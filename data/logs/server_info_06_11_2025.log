@@ -1,0 +1,15 @@
+[06-11-2025 11:40:07 PM] [INFO] [GameEngine.main()] Starting game engine..
+[06-11-2025 11:40:07 PM] [INFO] [GameEngine.main()] Launching 2006Scape World: 1...
+[06-11-2025 11:40:07 PM] [INFO] [ConfigLoader.loadSecrets()] Please open "data/secrets.json" file and enter your discord token bot there!
+[06-11-2025 11:40:07 PM] [INFO] [ConfigLoader.loadSecrets()] Please open "data/secrets.json" file and enter your Website Password there!
+[06-11-2025 11:40:07 PM] [INFO] [JavaCord.init()] Discord Token Not Set So Bot Not Loaded
+[06-11-2025 11:40:08 PM] [INFO] [FileServer.start()] Working Directory = C:\Users\damon\Desktop\Creating\Runescape
+[06-11-2025 11:40:08 PM] [INFO] [FileServer.start()] ************************************
+[06-11-2025 11:40:08 PM] [INFO] [FileServer.start()] ************************************
+[06-11-2025 11:40:08 PM] [INFO] [FileServer.start()] ************************************
+[06-11-2025 11:40:08 PM] [INFO] [FileServer.start()] WARNING: I could not find the data/cache folder. You are LIKELY running this in the wrong directory!
+[06-11-2025 11:40:08 PM] [INFO] [FileServer.start()] In IntelliJ, fix it by clicking "GameEngine" > Edit Configurations at the top of your screen
+[06-11-2025 11:40:08 PM] [INFO] [FileServer.start()] Then changing the "Working Directory" to be in "2006Scape/2006Scape Server", instead of just "2006Scape"
+[06-11-2025 11:40:08 PM] [INFO] [FileServer.start()] ************************************
+[06-11-2025 11:40:08 PM] [INFO] [FileServer.start()] ************************************
+[06-11-2025 11:40:08 PM] [INFO] [FileServer.start()] ************************************

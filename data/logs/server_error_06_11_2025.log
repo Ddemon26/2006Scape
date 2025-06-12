@@ -1,0 +1,5 @@
+[06-11-2025 11:40:07 PM] [ERROR] [Util.report()] SLF4J: Class path contains multiple SLF4J bindings.
+[06-11-2025 11:40:07 PM] [ERROR] [Util.report()] SLF4J: Found binding in [jar:file:/C:/Users/damon/.m2/repository/org/slf4j/slf4j-simple/1.7.25/slf4j-simple-1.7.25.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+[06-11-2025 11:40:07 PM] [ERROR] [Util.report()] SLF4J: Found binding in [jar:file:/C:/Users/damon/.m2/repository/org/slf4j/slf4j-log4j12/1.7.30/slf4j-log4j12-1.7.30.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+[06-11-2025 11:40:07 PM] [ERROR] [Util.report()] SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+[06-11-2025 11:40:07 PM] [ERROR] [Util.report()] SLF4J: Actual binding is of type [org.slf4j.impl.SimpleLoggerFactory]
