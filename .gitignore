@@ -15,3 +15,4 @@
 
 # Ignore any json files in the server root (should only be config files, the sample file should still be updated)
 2006Scape Server/*.json
+data/secrets.json
