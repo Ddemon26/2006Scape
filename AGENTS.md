@@ -2,7 +2,7 @@
 
 This file is **not** a human‑oriented README.  It is an *executable specification* for any **LLM / Codex‑style autonomous agent** that is authorised to push branches or open pull‑requests against the `2006Scape` repository.  The rules below are *strict*; the agent must follow them literally or abort.
 
-> **TL;DR** – If you are an LLM acting on this repo, obey every MUST, SHOULD, and MUST NOT below.  When in doubt, open an Issue titled `AI‑Clarification: <topic>` and wait for a maintainer.
+> **TL;DR** – If you are an LLM acting on this repo, obey every MUST, SHOULD, and MUST NOT below.  When in doubt, open a **draft PR** titled `AI‑Clarification: <topic>` (with no code changes) and wait for a maintainer.
 
 ---
 
@@ -37,14 +37,16 @@ The agent **MAY** perform **only** the following categories:
 4. **Dependency update** – bump Maven or Docker base images **within same major version**.
 5. **CI / workflow** – patch `.github/workflows/*.yml` for build health.
 
-Any other class of change **MUST** be gated by a maintainer **Issue comment** containing `/allow-bot <task>`.
+Any other class of change **MUST** be gated by a maintainer **comment** containing `/allow-bot <task>` on a draft clarification PR or existing discussion thread.
 
 The agent **MUST NOT**:
 
 * Touch any file under `cache/` or `assets/`.
-* Commit Jagex‑owned proprietary content.
+
 * Re‑write git history.
+
 * Modify license headers.
+
 * Introduce new runtime dependencies without maintainer permission.
 
 ---
@@ -60,7 +62,7 @@ Before opening a PR the agent **MUST** ensure:
 5. Branch is rebased onto latest `main`.
 6. PR description follows the **template** in `.github/PULL_REQUEST_TEMPLATE/bot.md`.
 
-If any item fails, abort and open an Issue instead of a PR.
+If any item fails, abort and open a **draft** clarification PR (`AI‑Clarification: …`) with **no code changes**.
 
 ---
 
@@ -131,8 +133,8 @@ If a PR authored by the agent is merged and afterwards fails on `main`:
 
 When the agent encounters ambiguity:
 
-* **First** – open an Issue tagged `needs‑maintainer`.
-* **Wait** 24 hours of no maintainer response → ping `@Ddemon26` and halt.
+* **First** – open a **draft PR** titled `AI‑Clarification: <topic>` and add the `needs‑maintainer` label.
+* **Wait** 24 hours of no maintainer response → ping `@Ddemon26` in the draft PR and halt.
 * **NEVER** guess silently.
 
 ---
@@ -180,11 +182,11 @@ Poorly named identifiers such as `class204`, `method321`, or `anInt545` **MAY** 
 > 7. Each PR **MUST** still satisfy the pre‑flight checklist, pass offline CI, and update a progress checklist in its description (e.g., *“batch 2 of 5”*).
 > 8. If any phase fails CI, the rollback protocol in Section 9 applies before continuing.
 
-| Step                      | Mandatory Checks                                                                                                                                                                                                                                                                                                                                                                                                              |
-| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1  Scope**              | Operate on **a small batch of top‑level classes (preferably 2‑5) per PR**.  The branch name should follow `bot/rename/<batch-slug>` and the PR title **MUST** be `[BOT] refactor(rename): <ClassA>, <ClassB>, …`. <br><br>Every obfuscated identifier *inside each touched class* **MUST** be renamed in the same PR.  Avoid batches so large that they violate the pre‑flight limits in Section 3 or overwhelm human review. |
-| **2  Dependency sweep**   | Before editing, grep for the old identifiers across the repo.<br>• Update **every reference** that uses the renamed public API (including tests and server modules).<br>• Do **NOT** touch unrelated logic or private helpers in other files.                                                                                                                                                                                 |
-| **3  No‑logic guarantee** | After changes, run:<br>\`\`\`bash                                                                                                                                                                                                                                                                                                                                                                                             |
+| Step                      | Mandatory Checks                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1  Scope**              | Operate on **a small batch of top‑level classes (preferably 2‑5) per PR**.  The branch name should follow `bot/rename/<batch-slug>` and the PR title **MUST** be `[BOT] refactor(rename): <ClassA>, <ClassB>, …`. Every obfuscated identifier *inside each touched class* **MUST** be renamed in the same PR.  Avoid batches so large that they violate the pre‑flight limits in Section 3 or overwhelm human review. |
+| **2  Dependency sweep**   | Before editing, grep for the old identifiers across the repo.• Update **every reference** that uses the renamed public API (including tests and server modules).• Do **NOT** touch unrelated logic or private helpers in other files.                                                                                                                                                                                 |
+| **3  No‑logic guarantee** | After changes, run:\`\`\`bash                                                                                                                                                                                                                                                                                                                                                                                         |
 
 # ↪️ Compile‑only requirement (Maven builds)
 
@@ -195,7 +197,7 @@ javac \$(git ls-files '\*.java' | tr '
 
 # ./gradlew test --offline  or  java -jar tests-all.jar --scan-class-path
 
-````<br>The diff **MUST** show *identifier changes only*; byte‑code instructions must remain byte‑for‑byte identical except for constant‑pool name entries. |
+````<br>The
 | **4  Triple‑check protocol**                                | a. Automated diff‑filter: abort if diff adds/removes anything but identifiers/comments.<br>b. Compile stage: full `verify` build (offline).<br>c. Runtime: spin up the Docker compose world, log in a test account, execute `/skills`, logout.  Abort if any exception or protocol mismatch occurs. |
 | **5  Naming convention**                                    | • Classes → `UpperCamelCase`.<br>• Methods & fields → `lowerCamelCase`.<br>Names **MUST** convey intent – the agent **MUST first understand what each class, method, or variable actually does** and pick a clear, self‑describing identifier. Placeholder or purely positional names are forbidden. Aim for clarity over brevity (e.g., `ProjectileTrajectoryCalculator`). |
 | **6  Follow‑up classes**                                    | If class *B* depends on renamed class *A*, perform the rename for *B's references* **in the same PR**, but do **not** begin renaming *B* itself (separate PR). |
@@ -212,7 +214,7 @@ The CI runners for `2006Scape` execute inside a **Codex sandbox** with **no egre
 
 1. **No offline Maven execution** – The sandbox blocks Maven Central and we do **not** maintain an offline mirror.  Therefore any PR that still uses Maven **MUST skip test execution**.  Compilation checks (e.g., `javac`) are still required.  If the PR adds a self‑contained test runner (fat jar, Gradle offline build, etc.), that runner **MUST** be executed and pass.
 
-2. **Avoid fetching new artifacts** – Any change that introduces a dependency **NOT** present in the offline cache **MUST** abort and open an Issue requesting human approval.
+2. **Avoid fetching new artifacts** – Any change that introduces a dependency **NOT** present in the offline cache **MUST** abort and open a draft clarification PR requesting human approval.
 3. **Export proxy & CA variables** for auxiliary tools (curl, npm, gradle):
    ```bash
    export http_proxy="http://proxy:8080"
