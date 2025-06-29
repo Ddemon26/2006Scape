@@ -31,56 +31,56 @@ final class Class6 {
 			return anIntArray115;
 		}
 		double d = i / (j + 0.0D);
-		aClass29_98.resetValues();
-		aClass29_99.resetValues();
+		aSoundEnvelope_98.reset();
+		aSoundEnvelope_99.reset();
 		int l = 0;
 		int i1 = 0;
 		int j1 = 0;
-		if (aClass29_100 != null) {
-			aClass29_100.resetValues();
-			aClass29_101.resetValues();
-			l = (int) ((aClass29_100.anInt539 - aClass29_100.anInt538) * 32.768000000000001D / d);
-			i1 = (int) (aClass29_100.anInt538 * 32.768000000000001D / d);
+		if (aSoundEnvelope_100 != null) {
+			aSoundEnvelope_100.reset();
+			aSoundEnvelope_101.reset();
+			l = (int) ((aSoundEnvelope_100.end - aSoundEnvelope_100.start) * 32.768000000000001D / d);
+			i1 = (int) (aSoundEnvelope_100.start * 32.768000000000001D / d);
 		}
 		int k1 = 0;
 		int l1 = 0;
 		int i2 = 0;
-		if (aClass29_102 != null) {
-			aClass29_102.resetValues();
-			aClass29_103.resetValues();
-			k1 = (int) ((aClass29_102.anInt539 - aClass29_102.anInt538) * 32.768000000000001D / d);
-			l1 = (int) (aClass29_102.anInt538 * 32.768000000000001D / d);
+		if (aSoundEnvelope_102 != null) {
+			aSoundEnvelope_102.reset();
+			aSoundEnvelope_103.reset();
+			k1 = (int) ((aSoundEnvelope_102.end - aSoundEnvelope_102.start) * 32.768000000000001D / d);
+			l1 = (int) (aSoundEnvelope_102.start * 32.768000000000001D / d);
 		}
 		for (int j2 = 0; j2 < 5; j2++) {
 			if (anIntArray106[j2] != 0) {
 				anIntArray118[j2] = 0;
 				anIntArray119[j2] = (int) (anIntArray108[j2] * d);
 				anIntArray120[j2] = (anIntArray106[j2] << 14) / 100;
-				anIntArray121[j2] = (int) ((aClass29_98.anInt539 - aClass29_98.anInt538) * 32.768000000000001D * Math.pow(1.0057929410678534D, anIntArray107[j2]) / d);
-				anIntArray122[j2] = (int) (aClass29_98.anInt538 * 32.768000000000001D / d);
+				anIntArray121[j2] = (int) ((aSoundEnvelope_98.end - aSoundEnvelope_98.start) * 32.768000000000001D * Math.pow(1.0057929410678534D, anIntArray107[j2]) / d);
+				anIntArray122[j2] = (int) (aSoundEnvelope_98.start * 32.768000000000001D / d);
 			}
 		}
 
 		for (int k2 = 0; k2 < i; k2++) {
-			int l2 = aClass29_98.method328(i);
-			int j4 = aClass29_99.method328(i);
-			if (aClass29_100 != null) {
-				int j5 = aClass29_100.method328(i);
-				int j6 = aClass29_101.method328(i);
-				l2 += method168(j6, j1, aClass29_100.anInt540) >> 1;
+			int l2 = aSoundEnvelope_98.step(i);
+			int j4 = aSoundEnvelope_99.step(i);
+			if (aSoundEnvelope_100 != null) {
+				int j5 = aSoundEnvelope_100.step(i);
+				int j6 = aSoundEnvelope_101.step(i);
+				l2 += method168(j6, j1, aSoundEnvelope_100.form) >> 1;
 				j1 += (j5 * l >> 16) + i1;
 			}
-			if (aClass29_102 != null) {
-				int k5 = aClass29_102.method328(i);
-				int k6 = aClass29_103.method328(i);
-				j4 = j4 * ((method168(k6, i2, aClass29_102.anInt540) >> 1) + 32768) >> 15;
+			if (aSoundEnvelope_102 != null) {
+				int k5 = aSoundEnvelope_102.step(i);
+				int k6 = aSoundEnvelope_103.step(i);
+				j4 = j4 * ((method168(k6, i2, aSoundEnvelope_102.form) >> 1) + 32768) >> 15;
 				i2 += (k5 * k1 >> 16) + l1;
 			}
 			for (int l5 = 0; l5 < 5; l5++) {
 				if (anIntArray106[l5] != 0) {
 					int l6 = k2 + anIntArray119[l5];
 					if (l6 < i) {
-						anIntArray115[l6] += method168(j4 * anIntArray120[l5] >> 15, anIntArray118[l5], aClass29_98.anInt540);
+						anIntArray115[l6] += method168(j4 * anIntArray120[l5] >> 15, anIntArray118[l5], aSoundEnvelope_98.form);
 						anIntArray118[l5] += (l2 * anIntArray121[l5] >> 16) + anIntArray122[l5];
 					}
 				}
@@ -88,19 +88,19 @@ final class Class6 {
 
 		}
 
-		if (aClass29_104 != null) {
-			aClass29_104.resetValues();
-			aClass29_105.resetValues();
+		if (aSoundEnvelope_104 != null) {
+			aSoundEnvelope_104.reset();
+			aSoundEnvelope_105.reset();
 			int i3 = 0;
 			boolean flag1 = true;
 			for (int i7 = 0; i7 < i; i7++) {
-				int k7 = aClass29_104.method328(i);
-				int i8 = aClass29_105.method328(i);
+				int k7 = aSoundEnvelope_104.step(i);
+				int i8 = aSoundEnvelope_105.step(i);
 				int k4;
 				if (flag1) {
-					k4 = aClass29_104.anInt538 + ((aClass29_104.anInt539 - aClass29_104.anInt538) * k7 >> 8);
+					k4 = aSoundEnvelope_104.start + ((aSoundEnvelope_104.end - aSoundEnvelope_104.start) * k7 >> 8);
 				} else {
-					k4 = aClass29_104.anInt538 + ((aClass29_104.anInt539 - aClass29_104.anInt538) * i8 >> 8);
+					k4 = aSoundEnvelope_104.start + ((aSoundEnvelope_104.end - aSoundEnvelope_104.start) * i8 >> 8);
 				}
 				if ((i3 += 256) >= k4) {
 					i3 = 0;
@@ -120,8 +120,8 @@ final class Class6 {
 
 		}
 		if (aClass39_111.anIntArray665[0] > 0 || aClass39_111.anIntArray665[1] > 0) {
-			aClass29_112.resetValues();
-			int k3 = aClass29_112.method328(i + 1);
+			aSoundEnvelope_112.reset();
+			int k3 = aSoundEnvelope_112.step(i + 1);
 			int i5 = aClass39_111.method544(0, k3 / 65536F);
 			int i6 = aClass39_111.method544(1, k3 / 65536F);
 			if (i >= i5 + i6) {
@@ -141,7 +141,7 @@ final class Class6 {
 					}
 
 					anIntArray115[j7] = j8;
-					k3 = aClass29_112.method328(i + 1);
+					k3 = aSoundEnvelope_112.step(i + 1);
 				}
 
 				char c = '\200';
@@ -161,7 +161,7 @@ final class Class6 {
 						}
 
 						anIntArray115[j7] = l8;
-						k3 = aClass29_112.method328(i + 1);
+						k3 = aSoundEnvelope_112.step(i + 1);
 					}
 
 					if (j7 >= i - i5) {
@@ -182,7 +182,7 @@ final class Class6 {
 					}
 
 					anIntArray115[j7] = i9;
-					aClass29_112.method328(i + 1);
+					aSoundEnvelope_112.step(i + 1);
 				}
 
 			}
@@ -221,33 +221,33 @@ final class Class6 {
 	}
 
 	public void method169(Stream stream) {
-		aClass29_98 = new Class29();
-		aClass29_98.method325(stream);
-		aClass29_99 = new Class29();
-		aClass29_99.method325(stream);
+		aSoundEnvelope_98 = new SoundEnvelope();
+		aSoundEnvelope_98.decode(stream);
+		aSoundEnvelope_99 = new SoundEnvelope();
+		aSoundEnvelope_99.decode(stream);
 		int i = stream.readUnsignedByte();
 		if (i != 0) {
 			stream.currentOffset--;
-			aClass29_100 = new Class29();
-			aClass29_100.method325(stream);
-			aClass29_101 = new Class29();
-			aClass29_101.method325(stream);
+			aSoundEnvelope_100 = new SoundEnvelope();
+			aSoundEnvelope_100.decode(stream);
+			aSoundEnvelope_101 = new SoundEnvelope();
+			aSoundEnvelope_101.decode(stream);
 		}
 		i = stream.readUnsignedByte();
 		if (i != 0) {
 			stream.currentOffset--;
-			aClass29_102 = new Class29();
-			aClass29_102.method325(stream);
-			aClass29_103 = new Class29();
-			aClass29_103.method325(stream);
+			aSoundEnvelope_102 = new SoundEnvelope();
+			aSoundEnvelope_102.decode(stream);
+			aSoundEnvelope_103 = new SoundEnvelope();
+			aSoundEnvelope_103.decode(stream);
 		}
 		i = stream.readUnsignedByte();
 		if (i != 0) {
 			stream.currentOffset--;
-			aClass29_104 = new Class29();
-			aClass29_104.method325(stream);
-			aClass29_105 = new Class29();
-			aClass29_105.method325(stream);
+			aSoundEnvelope_104 = new SoundEnvelope();
+			aSoundEnvelope_104.decode(stream);
+			aSoundEnvelope_105 = new SoundEnvelope();
+			aSoundEnvelope_105.decode(stream);
 		}
 		for (int j = 0; j < 10; j++) {
 			int k = stream.method422();
@@ -264,8 +264,8 @@ final class Class6 {
 		anInt113 = stream.readUnsignedWord();
 		anInt114 = stream.readUnsignedWord();
 		aClass39_111 = new Class39();
-		aClass29_112 = new Class29();
-		aClass39_111.method545(stream, aClass29_112);
+		aSoundEnvelope_112 = new SoundEnvelope();
+		aClass39_111.method545(stream, aSoundEnvelope_112);
 	}
 
 	public Class6() {
@@ -276,21 +276,21 @@ final class Class6 {
 		anInt113 = 500;
 	}
 
-	private Class29 aClass29_98;
-	private Class29 aClass29_99;
-	private Class29 aClass29_100;
-	private Class29 aClass29_101;
-	private Class29 aClass29_102;
-	private Class29 aClass29_103;
-	private Class29 aClass29_104;
-	private Class29 aClass29_105;
+	private SoundEnvelope aSoundEnvelope_98;
+	private SoundEnvelope aSoundEnvelope_99;
+	private SoundEnvelope aSoundEnvelope_100;
+	private SoundEnvelope aSoundEnvelope_101;
+	private SoundEnvelope aSoundEnvelope_102;
+	private SoundEnvelope aSoundEnvelope_103;
+	private SoundEnvelope aSoundEnvelope_104;
+	private SoundEnvelope aSoundEnvelope_105;
 	private final int[] anIntArray106;
 	private final int[] anIntArray107;
 	private final int[] anIntArray108;
 	private int anInt109;
 	private int anInt110;
 	private Class39 aClass39_111;
-	private Class29 aClass29_112;
+	private SoundEnvelope aSoundEnvelope_112;
 	int anInt113;
 	int anInt114;
 	private static int[] anIntArray115;
