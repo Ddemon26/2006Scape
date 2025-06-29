@@ -165,6 +165,13 @@ Poorly named identifiers such as `class204`, `method321`, or `anInt545` **MAY** 
 > **Entire‑class rule** – When an agent works on a class for renaming, **every** ambiguous or non‑descriptive field, method, or nested type *inside that same class* **MUST** be renamed to an intentional, self‑documenting name during the **same PR**.  Partial renames are forbidden.
 >
 > **Public‑API cross‑check** – After renaming, the agent **MUST** perform a project‑wide sweep and triple‑check that **all references** (client *and* server‑side) to the renamed **public** members now use the new identifiers.  Any mismatch **MUST** abort the run.
+>
+> **God‑class exception (≥ 10 000 LOC)** – When the target class is extremely large (roughly ≥ 10 000 lines), the rename **MUST** be delivered in a *sequence* of PRs:
+>
+> 1. **Phase A – Class shell rename.** PR #1 may rename **only** the class declaration itself and update every external reference.  Internal fields/methods may stay obfuscated for this step so the net diff and touched‑files count remain within Section 3 limits.
+> 2. **Phase B – Incremental member cleanup.** Subsequent PRs should rename groups of ≤ 500 identifiers (or ≤ 2 000 modified LOC) per PR until the entire class is clear.
+> 3. Each PR **MUST** still satisfy the pre‑flight checklist, pass offline CI, and update a progress checklist in its description (e.g., *“batch 2 of 5”*).
+> 4. If any phase fails CI, the rollback protocol in Section 9 applies before continuing.
 
 | Step                                                                   | Mandatory Checks                                                                                                                                                                                                                                                                                                                                                                                                              |
 | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

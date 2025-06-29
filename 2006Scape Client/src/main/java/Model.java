@@ -43,7 +43,7 @@ public final class Model extends Animable {
 		Stream stream = new Stream(abyte0);
 		stream.currentOffset = abyte0.length - 18;
 		ModelHeader class21_1 = aModelHeaderArray1661[j] = new ModelHeader();
-		class21_1.aByteArray368 = abyte0;
+		class21_1.data = abyte0;
 		class21_1.vertexCount = stream.readUnsignedWord();
 		class21_1.triangleCount = stream.readUnsignedWord();
 		class21_1.texturedTriangleCount = stream.readUnsignedByte();
@@ -172,15 +172,15 @@ public final class Model extends Animable {
 			anIntArray1656 = new int[anInt1630];
 		}
 		anIntArray1640 = new int[anInt1630];
-		Stream stream = new Stream(class21.aByteArray368);
+		Stream stream = new Stream(class21.data);
 		stream.currentOffset = class21.vertexDirectionOffset;
-		Stream stream_1 = new Stream(class21.aByteArray368);
+		Stream stream_1 = new Stream(class21.data);
 		stream_1.currentOffset = class21.vertexXOffset;
-		Stream stream_2 = new Stream(class21.aByteArray368);
+		Stream stream_2 = new Stream(class21.data);
 		stream_2.currentOffset = class21.vertexYOffset;
-		Stream stream_3 = new Stream(class21.aByteArray368);
+		Stream stream_3 = new Stream(class21.data);
 		stream_3.currentOffset = class21.vertexZOffset;
-		Stream stream_4 = new Stream(class21.aByteArray368);
+		Stream stream_4 = new Stream(class21.data);
 		stream_4.currentOffset = class21.vertexSkinsOffset;
 		int k = 0;
 		int l = 0;
