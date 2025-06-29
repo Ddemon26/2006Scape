@@ -203,8 +203,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	}
 
 	public int getNodeCount() {
-		synchronized (nodeSubList) {
-			return nodeSubList.getNodeCount();
+		synchronized (nodeSubDeque) {
+			return nodeSubDeque.getNodeCount();
 		}
 	}
 
@@ -283,8 +283,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		if (versions[i][j] == 0) {
 			return;
 		}
-		synchronized (nodeSubList) {
-			for (OnDemandData onDemandData = (OnDemandData) nodeSubList.reverseGetFirst(); onDemandData != null; onDemandData = (OnDemandData) nodeSubList.reverseGetNext()) {
+		synchronized (nodeSubDeque) {
+			for (OnDemandData onDemandData = (OnDemandData) nodeSubDeque.reverseGetFirst(); onDemandData != null; onDemandData = (OnDemandData) nodeSubDeque.reverseGetNext()) {
 				if (onDemandData.dataType == i && onDemandData.ID == j) {
 					return;
 				}
@@ -297,7 +297,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			synchronized (aClass19_1370) {
 				aClass19_1370.insertHead(onDemandData_1);
 			}
-			nodeSubList.insertHead(onDemandData_1);
+			nodeSubDeque.insertHead(onDemandData_1);
 		}
 	}
 
@@ -425,7 +425,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		if (onDemandData == null) {
 			return null;
 		}
-		synchronized (nodeSubList) {
+		synchronized (nodeSubDeque) {
 			onDemandData.unlinkSub();
 		}
 		if (onDemandData.buffer == null) {
@@ -623,25 +623,25 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	}
 
 	public OnDemandFetcher() {
-		requested = new NodeList();
+		requested = new NodeDeque();
 		statusString = "";
 		crc32 = new CRC32();
 		ioBuffer = new byte[500];
 		fileStatus = new byte[4][];
-		aClass19_1344 = new NodeList();
+		aClass19_1344 = new NodeDeque();
 		running = true;
 		waiting = false;
-		aClass19_1358 = new NodeList();
+		aClass19_1358 = new NodeDeque();
 		gzipInputBuffer = new byte[65000];
-		nodeSubList = new NodeSubList();
+		nodeSubDeque = new NodeSubDeque();
 		versions = new int[4][];
 		crcs = new int[4][];
-		aClass19_1368 = new NodeList();
-		aClass19_1370 = new NodeList();
+		aClass19_1368 = new NodeDeque();
+		aClass19_1370 = new NodeDeque();
 	}
 
 	private int totalFiles;
-	private final NodeList requested;
+	private final NodeDeque requested;
 	private int anInt1332;
 	public String statusString;
 	private int writeLoopCycle;
@@ -652,7 +652,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	public int onDemandCycle;
 	private final byte[][] fileStatus;
 	private Game clientInstance;
-	private final NodeList aClass19_1344;
+	private final NodeDeque aClass19_1344;
 	private int completedSize;
 	private int expectedSize;
 	int[] anIntArray1348;
@@ -663,19 +663,19 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	private OutputStream outputStream;
 	private int[] mapIndices4;
 	private boolean waiting;
-	private final NodeList aClass19_1358;
+	private final NodeDeque aClass19_1358;
 	private final byte[] gzipInputBuffer;
 	private int[] anIntArray1360;
-	private final NodeSubList nodeSubList;
+	private final NodeSubDeque nodeSubDeque;
 	private InputStream inputStream;
 	private Socket socket;
 	public final int[][] versions;
 	public final int[][] crcs;
 	private int uncompletedCount;
 	private int completedCount;
-	private final NodeList aClass19_1368;
+	private final NodeDeque aClass19_1368;
 	private OnDemandData current;
-	private final NodeList aClass19_1370;
+	private final NodeDeque aClass19_1370;
 	private int[] mapIndices1;
 	private byte[] modelIndices;
 	private int loopCycle;

@@ -2,9 +2,9 @@
 // Jad home page: http://www.kpdus.com/jad.html
 // Decompiler options: packimports(3) 
 
-final class NodeList {
+final class NodeDeque {
 
-	public NodeList() {
+	public NodeDeque() {
 		head = new Node();
 		head.prev = head;
 		head.next = head;

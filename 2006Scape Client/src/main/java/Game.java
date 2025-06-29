@@ -949,7 +949,7 @@ public class Game extends RSApplet {
 	}
 
 	public void spawnGroundItem(int i, int j) {
-		NodeList class19 = groundArray[plane][i][j];
+		NodeDeque class19 = groundArray[plane][i][j];
 		if (class19 == null) {
 			worldController.method295(plane, i, j);
 			return;
@@ -1479,7 +1479,7 @@ public class Game extends RSApplet {
 			// Draw item info
 			for (int k5 = 0; k5 < 104; k5++) {
 				for (int l5 = 0; l5 < 104; l5++) {
-					NodeList class19 = groundArray[plane][k5][l5];
+					NodeDeque class19 = groundArray[plane][k5][l5];
 					if (class19 != null) {
 						int offset = 5;
 						for (Item item = (Item) class19.reverseGetFirst(); item != null; item = (Item) class19.reverseGetNext()) {
@@ -4604,7 +4604,7 @@ public class Game extends RSApplet {
 				buildAtPlayerMenu(i1, l1, player, j1);
 			}
 			if (k1 == 3) {
-				NodeList class19 = groundArray[plane][i1][j1];
+				NodeDeque class19 = groundArray[plane][i1][j1];
 				if (class19 != null) {
 					for (Item item = (Item) class19.getFirst(); item != null; item = (Item) class19.getNext()) {
 						ItemDef itemDef = ItemDef.forID(item.ID);
@@ -5485,7 +5485,7 @@ public class Game extends RSApplet {
 				class9.disabledText = "\\nYou have not yet set any recovery questions.\\nIt is @lre@strongly@yel@ recommended that you do so.\\n\\nIf you don't you will be @lre@unable to recover your\\n@lre@password@yel@ if you forget it, or it is stolen.";
 			else if (anInt1034 <= anInt1170) {
 				class9.disabledText = "\\n\\nRecovery Questions Last Set:\\n@gre@"
-						+ method104(anInt1034);
+						+ formatDate(anInt1034);
 			} else {
 				int l1 = (anInt1170 + 14) - anInt1034;
 				String s2;
@@ -5497,7 +5497,7 @@ public class Game extends RSApplet {
 					s2 = l1 + " days ago";
 				class9.disabledText = s2
 						+ " you requested@lre@ new recovery\\n@lre@questions.@yel@ The requested change will occur\\non: @lre@"
-						+ method104(anInt1034)
+						+ formatDate(anInt1034)
 						+ "\\n\\nIf you do not remember making this request\\ncancel it immediately, and change your password.";
 			}
 		if (j == 663)
@@ -5505,7 +5505,7 @@ public class Game extends RSApplet {
 				class9.disabledText = "Last password change:\\n@gre@Never changed";
 			else
 				class9.disabledText = "Last password change:\\n@gre@"
-						+ method104(anInt1083);
+						+ formatDate(anInt1083);
 		if (j == 668) {
 			if (anInt1034 > anInt1170) {
 				class9.disabledText = "To cancel this request:\\n1) Logout and return to the frontpage of this website.\\n2) Choose 'Cancel recovery questions'.";
@@ -5515,7 +5515,7 @@ public class Game extends RSApplet {
 		}
 	}
 	
-	public String method104(int i) {
+       public String formatDate(int i) {
 		if (i > anInt1170 + 10) {
 			return "Unknown";
 		} else {
@@ -6143,7 +6143,7 @@ public class Game extends RSApplet {
 					}
 				}
 
-				aClass19_1179 = new NodeList();
+				aClass19_1179 = new NodeDeque();
 				anInt900 = 0;
 				friendsCount = 0;
 				dialogID = -1;
@@ -8173,13 +8173,13 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method104() {
-        Graphic class30_sub2_sub4_sub3 = (Graphic) aClass19_1056.reverseGetFirst();
+       public void updateGraphics() {
+       Graphic class30_sub2_sub4_sub3 = (Graphic) aClass19_1056.reverseGetFirst();
         for (; class30_sub2_sub4_sub3 != null; class30_sub2_sub4_sub3 = (Graphic) aClass19_1056.reverseGetNext()) {
 			if (class30_sub2_sub4_sub3.anInt1560 != plane || class30_sub2_sub4_sub3.aBoolean1567) {
 				class30_sub2_sub4_sub3.unlink();
 			} else if (loopCycle >= class30_sub2_sub4_sub3.anInt1564) {
-				class30_sub2_sub4_sub3.method454(anInt945);
+                               class30_sub2_sub4_sub3.advance(anInt945);
 				if (class30_sub2_sub4_sub3.aBoolean1567) {
 					class30_sub2_sub4_sub3.unlink();
 				} else {
@@ -9509,7 +9509,7 @@ public class Game extends RSApplet {
 
 		for (int k5 = 0; k5 < 104; k5++) {
 			for (int l5 = 0; l5 < 104; l5++) {
-				NodeList class19 = groundArray[plane][k5][l5];
+				NodeDeque class19 = groundArray[plane][k5][l5];
 				if (class19 != null) {
 					int l = k5 * 4 + 2 - myPlayer.x / 32;
 					int j3 = l5 * 4 + 2 - myPlayer.y / 32;
@@ -10015,7 +10015,7 @@ public class Game extends RSApplet {
 			int k11 = stream.readUnsignedWord();
 			int l13 = stream.readUnsignedWord();
 			if (j3 >= 0 && i6 >= 0 && j3 < 104 && i6 < 104) {
-				NodeList class19_1 = groundArray[plane][j3][i6];
+				NodeDeque class19_1 = groundArray[plane][j3][i6];
 				if (class19_1 != null) {
 					for (Item class30_sub2_sub4_sub2_3 = (Item) class19_1.reverseGetFirst(); class30_sub2_sub4_sub2_3 != null; class30_sub2_sub4_sub2_3 = (Item) class19_1.reverseGetNext()) {
 						if (class30_sub2_sub4_sub2_3.ID != (l8 & 0x7fff) || class30_sub2_sub4_sub2_3.amount != k11) {
@@ -10057,7 +10057,7 @@ public class Game extends RSApplet {
 				class30_sub2_sub4_sub2_2.ID = i1;
 				class30_sub2_sub4_sub2_2.amount = j14;
 				if (groundArray[plane][k6][j9] == null) {
-					groundArray[plane][k6][j9] = new NodeList();
+					groundArray[plane][k6][j9] = new NodeDeque();
 				}
 				groundArray[plane][k6][j9].insertHead(class30_sub2_sub4_sub2_2);
 				spawnGroundItem(k6, j9);
@@ -10070,7 +10070,7 @@ public class Game extends RSApplet {
 			int l6 = anInt1269 + (j1 & 7);
 			int k9 = stream.readUnsignedWord();
 			if (i4 >= 0 && l6 >= 0 && i4 < 104 && l6 < 104) {
-				NodeList class19 = groundArray[plane][i4][l6];
+				NodeDeque class19 = groundArray[plane][i4][l6];
 				if (class19 != null) {
 					for (Item item = (Item) class19.reverseGetFirst(); item != null; item = (Item) class19.reverseGetNext()) {
 						if (item.ID != (k9 & 0x7fff)) {
@@ -10253,7 +10253,7 @@ public class Game extends RSApplet {
 				gItem.ID = itemID;
 				gItem.amount = itemAmount;
 				if (groundArray[plane][l10][i13] == null) {
-					groundArray[plane][l10][i13] = new NodeList();
+					groundArray[plane][l10][i13] = new NodeDeque();
 				}
 				groundArray[plane][l10][i13].insertHead(gItem);
 				spawnGroundItem(l10, i13);
@@ -11838,8 +11838,8 @@ public class Game extends RSApplet {
 		method26(true);
 		method47(false);
 		method26(false);
-		method55();
-		method104();
+               method55();
+               updateGraphics();
 		if (!aBoolean1160) {
 			int i = anInt1184;
 			if (anInt984 / 256 > i) {
@@ -12016,7 +12016,7 @@ public class Game extends RSApplet {
 		server = ClientSettings.SERVER_IP;
 		anIntArrayArray825 = new int[104][104];
 		friendsNodeIDs = new int[200];
-		groundArray = new NodeList[4][104][104];
+		groundArray = new NodeDeque[4][104][104];
 		aBoolean831 = false;
 		aStream_834 = new Stream(new byte[5000]);
 		npcArray = new NPC[16384];
@@ -12080,7 +12080,7 @@ public class Game extends RSApplet {
 		anIntArray990 = new int[5];
 		anInt1002 = 0x23201b;
 		amountOrNameInput = "";
-		aClass19_1013 = new NodeList();
+		aClass19_1013 = new NodeDeque();
 		aBoolean1017 = false;
 		anInt1018 = -1;
 		anIntArray1030 = new int[5];
@@ -12092,7 +12092,7 @@ public class Game extends RSApplet {
 		aBoolean1047 = true;
 		anIntArray1052 = new int[151];
 		anInt1054 = -1;
-		aClass19_1056 = new NodeList();
+		aClass19_1056 = new NodeDeque();
 		anIntArray1057 = new int[33];
 		aClass9_1059 = new RSInterface();
 		mapScenes = new Background[100];
@@ -12132,7 +12132,7 @@ public class Game extends RSApplet {
 		myPassword = "";
 		genericLoadingError = false;
 		reportAbuseInterfaceID = -1;
-		aClass19_1179 = new NodeList();
+		aClass19_1179 = new NodeDeque();
 		anInt1184 = 128;
 		invOverlayInterfaceID = -1;
 		stream = Stream.create();
@@ -12171,7 +12171,7 @@ public class Game extends RSApplet {
 	public long aLong824;
 	public int[][] anIntArrayArray825;
 	public int[] friendsNodeIDs;
-	public NodeList[][][] groundArray;
+	public NodeDeque[][][] groundArray;
 	public int[] anIntArray828;
 	public int[] anIntArray829;
 	public volatile boolean aBoolean831;
@@ -12339,7 +12339,7 @@ public class Game extends RSApplet {
 	public int anInt1009;
 	public int anInt1010;
 	public int anInt1011;
-	public NodeList aClass19_1013;
+	public NodeDeque aClass19_1013;
 	public int anInt1014;
 	public int anInt1015;
 	public int anInt1016;
@@ -12378,7 +12378,7 @@ public class Game extends RSApplet {
 	public StreamLoader titleStreamLoader;
 	public int anInt1054;
 	public int anInt1055;
-	public NodeList aClass19_1056;
+	public NodeDeque aClass19_1056;
 	public final int[] anIntArray1057;
 	public final RSInterface aClass9_1059;
 	public Background[] mapScenes;
@@ -12492,7 +12492,7 @@ public class Game extends RSApplet {
 	public boolean genericLoadingError;
 	public final int[] anIntArray1177 = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3};
 	public int reportAbuseInterfaceID;
-	public NodeList aClass19_1179;
+	public NodeDeque aClass19_1179;
 	public int[] chatAreaOffsets;
 	public int[] tabAreaOffsets;
 	public int[] chatBoxAreaOffsets;

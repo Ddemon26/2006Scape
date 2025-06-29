@@ -2090,7 +2090,7 @@ final class WorldController {
         private static CullingCluster[][] cullingClusters;
         private static int anInt475;
         private static final CullingCluster[] clusterBuffer = new CullingCluster[500];
-	private static NodeList aClass19_477 = new NodeList();
+	private static NodeDeque aClass19_477 = new NodeDeque();
 	private static final int[] anIntArray478 = {19, 55, 38, 155, 255, 110, 137, 205, 76};
 	private static final int[] anIntArray479 = {160, 192, 80, 96, 0, 144, 80, 48, 160};
 	private static final int[] anIntArray480 = {76, 8, 137, 4, 0, 1, 38, 2, 19};
