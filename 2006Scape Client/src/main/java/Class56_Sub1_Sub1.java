@@ -16,7 +16,7 @@ final class Class56_Sub1_Sub1 extends Class56_Sub1 implements Receiver
     private static Receiver aReceiver1850 = null;
     private static Sequencer aSequencer1851 = null;
     
-    final void method827(int i, byte[] is, int i_0_, boolean bool) {
+    final void playMidi(int i, byte[] is, int i_0_, boolean bool) {
     	if (aSequencer1851 != null) {
     		try {
     			Sequence sequence = MidiSystem.getSequence(new ByteArrayInputStream(is));
@@ -30,7 +30,7 @@ final class Class56_Sub1_Sub1 extends Class56_Sub1 implements Receiver
     	}
     }
     
-    final void method833() {
+    final void stopMidi() {
 		if (aSequencer1851 != null) {
 		    aSequencer1851.stop();
 		    method838(-1L);
@@ -51,11 +51,11 @@ final class Class56_Sub1_Sub1 extends Class56_Sub1 implements Receiver
 		    aSequencer1851.open();
 		    method838(-1L);
 		} catch (Exception exception) {
-		    Game.method790();
+                   Game.closeMidiSystem();
 		}
     }
     
-    final void method828() {
+    final void shutdown() {
     	if (aSequencer1851 != null) {
     		aSequencer1851.close();
     		aSequencer1851 = null;
@@ -70,13 +70,13 @@ final class Class56_Sub1_Sub1 extends Class56_Sub1 implements Receiver
 	/* empty */
     }
     
-    final void method831(int i) {
+    final void setVolume(int i) {
 		if (aSequencer1851 != null) {
 		    method840(i, -1L);
 		}
     }
     
-    final synchronized void method830(int i, int i_2_) {
+    final synchronized void adjustVolume(int i, int i_2_) {
     	if (aSequencer1851 != null) {
     		method835(i_2_, i, -1L);
     	}
@@ -92,8 +92,8 @@ final class Class56_Sub1_Sub1 extends Class56_Sub1 implements Receiver
 		}
     }
     
-    final void method832(int i) {
-	if (i > -90)
-	    method833();
+    final void poll(int i) {
+        if (i > -90)
+                    stopMidi();
     }
 }
