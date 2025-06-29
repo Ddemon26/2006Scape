@@ -226,8 +226,8 @@ public class Game extends RSApplet {
 			if (fetchMusic) {
 				byte[] is = musicData;
 				if (is != null) {
-					if (anInt116 >= 0)
-						method684(aBoolean995, anInt116, musicVolume2, is);
+                                       if (anInt116 >= 0)
+                                               initiateMidiFade(aBoolean995, anInt116, musicVolume2, is);
                                         else if (anInt139 >= 0)
                                                 queueMidiTrack(anInt139, -1, aBoolean995, is, musicVolume2);
 					else
@@ -235,13 +235,13 @@ public class Game extends RSApplet {
 					fetchMusic = false;
 				}
 			}
-		    method368(0);
+                   updateMidiFade(0);
 		}
 	}
 	
-	static final int method1004(int i) {
-		return (int) (Math.log((double) i * 0.00390625) * 868.5889638065036 + 0.5);
-	}
+       static final int calculateLogVolume(int linearVolume) {
+               return (int) (Math.log((double) linearVolume * 0.00390625) * 868.5889638065036 + 0.5);
+       }
 	
     static final void playMidiTrack(int volume, byte[] data, boolean loop) {
                 if (aClass56_749 != null) {
@@ -273,7 +273,7 @@ public class Game extends RSApplet {
                                 if (anInt478 == 0)
                                         anInt2200 = 0;
                                 else {
-                                        int i_31_ = method1004(anInt478);
+                                       int i_31_ = calculateLogVolume(anInt478);
                                         i_31_ -= anInt155;
                                         anInt2200 = ((anInt2200 - 1 + (i_31_ + 3600)) / anInt2200);
                                 }
@@ -289,61 +289,61 @@ public class Game extends RSApplet {
                 }
         }
 	
-	static final void method684(boolean bool, int i, int i_2_, byte[] is) {
-		if (aClass56_749 != null) {
-			if (anInt478 >= 0) {
-				anInt2200 = i;
-				if (anInt478 != 0) {
-					int i_4_ = method1004(anInt478);
-					i_4_ -= anInt155;
-					anInt720 = (i_4_ + 3600) / i;
-					if (anInt720 < 1)
-						anInt720 = 1;
-				} else
-					anInt720 = 1;
-				aByteArray347 = is;
-				anInt1478 = i_2_;
-				aBoolean475 = bool;
-                        } else if (anInt720 == 0)
-                                playMidiTrack(i_2_, is, bool);
-			else {
-				anInt1478 = i_2_;
-				aBoolean475 = bool;
-				aByteArray347 = is;
-			}
-		}
-	}
+       static final void initiateMidiFade(boolean loop, int delay, int volume, byte[] data) {
+               if (aClass56_749 != null) {
+                       if (anInt478 >= 0) {
+                               anInt2200 = delay;
+                               if (anInt478 != 0) {
+                                       int mapped = calculateLogVolume(anInt478);
+                                       mapped -= anInt155;
+                                       anInt720 = (mapped + 3600) / delay;
+                                       if (anInt720 < 1)
+                                               anInt720 = 1;
+                               } else
+                                       anInt720 = 1;
+                               aByteArray347 = data;
+                               anInt1478 = volume;
+                               aBoolean475 = loop;
+                       } else if (anInt720 == 0)
+                               playMidiTrack(volume, data, loop);
+                       else {
+                               anInt1478 = volume;
+                               aBoolean475 = loop;
+                               aByteArray347 = data;
+                       }
+               }
+       }
 	
-	static final void method368(int i) {
-		if (aClass56_749 != null) {
-			if (anInt478 < i) {
-				if (anInt720 > 0) {
-					anInt720--;
-					if (anInt720 == 0) {
-						if (aByteArray347 == null)
-							aClass56_749.method831(256);
-						else {
-							aClass56_749.method831(anInt1478);
-							anInt478 = anInt1478;
-							aClass56_749.method827(anInt1478, aByteArray347, 0, aBoolean475);
-							aByteArray347 = null;
-						}
-						anInt155 = 0;
-					}
-				}
-			} else if (anInt720 > 0) {
-				anInt155 += anInt2200;
-				aClass56_749.method830(anInt478, anInt155);
-				anInt720--;
-				if (anInt720 == 0) {
-					aClass56_749.method833();
-					anInt720 = 20;
-					anInt478 = -1;
-				}
-			}
-			aClass56_749.method832(i - 122);
-		}
-	}
+       static final void updateMidiFade(int targetVolume) {
+               if (aClass56_749 != null) {
+                       if (anInt478 < targetVolume) {
+                               if (anInt720 > 0) {
+                                       anInt720--;
+                                       if (anInt720 == 0) {
+                                               if (aByteArray347 == null)
+                                                       aClass56_749.method831(256);
+                                               else {
+                                                       aClass56_749.method831(anInt1478);
+                                                       anInt478 = anInt1478;
+                                                       aClass56_749.method827(anInt1478, aByteArray347, 0, aBoolean475);
+                                                       aByteArray347 = null;
+                                               }
+                                               anInt155 = 0;
+                                       }
+                               }
+                       } else if (anInt720 > 0) {
+                               anInt155 += anInt2200;
+                               aClass56_749.method830(anInt478, anInt155);
+                               anInt720--;
+                               if (anInt720 == 0) {
+                                       aClass56_749.method833();
+                                       anInt720 = 20;
+                                       anInt478 = -1;
+                               }
+                       }
+                       aClass56_749.method832(targetVolume - 122);
+               }
+       }
 
 	private void stopMidi() {
 		if (Signlink.music != null) {
