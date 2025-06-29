@@ -53,7 +53,7 @@ The agent **MUST NOT**:
 
 Before opening a PR the agent **MUST** ensure:
 
-1. `mvn -B verify` exits with status 0.
+1. `mvn -B verify` exits with status 0 **using *offline mode*** (see Section 14).
 2. `spotbugs:check` passes.
 3. Modified lines are ≥ 80 % covered by unit/integration tests (Jacoco report).
 4. Net line‑count change < 5 000 and touched files ≤ 10.
@@ -160,27 +160,54 @@ graph TD
 
 ## 13  De‑obfuscation & Safe Renaming
 
-Badly named identifiers such as `class204`, `method321`, or `anInt545` **MAY** be renamed **only** under these additional constraints.  These rules are *mandatory* because even a single accidental logic tweak can break client↔server protocol synchronisation.
+Poorly named identifiers such as `class204`, `method321`, or `anInt545` **MAY** be renamed **only** under these additional constraints.  These rules are *mandatory* because even a single accidental logic tweak can break client↔server protocol synchronisation.
 
-| Step                                                        | Mandatory Checks                                                                                                                                                                                              |
-| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1  Scope**                                                | Operate on **one top‑level class per PR**.  The branch name should follow `bot/rename/<old>‑to‑<new>` and the PR title **MUST** be `[BOT] refactor(rename): <OldName> → <NewName>`.                           |
-| **2  Dependency sweep**                                     | Before editing, grep for the old identifier across the repo.<br>• Update **only those references** that call the renamed public API.<br>• Do **NOT** touch unrelated logic or private helpers in other files. |
-| **3  No‑logic guarantee**                                   | After changes, run:<br>\`\`\`bash                                                                                                                                                                             |
-| mvn -B verify            # compile + unit/integration tests |                                                                                                                                                                                                               |
-| japicmp\:cmp               # binary compatibility check     |                                                                                                                                                                                                               |
+> **Entire‑class rule** – When an agent works on a class for renaming, **every** ambiguous or non‑descriptive field, method, or nested type *inside that same class* **MUST** be renamed to an intentional, self‑documenting name during the **same PR**.  Partial renames are forbidden.
+>
+> **Public‑API cross‑check** – After renaming, the agent **MUST** perform a project‑wide sweep and triple‑check that **all references** (client *and* server‑side) to the renamed **public** members now use the new identifiers.  Any mismatch **MUST** abort the run.
 
-```<br>The diff **MUST** show *identifier changes only*; byte‑code instructions must remain byte‑for‑byte identical except for constant‑pool name entries. |
-| **4  Triple‑check protocol** | a. Automated diff‑filter: abort if diff adds/removes anything but identifiers/comments.<br>b. Compile stage: full `verify` build.<br>c. Runtime: spin up the Docker compose world, log in a test account, execute `/skills`, logout.  Abort if any exception or protocol mismatch occurs. |
-| **5  Naming convention** | • Classes → `UpperCamelCase`.<br>• Methods & fields → `lowerCamelCase`.<br>Names **MUST** convey intent (e.g., `ProjectileTrajectoryCalculator`). |
-| **6  Follow‑up classes** | If class *B* depends on renamed class *A*, perform the rename for *B's references* **in the same PR**, but do **not** begin renaming *B* itself. |
-| **7  Review artefacts** | PR description **MUST** include:<br>• Old ⇢ new mapping table.<br>• Output of `git diff --stat`.<br>• Link to successful integration‑test log. |
-| **8  Rollback readiness** | Attach a one‑liner revert command in the PR body.  If post‑merge CI fails, Section 9 rollback applies. |
+| Step                                                                   | Mandatory Checks                                                                                                                                                                                                                                                        |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1  Scope**                                                           | Operate on **one top‑level class per PR**.  The branch name should follow `bot/rename/<old>‑to‑<new>` and the PR title **MUST** be `[BOT] refactor(rename): <OldName> → <NewName>`.<br><br>All obfuscated names *inside* that class **MUST** be renamed in the same PR. |
+| **2  Dependency sweep**                                                | Before editing, grep for the old identifiers across the repo.<br>• Update **every reference** that uses the renamed public API (including tests and server modules).<br>• Do **NOT** touch unrelated logic or private helpers in other files.                           |
+| **3  No‑logic guarantee**                                              | After changes, run:<br>\`\`\`bash                                                                                                                                                                                                                                       |
+| mvn -B verify -o            # compile + unit/integration tests offline |                                                                                                                                                                                                                                                                         |
+| japicmp\:cmp                 # binary compatibility check              |                                                                                                                                                                                                                                                                         |
+
+````<br>The diff **MUST** show *identifier changes only*; byte‑code instructions must remain byte‑for‑byte identical except for constant‑pool name entries. |
+| **4  Triple‑check protocol**                                | a. Automated diff‑filter: abort if diff adds/removes anything but identifiers/comments.<br>b. Compile stage: full `verify` build (offline).<br>c. Runtime: spin up the Docker compose world, log in a test account, execute `/skills`, logout.  Abort if any exception or protocol mismatch occurs. |
+| **5  Naming convention**                                    | • Classes → `UpperCamelCase`.<br>• Methods & fields → `lowerCamelCase`.<br>Names **MUST** convey intent (e.g., `ProjectileTrajectoryCalculator`). |
+| **6  Follow‑up classes**                                    | If class *B* depends on renamed class *A*, perform the rename for *B's references* **in the same PR**, but do **not** begin renaming *B* itself (separate PR). |
+| **7  Review artefacts**                                     | PR description **MUST** include:<br>• Old ⇢ new mapping table.<br>• Output of `git diff --stat`.<br>• Link to successful integration‑test log. |
+| **8  Rollback readiness**                                   | Attach a one‑liner revert command in the PR body.  If post‑merge CI fails, Section 9 rollback applies. |
 
 These safeguards are **critical** – any deviation **MUST** cause the agent to abort and open an Issue for human review.
 
 ---
 
-*End of strict agent ruleset.*
+## 14  Network Constraints & Offline Build Strategy
 
-```
+The CI runners for `2006Scape` execute inside a **Codex sandbox** with **no egress to the public Internet**.  Access to `repo.maven.apache.org`, Docker Hub, or any other external host is blocked unless routed through an internal MITM proxy.  To guarantee successful builds, the agent **MUST**:
+
+1. **Run Maven strictly offline** – All build and test commands **MUST** include `-o` and either:
+   * `-Dmaven.repo.local=$PROJECT_ROOT/libs` when the repository includes a committed `libs/` directory containing every transitive dependency; **or**
+   * use a pre‑seeded `.m2` tarball extracted to `/opt/offline-m2` and set `MAVEN_OPTS="-Dmaven.repo.local=/opt/offline-m2"`.
+2. **Avoid fetching new artifacts** – Any change that introduces a dependency **NOT** present in the offline cache **MUST** abort and open an Issue requesting human approval.
+3. **Export proxy & CA variables** for auxiliary tools (curl, npm, gradle):
+   ```bash
+   export http_proxy="http://proxy:8080"
+   export https_proxy="$http_proxy"
+   export no_proxy="localhost,127.0.0.1,::1"
+   export SSL_CERT_FILE="/usr/local/share/ca-certificates/envoy-mitmproxy-ca-cert.crt"
+   export REQUESTS_CA_BUNDLE="$SSL_CERT_FILE"
+   export NODE_EXTRA_CA_CERTS="$SSL_CERT_FILE"
+````
+
+4. **Pre‑flight verification** (Section 3) **MUST** be executed in offline mode\*\*. Passing online locally is insufficient.
+5. **Startup‑script edits** – If the agent modifies any Dockerfile or CI `startup.sh`, it **MUST** ensure the script installs Maven, applies the proxy/CA vars above, and unpacks the offline repo before running tests.
+
+Failure to respect these constraints will cause CI to fail in the sandbox even if the agent passes tests locally.
+
+---
+
+*End of strict agent ruleset.*
