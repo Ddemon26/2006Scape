@@ -221,7 +221,7 @@ public class Game extends RSApplet {
 	
 	public static byte[] musicData;
 	
-	static final synchronized void method49() {
+       static final synchronized void processMusicQueue() {
 		if (musicIsntNull()) {
 			if (fetchMusic) {
 				byte[] is = musicData;
@@ -236,8 +236,8 @@ public class Game extends RSApplet {
 				}
 			}
                    updateMidiFade(0);
-		}
-	}
+               }
+       }
 	
        static final int calculateLogVolume(int linearVolume) {
                return (int) (Math.log((double) linearVolume * 0.00390625) * 868.5889638065036 + 0.5);
@@ -2280,32 +2280,32 @@ public class Game extends RSApplet {
 		} else {
 			mainGameProcessor();
 		}
-		processOnDemandQueue();
-		method49();
-	}
+               processOnDemandQueue();
+               processMusicQueue();
+       }
 
-	public void method47(boolean flag) {
-		if (myPlayer.x >> 7 == destX && myPlayer.y >> 7 == destY) {
-			destX = 0;
-		}
-		int j = playerCount;
-		if (flag) {
-			j = 1;
-		}
-		for (int l = 0; l < j; l++) {
-			Player player;
-			int i1;
-			if (flag) {
-				player = myPlayer;
-				i1 = myPlayerIndex << 14;
-			} else {
+       public void addPlayersToScene(boolean includeLocalPlayer) {
+               if (myPlayer.x >> 7 == destX && myPlayer.y >> 7 == destY) {
+                       destX = 0;
+               }
+               int j = playerCount;
+               if (includeLocalPlayer) {
+                       j = 1;
+               }
+               for (int l = 0; l < j; l++) {
+                       Player player;
+                       int i1;
+                       if (includeLocalPlayer) {
+                               player = myPlayer;
+                               i1 = myPlayerIndex << 14;
+                       } else {
 				player = playerArray[playerIndices[l]];
 				i1 = playerIndices[l] << 14;
 			}
 			if (player == null || !player.isVisible()) {
 				continue;
 			}
-			player.aBoolean1699 = (lowMem && playerCount > 50 || playerCount > 200) && !flag && player.anInt1517 == player.anInt1511;
+                       player.aBoolean1699 = (lowMem && playerCount > 50 || playerCount > 200) && !includeLocalPlayer && player.anInt1517 == player.anInt1511;
 			int j1 = player.x >> 7;
 			int k1 = player.y >> 7;
 			if (j1 < 0 || j1 >= 104 || k1 < 0 || k1 >= 104) {
@@ -2435,10 +2435,10 @@ public class Game extends RSApplet {
 		return false;
 	}
 
-	public void method49(Stream stream) {
-		for (int j = 0; j < anInt893; j++) {
-			int k = anIntArray894[j];
-			Player player = playerArray[k];
+       public void processPlayerUpdateMasks(Stream stream) {
+               for (int j = 0; j < anInt893; j++) {
+                       int k = anIntArray894[j];
+                       Player player = playerArray[k];
 			int l = stream.readUnsignedByte();
 			if ((l & 0x40) != 0) {
 				l += stream.readUnsignedByte() << 8;
@@ -10532,8 +10532,8 @@ public class Game extends RSApplet {
 		anInt893 = 0;
 		method117(stream);
 		method134(stream);
-		method91(stream, i);
-		method49(stream);
+               method91(stream, i);
+               processPlayerUpdateMasks(stream);
 		for (int k = 0; k < anInt839; k++) {
 			int l = anIntArray840[k];
 			if (playerArray[l].anInt1537 != loopCycle) {
@@ -11831,9 +11831,9 @@ public class Game extends RSApplet {
 
 	public void method146() {
 		anInt1265++;
-		method47(true);
-		method26(true);
-		method47(false);
+               addPlayersToScene(true);
+               method26(true);
+               addPlayersToScene(false);
 		method26(false);
 		method55();
 		method104();
