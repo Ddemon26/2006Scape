@@ -55,22 +55,20 @@ The agent **MUST NOT**:
 
 Before opening a PR the agent **MUST** ensure:
 
-1. **Compilation first** – All Java sources **MUST** compile cleanly:
+1. **Compilation first** – All Java sources **MUST compile with exit status 0**. Warnings (e.g., deprecation, unchecked) are acceptable as long as `javac` does not emit an error and the process returns 0:
 
-   ```bash
-   javac $(git ls-files '*.java' | tr '
-   ```
-
+```bash
+javac $(git ls-files '*.java' | tr '
 ' ' ')
-
 ```
-The agent **MUST keep working until compilation succeeds**; it **MUST NOT** create either a draft or final PR while the codebase fails to compile.
-2. **Build/Test strategy** – If this PR still relies on **Maven**, the network‑restricted sandbox cannot execute the usual `mvn verify`; therefore *unit and integration tests are skipped*.  If the PR switches to an **alternative runner that has no external dependencies** (e.g., a fat JUnit console jar), that runner **MUST** exit with status 0 and its command/output logged in the PR body.
-3. `spotbugs:check` passes.
-4. Modified lines are ≥ 80 % covered by unit/integration tests (Jacoco report).
-5. Net line‑count change < 5 000 and touched files ≤ 10.
-6. Branch is rebased onto latest `main`.
-7. PR description follows the **template** in `.github/PULL_REQUEST_TEMPLATE/bot.md`.
+
+If the exit status is non‑zero, the agent **MUST keep iterating until compilation succeeds**; it **MUST NOT** create either a draft or final PR while the codebase fails to compile. **MUST keep working until compilation succeeds**; it **MUST NOT** create either a draft or final PR while the codebase fails to compile.
+2\. **Build/Test strategy** – If this PR still relies on **Maven**, the network‑restricted sandbox cannot execute the usual `mvn verify`; therefore *unit and integration tests are skipped*.  If the PR switches to an **alternative runner that has no external dependencies** (e.g., a fat JUnit console jar), that runner **MUST** exit with status 0 and its command/output logged in the PR body.
+3\. `spotbugs:check` passes.
+4\. Modified lines are ≥ 80 % covered by unit/integration tests (Jacoco report).
+5\. Net line‑count change < 5 000 and touched files ≤ 10.
+6\. Branch is rebased onto latest `main`.
+7\. PR description follows the **template** in `.github/PULL_REQUEST_TEMPLATE/bot.md`.
 
 If any item *other than compilation* fails, abort and open a **draft** clarification PR (`AI‑Clarification: …`) with **no code changes**. (`AI‑Clarification: …`) with **no code changes**.
 
@@ -81,10 +79,8 @@ If any item *other than compilation* fails, abort and open a **draft** clarifica
 Every commit **MUST** be single‑line summary ≤ 72 chars starting with `[BOT]`:
 
 ```
-
-\[BOT] chore(format): apply spotless to Player and Npc packages
-
-````
+[BOT] chore(format): apply spotless to Player and Npc packages
+```
 
 If more detail is needed, use the PR body – not extra commit lines.
 
@@ -92,11 +88,11 @@ If more detail is needed, use the PR body – not extra commit lines.
 
 ## 5  Code‑Style Canon
 
-- Java 17 source/target.
-- `google-java-format` (as configured by Spotless plugin) is the single source of truth.
-- Max line length = 120.
-- Prefer `enum` over magic int constants.
-- No new global `static` mutable state.
+* Java 17 source/target.
+* `google-java-format` (as configured by Spotless plugin) is the single source of truth.
+* Max line length = 120.
+* Prefer `enum` over magic int constants.
+* No new global `static` mutable state.
 
 Violating style **MUST** cause the agent to fail the pre‑flight build and abort.
 
@@ -116,18 +112,18 @@ An automated refactor **SHOULD**:
 
 ## 7  Testing Rules
 
-- New logic **MUST** be accompanied by JUnit 5 tests.
-- Tests **MUST NOT** depend on an external DB; use in‑memory Fakes.
-- Each test class name **MUST** end with `Test`.
-- The agent **SHOULD** generate property‑based tests when refactoring numerical formulas.
+* New logic **MUST** be accompanied by JUnit 5 tests.
+* Tests **MUST NOT** depend on an external DB; use in‑memory Fakes.
+* Each test class name **MUST** end with `Test`.
+* The agent **SHOULD** generate property‑based tests when refactoring numerical formulas.
 
 ---
 
 ## 8  Security & Compliance
 
-- Dependencies **MUST** have no known critical CVEs (`mvn org.owasp:dependency-check-maven:check`).
-- Secrets detection (`trufflehog`) **MUST** pass.
-- The agent **MUST** refuse to commit any file whose SHA‑256 matches the deny‑list in `.github/bot-denylist.txt`.
+* Dependencies **MUST** have no known critical CVEs (`mvn org.owasp:dependency-check-maven:check`).
+* Secrets detection (`trufflehog`) **MUST** pass.
+* The agent **MUST** refuse to commit any file whose SHA‑256 matches the deny‑list in `.github/bot-denylist.txt`.
 
 ---
 
@@ -145,9 +141,9 @@ If a PR authored by the agent is merged and afterwards fails on `main`:
 
 When the agent encounters ambiguity:
 
-- **First** – open a **draft PR** titled `AI‑Clarification: <topic>` and add the `needs‑maintainer` label.
-- **Wait** 24 hours of no maintainer response → ping `@Ddemon26` in the draft PR and halt.
-- **NEVER** guess silently.
+* **First** – open a **draft PR** titled `AI‑Clarification: <topic>` and add the `needs‑maintainer` label.
+* **Wait** 24 hours of no maintainer response → ping `@Ddemon26` in the draft PR and halt.
+* **NEVER** guess silently.
 
 ---
 
@@ -168,7 +164,7 @@ graph TD
     E -->|pass| F[Push `bot/...` branch]
     F --> G[Open PR]
     E -->|fail| H[Open Issue & Abort]
-````
+```
 
 ---
 
