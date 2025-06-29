@@ -5,7 +5,7 @@
 public final class Model extends Animable {
 
 	public static void nullLoader() {
-		aClass21Array1661 = null;
+		aModelHeaderArray1661 = null;
 		aBooleanArray1663 = null;
 		aBooleanArray1664 = null;
 		anIntArray1665 = null;
@@ -28,25 +28,25 @@ public final class Model extends Animable {
 	}
 
 	public static void method459(int i, OnDemandFetcherParent onDemandFetcherParent) {
-		aClass21Array1661 = new Class21[i];
+		aModelHeaderArray1661 = new ModelHeader[i];
 		aOnDemandFetcherParent_1662 = onDemandFetcherParent;
 	}
 
 	public static void method460(byte abyte0[], int j) {
 		if (abyte0 == null) {
-			Class21 class21 = aClass21Array1661[j] = new Class21();
-			class21.anInt369 = 0;
-			class21.anInt370 = 0;
-			class21.anInt371 = 0;
+			ModelHeader class21 = aModelHeaderArray1661[j] = new ModelHeader();
+			class21.vertexCount = 0;
+			class21.triangleCount = 0;
+			class21.texturedTriangleCount = 0;
 			return;
 		}
 		Stream stream = new Stream(abyte0);
 		stream.currentOffset = abyte0.length - 18;
-		Class21 class21_1 = aClass21Array1661[j] = new Class21();
+		ModelHeader class21_1 = aModelHeaderArray1661[j] = new ModelHeader();
 		class21_1.aByteArray368 = abyte0;
-		class21_1.anInt369 = stream.readUnsignedWord();
-		class21_1.anInt370 = stream.readUnsignedWord();
-		class21_1.anInt371 = stream.readUnsignedByte();
+		class21_1.vertexCount = stream.readUnsignedWord();
+		class21_1.triangleCount = stream.readUnsignedWord();
+		class21_1.texturedTriangleCount = stream.readUnsignedByte();
 		int k = stream.readUnsignedByte();
 		int l = stream.readUnsignedByte();
 		int i1 = stream.readUnsignedByte();
@@ -57,63 +57,63 @@ public final class Model extends Animable {
 		int j2 = stream.readUnsignedWord();
 		int k2 = stream.readUnsignedWord();
 		int l2 = 0;
-		class21_1.anInt372 = l2;
-		l2 += class21_1.anInt369;
-		class21_1.anInt378 = l2;
-		l2 += class21_1.anInt370;
-		class21_1.anInt381 = l2;
+		class21_1.vertexDirectionOffset = l2;
+		l2 += class21_1.vertexCount;
+		class21_1.triangleTypeOffset = l2;
+		l2 += class21_1.triangleCount;
+		class21_1.faceAlphaOffset = l2;
 		if (l == 255) {
-			l2 += class21_1.anInt370;
+			l2 += class21_1.triangleCount;
 		} else {
-			class21_1.anInt381 = -l - 1;
+			class21_1.faceAlphaOffset = -l - 1;
 		}
-		class21_1.anInt383 = l2;
+		class21_1.textureInfoOffset = l2;
 		if (j1 == 1) {
-			l2 += class21_1.anInt370;
+			l2 += class21_1.triangleCount;
 		} else {
-			class21_1.anInt383 = -1;
+			class21_1.textureInfoOffset = -1;
 		}
-		class21_1.anInt380 = l2;
+		class21_1.triangleSkinOffset = l2;
 		if (k == 1) {
-			l2 += class21_1.anInt370;
+			l2 += class21_1.triangleCount;
 		} else {
-			class21_1.anInt380 = -1;
+			class21_1.triangleSkinOffset = -1;
 		}
-		class21_1.anInt376 = l2;
+		class21_1.vertexSkinsOffset = l2;
 		if (k1 == 1) {
-			l2 += class21_1.anInt369;
+			l2 += class21_1.vertexCount;
 		} else {
-			class21_1.anInt376 = -1;
+			class21_1.vertexSkinsOffset = -1;
 		}
-		class21_1.anInt382 = l2;
+		class21_1.colorDataOffset = l2;
 		if (i1 == 1) {
-			l2 += class21_1.anInt370;
+			l2 += class21_1.triangleCount;
 		} else {
-			class21_1.anInt382 = -1;
+			class21_1.colorDataOffset = -1;
 		}
-		class21_1.anInt377 = l2;
+		class21_1.trianglePointOffset = l2;
 		l2 += k2;
-		class21_1.anInt379 = l2;
-		l2 += class21_1.anInt370 * 2;
-		class21_1.anInt384 = l2;
-		l2 += class21_1.anInt371 * 6;
-		class21_1.anInt373 = l2;
+		class21_1.facePriorityOffset = l2;
+		l2 += class21_1.triangleCount * 2;
+		class21_1.endOffset = l2;
+		l2 += class21_1.texturedTriangleCount * 6;
+		class21_1.vertexXOffset = l2;
 		l2 += l1;
-		class21_1.anInt374 = l2;
+		class21_1.vertexYOffset = l2;
 		l2 += i2;
-		class21_1.anInt375 = l2;
+		class21_1.vertexZOffset = l2;
 		l2 += j2;
 	}
 
 	public static void method461(int j) {
-		aClass21Array1661[j] = null;
+		aModelHeaderArray1661[j] = null;
 	}
 
 	public static Model method462(int j) {
-		if (aClass21Array1661 == null) {
+		if (aModelHeaderArray1661 == null) {
 			return null;
 		}
-		Class21 class21 = aClass21Array1661.length < j  ? null : aClass21Array1661[j];
+		ModelHeader class21 = aModelHeaderArray1661.length < j  ? null : aModelHeaderArray1661[j];
 		if (class21 == null) {
 			aOnDemandFetcherParent_1662.method548(j);
 			return null;
@@ -123,10 +123,10 @@ public final class Model extends Animable {
 	}
 
 	public static boolean method463(int i) {
-		if (aClass21Array1661 == null) {
+		if (aModelHeaderArray1661 == null) {
 			return false;
 		}
-		Class21 class21 = aClass21Array1661[i];
+		ModelHeader class21 = aModelHeaderArray1661[i];
 		if (class21 == null) {
 			aOnDemandFetcherParent_1662.method548(i);
 			return false;
@@ -141,10 +141,10 @@ public final class Model extends Animable {
 
 	private Model(int i) {
 		aBoolean1659 = false;
-		Class21 class21 = aClass21Array1661[i];
-		anInt1626 = class21.anInt369;
-		anInt1630 = class21.anInt370;
-		anInt1642 = class21.anInt371;
+		ModelHeader class21 = aModelHeaderArray1661[i];
+		anInt1626 = class21.vertexCount;
+		anInt1630 = class21.triangleCount;
+		anInt1642 = class21.texturedTriangleCount;
 		anIntArray1627 = new int[anInt1626];
 		anIntArray1628 = new int[anInt1626];
 		anIntArray1629 = new int[anInt1626];
@@ -154,34 +154,34 @@ public final class Model extends Animable {
 		anIntArray1643 = new int[anInt1642];
 		anIntArray1644 = new int[anInt1642];
 		anIntArray1645 = new int[anInt1642];
-		if (class21.anInt376 >= 0) {
+		if (class21.vertexSkinsOffset >= 0) {
 			anIntArray1655 = new int[anInt1626];
 		}
-		if (class21.anInt380 >= 0) {
+		if (class21.triangleSkinOffset >= 0) {
 			anIntArray1637 = new int[anInt1630];
 		}
-		if (class21.anInt381 >= 0) {
+		if (class21.faceAlphaOffset >= 0) {
 			anIntArray1638 = new int[anInt1630];
 		} else {
-			anInt1641 = -class21.anInt381 - 1;
+			anInt1641 = -class21.faceAlphaOffset - 1;
 		}
-		if (class21.anInt382 >= 0) {
+		if (class21.colorDataOffset >= 0) {
 			anIntArray1639 = new int[anInt1630];
 		}
-		if (class21.anInt383 >= 0) {
+		if (class21.textureInfoOffset >= 0) {
 			anIntArray1656 = new int[anInt1630];
 		}
 		anIntArray1640 = new int[anInt1630];
 		Stream stream = new Stream(class21.aByteArray368);
-		stream.currentOffset = class21.anInt372;
+		stream.currentOffset = class21.vertexDirectionOffset;
 		Stream stream_1 = new Stream(class21.aByteArray368);
-		stream_1.currentOffset = class21.anInt373;
+		stream_1.currentOffset = class21.vertexXOffset;
 		Stream stream_2 = new Stream(class21.aByteArray368);
-		stream_2.currentOffset = class21.anInt374;
+		stream_2.currentOffset = class21.vertexYOffset;
 		Stream stream_3 = new Stream(class21.aByteArray368);
-		stream_3.currentOffset = class21.anInt375;
+		stream_3.currentOffset = class21.vertexZOffset;
 		Stream stream_4 = new Stream(class21.aByteArray368);
-		stream_4.currentOffset = class21.anInt376;
+		stream_4.currentOffset = class21.vertexSkinsOffset;
 		int k = 0;
 		int l = 0;
 		int i1 = 0;
@@ -210,11 +210,11 @@ public final class Model extends Animable {
 			}
 		}
 
-		stream.currentOffset = class21.anInt379;
-		stream_1.currentOffset = class21.anInt380;
-		stream_2.currentOffset = class21.anInt381;
-		stream_3.currentOffset = class21.anInt382;
-		stream_4.currentOffset = class21.anInt383;
+		stream.currentOffset = class21.facePriorityOffset;
+		stream_1.currentOffset = class21.triangleSkinOffset;
+		stream_2.currentOffset = class21.faceAlphaOffset;
+		stream_3.currentOffset = class21.colorDataOffset;
+		stream_4.currentOffset = class21.textureInfoOffset;
 		for (int l1 = 0; l1 < anInt1630; l1++) {
 			anIntArray1640[l1] = stream.readUnsignedWord();
 			if (anIntArray1637 != null) {
@@ -231,8 +231,8 @@ public final class Model extends Animable {
 			}
 		}
 
-		stream.currentOffset = class21.anInt377;
-		stream_1.currentOffset = class21.anInt378;
+		stream.currentOffset = class21.trianglePointOffset;
+		stream_1.currentOffset = class21.triangleTypeOffset;
 		int j2 = 0;
 		int l2 = 0;
 		int j3 = 0;
@@ -278,7 +278,7 @@ public final class Model extends Animable {
 			}
 		}
 
-		stream.currentOffset = class21.anInt384;
+		stream.currentOffset = class21.endOffset;
 		for (int j4 = 0; j4 < anInt1642; j4++) {
 			anIntArray1643[j4] = stream.readUnsignedWord();
 			anIntArray1644[j4] = stream.readUnsignedWord();
@@ -608,17 +608,17 @@ public final class Model extends Animable {
 				System.arraycopy(model.anIntArray1637, 0, anIntArray1637, 0, anInt1630);
 
 			}
-			super.aClass33Array1425 = new Class33[anInt1626];
+			super.vertexNormals = new VertexNormal[anInt1626];
 			for (int j1 = 0; j1 < anInt1626; j1++) {
-				Class33 class33 = super.aClass33Array1425[j1] = new Class33();
-				Class33 class33_1 = model.aClass33Array1425[j1];
-				class33.anInt602 = class33_1.anInt602;
-				class33.anInt603 = class33_1.anInt603;
-				class33.anInt604 = class33_1.anInt604;
-				class33.anInt605 = class33_1.anInt605;
+				VertexNormal class33 = super.vertexNormals[j1] = new VertexNormal();
+				VertexNormal class33_1 = model.vertexNormals[j1];
+				class33.x = class33_1.x;
+				class33.y = class33_1.y;
+				class33.z = class33_1.z;
+				class33.magnitude = class33_1.magnitude;
 			}
 
-			aClass33Array1660 = model.aClass33Array1660;
+			aVertexNormalArray1660 = model.aVertexNormalArray1660;
 		} else {
 			anIntArray1634 = model.anIntArray1634;
 			anIntArray1635 = model.anIntArray1635;
@@ -1135,10 +1135,10 @@ public final class Model extends Animable {
 			anIntArray1635 = new int[anInt1630];
 			anIntArray1636 = new int[anInt1630];
 		}
-		if (super.aClass33Array1425 == null) {
-			super.aClass33Array1425 = new Class33[anInt1626];
+		if (super.vertexNormals == null) {
+			super.vertexNormals = new VertexNormal[anInt1626];
 			for (int l1 = 0; l1 < anInt1626; l1++) {
-				super.aClass33Array1425[l1] = new Class33();
+				super.vertexNormals[l1] = new VertexNormal();
 			}
 
 		}
@@ -1168,21 +1168,21 @@ public final class Model extends Animable {
 			i5 = i5 * 256 / k5;
 			j5 = j5 * 256 / k5;
 			if (anIntArray1637 == null || (anIntArray1637[i2] & 1) == 0) {
-				Class33 class33_2 = super.aClass33Array1425[j2];
-				class33_2.anInt602 += l4;
-				class33_2.anInt603 += i5;
-				class33_2.anInt604 += j5;
-				class33_2.anInt605++;
-				class33_2 = super.aClass33Array1425[l2];
-				class33_2.anInt602 += l4;
-				class33_2.anInt603 += i5;
-				class33_2.anInt604 += j5;
-				class33_2.anInt605++;
-				class33_2 = super.aClass33Array1425[i3];
-				class33_2.anInt602 += l4;
-				class33_2.anInt603 += i5;
-				class33_2.anInt604 += j5;
-				class33_2.anInt605++;
+				VertexNormal class33_2 = super.vertexNormals[j2];
+				class33_2.x += l4;
+				class33_2.y += i5;
+				class33_2.z += j5;
+				class33_2.magnitude++;
+				class33_2 = super.vertexNormals[l2];
+				class33_2.x += l4;
+				class33_2.y += i5;
+				class33_2.z += j5;
+				class33_2.magnitude++;
+				class33_2 = super.vertexNormals[i3];
+				class33_2.x += l4;
+				class33_2.y += i5;
+				class33_2.z += j5;
+				class33_2.magnitude++;
 			} else {
 				int l5 = i + (k * l4 + l * i5 + i1 * j5) / (k1 + k1 / 2);
 				anIntArray1634[i2] = method481(anIntArray1640[i2], l5, anIntArray1637[i2]);
@@ -1192,14 +1192,14 @@ public final class Model extends Animable {
 		if (flag) {
 			method480(i, k1, k, l, i1);
 		} else {
-			aClass33Array1660 = new Class33[anInt1626];
+			aVertexNormalArray1660 = new VertexNormal[anInt1626];
 			for (int k2 = 0; k2 < anInt1626; k2++) {
-				Class33 class33 = super.aClass33Array1425[k2];
-				Class33 class33_1 = aClass33Array1660[k2] = new Class33();
-				class33_1.anInt602 = class33.anInt602;
-				class33_1.anInt603 = class33.anInt603;
-				class33_1.anInt604 = class33.anInt604;
-				class33_1.anInt605 = class33.anInt605;
+				VertexNormal class33 = super.vertexNormals[k2];
+				VertexNormal class33_1 = aVertexNormalArray1660[k2] = new VertexNormal();
+				class33_1.x = class33.x;
+				class33_1.y = class33.y;
+				class33_1.z = class33.z;
+				class33_1.magnitude = class33.magnitude;
 			}
 
 		}
@@ -1217,32 +1217,32 @@ public final class Model extends Animable {
 			int j2 = anIntArray1633[j1];
 			if (anIntArray1637 == null) {
 				int i3 = anIntArray1640[j1];
-				Class33 class33 = super.aClass33Array1425[k1];
-				int k2 = i + (k * class33.anInt602 + l * class33.anInt603 + i1 * class33.anInt604) / (j * class33.anInt605);
+				VertexNormal class33 = super.vertexNormals[k1];
+				int k2 = i + (k * class33.x + l * class33.y + i1 * class33.z) / (j * class33.magnitude);
 				anIntArray1634[j1] = method481(i3, k2, 0);
-				class33 = super.aClass33Array1425[i2];
-				k2 = i + (k * class33.anInt602 + l * class33.anInt603 + i1 * class33.anInt604) / (j * class33.anInt605);
+				class33 = super.vertexNormals[i2];
+				k2 = i + (k * class33.x + l * class33.y + i1 * class33.z) / (j * class33.magnitude);
 				anIntArray1635[j1] = method481(i3, k2, 0);
-				class33 = super.aClass33Array1425[j2];
-				k2 = i + (k * class33.anInt602 + l * class33.anInt603 + i1 * class33.anInt604) / (j * class33.anInt605);
+				class33 = super.vertexNormals[j2];
+				k2 = i + (k * class33.x + l * class33.y + i1 * class33.z) / (j * class33.magnitude);
 				anIntArray1636[j1] = method481(i3, k2, 0);
 			} else if ((anIntArray1637[j1] & 1) == 0) {
 				int j3 = anIntArray1640[j1];
 				int k3 = anIntArray1637[j1];
-				Class33 class33_1 = super.aClass33Array1425[k1];
-				int l2 = i + (k * class33_1.anInt602 + l * class33_1.anInt603 + i1 * class33_1.anInt604) / (j * class33_1.anInt605);
+				VertexNormal class33_1 = super.vertexNormals[k1];
+				int l2 = i + (k * class33_1.x + l * class33_1.y + i1 * class33_1.z) / (j * class33_1.magnitude);
 				anIntArray1634[j1] = method481(j3, l2, k3);
-				class33_1 = super.aClass33Array1425[i2];
-				l2 = i + (k * class33_1.anInt602 + l * class33_1.anInt603 + i1 * class33_1.anInt604) / (j * class33_1.anInt605);
+				class33_1 = super.vertexNormals[i2];
+				l2 = i + (k * class33_1.x + l * class33_1.y + i1 * class33_1.z) / (j * class33_1.magnitude);
 				anIntArray1635[j1] = method481(j3, l2, k3);
-				class33_1 = super.aClass33Array1425[j2];
-				l2 = i + (k * class33_1.anInt602 + l * class33_1.anInt603 + i1 * class33_1.anInt604) / (j * class33_1.anInt605);
+				class33_1 = super.vertexNormals[j2];
+				l2 = i + (k * class33_1.x + l * class33_1.y + i1 * class33_1.z) / (j * class33_1.magnitude);
 				anIntArray1636[j1] = method481(j3, l2, k3);
 			}
 		}
 
-		super.aClass33Array1425 = null;
-		aClass33Array1660 = null;
+		super.vertexNormals = null;
+		aVertexNormalArray1660 = null;
 		anIntArray1655 = null;
 		anIntArray1656 = null;
 		if (anIntArray1637 != null) {
@@ -1855,8 +1855,8 @@ public final class Model extends Animable {
 	public int anIntArrayArray1657[][];
 	public int anIntArrayArray1658[][];
 	public boolean aBoolean1659;
-	Class33 aClass33Array1660[];
-	private static Class21[] aClass21Array1661;
+	VertexNormal aVertexNormalArray1660[];
+	private static ModelHeader[] aModelHeaderArray1661;
 	private static OnDemandFetcherParent aOnDemandFetcherParent_1662;
 	private static boolean[] aBooleanArray1663 = new boolean[4096];
 	private static boolean[] aBooleanArray1664 = new boolean[4096];
