@@ -63,17 +63,17 @@ public class Game extends RSApplet {
 		return true;
 	}
 	
-	static final void method790() {
-		if (aClass56_749 != null) {
-			method891(false);
-			if (anInt720 > 0) {
-				aClass56_749.method831(256);
-				anInt720 = 0;
-			}
-		    aClass56_749.method828();
-		    aClass56_749 = null;
-		}
-	}
+        static final void closeMidiSystem() {
+                if (aClass56_749 != null) {
+                        stopMidiPlayback(false);
+                        if (anInt720 > 0) {
+                                aClass56_749.method831(256);
+                                anInt720 = 0;
+                        }
+                    aClass56_749.method828();
+                    aClass56_749 = null;
+                }
+        }
 	
 	public static String getFileNameWithoutExtension(String fileName) {
 		File tmpFile = new File(fileName);
@@ -152,33 +152,33 @@ public class Game extends RSApplet {
 		if (musicIsntNull()) {
 			if (fetchMusic)
 				musicVolume2 = i;
-			else
-				method900(i);
+                        else
+                                setMidiVolume(i);
 		}
 	}
 	
-	static final void method900(int i) {
-		if (aClass56_749 != null) {
-			if (anInt720 == 0) {
-				if (anInt478 >= 0) {
-					anInt478 = i;
-					aClass56_749.method830(i, 0);
-				}
-			} else if (aByteArray347 != null)
-				anInt1478 = i;
-		}
-	}
+        static final void setMidiVolume(int volume) {
+                if (aClass56_749 != null) {
+                        if (anInt720 == 0) {
+                                if (anInt478 >= 0) {
+                                        anInt478 = volume;
+                                        aClass56_749.method830(volume, 0);
+                                }
+                        } else if (aByteArray347 != null)
+                                anInt1478 = volume;
+                }
+        }
 	
-	static final synchronized void method55(boolean bool) {
-		if (musicIsntNull()) {
-			method891(bool);
-			fetchMusic = false;
-		}
-	}
+        static final synchronized void stopMusic(boolean fade) {
+                if (musicIsntNull()) {
+                        stopMidiPlayback(fade);
+                        fetchMusic = false;
+                }
+        }
 	
-	static final void method891(boolean bool) {
-		method853(0, null, bool);
-	}
+        static final void stopMidiPlayback(boolean fade) {
+                playMidiTrack(0, null, fade);
+        }
 	
 	static final boolean constructMusic() {
 		anInt720 = 20;
@@ -190,28 +190,28 @@ public class Game extends RSApplet {
 		return true;
 	}
 	
-	final synchronized void method58(int i_30_, int volume,
-		    boolean bool, int music) {
-		if (musicIsntNull()) {
-			nextSong = music;
-			onDemandFetcher.method558(2, nextSong);
-			musicVolume2 = volume;
-			anInt139 = -1;
-			aBoolean995 = true;
-			anInt116 = i_30_;
-		}
-	}
+        final synchronized void queueSong(int delay, int volume,
+                    boolean loop, int music) {
+                if (musicIsntNull()) {
+                        nextSong = music;
+                        onDemandFetcher.method558(2, nextSong);
+                        musicVolume2 = volume;
+                        anInt139 = -1;
+                        aBoolean995 = true;
+                        anInt116 = delay;
+                }
+        }
 	
-	final synchronized void method56(int i, boolean bool, int music) {
-		if (musicIsntNull()) {
-			nextSong = music;
-			onDemandFetcher.method558(2, nextSong);
-			musicVolume2 = i;
-			anInt139 = -1;
-			aBoolean995 = true;
-		    anInt116 = -1;
-		}
-	}
+        final synchronized void playSong(int volume, boolean loop, int music) {
+                if (musicIsntNull()) {
+                        nextSong = music;
+                        onDemandFetcher.method558(2, nextSong);
+                        musicVolume2 = volume;
+                        anInt139 = -1;
+                        aBoolean995 = true;
+                    anInt116 = -1;
+                }
+        }
 	
 	public void sendFrame126(String str,int i) {
 		RSInterface.interfaceCache[i].disabledText = str;
@@ -228,10 +228,10 @@ public class Game extends RSApplet {
 				if (is != null) {
 					if (anInt116 >= 0)
 						method684(aBoolean995, anInt116, musicVolume2, is);
-					else if (anInt139 >= 0)
-						method899(anInt139, -1, aBoolean995, is, musicVolume2);
+                                        else if (anInt139 >= 0)
+                                                queueMidiTrack(anInt139, -1, aBoolean995, is, musicVolume2);
 					else
-						method853(musicVolume2, is, aBoolean995);
+                                playMidiTrack(musicVolume2, is, aBoolean995);
 					fetchMusic = false;
 				}
 			}
@@ -243,51 +243,51 @@ public class Game extends RSApplet {
 		return (int) (Math.log((double) i * 0.00390625) * 868.5889638065036 + 0.5);
 	}
 	
-	static final void method853(int i_2_, byte[] is, boolean bool) {
-		if (aClass56_749 != null) {
-			if (anInt478 >= 0) {
-				aClass56_749.method833();
-				anInt478 = -1;
-				aByteArray347 = null;
-				anInt720 = 20;
-				anInt155 = 0;
-			}
-		    if (is != null) {
-		    	if (anInt720 > 0) {
-		    		aClass56_749.method831(i_2_);
-		    		anInt720 = 0;
-		    	}
-		    	anInt478 = i_2_;
-		    	aClass56_749.method827(i_2_, is, 0, bool);
-		    }
-		}
-	}
+    static final void playMidiTrack(int volume, byte[] data, boolean loop) {
+                if (aClass56_749 != null) {
+                        if (anInt478 >= 0) {
+                                aClass56_749.method833();
+                                anInt478 = -1;
+                                aByteArray347 = null;
+                                anInt720 = 20;
+                                anInt155 = 0;
+                        }
+                    if (data != null) {
+                        if (anInt720 > 0) {
+                                aClass56_749.method831(volume);
+                                anInt720 = 0;
+                        }
+                        anInt478 = volume;
+                        aClass56_749.method827(volume, data, 0, loop);
+                    }
+                }
+        }
 	
-	static final void method899(int i, int i_29_, boolean bool, byte[] is, int i_30_) {
-		if (aClass56_749 != null) {
-			if (i_29_ >= (anInt478 ^ 0xffffffff)) {
-				i -= 20;
-				if (i < 1)
-					i = 1;
-				anInt720 = i;
-				if (anInt478 == 0)
-					anInt2200 = 0;
-				else {
-					int i_31_ = method1004(anInt478);
-					i_31_ -= anInt155;
-					anInt2200 = ((anInt2200 - 1 + (i_31_ + 3600)) / anInt2200);
-				}
-				aBoolean475 = bool;
-				aByteArray347 = is;
-				anInt1478 = i_30_;
-			} else if (anInt720 != 0) {
-				aBoolean475 = bool;
-				aByteArray347 = is;
-				anInt1478 = i_30_;
-			} else
-				method853(i_30_, is, bool);
-		}
-	}
+        static final void queueMidiTrack(int delay, int index, boolean loop, byte[] data, int volume) {
+                if (aClass56_749 != null) {
+                        if (index >= (anInt478 ^ 0xffffffff)) {
+                                delay -= 20;
+                                if (delay < 1)
+                                        delay = 1;
+                                anInt720 = delay;
+                                if (anInt478 == 0)
+                                        anInt2200 = 0;
+                                else {
+                                        int i_31_ = method1004(anInt478);
+                                        i_31_ -= anInt155;
+                                        anInt2200 = ((anInt2200 - 1 + (i_31_ + 3600)) / anInt2200);
+                                }
+                                aBoolean475 = loop;
+                                aByteArray347 = data;
+                                anInt1478 = volume;
+                        } else if (anInt720 != 0) {
+                                aBoolean475 = loop;
+                                aByteArray347 = data;
+                                anInt1478 = volume;
+                        } else
+                                playMidiTrack(volume, data, loop);
+                }
+        }
 	
 	static final void method684(boolean bool, int i, int i_2_, byte[] is) {
 		if (aClass56_749 != null) {
@@ -304,8 +304,8 @@ public class Game extends RSApplet {
 				aByteArray347 = is;
 				anInt1478 = i_2_;
 				aBoolean475 = bool;
-			} else if (anInt720 == 0)
-				method853(i_2_, is, bool);
+                        } else if (anInt720 == 0)
+                                playMidiTrack(i_2_, is, bool);
 			else {
 				anInt1478 = i_2_;
 				aBoolean475 = bool;
@@ -1424,11 +1424,11 @@ public class Game extends RSApplet {
 					if (volume != 0)
 						setVolume(volume);
 					else {
-						method55(false);
+                                                stopMusic(false);
 						previousSong = 0;
 					}
 				} else {
-					method56(volume, false, currentSong);
+                                        playSong(volume, false, currentSong);
 					previousSong = 0;//TODO temp music
 				}
 				musicVolume = volume;
@@ -2213,7 +2213,7 @@ public class Game extends RSApplet {
 		currentSong = -1;
 		nextSong = -1;
 		previousSong = 0;
-		method58(10, musicVolume, false, 0);
+                queueSong(10, musicVolume, false, 0);
 	}
 
 	public void method45() {
@@ -6894,7 +6894,7 @@ public class Game extends RSApplet {
 			if (previousSong < 0)
 				previousSong = 0;
 			if (previousSong == 0 && musicVolume != 0 && currentSong != -1) {
-				method56(musicVolume, false, currentSong);
+                                playSong(musicVolume, false, currentSong);
 			}
 		}
 	}
@@ -7030,7 +7030,7 @@ public class Game extends RSApplet {
 			Class36.method528(onDemandFetcher.getAnimCount());
 			Model.method459(onDemandFetcher.getVersionCount(0), onDemandFetcher);
 			if (!lowMem) {
-				method58(10, musicVolume, false, 0);
+                                queueSong(10, musicVolume, false, 0);
 				while (onDemandFetcher.getNodeCount() > 0) {
 					processOnDemandQueue();
 					try {
@@ -10782,9 +10782,9 @@ public class Game extends RSApplet {
 				}
 				if (i2 != -1 || previousSong != 0) {
 					if (i2 != -1 && currentSong != i2 && musicVolume != 0 && previousSong == 0)
-						method58(10, musicVolume, false, i2);
+                                                queueSong(10, musicVolume, false, i2);
 				} else
-					method55(false);
+                                        stopMusic(false);
 				currentSong = i2;
 				pktType = -1;
 				return true;
@@ -10795,7 +10795,7 @@ public class Game extends RSApplet {
 				if (i_61_ == 0x00ffff)
 					i_61_ = -1;
 				if (musicVolume != 0 && i_61_ != -1) {
-					method56(musicVolume, false, i_60_);
+                                        playSong(musicVolume, false, i_60_);
 					previousSong = i_61_*20;
 				}
 				pktType = -1;
