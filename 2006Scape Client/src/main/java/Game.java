@@ -648,7 +648,7 @@ public class Game extends RSApplet {
 		Signlink.saveMidi(abyte0, abyte0.length);
 	}
 
-	public void method22() {
+       public void constructMapRegion() {
 		try {
 			anInt985 = -1;
 			aClass19_1056.removeAll();
@@ -1291,7 +1291,7 @@ public class Game extends RSApplet {
 		anInt839 = 0;
 		anInt893 = 0;
 		method139(stream);
-		method46(i, stream);
+               addLocalNPCs(i, stream);
 		method86(stream);
 		for (int k = 0; k < anInt839; k++) {
 			int l = anIntArray840[k];
@@ -1385,7 +1385,7 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method33(int i) {
+       public void applyVarp(int i) {
 		int action = Varp.cache[i].anInt709;
 		if (action == 0) {
 			return;
@@ -1857,7 +1857,7 @@ public class Game extends RSApplet {
 		Texture.lineOffsets = chatBoxAreaOffsets;
 	}
 
-	public void method37(int j) {
+       public void animateTextures(int j) {
 		if (!lowMem) {
 			if (Texture.anIntArray1480[17] >= j) {
 				Background background = Texture.aBackgroundArray1474s[17];
@@ -1918,7 +1918,7 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method38() {
+       public void updateEntityText() {
 		for (int i = -1; i < playerCount; i++) {
 			int j;
 			if (i == -1) {
@@ -2216,7 +2216,7 @@ public class Game extends RSApplet {
                queueSong(10, musicVolume, false, 0);
 	}
 
-	public void method45() {
+       public void resetCharacterOptions() {
 		aBoolean1031 = true;
 		for (int j = 0; j < 7; j++) {
 			anIntArray1065[j] = -1;
@@ -2232,7 +2232,7 @@ public class Game extends RSApplet {
 
 	}
 
-	public void method46(int i, Stream stream) {
+       public void addLocalNPCs(int i, Stream stream) {
 		while (stream.bitPosition + 21 < i * 8) {
 			int k = stream.readBits(14);
 			if (k == 16383) {
@@ -2284,7 +2284,7 @@ public class Game extends RSApplet {
                processMusicQueue();
 	}
 
-	public void method47(boolean flag) {
+       public void addPlayersToScene(boolean flag) {
 		if (myPlayer.x >> 7 == destX && myPlayer.y >> 7 == destY) {
 			destX = 0;
 		}
@@ -2401,11 +2401,11 @@ public class Game extends RSApplet {
 		}
 		if (j == 324 && !aBoolean1047) {
 			aBoolean1047 = true;
-			method45();
+                   resetCharacterOptions();
 		}
 		if (j == 325 && aBoolean1047) {
 			aBoolean1047 = false;
-			method45();
+                   resetCharacterOptions();
 		}
 		if (j == 326) {
 			stream.createFrame(101);
@@ -2435,7 +2435,7 @@ public class Game extends RSApplet {
 		return false;
 	}
 
-	public void method49(Stream stream) {
+       public void processPlayerUpdateMasks(Stream stream) {
 		for (int j = 0; j < anInt893; j++) {
 			int k = anIntArray894[j];
 			Player player = playerArray[k];
@@ -2728,7 +2728,7 @@ public class Game extends RSApplet {
 		} else {
 			loadingStage = 2;
 			ObjectManager.anInt131 = plane;
-			method22();
+                       constructMapRegion();
 			stream.createFrame(121);
 			return 0;
 		}
@@ -3120,7 +3120,7 @@ public class Game extends RSApplet {
 		}
 		method114();
 		method95();
-		method38();
+               updateEntityText();
 		anInt945++;
 		if (crossType != 0) {
 			crossIndex += 20;
@@ -4061,7 +4061,7 @@ public class Game extends RSApplet {
 				int i2 = class9_2.valueIndexArray[0][1];
 				if (variousSettings[i2] != class9_2.anIntArray212[0]) {
 					variousSettings[i2] = class9_2.anIntArray212[0];
-					method33(i2);
+                                   applyVarp(i2);
 					needDrawTabArea = true;
 				}
 			}
@@ -4396,7 +4396,7 @@ public class Game extends RSApplet {
 			if (class9_3.valueIndexArray != null && class9_3.valueIndexArray[0][0] == 5) {
 				int l2 = class9_3.valueIndexArray[0][1];
 				variousSettings[l2] = 1 - variousSettings[l2];
-				method33(l2);
+                           applyVarp(l2);
 				needDrawTabArea = true;
 			}
 		}
@@ -6158,7 +6158,7 @@ public class Game extends RSApplet {
 				anInt1055 = 0;
 				anInt1054 = -1;
 				aBoolean1047 = true;
-				method45();
+                           resetCharacterOptions();
 				for (int j3 = 0; j3 < 5; j3++) {
 					anIntArray990[j3] = 0;
 				}
@@ -9123,7 +9123,9 @@ public class Game extends RSApplet {
 			int k2 = stream.readBits(7);
 			int l2 = stream.readBits(7);
 			myPlayer.setPos(l2, k2, j1 == 1);
-			//Handle plane changes, higher planes need the roof drawing checks disabled, and we need to manually update ObjectManager's anInt131 (plane) then manually call method22 to let the ObjectManaegr know we're on a different plane. This makes plane changes draw properly. Coords for testing this: lumb: 3207 3227 and varrock: 3209, 3392 and gnome agil: 2474, 3427 
+                       //Handle plane changes: higher planes disable roof checks and we must update
+                       //ObjectManager's plane field then call constructMapRegion so it rebuilds the scene.
+                       //Test coords: lumbridge 3207, 3227; varrock 3209, 3392; gnome agility 2474, 3427
 			ObjectManager.hideRoofs = ClientSettings.HIDE_ROOFS;
 			ObjectManager.hideBuggyVarrockSwordShopSnow = ClientSettings.HIDE_BUGGY_VARROCK_SWORD_SHOP_SNOW;
 			if (plane > 0) {
@@ -9131,7 +9133,7 @@ public class Game extends RSApplet {
 				ObjectManager.hideBuggyVarrockSwordShopSnow = false;
 			}
 			ObjectManager.anInt131 = plane;
-			method22();
+                       constructMapRegion();
 		}
 	}
 
@@ -10533,7 +10535,7 @@ public class Game extends RSApplet {
 		method117(stream);
 		method134(stream);
 		method91(stream, i);
-		method49(stream);
+               processPlayerUpdateMasks(stream);
 		for (int k = 0; k < anInt839; k++) {
 			int l = anIntArray840[k];
 			if (playerArray[l].anInt1537 != loopCycle) {
@@ -11360,7 +11362,7 @@ public class Game extends RSApplet {
 				for (int k5 = 0; k5 < variousSettings.length; k5++) {
 					if (variousSettings[k5] != anIntArray1045[k5]) {
 						variousSettings[k5] = anIntArray1045[k5];
-						method33(k5);
+                                          applyVarp(k5);
 						needDrawTabArea = true;
 					}
 				}
@@ -11688,7 +11690,7 @@ public class Game extends RSApplet {
 				anIntArray1045[j8] = l14;
 				if (variousSettings[j8] != l14) {
 					variousSettings[j8] = l14;
-					method33(j8);
+                                  applyVarp(j8);
 					needDrawTabArea = true;
 					if (dialogID != -1) {
 						inputTaken = true;
@@ -11703,7 +11705,7 @@ public class Game extends RSApplet {
 				anIntArray1045[k8] = byte0;
 				if (variousSettings[k8] != byte0) {
 					variousSettings[k8] = byte0;
-					method33(k8);
+                                  applyVarp(k8);
 					needDrawTabArea = true;
 					if (dialogID != -1) {
 						inputTaken = true;
@@ -11831,9 +11833,9 @@ public class Game extends RSApplet {
 
 	public void method146() {
 		anInt1265++;
-		method47(true);
+          addPlayersToScene(true);
 		method26(true);
-		method47(false);
+          addPlayersToScene(false);
 		method26(false);
 		method55();
 		method104();
@@ -11900,7 +11902,7 @@ public class Game extends RSApplet {
 			drawHeadIcon();
 		}
 		// Allow tabs to work
-		method37(k2);
+          animateTextures(k2);
 		// Allow stuff inside the tabs to work
 		draw3dScreen();
 		if (showInfo) {
