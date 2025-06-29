@@ -53,7 +53,7 @@ The agent **MUST NOT**:
 
 Before opening a PR the agent **MUST** ensure:
 
-1. `mvn -B verify` exits with status 0 **using *offline mode*** (see Section 14).
+1. **Build/Test strategy** – If this PR still relies on **Maven**, the network‑restricted sandbox cannot execute the usual `mvn verify`; therefore *unit and integration tests are skipped*.  If the PR switches to an **alternative runner that has no external dependencies** (e.g., a fat JUnit console jar), that runner **MUST** exit with status 0 and its command/output logged in the PR body.
 2. `spotbugs:check` passes.
 3. Modified lines are ≥ 80 % covered by unit/integration tests (Jacoco report).
 4. Net line‑count change < 5 000 and touched files ≤ 10.
@@ -166,20 +166,34 @@ Poorly named identifiers such as `class204`, `method321`, or `anInt545` **MAY** 
 >
 > **Public‑API cross‑check** – After renaming, the agent **MUST** perform a project‑wide sweep and triple‑check that **all references** (client *and* server‑side) to the renamed **public** members now use the new identifiers.  Any mismatch **MUST** abort the run.
 >
+> **Public‑API cross‑check** – After renaming, the agent **MUST** perform a project‑wide sweep and triple‑check that **all references** (client *and* server‑side) to the renamed **public** members now use the new identifiers.  Any mismatch **MUST** abort the run.
+>
 > **God‑class exception (≥ 10 000 LOC)** – When the target class is extremely large (roughly ≥ 10 000 lines), the rename **MUST** be delivered in a *sequence* of PRs:
 >
 > 1. **Phase A – Class shell rename.** PR #1 may rename **only** the class declaration itself and update every external reference.  Internal fields/methods may stay obfuscated for this step so the net diff and touched‑files count remain within Section 3 limits.
 > 2. **Phase B – Incremental member cleanup.** Subsequent PRs should rename groups of ≤ 500 identifiers (or ≤ 2 000 modified LOC) per PR until the entire class is clear.
-> 3. Each PR **MUST** still satisfy the pre‑flight checklist, pass offline CI, and update a progress checklist in its description (e.g., *“batch 2 of 5”*).
+> 3. Each PR **MUST** still satisfy the pre‑flight checklist, *but test execution is waived if the project remains Maven‑based* (see Section 14). If an alternate test runner is provided, it **MUST** pass.
 > 4. If any phase fails CI, the rollback protocol in Section 9 applies before continuing.
+     >     (≥ 10 000 LOC)\*\* – When the target class is extremely large (roughly ≥ 10 000 lines), the rename **MUST** be delivered in a *sequence* of PRs:
+> 5. **Phase A – Class shell rename.** PR #1 may rename **only** the class declaration itself and update every external reference.  Internal fields/methods may stay obfuscated for this step so the net diff and touched‑files count remain within Section 3 limits.
+> 6. **Phase B – Incremental member cleanup.** Subsequent PRs should rename groups of ≤ 500 identifiers (or ≤ 2 000 modified LOC) per PR until the entire class is clear.
+> 7. Each PR **MUST** still satisfy the pre‑flight checklist, pass offline CI, and update a progress checklist in its description (e.g., *“batch 2 of 5”*).
+> 8. If any phase fails CI, the rollback protocol in Section 9 applies before continuing.
 
-| Step                                                                   | Mandatory Checks                                                                                                                                                                                                                                                                                                                                                                                                              |
-| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1  Scope**                                                           | Operate on **a small batch of top‑level classes (preferably 2‑5) per PR**.  The branch name should follow `bot/rename/<batch-slug>` and the PR title **MUST** be `[BOT] refactor(rename): <ClassA>, <ClassB>, …`. <br><br>Every obfuscated identifier *inside each touched class* **MUST** be renamed in the same PR.  Avoid batches so large that they violate the pre‑flight limits in Section 3 or overwhelm human review. |
-| **2  Dependency sweep**                                                | Before editing, grep for the old identifiers across the repo.<br>• Update **every reference** that uses the renamed public API (including tests and server modules).<br>• Do **NOT** touch unrelated logic or private helpers in other files.                                                                                                                                                                                 |
-| **3  No‑logic guarantee**                                              | After changes, run:<br>\`\`\`bash                                                                                                                                                                                                                                                                                                                                                                                             |
-| mvn -B verify -o            # compile + unit/integration tests offline |                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| japicmp\:cmp                 # binary compatibility check              |                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| Step                      | Mandatory Checks                                                                                                                                                                                                                                                                                                                                                                                                              |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1  Scope**              | Operate on **a small batch of top‑level classes (preferably 2‑5) per PR**.  The branch name should follow `bot/rename/<batch-slug>` and the PR title **MUST** be `[BOT] refactor(rename): <ClassA>, <ClassB>, …`. <br><br>Every obfuscated identifier *inside each touched class* **MUST** be renamed in the same PR.  Avoid batches so large that they violate the pre‑flight limits in Section 3 or overwhelm human review. |
+| **2  Dependency sweep**   | Before editing, grep for the old identifiers across the repo.<br>• Update **every reference** that uses the renamed public API (including tests and server modules).<br>• Do **NOT** touch unrelated logic or private helpers in other files.                                                                                                                                                                                 |
+| **3  No‑logic guarantee** | After changes, run:<br>\`\`\`bash                                                                                                                                                                                                                                                                                                                                                                                             |
+
+# ↪️ Compile‑only requirement (Maven builds)
+
+javac \$(git ls-files '\*.java' | tr '
+' ' ')  # ensure code still compiles
+
+# ↪️ Alternate path — if a standalone test runner is provided, invoke it instead
+
+# ./gradlew test --offline  or  java -jar tests-all.jar --scan-class-path
 
 ````<br>The diff **MUST** show *identifier changes only*; byte‑code instructions must remain byte‑for‑byte identical except for constant‑pool name entries. |
 | **4  Triple‑check protocol**                                | a. Automated diff‑filter: abort if diff adds/removes anything but identifiers/comments.<br>b. Compile stage: full `verify` build (offline).<br>c. Runtime: spin up the Docker compose world, log in a test account, execute `/skills`, logout.  Abort if any exception or protocol mismatch occurs. |
@@ -196,9 +210,8 @@ These safeguards are **critical** – any deviation **MUST** cause the agent to 
 
 The CI runners for `2006Scape` execute inside a **Codex sandbox** with **no egress to the public Internet**.  Access to `repo.maven.apache.org`, Docker Hub, or any other external host is blocked unless routed through an internal MITM proxy.  To guarantee successful builds, the agent **MUST**:
 
-1. **Run Maven strictly offline** – All build and test commands **MUST** include `-o` and either:
-   * `-Dmaven.repo.local=$PROJECT_ROOT/libs` when the repository includes a committed `libs/` directory containing every transitive dependency; **or**
-   * use a pre‑seeded `.m2` tarball extracted to `/opt/offline-m2` and set `MAVEN_OPTS="-Dmaven.repo.local=/opt/offline-m2"`.
+1. **No offline Maven execution** – The sandbox blocks Maven Central and we do **not** maintain an offline mirror.  Therefore any PR that still uses Maven **MUST skip test execution**.  Compilation checks (e.g., `javac`) are still required.  If the PR adds a self‑contained test runner (fat jar, Gradle offline build, etc.), that runner **MUST** be executed and pass.
+
 2. **Avoid fetching new artifacts** – Any change that introduces a dependency **NOT** present in the offline cache **MUST** abort and open an Issue requesting human approval.
 3. **Export proxy & CA variables** for auxiliary tools (curl, npm, gradle):
    ```bash
