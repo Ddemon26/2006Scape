@@ -1070,7 +1070,7 @@ public class Game extends RSApplet {
 			if (class9_1.type == 0) {
 				buildInterfaceMenu(i2, class9_1, k, j2, i1, class9_1.scrollPosition);
 				if (class9_1.scrollMax > class9_1.height) {
-					method65(i2 + class9_1.width, class9_1.height, k, i1, class9_1, j2, true, class9_1.scrollMax);
+					handleScrollbarInput(i2 + class9_1.width, class9_1.height, k, i1, class9_1, j2, true, class9_1.scrollMax);
 				}
 			} else {
 				if (class9_1.atActionType == 1 && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
@@ -3113,13 +3113,13 @@ public class Game extends RSApplet {
 		}
 		loadingStages();
 		method115();
-		method90();
+		processSoundEffects();
 		anInt1009++;
 		if (anInt1009 > 750) {
 			dropClient();
 		}
 		method114();
-		method95();
+		updateNpcMovement();
 		updateEntityText();
 		anInt945++;
 		if (crossType != 0) {
@@ -3321,7 +3321,7 @@ public class Game extends RSApplet {
 		for (; class30_sub1 != null; class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetNext()) {
 			if (class30_sub1.anInt1294 == -1) {
 				class30_sub1.anInt1302 = 0;
-				method89(class30_sub1);
+				updatePendingSpawn(class30_sub1);
 			} else {
 				class30_sub1.unlink();
 			}
@@ -3364,7 +3364,7 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method65(int i, int j, int k, int l, RSInterface class9, int i1, boolean visible, int j1) {
+       public void handleScrollbarInput(int i, int j, int k, int l, RSInterface class9, int i1, boolean visible, int j1) {
 		int anInt992;
 		if (aBoolean972) {
 			anInt992 = 32;
@@ -3397,7 +3397,7 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public boolean method66(int i, int j, int k) {
+       public boolean walkToObject(int i, int j, int k) {
 		int i1 = i >> 14 & 0x7fff;
 		int j1 = worldController.method304(plane, k, j, i);
 		if (j1 == -1) {
@@ -3664,7 +3664,7 @@ public class Game extends RSApplet {
 			stream.writeWord(i1);
 			stream.method431(j + baseX);
 		}
-		if (l == 62 && method66(i1, k, j)) {
+		if (l == 62 && walkToObject(i1, k, j)) {
 			stream.createFrame(192);
 			stream.writeWord(anInt1284);
 			stream.method431(i1 >> 14 & 0x7fff);
@@ -3772,7 +3772,7 @@ public class Game extends RSApplet {
 				stream.writeDWordBigEndian(0xe63271);
 				anInt924 = 0;
 			}
-			method66(i1, k, j);
+			walkToObject(i1, k, j);
 			stream.createFrame(228);
 			stream.method432(i1 >> 14 & 0x7fff);
 			stream.method432(k + baseY);
@@ -4137,7 +4137,7 @@ public class Game extends RSApplet {
 			}
 		}
 		if (l == 900) {
-			method66(i1, k, j);
+			walkToObject(i1, k, j);
 			stream.createFrame(252);
 			stream.method433(i1 >> 14 & 0x7fff);
 			stream.method431(k + baseY);
@@ -4192,7 +4192,7 @@ public class Game extends RSApplet {
 				stream.method431(i1);
 			}
 		}
-		if (l == 956 && method66(i1, k, j)) {
+		if (l == 956 && walkToObject(i1, k, j)) {
 			stream.createFrame(35);
 			stream.method431(j + baseX);
 			stream.method432(anInt1137);
@@ -4354,21 +4354,21 @@ public class Game extends RSApplet {
 			}
 		}
 		if (l == 113) {//third
-			method66(i1, k, j);
+			walkToObject(i1, k, j);
 			stream.createFrame(70);
 			stream.method431(j + baseX);
 			stream.writeWord(k + baseY);
 			stream.method433(i1 >> 14 & 0x7fff);
 		}
 		if (l == 872) {//fourth
-			method66(i1, k, j);
+			walkToObject(i1, k, j);
 			stream.createFrame(234);
 			stream.method433(j + baseX);
 			stream.method432(i1 >> 14 & 0x7fff);
 			stream.method433(k + baseY);
 		}
 		if (l == 502) {//first
-			method66(i1, k, j);
+			walkToObject(i1, k, j);
 			stream.createFrame(132);
 			stream.method433(j + baseX);
 			stream.writeWord(i1 >> 14 & 0x7fff);
@@ -6831,7 +6831,7 @@ public class Game extends RSApplet {
 
 	}
 
-	public void method89(Class30_Sub1 class30_sub1) {
+       public void updatePendingSpawn(Class30_Sub1 class30_sub1) {
 		int i = 0;
 		int j = -1;
 		int k = 0;
@@ -6859,7 +6859,7 @@ public class Game extends RSApplet {
 		class30_sub1.anInt1300 = l;
 	}
 
-	public final void method90() {
+       public final void processSoundEffects() {
 		for (int index = 0; index < currentSound; index++) {
 			//if (soundDelay[index] <= 0) {
 				boolean visible1 = false;
@@ -7542,17 +7542,17 @@ public class Game extends RSApplet {
 		// return super.getCodeBase();
 	}
 
-	public void method95() {
+       public void updateNpcMovement() {
 		for (int j = 0; j < npcCount; j++) {
 			int k = npcIndices[j];
 			NPC npc = npcArray[k];
 			if (npc != null) {
-				method96(npc);
+				updateEntityMovement(npc);
 			}
 		}
 	}
 
-	public void method96(Entity entity) {
+       public void updateEntityMovement(Entity entity) {
 		if (entity.x < 128 || entity.y < 128 || entity.x >= 13184 || entity.y >= 13184) {
 			entity.anim = -1;
 			entity.anInt1520 = -1;
@@ -7572,9 +7572,9 @@ public class Game extends RSApplet {
 			entity.method446();
 		}
 		if (entity.anInt1547 > loopCycle) {
-			method97(entity);
+			advanceForceMovement(entity);
 		} else if (entity.anInt1548 >= loopCycle) {
-			method98(entity);
+			updateForcedMovement(entity);
 		} else {
 			method99(entity);
 		}
@@ -7582,7 +7582,7 @@ public class Game extends RSApplet {
 		method101(entity);
 	}
 
-	public void method97(Entity entity) {
+       public void advanceForceMovement(Entity entity) {
 		int i = entity.anInt1547 - loopCycle;
 		int j = entity.anInt1543 * 128 + entity.anInt1540 * 64;
 		int k = entity.anInt1545 * 128 + entity.anInt1540 * 64;
@@ -7603,7 +7603,7 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method98(Entity entity) {
+       public void updateForcedMovement(Entity entity) {
 		if (entity.anInt1548 == loopCycle || entity.anim == -1 || entity.anInt1529 != 0 || entity.anInt1528 + 1 > Animation.anims[entity.anim].method258(entity.anInt1527)) {
 			int i = entity.anInt1548 - entity.anInt1547;
 			int j = loopCycle - entity.anInt1547;
@@ -7941,7 +7941,7 @@ public class Game extends RSApplet {
 		if (backDialogID == -1) {
 			aClass9_1059.scrollPosition = anInt1211 - anInt1089 - 77;
 			if (super.mouseX > 448 && super.mouseX < 560 && super.mouseY > 332) {
-				method65(463, 77, super.mouseX - 17, super.mouseY - 357, aClass9_1059, 0, false, anInt1211);
+				handleScrollbarInput(463, 77, super.mouseX - 17, super.mouseY - 357, aClass9_1059, 0, false, anInt1211);
 			}
 			int i = anInt1211 - 77 - aClass9_1059.scrollPosition;
 			if (i < 0) {
@@ -8964,7 +8964,7 @@ public class Game extends RSApplet {
 			}
 			Player player = playerArray[j];
 			if (player != null) {
-				method96(player);
+				updateEntityMovement(player);
 			}
 		}
 
@@ -9701,7 +9701,7 @@ public class Game extends RSApplet {
 			class30_sub1.anInt1296 = i1;
 			class30_sub1.anInt1297 = i2;
 			class30_sub1.anInt1298 = j1;
-			method89(class30_sub1);
+			updatePendingSpawn(class30_sub1);
 			aClass19_1179.insertHead(class30_sub1);
 		}
 		class30_sub1.anInt1291 = k;
