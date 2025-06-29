@@ -19,9 +19,9 @@ This file is **not** a human‑oriented README.  It is an *executable specificat
 
 ## 1  Identity & Meta‑data
 
-- The agent **MUST** identify itself with the commit/author `RuneBot <runebot@users.noreply.github.com>`.
-- Each PR **MUST** carry the label `bot`.  The agent **MUST** set this label.
-- The agent **MUST NOT** push directly to `main`; use a topic branch prefixed `bot/<task>/`.
+* The agent **MUST** identify itself with the commit/author `RuneBot <runebot@users.noreply.github.com>`.
+* Each PR **MUST** carry the label `bot`.  The agent **MUST** set this label.
+* The agent **MUST NOT** push directly to `main`; use a topic branch prefixed `bot/<task>/`.
 
 Example branch: `bot/refactor/player-enums`.
 
@@ -41,11 +41,11 @@ Any other class of change **MUST** be gated by a maintainer **Issue comment** co
 
 The agent **MUST NOT**:
 
-- Touch any file under `cache/` or `assets/`.
-- Commit Jagex‑owned proprietary content.
-- Re‑write git history.
-- Modify license headers.
-- Introduce new runtime dependencies without maintainer permission.
+* Touch any file under `cache/` or `assets/`.
+* Commit Jagex‑owned proprietary content.
+* Re‑write git history.
+* Modify license headers.
+* Introduce new runtime dependencies without maintainer permission.
 
 ---
 
@@ -78,11 +78,11 @@ If more detail is needed, use the PR body – not extra commit lines.
 
 ## 5  Code‑Style Canon
 
-- Java 17 source/target.
-- `google-java-format` (as configured by Spotless plugin) is the single source of truth.
-- Max line length = 120.
-- Prefer `enum` over magic int constants.
-- No new global `static` mutable state.
+* Java 17 source/target.
+* `google-java-format` (as configured by Spotless plugin) is the single source of truth.
+* Max line length = 120.
+* Prefer `enum` over magic int constants.
+* No new global `static` mutable state.
 
 Violating style **MUST** cause the agent to fail the pre‑flight build and abort.
 
@@ -102,18 +102,18 @@ An automated refactor **SHOULD**:
 
 ## 7  Testing Rules
 
-- New logic **MUST** be accompanied by JUnit 5 tests.
-- Tests **MUST NOT** depend on an external DB; use in‑memory Fakes.
-- Each test class name **MUST** end with `Test`.
-- The agent **SHOULD** generate property‑based tests when refactoring numerical formulas.
+* New logic **MUST** be accompanied by JUnit 5 tests.
+* Tests **MUST NOT** depend on an external DB; use in‑memory Fakes.
+* Each test class name **MUST** end with `Test`.
+* The agent **SHOULD** generate property‑based tests when refactoring numerical formulas.
 
 ---
 
 ## 8  Security & Compliance
 
-- Dependencies **MUST** have no known critical CVEs (`mvn org.owasp:dependency-check-maven:check`).
-- Secrets detection (`trufflehog`) **MUST** pass.
-- The agent **MUST** refuse to commit any file whose SHA‑256 matches the deny‑list in `.github/bot-denylist.txt`.
+* Dependencies **MUST** have no known critical CVEs (`mvn org.owasp:dependency-check-maven:check`).
+* Secrets detection (`trufflehog`) **MUST** pass.
+* The agent **MUST** refuse to commit any file whose SHA‑256 matches the deny‑list in `.github/bot-denylist.txt`.
 
 ---
 
@@ -131,9 +131,9 @@ If a PR authored by the agent is merged and afterwards fails on `main`:
 
 When the agent encounters ambiguity:
 
-- **First** – open an Issue tagged `needs‑maintainer`.
-- **Wait** 24 hours of no maintainer response → ping `@Ddemon26` and halt.
-- **NEVER** guess silently.
+* **First** – open an Issue tagged `needs‑maintainer`.
+* **Wait** 24 hours of no maintainer response → ping `@Ddemon26` and halt.
+* **NEVER** guess silently.
 
 ---
 
@@ -158,5 +158,29 @@ graph TD
 
 ---
 
+## 13  De‑obfuscation & Safe Renaming
+
+Badly named identifiers such as `class204`, `method321`, or `anInt545` **MAY** be renamed **only** under these additional constraints.  These rules are *mandatory* because even a single accidental logic tweak can break client↔server protocol synchronisation.
+
+| Step                                                        | Mandatory Checks                                                                                                                                                                                              |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1  Scope**                                                | Operate on **one top‑level class per PR**.  The branch name should follow `bot/rename/<old>‑to‑<new>` and the PR title **MUST** be `[BOT] refactor(rename): <OldName> → <NewName>`.                           |
+| **2  Dependency sweep**                                     | Before editing, grep for the old identifier across the repo.<br>• Update **only those references** that call the renamed public API.<br>• Do **NOT** touch unrelated logic or private helpers in other files. |
+| **3  No‑logic guarantee**                                   | After changes, run:<br>\`\`\`bash                                                                                                                                                                             |
+| mvn -B verify            # compile + unit/integration tests |                                                                                                                                                                                                               |
+| japicmp\:cmp               # binary compatibility check     |                                                                                                                                                                                                               |
+
+```<br>The diff **MUST** show *identifier changes only*; byte‑code instructions must remain byte‑for‑byte identical except for constant‑pool name entries. |
+| **4  Triple‑check protocol** | a. Automated diff‑filter: abort if diff adds/removes anything but identifiers/comments.<br>b. Compile stage: full `verify` build.<br>c. Runtime: spin up the Docker compose world, log in a test account, execute `/skills`, logout.  Abort if any exception or protocol mismatch occurs. |
+| **5  Naming convention** | • Classes → `UpperCamelCase`.<br>• Methods & fields → `lowerCamelCase`.<br>Names **MUST** convey intent (e.g., `ProjectileTrajectoryCalculator`). |
+| **6  Follow‑up classes** | If class *B* depends on renamed class *A*, perform the rename for *B's references* **in the same PR**, but do **not** begin renaming *B* itself. |
+| **7  Review artefacts** | PR description **MUST** include:<br>• Old ⇢ new mapping table.<br>• Output of `git diff --stat`.<br>• Link to successful integration‑test log. |
+| **8  Rollback readiness** | Attach a one‑liner revert command in the PR body.  If post‑merge CI fails, Section 9 rollback applies. |
+
+These safeguards are **critical** – any deviation **MUST** cause the agent to abort and open an Issue for human review.
+
+---
+
 *End of strict agent ruleset.*
 
+```
