@@ -2734,7 +2734,7 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method55() {
+       public void processProjectiles() {
 		for (Animable_Sub4 class30_sub2_sub4_sub4 = (Animable_Sub4) aClass19_1013.reverseGetFirst(); class30_sub2_sub4_sub4 != null; class30_sub2_sub4_sub4 = (Animable_Sub4) aClass19_1013.reverseGetNext()) {
 			if (class30_sub2_sub4_sub4.anInt1597 != plane || loopCycle > class30_sub2_sub4_sub4.anInt1572) {
 				class30_sub2_sub4_sub4.unlink();
@@ -5482,7 +5482,7 @@ public class Game extends RSApplet {
 				class9.disabledText = "\\nYou have not yet set any recovery questions.\\nIt is @lre@strongly@yel@ recommended that you do so.\\n\\nIf you don't you will be @lre@unable to recover your\\n@lre@password@yel@ if you forget it, or it is stolen.";
 			else if (anInt1034 <= anInt1170) {
 				class9.disabledText = "\\n\\nRecovery Questions Last Set:\\n@gre@"
-						+ method104(anInt1034);
+                                               + formatDate(anInt1034);
 			} else {
 				int l1 = (anInt1170 + 14) - anInt1034;
 				String s2;
@@ -5494,7 +5494,7 @@ public class Game extends RSApplet {
 					s2 = l1 + " days ago";
 				class9.disabledText = s2
 						+ " you requested@lre@ new recovery\\n@lre@questions.@yel@ The requested change will occur\\non: @lre@"
-						+ method104(anInt1034)
+                                               + formatDate(anInt1034)
 						+ "\\n\\nIf you do not remember making this request\\ncancel it immediately, and change your password.";
 			}
 		if (j == 663)
@@ -5502,7 +5502,7 @@ public class Game extends RSApplet {
 				class9.disabledText = "Last password change:\\n@gre@Never changed";
 			else
 				class9.disabledText = "Last password change:\\n@gre@"
-						+ method104(anInt1083);
+                                               + formatDate(anInt1083);
 		if (j == 668) {
 			if (anInt1034 > anInt1170) {
 				class9.disabledText = "To cancel this request:\\n1) Logout and return to the frontpage of this website.\\n2) Choose 'Cancel recovery questions'.";
@@ -5512,11 +5512,11 @@ public class Game extends RSApplet {
 		}
 	}
 	
-	public String method104(int i) {
-		if (i > anInt1170 + 10) {
-			return "Unknown";
-		} else {
-			long l = ((long) i + 11745L) * 0x5265c00L;
+       public String formatDate(int days) {
+               if (days > anInt1170 + 10) {
+                       return "Unknown";
+               } else {
+                       long l = ((long) days + 11745L) * 0x5265c00L;
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(new Date(l));
 			int j = calendar.get(5);
@@ -8170,7 +8170,7 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method104() {
+       public void processGraphicsObjects() {
 		Animable_Sub3 class30_sub2_sub4_sub3 = (Animable_Sub3) aClass19_1056.reverseGetFirst();
 		for (; class30_sub2_sub4_sub3 != null; class30_sub2_sub4_sub3 = (Animable_Sub3) aClass19_1056.reverseGetNext()) {
 			if (class30_sub2_sub4_sub3.anInt1560 != plane || class30_sub2_sub4_sub3.aBoolean1567) {
@@ -11835,8 +11835,8 @@ public class Game extends RSApplet {
                addNpcsToScene(true);
                addPlayersToScene(false);
                 addNpcsToScene(false);
-		method55();
-		method104();
+               processProjectiles();
+               processGraphicsObjects();
 		if (!aBoolean1160) {
 			int i = anInt1184;
 			if (anInt984 / 256 > i) {
