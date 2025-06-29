@@ -51,7 +51,7 @@ final class Class56_Sub1_Sub1 extends Class56_Sub1 implements Receiver
 		    aSequencer1851.open();
 		    method838(-1L);
 		} catch (Exception exception) {
-		    Game.method790();
+		    Game.shutdownMidiPlayer();
 		}
     }
     
