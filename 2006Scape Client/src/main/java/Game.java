@@ -804,7 +804,7 @@ public class Game extends RSApplet {
 				anInt1051 = 0;
 				stream.createFrame(150);
 			}
-			method63();
+                       processPendingSpawns();
 		} catch (Exception exception) {
 		}
 		ObjectDef.mruNodes1.unlinkAll();
@@ -890,10 +890,10 @@ public class Game extends RSApplet {
 		for (int i2 = 1; i2 < 103; i2++) {
 			for (int j2 = 1; j2 < 103; j2++) {
 				if ((byteGroundArray[planeIndex][j2][i2] & 0x18) == 0) {
-					method50(i2, j1, j2, l1, planeIndex);
+                                       drawMinimapLoc(i2, j1, j2, l1, planeIndex);
 				}
 				if (planeIndex < 3 && (byteGroundArray[planeIndex + 1][j2][i2] & 8) != 0) {
-					method50(i2, j1, j2, l1, planeIndex + 1);
+                                       drawMinimapLoc(i2, j1, j2, l1, planeIndex + 1);
 				}
 			}
 
@@ -1291,8 +1291,8 @@ public class Game extends RSApplet {
 		anInt839 = 0;
 		anInt893 = 0;
 		method139(stream);
-		method46(i, stream);
-		method86(stream);
+               addLocalNPCs(i, stream);
+               processNpcUpdateMasks(stream);
 		for (int k = 0; k < anInt839; k++) {
 			int l = anIntArray840[k];
 			if (npcArray[l].anInt1537 != loopCycle) {
@@ -2216,7 +2216,7 @@ public class Game extends RSApplet {
                 queueSong(10, musicVolume, false, 0);
 	}
 
-	public void method45() {
+       public void resetCharacterOptions() {
 		aBoolean1031 = true;
 		for (int j = 0; j < 7; j++) {
 			anIntArray1065[j] = -1;
@@ -2232,7 +2232,7 @@ public class Game extends RSApplet {
 
 	}
 
-	public void method46(int i, Stream stream) {
+       public void addLocalNPCs(int i, Stream stream) {
 		while (stream.bitPosition + 21 < i * 8) {
 			int k = stream.readBits(14);
 			if (k == 16383) {
@@ -2401,11 +2401,11 @@ public class Game extends RSApplet {
 		}
 		if (j == 324 && !aBoolean1047) {
 			aBoolean1047 = true;
-			method45();
+                       resetCharacterOptions();
 		}
 		if (j == 325 && aBoolean1047) {
 			aBoolean1047 = false;
-			method45();
+                       resetCharacterOptions();
 		}
 		if (j == 326) {
 			stream.createFrame(101);
@@ -2448,7 +2448,7 @@ public class Game extends RSApplet {
 
 	}
 
-	public void method50(int i, int k, int l, int i1, int j1) {
+       public void drawMinimapLoc(int i, int k, int l, int i1, int j1) {
 		int k1 = worldController.method300(j1, l, i);
 		if (k1 != 0) {
 			int l1 = worldController.method304(j1, l, i, k1);
@@ -2944,7 +2944,7 @@ public class Game extends RSApplet {
 		return abyte0 == null || Signlink.wavesave(abyte0, i);
 	}
 
-	public void method60(int i) {
+       public void resetInterfaceAnimation(int i) {
 		RSInterface class9 = RSInterface.interfaceCache[i];
 		if (class9 == null || class9.children == null)
 			return;
@@ -2954,7 +2954,7 @@ public class Game extends RSApplet {
 			}
 			RSInterface class9_1 = RSInterface.interfaceCache[element];
 			if (class9_1.type == 1) {
-				method60(class9_1.id);
+                               resetInterfaceAnimation(class9_1.id);
 			}
 			class9_1.anInt246 = 0;
 			class9_1.anInt208 = 0;
@@ -3237,7 +3237,7 @@ public class Game extends RSApplet {
 			anIntArray1030[i1]++;
 		}
 
-		method73();
+               processInput();
 		super.idleTime++; //Idle timer nope!
 		/*if (super.idleTime > 12000) {
 			anInt1011 = 250;
@@ -3316,7 +3316,7 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method63() {
+       public void processPendingSpawns() {
 		Class30_Sub1 class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetFirst();
 		for (; class30_sub1 != null; class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetNext()) {
 			if (class30_sub1.anInt1294 == -1) {
@@ -4458,7 +4458,7 @@ public class Game extends RSApplet {
 
 	}
 
-	public void method70() {
+       public void updateMultiCombatArea() {
 		anInt1251 = 0;
 		int j = (myPlayer.x >> 7) + baseX;
 		int k = (myPlayer.y >> 7) + baseY;
@@ -4831,7 +4831,7 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method73() {
+       public void processInput() {
 		do {
 			int j = readChar(-796);
 			if (j == -1) {
@@ -5900,7 +5900,7 @@ public class Game extends RSApplet {
 		// SignLink.midii.fadeOut();
 	}
 
-	public void method81(Sprite sprite, int y, int x) {
+       public void drawMinimapSprite(Sprite sprite, int y, int x) {
 		int l = x * x + y * y;
 		if (l > 4225 && l < 90000) {
 			int i1 = minimapInt1 + minimapInt2 & 0x7ff;
@@ -6158,7 +6158,7 @@ public class Game extends RSApplet {
 				anInt1055 = 0;
 				anInt1054 = -1;
 				aBoolean1047 = true;
-				method45();
+                               resetCharacterOptions();
 				for (int j3 = 0; j3 < 5; j3++) {
 					anIntArray990[j3] = 0;
 				}
@@ -6556,7 +6556,7 @@ public class Game extends RSApplet {
 		return (i_1_ & 0xff80) + i;
 	}
 
-	public void method86(Stream stream) {
+       public void processNpcUpdateMasks(Stream stream) {
 		for (int j = 0; j < anInt893; j++) {
 			int k = anIntArray894[j];
 			NPC npc = npcArray[k];
@@ -8858,7 +8858,7 @@ public class Game extends RSApplet {
 			method119(anInt945, openInterfaceID);
 			drawInterface(0, 0, RSInterface.interfaceCache[openInterfaceID], 0);
 		}
-		method70();
+               updateMultiCombatArea();
 		if (!menuOpen) {
 			processRightClick();
 			drawTooltip();
@@ -9567,20 +9567,20 @@ public class Game extends RSApplet {
 				if (class30_sub2_sub4_sub1_sub1_1 != null) {
 					int k1 = class30_sub2_sub4_sub1_sub1_1.x / 32 - myPlayer.x / 32;
 					int i4 = class30_sub2_sub4_sub1_sub1_1.y / 32 - myPlayer.y / 32;
-					method81(mapMarker, i4, k1);
+                                       drawMinimapSprite(mapMarker, i4, k1);
 				}
 			}
 			if (anInt855 == 2) {
 				int l1 = (anInt934 - baseX) * 4 + 2 - myPlayer.x / 32;
 				int j4 = (anInt935 - baseY) * 4 + 2 - myPlayer.y / 32;
-				method81(mapMarker, j4, l1);
+                                drawMinimapSprite(mapMarker, j4, l1);
 			}
 			if (anInt855 == 10 && anInt933 >= 0 && anInt933 < playerArray.length) {
 				Player class30_sub2_sub4_sub1_sub2_1 = playerArray[anInt933];
 				if (class30_sub2_sub4_sub1_sub2_1 != null) {
 					int i2 = class30_sub2_sub4_sub1_sub2_1.x / 32 - myPlayer.x / 32;
 					int k4 = class30_sub2_sub4_sub1_sub2_1.y / 32 - myPlayer.y / 32;
-					method81(mapMarker, k4, i2);
+                                       drawMinimapSprite(mapMarker, k4, i2);
 				}
 			}
 		}
@@ -11032,7 +11032,7 @@ public class Game extends RSApplet {
 			if (pktType == 208) {
 				int i3 = inStream.method437();
 				if (i3 >= 0) {
-					method60(i3);
+                               resetInterfaceAnimation(i3);
 				}
 				anInt1018 = i3;
 				pktType = -1;
@@ -11448,7 +11448,7 @@ public class Game extends RSApplet {
 			}
 			if (pktType == 142) {
 				int j6 = inStream.method434();
-				method60(j6);
+                               resetInterfaceAnimation(j6);
 				if (backDialogID != -1) {
 					backDialogID = -1;
 					inputTaken = true;
@@ -11507,9 +11507,9 @@ public class Game extends RSApplet {
 			if (pktType == 69) {
 				int k9 = inStream.readUnsignedWord();
 				int k15 = inStream.readUnsignedWord();
-				method60(k15);
+                               resetInterfaceAnimation(k15);
 				if (k9 != -1)
-					method60(k9);
+                               resetInterfaceAnimation(k9);
 				if (openInterfaceID != -1) {
 					openInterfaceID = -1;
 				}
@@ -11640,7 +11640,7 @@ public class Game extends RSApplet {
 			}
 			if (pktType == 97) {
 				int l7 = inStream.readUnsignedWord();
-				method60(l7);
+                               resetInterfaceAnimation(l7);
 				if (invOverlayInterfaceID != -1) {
 					invOverlayInterfaceID = -1;
 					needDrawTabArea = true;
@@ -11786,7 +11786,7 @@ public class Game extends RSApplet {
 			}
 			if (pktType == 164) {
 				int j9 = inStream.method434();
-				method60(j9);
+                               resetInterfaceAnimation(j9);
 				if (invOverlayInterfaceID != -1) {
 					invOverlayInterfaceID = -1;
 					needDrawTabArea = true;
@@ -12872,7 +12872,7 @@ public class Game extends RSApplet {
     }
 
 	public void openInterface(int interfaceID) {
-		method60(interfaceID);
+               resetInterfaceAnimation(interfaceID);
 		if (invOverlayInterfaceID != -1) {
 			invOverlayInterfaceID = -1;
 			needDrawTabArea = true;
