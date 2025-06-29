@@ -16,8 +16,8 @@ public final class Ground extends Node {
 	final int anInt1308;
 	final int anInt1309;
 	final int anInt1310;
-	public Class43 aClass43_1311;
-	public Class40 aClass40_1312;
+        public PlainTile plainTile;
+        public ShapedTile shapedTile;
 	public Object1 obj1;
 	public Object2 obj2;
 	public Object3 obj3;

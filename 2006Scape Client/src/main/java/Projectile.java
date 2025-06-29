@@ -2,9 +2,9 @@
 // Jad home page: http://www.kpdus.com/jad.html
 // Decompiler options: packimports(3) 
 
-final class Animable_Sub4 extends Animable {
+final class Projectile extends Animable {
 
-	public void method455(int i, int j, int k, int l) {
+        public void initializeTrajectory(int i, int j, int k, int l) {
 		if (!aBoolean1579) {
 			double d = l - anInt1580;
 			double d2 = j - anInt1581;
@@ -33,7 +33,7 @@ final class Animable_Sub4 extends Animable {
 		if (aSpotAnim_1592.aAnimation_407 != null) {
 			j = aSpotAnim_1592.aAnimation_407.anIntArray353[anInt1593];
 		}
-		Model model_1 = new Model(true, Class36.method532(j), false, model);
+                Model model_1 = new Model(true, AnimFrame.method532(j), false, model);
 		if (j != -1) {
 			model_1.method469();
 			model_1.method470(j);
@@ -48,7 +48,7 @@ final class Animable_Sub4 extends Animable {
 		return model_1;
 	}
 
-	public Animable_Sub4(int i, int j, int l, int i1, int j1, int k1, int l1, int i2, int j2, int k2, int l2) {
+        public Projectile(int i, int j, int l, int i1, int j1, int k1, int l1, int i2, int j2, int k2, int l2) {
 		aBoolean1579 = false;
 		aSpotAnim_1592 = SpotAnim.cache[l2];
 		anInt1597 = k1;
@@ -64,7 +64,7 @@ final class Animable_Sub4 extends Animable {
 		aBoolean1579 = false;
 	}
 
-	public void method456(int i) {
+        public void update(int i) {
 		aBoolean1579 = true;
 		aDouble1585 += aDouble1574 * i;
 		aDouble1586 += aDouble1575 * i;

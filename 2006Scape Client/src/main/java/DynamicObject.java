@@ -2,7 +2,7 @@
 // Jad home page: http://www.kpdus.com/jad.html
 // Decompiler options: packimports(3) 
 
-final class Animable_Sub5 extends Animable {
+final class DynamicObject extends Animable {
 
 	@Override
 	public Model getRotatedModel() {
@@ -30,9 +30,9 @@ final class Animable_Sub5 extends Animable {
 				j = aAnimation_1607.anIntArray353[anInt1599];
 			}
 		}
-		ObjectDef class46;
-		if (anIntArray1600 != null) {
-			class46 = method457();
+                ObjectDef class46;
+                if (anIntArray1600 != null) {
+                        class46 = getChildDefinition();
 		} else {
 			class46 = ObjectDef.forID(anInt1610);
 		}
@@ -43,7 +43,7 @@ final class Animable_Sub5 extends Animable {
 		}
 	}
 
-	private ObjectDef method457() {
+        private ObjectDef getChildDefinition() {
 		int i = -1;
 		if (anInt1601 != -1) {
 			VarBit varBit = VarBit.cache[anInt1601];
@@ -62,7 +62,7 @@ final class Animable_Sub5 extends Animable {
 		}
 	}
 
-	public Animable_Sub5(int i, int j, int k, int l, int i1, int j1, int k1, int l1, boolean flag) {
+        public DynamicObject(int i, int j, int k, int l, int i1, int j1, int k1, int l1, boolean flag) {
 		anInt1610 = i;
 		anInt1611 = k;
 		anInt1612 = j;

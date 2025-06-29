@@ -12,7 +12,7 @@ public final class ItemDef {
 		stream = null;
 	}
 
-	public boolean method192(int j) {
+	public boolean areWearModelsReady(int j) {
 		int k = anInt175;
 		int l = anInt166;
 		if (j == 1) {
@@ -50,7 +50,7 @@ public final class ItemDef {
 
 	}
 
-	public Model method194(int j) {
+	public Model getWearModel(int j) {
 		int k = anInt175;
 		int l = anInt166;
 		if (j == 1) {
@@ -75,7 +75,7 @@ public final class ItemDef {
 		return model;
 	}
 
-	public boolean method195(int j) {
+	public boolean areEquipModelsReady(int j) {
 		int k = anInt165;
 		int l = anInt188;
 		int i1 = anInt185;
@@ -100,7 +100,7 @@ public final class ItemDef {
 		return flag;
 	}
 
-	public Model method196(int i) {
+	public Model getEquipModel(int i) {
 		int j = anInt165;
 		int k = anInt188;
 		int l = anInt185;
@@ -2079,7 +2079,7 @@ public final class ItemDef {
 				itemDef = forID(i1);
 			}
 		}
-		Model model = itemDef.method201(1);
+		Model model = itemDef.getModelForAmount(1);
 		if (model == null) {
 			return null;
 		}
@@ -2188,7 +2188,7 @@ public final class ItemDef {
 		return sprite2;
 	}
 
-	public Model method201(int i) {
+	public Model getModelForAmount(int i) {
 		if (stackIDs != null && i > 1) {
 			int j = -1;
 			for (int k = 0; k < 10; k++) {
@@ -2198,7 +2198,7 @@ public final class ItemDef {
 			}
 
 			if (j != -1) {
-				return forID(j).method201(1);
+				return forID(j).getModelForAmount(1);
 			}
 		}
 		Model model = (Model) mruNodes2.insertFromCache(id);
@@ -2224,7 +2224,7 @@ public final class ItemDef {
 		return model;
 	}
 
-	public Model method202(int i) {
+	public Model getBaseModel(int i) {
 		if (stackIDs != null && i > 1) {
 			int j = -1;
 			for (int k = 0; k < 10; k++) {
@@ -2234,7 +2234,7 @@ public final class ItemDef {
 			}
 
 			if (j != -1) {
-				return forID(j).method202(1);
+				return forID(j).getBaseModel(1);
 			}
 		}
 		Model model = Model.method462(modelID);

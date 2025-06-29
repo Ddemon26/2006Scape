@@ -5,13 +5,13 @@
 final class Sounds {
 
 	private Sounds() {
-		aClass6Array329 = new Class6[10];
+		soundEffects = new SoundEffect[10];
 	}
 
 	public static void unpack(Stream stream) {
 		aByteArray327 = new byte[0x6baa8];
 		aStream_328 = new Stream(aByteArray327);
-		Class6.method166();
+		SoundEffect.method166();
 		do {
 			int j = stream.readUnsignedWord();
 			if (j == 65535) {
@@ -37,8 +37,8 @@ final class Sounds {
 			int j = stream.readUnsignedByte();
 			if (j != 0) {
 				stream.currentOffset--;
-				aClass6Array329[i] = new Class6();
-				aClass6Array329[i].method169(stream);
+				soundEffects[i] = new SoundEffect();
+				soundEffects[i].method169(stream);
 			}
 		}
 		anInt330 = stream.readUnsignedWord();
@@ -48,8 +48,8 @@ final class Sounds {
 	private int method243() {
 		int j = 0x98967f;
 		for (int k = 0; k < 10; k++) {
-			if (aClass6Array329[k] != null && aClass6Array329[k].anInt114 / 20 < j) {
-				j = aClass6Array329[k].anInt114 / 20;
+			if (soundEffects[k] != null && soundEffects[k].anInt114 / 20 < j) {
+				j = soundEffects[k].anInt114 / 20;
 			}
 		}
 
@@ -60,8 +60,8 @@ final class Sounds {
 			return 0;
 		}
 		for (int l = 0; l < 10; l++) {
-			if (aClass6Array329[l] != null) {
-				aClass6Array329[l].anInt114 -= j * 20;
+			if (soundEffects[l] != null) {
+				soundEffects[l].anInt114 -= j * 20;
 			}
 		}
 
@@ -95,8 +95,8 @@ final class Sounds {
 	private int method245(int i) {
 		int j = 0;
 		for (int k = 0; k < 10; k++) {
-			if (aClass6Array329[k] != null && aClass6Array329[k].anInt113 + aClass6Array329[k].anInt114 > j) {
-				j = aClass6Array329[k].anInt113 + aClass6Array329[k].anInt114;
+			if (soundEffects[k] != null && soundEffects[k].anInt113 + soundEffects[k].anInt114 > j) {
+				j = soundEffects[k].anInt113 + soundEffects[k].anInt114;
 			}
 		}
 
@@ -115,10 +115,10 @@ final class Sounds {
 		}
 
 		for (int i2 = 0; i2 < 10; i2++) {
-			if (aClass6Array329[i2] != null) {
-				int j2 = aClass6Array329[i2].anInt113 * 22050 / 1000;
-				int i3 = aClass6Array329[i2].anInt114 * 22050 / 1000;
-				int ai[] = aClass6Array329[i2].method167(j2, aClass6Array329[i2].anInt113);
+			if (soundEffects[i2] != null) {
+				int j2 = soundEffects[i2].anInt113 * 22050 / 1000;
+				int i3 = soundEffects[i2].anInt114 * 22050 / 1000;
+				int ai[] = soundEffects[i2].method167(j2, soundEffects[i2].anInt113);
 				for (int l3 = 0; l3 < j2; l3++) {
 					aByteArray327[l3 + i3 + 44] += (byte) (ai[l3] >> 8);
 				}
@@ -150,7 +150,7 @@ final class Sounds {
 	public static final int[] anIntArray326 = new int[5000];
 	private static byte[] aByteArray327;
 	private static Stream aStream_328;
-	private final Class6[] aClass6Array329;
+	private final SoundEffect[] soundEffects;
 	private int anInt330;
 	private int anInt331;
 

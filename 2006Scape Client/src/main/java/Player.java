@@ -9,7 +9,7 @@ public final class Player extends Entity {
 		if (!visible) {
 			return null;
 		}
-		Model model = method452();
+                Model model = buildBaseModel();
 		if (model == null) {
 			return null;
 		}
@@ -22,7 +22,7 @@ public final class Player extends Entity {
 			SpotAnim spotAnim = SpotAnim.cache[super.anInt1520];
 			Model model_2 = spotAnim.getModel();
 			if (model_2 != null) {
-				Model model_3 = new Model(true, Class36.method532(super.anInt1521), false, model_2);
+                                Model model_3 = new Model(true, AnimFrame.method532(super.anInt1521), false, model_2);
 				model_3.method475(0, -super.anInt1524, 0);
 				model_3.method469();
 				model_3.method470(spotAnim.aAnimation_407.anIntArray353[super.anInt1521]);
@@ -162,7 +162,11 @@ public final class Player extends Entity {
 		aLong1718 += anInt1702;
 	}
 
-	private Model method452() {
+        /**
+         * Builds the player's base model using current equipment and animation
+         * state. This model is cached for efficiency.
+         */
+        private Model buildBaseModel() {
 		if (desc != null) {
 			int j = -1;
 			if (super.anim >= 0 && super.anInt1529 == 0) {
@@ -209,7 +213,7 @@ public final class Player extends Entity {
 				if (k2 >= 256 && k2 < 512 && !IDK.cache[k2 - 256].method537()) {
 					flag = true;
 				}
-				if (k2 >= 512 && !ItemDef.forID(k2 - 512).method195(anInt1702)) {
+				if (k2 >= 512 && !ItemDef.forID(k2 - 512).areEquipModelsReady(anInt1702)) {
 					flag = true;
 				}
 			}
@@ -241,7 +245,7 @@ public final class Player extends Entity {
 					}
 				}
 				if (i3 >= 512) {
-					Model model_4 = ItemDef.forID(i3 - 512).method196(anInt1702);
+					Model model_4 = ItemDef.forID(i3 - 512).getEquipModel(anInt1702);
 					if (model_4 != null) {
 						aclass30_sub2_sub4_sub6s[j2++] = model_4;
 					}
@@ -267,7 +271,7 @@ public final class Player extends Entity {
 			return model_1;
 		}
 		Model model_2 = Model.aModel_1621;
-		model_2.method464(model_1, Class36.method532(k) & Class36.method532(i1));
+                model_2.method464(model_1, AnimFrame.method532(k) & AnimFrame.method532(i1));
 		if (k != -1 && i1 != -1) {
 			model_2.method471(Animation.anims[super.anim].anIntArray357, i1, k);
 		} else if (k != -1) {
@@ -285,7 +289,11 @@ public final class Player extends Entity {
 	}
 
 	public int privelage;
-	public Model method453() {
+        /**
+         * Creates a model of the player's equipped items without any
+         * current animations applied. Used for interface previews.
+         */
+        public Model buildEquipmentModel() {
 		if (!visible) {
 			return null;
 		}
@@ -298,7 +306,7 @@ public final class Player extends Entity {
 			if (j >= 256 && j < 512 && !IDK.cache[j - 256].method539()) {
 				flag = true;
 			}
-			if (j >= 512 && !ItemDef.forID(j - 512).method192(anInt1702)) {
+			if (j >= 512 && !ItemDef.forID(j - 512).areWearModelsReady(anInt1702)) {
 				flag = true;
 			}
 		}
@@ -317,7 +325,7 @@ public final class Player extends Entity {
 				}
 			}
 			if (i1 >= 512) {
-				Model model_2 = ItemDef.forID(i1 - 512).method194(anInt1702);
+				Model model_2 = ItemDef.forID(i1 - 512).getWearModel(anInt1702);
 				if (model_2 != null) {
 					aclass30_sub2_sub4_sub6s[k++] = model_2;
 				}

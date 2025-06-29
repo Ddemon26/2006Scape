@@ -1,9 +1,9 @@
-/* InputStream_Sub1 - Decompiled by JODE
+/* MuLawInputStream - Decompiled by JODE
  * Visit http://jode.sourceforge.net/
  */
 import java.io.InputStream;
 
-final class InputStream_Sub1 extends InputStream {
+final class MuLawInputStream extends InputStream {
 	
     boolean aBoolean31;
     private int[] anIntArray32 = {
@@ -23,7 +23,7 @@ final class InputStream_Sub1 extends InputStream {
     private byte[] aByteArray33 = new byte[65536];
     private int[] anIntArray34 = new int[256];
     
-    private final byte method41(int i) {
+    private final byte encodeSample(int i) {
 		int i_0_ = i >> 8 & 0x80;
 		if (i_0_ != 0)
 		    i = -i;
@@ -52,7 +52,7 @@ final class InputStream_Sub1 extends InputStream {
 		    	if ((i_7_ + 8388608 & ~0xffffff) != 0)
 		    		anIntArray34[i_6_] = 0x7fffff ^ i_7_ >> 31;
 		    }
-		    method42(aByteArray33, anIntArray34, is, 0, i, i_4_);
+                    mixSamples(aByteArray33, anIntArray34, is, 0, i, i_4_);
 		    i_5_ = i_4_;
 		} catch (Exception exception) {
 			aBoolean31 = true;
@@ -67,13 +67,13 @@ final class InputStream_Sub1 extends InputStream {
     	return is[0];
     }
     
-    private static final void method42(byte[] is, int[] is_8_, byte[] is_9_, int i, int i_10_, int i_11_) {
+    private static final void mixSamples(byte[] is, int[] is_8_, byte[] is_9_, int i, int i_10_, int i_11_) {
     	for (i = 0; i < i_11_; i++)
     		is_9_[i_10_++] = is[(is_8_[i] >> 8) + 32768];
     }	
     
-    InputStream_Sub1() {
+    MuLawInputStream() {
     	for (int i = -32768; i < 32768; i++)
-    		aByteArray33[i + 32768] = method41(i);
+                aByteArray33[i + 32768] = encodeSample(i);
     }
 }

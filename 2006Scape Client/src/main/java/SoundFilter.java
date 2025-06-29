@@ -2,7 +2,7 @@
 // Jad home page: http://www.kpdus.com/jad.html
 // Decompiler options: packimports(3) 
 
-final class Class39 {
+final class SoundFilter {
 
 	private float method541(int i, int j, float f) {
 		float f1 = anIntArrayArrayArray667[i][0][j] + f * (anIntArrayArrayArray667[i][1][j] - anIntArrayArrayArray667[i][0][j]);
@@ -21,7 +21,7 @@ final class Class39 {
 		return method542(f1);
 	}
 
-	public int method544(int i, float f) {
+    public int evaluate(int i, float f) {
 		if (i == 0) {
 			float f1 = anIntArray668[0] + (anIntArray668[1] - anIntArray668[0]) * f;
 			f1 *= 0.003051758F;
@@ -61,7 +61,7 @@ final class Class39 {
 		return anIntArray665[i] * 2;
 	}
 
-	public void method545(Stream stream, Class29 class29) {
+    public void decode(Stream stream, SoundEnvelope class29) {
 		int i = stream.readUnsignedByte();
 		anIntArray665[0] = i >> 4;
 		anIntArray665[1] = i & 0xf;
@@ -98,7 +98,7 @@ final class Class39 {
 		}
 	}
 
-	public Class39() {
+    public SoundFilter() {
 		anIntArray665 = new int[2];
 		anIntArrayArrayArray666 = new int[2][2][4];
 		anIntArrayArrayArray667 = new int[2][2][4];

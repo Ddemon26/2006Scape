@@ -58,20 +58,20 @@ public class Game extends RSApplet {
 	}
 	
 	static final boolean musicIsntNull() {
-		if (aClass56_749 == null)
+		if (midiPlayer == null)
 			return false;
 		return true;
 	}
 	
-	static final void method790() {
-		if (aClass56_749 != null) {
-			method891(false);
+    static final void shutdownMidiPlayer() {
+		if (midiPlayer != null) {
+                        stopMidi(false);
 			if (anInt720 > 0) {
-				aClass56_749.method831(256);
+				midiPlayer.method831(256);
 				anInt720 = 0;
 			}
-		    aClass56_749.method828();
-		    aClass56_749 = null;
+		    midiPlayer.method828();
+		    midiPlayer = null;
 		}
 	}
 	
@@ -158,11 +158,11 @@ public class Game extends RSApplet {
 	}
 	
 	static final void method900(int i) {
-		if (aClass56_749 != null) {
+		if (midiPlayer != null) {
 			if (anInt720 == 0) {
 				if (anInt478 >= 0) {
 					anInt478 = i;
-					aClass56_749.method830(i, 0);
+					midiPlayer.method830(i, 0);
 				}
 			} else if (aByteArray347 != null)
 				anInt1478 = i;
@@ -171,19 +171,19 @@ public class Game extends RSApplet {
 	
 	static final synchronized void method55(boolean bool) {
 		if (musicIsntNull()) {
-			method891(bool);
+                        stopMidi(bool);
 			fetchMusic = false;
 		}
 	}
 	
-	static final void method891(boolean bool) {
-		method853(0, null, bool);
+    static final void stopMidi(boolean bool) {
+            playMidiTrack(0, null, bool);
 	}
 	
 	static final boolean constructMusic() {
 		anInt720 = 20;
 		try {
-		    aClass56_749 = (Class56) Class.forName("Class56_Sub1_Sub1").newInstance();
+                    midiPlayer = (MidiPlayer) Class.forName("JavaMidiPlayer").newInstance();
 		} catch (Throwable throwable) {
 		    return false;
 		}
@@ -227,26 +227,29 @@ public class Game extends RSApplet {
 				byte[] is = musicData;
 				if (is != null) {
 					if (anInt116 >= 0)
-						method684(aBoolean995, anInt116, musicVolume2, is);
+                                                switchMidiTrack(aBoolean995, anInt116, musicVolume2, is);
 					else if (anInt139 >= 0)
-						method899(anInt139, -1, aBoolean995, is, musicVolume2);
-					else
-						method853(musicVolume2, is, aBoolean995);
+                                                queueMidiTrack(anInt139, -1, aBoolean995, is, musicVolume2);
+                                        else
+                                                playMidiTrack(musicVolume2, is, aBoolean995);
 					fetchMusic = false;
 				}
 			}
-		    method368(0);
+                updateMidi(0);
 		}
 	}
 	
-	static final int method1004(int i) {
-		return (int) (Math.log((double) i * 0.00390625) * 868.5889638065036 + 0.5);
-	}
+        /**
+         * Converts a linear volume value into a logarithmic scale used by the MIDI player.
+         */
+        static final int scaleMidiVolume(int value) {
+                return (int) (Math.log((double) value * 0.00390625) * 868.5889638065036 + 0.5);
+        }
 	
-	static final void method853(int i_2_, byte[] is, boolean bool) {
-		if (aClass56_749 != null) {
+        static final void playMidiTrack(int i_2_, byte[] is, boolean bool) {
+		if (midiPlayer != null) {
 			if (anInt478 >= 0) {
-				aClass56_749.method833();
+				midiPlayer.method833();
 				anInt478 = -1;
 				aByteArray347 = null;
 				anInt720 = 20;
@@ -254,17 +257,17 @@ public class Game extends RSApplet {
 			}
 		    if (is != null) {
 		    	if (anInt720 > 0) {
-		    		aClass56_749.method831(i_2_);
+		    		midiPlayer.method831(i_2_);
 		    		anInt720 = 0;
 		    	}
 		    	anInt478 = i_2_;
-		    	aClass56_749.method827(i_2_, is, 0, bool);
+		    	midiPlayer.method827(i_2_, is, 0, bool);
 		    }
 		}
 	}
 	
-	static final void method899(int i, int i_29_, boolean bool, byte[] is, int i_30_) {
-		if (aClass56_749 != null) {
+        static final void queueMidiTrack(int i, int i_29_, boolean bool, byte[] is, int i_30_) {
+		if (midiPlayer != null) {
 			if (i_29_ >= (anInt478 ^ 0xffffffff)) {
 				i -= 20;
 				if (i < 1)
@@ -273,7 +276,7 @@ public class Game extends RSApplet {
 				if (anInt478 == 0)
 					anInt2200 = 0;
 				else {
-					int i_31_ = method1004(anInt478);
+                                        int i_31_ = scaleMidiVolume(anInt478);
 					i_31_ -= anInt155;
 					anInt2200 = ((anInt2200 - 1 + (i_31_ + 3600)) / anInt2200);
 				}
@@ -284,17 +287,17 @@ public class Game extends RSApplet {
 				aBoolean475 = bool;
 				aByteArray347 = is;
 				anInt1478 = i_30_;
-			} else
-				method853(i_30_, is, bool);
+                        } else
+                                playMidiTrack(i_30_, is, bool);
 		}
 	}
 	
-	static final void method684(boolean bool, int i, int i_2_, byte[] is) {
-		if (aClass56_749 != null) {
+        static final void switchMidiTrack(boolean bool, int i, int i_2_, byte[] is) {
+		if (midiPlayer != null) {
 			if (anInt478 >= 0) {
 				anInt2200 = i;
 				if (anInt478 != 0) {
-					int i_4_ = method1004(anInt478);
+                                        int i_4_ = scaleMidiVolume(anInt478);
 					i_4_ -= anInt155;
 					anInt720 = (i_4_ + 3600) / i;
 					if (anInt720 < 1)
@@ -304,8 +307,8 @@ public class Game extends RSApplet {
 				aByteArray347 = is;
 				anInt1478 = i_2_;
 				aBoolean475 = bool;
-			} else if (anInt720 == 0)
-				method853(i_2_, is, bool);
+                        } else if (anInt720 == 0)
+                                playMidiTrack(i_2_, is, bool);
 			else {
 				anInt1478 = i_2_;
 				aBoolean475 = bool;
@@ -314,18 +317,18 @@ public class Game extends RSApplet {
 		}
 	}
 	
-	static final void method368(int i) {
-		if (aClass56_749 != null) {
+        static final void updateMidi(int i) {
+		if (midiPlayer != null) {
 			if (anInt478 < i) {
 				if (anInt720 > 0) {
 					anInt720--;
 					if (anInt720 == 0) {
 						if (aByteArray347 == null)
-							aClass56_749.method831(256);
+							midiPlayer.method831(256);
 						else {
-							aClass56_749.method831(anInt1478);
+							midiPlayer.method831(anInt1478);
 							anInt478 = anInt1478;
-							aClass56_749.method827(anInt1478, aByteArray347, 0, aBoolean475);
+							midiPlayer.method827(anInt1478, aByteArray347, 0, aBoolean475);
 							aByteArray347 = null;
 						}
 						anInt155 = 0;
@@ -333,15 +336,15 @@ public class Game extends RSApplet {
 				}
 			} else if (anInt720 > 0) {
 				anInt155 += anInt2200;
-				aClass56_749.method830(anInt478, anInt155);
+				midiPlayer.method830(anInt478, anInt155);
 				anInt720--;
 				if (anInt720 == 0) {
-					aClass56_749.method833();
+					midiPlayer.method833();
 					anInt720 = 20;
 					anInt478 = -1;
 				}
 			}
-			aClass56_749.method832(i - 122);
+			midiPlayer.method832(i - 122);
 		}
 	}
 
@@ -658,7 +661,7 @@ public class Game extends RSApplet {
 			worldController.initToNull();
 			System.gc();
 			for (int i = 0; i < 4; i++) {
-				aClass11Array1230[i].method210();
+				collisionMaps[i].method210();
 			}
 
 			for (int l = 0; l < 4; l++) {
@@ -680,7 +683,7 @@ public class Game extends RSApplet {
 					int k5 = (anIntArray1234[i3] & 0xff) * 64 - baseY;
 					byte abyte0[] = aByteArrayArray1183[i3];
 					if (abyte0 != null) {
-						objectManager.method180(abyte0, k5, i4, (anInt1069 - 6) * 8, (anInt1070 - 6) * 8, aClass11Array1230);
+						objectManager.method180(abyte0, k5, i4, (anInt1069 - 6) * 8, (anInt1070 - 6) * 8, collisionMaps);
 					}
 				}
 
@@ -705,7 +708,7 @@ public class Game extends RSApplet {
 					if (abyte1 != null) {
 						int l8 = (anIntArray1234[i6] >> 8) * 64 - baseX;
 						int k9 = (anIntArray1234[i6] & 0xff) * 64 - baseY;
-						objectManager.method190(l8, aClass11Array1230, k9, worldController, abyte1);
+						objectManager.method190(l8, collisionMaps, k9, worldController, abyte1);
 					}
 				}
 
@@ -725,7 +728,7 @@ public class Game extends RSApplet {
 									if (anIntArray1234[l11] != j11 || aByteArrayArray1183[l11] == null) {
 										continue;
 									}
-									objectManager.method179(i9, l9, aClass11Array1230, k4 * 8, (j10 & 7) * 8, aByteArrayArray1183[l11], (l10 & 7) * 8, j3, j6 * 8);
+									objectManager.method179(i9, l9, collisionMaps, k4 * 8, (j10 & 7) * 8, aByteArrayArray1183[l11], (l10 & 7) * 8, j3, j6 * 8);
 									break;
 								}
 
@@ -761,7 +764,7 @@ public class Game extends RSApplet {
 									if (anIntArray1234[k12] != j12 || aByteArrayArray1247[k12] == null) {
 										continue;
 									}
-									objectManager.method183(aClass11Array1230, worldController, k10, j8 * 8, (i12 & 7) * 8, l6, aByteArrayArray1247[k12], (k11 & 7) * 8, i11, j9 * 8);
+									objectManager.method183(collisionMaps, worldController, k10, j8 * 8, (i12 & 7) * 8, l6, aByteArrayArray1247[k12], (k11 & 7) * 8, i11, j9 * 8);
 									break;
 								}
 
@@ -774,7 +777,7 @@ public class Game extends RSApplet {
 
 			}
 			stream.createFrame(0);
-			objectManager.method171(aClass11Array1230, worldController);
+			objectManager.method171(collisionMaps, worldController);
 			if(aRSImageProducer_1165 != null) {
 				aRSImageProducer_1165.initDrawingArea();
 				Texture.lineOffsets = chatBoxAreaOffsets;
@@ -915,7 +918,7 @@ public class Game extends RSApplet {
 						if (j3 != 22 && j3 != 29 && j3 != 34 && j3 != 36 && j3 != 46 && j3 != 47 && j3 != 48) {
 							byte byte0 = 104;
 							byte byte1 = 104;
-							int ai1[][] = aClass11Array1230[plane].anIntArrayArray294;
+							int ai1[][] = collisionMaps[plane].anIntArrayArray294;
 							for (int i4 = 0; i4 < 10; i4++) {
 								int j4 = (int) (Math.random() * 4D);
 								if (j4 == 0 && k3 > 0 && k3 > k2 - 3 && (ai1[k3 - 1][l3] & 0x1280108) == 0) {
@@ -2205,7 +2208,7 @@ public class Game extends RSApplet {
 		unlinkMRUNodes();
 		worldController.initToNull();
 		for (int i = 0; i < 4; i++) {
-			aClass11Array1230[i].method210();
+			collisionMaps[i].method210();
 		}
 
 		System.gc();
@@ -2734,31 +2737,31 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method55() {
-		for (Animable_Sub4 class30_sub2_sub4_sub4 = (Animable_Sub4) aClass19_1013.reverseGetFirst(); class30_sub2_sub4_sub4 != null; class30_sub2_sub4_sub4 = (Animable_Sub4) aClass19_1013.reverseGetNext()) {
-			if (class30_sub2_sub4_sub4.anInt1597 != plane || loopCycle > class30_sub2_sub4_sub4.anInt1572) {
-				class30_sub2_sub4_sub4.unlink();
-			} else if (loopCycle >= class30_sub2_sub4_sub4.anInt1571) {
-				if (class30_sub2_sub4_sub4.anInt1590 > 0) {
-					NPC npc = npcArray[class30_sub2_sub4_sub4.anInt1590 - 1];
-					if (npc != null && npc.x >= 0 && npc.x < 13312 && npc.y >= 0 && npc.y < 13312) {
-						class30_sub2_sub4_sub4.method455(loopCycle, npc.y, method42(class30_sub2_sub4_sub4.anInt1597, npc.y, npc.x) - class30_sub2_sub4_sub4.anInt1583, npc.x);
-					}
-				}
-				if (class30_sub2_sub4_sub4.anInt1590 < 0) {
-					int j = -class30_sub2_sub4_sub4.anInt1590 - 1;
+        public void method55() {
+                for (Projectile projectile = (Projectile) aClass19_1013.reverseGetFirst(); projectile != null; projectile = (Projectile) aClass19_1013.reverseGetNext()) {
+                        if (projectile.anInt1597 != plane || loopCycle > projectile.anInt1572) {
+                                projectile.unlink();
+                        } else if (loopCycle >= projectile.anInt1571) {
+                                if (projectile.anInt1590 > 0) {
+                                        NPC npc = npcArray[projectile.anInt1590 - 1];
+                                        if (npc != null && npc.x >= 0 && npc.x < 13312 && npc.y >= 0 && npc.y < 13312) {
+                                                projectile.initializeTrajectory(loopCycle, npc.y, method42(projectile.anInt1597, npc.y, npc.x) - projectile.anInt1583, npc.x);
+                                        }
+                                }
+                                if (projectile.anInt1590 < 0) {
+                                        int j = -projectile.anInt1590 - 1;
 					Player player;
 					if (j == unknownInt10) {
 						player = myPlayer;
 					} else {
 						player = playerArray[j];
 					}
-					if (player != null && player.x >= 0 && player.x < 13312 && player.y >= 0 && player.y < 13312) {
-						class30_sub2_sub4_sub4.method455(loopCycle, player.y, method42(class30_sub2_sub4_sub4.anInt1597, player.y, player.x) - class30_sub2_sub4_sub4.anInt1583, player.x);
-					}
-				}
-				class30_sub2_sub4_sub4.method456(anInt945);
-				worldController.method285(plane, class30_sub2_sub4_sub4.anInt1595, (int) class30_sub2_sub4_sub4.aDouble1587, -1, (int) class30_sub2_sub4_sub4.aDouble1586, 60, (int) class30_sub2_sub4_sub4.aDouble1585, class30_sub2_sub4_sub4, false);
+                                        if (player != null && player.x >= 0 && player.x < 13312 && player.y >= 0 && player.y < 13312) {
+                                                projectile.initializeTrajectory(loopCycle, player.y, method42(projectile.anInt1597, player.y, player.x) - projectile.anInt1583, player.x);
+                                        }
+                                }
+                                projectile.update(anInt945);
+                                worldController.method285(plane, projectile.anInt1595, (int) projectile.aDouble1587, -1, (int) projectile.aDouble1586, 60, (int) projectile.aDouble1585, projectile, false);
 			}
 		}
 
@@ -2847,7 +2850,7 @@ public class Game extends RSApplet {
 					}
 				}
 				if (onDemandData.dataType == 1 && onDemandData.buffer != null) {
-					Class36.method529(onDemandData.buffer);
+                                        AnimFrame.method529(onDemandData.buffer);
 				}
 				if (onDemandData.dataType == 2 && onDemandData.ID == nextSong && onDemandData.buffer != null) {
 					musicData = new byte[onDemandData.buffer.length];
@@ -3317,8 +3320,8 @@ public class Game extends RSApplet {
 	}
 
 	public void method63() {
-		Class30_Sub1 class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetFirst();
-		for (; class30_sub1 != null; class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetNext()) {
+		ObjectSpawn class30_sub1 = (ObjectSpawn) aClass19_1179.reverseGetFirst();
+		for (; class30_sub1 != null; class30_sub1 = (ObjectSpawn) aClass19_1179.reverseGetNext()) {
 			if (class30_sub1.anInt1294 == -1) {
 				class30_sub1.anInt1302 = 0;
 				method89(class30_sub1);
@@ -4699,7 +4702,7 @@ public class Game extends RSApplet {
 		intGroundArray = null;
 		byteGroundArray = null;
 		worldController = null;
-		aClass11Array1230 = null;
+		collisionMaps = null;
 		anIntArrayArray901 = null;
 		anIntArrayArray825 = null;
 		bigX = null;
@@ -4803,7 +4806,7 @@ public class Game extends RSApplet {
 		Texture.nullLoader();
 		WorldController.nullLoader();
 		Model.nullLoader();
-		Class36.nullLoader();
+                AnimFrame.nullLoader();
 		System.gc();
 	}
 
@@ -5050,7 +5053,7 @@ public class Game extends RSApplet {
 							for (int k1 = 0; k1 < 4; k1++)
 								for (int i2 = 1; i2 < 103; i2++)
 									for (int k2 = 1; k2 < 103; k2++)
-										aClass11Array1230[k1].anIntArrayArray294[i2][k2] = 0;
+										collisionMaps[k1].anIntArrayArray294[i2][k2] = 0;
 						if (inputString.equals("::clientdrop")) {
 							dropClient();
 						}
@@ -5424,7 +5427,7 @@ public class Game extends RSApplet {
 				model.method479(64, 850, -30, -50, -30, true);
 				class9.anInt233 = 5;
 				class9.mediaID = 0;
-				RSInterface.method208(model, 0, 5);
+                                RSInterface.clearModelCache(model, 0, 5);
 			}
 			return;
 		}
@@ -6363,7 +6366,7 @@ public class Game extends RSApplet {
 		bigY[l3++] = j1;
 		boolean flag1 = false;
 		int j4 = bigX.length;
-		int ai[][] = aClass11Array1230[plane].anIntArrayArray294;
+		int ai[][] = collisionMaps[plane].anIntArrayArray294;
 		while (i4 != l3) {
 			j3 = bigX[i4];
 			k3 = bigY[i4];
@@ -6373,16 +6376,16 @@ public class Game extends RSApplet {
 				break;
 			}
 			if (i1 != 0) {
-				if ((i1 < 5 || i1 == 10) && aClass11Array1230[plane].method219(k2, j3, k3, j, i1 - 1, i2)) {
+				if ((i1 < 5 || i1 == 10) && collisionMaps[plane].method219(k2, j3, k3, j, i1 - 1, i2)) {
 					flag1 = true;
 					break;
 				}
-				if (i1 < 10 && aClass11Array1230[plane].method220(k2, i2, k3, i1 - 1, j, j3)) {
+				if (i1 < 10 && collisionMaps[plane].method220(k2, i2, k3, i1 - 1, j, j3)) {
 					flag1 = true;
 					break;
 				}
 			}
-			if (k1 != 0 && k != 0 && aClass11Array1230[plane].method221(i2, k2, j3, k, l1, k1, k3)) {
+			if (k1 != 0 && k != 0 && collisionMaps[plane].method221(i2, k2, j3, k, l1, k1, k3)) {
 				flag1 = true;
 				break;
 			}
@@ -6831,7 +6834,7 @@ public class Game extends RSApplet {
 
 	}
 
-	public void method89(Class30_Sub1 class30_sub1) {
+	public void method89(ObjectSpawn class30_sub1) {
 		int i = 0;
 		int j = -1;
 		int k = 0;
@@ -7018,7 +7021,7 @@ public class Game extends RSApplet {
 			intGroundArray = new int[4][105][105];
 			worldController = new WorldController(intGroundArray);
 			for (int j = 0; j < 4; j++) {
-				aClass11Array1230[j] = new CollisionMap();
+				collisionMaps[j] = new CollisionMap();
 			}
 
 			aClass30_Sub2_Sub1_Sub1_1263 = new Sprite(512, 512);
@@ -7027,7 +7030,7 @@ public class Game extends RSApplet {
 			onDemandFetcher = new OnDemandFetcher();
 			onDemandFetcher.start(streamLoader_6, this);
 //			musics();
-			Class36.method528(onDemandFetcher.getAnimCount());
+                        AnimFrame.method528(onDemandFetcher.getAnimCount());
 			Model.method459(onDemandFetcher.getVersionCount(0), onDemandFetcher);
 			if (!lowMem) {
 				method58(10, musicVolume, false, 0);
@@ -7360,7 +7363,7 @@ public class Game extends RSApplet {
 			Censor.loadConfig(streamLoader_4);
 			mouseDetection = new MouseDetection(this);
 			startRunnable(mouseDetection, 10);
-			Animable_Sub5.clientInstance = this;
+			DynamicObject.clientInstance = this;
 			ObjectDef.clientInstance = this;
 			EntityDef.clientInstance = this;
 			
@@ -7560,7 +7563,7 @@ public class Game extends RSApplet {
 			entity.anInt1548 = 0;
 			entity.x = entity.smallX[0] * 128 + entity.anInt1540 * 64;
 			entity.y = entity.smallY[0] * 128 + entity.anInt1540 * 64;
-			entity.method446();
+                        entity.resetMovementQueue();
 		}
 		if (entity == myPlayer && (entity.x < 1536 || entity.y < 1536 || entity.x >= 11776 || entity.y >= 11776)) {
 			entity.anim = -1;
@@ -7569,7 +7572,7 @@ public class Game extends RSApplet {
 			entity.anInt1548 = 0;
 			entity.x = entity.smallX[0] * 128 + entity.anInt1540 * 64;
 			entity.y = entity.smallY[0] * 128 + entity.anInt1540 * 64;
-			entity.method446();
+                        entity.resetMovementQueue();
 		}
 		if (entity.anInt1547 > loopCycle) {
 			method97(entity);
@@ -8171,8 +8174,8 @@ public class Game extends RSApplet {
 	}
 
 	public void method104() {
-		Animable_Sub3 class30_sub2_sub4_sub3 = (Animable_Sub3) aClass19_1056.reverseGetFirst();
-		for (; class30_sub2_sub4_sub3 != null; class30_sub2_sub4_sub3 = (Animable_Sub3) aClass19_1056.reverseGetNext()) {
+        Graphic class30_sub2_sub4_sub3 = (Graphic) aClass19_1056.reverseGetFirst();
+        for (; class30_sub2_sub4_sub3 != null; class30_sub2_sub4_sub3 = (Graphic) aClass19_1056.reverseGetNext()) {
 			if (class30_sub2_sub4_sub3.anInt1560 != plane || class30_sub2_sub4_sub3.aBoolean1567) {
 				class30_sub2_sub4_sub3.unlink();
 			} else if (loopCycle >= class30_sub2_sub4_sub3.anInt1564) {
@@ -8446,13 +8449,13 @@ public class Game extends RSApplet {
 					} else {
 						i7 = component.anInt257;
 					}
-					Model model;
-					if (i7 == -1) {
-						model = component.method209(-1, -1, flag2);
-					} else {
-						Animation animation = Animation.anims[i7];
-						model = component.method209(animation.anIntArray354[component.anInt246], animation.anIntArray353[component.anInt246], flag2);
-					}
+                                        Model model;
+                                        if (i7 == -1) {
+                                                model = component.getAnimatedModel(-1, -1, flag2);
+                                        } else {
+                                                Animation animation = Animation.anims[i7];
+                                                model = component.getAnimatedModel(animation.anIntArray354[component.anInt246], animation.anIntArray353[component.anInt246], flag2);
+                                        }
 					if (model != null) {
 						model.method482(component.anInt271, 0, component.anInt270, 0, i5, l5);
 					}
@@ -8542,7 +8545,7 @@ public class Game extends RSApplet {
 			player.anInt1547 = stream.method436() + loopCycle;
 			player.anInt1548 = stream.method435() + loopCycle;
 			player.anInt1549 = stream.method428();
-			player.method446();
+                        player.resetMovementQueue();
 		}
 		if ((i & 0x100) != 0) {
 			player.anInt1520 = stream.method434();
@@ -8972,7 +8975,7 @@ public class Game extends RSApplet {
 
 	public void method115() {
 		if (loadingStage == 2) {
-			for (Class30_Sub1 class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetFirst(); class30_sub1 != null; class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetNext()) {
+			for (ObjectSpawn class30_sub1 = (ObjectSpawn) aClass19_1179.reverseGetFirst(); class30_sub1 != null; class30_sub1 = (ObjectSpawn) aClass19_1179.reverseGetNext()) {
 				if (class30_sub1.anInt1294 > 0) {
 					class30_sub1.anInt1294--;
 				}
@@ -9686,8 +9689,8 @@ public class Game extends RSApplet {
 	}
 
 	public void method130(int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2) {
-		Class30_Sub1 class30_sub1 = null;
-		for (Class30_Sub1 class30_sub1_1 = (Class30_Sub1) aClass19_1179.reverseGetFirst(); class30_sub1_1 != null; class30_sub1_1 = (Class30_Sub1) aClass19_1179.reverseGetNext()) {
+		ObjectSpawn class30_sub1 = null;
+		for (ObjectSpawn class30_sub1_1 = (ObjectSpawn) aClass19_1179.reverseGetFirst(); class30_sub1_1 != null; class30_sub1_1 = (ObjectSpawn) aClass19_1179.reverseGetNext()) {
 			if (class30_sub1_1.anInt1295 != l1 || class30_sub1_1.anInt1297 != i2 || class30_sub1_1.anInt1298 != j1 || class30_sub1_1.anInt1296 != i1) {
 				continue;
 			}
@@ -9696,7 +9699,7 @@ public class Game extends RSApplet {
 		}
 
 		if (class30_sub1 == null) {
-			class30_sub1 = new Class30_Sub1();
+			class30_sub1 = new ObjectSpawn();
 			class30_sub1.anInt1295 = l1;
 			class30_sub1.anInt1296 = i1;
 			class30_sub1.anInt1297 = i2;
@@ -10104,17 +10107,17 @@ public class Game extends RSApplet {
 					if (class10 != null) {
 						int k21 = class10.uid >> 14 & 0x7fff;
 						if (j12 == 2) {
-							class10.aClass30_Sub2_Sub4_278 = new Animable_Sub5(k21, 4 + k14, 2, i19, l19, j18, k20, j17, false);
-							class10.aClass30_Sub2_Sub4_279 = new Animable_Sub5(k21, k14 + 1 & 3, 2, i19, l19, j18, k20, j17, false);
+							class10.aClass30_Sub2_Sub4_278 = new DynamicObject(k21, 4 + k14, 2, i19, l19, j18, k20, j17, false);
+							class10.aClass30_Sub2_Sub4_279 = new DynamicObject(k21, k14 + 1 & 3, 2, i19, l19, j18, k20, j17, false);
 						} else {
-							class10.aClass30_Sub2_Sub4_278 = new Animable_Sub5(k21, k14, j12, i19, l19, j18, k20, j17, false);
+							class10.aClass30_Sub2_Sub4_278 = new DynamicObject(k21, k14, j12, i19, l19, j18, k20, j17, false);
 						}
 					}
 				}
 				if (j16 == 1) {
 					Object2 class26 = worldController.method297(j4, i7, plane);
 					if (class26 != null) {
-						class26.aClass30_Sub2_Sub4_504 = new Animable_Sub5(class26.uid >> 14 & 0x7fff, 0, 4, i19, l19, j18, k20, j17, false);
+						class26.aClass30_Sub2_Sub4_504 = new DynamicObject(class26.uid >> 14 & 0x7fff, 0, 4, i19, l19, j18, k20, j17, false);
 					}
 				}
 				if (j16 == 2) {
@@ -10123,13 +10126,13 @@ public class Game extends RSApplet {
 						j12 = 10;
 					}
 					if (class28 != null) {
-						class28.aClass30_Sub2_Sub4_521 = new Animable_Sub5(class28.uid >> 14 & 0x7fff, k14, j12, i19, l19, j18, k20, j17, false);
+						class28.aClass30_Sub2_Sub4_521 = new DynamicObject(class28.uid >> 14 & 0x7fff, k14, j12, i19, l19, j18, k20, j17, false);
 					}
 				}
 				if (j16 == 3) {
 					Object3 class49 = worldController.method299(i7, j4, plane);
 					if (class49 != null) {
-						class49.aClass30_Sub2_Sub4_814 = new Animable_Sub5(class49.uid >> 14 & 0x7fff, k14, 22, i19, l19, j18, k20, j17, false);
+						class49.aClass30_Sub2_Sub4_814 = new DynamicObject(class49.uid >> 14 & 0x7fff, k14, 22, i19, l19, j18, k20, j17, false);
 					}
 				}
 			}
@@ -10234,7 +10237,7 @@ public class Game extends RSApplet {
 			if (i5 >= 0 && l7 >= 0 && i5 < 104 && l7 < 104) {
 				i5 = i5 * 128 + 64;
 				l7 = l7 * 128 + 64;
-				Animable_Sub3 class30_sub2_sub4_sub3 = new Animable_Sub3(plane, loopCycle, j15, k10, method42(plane, l7, i5) - l12, l7, i5);
+                        Graphic class30_sub2_sub4_sub3 = new Graphic(plane, loopCycle, j15, k10, method42(plane, l7, i5) - l12, l7, i5);
 				aClass19_1056.insertHead(class30_sub2_sub4_sub3);
 			}
 			return;
@@ -10276,9 +10279,9 @@ public class Game extends RSApplet {
 				k8 = k8 * 128 + 64;
 				j11 = j11 * 128 + 64;
 				k13 = k13 * 128 + 64;
-				Animable_Sub4 class30_sub2_sub4_sub4 = new Animable_Sub4(i21, l18, k19 + loopCycle, j20 + loopCycle, j21, plane, method42(plane, k8, l5) - i18, k8, l5, l15, i17);
-				class30_sub2_sub4_sub4.method455(k19 + loopCycle, k13, method42(plane, k13, j11) - l18, j11);
-				aClass19_1013.insertHead(class30_sub2_sub4_sub4);
+                                Projectile projectile = new Projectile(i21, l18, k19 + loopCycle, j20 + loopCycle, j21, plane, method42(plane, k8, l5) - i18, k8, l5, l15, i17);
+                                projectile.initializeTrajectory(k19 + loopCycle, k13, method42(plane, k13, j11) - l18, j11);
+                                aClass19_1013.insertHead(projectile);
 			}
 		}
 	}
@@ -10493,7 +10496,7 @@ public class Game extends RSApplet {
 					worldController.method291(i1, j, i, (byte) -119);
 					ObjectDef class46 = ObjectDef.forID(j2);
 					if (class46.aBoolean767) {
-						aClass11Array1230[j].method215(l2, k2, class46.aBoolean757, i1, i);
+						collisionMaps[j].method215(l2, k2, class46.aBoolean757, i1, i);
 					}
 				}
 				if (j1 == 1) {
@@ -10506,14 +10509,14 @@ public class Game extends RSApplet {
 						return;
 					}
 					if (class46_1.aBoolean767) {
-						aClass11Array1230[j].method216(l2, class46_1.anInt744, i1, i, class46_1.anInt761, class46_1.aBoolean757);
+						collisionMaps[j].method216(l2, class46_1.anInt744, i1, i, class46_1.anInt761, class46_1.aBoolean757);
 					}
 				}
 				if (j1 == 3) {
 					worldController.method294(j, i, i1);
 					ObjectDef class46_2 = ObjectDef.forID(j2);
 					if (class46_2.aBoolean767 && class46_2.hasActions) {
-						aClass11Array1230[j].method218(i, i1);
+						collisionMaps[j].method218(i, i1);
 					}
 				}
 			}
@@ -10522,7 +10525,7 @@ public class Game extends RSApplet {
 				if (j3 < 3 && (byteGroundArray[1][i1][i] & 2) == 2) {
 					j3++;
 				}
-				ObjectManager.method188(worldController, k, i, l, j3, aClass11Array1230[j], intGroundArray, i1, k1, j);
+				ObjectManager.method188(worldController, k, i, l, j3, collisionMaps[j], intGroundArray, i1, k1, j);
 			}
 		}
 	}
@@ -10678,7 +10681,7 @@ public class Game extends RSApplet {
 
 				}
 
-				for (Class30_Sub1 class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetFirst(); class30_sub1 != null; class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetNext()) {
+				for (ObjectSpawn class30_sub1 = (ObjectSpawn) aClass19_1179.reverseGetFirst(); class30_sub1 != null; class30_sub1 = (ObjectSpawn) aClass19_1179.reverseGetNext()) {
 					if (class30_sub1.anInt1297 >= anInt1268 && class30_sub1.anInt1297 < anInt1268 + 8 && class30_sub1.anInt1298 >= anInt1269 && class30_sub1.anInt1298 < anInt1269 + 8 && class30_sub1.anInt1295 == plane) {
 						class30_sub1.anInt1294 = 0;
 					}
@@ -11013,7 +11016,7 @@ public class Game extends RSApplet {
 
 				}
 
-				for (Class30_Sub1 class30_sub1_1 = (Class30_Sub1) aClass19_1179.reverseGetFirst(); class30_sub1_1 != null; class30_sub1_1 = (Class30_Sub1) aClass19_1179.reverseGetNext()) {
+				for (ObjectSpawn class30_sub1_1 = (ObjectSpawn) aClass19_1179.reverseGetFirst(); class30_sub1_1 != null; class30_sub1_1 = (ObjectSpawn) aClass19_1179.reverseGetNext()) {
 					class30_sub1_1.anInt1297 -= i17;
 					class30_sub1_1.anInt1298 -= j21;
 					if (class30_sub1_1.anInt1297 < 0 || class30_sub1_1.anInt1298 < 0 || class30_sub1_1.anInt1297 >= 104 || class30_sub1_1.anInt1298 >= 104) {
@@ -12144,7 +12147,7 @@ public class Game extends RSApplet {
 		inputTaken = false;
 		songChanging = true;
 		anIntArray1229 = new int[151];
-		aClass11Array1230 = new CollisionMap[4];
+		collisionMaps = new CollisionMap[4];
 		aBoolean1233 = false;
 		soundType = new int[50];
 		aBoolean1242 = false;
@@ -12534,7 +12537,7 @@ public class Game extends RSApplet {
 	public int nextSong;
 	public boolean songChanging;
 	public final int[] anIntArray1229;
-	public CollisionMap[] aClass11Array1230;
+	public CollisionMap[] collisionMaps;
 	public static int anIntArray1232[];
 	public boolean aBoolean1233;
 	public int[] anIntArray1234;
@@ -12596,7 +12599,7 @@ public class Game extends RSApplet {
 	12800, 12800, 12800, 12800, 12800, 12800,
 	12800, 12800, 12800, 12800 };
 	public static int anInt720 = 0;
-	public static Class56 aClass56_749;
+        public static MidiPlayer midiPlayer;
 	public static boolean fetchMusic = false;
 	public static int musicVolume2;
 	public static int anInt478 = -1;

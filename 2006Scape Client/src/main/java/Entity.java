@@ -36,10 +36,10 @@ public class Entity extends Animable {
 		y = smallY[0] * 128 + anInt1540 * 64;
 	}
 
-	public final void method446() {
-		smallXYIndex = 0;
-		anInt1542 = 0;
-	}
+        public final void resetMovementQueue() {
+                smallXYIndex = 0;
+                anInt1542 = 0;
+        }
 
 	public final void updateHitData(int j, int k, int l) {
 		for (int i1 = 0; i1 < 4; i1++) {

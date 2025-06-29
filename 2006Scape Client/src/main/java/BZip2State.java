@@ -2,9 +2,9 @@
 // Jad home page: http://www.kpdus.com/jad.html
 // Decompiler options: packimports(3) 
 
-final class Class32 {
+final class BZip2State {
 
-	Class32() {
+    BZip2State() {
 		anIntArray583 = new int[256];
 		anIntArray585 = new int[257];
 		aBooleanArray589 = new boolean[256];

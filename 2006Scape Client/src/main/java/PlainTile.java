@@ -2,9 +2,9 @@
 // Jad home page: http://www.kpdus.com/jad.html
 // Decompiler options: packimports(3) 
 
-final class Class43 {
+final class PlainTile {
 
-	public Class43(int i, int j, int k, int l, int i1, int j1, boolean flag) {
+        public PlainTile(int i, int j, int k, int l, int i1, int j1, boolean flag) {
 		aBoolean721 = true;
 		anInt716 = i;
 		anInt717 = j;

@@ -2,9 +2,9 @@
 // Jad home page: http://www.kpdus.com/jad.html
 // Decompiler options: packimports(3) 
 
-public final class Class18 {
+public final class FrameMap {
 
-	public Class18(Stream stream) {
+        public FrameMap(Stream stream) {
 		int anInt341 = stream.readUnsignedByte();
 		anIntArray342 = new int[anInt341];
 		anIntArrayArray343 = new int[anInt341][];

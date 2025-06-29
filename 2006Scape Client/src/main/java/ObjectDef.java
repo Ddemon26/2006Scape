@@ -261,7 +261,7 @@ public final class ObjectDef {
 		flag = anInt748 != 128 || anInt772 != 128 || anInt740 != 128;
 		boolean flag2;
 		flag2 = anInt738 != 0 || anInt745 != 0 || anInt783 != 0;
-		Model model_3 = new Model(modifiedModelColors == null, Class36.method532(k), l == 0 && k == -1 && !flag && !flag2, model);
+                Model model_3 = new Model(modifiedModelColors == null, AnimFrame.method532(k), l == 0 && k == -1 && !flag && !flag2, model);
 		if (k != -1) {
 			model_3.method469();
 			model_3.method470(k);

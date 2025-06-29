@@ -2,7 +2,7 @@
 // Jad home page: http://www.kpdus.com/jad.html
 // Decompiler options: packimports(3) 
 
-final class Class29 {
+final class SoundEnvelope {
 
 	public void method325(Stream stream) {
 		anInt540 = stream.readUnsignedByte();
@@ -46,7 +46,7 @@ final class Class29 {
 		return anInt544 - anInt543 >> 15;
 	}
 
-	public Class29() {
+        public SoundEnvelope() {
 	}
 
 	private int anInt535;

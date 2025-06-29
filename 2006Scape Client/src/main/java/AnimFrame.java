@@ -2,10 +2,10 @@
 // Jad home page: http://www.kpdus.com/jad.html
 // Decompiler options: packimports(3)
 
-public final class Class36 {
+public final class AnimFrame {
 
-	public static void method528(int i) {
-		aClass36Array635 = new Class36[i + 1];
+        public static void method528(int i) {
+                aClass36Array635 = new AnimFrame[i + 1];
 		aBooleanArray643 = new boolean[i + 1];
 		for (int j = 0; j < i + 1; j++) {
 			aBooleanArray643[j] = true;
@@ -35,7 +35,7 @@ public final class Class36 {
 		i1 += l;
 		Stream stream_5 = new Stream(abyte0);
 		stream_5.currentOffset = i1;
-		Class18 class18 = new Class18(stream_5);
+                FrameMap class18 = new FrameMap(stream_5);
 		int k1 = stream_1.readUnsignedWord();
 		int ai[] = new int[500];
 		int ai1[] = new int[500];
@@ -43,9 +43,9 @@ public final class Class36 {
 		int ai3[] = new int[500];
 		for (int l1 = 0; l1 < k1; l1++) {
 			int i2 = stream_1.readUnsignedWord();
-			Class36 class36 = aClass36Array635[i2] = new Class36();
+                AnimFrame class36 = aClass36Array635[i2] = new AnimFrame();
 			class36.anInt636 = stream_4.readUnsignedByte();
-			class36.aClass18_637 = class18;
+                        class36.aClass18_637 = class18;
 			int j2 = stream_1.readUnsignedByte();
 			int k2 = -1;
 			int l2 = 0;
@@ -114,7 +114,7 @@ public final class Class36 {
 		aClass36Array635 = null;
 	}
 
-	public static Class36 method531(int j) {
+    public static AnimFrame method531(int j) {
 		if (aClass36Array635 == null) {
 			return null;
 		} else {
@@ -126,12 +126,12 @@ public final class Class36 {
 		return i == -1;
 	}
 
-	private Class36() {
+    private AnimFrame() {
 	}
 
-	private static Class36[] aClass36Array635;
+    private static AnimFrame[] aClass36Array635;
 	public int anInt636;
-	public Class18 aClass18_637;
+        public FrameMap aClass18_637;
 	public int anInt638;
 	public int anIntArray639[];
 	public int anIntArray640[];

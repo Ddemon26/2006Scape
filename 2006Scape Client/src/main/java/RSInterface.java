@@ -97,7 +97,7 @@ public final class RSInterface {
 						String s1 = stream.readString();
 						if (streamLoader_1 != null && s1.length() > 0) {
 							int i5 = s1.lastIndexOf(",");
-							rsInterface.sprites[j2] = method207(Integer.parseInt(s1.substring(i5 + 1)), streamLoader_1, s1.substring(0, i5));
+                                                    rsInterface.sprites[j2] = loadSprite(Integer.parseInt(s1.substring(i5 + 1)), streamLoader_1, s1.substring(0, i5));
 						}
 					}
 				}
@@ -145,12 +145,12 @@ public final class RSInterface {
 				String s = stream.readString();
 				if (streamLoader_1 != null && s.length() > 0) {
 					int i4 = s.lastIndexOf(",");
-					rsInterface.sprite1 = method207(Integer.parseInt(s.substring(i4 + 1)), streamLoader_1, s.substring(0, i4));
+                                    rsInterface.sprite1 = loadSprite(Integer.parseInt(s.substring(i4 + 1)), streamLoader_1, s.substring(0, i4));
 				}
 				s = stream.readString();
 				if (streamLoader_1 != null && s.length() > 0) {
 					int j4 = s.lastIndexOf(",");
-					rsInterface.sprite2 = method207(Integer.parseInt(s.substring(j4 + 1)), streamLoader_1, s.substring(0, j4));
+                                    rsInterface.sprite2 = loadSprite(Integer.parseInt(s.substring(j4 + 1)), streamLoader_1, s.substring(0, j4));
 				}
 			}
 			if (rsInterface.type == 6) {
@@ -231,39 +231,39 @@ public final class RSInterface {
 		aMRUNodes_238 = null;
 	}
 
-	private Model method206(int i, int j) {
+        private Model loadModel(int type, int id) {
 		ItemDef itemDefinition = null;
 		if (type == 4) {
 			itemDefinition = ItemDef.forID(id);
 			lightness += itemDefinition.anInt196;
 			shading += itemDefinition.anInt184;
 		}
-		Model model = (Model) aMRUNodes_264.insertFromCache((i << 16) + j);
-		if (model != null)
-			return model;
-		if (i == 1)
-			model = Model.method462(j);
-		if (i == 2)
-			model = EntityDef.forID(j).method160();
-		if (i == 3)
-			model = Game.myPlayer.method453();
-		if (i == 4)
-			model = ItemDef.forID(j).method202(50);
-		if (i == 5)
-			model = null;
-		if (model != null)
-			aMRUNodes_264.removeFromCache(model, (i << 16) + j);
-		return model;
+                Model model = (Model) aMRUNodes_264.insertFromCache((type << 16) + id);
+                if (model != null)
+                        return model;
+                if (type == 1)
+                        model = Model.method462(id);
+                if (type == 2)
+                        model = EntityDef.forID(id).method160();
+                if (type == 3)
+                        model = Game.myPlayer.buildEquipmentModel();
+                if (type == 4)
+                        model = ItemDef.forID(id).getBaseModel(50);
+                if (type == 5)
+                        model = null;
+                if (model != null)
+                        aMRUNodes_264.removeFromCache(model, (type << 16) + id);
+                return model;
 	}
 
-	private static Sprite method207(int i, StreamLoader streamLoader, String s) {
-		long l = (TextClass.method585(s) << 8) + i;
-		Sprite sprite = (Sprite) aMRUNodes_238.insertFromCache(l);
-		if (sprite != null) {
-			return sprite;
-		}
-		try {
-			sprite = new Sprite(streamLoader, s, i);
+    private static Sprite loadSprite(int id, StreamLoader streamLoader, String name) {
+                long l = (TextClass.method585(name) << 8) + id;
+                Sprite sprite = (Sprite) aMRUNodes_238.insertFromCache(l);
+                if (sprite != null) {
+                        return sprite;
+                }
+                try {
+                        sprite = new Sprite(streamLoader, name, id);
 			aMRUNodes_238.removeFromCache(sprite, l);
 		} catch (Exception _ex) {
 			return null;
@@ -282,41 +282,47 @@ public final class RSInterface {
 
 	}
 
-	public static void method208(Model model, int id, int type) {
-		aMRUNodes_264.unlinkAll();
-		if (model != null && type != 4) {
-			aMRUNodes_264.removeFromCache(model, (type << 16) + id);
-		}
-	}
+        /**
+         * Clears the cached model for the specified type and id.
+         */
+        public static void clearModelCache(Model model, int id, int type) {
+                aMRUNodes_264.unlinkAll();
+                if (model != null && type != 4) {
+                        aMRUNodes_264.removeFromCache(model, (type << 16) + id);
+                }
+        }
 
-	public Model method209(int j, int k, boolean flag) {
-		lightness = 64;
-		shading = 768;
-		Model model;
-		if (flag) {
-			model = method206(anInt255, anInt256);
-		} else {
-			model = method206(anInt233, mediaID);
-		}
-		if (model == null) {
-			return null;
-		}
-		if (k == -1 && j == -1 && model.anIntArray1640 == null) {
-			return model;
-		}
-		Model model_1 = new Model(true, Class36.method532(k) & Class36.method532(j), false, model);
-		if (k != -1 || j != -1) {
-			model_1.method469();
-		}
-		if (k != -1) {
-			model_1.method470(k);
-		}
-		if (j != -1) {
-			model_1.method470(j);
-		}
-		model_1.method479(lightness, shading, -50, -10, -50, true);
-		return model_1;
-	}
+        /**
+         * Retrieves this interface's model and applies optional animations.
+         */
+        public Model getAnimatedModel(int anim1, int anim2, boolean flag) {
+                lightness = 64;
+                shading = 768;
+                Model model;
+                if (flag) {
+                        model = loadModel(anInt255, anInt256);
+                } else {
+                        model = loadModel(anInt233, mediaID);
+                }
+                if (model == null) {
+                        return null;
+                }
+                if (anim2 == -1 && anim1 == -1 && model.anIntArray1640 == null) {
+                        return model;
+                }
+                Model model_1 = new Model(true, AnimFrame.method532(anim2) & AnimFrame.method532(anim1), false, model);
+                if (anim2 != -1 || anim1 != -1) {
+                        model_1.method469();
+                }
+                if (anim2 != -1) {
+                        model_1.method470(anim2);
+                }
+                if (anim1 != -1) {
+                        model_1.method470(anim1);
+                }
+                model_1.method479(lightness, shading, -50, -10, -50, true);
+                return model_1;
+        }
 
 	public RSInterface() {
 	}

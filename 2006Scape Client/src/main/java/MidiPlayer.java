@@ -1,10 +1,10 @@
-abstract class Class56 {
+abstract class MidiPlayer {
     
     abstract void method827(int i, byte[] is, int i_2_, boolean bool);
     
     abstract void method828();
     
-  	public Class56() {
+        public MidiPlayer() {
 	/* empty */
     }
     
