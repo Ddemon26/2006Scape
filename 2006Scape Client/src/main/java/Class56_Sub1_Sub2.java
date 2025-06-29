@@ -33,8 +33,8 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
     	method845(i, (int) l, i_4_, i_5_);
     }
     
-    final synchronized void method827(int i, byte[] is, int i_6_,
-				      boolean bool) {
+    final synchronized void playMidi(int i, byte[] is, int i_6_,
+                                      boolean bool) {
 		aClass11_1857.method525(is);
 		boolean bool_7_ = true;
 		aBoolean1854 = bool;
@@ -63,13 +63,13 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
 		method846();
     }
     
-    final synchronized void method831(int i) {
+    final synchronized void setVolume(int i) {
 		method840(i, (long) anInt1855);
 		aRunnable_Impl1_1852.method10(anIntArray1858, anInt1856);
 		anInt1856 = 0;
     }
     
-    final synchronized void method832(int i) {
+    final synchronized void poll(int i) {
 	if (aClass11_1857.method527()) {
 	    int i_11_ = anInt1855;
 	    int i_12_ = -200;
@@ -113,7 +113,7 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
 	}
     }
     
-    final synchronized void method833() {
+    final synchronized void stopMidi() {
 		aRunnable_Impl1_1852.method12(false);
 		method838((long) anInt1855);
 		aRunnable_Impl1_1852.method10(anIntArray1858, anInt1856);
@@ -121,7 +121,7 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
 		aClass11_1857.method523();
     }
     
-    final void method828() {
+    final void shutdown() {
     	synchronized (this) {
     		aBoolean1853 = true;
     	}
@@ -143,7 +143,7 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
     					aBoolean1853 = false;
     					break;
     				}
-    				method832(-126);
+                                poll(-126);
     			}
     			Game.sleep(100L);
     		}
@@ -179,7 +179,7 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
 		thread.setPriority(10);
     }
     
-    final synchronized void method830(int i, int i_23_) {
+    final synchronized void adjustVolume(int i, int i_23_) {
     	method835(i_23_, i, (long) anInt1855);
     }
 }

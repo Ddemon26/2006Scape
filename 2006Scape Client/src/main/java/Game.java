@@ -67,10 +67,10 @@ public class Game extends RSApplet {
 		if (aClass56_749 != null) {
                        stopMidiPlayback(false);
 			if (anInt720 > 0) {
-				aClass56_749.method831(256);
+                                aClass56_749.setVolume(256);
 				anInt720 = 0;
 			}
-		    aClass56_749.method828();
+                       aClass56_749.shutdown();
 		    aClass56_749 = null;
 		}
 	}
@@ -98,7 +98,7 @@ public class Game extends RSApplet {
 				int fileIndex = Integer.parseInt(getFileNameWithoutExtension(file[index].toString()));
 				byte[] data = fileToByteArray(cacheIndex, fileIndex);
 				if(data != null && data.length > 0) {
-					decompressors[cacheIndex].method234(data.length, data, fileIndex);
+                                        decompressors[cacheIndex].writeEntry(data.length, data, fileIndex);
 					System.out.println("Repacked " + fileIndex + ".");
 				} else {
 					System.out.println("Unable to locate index " + fileIndex + ".");
@@ -130,7 +130,7 @@ public class Game extends RSApplet {
 		for(int MusicIndex = 0; MusicIndex < 3536; MusicIndex++) {
 			byte[] abyte0 = GetMusic(MusicIndex);
 				if (abyte0 != null && abyte0.length > 0) {
-					decompressors[3].method234(abyte0.length, abyte0, MusicIndex);
+                                        decompressors[3].writeEntry(abyte0.length, abyte0, MusicIndex);
 				}
 			}
 		}
@@ -162,7 +162,7 @@ public class Game extends RSApplet {
 			if (anInt720 == 0) {
 				if (anInt478 >= 0) {
 					anInt478 = i;
-					aClass56_749.method830(i, 0);
+                                    aClass56_749.adjustVolume(i, 0);
 				}
 			} else if (aByteArray347 != null)
 				anInt1478 = i;
@@ -246,7 +246,7 @@ public class Game extends RSApplet {
        static final void playMidiTrack(int i_2_, byte[] is, boolean bool) {
 		if (aClass56_749 != null) {
 			if (anInt478 >= 0) {
-				aClass56_749.method833();
+                    aClass56_749.stopMidi();
 				anInt478 = -1;
 				aByteArray347 = null;
 				anInt720 = 20;
@@ -254,11 +254,11 @@ public class Game extends RSApplet {
 			}
 		    if (is != null) {
 		    	if (anInt720 > 0) {
-		    		aClass56_749.method831(i_2_);
+                            aClass56_749.setVolume(i_2_);
 		    		anInt720 = 0;
 		    	}
 		    	anInt478 = i_2_;
-		    	aClass56_749.method827(i_2_, is, 0, bool);
+                    aClass56_749.playMidi(i_2_, is, 0, bool);
 		    }
 		}
 	}
@@ -320,12 +320,12 @@ public class Game extends RSApplet {
 				if (anInt720 > 0) {
 					anInt720--;
 					if (anInt720 == 0) {
-						if (aByteArray347 == null)
-							aClass56_749.method831(256);
-						else {
-							aClass56_749.method831(anInt1478);
-							anInt478 = anInt1478;
-							aClass56_749.method827(anInt1478, aByteArray347, 0, aBoolean475);
+                                                if (aByteArray347 == null)
+                                                        aClass56_749.setVolume(256);
+                                                else {
+                                                        aClass56_749.setVolume(anInt1478);
+                                                        anInt478 = anInt1478;
+                                                        aClass56_749.playMidi(anInt1478, aByteArray347, 0, aBoolean475);
 							aByteArray347 = null;
 						}
 						anInt155 = 0;
@@ -333,15 +333,15 @@ public class Game extends RSApplet {
 				}
 			} else if (anInt720 > 0) {
 				anInt155 += anInt2200;
-				aClass56_749.method830(anInt478, anInt155);
+                                aClass56_749.adjustVolume(anInt478, anInt155);
 				anInt720--;
 				if (anInt720 == 0) {
-					aClass56_749.method833();
+                                        aClass56_749.stopMidi();
 					anInt720 = 20;
 					anInt478 = -1;
 				}
 			}
-			aClass56_749.method832(i - 122);
+                        aClass56_749.poll(i - 122);
 		}
 	}
 
@@ -2443,7 +2443,7 @@ public class Game extends RSApplet {
 			if ((l & 0x40) != 0) {
 				l += stream.readUnsignedByte() << 8;
 			}
-			method107(l, k, stream, player);
+                        decodePlayerUpdateMask(l, k, stream, player);
 		}
 
 	}
@@ -3487,7 +3487,7 @@ public class Game extends RSApplet {
 				datainputstream.close();
 				try {
 					if (decompressors[0] != null) {
-						decompressors[0].method234(abyte0.length, abyte0, i);
+                                                decompressors[0].writeEntry(abyte0.length, abyte0, i);
 					}
 				} catch (Exception _ex) {
 					decompressors[0] = null;
@@ -7578,8 +7578,8 @@ public class Game extends RSApplet {
 		} else {
 			method99(entity);
 		}
-		method100(entity);
-		method101(entity);
+           updateEntityFacing(entity);
+           updateEntityAnimation(entity);
 	}
 
 	public void method97(Entity entity) {
@@ -7743,7 +7743,7 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method100(Entity entity) {
+       public void updateEntityFacing(Entity entity) {
 		if (entity.anInt1504 == 0) {
 			return;
 		}
@@ -7800,7 +7800,7 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method101(Entity entity) {
+       public void updateEntityAnimation(Entity entity) {
 		entity.aBoolean1541 = false;
 		if (entity.anInt1517 != -1) {
 			Animation animation = Animation.anims[entity.anInt1517];
@@ -8533,7 +8533,7 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method107(int i, int j, Stream stream, Player player) {
+        public void decodePlayerUpdateMask(int i, int j, Stream stream, Player player) {
 		if ((i & 0x400) != 0) {
 			player.anInt1543 = stream.method428();
 			player.anInt1545 = stream.method428();

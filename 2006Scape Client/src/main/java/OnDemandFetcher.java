@@ -101,8 +101,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 					;
 				}
 				if (expectedSize + completedSize >= abyte0.length && current != null) {
-					if (clientInstance.decompressors[0] != null) {
-						clientInstance.decompressors[current.dataType + 1].method234(abyte0.length, abyte0, current.ID);
+                                        if (clientInstance.decompressors[0] != null) {
+                                                clientInstance.decompressors[current.dataType + 1].writeEntry(abyte0.length, abyte0, current.ID);
 					}
 					if (!current.incomplete && current.dataType == 3) {
 						current.incomplete = true;
