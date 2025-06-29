@@ -1290,7 +1290,7 @@ public class Game extends RSApplet {
 	public void updateNPCs(Stream stream, int i) {
 		anInt839 = 0;
 		anInt893 = 0;
-		method139(stream);
+               decodeNpcMovement(stream);
                addLocalNPCs(i, stream);
                processNpcUpdateMasks(stream);
 		for (int k = 0; k < anInt839; k++) {
@@ -7373,7 +7373,7 @@ public class Game extends RSApplet {
 		loadingError = true;
 	}
 
-	public void method91(Stream stream, int i) {
+       public void addLocalPlayers(Stream stream, int i) {
 		while (stream.bitPosition + 10 < i * 8) {
 			int j = stream.readBits(11);
 			if (j == 2047) {
@@ -7576,10 +7576,10 @@ public class Game extends RSApplet {
 		} else if (entity.anInt1548 >= loopCycle) {
 			updateForcedMovement(entity);
 		} else {
-			method99(entity);
-		}
-		method100(entity);
-		method101(entity);
+                       updateWalkingStep(entity);
+                }
+                updateEntityFacing(entity);
+                updateEntityAnimation(entity);
 	}
 
        public void advanceForceMovement(Entity entity) {
@@ -7630,7 +7630,7 @@ public class Game extends RSApplet {
 		entity.anInt1552 = entity.turnDirection;
 	}
 
-	public void method99(Entity entity) {
+       public void updateWalkingStep(Entity entity) {
 		entity.anInt1517 = entity.anInt1511;
 		if (entity.smallXYIndex == 0) {
 			entity.anInt1503 = 0;
@@ -7743,7 +7743,7 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method100(Entity entity) {
+       public void updateEntityFacing(Entity entity) {
 		if (entity.anInt1504 == 0) {
 			return;
 		}
@@ -7800,7 +7800,7 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method101(Entity entity) {
+       public void updateEntityAnimation(Entity entity) {
 		entity.aBoolean1541 = false;
 		if (entity.anInt1517 != -1) {
 			Animation animation = Animation.anims[entity.anInt1517];
@@ -9075,7 +9075,7 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method117(Stream stream) {
+       public void decodeSelfMovement(Stream stream) {
 		stream.initBitAccess();
 		int j = stream.readBits(1);
 		if (j == 0) {
@@ -9843,7 +9843,7 @@ public class Game extends RSApplet {
 		aRSImageProducer_1111.drawGraphics(0, super.graphics, 637);
 	}
 
-	public void method134(Stream stream) {
+       public void decodePlayerMovement(Stream stream) {
 		int j = stream.readBits(8);
 		if (j < playerCount) {
 			for (int k = j; k < playerCount; k++) {
@@ -10291,7 +10291,7 @@ public class Game extends RSApplet {
 		ObjectDef.lowMem = true;
 	}
 
-	public void method139(Stream stream) {
+       public void decodeNpcMovement(Stream stream) {
 		stream.initBitAccess();
 		int k = stream.readBits(8);
 		if (k < npcCount) {
@@ -10530,9 +10530,9 @@ public class Game extends RSApplet {
 	public void updatePlayers(int i, Stream stream) {
 		anInt839 = 0;
 		anInt893 = 0;
-		method117(stream);
-		method134(stream);
-               method91(stream, i);
+               decodeSelfMovement(stream);
+               decodePlayerMovement(stream);
+               addLocalPlayers(stream, i);
                processPlayerUpdateMasks(stream);
 		for (int k = 0; k < anInt839; k++) {
 			int l = anIntArray840[k];
