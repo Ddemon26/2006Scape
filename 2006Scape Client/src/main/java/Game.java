@@ -169,12 +169,12 @@ public class Game extends RSApplet {
 		}
 	}
 	
-	static final synchronized void method55(boolean bool) {
-		if (musicIsntNull()) {
-                        stopMidi(bool);
-			fetchMusic = false;
-		}
-	}
+       static final synchronized void stopMusicPlayback(boolean bool) {
+               if (musicIsntNull()) {
+                       stopMidi(bool);
+                       fetchMusic = false;
+               }
+       }
 	
     static final void stopMidi(boolean bool) {
             playMidiTrack(0, null, bool);
@@ -807,7 +807,7 @@ public class Game extends RSApplet {
 				anInt1051 = 0;
 				stream.createFrame(150);
 			}
-			method63();
+                        processObjectSpawns();
 		} catch (Exception exception) {
 		}
 		ObjectDef.mruNodes1.unlinkAll();
@@ -1427,7 +1427,7 @@ public class Game extends RSApplet {
 					if (volume != 0)
 						setVolume(volume);
 					else {
-						method55(false);
+                                                stopMusicPlayback(false);
 						previousSong = 0;
 					}
 				} else {
@@ -2737,7 +2737,10 @@ public class Game extends RSApplet {
 		}
 	}
 
-        public void method55() {
+       /**
+        * Advances all active projectiles and removes them when finished.
+        */
+       public void updateProjectiles() {
                 for (Projectile projectile = (Projectile) aClass19_1013.reverseGetFirst(); projectile != null; projectile = (Projectile) aClass19_1013.reverseGetNext()) {
                         if (projectile.anInt1597 != plane || loopCycle > projectile.anInt1572) {
                                 projectile.unlink();
@@ -3319,7 +3322,10 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method63() {
+       /**
+        * Processes queued object spawns, updating or removing them as needed.
+        */
+       public void processObjectSpawns() {
 		ObjectSpawn class30_sub1 = (ObjectSpawn) aClass19_1179.reverseGetFirst();
 		for (; class30_sub1 != null; class30_sub1 = (ObjectSpawn) aClass19_1179.reverseGetNext()) {
 			if (class30_sub1.anInt1294 == -1) {
@@ -10786,8 +10792,8 @@ public class Game extends RSApplet {
 				if (i2 != -1 || previousSong != 0) {
 					if (i2 != -1 && currentSong != i2 && musicVolume != 0 && previousSong == 0)
 						method58(10, musicVolume, false, i2);
-				} else
-					method55(false);
+                                } else
+                                        stopMusicPlayback(false);
 				currentSong = i2;
 				pktType = -1;
 				return true;
@@ -11838,7 +11844,7 @@ public class Game extends RSApplet {
 		method26(true);
 		method47(false);
 		method26(false);
-               method55();
+               updateProjectiles();
                updateGraphics();
 		if (!aBoolean1160) {
 			int i = anInt1184;
