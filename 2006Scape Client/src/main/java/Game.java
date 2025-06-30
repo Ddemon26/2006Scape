@@ -4793,7 +4793,7 @@ public class Game extends RSApplet {
 		Flo.cache = null;
 		IDK.cache = null;
 		RSInterface.interfaceCache = null;
-		DummyClass.cache = null;
+		CachePlaceholder.cache = null;
 		Animation.anims = null;
 		SpotAnim.cache = null;
 		SpotAnim.aMRUNodes_415 = null;
