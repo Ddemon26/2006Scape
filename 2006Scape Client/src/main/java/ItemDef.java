@@ -2043,7 +2043,7 @@ public final class ItemDef {
                         itemDef.modifiedModelColors = new int[1];
                         itemDef.originalModelColors = new int[1];
                         itemDef.modifiedModelColors[0] = 17350;
-                        itemDef.originalModelColors[0] = 0;
+                        itemDef.originalModelColors[0] = 528;
                         break;
                         }
                 return itemDef;
