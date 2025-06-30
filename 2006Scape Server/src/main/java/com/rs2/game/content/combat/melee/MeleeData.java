@@ -277,6 +277,7 @@ public class MeleeData {
 
         switch (c.playerEquipment[c.playerWeapon]) {
             case 4151:
+            case StaticItemList.LIME_WHIP:
                 c.playerStandIndex = 1832;
                 c.playerWalkIndex = 1660;
                 c.playerRunIndex = 1661;
@@ -404,6 +405,7 @@ public class MeleeData {
             case 4734: // karil
                 return 2075;
             case 4151:
+            case StaticItemList.LIME_WHIP:
                 return 1658;
             case 6528:
                 return 2661;
@@ -440,6 +442,7 @@ public class MeleeData {
                 return 1666;
 
             case 4151:
+            case StaticItemList.LIME_WHIP:
                 return 1659;
 
             case 11694:

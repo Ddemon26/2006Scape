@@ -37,12 +37,18 @@ public class DeprecatedItems {
 	 * @param id The id.
 	 * @return The items name or "Unarmed"
 	 */
-	@java.lang.Deprecated
-	public static String getItemName(int id) {
-		if(id == -1)
-			return "Unarmed";
-		if(org.apollo.cache.def.ItemDefinition.lookup(id) == null || org.apollo.cache.def.ItemDefinition.lookup(id).getName() == null)
-			return "Unarmed";
-		return org.apollo.cache.def.ItemDefinition.lookup(id).getName();
-	}
+       @java.lang.Deprecated
+       public static String getItemName(int id) {
+               if (id == -1) {
+                       return "Unarmed";
+               }
+               if (id == com.rs2.game.content.StaticItemList.LIME_WHIP) {
+                       return "Lime whip";
+               }
+               org.apollo.cache.def.ItemDefinition def = org.apollo.cache.def.ItemDefinition.lookup(id);
+               if (def == null || def.getName() == null) {
+                       return "Unarmed";
+               }
+               return def.getName();
+       }
 }

@@ -21021,5 +21021,14 @@
    {
       "id":7951,
       "weight":9.0
+   },
+   {
+      "id":16022,
+      "weight":45.0,
+      "bonuses":{
+         "attackSlash":90,
+         "strengthBonus":90,
+         "prayerBonus":1
+      }
    }
 ]

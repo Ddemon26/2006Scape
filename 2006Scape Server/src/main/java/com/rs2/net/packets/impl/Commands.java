@@ -980,7 +980,7 @@ public class Commands implements PacketType {
                     }
                     int newItemID = Integer.parseInt(arguments[0]);
                     int newItemAmount = arguments.length >= 2 ? Integer.parseInt(arguments[1]) : 1;
-                    if (newItemID <= 10000 && newItemID >= 0) {
+                    if (newItemID <= Constants.ITEM_LIMIT && newItemID >= 0) {
                         player.getItemAssistant().addItem(newItemID, newItemAmount);
                         if (player.isBusy()) {
                             player.getPacketSender().closeAllWindows();

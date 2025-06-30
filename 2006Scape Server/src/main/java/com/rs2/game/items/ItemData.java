@@ -339,8 +339,11 @@ public class ItemData {
 				targetSlots[counter] = slot;
 				counter++;
 			}
-			dataIn.close();
-		} catch (IOException e) {
+                        dataIn.close();
+                        // Custom items may not exist in the equipment table
+                        // explicitly; map the Lime Whip to the weapon slot.
+                        targetSlots[StaticItemList.LIME_WHIP] = ItemConstants.WEAPON;
+                } catch (IOException e) {
 			System.out.println("Critical error while loading equipment data! Trace:");
 			e.printStackTrace();
 		}

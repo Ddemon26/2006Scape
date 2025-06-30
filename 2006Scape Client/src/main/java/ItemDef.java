@@ -190,14 +190,16 @@ public final class ItemDef {
 
 		cacheIndex = (cacheIndex + 1) % 10;
 		ItemDef itemDef = cache[cacheIndex];
-		try {
-			stream.currentOffset = streamIndices[i];
-		} catch (Exception e) {
-			System.out.println("Itemdef issue? Apparently this ID is out of bounds: " + e);
-		}
-		itemDef.id = i;
-		itemDef.setDefaults();
-		itemDef.readValues(stream);
+                if (i < streamIndices.length) {
+                        stream.currentOffset = streamIndices[i];
+                        itemDef.id = i;
+                        itemDef.setDefaults();
+                        itemDef.readValues(stream);
+                } else {
+                        // custom items are not present in obj.dat
+                        itemDef.id = i;
+                        itemDef.setDefaults();
+                }
 		if (itemDef.certTemplateID != -1) {
 			itemDef.toNote();
 		}
@@ -2021,11 +2023,32 @@ public final class ItemDef {
 			itemDef.anInt165 = 18914;
 			itemDef.anInt200 = 18967;
 			itemDef.name = "Quest hood";
-			itemDef.description = "Quest skillcape hood.".getBytes();
-			break;
-			}
-		return itemDef;
-	}
+                        itemDef.description = "Quest skillcape hood.".getBytes();
+                        break;
+
+                case 16022:
+                        itemDef.actions = new String[5];
+                        itemDef.actions[1] = "Wield";
+                        itemDef.modelID = 5412;
+                        itemDef.anInt165 = 5409;
+                        itemDef.anInt200 = 5409;
+                        itemDef.modelZoom = 840;
+                        itemDef.modelRotation1 = 280;
+                        itemDef.modelRotation2 = 0;
+                        itemDef.modelOffset1 = 0;
+                        itemDef.modelOffset2 = 56;
+                        itemDef.stackable = false;
+                        itemDef.name = "Lime whip";
+                        itemDef.description = "A lime-colored abyssal whip.".getBytes();
+                        itemDef.modifiedModelColors = new int[1];
+                        itemDef.originalModelColors = new int[1];
+                        // keep vanilla colors on the equipped model for now
+                        itemDef.modifiedModelColors[0] = 528;
+                        itemDef.originalModelColors[0] = 17350;
+                        break;
+                        }
+                return itemDef;
+        }
 
 	private void toNote() {
 		ItemDef itemDef = forID(certTemplateID);
