@@ -35,7 +35,7 @@ public final class NPC extends Entity {
 			Model model_1 = spotAnim.getModel();
 			if (model_1 != null) {
 				int j = spotAnim.aAnimation_407.anIntArray353[super.anInt1521];
-				Model model_2 = new Model(true, Class36.method532(j), false, model_1);
+                                Model model_2 = new Model(true, AnimFrame.isNullFrame(j), false, model_1);
 				model_2.method475(0, -super.anInt1524, 0);
 				model_2.method469();
 				model_2.method470(j);
