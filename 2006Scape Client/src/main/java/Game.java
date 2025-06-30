@@ -183,7 +183,7 @@ public class Game extends RSApplet {
 	static final boolean constructMusic() {
 		anInt720 = 20;
 		try {
-                midiPlayer = (MidiPlayer) Class.forName("Class56_Sub1_Sub1").newInstance();
+                midiPlayer = (MidiPlayer) Class.forName("SystemMidiPlayer").newInstance();
 		} catch (Throwable throwable) {
 		    return false;
 		}
