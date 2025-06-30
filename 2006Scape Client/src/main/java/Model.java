@@ -5,7 +5,7 @@
 public final class Model extends Animable {
 
 	public static void nullLoader() {
-		aClass21Array1661 = null;
+                aModelHeaderArray1661 = null;
 		aBooleanArray1663 = null;
 		aBooleanArray1664 = null;
 		anIntArray1665 = null;
@@ -28,25 +28,25 @@ public final class Model extends Animable {
 	}
 
 	public static void method459(int i, OnDemandFetcherParent onDemandFetcherParent) {
-		aClass21Array1661 = new Class21[i];
+		aModelHeaderArray1661 = new ModelHeader[i];
 		aOnDemandFetcherParent_1662 = onDemandFetcherParent;
 	}
 
 	public static void method460(byte abyte0[], int j) {
-		if (abyte0 == null) {
-			Class21 class21 = aClass21Array1661[j] = new Class21();
-			class21.anInt369 = 0;
-			class21.anInt370 = 0;
-			class21.anInt371 = 0;
-			return;
-		}
-		Stream stream = new Stream(abyte0);
-		stream.currentOffset = abyte0.length - 18;
-		Class21 class21_1 = aClass21Array1661[j] = new Class21();
-		class21_1.aByteArray368 = abyte0;
-		class21_1.anInt369 = stream.readUnsignedWord();
-		class21_1.anInt370 = stream.readUnsignedWord();
-		class21_1.anInt371 = stream.readUnsignedByte();
+                if (abyte0 == null) {
+                        ModelHeader header = aModelHeaderArray1661[j] = new ModelHeader();
+                        header.vertexCount = 0;
+                        header.faceCount = 0;
+                        header.texturedTriangleCount = 0;
+                        return;
+                }
+                Stream stream = new Stream(abyte0);
+                stream.currentOffset = abyte0.length - 18;
+                ModelHeader header1 = aModelHeaderArray1661[j] = new ModelHeader();
+                header1.data = abyte0;
+                header1.vertexCount = stream.readUnsignedWord();
+                header1.faceCount = stream.readUnsignedWord();
+                header1.texturedTriangleCount = stream.readUnsignedByte();
 		int k = stream.readUnsignedByte();
 		int l = stream.readUnsignedByte();
 		int i1 = stream.readUnsignedByte();
@@ -57,64 +57,64 @@ public final class Model extends Animable {
 		int j2 = stream.readUnsignedWord();
 		int k2 = stream.readUnsignedWord();
 		int l2 = 0;
-		class21_1.anInt372 = l2;
-		l2 += class21_1.anInt369;
-		class21_1.anInt378 = l2;
-		l2 += class21_1.anInt370;
-		class21_1.anInt381 = l2;
-		if (l == 255) {
-			l2 += class21_1.anInt370;
-		} else {
-			class21_1.anInt381 = -l - 1;
-		}
-		class21_1.anInt383 = l2;
-		if (j1 == 1) {
-			l2 += class21_1.anInt370;
-		} else {
-			class21_1.anInt383 = -1;
-		}
-		class21_1.anInt380 = l2;
-		if (k == 1) {
-			l2 += class21_1.anInt370;
-		} else {
-			class21_1.anInt380 = -1;
-		}
-		class21_1.anInt376 = l2;
-		if (k1 == 1) {
-			l2 += class21_1.anInt369;
-		} else {
-			class21_1.anInt376 = -1;
-		}
-		class21_1.anInt382 = l2;
-		if (i1 == 1) {
-			l2 += class21_1.anInt370;
-		} else {
-			class21_1.anInt382 = -1;
-		}
-		class21_1.anInt377 = l2;
-		l2 += k2;
-		class21_1.anInt379 = l2;
-		l2 += class21_1.anInt370 * 2;
-		class21_1.anInt384 = l2;
-		l2 += class21_1.anInt371 * 6;
-		class21_1.anInt373 = l2;
-		l2 += l1;
-		class21_1.anInt374 = l2;
-		l2 += i2;
-		class21_1.anInt375 = l2;
-		l2 += j2;
+                header1.vertexFlagsOffset = l2;
+                l2 += header1.vertexCount;
+                header1.facePriorityOffset = l2;
+                l2 += header1.faceCount;
+                header1.faceAlphaOffset = l2;
+                if (l == 255) {
+                        l2 += header1.faceCount;
+                } else {
+                        header1.faceAlphaOffset = -l - 1;
+                }
+                header1.vertexLabelOffset = l2;
+                if (j1 == 1) {
+                        l2 += header1.faceCount;
+                } else {
+                        header1.vertexLabelOffset = -1;
+                }
+                header1.faceLabelOffset = l2;
+                if (k == 1) {
+                        l2 += header1.faceCount;
+                } else {
+                        header1.faceLabelOffset = -1;
+                }
+                header1.vertexSkinsOffset = l2;
+                if (k1 == 1) {
+                        l2 += header1.vertexCount;
+                } else {
+                        header1.vertexSkinsOffset = -1;
+                }
+                header1.faceTextureOffset = l2;
+                if (i1 == 1) {
+                        l2 += header1.faceCount;
+                } else {
+                        header1.faceTextureOffset = -1;
+                }
+                header1.faceTypeOffset = l2;
+                l2 += k2;
+                header1.faceSkinOffset = l2;
+                l2 += header1.faceCount * 2;
+                header1.faceIndicesOffset = l2;
+                l2 += header1.texturedTriangleCount * 6;
+                header1.vertexXOffset = l2;
+                l2 += l1;
+                header1.vertexYOffset = l2;
+                l2 += i2;
+                header1.vertexZOffset = l2;
+                l2 += j2;
 	}
 
 	public static void method461(int j) {
-		aClass21Array1661[j] = null;
+		aModelHeaderArray1661[j] = null;
 	}
 
 	public static Model method462(int j) {
-		if (aClass21Array1661 == null) {
+		if (aModelHeaderArray1661 == null) {
 			return null;
 		}
-		Class21 class21 = aClass21Array1661.length < j  ? null : aClass21Array1661[j];
-		if (class21 == null) {
+		ModelHeader header = aModelHeaderArray1661.length < j  ? null : aModelHeaderArray1661[j];
+		if (header == null) {
 			aOnDemandFetcherParent_1662.method548(j);
 			return null;
 		} else {
@@ -123,11 +123,11 @@ public final class Model extends Animable {
 	}
 
 	public static boolean method463(int i) {
-		if (aClass21Array1661 == null) {
+		if (aModelHeaderArray1661 == null) {
 			return false;
 		}
-		Class21 class21 = aClass21Array1661[i];
-		if (class21 == null) {
+		ModelHeader header = aModelHeaderArray1661[i];
+		if (header == null) {
 			aOnDemandFetcherParent_1662.method548(i);
 			return false;
 		} else {
@@ -141,10 +141,10 @@ public final class Model extends Animable {
 
 	private Model(int i) {
 		aBoolean1659 = false;
-		Class21 class21 = aClass21Array1661[i];
-		anInt1626 = class21.anInt369;
-		anInt1630 = class21.anInt370;
-		anInt1642 = class21.anInt371;
+		ModelHeader header = aModelHeaderArray1661[i];
+                anInt1626 = header.vertexCount;
+                anInt1630 = header.faceCount;
+                anInt1642 = header.texturedTriangleCount;
 		anIntArray1627 = new int[anInt1626];
 		anIntArray1628 = new int[anInt1626];
 		anIntArray1629 = new int[anInt1626];
@@ -154,34 +154,34 @@ public final class Model extends Animable {
 		anIntArray1643 = new int[anInt1642];
 		anIntArray1644 = new int[anInt1642];
 		anIntArray1645 = new int[anInt1642];
-		if (class21.anInt376 >= 0) {
-			anIntArray1655 = new int[anInt1626];
-		}
-		if (class21.anInt380 >= 0) {
-			anIntArray1637 = new int[anInt1630];
-		}
-		if (class21.anInt381 >= 0) {
-			anIntArray1638 = new int[anInt1630];
-		} else {
-			anInt1641 = -class21.anInt381 - 1;
-		}
-		if (class21.anInt382 >= 0) {
-			anIntArray1639 = new int[anInt1630];
-		}
-		if (class21.anInt383 >= 0) {
-			anIntArray1656 = new int[anInt1630];
-		}
-		anIntArray1640 = new int[anInt1630];
-		Stream stream = new Stream(class21.aByteArray368);
-		stream.currentOffset = class21.anInt372;
-		Stream stream_1 = new Stream(class21.aByteArray368);
-		stream_1.currentOffset = class21.anInt373;
-		Stream stream_2 = new Stream(class21.aByteArray368);
-		stream_2.currentOffset = class21.anInt374;
-		Stream stream_3 = new Stream(class21.aByteArray368);
-		stream_3.currentOffset = class21.anInt375;
-		Stream stream_4 = new Stream(class21.aByteArray368);
-		stream_4.currentOffset = class21.anInt376;
+                if (header.vertexSkinsOffset >= 0) {
+                        anIntArray1655 = new int[anInt1626];
+                }
+                if (header.faceLabelOffset >= 0) {
+                        anIntArray1637 = new int[anInt1630];
+                }
+                if (header.faceAlphaOffset >= 0) {
+                        anIntArray1638 = new int[anInt1630];
+                } else {
+                        anInt1641 = -header.faceAlphaOffset - 1;
+                }
+                if (header.faceTextureOffset >= 0) {
+                        anIntArray1639 = new int[anInt1630];
+                }
+                if (header.vertexLabelOffset >= 0) {
+                        anIntArray1656 = new int[anInt1630];
+                }
+                anIntArray1640 = new int[anInt1630];
+                Stream stream = new Stream(header.data);
+                stream.currentOffset = header.vertexFlagsOffset;
+                Stream stream_1 = new Stream(header.data);
+                stream_1.currentOffset = header.vertexXOffset;
+                Stream stream_2 = new Stream(header.data);
+                stream_2.currentOffset = header.vertexYOffset;
+                Stream stream_3 = new Stream(header.data);
+                stream_3.currentOffset = header.vertexZOffset;
+                Stream stream_4 = new Stream(header.data);
+                stream_4.currentOffset = header.vertexSkinsOffset;
 		int k = 0;
 		int l = 0;
 		int i1 = 0;
@@ -210,11 +210,11 @@ public final class Model extends Animable {
 			}
 		}
 
-		stream.currentOffset = class21.anInt379;
-		stream_1.currentOffset = class21.anInt380;
-		stream_2.currentOffset = class21.anInt381;
-		stream_3.currentOffset = class21.anInt382;
-		stream_4.currentOffset = class21.anInt383;
+                stream.currentOffset = header.faceSkinOffset;
+                stream_1.currentOffset = header.faceLabelOffset;
+                stream_2.currentOffset = header.faceAlphaOffset;
+                stream_3.currentOffset = header.faceTextureOffset;
+                stream_4.currentOffset = header.vertexLabelOffset;
 		for (int l1 = 0; l1 < anInt1630; l1++) {
 			anIntArray1640[l1] = stream.readUnsignedWord();
 			if (anIntArray1637 != null) {
@@ -231,8 +231,8 @@ public final class Model extends Animable {
 			}
 		}
 
-		stream.currentOffset = class21.anInt377;
-		stream_1.currentOffset = class21.anInt378;
+                stream.currentOffset = header.faceTypeOffset;
+                stream_1.currentOffset = header.facePriorityOffset;
 		int j2 = 0;
 		int l2 = 0;
 		int j3 = 0;
@@ -278,7 +278,7 @@ public final class Model extends Animable {
 			}
 		}
 
-		stream.currentOffset = class21.anInt384;
+                stream.currentOffset = header.faceIndicesOffset;
 		for (int j4 = 0; j4 < anInt1642; j4++) {
 			anIntArray1643[j4] = stream.readUnsignedWord();
 			anIntArray1644[j4] = stream.readUnsignedWord();
@@ -865,17 +865,17 @@ public final class Model extends Animable {
 		if (i == -1) {
 			return;
 		}
-		Class36 class36 = Class36.method531(i);
+                AnimFrame class36 = AnimFrame.forId(i);
 		if (class36 == null) {
 			return;
 		}
-		Class18 class18 = class36.aClass18_637;
+                FrameBase class18 = class36.frameBase;
 		anInt1681 = 0;
 		anInt1682 = 0;
 		anInt1683 = 0;
-		for (int k = 0; k < class36.anInt638; k++) {
-			int l = class36.anIntArray639[k];
-			method472(class18.anIntArray342[l], class18.anIntArrayArray343[l], class36.anIntArray640[k], class36.anIntArray641[k], class36.anIntArray642[k]);
+                for (int k = 0; k < class36.transformationCount; k++) {
+                        int l = class36.transformationIndices[k];
+                        method472(class18.transformationType[l], class18.transformationList[l], class36.transformX[k], class36.transformY[k], class36.transformZ[k]);
 		}
 
 	}
@@ -888,28 +888,28 @@ public final class Model extends Animable {
 			method470(k);
 			return;
 		}
-		Class36 class36 = Class36.method531(k);
+                AnimFrame class36 = AnimFrame.forId(k);
 		if (class36 == null) {
 			return;
 		}
-		Class36 class36_1 = Class36.method531(j);
+                AnimFrame class36_1 = AnimFrame.forId(j);
 		if (class36_1 == null) {
 			method470(k);
 			return;
 		}
-		Class18 class18 = class36.aClass18_637;
+                FrameBase class18 = class36.frameBase;
 		anInt1681 = 0;
 		anInt1682 = 0;
 		anInt1683 = 0;
 		int l = 0;
 		int i1 = ai[l++];
-		for (int j1 = 0; j1 < class36.anInt638; j1++) {
-			int k1;
-			for (k1 = class36.anIntArray639[j1]; k1 > i1; i1 = ai[l++]) {
+                for (int j1 = 0; j1 < class36.transformationCount; j1++) {
+                        int k1;
+                        for (k1 = class36.transformationIndices[j1]; k1 > i1; i1 = ai[l++]) {
 				;
 			}
-			if (k1 != i1 || class18.anIntArray342[k1] == 0) {
-				method472(class18.anIntArray342[k1], class18.anIntArrayArray343[k1], class36.anIntArray640[j1], class36.anIntArray641[j1], class36.anIntArray642[j1]);
+                        if (k1 != i1 || class18.transformationType[k1] == 0) {
+                                method472(class18.transformationType[k1], class18.transformationList[k1], class36.transformX[j1], class36.transformY[j1], class36.transformZ[j1]);
 			}
 		}
 
@@ -918,15 +918,15 @@ public final class Model extends Animable {
 		anInt1683 = 0;
 		l = 0;
 		i1 = ai[l++];
-		for (int l1 = 0; l1 < class36_1.anInt638; l1++) {
-			int i2;
-			for (i2 = class36_1.anIntArray639[l1]; i2 > i1; i1 = ai[l++]) {
-				;
-			}
-			if (i2 == i1 || class18.anIntArray342[i2] == 0) {
-				method472(class18.anIntArray342[i2], class18.anIntArrayArray343[i2], class36_1.anIntArray640[l1], class36_1.anIntArray641[l1], class36_1.anIntArray642[l1]);
-			}
-		}
+                for (int l1 = 0; l1 < class36_1.transformationCount; l1++) {
+                        int i2;
+                        for (i2 = class36_1.transformationIndices[l1]; i2 > i1; i1 = ai[l++]) {
+                                ;
+                        }
+                        if (i2 == i1 || class18.transformationType[i2] == 0) {
+                                method472(class18.transformationType[i2], class18.transformationList[i2], class36_1.transformX[l1], class36_1.transformY[l1], class36_1.transformZ[l1]);
+                        }
+                }
 
 	}
 
@@ -1856,7 +1856,7 @@ public final class Model extends Animable {
 	public int anIntArrayArray1658[][];
 	public boolean aBoolean1659;
 	VertexNormal aVertexNormalArray1660[];
-	private static Class21[] aClass21Array1661;
+	private static ModelHeader[] aModelHeaderArray1661;
 	private static OnDemandFetcherParent aOnDemandFetcherParent_1662;
 	private static boolean[] aBooleanArray1663 = new boolean[4096];
 	private static boolean[] aBooleanArray1664 = new boolean[4096];

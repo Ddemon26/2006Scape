@@ -19,12 +19,12 @@ public final class Animation {
 	}
 
 	public int method258(int i) {
-		int j = anIntArray355[i];
-		if (j == 0) {
-			Class36 class36 = Class36.method531(anIntArray353[i]);
-			if (class36 != null) {
-				j = anIntArray355[i] = class36.anInt636;
-			}
+                int j = anIntArray355[i];
+                if (j == 0) {
+                        AnimFrame frame = AnimFrame.forId(anIntArray353[i]);
+                        if (frame != null) {
+                                j = anIntArray355[i] = frame.delay;
+                        }
 		}
 		if (j == 0) {
 			j = 1;
