@@ -190,14 +190,16 @@ public final class ItemDef {
 
 		cacheIndex = (cacheIndex + 1) % 10;
 		ItemDef itemDef = cache[cacheIndex];
-		try {
-			stream.currentOffset = streamIndices[i];
-		} catch (Exception e) {
-			System.out.println("Itemdef issue? Apparently this ID is out of bounds: " + e);
-		}
-		itemDef.id = i;
-		itemDef.setDefaults();
-		itemDef.readValues(stream);
+                if (i < streamIndices.length) {
+                        stream.currentOffset = streamIndices[i];
+                        itemDef.id = i;
+                        itemDef.setDefaults();
+                        itemDef.readValues(stream);
+                } else {
+                        // custom items are not present in obj.dat
+                        itemDef.id = i;
+                        itemDef.setDefaults();
+                }
 		if (itemDef.certTemplateID != -1) {
 			itemDef.toNote();
 		}
@@ -2024,7 +2026,7 @@ public final class ItemDef {
                         itemDef.description = "Quest skillcape hood.".getBytes();
                         break;
 
-               case 16022:
+                case 16022:
                         itemDef.actions = new String[5];
                         itemDef.actions[1] = "Wield";
                         itemDef.modelID = 5412;
@@ -2035,6 +2037,7 @@ public final class ItemDef {
                         itemDef.modelRotation2 = 0;
                         itemDef.modelOffset1 = 0;
                         itemDef.modelOffset2 = 56;
+                        itemDef.stackable = false;
                         itemDef.name = "Lime whip";
                         itemDef.description = "A lime-colored abyssal whip.".getBytes();
                         itemDef.modifiedModelColors = new int[1];
