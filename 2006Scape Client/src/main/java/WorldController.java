@@ -120,25 +120,25 @@ final class WorldController {
 
 	public void method279(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2, int k2, int l2, int i3, int j3, int k3, int l3, int i4, int j4, int k4, int l4) {
 		if (l == 0) {
-			Class43 class43 = new Class43(k2, l2, i3, j3, -1, k4, false);
+                    PlainTile class43 = new PlainTile(k2, l2, i3, j3, -1, k4, false);
 			for (int i5 = i; i5 >= 0; i5--) {
 				if (groundArray[i5][j][k] == null) {
 					groundArray[i5][j][k] = new Ground(i5, j, k);
 				}
 			}
 
-			groundArray[i][j][k].aClass43_1311 = class43;
+                        groundArray[i][j][k].plainTile = class43;
 			return;
 		}
 		if (l == 1) {
-			Class43 class43_1 = new Class43(k3, l3, i4, j4, j1, l4, k1 == l1 && k1 == i2 && k1 == j2);
+                    PlainTile class43_1 = new PlainTile(k3, l3, i4, j4, j1, l4, k1 == l1 && k1 == i2 && k1 == j2);
 			for (int j5 = i; j5 >= 0; j5--) {
 				if (groundArray[j5][j][k] == null) {
 					groundArray[j5][j][k] = new Ground(j5, j, k);
 				}
 			}
 
-			groundArray[i][j][k].aClass43_1311 = class43_1;
+                        groundArray[i][j][k].plainTile = class43_1;
 			return;
 		}
 		Class40 class40 = new Class40(k, k3, j3, i2, j1, i4, i1, k2, k4, i3, j2, l1, k1, l, j4, l3, l2, j, l4);
@@ -732,9 +732,9 @@ final class WorldController {
 		if (class30_sub3 == null) {
 			return;
 		}
-		Class43 class43 = class30_sub3.aClass43_1311;
-		if (class43 != null) {
-			int j1 = class43.anInt722;
+                PlainTile class43 = class30_sub3.plainTile;
+                if (class43 != null) {
+                        int j1 = class43.orientation;
 			if (j1 == 0) {
 				return;
 			}
@@ -1098,9 +1098,9 @@ final class WorldController {
 				class30_sub3_1.aBoolean1322 = false;
 				if (class30_sub3_1.aClass30_Sub3_1329 != null) {
 					Ground class30_sub3_7 = class30_sub3_1.aClass30_Sub3_1329;
-					if (class30_sub3_7.aClass43_1311 != null) {
+                                        if (class30_sub3_7.plainTile != null) {
 						if (!method320(0, i, j)) {
-							method315(class30_sub3_7.aClass43_1311, 0, anInt458, anInt459, anInt460, anInt461, i, j);
+                                                        method315(class30_sub3_7.plainTile, 0, anInt458, anInt459, anInt460, anInt461, i, j);
 						}
 					} else if (class30_sub3_7.aClass40_1312 != null && !method320(0, i, j)) {
 						method316(i, anInt458, anInt460, class30_sub3_7.aClass40_1312, anInt459, j, anInt461);
@@ -1118,10 +1118,10 @@ final class WorldController {
 
 				}
 				boolean flag1 = false;
-				if (class30_sub3_1.aClass43_1311 != null) {
+                                if (class30_sub3_1.plainTile != null) {
 					if (!method320(l, i, j)) {
 						flag1 = true;
-						method315(class30_sub3_1.aClass43_1311, l, anInt458, anInt459, anInt460, anInt461, i, j);
+                                                method315(class30_sub3_1.plainTile, l, anInt458, anInt459, anInt460, anInt461, i, j);
 					}
 				} else if (class30_sub3_1.aClass40_1312 != null && !method320(l, i, j)) {
 					flag1 = true;
@@ -1494,7 +1494,7 @@ final class WorldController {
 		} while (true);
 	}
 
-	private void method315(Class43 class43, int i, int j, int k, int l, int i1, int j1, int k1) {
+       private void method315(PlainTile class43, int i, int j, int k, int l, int i1, int j1, int k1) {
 		int l1;
 		int i2 = l1 = (j1 << 7) - anInt455;
 		int j2;
@@ -1558,20 +1558,20 @@ final class WorldController {
 				anInt470 = j1;
 				anInt471 = k1;
 			}
-			if (class43.anInt720 == -1) {
-				if (class43.anInt718 != 0xbc614e) {
-					Texture.method374(j6, l6, l5, i6, k6, k5, class43.anInt718, class43.anInt719, class43.anInt717);
-				}
-			} else if (!lowMem) {
-				if (class43.aBoolean721) {
-					Texture.method378(j6, l6, l5, i6, k6, k5, class43.anInt718, class43.anInt719, class43.anInt717, i2, i3, l1, l3, i4, k4, k2, j2, j3, class43.anInt720);
-				} else {
-					Texture.method378(j6, l6, l5, i6, k6, k5, class43.anInt718, class43.anInt719, class43.anInt717, l2, l1, i3, j4, k4, i4, k3, j3, j2, class43.anInt720);
-				}
-			} else {
-				int i7 = anIntArray485[class43.anInt720];
-				Texture.method374(j6, l6, l5, i6, k6, k5, method317(i7, class43.anInt718), method317(i7, class43.anInt719), method317(i7, class43.anInt717));
-			}
+                        if (class43.textureId == -1) {
+                                if (class43.northEastColor != 0xbc614e) {
+                                        Texture.method374(j6, l6, l5, i6, k6, k5, class43.northEastColor, class43.northWestColor, class43.southEastColor);
+                                }
+                        } else if (!lowMem) {
+                                if (class43.flatShade) {
+                                        Texture.method378(j6, l6, l5, i6, k6, k5, class43.northEastColor, class43.northWestColor, class43.southEastColor, i2, i3, l1, l3, i4, k4, k2, j2, j3, class43.textureId);
+                                } else {
+                                        Texture.method378(j6, l6, l5, i6, k6, k5, class43.northEastColor, class43.northWestColor, class43.southEastColor, l2, l1, i3, j4, k4, i4, k3, j3, j2, class43.textureId);
+                                }
+                        } else {
+                                int i7 = anIntArray485[class43.textureId];
+                                Texture.method374(j6, l6, l5, i6, k6, k5, method317(i7, class43.northEastColor), method317(i7, class43.northWestColor), method317(i7, class43.southEastColor));
+                        }
 		}
 		if ((i5 - k5) * (l6 - l5) - (j5 - l5) * (k6 - k5) > 0) {
 			Texture.aBoolean1462 = i5 < 0 || k5 < 0 || k6 < 0 || i5 > DrawingArea.centerX || k5 > DrawingArea.centerX || k6 > DrawingArea.centerX;
@@ -1579,18 +1579,18 @@ final class WorldController {
 				anInt470 = j1;
 				anInt471 = k1;
 			}
-			if (class43.anInt720 == -1) {
-				if (class43.anInt716 != 0xbc614e) {
-					Texture.method374(j5, l5, l6, i5, k5, k6, class43.anInt716, class43.anInt717, class43.anInt719);
-				}
-			} else {
-				if (!lowMem) {
-					Texture.method378(j5, l5, l6, i5, k5, k6, class43.anInt716, class43.anInt717, class43.anInt719, i2, i3, l1, l3, i4, k4, k2, j2, j3, class43.anInt720);
-					return;
-				}
-				int j7 = anIntArray485[class43.anInt720];
-				Texture.method374(j5, l5, l6, i5, k5, k6, method317(j7, class43.anInt716), method317(j7, class43.anInt717), method317(j7, class43.anInt719));
-			}
+                        if (class43.textureId == -1) {
+                                if (class43.southWestColor != 0xbc614e) {
+                                        Texture.method374(j5, l5, l6, i5, k5, k6, class43.southWestColor, class43.southEastColor, class43.northWestColor);
+                                }
+                        } else {
+                                if (!lowMem) {
+                                        Texture.method378(j5, l5, l6, i5, k5, k6, class43.southWestColor, class43.southEastColor, class43.northWestColor, i2, i3, l1, l3, i4, k4, k2, j2, j3, class43.textureId);
+                                        return;
+                                }
+                                int j7 = anIntArray485[class43.textureId];
+                                Texture.method374(j5, l5, l6, i5, k5, k6, method317(j7, class43.southWestColor), method317(j7, class43.southEastColor), method317(j7, class43.northWestColor));
+                        }
 		}
 	}
 
