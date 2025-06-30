@@ -2024,12 +2024,19 @@ public final class ItemDef {
                         itemDef.description = "Quest skillcape hood.".getBytes();
                         break;
 
-                case 16022:
+               case 16022:
                         itemDef.actions = new String[5];
                         itemDef.actions[1] = "Wield";
                         itemDef.modelID = 5412;
+                        itemDef.anInt165 = 5409;
+                        itemDef.anInt200 = 5409;
                         itemDef.modelZoom = 840;
+                        itemDef.modelRotation1 = 280;
+                        itemDef.modelRotation2 = 0;
+                        itemDef.modelOffset1 = 0;
+                        itemDef.modelOffset2 = 56;
                         itemDef.name = "Lime whip";
+                        itemDef.description = "A lime-colored abyssal whip.".getBytes();
                         itemDef.modifiedModelColors = new int[1];
                         itemDef.originalModelColors = new int[1];
                         itemDef.modifiedModelColors[0] = 17350;
