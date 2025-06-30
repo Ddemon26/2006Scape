@@ -119,12 +119,24 @@ public final class ItemDefinitionDecoder implements Runnable {
 				buffer.getShort();
 			} else if (opcode >= 110 && opcode <= 112) {
 				buffer.getShort();
-			} else if (opcode == 113 || opcode == 114) {
-				buffer.get();
-			} else if (opcode == 115) {
-				definition.setTeam(buffer.get() & 0xFF);
-			}
-		}
-	}
+                       } else if (opcode == 113 || opcode == 114) {
+                               buffer.get();
+                       } else if (opcode == 115) {
+                               definition.setTeam(buffer.get() & 0xFF);
+                       } else if (opcode == 121) {
+                               buffer.getShort();
+                       } else if (opcode == 122) {
+                               buffer.getShort();
+                       } else if (opcode == 125) {
+                               buffer.get();
+                               buffer.get();
+                               buffer.get();
+                       } else if (opcode == 126) {
+                               buffer.getShort();
+                       } else {
+                               break;
+                       }
+               }
+       }
 
 }

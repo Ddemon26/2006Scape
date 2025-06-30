@@ -151,10 +151,10 @@ public final class LoginDecoder extends StatefulFrameDecoder<LoginDecoderState> 
 
 			boolean lowMemory = memoryStatus == 1;
 
-			int[] crcs = new int[FileSystemConstants.ARCHIVE_COUNT];
-			for (int index = 0; index < 9; index++) {
-				crcs[index] = payload.readInt();
-			}
+                       int[] crcs = new int[FileSystemConstants.ARCHIVE_COUNT];
+                       for (int index = 0; index < FileSystemConstants.ARCHIVE_COUNT; index++) {
+                               crcs[index] = payload.readInt();
+                       }
 
 			int length = payload.readUnsignedByte();
 			if (length != loginLength - 41) {

@@ -125,16 +125,18 @@ public final class NpcDefinitionDecoder implements Runnable {
 				buffer.get();
 			} else if (opcode == 102 || opcode == 103) {
 				buffer.getShort();
-			} else if (opcode == 106) {
-				wrap(buffer.getShort());
-				wrap(buffer.getShort());
+                       } else if (opcode == 106) {
+                               wrap(buffer.getShort());
+                               wrap(buffer.getShort());
 
 				int count = buffer.get() & 0xFF;
-				int[] morphisms = new int[count + 1];
-				Arrays.setAll(morphisms, index -> wrap(buffer.getShort()));
-			}
-		}
-	}
+                               int[] morphisms = new int[count + 1];
+                               Arrays.setAll(morphisms, index -> wrap(buffer.getShort()));
+                       } else {
+                               break;
+                       }
+               }
+       }
 
 	/**
 	 * Wraps a morphism value around, returning -1 if the specified value is 65,535.

@@ -6901,53 +6901,53 @@ public class Game extends RSApplet {
 	
 	private void connectServer()
 	{
-	  int j = 5;
-		expectedCRCs[8] = 0;
-		int k = 0;
-		while(expectedCRCs[8] == 0)
-		{
+          int j = 5;
+               expectedCRCs[Signlink.INDEX_COUNT - 1] = 0;
+               int k = 0;
+               while(expectedCRCs[Signlink.INDEX_COUNT - 1] == 0)
+               {
 			String s = "Unknown problem";
 			drawLoadingText(20, "Connecting to web server");
 			try
 			{
-				DataInputStream datainputstream = openJagGrabInputStream("crc" + (int)(Math.random() * 99999999D) + "-" + 317);
+                               DataInputStream datainputstream = openJagGrabInputStream("crc" + (int)(Math.random() * 99999999D) + "-" + 470);
 				Stream class30_sub2_sub2 = new Stream(new byte[40]);
 				datainputstream.readFully(class30_sub2_sub2.buffer, 0, 40);
 				datainputstream.close();
-				for(int i1 = 0; i1 < 9; i1++)
-					expectedCRCs[i1] = class30_sub2_sub2.readDWord();
+                               for(int i1 = 0; i1 < Signlink.INDEX_COUNT; i1++)
+                                       expectedCRCs[i1] = class30_sub2_sub2.readDWord();
 
 				int j1 = class30_sub2_sub2.readDWord();
 				int k1 = 1234;
-				for(int l1 = 0; l1 < 9; l1++)
-					k1 = (k1 << 1) + expectedCRCs[l1];
+                               for(int l1 = 0; l1 < Signlink.INDEX_COUNT; l1++)
+                                       k1 = (k1 << 1) + expectedCRCs[l1];
 
 				if(j1 != k1)
 				{
 					s = "checksum problem";
-					expectedCRCs[8] = 0;
+                                       expectedCRCs[Signlink.INDEX_COUNT - 1] = 0;
 				}
 			}
 			catch(EOFException _ex)
 			{
-				s = "EOF problem";
-				expectedCRCs[8] = 0;
+                               s = "EOF problem";
+                               expectedCRCs[Signlink.INDEX_COUNT - 1] = 0;
 			}
 			catch(IOException _ex)
 			{
 				s = "FileServer Connection problem";
 				// Check if we already have cache files, if so then allow the client to load anyway
-				String cacheDir = Signlink.findcachedir();
-				expectedCRCs[8] = new File(cacheDir + "main_file_cache.dat").length() > 0 ? 1 : 0;
+                               String cacheDir = Signlink.findcachedir();
+                               expectedCRCs[Signlink.INDEX_COUNT - 1] = new File(cacheDir + "main_file_cache.dat").length() > 0 ? 1 : 0;
 			}
 			catch(Exception _ex)
 			{
-				s = "logic problem";
-				expectedCRCs[8] = 0;
+                               s = "logic problem";
+                               expectedCRCs[Signlink.INDEX_COUNT - 1] = 0;
 				if(!Signlink.reporterror)
 					return;
 			}
-			if(expectedCRCs[8] == 0)
+                       if(expectedCRCs[Signlink.INDEX_COUNT - 1] == 0)
 			{
 				k++;
 				for(int l = j; l > 0; l--)
@@ -6991,10 +6991,10 @@ public class Game extends RSApplet {
 			genericLoadingError = true;
 			return;
 		}
-		if (Signlink.cache_dat != null) {
-			for (int i = 0; i < 5; i++) {
-				decompressors[i] = new Decompressor(Signlink.cache_dat, Signlink.cache_idx[i], i + 1);
-			}
+               if (Signlink.cache_dat != null) {
+                       for (int i = 0; i < Signlink.INDEX_COUNT; i++) {
+                               decompressors[i] = new Decompressor(Signlink.cache_dat, Signlink.cache_idx[i], i + 1);
+                       }
 
 		}
 		try {
@@ -7013,7 +7013,7 @@ public class Game extends RSApplet {
 			StreamLoader streamLoader_2 = streamLoaderForName(4, "2d graphics", "media", expectedCRCs[4], 40);
 			StreamLoader streamLoader_3 = streamLoaderForName(6, "textures", "textures", expectedCRCs[6], 45);
 			StreamLoader streamLoader_4 = streamLoaderForName(7, "chat system", "wordenc", expectedCRCs[7], 50);
-			StreamLoader streamLoader_5 = streamLoaderForName(8, "sound effects", "sounds", expectedCRCs[8], 55);
+                       StreamLoader streamLoader_5 = streamLoaderForName(8, "sound effects", "sounds", expectedCRCs[Signlink.INDEX_COUNT - 1], 55);
 			byteGroundArray = new byte[4][104][104];
 			intGroundArray = new int[4][105][105];
 			worldController = new WorldController(intGroundArray);
@@ -12062,7 +12062,7 @@ public class Game extends RSApplet {
 		spriteDrawY = -1;
 		anIntArray968 = new int[33];
 		anIntArray969 = new int[256];
-		decompressors = new Decompressor[5];
+               decompressors = new Decompressor[Signlink.INDEX_COUNT];
 		variousSettings = new int[2000];
 		aBoolean972 = false;
 		anInt975 = 50;
@@ -12102,7 +12102,7 @@ public class Game extends RSApplet {
 		aBoolean1080 = false;
 		friendsList = new String[200];
 		inStream = Stream.create();
-		expectedCRCs = new int[9];
+               expectedCRCs = new int[Signlink.INDEX_COUNT];
 		menuActionCmd2 = new int[500];
 		menuActionCmd3 = new int[500];
 		menuActionID = new int[500];

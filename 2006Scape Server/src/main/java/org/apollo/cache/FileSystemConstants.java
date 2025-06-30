@@ -10,7 +10,7 @@ public final class FileSystemConstants {
 	/**
 	 * The number of archives in cache 0.
 	 */
-	public static final int ARCHIVE_COUNT = 9;
+       public static final int ARCHIVE_COUNT = 16;
 
 	/**
 	 * The size of a chunk.

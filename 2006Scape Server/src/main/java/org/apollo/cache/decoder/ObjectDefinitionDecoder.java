@@ -166,9 +166,9 @@ public final class ObjectDefinitionDecoder implements Runnable {
 				for (int i = 0; i <= count; i++) {
 					data.getShort();
 				}
-			} else {
-				continue;
-			}
+                       } else {
+                               break;
+                       }
 		}
 	}
 

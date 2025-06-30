@@ -25,6 +25,9 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 public final class Signlink implements Runnable {
 
+       /** Number of cache indexes supported. */
+       public static final int INDEX_COUNT = 16;
+
 	public static final void startpriv(InetAddress inetaddress) {
 		threadliveid = (int) (Math.random() * 99999999D);
 		if (active) {
@@ -64,8 +67,8 @@ public final class Signlink implements Runnable {
 		String s = findcachedir();
 		try {
 			cache_dat = new RandomAccessFile(s + "main_file_cache.dat", "rw");
-			for (int j = 0; j < 5; j++)
-				cache_idx[j] = new RandomAccessFile(s + "main_file_cache.idx" + j, "rw");
+                       for (int j = 0; j < INDEX_COUNT; j++)
+                               cache_idx[j] = new RandomAccessFile(s + "main_file_cache.idx" + j, "rw");
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -384,10 +387,10 @@ public final class Signlink implements Runnable {
 	private Signlink() {
 	}
 
-	public static final int clientversion = 317;
-	public static int storeid = 32;
-	public static RandomAccessFile cache_dat = null;
-	public static final RandomAccessFile[] cache_idx = new RandomAccessFile[5];
+       public static final int clientversion = 470;
+       public static int storeid = 32;
+       public static RandomAccessFile cache_dat = null;
+       public static final RandomAccessFile[] cache_idx = new RandomAccessFile[INDEX_COUNT];
 	public static boolean sunjava;
 	public static Applet mainapp = null;
 	private static boolean active;
