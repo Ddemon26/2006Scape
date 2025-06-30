@@ -2,7 +2,7 @@
 // Jad home page: http://www.kpdus.com/jad.html
 // Decompiler options: packimports(3) 
 
-final class Class13 {
+final class BZip2Decompressor {
 
 	public static int method225(byte abyte0[], int i, byte abyte1[], int j, int k) {
 		synchronized (aClass32_305) {
