@@ -1,6 +1,7 @@
 package com.rs2.game.shops;
 
 import com.rs2.Constants;
+import com.rs2.game.content.StaticItemList;
 import org.apollo.cache.def.ItemDefinition;
 
 import com.rs2.game.bots.BotHandler;
