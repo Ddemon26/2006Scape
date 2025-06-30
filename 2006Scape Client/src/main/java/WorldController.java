@@ -155,7 +155,7 @@ final class WorldController {
 		if (class30_sub2_sub4 == null) {
 			return;
 		}
-		Object3 class49 = new Object3();
+            TileDecoration class49 = new TileDecoration();
 		class49.aClass30_Sub2_Sub4_814 = class30_sub2_sub4;
 		class49.anInt812 = j1 * 128 + 64;
 		class49.anInt813 = k * 128 + 64;
@@ -482,7 +482,7 @@ final class WorldController {
 		return null;
 	}
 
-	public Object3 method299(int i, int j, int k) {
+    public TileDecoration method299(int i, int j, int k) {
 		Ground class30_sub3 = groundArray[k][j][i];
 		if (class30_sub3 == null || class30_sub3.obj3 == null) {
 			return null;
@@ -584,7 +584,7 @@ final class WorldController {
 							}
 						}
 
-						Object3 class49 = class30_sub3.obj3;
+                                            TileDecoration class49 = class30_sub3.obj3;
 						if (class49 != null && class49.aClass30_Sub2_Sub4_814.aVertexNormalArray1425 != null) {
 							method306(i2, l1, (Model) class49.aClass30_Sub2_Sub4_814, j2);
 							((Model) class49.aClass30_Sub2_Sub4_814).method480(j, k1, k, i, i1);
@@ -1207,7 +1207,7 @@ final class WorldController {
 					}
 				}
 				if (flag1) {
-					Object3 class49 = class30_sub3_1.obj3;
+                                   TileDecoration class49 = class30_sub3_1.obj3;
 					if (class49 != null) {
 						class49.aClass30_Sub2_Sub4_814.method443(0, anInt458, anInt459, anInt460, anInt461, class49.anInt812 - anInt455, class49.anInt811 - anInt456, class49.anInt813 - anInt457, class49.uid);
 					}
