@@ -10129,7 +10129,7 @@ public class Game extends RSApplet {
 					}
 				}
 				if (j16 == 3) {
-					Object3 class49 = worldController.method299(i7, j4, plane);
+                                        TileDecoration class49 = worldController.method299(i7, j4, plane);
 					if (class49 != null) {
 						class49.aClass30_Sub2_Sub4_814 = new Animable_Sub5(class49.uid >> 14 & 0x7fff, k14, 22, i19, l19, j18, k20, j17, false);
 					}
