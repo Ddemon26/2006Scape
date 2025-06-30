@@ -414,16 +414,17 @@ public class CombatSounds {
 					|| c.playerEquipment[c.playerWeapon] == 2748) { // Godswords
 				return 390;
 			}
-			if (c.playerEquipment[c.playerWeapon] == 4151) {
-				return 1080;
-			}
+                        if (c.playerEquipment[c.playerWeapon] == 4151
+                                        || c.playerEquipment[c.playerWeapon] == StaticItemList.LIME_WHIP) {
+                                return 1080;
+                        }
 		}
 		return 398;
 	}
 
 	public static int specialSounds(int id) {
-		if (id == 4151) {// whip
-			return 1081;
+                if (id == 4151 || id == StaticItemList.LIME_WHIP) {// whip
+                        return 1081;
 		} else if (id == 5698 || id == 1231 || id == 1215 || id == 5680) {// dds
 			return 385;
 		} else if (id == 1434) {// Mace

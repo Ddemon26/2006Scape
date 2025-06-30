@@ -24,7 +24,8 @@ public class Specials {
 		// ItemName(ItemId, SpecDamage, SpecAccuracy, SpecAmount, Anim, GFX0,
 		// GFX100, DoubleHit, SsSpec, SpecEffect)
 
-		ABYSSAL_WHIP(StaticItemList.ABYSSAL_WHIP, 1, 1.25, 5, 1658, 341, -1, false, 0),
+                ABYSSAL_WHIP(StaticItemList.ABYSSAL_WHIP, 1, 1.25, 5, 1658, 341, -1, false, 0),
+                LIME_WHIP(StaticItemList.LIME_WHIP, 1, 1.25, 5, 1658, 341, -1, false, 0),
 		DRAGON_DAGGER(StaticItemList.DRAGON_DAGGER, 1.15, 1.25, 2.5, 1062, -1, 252, true, 0),
 		DRAGON_DAGGER_P(StaticItemList.DRAGON_DAGGERP, 1.15, 1.25, 2.5, 1062, -1, 252, true, 0),
 		DRAGON_DAGGER_PP(StaticItemList.DRAGON_DAGGERS, 1.15, 1.25, 2.5, 1062, -1, 252, true, 0),
@@ -285,13 +286,14 @@ public class Specials {
 		}
 		break;
 
-		case 48023:
-			if (player2.playerEquipment[player2.playerWeapon] == StaticItemList.ABYSSAL_WHIP) {
-				player2.specBarId = 12335;
-				player2.usingSpecial = !player2.usingSpecial;
-				player2.getItemAssistant().updateSpecialBar();
-			}
-			break;
+                case 48023:
+                        if (player2.playerEquipment[player2.playerWeapon] == StaticItemList.ABYSSAL_WHIP
+                                        || player2.playerEquipment[player2.playerWeapon] == StaticItemList.LIME_WHIP) {
+                                player2.specBarId = 12335;
+                                player2.usingSpecial = !player2.usingSpecial;
+                                player2.getItemAssistant().updateSpecialBar();
+                        }
+                        break;
 
 		case 29138:
 			if (player2.playerEquipment[player2.playerWeapon] == StaticItemList.DRAGON_DAGGER || player2.playerEquipment[player2.playerWeapon] == StaticItemList.DRAGON_DAGGERP

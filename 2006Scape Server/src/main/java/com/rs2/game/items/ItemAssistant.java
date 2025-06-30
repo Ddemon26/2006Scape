@@ -947,9 +947,10 @@ public class ItemAssistant {
 				player.rangeLevelReq = 61;
 				break;
 
-			case 4151: // if you don't want to use names
-				player.attackLevelReq = 70;
-				return;
+                    case 4151: // if you don't want to use names
+                    case StaticItemList.LIME_WHIP:
+                        player.attackLevelReq = 70;
+                        return;
 
 			case 6724: // seercull
 				player.rangeLevelReq = 60; // idk if that is correct
@@ -1103,10 +1104,11 @@ public class ItemAssistant {
 	public void addSpecialBar(int weapon) {
 		switch (weapon) {
 
-			case 4151: // whip
-				player.getPacketSender().sendHideInterfaceLayer(12323, false);
-				specialAmount(weapon, player.specAmount, 12335);
-				break;
+                case 4151: // whip
+                case StaticItemList.LIME_WHIP:
+                        player.getPacketSender().sendHideInterfaceLayer(12323, false);
+                        specialAmount(weapon, player.specAmount, 12335);
+                        break;
 
 			case 859: // magic bows
 			case 861:

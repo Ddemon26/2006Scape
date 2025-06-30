@@ -2021,11 +2021,23 @@ public final class ItemDef {
 			itemDef.anInt165 = 18914;
 			itemDef.anInt200 = 18967;
 			itemDef.name = "Quest hood";
-			itemDef.description = "Quest skillcape hood.".getBytes();
-			break;
-			}
-		return itemDef;
-	}
+                        itemDef.description = "Quest skillcape hood.".getBytes();
+                        break;
+
+                case 16022:
+                        itemDef.actions = new String[5];
+                        itemDef.actions[1] = "Wield";
+                        itemDef.modelID = 5412;
+                        itemDef.modelZoom = 840;
+                        itemDef.name = "Lime whip";
+                        itemDef.modifiedModelColors = new int[1];
+                        itemDef.originalModelColors = new int[1];
+                        itemDef.modifiedModelColors[0] = 17350;
+                        itemDef.originalModelColors[0] = 0;
+                        break;
+                        }
+                return itemDef;
+        }
 
 	private void toNote() {
 		ItemDef itemDef = forID(certTemplateID);

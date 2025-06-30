@@ -4160,8 +4160,9 @@ public class StaticItemList {
 	public static final int NECHRYAEL = 4148;
 	public static final int ABYSSAL_DEMON = 4149;
 	public static final int BROAD_ARROWS = 4150;
-	public static final int ABYSSAL_WHIP = 4151;
-	public static final int ABYSSAL_WHIP_4152 = 4152;
+       public static final int ABYSSAL_WHIP = 4151;
+       public static final int LIME_WHIP = 16022;
+       public static final int ABYSSAL_WHIP_4152 = 4152;
 	public static final int GRANITE_MAUL = 4153;
 	public static final int GRANITE_MAUL_4154 = 4154;
 	public static final int ENCHANTED_GEM = 4155;
