@@ -141,15 +141,15 @@ final class WorldController {
                         groundArray[i][j][k].plainTile = class43_1;
 			return;
 		}
-		Class40 class40 = new Class40(k, k3, j3, i2, j1, i4, i1, k2, k4, i3, j2, l1, k1, l, j4, l3, l2, j, l4);
-		for (int k5 = i; k5 >= 0; k5--) {
-			if (groundArray[k5][j][k] == null) {
-				groundArray[k5][j][k] = new Ground(k5, j, k);
-			}
-		}
+                ShapedTile shapedTile = new ShapedTile(k, k3, j3, i2, j1, i4, i1, k2, k4, i3, j2, l1, k1, l, j4, l3, l2, j, l4);
+                for (int k5 = i; k5 >= 0; k5--) {
+                        if (groundArray[k5][j][k] == null) {
+                                groundArray[k5][j][k] = new Ground(k5, j, k);
+                        }
+                }
 
-		groundArray[i][j][k].aClass40_1312 = class40;
-	}
+                groundArray[i][j][k].shapedTile = shapedTile;
+        }
 
 	public void method280(int i, int j, int k, Animable class30_sub2_sub4, byte byte0, int i1, int j1) {
 		if (class30_sub2_sub4 == null) {
@@ -748,14 +748,14 @@ final class WorldController {
 
 			return;
 		}
-		Class40 class40 = class30_sub3.aClass40_1312;
-		if (class40 == null) {
-			return;
-		}
-		int l1 = class40.anInt684;
-		int i2 = class40.anInt685;
-		int j2 = class40.anInt686;
-		int k2 = class40.anInt687;
+                ShapedTile shapedTile = class30_sub3.shapedTile;
+                if (shapedTile == null) {
+                        return;
+                }
+                int l1 = shapedTile.anInt684;
+                int i2 = shapedTile.anInt685;
+                int j2 = shapedTile.anInt686;
+                int k2 = shapedTile.anInt687;
 		int ai1[] = anIntArrayArray489[l1];
 		int ai2[] = anIntArrayArray490[i2];
 		int l2 = 0;
@@ -1102,8 +1102,8 @@ final class WorldController {
 						if (!method320(0, i, j)) {
                                                         method315(class30_sub3_7.plainTile, 0, anInt458, anInt459, anInt460, anInt461, i, j);
 						}
-					} else if (class30_sub3_7.aClass40_1312 != null && !method320(0, i, j)) {
-						method316(i, anInt458, anInt460, class30_sub3_7.aClass40_1312, anInt459, j, anInt461);
+                                } else if (class30_sub3_7.shapedTile != null && !method320(0, i, j)) {
+                                                method316(i, anInt458, anInt460, class30_sub3_7.shapedTile, anInt459, j, anInt461);
 					}
 					Object1 class10 = class30_sub3_7.obj1;
 					if (class10 != null) {
@@ -1123,9 +1123,9 @@ final class WorldController {
 						flag1 = true;
                                                 method315(class30_sub3_1.plainTile, l, anInt458, anInt459, anInt460, anInt461, i, j);
 					}
-				} else if (class30_sub3_1.aClass40_1312 != null && !method320(l, i, j)) {
-					flag1 = true;
-					method316(i, anInt458, anInt460, class30_sub3_1.aClass40_1312, anInt459, j, anInt461);
+                                } else if (class30_sub3_1.shapedTile != null && !method320(l, i, j)) {
+                                        flag1 = true;
+                                        method316(i, anInt458, anInt460, class30_sub3_1.shapedTile, anInt459, j, anInt461);
 				}
 				int j1 = 0;
 				int j2 = 0;
@@ -1594,12 +1594,12 @@ final class WorldController {
 		}
 	}
 
-	private void method316(int i, int j, int k, Class40 class40, int l, int i1, int j1) {
-		int k1 = class40.anIntArray673.length;
-		for (int l1 = 0; l1 < k1; l1++) {
-			int i2 = class40.anIntArray673[l1] - anInt455;
-			int k2 = class40.anIntArray674[l1] - anInt456;
-			int i3 = class40.anIntArray675[l1] - anInt457;
+        private void method316(int i, int j, int k, ShapedTile shapedTile, int l, int i1, int j1) {
+                int k1 = shapedTile.anIntArray673.length;
+                for (int l1 = 0; l1 < k1; l1++) {
+                        int i2 = shapedTile.anIntArray673[l1] - anInt455;
+                        int k2 = shapedTile.anIntArray674[l1] - anInt456;
+                        int i3 = shapedTile.anIntArray675[l1] - anInt457;
 			int k3 = i3 * k + i2 * j1 >> 16;
 			i3 = i3 * j1 - i2 * k >> 16;
 			i2 = k3;
@@ -1609,49 +1609,49 @@ final class WorldController {
 			if (i3 < 50) {
 				return;
 			}
-			if (class40.anIntArray682 != null) {
-				Class40.anIntArray690[l1] = i2;
-				Class40.anIntArray691[l1] = k2;
-				Class40.anIntArray692[l1] = i3;
-			}
-			Class40.anIntArray688[l1] = Texture.textureInt1 + (i2 << 9) / i3;
-			Class40.anIntArray689[l1] = Texture.textureInt2 + (k2 << 9) / i3;
-		}
+                        if (shapedTile.anIntArray682 != null) {
+                                ShapedTile.anIntArray690[l1] = i2;
+                                ShapedTile.anIntArray691[l1] = k2;
+                                ShapedTile.anIntArray692[l1] = i3;
+                        }
+                        ShapedTile.anIntArray688[l1] = Texture.textureInt1 + (i2 << 9) / i3;
+                        ShapedTile.anIntArray689[l1] = Texture.textureInt2 + (k2 << 9) / i3;
+                }
 
 		Texture.anInt1465 = 0;
-		k1 = class40.anIntArray679.length;
-		for (int j2 = 0; j2 < k1; j2++) {
-			int l2 = class40.anIntArray679[j2];
-			int j3 = class40.anIntArray680[j2];
-			int l3 = class40.anIntArray681[j2];
-			int i4 = Class40.anIntArray688[l2];
-			int j4 = Class40.anIntArray688[j3];
-			int k4 = Class40.anIntArray688[l3];
-			int l4 = Class40.anIntArray689[l2];
-			int i5 = Class40.anIntArray689[j3];
-			int j5 = Class40.anIntArray689[l3];
+                k1 = shapedTile.anIntArray679.length;
+                for (int j2 = 0; j2 < k1; j2++) {
+                        int l2 = shapedTile.anIntArray679[j2];
+                        int j3 = shapedTile.anIntArray680[j2];
+                        int l3 = shapedTile.anIntArray681[j2];
+                        int i4 = ShapedTile.anIntArray688[l2];
+                        int j4 = ShapedTile.anIntArray688[j3];
+                        int k4 = ShapedTile.anIntArray688[l3];
+                        int l4 = ShapedTile.anIntArray689[l2];
+                        int i5 = ShapedTile.anIntArray689[j3];
+                        int j5 = ShapedTile.anIntArray689[l3];
 			if ((i4 - j4) * (j5 - i5) - (l4 - i5) * (k4 - j4) > 0) {
 				Texture.aBoolean1462 = i4 < 0 || j4 < 0 || k4 < 0 || i4 > DrawingArea.centerX || j4 > DrawingArea.centerX || k4 > DrawingArea.centerX;
 				if (aBoolean467 && method318(anInt468, anInt469, l4, i5, j5, i4, j4, k4)) {
 					anInt470 = i;
 					anInt471 = i1;
 				}
-				if (class40.anIntArray682 == null || class40.anIntArray682[j2] == -1) {
-					if (class40.anIntArray676[j2] != 0xbc614e) {
-						Texture.method374(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2], class40.anIntArray677[j2], class40.anIntArray678[j2]);
-					}
-				} else if (!lowMem) {
-					if (class40.aBoolean683) {
-						Texture.method378(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2], class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[0], Class40.anIntArray690[1], Class40.anIntArray690[3], Class40.anIntArray691[0], Class40.anIntArray691[1], Class40.anIntArray691[3], Class40.anIntArray692[0], Class40.anIntArray692[1], Class40.anIntArray692[3], class40.anIntArray682[j2]);
-					} else {
-						Texture.method378(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2], class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[l2], Class40.anIntArray690[j3], Class40.anIntArray690[l3], Class40.anIntArray691[l2], Class40.anIntArray691[j3], Class40.anIntArray691[l3], Class40.anIntArray692[l2], Class40.anIntArray692[j3], Class40.anIntArray692[l3], class40.anIntArray682[j2]);
-					}
-				} else {
-					int k5 = anIntArray485[class40.anIntArray682[j2]];
-					Texture.method374(l4, i5, j5, i4, j4, k4, method317(k5, class40.anIntArray676[j2]), method317(k5, class40.anIntArray677[j2]), method317(k5, class40.anIntArray678[j2]));
-				}
-			}
-		}
+                                if (shapedTile.anIntArray682 == null || shapedTile.anIntArray682[j2] == -1) {
+                                        if (shapedTile.anIntArray676[j2] != 0xbc614e) {
+                                                Texture.method374(l4, i5, j5, i4, j4, k4, shapedTile.anIntArray676[j2], shapedTile.anIntArray677[j2], shapedTile.anIntArray678[j2]);
+                                        }
+                                } else if (!lowMem) {
+                                        if (shapedTile.aBoolean683) {
+                                                Texture.method378(l4, i5, j5, i4, j4, k4, shapedTile.anIntArray676[j2], shapedTile.anIntArray677[j2], shapedTile.anIntArray678[j2], ShapedTile.anIntArray690[0], ShapedTile.anIntArray690[1], ShapedTile.anIntArray690[3], ShapedTile.anIntArray691[0], ShapedTile.anIntArray691[1], ShapedTile.anIntArray691[3], ShapedTile.anIntArray692[0], ShapedTile.anIntArray692[1], ShapedTile.anIntArray692[3], shapedTile.anIntArray682[j2]);
+                                        } else {
+                                                Texture.method378(l4, i5, j5, i4, j4, k4, shapedTile.anIntArray676[j2], shapedTile.anIntArray677[j2], shapedTile.anIntArray678[j2], ShapedTile.anIntArray690[l2], ShapedTile.anIntArray690[j3], ShapedTile.anIntArray690[l3], ShapedTile.anIntArray691[l2], ShapedTile.anIntArray691[j3], ShapedTile.anIntArray691[l3], ShapedTile.anIntArray692[l2], ShapedTile.anIntArray692[j3], ShapedTile.anIntArray692[l3], shapedTile.anIntArray682[j2]);
+                                        }
+                                } else {
+                                        int k5 = anIntArray485[shapedTile.anIntArray682[j2]];
+                                        Texture.method374(l4, i5, j5, i4, j4, k4, method317(k5, shapedTile.anIntArray676[j2]), method317(k5, shapedTile.anIntArray677[j2]), method317(k5, shapedTile.anIntArray678[j2]));
+                                }
+                        }
+                }
 
 	}
 
