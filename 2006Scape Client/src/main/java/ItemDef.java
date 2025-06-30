@@ -2042,8 +2042,8 @@ public final class ItemDef {
                         itemDef.description = "A lime-colored abyssal whip.".getBytes();
                         itemDef.modifiedModelColors = new int[1];
                         itemDef.originalModelColors = new int[1];
-                        itemDef.modifiedModelColors[0] = 17350;
-                        itemDef.originalModelColors[0] = 0;
+                        itemDef.modifiedModelColors[0] = 0;
+                        itemDef.originalModelColors[0] = 17350;
                         break;
                         }
                 return itemDef;
