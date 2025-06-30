@@ -1,6 +1,7 @@
 package com.rs2.game.content.combat.melee;
 
 import com.rs2.Constants;
+import com.rs2.game.content.StaticItemList;
 import com.rs2.game.content.combat.magic.MagicData;
 import com.rs2.game.items.DeprecatedItems;
 import com.rs2.game.items.ItemConstants;

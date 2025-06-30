@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import com.rs2.Constants;
+import com.rs2.game.content.StaticItemList;
 import org.apollo.cache.def.ItemDefinition;
 
 public class ItemData {

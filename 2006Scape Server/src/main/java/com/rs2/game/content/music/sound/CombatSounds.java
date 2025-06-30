@@ -1,5 +1,6 @@
 package com.rs2.game.content.music.sound;
 
+import com.rs2.game.content.StaticItemList;
 import org.apollo.cache.def.ItemDefinition;
 
 import com.rs2.game.content.combat.magic.MagicData;
