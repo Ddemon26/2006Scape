@@ -1,4 +1,4 @@
-/* Class56_Sub1_Sub1 - Decompiled by JODE
+/* SystemMidiPlayer - Decompiled by JODE
  * Visit http://jode.sourceforge.net/
  */
 import java.io.ByteArrayInputStream;
@@ -11,7 +11,7 @@ import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
 
-final class Class56_Sub1_Sub1 extends Class56_Sub1 implements Receiver
+final class SystemMidiPlayer extends Class56_Sub1 implements Receiver
 {
     private static Receiver aReceiver1850 = null;
     private static Sequencer aSequencer1851 = null;
@@ -43,7 +43,7 @@ final class Class56_Sub1_Sub1 extends Class56_Sub1 implements Receiver
     		aReceiver1850.send(midimessage, l);
     }
     
-    Class56_Sub1_Sub1() {
+    SystemMidiPlayer() {
 		try {
 		    aReceiver1850 = MidiSystem.getReceiver();
 		    aSequencer1851 = MidiSystem.getSequencer(false);
