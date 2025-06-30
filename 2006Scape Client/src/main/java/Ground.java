@@ -21,7 +21,7 @@ public final class Ground extends Node {
 	public Object1 obj1;
 	public Object2 obj2;
         public TileDecoration obj3;
-	public Object4 obj4;
+        public ItemPile itemPile;
 	int anInt1317;
 	public final Object5[] obj5Array;
 	final int[] anIntArray1319;

@@ -169,14 +169,14 @@ final class WorldController {
 	}
 
 	public void method281(int i, int j, Animable class30_sub2_sub4, int k, Animable class30_sub2_sub4_1, Animable class30_sub2_sub4_2, int l, int i1) {
-		Object4 object4 = new Object4();
-		object4.aClass30_Sub2_Sub4_48 = class30_sub2_sub4_2;
-		object4.anInt46 = i * 128 + 64;
-		object4.anInt47 = i1 * 128 + 64;
-		object4.anInt45 = k;
-		object4.uid = j;
-		object4.aClass30_Sub2_Sub4_49 = class30_sub2_sub4;
-		object4.aClass30_Sub2_Sub4_50 = class30_sub2_sub4_1;
+                ItemPile itemPile = new ItemPile();
+                itemPile.topItem = class30_sub2_sub4_2;
+                itemPile.x = i * 128 + 64;
+                itemPile.y = i1 * 128 + 64;
+                itemPile.height = k;
+                itemPile.uid = j;
+                itemPile.secondItem = class30_sub2_sub4;
+                itemPile.thirdItem = class30_sub2_sub4_1;
 		int j1 = 0;
 		Ground class30_sub3 = groundArray[l][i][i1];
 		if (class30_sub3 != null) {
@@ -190,11 +190,11 @@ final class WorldController {
 			}
 
 		}
-		object4.anInt52 = j1;
-		if (groundArray[l][i][i1] == null) {
-			groundArray[l][i][i1] = new Ground(l, i, i1);
-		}
-		groundArray[l][i][i1].obj4 = object4;
+                itemPile.offsetY = j1;
+                if (groundArray[l][i][i1] == null) {
+                        groundArray[l][i][i1] = new Ground(l, i, i1);
+                }
+                groundArray[l][i][i1].itemPile = itemPile;
 	}
 
 	public void method282(int i, Animable class30_sub2_sub4, int j, int k, byte byte0, int l, Animable class30_sub2_sub4_1, int i1, int j1, int k1) {
@@ -446,7 +446,7 @@ final class WorldController {
 	public void method295(int i, int j, int k) {
 		Ground class30_sub3 = groundArray[i][j][k];
 		if (class30_sub3 != null) {
-			class30_sub3.obj4 = null;
+                        class30_sub3.itemPile = null;
 		}
 	}
 
@@ -1211,18 +1211,18 @@ final class WorldController {
 					if (class49 != null) {
 						class49.aClass30_Sub2_Sub4_814.method443(0, anInt458, anInt459, anInt460, anInt461, class49.anInt812 - anInt455, class49.anInt811 - anInt456, class49.anInt813 - anInt457, class49.uid);
 					}
-					Object4 object4_1 = class30_sub3_1.obj4;
-					if (object4_1 != null && object4_1.anInt52 == 0) {
-						if (object4_1.aClass30_Sub2_Sub4_49 != null) {
-							object4_1.aClass30_Sub2_Sub4_49.method443(0, anInt458, anInt459, anInt460, anInt461, object4_1.anInt46 - anInt455, object4_1.anInt45 - anInt456, object4_1.anInt47 - anInt457, object4_1.uid);
-						}
-						if (object4_1.aClass30_Sub2_Sub4_50 != null) {
-							object4_1.aClass30_Sub2_Sub4_50.method443(0, anInt458, anInt459, anInt460, anInt461, object4_1.anInt46 - anInt455, object4_1.anInt45 - anInt456, object4_1.anInt47 - anInt457, object4_1.uid);
-						}
-						if (object4_1.aClass30_Sub2_Sub4_48 != null) {
-							object4_1.aClass30_Sub2_Sub4_48.method443(0, anInt458, anInt459, anInt460, anInt461, object4_1.anInt46 - anInt455, object4_1.anInt45 - anInt456, object4_1.anInt47 - anInt457, object4_1.uid);
-						}
-					}
+                                        ItemPile pile1 = class30_sub3_1.itemPile;
+                                        if (pile1 != null && pile1.offsetY == 0) {
+                                                if (pile1.secondItem != null) {
+                                                        pile1.secondItem.method443(0, anInt458, anInt459, anInt460, anInt461, pile1.x - anInt455, pile1.height - anInt456, pile1.y - anInt457, pile1.uid);
+                                                }
+                                                if (pile1.thirdItem != null) {
+                                                        pile1.thirdItem.method443(0, anInt458, anInt459, anInt460, anInt461, pile1.x - anInt455, pile1.height - anInt456, pile1.y - anInt457, pile1.uid);
+                                                }
+                                                if (pile1.topItem != null) {
+                                                        pile1.topItem.method443(0, anInt458, anInt459, anInt460, anInt461, pile1.x - anInt455, pile1.height - anInt456, pile1.y - anInt457, pile1.uid);
+                                                }
+                                        }
 				}
 				int k4 = class30_sub3_1.anInt1320;
 				if (k4 != 0) {
@@ -1405,18 +1405,18 @@ final class WorldController {
 			}
 			class30_sub3_1.aBoolean1323 = false;
 			anInt446--;
-			Object4 object4 = class30_sub3_1.obj4;
-			if (object4 != null && object4.anInt52 != 0) {
-				if (object4.aClass30_Sub2_Sub4_49 != null) {
-					object4.aClass30_Sub2_Sub4_49.method443(0, anInt458, anInt459, anInt460, anInt461, object4.anInt46 - anInt455, object4.anInt45 - anInt456 - object4.anInt52, object4.anInt47 - anInt457, object4.uid);
-				}
-				if (object4.aClass30_Sub2_Sub4_50 != null) {
-					object4.aClass30_Sub2_Sub4_50.method443(0, anInt458, anInt459, anInt460, anInt461, object4.anInt46 - anInt455, object4.anInt45 - anInt456 - object4.anInt52, object4.anInt47 - anInt457, object4.uid);
-				}
-				if (object4.aClass30_Sub2_Sub4_48 != null) {
-					object4.aClass30_Sub2_Sub4_48.method443(0, anInt458, anInt459, anInt460, anInt461, object4.anInt46 - anInt455, object4.anInt45 - anInt456 - object4.anInt52, object4.anInt47 - anInt457, object4.uid);
-				}
-			}
+                        ItemPile pile = class30_sub3_1.itemPile;
+                        if (pile != null && pile.offsetY != 0) {
+                                if (pile.secondItem != null) {
+                                        pile.secondItem.method443(0, anInt458, anInt459, anInt460, anInt461, pile.x - anInt455, pile.height - anInt456 - pile.offsetY, pile.y - anInt457, pile.uid);
+                                }
+                                if (pile.thirdItem != null) {
+                                        pile.thirdItem.method443(0, anInt458, anInt459, anInt460, anInt461, pile.x - anInt455, pile.height - anInt456 - pile.offsetY, pile.y - anInt457, pile.uid);
+                                }
+                                if (pile.topItem != null) {
+                                        pile.topItem.method443(0, anInt458, anInt459, anInt460, anInt461, pile.x - anInt455, pile.height - anInt456 - pile.offsetY, pile.y - anInt457, pile.uid);
+                                }
+                        }
 			if (class30_sub3_1.anInt1328 != 0) {
 				Object2 class26 = class30_sub3_1.obj2;
 				if (class26 != null && !method322(l, i, j, class26.aClass30_Sub2_Sub4_504.modelHeight)) {
