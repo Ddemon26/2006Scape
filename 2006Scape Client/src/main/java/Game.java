@@ -2735,32 +2735,32 @@ public class Game extends RSApplet {
 	}
 
        public void processProjectiles() {
-		for (Animable_Sub4 class30_sub2_sub4_sub4 = (Animable_Sub4) aClass19_1013.reverseGetFirst(); class30_sub2_sub4_sub4 != null; class30_sub2_sub4_sub4 = (Animable_Sub4) aClass19_1013.reverseGetNext()) {
-			if (class30_sub2_sub4_sub4.anInt1597 != plane || loopCycle > class30_sub2_sub4_sub4.anInt1572) {
-				class30_sub2_sub4_sub4.unlink();
-			} else if (loopCycle >= class30_sub2_sub4_sub4.anInt1571) {
-				if (class30_sub2_sub4_sub4.anInt1590 > 0) {
-					NPC npc = npcArray[class30_sub2_sub4_sub4.anInt1590 - 1];
-					if (npc != null && npc.x >= 0 && npc.x < 13312 && npc.y >= 0 && npc.y < 13312) {
-						class30_sub2_sub4_sub4.method455(loopCycle, npc.y, method42(class30_sub2_sub4_sub4.anInt1597, npc.y, npc.x) - class30_sub2_sub4_sub4.anInt1583, npc.x);
-					}
-				}
-				if (class30_sub2_sub4_sub4.anInt1590 < 0) {
-					int j = -class30_sub2_sub4_sub4.anInt1590 - 1;
-					Player player;
-					if (j == unknownInt10) {
-						player = myPlayer;
-					} else {
-						player = playerArray[j];
-					}
-					if (player != null && player.x >= 0 && player.x < 13312 && player.y >= 0 && player.y < 13312) {
-						class30_sub2_sub4_sub4.method455(loopCycle, player.y, method42(class30_sub2_sub4_sub4.anInt1597, player.y, player.x) - class30_sub2_sub4_sub4.anInt1583, player.x);
-					}
-				}
-				class30_sub2_sub4_sub4.method456(anInt945);
-				worldController.method285(plane, class30_sub2_sub4_sub4.anInt1595, (int) class30_sub2_sub4_sub4.aDouble1587, -1, (int) class30_sub2_sub4_sub4.aDouble1586, 60, (int) class30_sub2_sub4_sub4.aDouble1585, class30_sub2_sub4_sub4, false);
-			}
-		}
+       for (Projectile class30_sub2_sub4_sub4 = (Projectile) aClass19_1013.reverseGetFirst(); class30_sub2_sub4_sub4 != null; class30_sub2_sub4_sub4 = (Projectile) aClass19_1013.reverseGetNext()) {
+                        if (class30_sub2_sub4_sub4.plane != plane || loopCycle > class30_sub2_sub4_sub4.endCycle) {
+                                class30_sub2_sub4_sub4.unlink();
+                        } else if (loopCycle >= class30_sub2_sub4_sub4.startCycle) {
+                                if (class30_sub2_sub4_sub4.targetIndex > 0) {
+                                        NPC npc = npcArray[class30_sub2_sub4_sub4.targetIndex - 1];
+                                        if (npc != null && npc.x >= 0 && npc.x < 13312 && npc.y >= 0 && npc.y < 13312) {
+                                                class30_sub2_sub4_sub4.track(loopCycle, npc.y, method42(class30_sub2_sub4_sub4.plane, npc.y, npc.x) - class30_sub2_sub4_sub4.heightOffset, npc.x);
+                                        }
+                                }
+                                if (class30_sub2_sub4_sub4.targetIndex < 0) {
+                                        int j = -class30_sub2_sub4_sub4.targetIndex - 1;
+                                        Player player;
+                                        if (j == unknownInt10) {
+                                                player = myPlayer;
+                                        } else {
+                                                player = playerArray[j];
+                                        }
+                                        if (player != null && player.x >= 0 && player.x < 13312 && player.y >= 0 && player.y < 13312) {
+                                                class30_sub2_sub4_sub4.track(loopCycle, player.y, method42(class30_sub2_sub4_sub4.plane, player.y, player.x) - class30_sub2_sub4_sub4.heightOffset, player.x);
+                                        }
+                                }
+                                class30_sub2_sub4_sub4.update(anInt945);
+                                worldController.method285(plane, class30_sub2_sub4_sub4.yaw, (int) class30_sub2_sub4_sub4.currentHeight, -1, (int) class30_sub2_sub4_sub4.currentY, 60, (int) class30_sub2_sub4_sub4.currentX, class30_sub2_sub4_sub4, false);
+                        }
+                }
 
 	}
 
@@ -10278,9 +10278,9 @@ public class Game extends RSApplet {
 				k8 = k8 * 128 + 64;
 				j11 = j11 * 128 + 64;
 				k13 = k13 * 128 + 64;
-				Animable_Sub4 class30_sub2_sub4_sub4 = new Animable_Sub4(i21, l18, k19 + loopCycle, j20 + loopCycle, j21, plane, method42(plane, k8, l5) - i18, k8, l5, l15, i17);
-				class30_sub2_sub4_sub4.method455(k19 + loopCycle, k13, method42(plane, k13, j11) - l18, j11);
-				aClass19_1013.insertHead(class30_sub2_sub4_sub4);
+                                Projectile class30_sub2_sub4_sub4 = new Projectile(i21, l18, k19 + loopCycle, j20 + loopCycle, j21, plane, method42(plane, k8, l5) - i18, k8, l5, l15, i17);
+                                class30_sub2_sub4_sub4.track(k19 + loopCycle, k13, method42(plane, k13, j11) - l18, j11);
+                                aClass19_1013.insertHead(class30_sub2_sub4_sub4);
 			}
 		}
 	}
