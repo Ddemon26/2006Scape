@@ -58,20 +58,20 @@ public class Game extends RSApplet {
 	}
 	
 	static final boolean musicIsntNull() {
-		if (aClass56_749 == null)
+            if (midiPlayer == null)
 			return false;
 		return true;
 	}
 	
        static final void closeMidiSystem() {
-		if (aClass56_749 != null) {
+            if (midiPlayer != null) {
                        stopMidiPlayback(false);
 			if (anInt720 > 0) {
-                                aClass56_749.setVolume(256);
+                                midiPlayer.setVolume(256);
 				anInt720 = 0;
 			}
-                       aClass56_749.shutdown();
-		    aClass56_749 = null;
+                       midiPlayer.shutdown();
+                 midiPlayer = null;
 		}
 	}
 	
@@ -158,11 +158,11 @@ public class Game extends RSApplet {
 	}
 	
        static final void setMidiVolume(int i) {
-		if (aClass56_749 != null) {
+            if (midiPlayer != null) {
 			if (anInt720 == 0) {
 				if (anInt478 >= 0) {
 					anInt478 = i;
-                                    aClass56_749.adjustVolume(i, 0);
+                                    midiPlayer.adjustVolume(i, 0);
 				}
 			} else if (aByteArray347 != null)
 				anInt1478 = i;
@@ -183,7 +183,7 @@ public class Game extends RSApplet {
 	static final boolean constructMusic() {
 		anInt720 = 20;
 		try {
-		    aClass56_749 = (Class56) Class.forName("Class56_Sub1_Sub1").newInstance();
+                midiPlayer = (MidiPlayer) Class.forName("Class56_Sub1_Sub1").newInstance();
 		} catch (Throwable throwable) {
 		    return false;
 		}
@@ -244,9 +244,9 @@ public class Game extends RSApplet {
 	}
 	
        static final void playMidiTrack(int i_2_, byte[] is, boolean bool) {
-		if (aClass56_749 != null) {
+            if (midiPlayer != null) {
 			if (anInt478 >= 0) {
-                    aClass56_749.stopMidi();
+                    midiPlayer.stopMidi();
 				anInt478 = -1;
 				aByteArray347 = null;
 				anInt720 = 20;
@@ -254,17 +254,17 @@ public class Game extends RSApplet {
 			}
 		    if (is != null) {
 		    	if (anInt720 > 0) {
-                            aClass56_749.setVolume(i_2_);
+                            midiPlayer.setVolume(i_2_);
 		    		anInt720 = 0;
 		    	}
 		    	anInt478 = i_2_;
-                    aClass56_749.playMidi(i_2_, is, 0, bool);
+                    midiPlayer.playMidi(i_2_, is, 0, bool);
 		    }
 		}
 	}
 	
        static final void queueMidiTrack(int i, int i_29_, boolean bool, byte[] is, int i_30_) {
-		if (aClass56_749 != null) {
+            if (midiPlayer != null) {
 			if (i_29_ >= (anInt478 ^ 0xffffffff)) {
 				i -= 20;
 				if (i < 1)
@@ -290,7 +290,7 @@ public class Game extends RSApplet {
 	}
 	
        static final void initiateMidiFade(boolean bool, int i, int i_2_, byte[] is) {
-		if (aClass56_749 != null) {
+            if (midiPlayer != null) {
 			if (anInt478 >= 0) {
 				anInt2200 = i;
 				if (anInt478 != 0) {
@@ -315,17 +315,17 @@ public class Game extends RSApplet {
 	}
 	
        static final void updateMidiFade(int i) {
-		if (aClass56_749 != null) {
+            if (midiPlayer != null) {
 			if (anInt478 < i) {
 				if (anInt720 > 0) {
 					anInt720--;
 					if (anInt720 == 0) {
                                                 if (aByteArray347 == null)
-                                                        aClass56_749.setVolume(256);
+                                                        midiPlayer.setVolume(256);
                                                 else {
-                                                        aClass56_749.setVolume(anInt1478);
+                                                        midiPlayer.setVolume(anInt1478);
                                                         anInt478 = anInt1478;
-                                                        aClass56_749.playMidi(anInt1478, aByteArray347, 0, aBoolean475);
+                                                        midiPlayer.playMidi(anInt1478, aByteArray347, 0, aBoolean475);
 							aByteArray347 = null;
 						}
 						anInt155 = 0;
@@ -333,15 +333,15 @@ public class Game extends RSApplet {
 				}
 			} else if (anInt720 > 0) {
 				anInt155 += anInt2200;
-                                aClass56_749.adjustVolume(anInt478, anInt155);
+                                midiPlayer.adjustVolume(anInt478, anInt155);
 				anInt720--;
 				if (anInt720 == 0) {
-                                        aClass56_749.stopMidi();
+                                        midiPlayer.stopMidi();
 					anInt720 = 20;
 					anInt478 = -1;
 				}
 			}
-                        aClass56_749.poll(i - 122);
+                        midiPlayer.poll(i - 122);
 		}
 	}
 
@@ -12598,7 +12598,7 @@ public class Game extends RSApplet {
 	12800, 12800, 12800, 12800, 12800, 12800,
 	12800, 12800, 12800, 12800 };
 	public static int anInt720 = 0;
-	public static Class56 aClass56_749;
+        public static MidiPlayer midiPlayer;
 	public static boolean fetchMusic = false;
 	public static int musicVolume2;
 	public static int anInt478 = -1;
