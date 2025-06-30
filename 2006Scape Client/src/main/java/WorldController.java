@@ -25,7 +25,7 @@ final class WorldController {
 	public static void nullLoader() {
 		aClass28Array462 = null;
 		anIntArray473 = null;
-		aClass47ArrayArray474 = null;
+		aCullingClusters = null;
 		aClass19_477 = null;
 		aBooleanArrayArrayArrayArray491 = null;
 		aBooleanArrayArray492 = null;
@@ -43,7 +43,7 @@ final class WorldController {
 		}
 		for (int l = 0; l < anInt472; l++) {
 			for (int j1 = 0; j1 < anIntArray473[l]; j1++) {
-				aClass47ArrayArray474[l][j1] = null;
+				aCullingClusters[l][j1] = null;
 			}
 
 			anIntArray473[l] = 0;
@@ -95,21 +95,21 @@ final class WorldController {
 		groundArray[3][j][i] = null;
 	}
 
-	public static void method277(int i, int j, int k, int l, int i1, int j1, int l1, int i2) {
-		Class47 class47 = new Class47();
-		class47.anInt787 = j / 128;
-		class47.anInt788 = l / 128;
-		class47.anInt789 = l1 / 128;
-		class47.anInt790 = i1 / 128;
-		class47.anInt791 = i2;
-		class47.anInt792 = j;
-		class47.anInt793 = l;
-		class47.anInt794 = l1;
-		class47.anInt795 = i1;
-		class47.anInt796 = j1;
-		class47.anInt797 = k;
-		aClass47ArrayArray474[i][anIntArray473[i]++] = class47;
-	}
+        public static void method277(int i, int j, int k, int l, int i1, int j1, int l1, int i2) {
+                CullingCluster cluster = new CullingCluster();
+                cluster.minTileX = j / 128;
+                cluster.maxTileX = l / 128;
+                cluster.minTileZ = l1 / 128;
+                cluster.maxTileZ = i1 / 128;
+                cluster.type = i2;
+                cluster.minX = j;
+                cluster.maxX = l;
+                cluster.minZ = l1;
+                cluster.maxZ = i1;
+                cluster.minY = j1;
+                cluster.maxY = k;
+                aCullingClusters[i][anIntArray473[i]++] = cluster;
+        }
 
 	public void method278(int i, int j, int k, int l) {
 		Ground class30_sub3 = groundArray[i][j][k];
@@ -1687,20 +1687,20 @@ final class WorldController {
 
 	private void method319() {
 		int j = anIntArray473[anInt447];
-		Class47 aclass47[] = aClass47ArrayArray474[anInt447];
+		CullingCluster aclass47[] = aCullingClusters[anInt447];
 		anInt475 = 0;
 		for (int k = 0; k < j; k++) {
-			Class47 class47 = aclass47[k];
-			if (class47.anInt791 == 1) {
-				int l = class47.anInt787 - anInt453 + drawDistance;
+			CullingCluster class47 = aclass47[k];
+			if (class47.type == 1) {
+				int l = class47.minTileX - anInt453 + drawDistance;
 				if (l < 0 || l > 50) {
 					continue;
 				}
-				int k1 = class47.anInt789 - anInt454 + drawDistance;
+				int k1 = class47.minTileZ - anInt454 + drawDistance;
 				if (k1 < 0) {
 					k1 = 0;
 				}
-				int j2 = class47.anInt790 - anInt454 + drawDistance;
+				int j2 = class47.maxTileZ - anInt454 + drawDistance;
 				if (j2 > 50) {
 					j2 = 50;
 				}
@@ -1714,33 +1714,33 @@ final class WorldController {
 				if (!flag) {
 					continue;
 				}
-				int j3 = anInt455 - class47.anInt792;
+				int j3 = anInt455 - class47.minX;
 				if (j3 > 32) {
-					class47.anInt798 = 1;
+					class47.searchMask = 1;
 				} else {
 					if (j3 >= -32) {
 						continue;
 					}
-					class47.anInt798 = 2;
+					class47.searchMask = 2;
 					j3 = -j3;
 				}
-				class47.anInt801 = (class47.anInt794 - anInt457 << 8) / j3;
-				class47.anInt802 = (class47.anInt795 - anInt457 << 8) / j3;
-				class47.anInt803 = (class47.anInt796 - anInt456 << 8) / j3;
-				class47.anInt804 = (class47.anInt797 - anInt456 << 8) / j3;
-				aClass47Array476[anInt475++] = class47;
+				class47.startZFactor = (class47.minZ - anInt457 << 8) / j3;
+				class47.endZFactor = (class47.maxZ - anInt457 << 8) / j3;
+				class47.startYFactor = (class47.minY - anInt456 << 8) / j3;
+				class47.endYFactor = (class47.maxY - anInt456 << 8) / j3;
+				cullingClusterBuffer[anInt475++] = class47;
 				continue;
 			}
-			if (class47.anInt791 == 2) {
-				int i1 = class47.anInt789 - anInt454 + drawDistance;
+			if (class47.type == 2) {
+				int i1 = class47.minTileZ - anInt454 + drawDistance;
 				if (i1 < 0 || i1 > 50) {
 					continue;
 				}
-				int l1 = class47.anInt787 - anInt453 + drawDistance;
+				int l1 = class47.minTileX - anInt453 + drawDistance;
 				if (l1 < 0) {
 					l1 = 0;
 				}
-				int k2 = class47.anInt788 - anInt453 + drawDistance;
+				int k2 = class47.maxTileX - anInt453 + drawDistance;
 				if (k2 > 50) {
 					k2 = 50;
 				}
@@ -1754,38 +1754,38 @@ final class WorldController {
 				if (!flag1) {
 					continue;
 				}
-				int k3 = anInt457 - class47.anInt794;
+				int k3 = anInt457 - class47.minZ;
 				if (k3 > 32) {
-					class47.anInt798 = 3;
+					class47.searchMask = 3;
 				} else {
 					if (k3 >= -32) {
 						continue;
 					}
-					class47.anInt798 = 4;
+					class47.searchMask = 4;
 					k3 = -k3;
 				}
-				class47.anInt799 = (class47.anInt792 - anInt455 << 8) / k3;
-				class47.anInt800 = (class47.anInt793 - anInt455 << 8) / k3;
-				class47.anInt803 = (class47.anInt796 - anInt456 << 8) / k3;
-				class47.anInt804 = (class47.anInt797 - anInt456 << 8) / k3;
-				aClass47Array476[anInt475++] = class47;
-			} else if (class47.anInt791 == 4) {
-				int j1 = class47.anInt796 - anInt456;
+				class47.startXFactor = (class47.minX - anInt455 << 8) / k3;
+				class47.endXFactor = (class47.maxX - anInt455 << 8) / k3;
+				class47.startYFactor = (class47.minY - anInt456 << 8) / k3;
+				class47.endYFactor = (class47.maxY - anInt456 << 8) / k3;
+				cullingClusterBuffer[anInt475++] = class47;
+			} else if (class47.type == 4) {
+				int j1 = class47.minY - anInt456;
 				if (j1 > 128) {
-					int i2 = class47.anInt789 - anInt454 + drawDistance;
+					int i2 = class47.minTileZ - anInt454 + drawDistance;
 					if (i2 < 0) {
 						i2 = 0;
 					}
-					int l2 = class47.anInt790 - anInt454 + drawDistance;
+					int l2 = class47.maxTileZ - anInt454 + drawDistance;
 					if (l2 > 50) {
 						l2 = 50;
 					}
 					if (i2 <= l2) {
-						int i3 = class47.anInt787 - anInt453 + drawDistance;
+						int i3 = class47.minTileX - anInt453 + drawDistance;
 						if (i3 < 0) {
 							i3 = 0;
 						}
-						int l3 = class47.anInt788 - anInt453 + drawDistance;
+						int l3 = class47.maxTileX - anInt453 + drawDistance;
 						if (l3 > 50) {
 							l3 = 50;
 						}
@@ -1802,12 +1802,12 @@ final class WorldController {
 						}
 
 						if (flag2) {
-							class47.anInt798 = 5;
-							class47.anInt799 = (class47.anInt792 - anInt455 << 8) / j1;
-							class47.anInt800 = (class47.anInt793 - anInt455 << 8) / j1;
-							class47.anInt801 = (class47.anInt794 - anInt457 << 8) / j1;
-							class47.anInt802 = (class47.anInt795 - anInt457 << 8) / j1;
-							aClass47Array476[anInt475++] = class47;
+							class47.searchMask = 5;
+							class47.startXFactor = (class47.minX - anInt455 << 8) / j1;
+							class47.endXFactor = (class47.maxX - anInt455 << 8) / j1;
+							class47.startZFactor = (class47.minZ - anInt457 << 8) / j1;
+							class47.endZFactor = (class47.maxZ - anInt457 << 8) / j1;
+							cullingClusterBuffer[anInt475++] = class47;
 						}
 					}
 				}
@@ -1986,58 +1986,58 @@ final class WorldController {
 
 	private boolean method324(int i, int j, int k) {
 		for (int l = 0; l < anInt475; l++) {
-			Class47 class47 = aClass47Array476[l];
-			if (class47.anInt798 == 1) {
-				int i1 = class47.anInt792 - i;
+			CullingCluster class47 = cullingClusterBuffer[l];
+			if (class47.searchMask == 1) {
+				int i1 = class47.minX - i;
 				if (i1 > 0) {
-					int j2 = class47.anInt794 + (class47.anInt801 * i1 >> 8);
-					int k3 = class47.anInt795 + (class47.anInt802 * i1 >> 8);
-					int l4 = class47.anInt796 + (class47.anInt803 * i1 >> 8);
-					int i6 = class47.anInt797 + (class47.anInt804 * i1 >> 8);
+					int j2 = class47.minZ + (class47.startZFactor * i1 >> 8);
+					int k3 = class47.maxZ + (class47.endZFactor * i1 >> 8);
+					int l4 = class47.minY + (class47.startYFactor * i1 >> 8);
+					int i6 = class47.maxY + (class47.endYFactor * i1 >> 8);
 					if (k >= j2 && k <= k3 && j >= l4 && j <= i6) {
 						return true;
 					}
 				}
-			} else if (class47.anInt798 == 2) {
-				int j1 = i - class47.anInt792;
+			} else if (class47.searchMask == 2) {
+				int j1 = i - class47.minX;
 				if (j1 > 0) {
-					int k2 = class47.anInt794 + (class47.anInt801 * j1 >> 8);
-					int l3 = class47.anInt795 + (class47.anInt802 * j1 >> 8);
-					int i5 = class47.anInt796 + (class47.anInt803 * j1 >> 8);
-					int j6 = class47.anInt797 + (class47.anInt804 * j1 >> 8);
+					int k2 = class47.minZ + (class47.startZFactor * j1 >> 8);
+					int l3 = class47.maxZ + (class47.endZFactor * j1 >> 8);
+					int i5 = class47.minY + (class47.startYFactor * j1 >> 8);
+					int j6 = class47.maxY + (class47.endYFactor * j1 >> 8);
 					if (k >= k2 && k <= l3 && j >= i5 && j <= j6) {
 						return true;
 					}
 				}
-			} else if (class47.anInt798 == 3) {
-				int k1 = class47.anInt794 - k;
+			} else if (class47.searchMask == 3) {
+				int k1 = class47.minZ - k;
 				if (k1 > 0) {
-					int l2 = class47.anInt792 + (class47.anInt799 * k1 >> 8);
-					int i4 = class47.anInt793 + (class47.anInt800 * k1 >> 8);
-					int j5 = class47.anInt796 + (class47.anInt803 * k1 >> 8);
-					int k6 = class47.anInt797 + (class47.anInt804 * k1 >> 8);
+					int l2 = class47.minX + (class47.startXFactor * k1 >> 8);
+					int i4 = class47.maxX + (class47.endXFactor * k1 >> 8);
+					int j5 = class47.minY + (class47.startYFactor * k1 >> 8);
+					int k6 = class47.maxY + (class47.endYFactor * k1 >> 8);
 					if (i >= l2 && i <= i4 && j >= j5 && j <= k6) {
 						return true;
 					}
 				}
-			} else if (class47.anInt798 == 4) {
-				int l1 = k - class47.anInt794;
+			} else if (class47.searchMask == 4) {
+				int l1 = k - class47.minZ;
 				if (l1 > 0) {
-					int i3 = class47.anInt792 + (class47.anInt799 * l1 >> 8);
-					int j4 = class47.anInt793 + (class47.anInt800 * l1 >> 8);
-					int k5 = class47.anInt796 + (class47.anInt803 * l1 >> 8);
-					int l6 = class47.anInt797 + (class47.anInt804 * l1 >> 8);
+					int i3 = class47.minX + (class47.startXFactor * l1 >> 8);
+					int j4 = class47.maxX + (class47.endXFactor * l1 >> 8);
+					int k5 = class47.minY + (class47.startYFactor * l1 >> 8);
+					int l6 = class47.maxY + (class47.endYFactor * l1 >> 8);
 					if (i >= i3 && i <= j4 && j >= k5 && j <= l6) {
 						return true;
 					}
 				}
-			} else if (class47.anInt798 == 5) {
-				int i2 = j - class47.anInt796;
+			} else if (class47.searchMask == 5) {
+				int i2 = j - class47.minY;
 				if (i2 > 0) {
-					int j3 = class47.anInt792 + (class47.anInt799 * i2 >> 8);
-					int k4 = class47.anInt793 + (class47.anInt800 * i2 >> 8);
-					int l5 = class47.anInt794 + (class47.anInt801 * i2 >> 8);
-					int i7 = class47.anInt795 + (class47.anInt802 * i2 >> 8);
+					int j3 = class47.minX + (class47.startXFactor * i2 >> 8);
+					int k4 = class47.maxX + (class47.endXFactor * i2 >> 8);
+					int l5 = class47.minZ + (class47.startZFactor * i2 >> 8);
+					int i7 = class47.maxZ + (class47.endZFactor * i2 >> 8);
 					if (i >= j3 && i <= k4 && k >= l5 && k <= i7) {
 						return true;
 					}
@@ -2087,9 +2087,9 @@ final class WorldController {
 	public static int anInt471 = -1;
 	private static final int anInt472;
 	private static int[] anIntArray473;
-	private static Class47[][] aClass47ArrayArray474;
+	private static CullingCluster[][] aCullingClusters;
 	private static int anInt475;
-	private static final Class47[] aClass47Array476 = new Class47[500];
+	private static final CullingCluster[] cullingClusterBuffer = new CullingCluster[500];
 	private static NodeList aClass19_477 = new NodeList();
 	private static final int[] anIntArray478 = {19, 55, 38, 155, 255, 110, 137, 205, 76};
 	private static final int[] anIntArray479 = {160, 192, 80, 96, 0, 144, 80, 48, 160};
@@ -2116,6 +2116,6 @@ final class WorldController {
 	static {
 		anInt472 = 4;
 		anIntArray473 = new int[anInt472];
-		aClass47ArrayArray474 = new Class47[anInt472][500];
+		aCullingClusters = new CullingCluster[anInt472][500];
 	}
 }
