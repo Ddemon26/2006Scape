@@ -95,7 +95,7 @@ Violating style **MUST** cause the agent to abort or open a clarification PR.
 
 An automated refactor **SHOULD**:
 
-1. \*\*Detect and split \*\****god files*** – any class or source file larger than 2 000 LOC **MUST** be broken into smaller, single‑responsibility units in successive PRs that each satisfy Section 3 limits.
+1. **Detect and split *god files*** – any class or source file larger than 2 000 LOC **MUST** be broken into smaller, single‑responsibility units in successive PRs that each satisfy Section 3 limits.
 2. Remove unused imports & dead code.
 3. Convert duplicated literal IDs to shared enums/records.
 4. Migrate legacy collections (`Vector`, `Hashtable`) to modern ones.
@@ -167,12 +167,12 @@ graph TD
 
 Badly named identifiers such as `class204`, `method321`, or `anInt545` **MAY** be renamed **only** under these constraints (even a tiny logic tweak can break client↔server protocol synchronisation):
 
-| Step                         | Mandatory Checks                                                                                                                                    |
-| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1  Scope**                 | Operate on **one top‑level class per PR**. Branch `bot/rename/<old>-to-<new>`; PR title `[BOT] refactor(rename): <OldName> → <NewName>`.            |
-| **2  Dependency sweep**      | Grep for the old identifier repo‑wide; update **every reference** that calls the renamed public API. Avoid touching unrelated logic.                |
-| **3  No‑logic guarantee**    | Compile using the command in Section 3 and run `tests-all.jar`. The byte‑code diff **MUST** show identifier changes only (verified by `japicmp`).   |
-| **4  Triple‑check protocol** | a. Diff‑filter rejects logic changes.b. Compile succeeds.c. Runtime sanity: launch Docker world, log in, run `/skills`, logout; abort on any error. |
-| **5  Naming convention**     | Classes `UpperCamelCase`; methods & fields `lowerCamelCase`; names **MUST** convey intent.                                                          |
-| **6  Follow‑up classes**     | If class *B* depends on renamed class *A*, update *B's references* in the same PR, but rename *B* itself in a future PR.                            |
-| **7  Review artefacts**      | PR body \*\*M                                                                                                                                       |
+| Step                         | Mandatory Checks                                                                                                                                            |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1  Scope**                 | Operate on **one top‑level class per PR**. Branch `bot/rename/<old>-to-<new>`; PR title `[BOT] refactor(rename): <OldName> → <NewName>`.                    |
+| **2  Dependency sweep**      | Grep for the old identifier repo‑wide; update **every reference** that calls the renamed public API. Avoid touching unrelated logic.                        |
+| **3  No‑logic guarantee**    | Compile using the command in Section 3 and run `tests-all.jar`. The byte‑code diff **MUST** show identifier changes only (verified by `japicmp`).           |
+| **4  Triple‑check protocol** | a. Diff‑filter rejects logic changes.<br>b. Compile succeeds.<br>c. Runtime sanity: launch Docker world, log in, run `/skills`, logout; abort on any error. |
+| **5  Naming convention**     | Classes `UpperCamelCase`; methods & fields `lowerCamelCase`; names **MUST** convey intent.                                                                  |
+| **6  Follow‑up classes**     | If class *B* depends on renamed class *A*, update *B's references* in the same PR, but rename *B* itself in a future PR.                                    |
+| **7  Review artefacts**      | PR body \*\*M                                                                                                                                               |
