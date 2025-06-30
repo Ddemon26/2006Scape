@@ -97,15 +97,23 @@ public class ShopAssistant {
 		}
 	}
 
-	public int getItemShopValue(int ItemID, int Type, boolean isSelling) {
-		double ShopValue = 1;
-		double TotPrice = 0;
-		double sellingRatio = isSelling ? 0.85 : 1;
-		if (ItemDefinition.lookup(ItemID) != null) {
-			ShopValue = ItemDefinition.lookup(ItemID).getValue() * sellingRatio;
-		}
+       public int getItemShopValue(int ItemID, int Type, boolean isSelling) {
+               double ShopValue = 1;
+               double TotPrice = 0;
+               double sellingRatio = isSelling ? 0.85 : 1;
 
-		TotPrice = ShopValue;
+               ItemDefinition def = ItemDefinition.lookup(ItemID);
+
+               if (def.getId() == -1 && ItemID == StaticItemList.LIME_WHIP) {
+                       // Fallback to abyssal whip value for custom lime whip
+                       def = ItemDefinition.lookup(StaticItemList.ABYSSAL_WHIP);
+               }
+
+               if (def.getId() != -1) {
+                       ShopValue = def.getValue() * sellingRatio;
+               }
+
+               TotPrice = ShopValue;
 
 		// General store pays less for items
 		if (isSelling && ShopHandler.shopBModifier[player.shopId] == 1) {
