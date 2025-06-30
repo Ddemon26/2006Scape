@@ -50,8 +50,6 @@ Any other class of change **MUST** be expressly permitted by a maintainer commen
 
 The agent **MUST NOT**:
 
-* Touch any file under `cache/` or `assets/`.
-* Commit Jagex‑owned proprietary content.
 * Re‑write git history.
 * Modify license headers.
 * Introduce new runtime dependencies without maintainer permission.
