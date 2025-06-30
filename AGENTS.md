@@ -45,6 +45,7 @@ The agent **MAY** perform **only** the following categories:
 3. **Bug‑fix** – fix a reproducible defect referenced in the PR body.
 4. **Dependency update** – bump Maven or Docker images **within the same major version**.
 5. **CI / workflow** – patch `.github/workflows/*.yml` for build health.
+6. **Convert/Update Cache** – update the runescape cache files to the latest format.
 
 Any other class of change **MUST** be expressly permitted by a maintainer comment containing `/allow‑bot <task>` on the **PR** itself.
 
