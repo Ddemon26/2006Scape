@@ -1,8 +1,8 @@
-/* Class11 - Decompiled by JODE
+/* MidiFile - Decompiled by JODE
  * Visit http://jode.sourceforge.net/
  */
 
-final class Class11
+final class MidiFile
 {
     private static byte[] aByteArray210
 	= { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
@@ -189,7 +189,7 @@ final class Class11
 	return i_17_;
     }
     
-    public Class11() {
+    public MidiFile() {
 	/* empty */
     }
 }
