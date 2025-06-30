@@ -2,7 +2,7 @@
  * Visit http://jode.sourceforge.net/
  */
 
-final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
+final class Class56_Sub1_Sub2 extends AbstractMidiController implements Runnable
 {
     private static Runnable_Impl1 aRunnable_Impl1_1852;
     private static boolean aBoolean1853;
@@ -29,8 +29,8 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
     	}
     }
     
-    final void method836(int i, int i_4_, int i_5_, long l) {
-    	method845(i, (int) l, i_4_, i_5_);
+    final void sendShortMessage(int status, int data1, int data2, long timestamp) {
+        method845(status, (int) timestamp, data1, data2);
     }
     
     final synchronized void playMidi(int i, byte[] is, int i_6_,
@@ -40,7 +40,7 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
 		aBoolean1854 = bool;
 		anInt1855 = 0;
 		aRunnable_Impl1_1852.method12(false);
-		method835(i_6_, i, (long) anInt1855);
+		applyVolumeFade(i_6_, i, (long) anInt1855);
 		int i_8_ = aMidiFile_1857.method533();
 		for (int i_9_ = 0; i_9_ < i_8_; i_9_++) {
 			aMidiFile_1857.method526(i_9_);
@@ -57,14 +57,14 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
 		if (bool_7_) {
 			if (aBoolean1854)
 				throw new RuntimeException();
-			method838((long) anInt1855);
+			resetAllControllers((long) anInt1855);
 		    aMidiFile_1857.method523();
 		}
 		method846();
     }
     
     final synchronized void setVolume(int i) {
-		method840(i, (long) anInt1855);
+		setMasterVolume(i, (long) anInt1855);
 		aRunnable_Impl1_1852.method10(anIntArray1858, anInt1856);
 		anInt1856 = 0;
     }
@@ -92,7 +92,7 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
 			    if (aBoolean1854)
 				aMidiFile_1857.method534(l_16_);
 			    else {
-				method838
+				resetAllControllers
 				    ((long) (int) (l_16_
 						   / (long) ((aMidiFile_1857.anInt213)
 							     * 1000)));
@@ -115,7 +115,7 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
     
     final synchronized void stopMidi() {
 		aRunnable_Impl1_1852.method12(false);
-		method838((long) anInt1855);
+		resetAllControllers((long) anInt1855);
 		aRunnable_Impl1_1852.method10(anIntArray1858, anInt1856);
 		anInt1856 = 0;
 		aMidiFile_1857.method523();
@@ -159,7 +159,7 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
     			int i_20_ = i_18_ & 0xff;
     			int i_21_ = (i_18_ & 0xffe7d5) >> 16;
 				int i_22_ = (i_18_ & 0xfff6) >> 8;
-			    if (!method837(i_20_, i_22_, i_21_, (long) i_19_))
+			    if (!handleControlChange(i_20_, i_22_, i_21_, (long) i_19_))
 			    	method845(i_20_, i_19_, i_22_, i_21_);
     		}
     	} else
@@ -170,7 +170,7 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
 		aRunnable_Impl1_1852 = runnable_impl1;
 		aRunnable_Impl1_1852.method15((byte) 96);
 		aRunnable_Impl1_1852.method12(false);
-		method838((long) anInt1855);
+		resetAllControllers((long) anInt1855);
 		aRunnable_Impl1_1852.method10(anIntArray1858, anInt1856);
 		anInt1856 = 0;
 		Thread thread = new Thread(this);
@@ -180,6 +180,6 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
     }
     
     final synchronized void adjustVolume(int i, int i_23_) {
-    	method835(i_23_, i, (long) anInt1855);
+    	applyVolumeFade(i_23_, i, (long) anInt1855);
     }
 }
