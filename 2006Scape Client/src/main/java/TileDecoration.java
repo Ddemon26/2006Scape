@@ -2,10 +2,9 @@
 // Jad home page: http://www.kpdus.com/jad.html
 // Decompiler options: packimports(3) 
 
-public final class Object3 {
+public final class TileDecoration {
 
-	public Object3() {
-	}
+        public TileDecoration() {}
 
 	int anInt811;
 	int anInt812;
