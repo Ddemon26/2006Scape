@@ -50,7 +50,8 @@ public class Constants {
     /**
      * The Variables Below Should Only Be Changed If You Understand What You Are Doing
      */
-    public final static int ITEM_LIMIT = 15000, MAXITEM_AMOUNT = Integer.MAX_VALUE,
+    // Increased from 15000 to support custom items such as the Lime Whip
+    public final static int ITEM_LIMIT = 17000, MAXITEM_AMOUNT = Integer.MAX_VALUE,
             IPS_ALLOWED = 250, CONNECTION_DELAY = 100;
 
     public final static boolean sendServerPackets = false, SOUND = true, GUILDS = true;
