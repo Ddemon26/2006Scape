@@ -11,7 +11,7 @@ import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
 
-final class SystemMidiPlayer extends Class56_Sub1 implements Receiver
+final class SystemMidiPlayer extends AbstractMidiController implements Receiver
 {
     private static Receiver aReceiver1850 = null;
     private static Sequencer aSequencer1851 = null;

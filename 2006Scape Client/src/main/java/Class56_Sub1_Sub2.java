@@ -2,7 +2,7 @@
  * Visit http://jode.sourceforge.net/
  */
 
-final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
+final class Class56_Sub1_Sub2 extends AbstractMidiController implements Runnable
 {
     private static Runnable_Impl1 aRunnable_Impl1_1852;
     private static boolean aBoolean1853;

@@ -1,8 +1,8 @@
-/* Class56_Sub1 - Decompiled by JODE
+/* AbstractMidiController - Decompiled by JODE
  * Visit http://jode.sourceforge.net/
  */
 
-abstract class Class56_Sub1 extends MidiPlayer
+abstract class AbstractMidiController extends MidiPlayer
 {
     final void method835(int i, int i_1_, long l) {
     	i_1_ = (int) ((double) i_1_ * Math.pow(0.1, (double) i * 5.0E-4) + 0.5);
