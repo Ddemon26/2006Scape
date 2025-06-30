@@ -2,10 +2,10 @@
 // Jad home page: http://www.kpdus.com/jad.html
 // Decompiler options: packimports(3) 
 
-public final class DummyClass {
+public final class CachePlaceholder {
 
-	public DummyClass() {
+	public CachePlaceholder() {
 	}
 
-	public static DummyClass cache[];
+	public static CachePlaceholder cache[];
 }
