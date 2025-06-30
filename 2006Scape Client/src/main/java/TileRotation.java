@@ -2,9 +2,9 @@
 // Jad home page: http://www.kpdus.com/jad.html
 // Decompiler options: packimports(3) 
 
-final class Class4 {
+final class TileRotation {
 
-	public static int method155(int i, int j, int k) {
+        public static int rotateX(int i, int j, int k) {
 		i &= 3;
 		if (i == 0) {
 			return k;
@@ -19,7 +19,7 @@ final class Class4 {
 		}
 	}
 
-	public static int method156(int i, int j, int l) {
+        public static int rotateY(int i, int j, int l) {
 		j &= 3;
 		if (j == 0) {
 			return i;
@@ -34,7 +34,7 @@ final class Class4 {
 		}
 	}
 
-	public static int method157(int i, int j, int k, int l, int i1) {
+        public static int rotateWidth(int i, int j, int k, int l, int i1) {
 		i &= 3;
 		if (i == 0) {
 			return k;
@@ -49,7 +49,7 @@ final class Class4 {
 		}
 	}
 
-	public static int method158(int j, int k, int l, int i1, int j1) {
+        public static int rotateHeight(int j, int k, int l, int i1, int j1) {
 		l &= 3;
 		if (l == 0) {
 			return j;

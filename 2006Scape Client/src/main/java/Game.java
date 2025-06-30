@@ -3317,10 +3317,10 @@ public class Game extends RSApplet {
 	}
 
        public void processPendingSpawns() {
-		Class30_Sub1 class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetFirst();
-		for (; class30_sub1 != null; class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetNext()) {
-			if (class30_sub1.anInt1294 == -1) {
-				class30_sub1.anInt1302 = 0;
+		PendingSpawn class30_sub1 = (PendingSpawn) aClass19_1179.reverseGetFirst();
+		for (; class30_sub1 != null; class30_sub1 = (PendingSpawn) aClass19_1179.reverseGetNext()) {
+			if (class30_sub1.delay == -1) {
+				class30_sub1.spawnDelay = 0;
 				locateSceneObject(class30_sub1);
 			} else {
 				class30_sub1.unlink();
@@ -6831,32 +6831,32 @@ public class Game extends RSApplet {
 
 	}
 
-       public void locateSceneObject(Class30_Sub1 class30_sub1) {
+       public void locateSceneObject(PendingSpawn class30_sub1) {
 		int i = 0;
 		int j = -1;
 		int k = 0;
 		int l = 0;
-		if (class30_sub1.anInt1296 == 0) {
-			i = worldController.method300(class30_sub1.anInt1295, class30_sub1.anInt1297, class30_sub1.anInt1298);
+		if (class30_sub1.category == 0) {
+			i = worldController.method300(class30_sub1.plane, class30_sub1.x, class30_sub1.y);
 		}
-		if (class30_sub1.anInt1296 == 1) {
-			i = worldController.method301(class30_sub1.anInt1295, class30_sub1.anInt1297, class30_sub1.anInt1298);
+		if (class30_sub1.category == 1) {
+			i = worldController.method301(class30_sub1.plane, class30_sub1.x, class30_sub1.y);
 		}
-		if (class30_sub1.anInt1296 == 2) {
-			i = worldController.method302(class30_sub1.anInt1295, class30_sub1.anInt1297, class30_sub1.anInt1298);
+		if (class30_sub1.category == 2) {
+			i = worldController.method302(class30_sub1.plane, class30_sub1.x, class30_sub1.y);
 		}
-		if (class30_sub1.anInt1296 == 3) {
-			i = worldController.method303(class30_sub1.anInt1295, class30_sub1.anInt1297, class30_sub1.anInt1298);
+		if (class30_sub1.category == 3) {
+			i = worldController.method303(class30_sub1.plane, class30_sub1.x, class30_sub1.y);
 		}
 		if (i != 0) {
-			int i1 = worldController.method304(class30_sub1.anInt1295, class30_sub1.anInt1297, class30_sub1.anInt1298, i);
+			int i1 = worldController.method304(class30_sub1.plane, class30_sub1.x, class30_sub1.y, i);
 			j = i >> 14 & 0x7fff;
 			k = i1 & 0x1f;
 			l = i1 >> 6;
 		}
-		class30_sub1.anInt1299 = j;
-		class30_sub1.anInt1301 = k;
-		class30_sub1.anInt1300 = l;
+		class30_sub1.oldId = j;
+		class30_sub1.oldOrientation = k;
+		class30_sub1.oldType = l;
 	}
 
        public final void processSoundQueue() {
@@ -8972,25 +8972,25 @@ public class Game extends RSApplet {
 
 	public void method115() {
 		if (loadingStage == 2) {
-			for (Class30_Sub1 class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetFirst(); class30_sub1 != null; class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetNext()) {
-				if (class30_sub1.anInt1294 > 0) {
-					class30_sub1.anInt1294--;
+			for (PendingSpawn class30_sub1 = (PendingSpawn) aClass19_1179.reverseGetFirst(); class30_sub1 != null; class30_sub1 = (PendingSpawn) aClass19_1179.reverseGetNext()) {
+				if (class30_sub1.delay > 0) {
+					class30_sub1.delay--;
 				}
-				if (class30_sub1.anInt1294 == 0) {
-					if (class30_sub1.anInt1299 < 0 || ObjectManager.method178(class30_sub1.anInt1299, class30_sub1.anInt1301)) {
-						method142(class30_sub1.anInt1298, class30_sub1.anInt1295, class30_sub1.anInt1300, class30_sub1.anInt1301, class30_sub1.anInt1297, class30_sub1.anInt1296, class30_sub1.anInt1299);
+				if (class30_sub1.delay == 0) {
+					if (class30_sub1.oldId < 0 || ObjectManager.method178(class30_sub1.oldId, class30_sub1.oldOrientation)) {
+						method142(class30_sub1.y, class30_sub1.plane, class30_sub1.oldType, class30_sub1.oldOrientation, class30_sub1.x, class30_sub1.category, class30_sub1.oldId);
 						class30_sub1.unlink();
 					}
 				} else {
-					if (class30_sub1.anInt1302 > 0) {
-						class30_sub1.anInt1302--;
+					if (class30_sub1.spawnDelay > 0) {
+						class30_sub1.spawnDelay--;
 					}
-					if (class30_sub1.anInt1302 == 0 && class30_sub1.anInt1297 >= 1 && class30_sub1.anInt1298 >= 1 && class30_sub1.anInt1297 <= 102 && class30_sub1.anInt1298 <= 102 && (class30_sub1.anInt1291 < 0 || ObjectManager.method178(class30_sub1.anInt1291, class30_sub1.anInt1293))) {
-						method142(class30_sub1.anInt1298, class30_sub1.anInt1295, class30_sub1.anInt1292, class30_sub1.anInt1293, class30_sub1.anInt1297, class30_sub1.anInt1296, class30_sub1.anInt1291);
-						class30_sub1.anInt1302 = -1;
-						if (class30_sub1.anInt1291 == class30_sub1.anInt1299 && class30_sub1.anInt1299 == -1) {
+					if (class30_sub1.spawnDelay == 0 && class30_sub1.x >= 1 && class30_sub1.y >= 1 && class30_sub1.x <= 102 && class30_sub1.y <= 102 && (class30_sub1.id < 0 || ObjectManager.method178(class30_sub1.id, class30_sub1.type))) {
+						method142(class30_sub1.y, class30_sub1.plane, class30_sub1.orientation, class30_sub1.type, class30_sub1.x, class30_sub1.category, class30_sub1.id);
+						class30_sub1.spawnDelay = -1;
+						if (class30_sub1.id == class30_sub1.oldId && class30_sub1.oldId == -1) {
 							class30_sub1.unlink();
-						} else if (class30_sub1.anInt1291 == class30_sub1.anInt1299 && class30_sub1.anInt1292 == class30_sub1.anInt1300 && class30_sub1.anInt1293 == class30_sub1.anInt1301) {
+						} else if (class30_sub1.id == class30_sub1.oldId && class30_sub1.orientation == class30_sub1.oldType && class30_sub1.type == class30_sub1.oldOrientation) {
 							class30_sub1.unlink();
 						}
 					}
@@ -9688,9 +9688,9 @@ public class Game extends RSApplet {
 	}
 
 	public void method130(int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2) {
-		Class30_Sub1 class30_sub1 = null;
-		for (Class30_Sub1 class30_sub1_1 = (Class30_Sub1) aClass19_1179.reverseGetFirst(); class30_sub1_1 != null; class30_sub1_1 = (Class30_Sub1) aClass19_1179.reverseGetNext()) {
-			if (class30_sub1_1.anInt1295 != l1 || class30_sub1_1.anInt1297 != i2 || class30_sub1_1.anInt1298 != j1 || class30_sub1_1.anInt1296 != i1) {
+		PendingSpawn class30_sub1 = null;
+		for (PendingSpawn class30_sub1_1 = (PendingSpawn) aClass19_1179.reverseGetFirst(); class30_sub1_1 != null; class30_sub1_1 = (PendingSpawn) aClass19_1179.reverseGetNext()) {
+			if (class30_sub1_1.plane != l1 || class30_sub1_1.x != i2 || class30_sub1_1.y != j1 || class30_sub1_1.category != i1) {
 				continue;
 			}
 			class30_sub1 = class30_sub1_1;
@@ -9698,19 +9698,19 @@ public class Game extends RSApplet {
 		}
 
 		if (class30_sub1 == null) {
-			class30_sub1 = new Class30_Sub1();
-			class30_sub1.anInt1295 = l1;
-			class30_sub1.anInt1296 = i1;
-			class30_sub1.anInt1297 = i2;
-			class30_sub1.anInt1298 = j1;
+			class30_sub1 = new PendingSpawn();
+			class30_sub1.plane = l1;
+			class30_sub1.category = i1;
+			class30_sub1.x = i2;
+			class30_sub1.y = j1;
 			locateSceneObject(class30_sub1);
 			aClass19_1179.insertHead(class30_sub1);
 		}
-		class30_sub1.anInt1291 = k;
-		class30_sub1.anInt1293 = k1;
-		class30_sub1.anInt1292 = l;
-		class30_sub1.anInt1302 = j2;
-		class30_sub1.anInt1294 = j;
+		class30_sub1.id = k;
+		class30_sub1.type = k1;
+		class30_sub1.orientation = l;
+		class30_sub1.spawnDelay = j2;
+		class30_sub1.delay = j;
 	}
 
 	public boolean interfaceIsSelected(RSInterface class9) {
@@ -10680,9 +10680,9 @@ public class Game extends RSApplet {
 
 				}
 
-				for (Class30_Sub1 class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetFirst(); class30_sub1 != null; class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetNext()) {
-					if (class30_sub1.anInt1297 >= anInt1268 && class30_sub1.anInt1297 < anInt1268 + 8 && class30_sub1.anInt1298 >= anInt1269 && class30_sub1.anInt1298 < anInt1269 + 8 && class30_sub1.anInt1295 == plane) {
-						class30_sub1.anInt1294 = 0;
+				for (PendingSpawn class30_sub1 = (PendingSpawn) aClass19_1179.reverseGetFirst(); class30_sub1 != null; class30_sub1 = (PendingSpawn) aClass19_1179.reverseGetNext()) {
+					if (class30_sub1.x >= anInt1268 && class30_sub1.x < anInt1268 + 8 && class30_sub1.y >= anInt1269 && class30_sub1.y < anInt1269 + 8 && class30_sub1.plane == plane) {
+						class30_sub1.delay = 0;
 					}
 				}
 
@@ -11015,10 +11015,10 @@ public class Game extends RSApplet {
 
 				}
 
-				for (Class30_Sub1 class30_sub1_1 = (Class30_Sub1) aClass19_1179.reverseGetFirst(); class30_sub1_1 != null; class30_sub1_1 = (Class30_Sub1) aClass19_1179.reverseGetNext()) {
-					class30_sub1_1.anInt1297 -= i17;
-					class30_sub1_1.anInt1298 -= j21;
-					if (class30_sub1_1.anInt1297 < 0 || class30_sub1_1.anInt1298 < 0 || class30_sub1_1.anInt1297 >= 104 || class30_sub1_1.anInt1298 >= 104) {
+				for (PendingSpawn class30_sub1_1 = (PendingSpawn) aClass19_1179.reverseGetFirst(); class30_sub1_1 != null; class30_sub1_1 = (PendingSpawn) aClass19_1179.reverseGetNext()) {
+					class30_sub1_1.x -= i17;
+					class30_sub1_1.y -= j21;
+					if (class30_sub1_1.x < 0 || class30_sub1_1.y < 0 || class30_sub1_1.x >= 104 || class30_sub1_1.y >= 104) {
 						class30_sub1_1.unlink();
 					}
 				}

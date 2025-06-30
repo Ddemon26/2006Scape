@@ -838,7 +838,7 @@ final class ObjectManager {
 			for (int i3 = 0; i3 < 64; i3++) {
 				for (int j3 = 0; j3 < 64; j3++) {
 					if (l2 == i && i3 >= i1 && i3 < i1 + 8 && j3 >= j1 && j3 < j1 + 8) {
-						method181(l1 + Class4.method156(j3 & 7, j, i3 & 7), 0, stream, l + Class4.method155(j, j3 & 7, i3 & 7), k1, j, 0);
+						method181(l1 + TileRotation.rotateY(j3 & 7, j, i3 & 7), 0, stream, l + TileRotation.rotateX(j, j3 & 7, i3 & 7), k1, j, 0);
 					} else {
 						method181(-1, 0, stream, -1, 0, 0, 0);
 					}
@@ -964,8 +964,8 @@ final class ObjectManager {
 					int i4 = k3 & 3;
 					if (j3 == i && i3 >= i1 && i3 < i1 + 8 && l2 >= k && l2 < k + 8) {
 						ObjectDef class46 = ObjectDef.forID(l1);
-						int j4 = j + Class4.method157(j1, class46.anInt761, i3 & 7, l2 & 7, class46.anInt744);
-						int k4 = k1 + Class4.method158(l2 & 7, class46.anInt761, j1, class46.anInt744, i3 & 7);
+						int j4 = j + TileRotation.rotateWidth(j1, class46.anInt761, i3 & 7, l2 & 7, class46.anInt744);
+						int k4 = k1 + TileRotation.rotateHeight(l2 & 7, class46.anInt761, j1, class46.anInt744, i3 & 7);
 						if (j4 > 0 && k4 > 0 && j4 < 103 && k4 < 103) {
 							int l4 = j3;
 							if ((aByteArrayArrayArray149[1][j4][k4] & 2) == 2) {
