@@ -572,22 +572,22 @@ final class WorldController {
 							if (class10.secondary != null && class10.secondary.vertexNormals != null) {
 								method307(l1, 1, 1, i2, j2, (Model) class10.secondary);
 								method308((Model) class10.primary, (Model) class10.secondary, 0, 0, 0, false);
-								((Model) class10.secondary).method480(j, k1, k, i, i1);
+								((Model) class10.secondary).applyShading(j, k1, k, i, i1);
 							}
-							((Model) class10.primary).method480(j, k1, k, i, i1);
+							((Model) class10.primary).applyShading(j, k1, k, i, i1);
 						}
                                                 for (int k2 = 0; k2 < class30_sub3.anInt1317; k2++) {
                                                         SceneObject sceneObject = class30_sub3.obj5Array[k2];
                                                         if (sceneObject != null && sceneObject.renderable != null && sceneObject.renderable.vertexNormals != null) {
                                                                 method307(l1, sceneObject.endX - sceneObject.startX + 1, sceneObject.endY - sceneObject.startY + 1, i2, j2, (Model) sceneObject.renderable);
-                                                                ((Model) sceneObject.renderable).method480(j, k1, k, i, i1);
+                                                                ((Model) sceneObject.renderable).applyShading(j, k1, k, i, i1);
                                                         }
                                                 }
 
                                             TileDecoration class49 = class30_sub3.obj3;
 						if (class49 != null && class49.aClass30_Sub2_Sub4_814.vertexNormals != null) {
 							method306(i2, l1, (Model) class49.aClass30_Sub2_Sub4_814, j2);
-							((Model) class49.aClass30_Sub2_Sub4_814).method480(j, k1, k, i, i1);
+							((Model) class49.aClass30_Sub2_Sub4_814).applyShading(j, k1, k, i, i1);
 						}
 					}
 				}
@@ -673,22 +673,22 @@ final class WorldController {
 	private void method308(Model model, Model model_1, int i, int j, int k, boolean flag) {
 		anInt488++;
 		int l = 0;
-		int ai[] = model_1.anIntArray1627;
+		int ai[] = model_1.vertexX;
 		int i1 = model_1.anInt1626;
 		for (int j1 = 0; j1 < model.anInt1626; j1++) {
 			VertexNormal class33 = model.vertexNormals[j1];
 			VertexNormal class33_1 = model.aVertexNormalArray1660[j1];
 			if (class33_1.magnitude != 0) {
-				int i2 = model.anIntArray1628[j1] - j;
-				if (i2 <= model_1.anInt1651) {
-					int j2 = model.anIntArray1627[j1] - i;
-					if (j2 >= model_1.anInt1646 && j2 <= model_1.anInt1647) {
-						int k2 = model.anIntArray1629[j1] - k;
-						if (k2 >= model_1.anInt1649 && k2 <= model_1.anInt1648) {
+				int i2 = model.vertexY[j1] - j;
+				if (i2 <= model_1.maxY) {
+					int j2 = model.vertexX[j1] - i;
+					if (j2 >= model_1.minX && j2 <= model_1.maxX) {
+						int k2 = model.vertexZ[j1] - k;
+						if (k2 >= model_1.minZ && k2 <= model_1.maxZ) {
 							for (int l2 = 0; l2 < i1; l2++) {
 								VertexNormal class33_2 = model_1.vertexNormals[l2];
 								VertexNormal class33_3 = model_1.aVertexNormalArray1660[l2];
-								if (j2 == ai[l2] && k2 == model_1.anIntArray1629[l2] && i2 == model_1.anIntArray1628[l2] && class33_3.magnitude != 0) {
+								if (j2 == ai[l2] && k2 == model_1.vertexZ[l2] && i2 == model_1.vertexY[l2] && class33_3.magnitude != 0) {
 									class33.x += class33_3.x;
 									class33.y += class33_3.y;
 									class33.z += class33_3.z;
@@ -713,13 +713,13 @@ final class WorldController {
 			return;
 		}
 		for (int k1 = 0; k1 < model.anInt1630; k1++) {
-			if (anIntArray486[model.anIntArray1631[k1]] == anInt488 && anIntArray486[model.anIntArray1632[k1]] == anInt488 && anIntArray486[model.anIntArray1633[k1]] == anInt488) {
+			if (anIntArray486[model.faceA[k1]] == anInt488 && anIntArray486[model.faceB[k1]] == anInt488 && anIntArray486[model.faceC[k1]] == anInt488) {
 				model.anIntArray1637[k1] = -1;
 			}
 		}
 
 		for (int l1 = 0; l1 < model_1.anInt1630; l1++) {
-			if (anIntArray487[model_1.anIntArray1631[l1]] == anInt488 && anIntArray487[model_1.anIntArray1632[l1]] == anInt488 && anIntArray487[model_1.anIntArray1633[l1]] == anInt488) {
+			if (anIntArray487[model_1.faceA[l1]] == anInt488 && anIntArray487[model_1.faceB[l1]] == anInt488 && anIntArray487[model_1.faceC[l1]] == anInt488) {
 				model_1.anIntArray1637[l1] = -1;
 			}
 		}

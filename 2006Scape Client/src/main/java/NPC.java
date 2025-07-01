@@ -36,15 +36,15 @@ public final class NPC extends Entity {
 			if (model_1 != null) {
 				int j = spotAnim.aAnimation_407.anIntArray353[super.anInt1521];
                                 Model model_2 = new Model(true, AnimFrame.isNullFrame(j), false, model_1);
-				model_2.method475(0, -super.anInt1524, 0);
-				model_2.method469();
-				model_2.method470(j);
-				model_2.anIntArrayArray1658 = null;
-				model_2.anIntArrayArray1657 = null;
+				model_2.translate(0, -super.anInt1524, 0);
+				model_2.buildVertexGroups();
+				model_2.applyFrame(j);
+				model_2.faceGroups = null;
+				model_2.vertexGroups = null;
 				if (spotAnim.anInt410 != 128 || spotAnim.anInt411 != 128) {
-					model_2.method478(spotAnim.anInt410, spotAnim.anInt410, spotAnim.anInt411);
+					model_2.scaleModel(spotAnim.anInt410, spotAnim.anInt410, spotAnim.anInt411);
 				}
-				model_2.method479(64 + spotAnim.anInt413, 850 + spotAnim.anInt414, -30, -50, -30, true);
+				model_2.applyLighting(64 + spotAnim.anInt413, 850 + spotAnim.anInt414, -30, -50, -30, true);
 				Model aModel[] = {model, model_2};
 				model = new Model(aModel);
 			}

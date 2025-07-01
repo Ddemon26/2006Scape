@@ -242,7 +242,7 @@ public final class RSInterface {
 		if (model != null)
 			return model;
 		if (i == 1)
-			model = Model.method462(j);
+			model = Model.create(j);
 		if (i == 2)
 			model = EntityDef.forID(j).method160();
 		if (i == 3)
@@ -301,20 +301,20 @@ public final class RSInterface {
 		if (model == null) {
 			return null;
 		}
-		if (k == -1 && j == -1 && model.anIntArray1640 == null) {
+		if (k == -1 && j == -1 && model.faceColor == null) {
 			return model;
 		}
                 Model model_1 = new Model(true, AnimFrame.isNullFrame(k) & AnimFrame.isNullFrame(j), false, model);
 		if (k != -1 || j != -1) {
-			model_1.method469();
+			model_1.buildVertexGroups();
 		}
 		if (k != -1) {
-			model_1.method470(k);
+			model_1.applyFrame(k);
 		}
 		if (j != -1) {
-			model_1.method470(j);
+			model_1.applyFrame(j);
 		}
-		model_1.method479(lightness, shading, -50, -10, -50, true);
+		model_1.applyLighting(lightness, shading, -50, -10, -50, true);
 		return model_1;
 	}
 

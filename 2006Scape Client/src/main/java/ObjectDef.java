@@ -113,14 +113,14 @@ public final class ObjectDef {
 			}
 			boolean flag1 = true;
 			for (int element : modelIds) {
-				flag1 &= Model.method463(element & 0xffff);
+				flag1 &= Model.isLoaded(element & 0xffff);
 			}
 
 			return flag1;
 		}
 		for (int j = 0; j < modelTypes.length; j++) {
 			if (modelTypes[j] == i) {
-				return Model.method463(modelIds[j] & 0xffff);
+				return Model.isLoaded(modelIds[j] & 0xffff);
 			}
 		}
 
@@ -138,15 +138,15 @@ public final class ObjectDef {
 		if (aBoolean762) {
 			int l1 = (k + l + i1 + j1) / 4;
 			for (int i2 = 0; i2 < model.anInt1626; i2++) {
-				int j2 = model.anIntArray1627[i2];
-				int k2 = model.anIntArray1629[i2];
+				int j2 = model.vertexX[i2];
+				int k2 = model.vertexZ[i2];
 				int l2 = k + (l - k) * (j2 + 64) / 128;
 				int i3 = j1 + (i1 - j1) * (j2 + 64) / 128;
 				int j3 = l2 + (i3 - l2) * (k2 + 64) / 128;
-				model.anIntArray1628[i2] += j3 - l1;
+				model.vertexY[i2] += j3 - l1;
 			}
 
-			model.method467();
+			model.calculateBoundsY();
 		}
 		return model;
 	}
@@ -157,7 +157,7 @@ public final class ObjectDef {
 		}
 		boolean flag1 = true;
 		for (int element : modelIds) {
-			flag1 &= Model.method463(element & 0xffff);
+			flag1 &= Model.isLoaded(element & 0xffff);
 		}
 		return flag1;
 	}
@@ -205,12 +205,12 @@ public final class ObjectDef {
 				}
 				model = (Model) mruNodes1.insertFromCache(l2);
 				if (model == null) {
-					model = Model.method462(l2 & 0xffff);
+					model = Model.create(l2 & 0xffff);
 					if (model == null) {
 						return null;
 					}
 					if (flag1) {
-						model.method477();
+						model.mirror();
 					}
 					mruNodes1.removeFromCache(model, l2);
 				}
@@ -247,12 +247,12 @@ public final class ObjectDef {
 			}
 			model = (Model) mruNodes1.insertFromCache(j2);
 			if (model == null) {
-				model = Model.method462(j2 & 0xffff);
+				model = Model.create(j2 & 0xffff);
 				if (model == null) {
 					return null;
 				}
 				if (flag3) {
-					model.method477();
+					model.mirror();
 				}
 				mruNodes1.removeFromCache(model, j2);
 			}
@@ -263,27 +263,27 @@ public final class ObjectDef {
 		flag2 = anInt738 != 0 || anInt745 != 0 || anInt783 != 0;
                 Model model_3 = new Model(modifiedModelColors == null, AnimFrame.isNullFrame(k), l == 0 && k == -1 && !flag && !flag2, model);
 		if (k != -1) {
-			model_3.method469();
-			model_3.method470(k);
-			model_3.anIntArrayArray1658 = null;
-			model_3.anIntArrayArray1657 = null;
+			model_3.buildVertexGroups();
+			model_3.applyFrame(k);
+			model_3.faceGroups = null;
+			model_3.vertexGroups = null;
 		}
 		while (l-- > 0) {
-			model_3.method473();
+			model_3.calculateNormals();
 		}
 		if (modifiedModelColors != null) {
 			for (int k2 = 0; k2 < modifiedModelColors.length; k2++) {
-				model_3.method476(modifiedModelColors[k2], originalModelColors[k2]);
+				model_3.recolor(modifiedModelColors[k2], originalModelColors[k2]);
 			}
 
 		}
 		if (flag) {
-			model_3.method478(scaleX, scaleZ, scaleY);
+			model_3.scaleModel(scaleX, scaleZ, scaleY);
 		}
 		if (flag2) {
-			model_3.method475(anInt738, anInt745, anInt783);
+			model_3.translate(anInt738, anInt745, anInt783);
 		}
-		model_3.method479(64 + aByte737, 768 + aByte742 * 5, -50, -10, -50, !aBoolean769);
+		model_3.applyLighting(64 + aByte737, 768 + aByte742 * 5, -50, -10, -50, !aBoolean769);
 		if (anInt760 == 1) {
 			model_3.anInt1654 = model_3.modelHeight;
 		}

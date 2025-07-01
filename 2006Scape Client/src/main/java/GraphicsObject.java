@@ -24,29 +24,29 @@ final class GraphicsObject extends Animable {
         int   j       = spotAnimation.aAnimation_407.anIntArray353[frame];
         Model model_1 = new Model(true, AnimFrame.isNullFrame(j), false, model);
         if (!finished) {
-            model_1.method469();
-            model_1.method470(j);
-            model_1.anIntArrayArray1658 = null;
-            model_1.anIntArrayArray1657 = null;
+            model_1.buildVertexGroups();
+            model_1.applyFrame(j);
+            model_1.faceGroups = null;
+            model_1.vertexGroups = null;
         }
         if (spotAnimation.anInt410 != 128 || spotAnimation.anInt411 != 128) {
-            model_1.method478(spotAnimation.anInt410, spotAnimation.anInt410, spotAnimation.anInt411);
+            model_1.scaleModel(spotAnimation.anInt410, spotAnimation.anInt410, spotAnimation.anInt411);
         }
         if (spotAnimation.anInt412 != 0) {
             if (spotAnimation.anInt412 == 90) {
-                model_1.method473();
+                model_1.calculateNormals();
             }
             if (spotAnimation.anInt412 == 180) {
-                model_1.method473();
-                model_1.method473();
+                model_1.calculateNormals();
+                model_1.calculateNormals();
             }
             if (spotAnimation.anInt412 == 270) {
-                model_1.method473();
-                model_1.method473();
-                model_1.method473();
+                model_1.calculateNormals();
+                model_1.calculateNormals();
+                model_1.calculateNormals();
             }
         }
-        model_1.method479(64 + spotAnimation.anInt413, 850 + spotAnimation.anInt414, -30, -50, -30, true);
+        model_1.applyLighting(64 + spotAnimation.anInt413, 850 + spotAnimation.anInt414, -30, -50, -30, true);
         return model_1;
     }
 

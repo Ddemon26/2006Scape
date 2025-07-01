@@ -23,10 +23,10 @@ public final class ItemDef {
                        return true;
                }
                boolean flag = true;
-               if (!Model.method463(head)) {
+               if (!Model.isLoaded(head)) {
                        flag = false;
                }
-               if (head2 != -1 && !Model.method463(head2)) {
+               if (head2 != -1 && !Model.isLoaded(head2)) {
                        flag = false;
                }
                return flag;
@@ -60,15 +60,15 @@ public final class ItemDef {
                if (head == -1) {
                        return null;
                }
-               Model model = Model.method462(head);
+               Model model = Model.create(head);
                if (head2 != -1) {
-                       Model model_1 = Model.method462(head2);
+                       Model model_1 = Model.create(head2);
                        Model aclass30_sub2_sub4_sub6s[] = {model, model_1};
                        model = new Model(2, aclass30_sub2_sub4_sub6s);
                }
 		if (modifiedModelColors != null) {
 			for (int i1 = 0; i1 < modifiedModelColors.length; i1++) {
-				model.method476(modifiedModelColors[i1], originalModelColors[i1]);
+				model.recolor(modifiedModelColors[i1], originalModelColors[i1]);
 			}
 
 		}
@@ -88,13 +88,13 @@ public final class ItemDef {
                        return true;
                }
                boolean flag = true;
-               if (!Model.method463(body)) {
+               if (!Model.isLoaded(body)) {
                        flag = false;
                }
-               if (arm != -1 && !Model.method463(arm)) {
+               if (arm != -1 && !Model.isLoaded(arm)) {
                        flag = false;
                }
-               if (leg != -1 && !Model.method463(leg)) {
+               if (leg != -1 && !Model.isLoaded(leg)) {
                        flag = false;
                }
                return flag;
@@ -112,28 +112,28 @@ public final class ItemDef {
                if (body == -1) {
                        return null;
                }
-               Model model = Model.method462(body);
+               Model model = Model.create(body);
                if (arm != -1) {
                        if (leg != -1) {
-                               Model model_1 = Model.method462(arm);
-                               Model model_3 = Model.method462(leg);
+                               Model model_1 = Model.create(arm);
+                               Model model_3 = Model.create(leg);
                                Model aclass30_sub2_sub4_sub6_1s[] = {model, model_1, model_3};
                                model = new Model(3, aclass30_sub2_sub4_sub6_1s);
                        } else {
-                               Model model_2 = Model.method462(arm);
+                               Model model_2 = Model.create(arm);
                                Model aclass30_sub2_sub4_sub6s[] = {model, model_2};
                                model = new Model(2, aclass30_sub2_sub4_sub6s);
                        }
                }
                if (gender == 0 && maleOffsetY != 0) {
-                       model.method475(0, maleOffsetY, 0);
+                       model.translate(0, maleOffsetY, 0);
                }
                if (gender == 1 && femaleOffsetY != 0) {
-                       model.method475(0, femaleOffsetY, 0);
+                       model.translate(0, femaleOffsetY, 0);
                }
 		if (modifiedModelColors != null) {
 			for (int i1 = 0; i1 < modifiedModelColors.length; i1++) {
-				model.method476(modifiedModelColors[i1], originalModelColors[i1]);
+				model.recolor(modifiedModelColors[i1], originalModelColors[i1]);
 			}
 
 		}
@@ -2228,20 +2228,20 @@ public final class ItemDef {
 		if (model != null) {
 			return model;
 		}
-		model = Model.method462(modelID);
+		model = Model.create(modelID);
 		if (model == null) {
 			return null;
 		}
 		if (resizeX != 128 || resizeY != 128 || resizeZ != 128) {
-			model.method478(resizeX, resizeZ, resizeY);
+			model.scaleModel(resizeX, resizeZ, resizeY);
 		}
 		if (modifiedModelColors != null) {
 			for (int l = 0; l < modifiedModelColors.length; l++) {
-				model.method476(modifiedModelColors[l], originalModelColors[l]);
+				model.recolor(modifiedModelColors[l], originalModelColors[l]);
 			}
 
 		}
-		model.method479(64 + ambient, 768 + contrast, -50, -10, -50, true);
+		model.applyLighting(64 + ambient, 768 + contrast, -50, -10, -50, true);
 		model.aBoolean1659 = true;
         modelCache.removeFromCache(model, id);
 		return model;
@@ -2260,13 +2260,13 @@ public final class ItemDef {
                                return lookup(id).getInterfaceModel(1);
                        }
                }
-               Model model = Model.method462(modelID);
+               Model model = Model.create(modelID);
 		if (model == null) {
 			return null;
 		}
 		if (modifiedModelColors != null) {
 			for (int l = 0; l < modifiedModelColors.length; l++) {
-				model.method476(modifiedModelColors[l], originalModelColors[l]);
+				model.recolor(modifiedModelColors[l], originalModelColors[l]);
 			}
 
 		}
