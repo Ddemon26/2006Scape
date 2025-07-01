@@ -41,7 +41,7 @@ final class ObjectManager {
 							k1--;
 						}
 						if (k1 >= 0) {
-							aclass11[k1].method213(i1, k);
+							aclass11[k1].blockTile(i1, k);
 						}
 					}
 				}
@@ -490,7 +490,7 @@ final class ObjectManager {
 			}
 			worldController.method280(k, k2, i, ((Animable) obj), byte0, l2, l);
 			if (class46.isSolid && class46.interactive && class11 != null) {
-				class11.method213(i, l);
+				class11.blockTile(i, l);
 			}
 			return;
 		}
@@ -540,7 +540,7 @@ final class ObjectManager {
 				}
 			}
 			if (class46.isSolid && class11 != null) {
-				class11.method212(class46.impenetrable, class46.sizeX, class46.sizeY, l, i, j1);
+				class11.addObject(class46.impenetrable, class46.sizeX, class46.sizeY, l, i, j1);
 			}
 			return;
 		}
@@ -556,7 +556,7 @@ final class ObjectManager {
 				anIntArrayArrayArray135[k][l][i] |= 0x924;
 			}
 			if (class46.isSolid && class11 != null) {
-				class11.method212(class46.impenetrable, class46.sizeX, class46.sizeY, l, i, j1);
+				class11.addObject(class46.impenetrable, class46.sizeX, class46.sizeY, l, i, j1);
 			}
 			return;
 		}
@@ -602,7 +602,7 @@ final class ObjectManager {
 				}
 			}
 			if (class46.isSolid && class11 != null) {
-				class11.method211(i, j1, l, j, class46.impenetrable);
+				class11.addWall(i, j1, l, j, class46.impenetrable);
 			}
 			if (class46.anInt775 != 16) {
 				worldController.method290(i, class46.anInt775, l, k);
@@ -629,7 +629,7 @@ final class ObjectManager {
 				}
 			}
 			if (class46.isSolid && class11 != null) {
-				class11.method211(i, j1, l, j, class46.impenetrable);
+				class11.addWall(i, j1, l, j, class46.impenetrable);
 			}
 			return;
 		}
@@ -661,7 +661,7 @@ final class ObjectManager {
 				}
 			}
 			if (class46.isSolid && class11 != null) {
-				class11.method211(i, j1, l, j, class46.impenetrable);
+				class11.addWall(i, j1, l, j, class46.impenetrable);
 			}
 			if (class46.anInt775 != 16) {
 				worldController.method290(i, class46.anInt775, l, k);
@@ -688,7 +688,7 @@ final class ObjectManager {
 				}
 			}
 			if (class46.isSolid && class11 != null) {
-				class11.method211(i, j1, l, j, class46.impenetrable);
+				class11.addWall(i, j1, l, j, class46.impenetrable);
 			}
 			return;
 		}
@@ -701,7 +701,7 @@ final class ObjectManager {
 			}
 			worldController.method284(l2, byte0, k2, 1, ((Animable) obj6), 1, k, 0, i, l);
 			if (class46.isSolid && class11 != null) {
-				class11.method212(class46.impenetrable, class46.sizeX, class46.sizeY, l, i, j1);
+				class11.addObject(class46.impenetrable, class46.sizeX, class46.sizeY, l, i, j1);
 			}
 			return;
 		}
@@ -828,7 +828,7 @@ final class ObjectManager {
 		for (int i2 = 0; i2 < 8; i2++) {
 			for (int j2 = 0; j2 < 8; j2++) {
 				if (l + i2 > 0 && l + i2 < 103 && l1 + j2 > 0 && l1 + j2 < 103) {
-					aclass11[k1].anIntArrayArray294[l + i2][l1 + j2] &= 0xfeffffff;
+					aclass11[k1].clippingFlags[l + i2][l1 + j2] &= 0xfeffffff;
 				}
 			}
 
@@ -855,7 +855,7 @@ final class ObjectManager {
 			for (int j1 = 0; j1 < 64; j1++) {
 				for (int k1 = 0; k1 < 64; k1++) {
 					if (j + j1 > 0 && j + j1 < 103 && i + k1 > 0 && i + k1 < 103) {
-						aclass11[i1].anIntArrayArray294[j + j1][i + k1] &= 0xfeffffff;
+						aclass11[i1].clippingFlags[j + j1][i + k1] &= 0xfeffffff;
 					}
 				}
 
@@ -1051,7 +1051,7 @@ final class ObjectManager {
 			}
 			worldController.method280(k1, l2, j, ((Animable) obj), byte1, i3, i1);
 			if (class46.isSolid && class46.interactive) {
-				class11.method213(j, i1);
+				class11.blockTile(j, i1);
 			}
 			return;
 		}
@@ -1079,7 +1079,7 @@ final class ObjectManager {
 				worldController.method284(i3, byte1, l2, i5, ((Animable) obj1), k4, k1, j5, j, i1);
 			}
 			if (class46.isSolid) {
-				class11.method212(class46.impenetrable, class46.sizeX, class46.sizeY, i1, j, i);
+				class11.addObject(class46.impenetrable, class46.sizeX, class46.sizeY, i1, j, i);
 			}
 			return;
 		}
@@ -1092,7 +1092,7 @@ final class ObjectManager {
 			}
 			worldController.method284(i3, byte1, l2, 1, ((Animable) obj2), 1, k1, 0, j, i1);
 			if (class46.isSolid) {
-				class11.method212(class46.impenetrable, class46.sizeX, class46.sizeY, i1, j, i);
+				class11.addObject(class46.impenetrable, class46.sizeX, class46.sizeY, i1, j, i);
 			}
 			return;
 		}
@@ -1105,7 +1105,7 @@ final class ObjectManager {
 			}
 			worldController.method282(anIntArray152[i], ((Animable) obj3), i3, j, byte1, i1, null, l2, 0, k1);
 			if (class46.isSolid) {
-				class11.method211(j, i, i1, k, class46.impenetrable);
+				class11.addWall(j, i, i1, k, class46.impenetrable);
 			}
 			return;
 		}
@@ -1118,7 +1118,7 @@ final class ObjectManager {
 			}
 			worldController.method282(anIntArray140[i], ((Animable) obj4), i3, j, byte1, i1, null, l2, 0, k1);
 			if (class46.isSolid) {
-				class11.method211(j, i, i1, k, class46.impenetrable);
+				class11.addWall(j, i, i1, k, class46.impenetrable);
 			}
 			return;
 		}
@@ -1135,7 +1135,7 @@ final class ObjectManager {
 			}
 			worldController.method282(anIntArray152[i], ((Animable) obj11), i3, j, byte1, i1, ((Animable) obj12), l2, anIntArray152[j3], k1);
 			if (class46.isSolid) {
-				class11.method211(j, i, i1, k, class46.impenetrable);
+				class11.addWall(j, i, i1, k, class46.impenetrable);
 			}
 			return;
 		}
@@ -1148,7 +1148,7 @@ final class ObjectManager {
 			}
 			worldController.method282(anIntArray140[i], ((Animable) obj5), i3, j, byte1, i1, null, l2, 0, k1);
 			if (class46.isSolid) {
-				class11.method211(j, i, i1, k, class46.impenetrable);
+				class11.addWall(j, i, i1, k, class46.impenetrable);
 			}
 			return;
 		}
@@ -1161,7 +1161,7 @@ final class ObjectManager {
 			}
 			worldController.method284(i3, byte1, l2, 1, ((Animable) obj6), 1, k1, 0, j, i1);
 			if (class46.isSolid) {
-				class11.method212(class46.impenetrable, class46.sizeX, class46.sizeY, i1, j, i);
+				class11.addObject(class46.impenetrable, class46.sizeX, class46.sizeY, i1, j, i);
 			}
 			return;
 		}
