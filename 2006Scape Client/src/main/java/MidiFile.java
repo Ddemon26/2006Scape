@@ -21,7 +21,7 @@ final class MidiFile
     private int anInt218;
     
     final void method520(int i) {
-	int i_0_ = aClass3_Sub12_211.method428();
+	int i_0_ = aClass3_Sub12_211.readUnsignedByteSub();
 	anIntArray216[i] += i_0_;
     }
     
@@ -53,7 +53,7 @@ final class MidiFile
 	} else
 	    i_1_ = anIntArray212[i];
 	if (i_1_ == 240 || i_1_ == 247) {
-	    int i_2_ = aClass3_Sub12_211.method428();
+	    int i_2_ = aClass3_Sub12_211.readUnsignedByteSub();
 	    if (i_1_ == 247 && i_2_ > 0) {
 		int i_3_ = ((aClass3_Sub12_211.buffer
 			     [aClass3_Sub12_211.currentOffset])
@@ -149,7 +149,7 @@ final class MidiFile
     private final int method535(int i, int i_10_) {
 	if (i_10_ == 255) {
 	    int i_11_ = aClass3_Sub12_211.readUnsignedByte();
-	    int i_12_ = aClass3_Sub12_211.method428();
+	    int i_12_ = aClass3_Sub12_211.readUnsignedByteSub();
 	    if (i_11_ == 47) {
 		aClass3_Sub12_211.currentOffset += i_12_;
 		return 1;

@@ -72,17 +72,17 @@ public final class AnimFrame {
 						c = '\200';
 					}
 					if ((j3 & 1) != 0) {
-						ai1[l2] = stream_3.method421();
+						ai1[l2] = stream_3.readSignedSmart();
 					} else {
 						ai1[l2] = c;
 					}
 					if ((j3 & 2) != 0) {
-						ai2[l2] = stream_3.method421();
+						ai2[l2] = stream_3.readSignedSmart();
 					} else {
 						ai2[l2] = c;
 					}
 					if ((j3 & 4) != 0) {
-						ai3[l2] = stream_3.method421();
+						ai3[l2] = stream_3.readSignedSmart();
 					} else {
 						ai3[l2] = c;
 					}

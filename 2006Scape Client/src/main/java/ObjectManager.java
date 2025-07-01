@@ -414,7 +414,7 @@ final class ObjectManager {
 		label0 : {
 			int i = -1;
 			do {
-				int j = stream.method422();
+				int j = stream.readUnsignedSmart();
 				if (j == 0) {
 					break label0;
 				}
@@ -422,7 +422,7 @@ final class ObjectManager {
 				ObjectDef class46 = ObjectDef.forID(i);
 				class46.method574(class42_sub1);
 				do {
-					int k = stream.method422();
+					int k = stream.readUnsignedSmart();
 					if (k == 0) {
 						break;
 					}
@@ -944,14 +944,14 @@ final class ObjectManager {
 			Stream stream = new Stream(abyte0);
 			int l1 = -1;
 			do {
-				int i2 = stream.method422();
+				int i2 = stream.readUnsignedSmart();
 				if (i2 == 0) {
 					break label0;
 				}
 				l1 += i2;
 				int j2 = 0;
 				do {
-					int k2 = stream.method422();
+					int k2 = stream.readUnsignedSmart();
 					if (k2 == 0) {
 						break;
 					}
@@ -1252,7 +1252,7 @@ final class ObjectManager {
 		Stream stream = new Stream(is);
 		int i_252_ = -1;
 		for (;;) {
-			int i_253_ = stream.method422();
+			int i_253_ = stream.readUnsignedSmart();
 			if (i_253_ == 0) {
 				break;
 			}
@@ -1261,13 +1261,13 @@ final class ObjectManager {
 			boolean bool_255_ = false;
 			for (;;) {
 				if (bool_255_) {
-					int i_256_ = stream.method422();
+					int i_256_ = stream.readUnsignedSmart();
 					if (i_256_ == 0) {
 						break;
 					}
 					stream.readUnsignedByte();
 				} else {
-					int i_257_ = stream.method422();
+					int i_257_ = stream.readUnsignedSmart();
 					if (i_257_ == 0) {
 						break;
 					}
@@ -1295,14 +1295,14 @@ final class ObjectManager {
 			Stream stream = new Stream(abyte0);
 			int l = -1;
 			do {
-				int i1 = stream.method422();
+				int i1 = stream.readUnsignedSmart();
 				if (i1 == 0) {
 					break label0;
 				}
 				l += i1;
 				int j1 = 0;
 				do {
-					int k1 = stream.method422();
+					int k1 = stream.readUnsignedSmart();
 					if (k1 == 0) {
 						break;
 					}

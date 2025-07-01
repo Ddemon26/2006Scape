@@ -250,17 +250,17 @@ final class Instrument {
 			attackEnvelope.decode(stream);
 		}
 		for (int j = 0; j < 10; j++) {
-			int k = stream.method422();
+			int k = stream.readUnsignedSmart();
 			if (k == 0) {
 				break;
 			}
 			oscillatorVolume[j] = k;
-			oscillatorPitch[j] = stream.method421();
-			oscillatorDelay[j] = stream.method422();
+			oscillatorPitch[j] = stream.readSignedSmart();
+			oscillatorDelay[j] = stream.readUnsignedSmart();
 		}
 
-		delayTime = stream.method422();
-		delayDecay = stream.method422();
+		delayTime = stream.readUnsignedSmart();
+		delayDecay = stream.readUnsignedSmart();
 		duration = stream.readUnsignedWord();
 		offset = stream.readUnsignedWord();
 		soundFilter = new SoundFilter();
