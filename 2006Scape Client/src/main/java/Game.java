@@ -7360,7 +7360,7 @@ public class Game extends RSApplet {
 			Censor.loadConfig(streamLoader_4);
 			mouseDetection = new MouseDetection(this);
 			startRunnable(mouseDetection, 10);
-			Animable_Sub5.clientInstance = this;
+			DynamicObject.client = this;
 			ObjectDef.clientInstance = this;
 			EntityDef.clientInstance = this;
 			
@@ -10106,17 +10106,17 @@ public class Game extends RSApplet {
 					if (class10 != null) {
 						int k21 = class10.uid >> 14 & 0x7fff;
 						if (j12 == 2) {
-							class10.primary = new Animable_Sub5(k21, 4 + k14, 2, i19, l19, j18, k20, j17, false);
-							class10.secondary = new Animable_Sub5(k21, k14 + 1 & 3, 2, i19, l19, j18, k20, j17, false);
+							class10.primary = new DynamicObject(k21, 4 + k14, 2, i19, l19, j18, k20, j17, false);
+							class10.secondary = new DynamicObject(k21, k14 + 1 & 3, 2, i19, l19, j18, k20, j17, false);
 						} else {
-							class10.primary = new Animable_Sub5(k21, k14, j12, i19, l19, j18, k20, j17, false);
+							class10.primary = new DynamicObject(k21, k14, j12, i19, l19, j18, k20, j17, false);
 						}
 					}
 				}
                                 if (j16 == 1) {
                                         WallDecoration decoration = worldController.method297(j4, i7, plane);
                                         if (decoration != null) {
-                                                decoration.renderable = new Animable_Sub5(decoration.uid >> 14 & 0x7fff, 0, 4, i19, l19, j18, k20, j17, false);
+                                                decoration.renderable = new DynamicObject(decoration.uid >> 14 & 0x7fff, 0, 4, i19, l19, j18, k20, j17, false);
                                         }
                                 }
 				if (j16 == 2) {
@@ -10125,13 +10125,13 @@ public class Game extends RSApplet {
 						j12 = 10;
 					}
 					if (class28 != null) {
-						class28.aClass30_Sub2_Sub4_521 = new Animable_Sub5(class28.uid >> 14 & 0x7fff, k14, j12, i19, l19, j18, k20, j17, false);
+						class28.aClass30_Sub2_Sub4_521 = new DynamicObject(class28.uid >> 14 & 0x7fff, k14, j12, i19, l19, j18, k20, j17, false);
 					}
 				}
 				if (j16 == 3) {
                                         TileDecoration class49 = worldController.method299(i7, j4, plane);
 					if (class49 != null) {
-						class49.aClass30_Sub2_Sub4_814 = new Animable_Sub5(class49.uid >> 14 & 0x7fff, k14, 22, i19, l19, j18, k20, j17, false);
+						class49.aClass30_Sub2_Sub4_814 = new DynamicObject(class49.uid >> 14 & 0x7fff, k14, 22, i19, l19, j18, k20, j17, false);
 					}
 				}
 			}
