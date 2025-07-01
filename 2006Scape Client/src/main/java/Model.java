@@ -608,10 +608,10 @@ public final class Model extends Animable {
 				System.arraycopy(model.anIntArray1637, 0, anIntArray1637, 0, anInt1630);
 
 			}
-			super.aVertexNormalArray1425 = new VertexNormal[anInt1626];
+                       super.vertexNormals = new VertexNormal[anInt1626];
 			for (int j1 = 0; j1 < anInt1626; j1++) {
-				VertexNormal class33 = super.aVertexNormalArray1425[j1] = new VertexNormal();
-				VertexNormal class33_1 = model.aVertexNormalArray1425[j1];
+                               VertexNormal class33 = super.vertexNormals[j1] = new VertexNormal();
+                               VertexNormal class33_1 = model.vertexNormals[j1];
 				class33.x = class33_1.x;
 				class33.y = class33_1.y;
 				class33.z = class33_1.z;
@@ -1135,11 +1135,11 @@ public final class Model extends Animable {
 			anIntArray1635 = new int[anInt1630];
 			anIntArray1636 = new int[anInt1630];
 		}
-		if (super.aVertexNormalArray1425 == null) {
-			super.aVertexNormalArray1425 = new VertexNormal[anInt1626];
-			for (int l1 = 0; l1 < anInt1626; l1++) {
-				super.aVertexNormalArray1425[l1] = new VertexNormal();
-			}
+               if (super.vertexNormals == null) {
+                       super.vertexNormals = new VertexNormal[anInt1626];
+                       for (int l1 = 0; l1 < anInt1626; l1++) {
+                               super.vertexNormals[l1] = new VertexNormal();
+                       }
 
 		}
 		for (int i2 = 0; i2 < anInt1630; i2++) {
@@ -1168,17 +1168,17 @@ public final class Model extends Animable {
 			i5 = i5 * 256 / k5;
 			j5 = j5 * 256 / k5;
 			if (anIntArray1637 == null || (anIntArray1637[i2] & 1) == 0) {
-				VertexNormal class33_2 = super.aVertexNormalArray1425[j2];
+                               VertexNormal class33_2 = super.vertexNormals[j2];
 				class33_2.x += l4;
 				class33_2.y += i5;
 				class33_2.z += j5;
 				class33_2.magnitude++;
-				class33_2 = super.aVertexNormalArray1425[l2];
+                               class33_2 = super.vertexNormals[l2];
 				class33_2.x += l4;
 				class33_2.y += i5;
 				class33_2.z += j5;
 				class33_2.magnitude++;
-				class33_2 = super.aVertexNormalArray1425[i3];
+                               class33_2 = super.vertexNormals[i3];
 				class33_2.x += l4;
 				class33_2.y += i5;
 				class33_2.z += j5;
@@ -1194,7 +1194,7 @@ public final class Model extends Animable {
 		} else {
 			aVertexNormalArray1660 = new VertexNormal[anInt1626];
 			for (int k2 = 0; k2 < anInt1626; k2++) {
-				VertexNormal class33 = super.aVertexNormalArray1425[k2];
+                                VertexNormal class33 = super.vertexNormals[k2];
 				VertexNormal class33_1 = aVertexNormalArray1660[k2] = new VertexNormal();
 				class33_1.x = class33.x;
 				class33_1.y = class33.y;
@@ -1217,31 +1217,31 @@ public final class Model extends Animable {
 			int j2 = anIntArray1633[j1];
 			if (anIntArray1637 == null) {
 				int i3 = anIntArray1640[j1];
-				VertexNormal class33 = super.aVertexNormalArray1425[k1];
+                                VertexNormal class33 = super.vertexNormals[k1];
 				int k2 = i + (k * class33.x + l * class33.y + i1 * class33.z) / (j * class33.magnitude);
 				anIntArray1634[j1] = method481(i3, k2, 0);
-				class33 = super.aVertexNormalArray1425[i2];
+                                class33 = super.vertexNormals[i2];
 				k2 = i + (k * class33.x + l * class33.y + i1 * class33.z) / (j * class33.magnitude);
 				anIntArray1635[j1] = method481(i3, k2, 0);
-				class33 = super.aVertexNormalArray1425[j2];
+                                class33 = super.vertexNormals[j2];
 				k2 = i + (k * class33.x + l * class33.y + i1 * class33.z) / (j * class33.magnitude);
 				anIntArray1636[j1] = method481(i3, k2, 0);
 			} else if ((anIntArray1637[j1] & 1) == 0) {
 				int j3 = anIntArray1640[j1];
 				int k3 = anIntArray1637[j1];
-				VertexNormal class33_1 = super.aVertexNormalArray1425[k1];
+                                VertexNormal class33_1 = super.vertexNormals[k1];
 				int l2 = i + (k * class33_1.x + l * class33_1.y + i1 * class33_1.z) / (j * class33_1.magnitude);
 				anIntArray1634[j1] = method481(j3, l2, k3);
-				class33_1 = super.aVertexNormalArray1425[i2];
+                                class33_1 = super.vertexNormals[i2];
 				l2 = i + (k * class33_1.x + l * class33_1.y + i1 * class33_1.z) / (j * class33_1.magnitude);
 				anIntArray1635[j1] = method481(j3, l2, k3);
-				class33_1 = super.aVertexNormalArray1425[j2];
+                                class33_1 = super.vertexNormals[j2];
 				l2 = i + (k * class33_1.x + l * class33_1.y + i1 * class33_1.z) / (j * class33_1.magnitude);
 				anIntArray1636[j1] = method481(j3, l2, k3);
 			}
 		}
 
-		super.aVertexNormalArray1425 = null;
+                super.vertexNormals = null;
 		aVertexNormalArray1660 = null;
 		anIntArray1655 = null;
 		anIntArray1656 = null;
@@ -1330,7 +1330,7 @@ public final class Model extends Animable {
 	}
 
 	@Override
-	public void method443(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2) {
+	public void render(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2) {
 		int j2 = l1 * i1 - j1 * l >> 16;
 		int k2 = k1 * j + j2 * k >> 16;
 		int l2 = anInt1650 * k >> 16;

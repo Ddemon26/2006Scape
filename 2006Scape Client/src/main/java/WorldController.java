@@ -567,9 +567,9 @@ final class WorldController {
 					Ground class30_sub3 = groundArray[l1][i2][j2];
 					if (class30_sub3 != null) {
 						BoundaryObject class10 = class30_sub3.obj1;
-						if (class10 != null && class10.primary != null && class10.primary.aVertexNormalArray1425 != null) {
+						if (class10 != null && class10.primary != null && class10.primary.vertexNormals != null) {
 							method307(l1, 1, 1, i2, j2, (Model) class10.primary);
-							if (class10.secondary != null && class10.secondary.aVertexNormalArray1425 != null) {
+							if (class10.secondary != null && class10.secondary.vertexNormals != null) {
 								method307(l1, 1, 1, i2, j2, (Model) class10.secondary);
 								method308((Model) class10.primary, (Model) class10.secondary, 0, 0, 0, false);
 								((Model) class10.secondary).method480(j, k1, k, i, i1);
@@ -578,14 +578,14 @@ final class WorldController {
 						}
 						for (int k2 = 0; k2 < class30_sub3.anInt1317; k2++) {
 							Object5 class28 = class30_sub3.obj5Array[k2];
-							if (class28 != null && class28.aClass30_Sub2_Sub4_521 != null && class28.aClass30_Sub2_Sub4_521.aVertexNormalArray1425 != null) {
+							if (class28 != null && class28.aClass30_Sub2_Sub4_521 != null && class28.aClass30_Sub2_Sub4_521.vertexNormals != null) {
 								method307(l1, class28.anInt524 - class28.anInt523 + 1, class28.anInt526 - class28.anInt525 + 1, i2, j2, (Model) class28.aClass30_Sub2_Sub4_521);
 								((Model) class28.aClass30_Sub2_Sub4_521).method480(j, k1, k, i, i1);
 							}
 						}
 
                                             TileDecoration class49 = class30_sub3.obj3;
-						if (class49 != null && class49.aClass30_Sub2_Sub4_814.aVertexNormalArray1425 != null) {
+						if (class49 != null && class49.aClass30_Sub2_Sub4_814.vertexNormals != null) {
 							method306(i2, l1, (Model) class49.aClass30_Sub2_Sub4_814, j2);
 							((Model) class49.aClass30_Sub2_Sub4_814).method480(j, k1, k, i, i1);
 						}
@@ -601,25 +601,25 @@ final class WorldController {
 	private void method306(int i, int j, Model model, int k) {
 		if (i < anInt438) {
 			Ground class30_sub3 = groundArray[j][i + 1][k];
-			if (class30_sub3 != null && class30_sub3.obj3 != null && class30_sub3.obj3.aClass30_Sub2_Sub4_814.aVertexNormalArray1425 != null) {
+			if (class30_sub3 != null && class30_sub3.obj3 != null && class30_sub3.obj3.aClass30_Sub2_Sub4_814.vertexNormals != null) {
 				method308(model, (Model) class30_sub3.obj3.aClass30_Sub2_Sub4_814, 128, 0, 0, true);
 			}
 		}
 		if (k < anInt438) {
 			Ground class30_sub3_1 = groundArray[j][i][k + 1];
-			if (class30_sub3_1 != null && class30_sub3_1.obj3 != null && class30_sub3_1.obj3.aClass30_Sub2_Sub4_814.aVertexNormalArray1425 != null) {
+			if (class30_sub3_1 != null && class30_sub3_1.obj3 != null && class30_sub3_1.obj3.aClass30_Sub2_Sub4_814.vertexNormals != null) {
 				method308(model, (Model) class30_sub3_1.obj3.aClass30_Sub2_Sub4_814, 0, 0, 128, true);
 			}
 		}
 		if (i < anInt438 && k < anInt439) {
 			Ground class30_sub3_2 = groundArray[j][i + 1][k + 1];
-			if (class30_sub3_2 != null && class30_sub3_2.obj3 != null && class30_sub3_2.obj3.aClass30_Sub2_Sub4_814.aVertexNormalArray1425 != null) {
+			if (class30_sub3_2 != null && class30_sub3_2.obj3 != null && class30_sub3_2.obj3.aClass30_Sub2_Sub4_814.vertexNormals != null) {
 				method308(model, (Model) class30_sub3_2.obj3.aClass30_Sub2_Sub4_814, 128, 0, 128, true);
 			}
 		}
 		if (i < anInt438 && k > 0) {
 			Ground class30_sub3_3 = groundArray[j][i + 1][k - 1];
-			if (class30_sub3_3 != null && class30_sub3_3.obj3 != null && class30_sub3_3.obj3.aClass30_Sub2_Sub4_814.aVertexNormalArray1425 != null) {
+			if (class30_sub3_3 != null && class30_sub3_3.obj3 != null && class30_sub3_3.obj3.aClass30_Sub2_Sub4_814.vertexNormals != null) {
 				method308(model, (Model) class30_sub3_3.obj3.aClass30_Sub2_Sub4_814, 128, 0, -128, true);
 			}
 		}
@@ -641,15 +641,15 @@ final class WorldController {
 								if (class30_sub3 != null) {
 									int i3 = (anIntArrayArrayArray440[j2][k2][l2] + anIntArrayArrayArray440[j2][k2 + 1][l2] + anIntArrayArrayArray440[j2][k2][l2 + 1] + anIntArrayArrayArray440[j2][k2 + 1][l2 + 1]) / 4 - (anIntArrayArrayArray440[i][l][i1] + anIntArrayArrayArray440[i][l + 1][i1] + anIntArrayArrayArray440[i][l][i1 + 1] + anIntArrayArrayArray440[i][l + 1][i1 + 1]) / 4;
 									BoundaryObject class10 = class30_sub3.obj1;
-									if (class10 != null && class10.primary != null && class10.primary.aVertexNormalArray1425 != null) {
+									if (class10 != null && class10.primary != null && class10.primary.vertexNormals != null) {
 										method308(model, (Model) class10.primary, (k2 - l) * 128 + (1 - j) * 64, i3, (l2 - i1) * 128 + (1 - k) * 64, flag);
 									}
-									if (class10 != null && class10.secondary != null && class10.secondary.aVertexNormalArray1425 != null) {
+									if (class10 != null && class10.secondary != null && class10.secondary.vertexNormals != null) {
 										method308(model, (Model) class10.secondary, (k2 - l) * 128 + (1 - j) * 64, i3, (l2 - i1) * 128 + (1 - k) * 64, flag);
 									}
 									for (int j3 = 0; j3 < class30_sub3.anInt1317; j3++) {
 										Object5 class28 = class30_sub3.obj5Array[j3];
-										if (class28 != null && class28.aClass30_Sub2_Sub4_521 != null && class28.aClass30_Sub2_Sub4_521.aVertexNormalArray1425 != null) {
+										if (class28 != null && class28.aClass30_Sub2_Sub4_521 != null && class28.aClass30_Sub2_Sub4_521.vertexNormals != null) {
 											int k3 = class28.anInt524 - class28.anInt523 + 1;
 											int l3 = class28.anInt526 - class28.anInt525 + 1;
 											method308(model, (Model) class28.aClass30_Sub2_Sub4_521, (class28.anInt523 - l) * 128 + (k3 - j) * 64, i3, (class28.anInt525 - i1) * 128 + (l3 - k) * 64, flag);
@@ -676,7 +676,7 @@ final class WorldController {
 		int ai[] = model_1.anIntArray1627;
 		int i1 = model_1.anInt1626;
 		for (int j1 = 0; j1 < model.anInt1626; j1++) {
-			VertexNormal class33 = model.aVertexNormalArray1425[j1];
+			VertexNormal class33 = model.vertexNormals[j1];
 			VertexNormal class33_1 = model.aVertexNormalArray1660[j1];
 			if (class33_1.magnitude != 0) {
 				int i2 = model.anIntArray1628[j1] - j;
@@ -686,7 +686,7 @@ final class WorldController {
 						int k2 = model.anIntArray1629[j1] - k;
 						if (k2 >= model_1.anInt1649 && k2 <= model_1.anInt1648) {
 							for (int l2 = 0; l2 < i1; l2++) {
-								VertexNormal class33_2 = model_1.aVertexNormalArray1425[l2];
+								VertexNormal class33_2 = model_1.vertexNormals[l2];
 								VertexNormal class33_3 = model_1.aVertexNormalArray1660[l2];
 								if (j2 == ai[l2] && k2 == model_1.anIntArray1629[l2] && i2 == model_1.anIntArray1628[l2] && class33_3.magnitude != 0) {
 									class33.x += class33_3.x;
@@ -1107,12 +1107,12 @@ final class WorldController {
 					}
 					BoundaryObject class10 = class30_sub3_7.obj1;
 					if (class10 != null) {
-						class10.primary.method443(0, anInt458, anInt459, anInt460, anInt461, class10.x - anInt455, class10.plane - anInt456, class10.y - anInt457, class10.uid);
+						class10.primary.render(0, anInt458, anInt459, anInt460, anInt461, class10.x - anInt455, class10.plane - anInt456, class10.y - anInt457, class10.uid);
 					}
 					for (int i2 = 0; i2 < class30_sub3_7.anInt1317; i2++) {
 						Object5 class28 = class30_sub3_7.obj5Array[i2];
 						if (class28 != null) {
-							class28.aClass30_Sub2_Sub4_521.method443(class28.anInt522, anInt458, anInt459, anInt460, anInt461, class28.anInt519 - anInt455, class28.anInt518 - anInt456, class28.anInt520 - anInt457, class28.uid);
+							class28.aClass30_Sub2_Sub4_521.render(class28.anInt522, anInt458, anInt459, anInt460, anInt461, class28.anInt519 - anInt455, class28.anInt518 - anInt456, class28.anInt520 - anInt457, class28.uid);
 						}
 					}
 
@@ -1168,15 +1168,15 @@ final class WorldController {
 						class30_sub3_1.anInt1325 = 0;
 					}
 					if ((class10_3.orientation & j2) != 0 && !method321(l, i, j, class10_3.orientation)) {
-						class10_3.primary.method443(0, anInt458, anInt459, anInt460, anInt461, class10_3.x - anInt455, class10_3.plane - anInt456, class10_3.y - anInt457, class10_3.uid);
+						class10_3.primary.render(0, anInt458, anInt459, anInt460, anInt461, class10_3.x - anInt455, class10_3.plane - anInt456, class10_3.y - anInt457, class10_3.uid);
 					}
 					if ((class10_3.orientation2 & j2) != 0 && !method321(l, i, j, class10_3.orientation2)) {
-						class10_3.secondary.method443(0, anInt458, anInt459, anInt460, anInt461, class10_3.x - anInt455, class10_3.plane - anInt456, class10_3.y - anInt457, class10_3.uid);
+						class10_3.secondary.render(0, anInt458, anInt459, anInt460, anInt461, class10_3.x - anInt455, class10_3.plane - anInt456, class10_3.y - anInt457, class10_3.uid);
 					}
 				}
                                 if (class26_1 != null && !method322(l, i, j, class26_1.renderable.modelHeight)) {
                                         if ((class26_1.orientationFlags & j2) != 0) {
-                                                class26_1.renderable.method443(class26_1.orientation, anInt458, anInt459, anInt460, anInt461, class26_1.x - anInt455, class26_1.plane - anInt456, class26_1.y - anInt457, class26_1.uid);
+                                                class26_1.renderable.render(class26_1.orientation, anInt458, anInt459, anInt460, anInt461, class26_1.x - anInt455, class26_1.plane - anInt456, class26_1.y - anInt457, class26_1.uid);
                                         } else if ((class26_1.orientationFlags & 0x300) != 0) {
                                                 int j4 = class26_1.x - anInt455;
                                                 int l5 = class26_1.plane - anInt456;
@@ -1197,30 +1197,30 @@ final class WorldController {
                                                 if ((class26_1.orientationFlags & 0x100) != 0 && k10 < k9) {
                                                         int i11 = j4 + anIntArray463[i8];
                                                         int k11 = k6 + anIntArray464[i8];
-                                                        class26_1.renderable.method443(i8 * 512 + 256, anInt458, anInt459, anInt460, anInt461, i11, l5, k11, class26_1.uid);
+                                                        class26_1.renderable.render(i8 * 512 + 256, anInt458, anInt459, anInt460, anInt461, i11, l5, k11, class26_1.uid);
                                                 }
                                                 if ((class26_1.orientationFlags & 0x200) != 0 && k10 > k9) {
                                                         int j11 = j4 + anIntArray465[i8];
                                                         int l11 = k6 + anIntArray466[i8];
-                                                        class26_1.renderable.method443(i8 * 512 + 1280 & 0x7ff, anInt458, anInt459, anInt460, anInt461, j11, l5, l11, class26_1.uid);
+                                                        class26_1.renderable.render(i8 * 512 + 1280 & 0x7ff, anInt458, anInt459, anInt460, anInt461, j11, l5, l11, class26_1.uid);
                                                 }
                                         }
                                 }
 				if (flag1) {
                                    TileDecoration class49 = class30_sub3_1.obj3;
 					if (class49 != null) {
-						class49.aClass30_Sub2_Sub4_814.method443(0, anInt458, anInt459, anInt460, anInt461, class49.anInt812 - anInt455, class49.anInt811 - anInt456, class49.anInt813 - anInt457, class49.uid);
+						class49.aClass30_Sub2_Sub4_814.render(0, anInt458, anInt459, anInt460, anInt461, class49.anInt812 - anInt455, class49.anInt811 - anInt456, class49.anInt813 - anInt457, class49.uid);
 					}
                                         ItemPile pile1 = class30_sub3_1.itemPile;
                                         if (pile1 != null && pile1.offsetY == 0) {
                                                 if (pile1.secondItem != null) {
-                                                        pile1.secondItem.method443(0, anInt458, anInt459, anInt460, anInt461, pile1.x - anInt455, pile1.height - anInt456, pile1.y - anInt457, pile1.uid);
+                                                        pile1.secondItem.render(0, anInt458, anInt459, anInt460, anInt461, pile1.x - anInt455, pile1.height - anInt456, pile1.y - anInt457, pile1.uid);
                                                 }
                                                 if (pile1.thirdItem != null) {
-                                                        pile1.thirdItem.method443(0, anInt458, anInt459, anInt460, anInt461, pile1.x - anInt455, pile1.height - anInt456, pile1.y - anInt457, pile1.uid);
+                                                        pile1.thirdItem.render(0, anInt458, anInt459, anInt460, anInt461, pile1.x - anInt455, pile1.height - anInt456, pile1.y - anInt457, pile1.uid);
                                                 }
                                                 if (pile1.topItem != null) {
-                                                        pile1.topItem.method443(0, anInt458, anInt459, anInt460, anInt461, pile1.x - anInt455, pile1.height - anInt456, pile1.y - anInt457, pile1.uid);
+                                                        pile1.topItem.render(0, anInt458, anInt459, anInt460, anInt461, pile1.x - anInt455, pile1.height - anInt456, pile1.y - anInt457, pile1.uid);
                                                 }
                                         }
 				}
@@ -1265,7 +1265,7 @@ final class WorldController {
 				if (flag2) {
 					BoundaryObject class10_1 = class30_sub3_1.obj1;
 					if (!method321(l, i, j, class10_1.orientation)) {
-						class10_1.primary.method443(0, anInt458, anInt459, anInt460, anInt461, class10_1.x - anInt455, class10_1.plane - anInt456, class10_1.y - anInt457, class10_1.uid);
+						class10_1.primary.render(0, anInt458, anInt459, anInt460, anInt461, class10_1.x - anInt455, class10_1.plane - anInt456, class10_1.y - anInt457, class10_1.uid);
 					}
 					class30_sub3_1.anInt1325 = 0;
 				}
@@ -1354,7 +1354,7 @@ final class WorldController {
 						Object5 class28_3 = aClass28Array462[l3];
 						class28_3.anInt528 = anInt448;
 						if (!method323(l, class28_3.anInt523, class28_3.anInt524, class28_3.anInt525, class28_3.anInt526, class28_3.aClass30_Sub2_Sub4_521.modelHeight)) {
-							class28_3.aClass30_Sub2_Sub4_521.method443(class28_3.anInt522, anInt458, anInt459, anInt460, anInt461, class28_3.anInt519 - anInt455, class28_3.anInt518 - anInt456, class28_3.anInt520 - anInt457, class28_3.uid);
+							class28_3.aClass30_Sub2_Sub4_521.render(class28_3.anInt522, anInt458, anInt459, anInt460, anInt461, class28_3.anInt519 - anInt455, class28_3.anInt518 - anInt456, class28_3.anInt520 - anInt457, class28_3.uid);
 						}
 						for (int k7 = class28_3.anInt523; k7 <= class28_3.anInt524; k7++) {
 							for (int l8 = class28_3.anInt525; l8 <= class28_3.anInt526; l8++) {
@@ -1408,20 +1408,20 @@ final class WorldController {
                         ItemPile pile = class30_sub3_1.itemPile;
                         if (pile != null && pile.offsetY != 0) {
                                 if (pile.secondItem != null) {
-                                        pile.secondItem.method443(0, anInt458, anInt459, anInt460, anInt461, pile.x - anInt455, pile.height - anInt456 - pile.offsetY, pile.y - anInt457, pile.uid);
+                                        pile.secondItem.render(0, anInt458, anInt459, anInt460, anInt461, pile.x - anInt455, pile.height - anInt456 - pile.offsetY, pile.y - anInt457, pile.uid);
                                 }
                                 if (pile.thirdItem != null) {
-                                        pile.thirdItem.method443(0, anInt458, anInt459, anInt460, anInt461, pile.x - anInt455, pile.height - anInt456 - pile.offsetY, pile.y - anInt457, pile.uid);
+                                        pile.thirdItem.render(0, anInt458, anInt459, anInt460, anInt461, pile.x - anInt455, pile.height - anInt456 - pile.offsetY, pile.y - anInt457, pile.uid);
                                 }
                                 if (pile.topItem != null) {
-                                        pile.topItem.method443(0, anInt458, anInt459, anInt460, anInt461, pile.x - anInt455, pile.height - anInt456 - pile.offsetY, pile.y - anInt457, pile.uid);
+                                        pile.topItem.render(0, anInt458, anInt459, anInt460, anInt461, pile.x - anInt455, pile.height - anInt456 - pile.offsetY, pile.y - anInt457, pile.uid);
                                 }
                         }
 			if (class30_sub3_1.anInt1328 != 0) {
                                 WallDecoration class26 = class30_sub3_1.obj2;
                                 if (class26 != null && !method322(l, i, j, class26.renderable.modelHeight)) {
                                         if ((class26.orientationFlags & class30_sub3_1.anInt1328) != 0) {
-                                                class26.renderable.method443(class26.orientation, anInt458, anInt459, anInt460, anInt461, class26.x - anInt455, class26.plane - anInt456, class26.y - anInt457, class26.uid);
+                                                class26.renderable.render(class26.orientation, anInt458, anInt459, anInt460, anInt461, class26.x - anInt455, class26.plane - anInt456, class26.y - anInt457, class26.uid);
                                         } else if ((class26.orientationFlags & 0x300) != 0) {
                                                 int l2 = class26.x - anInt455;
                                                 int j3 = class26.plane - anInt456;
@@ -1442,22 +1442,22 @@ final class WorldController {
                                                 if ((class26.orientationFlags & 0x100) != 0 && l7 >= j6) {
                                                         int i9 = l2 + anIntArray463[k5];
                                                         int i10 = i4 + anIntArray464[k5];
-                                                        class26.renderable.method443(k5 * 512 + 256, anInt458, anInt459, anInt460, anInt461, i9, j3, i10, class26.uid);
+                                                        class26.renderable.render(k5 * 512 + 256, anInt458, anInt459, anInt460, anInt461, i9, j3, i10, class26.uid);
                                                 }
                                                 if ((class26.orientationFlags & 0x200) != 0 && l7 <= j6) {
                                                         int j9 = l2 + anIntArray465[k5];
                                                         int j10 = i4 + anIntArray466[k5];
-                                                        class26.renderable.method443(k5 * 512 + 1280 & 0x7ff, anInt458, anInt459, anInt460, anInt461, j9, j3, j10, class26.uid);
+                                                        class26.renderable.render(k5 * 512 + 1280 & 0x7ff, anInt458, anInt459, anInt460, anInt461, j9, j3, j10, class26.uid);
                                                 }
                                         }
                                 }
 				BoundaryObject class10_2 = class30_sub3_1.obj1;
 				if (class10_2 != null) {
 					if ((class10_2.orientation2 & class30_sub3_1.anInt1328) != 0 && !method321(l, i, j, class10_2.orientation2)) {
-						class10_2.secondary.method443(0, anInt458, anInt459, anInt460, anInt461, class10_2.x - anInt455, class10_2.plane - anInt456, class10_2.y - anInt457, class10_2.uid);
+						class10_2.secondary.render(0, anInt458, anInt459, anInt460, anInt461, class10_2.x - anInt455, class10_2.plane - anInt456, class10_2.y - anInt457, class10_2.uid);
 					}
 					if ((class10_2.orientation & class30_sub3_1.anInt1328) != 0 && !method321(l, i, j, class10_2.orientation)) {
-						class10_2.primary.method443(0, anInt458, anInt459, anInt460, anInt461, class10_2.x - anInt455, class10_2.plane - anInt456, class10_2.y - anInt457, class10_2.uid);
+						class10_2.primary.render(0, anInt458, anInt459, anInt460, anInt461, class10_2.x - anInt455, class10_2.plane - anInt456, class10_2.y - anInt457, class10_2.uid);
 					}
 				}
 			}
