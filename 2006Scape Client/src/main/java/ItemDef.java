@@ -2124,10 +2124,10 @@ public final class ItemDef {
 		int l2 = DrawingArea.bottomX;
 		int i3 = DrawingArea.topY;
 		int j3 = DrawingArea.bottomY;
-		Texture.aBoolean1464 = false;
+		Texture.highQuality = false;
 		DrawingArea.initDrawingArea(32, 32, sprite2.pixels);
 		DrawingArea.fillArea(32, 0, 0, 32, 0);
-		Texture.method364();
+		Texture.init();
 		int k3 = itemDef.modelZoom;
 		if (k == -1) {
 			k3 = (int) (k3 * 1.5D);
@@ -2135,8 +2135,8 @@ public final class ItemDef {
 		if (k > 0) {
 			k3 = (int) (k3 * 1.04D);
 		}
-		int l3 = Texture.anIntArray1470[itemDef.modelRotation1] * k3 >> 16;
-		int i4 = Texture.anIntArray1471[itemDef.modelRotation1] * k3 >> 16;
+		int l3 = Texture.sineTable[itemDef.modelRotation1] * k3 >> 16;
+		int i4 = Texture.cosineTable[itemDef.modelRotation1] * k3 >> 16;
 		model.method482(itemDef.modelRotation2, itemDef.zRotation, itemDef.modelRotation1, itemDef.offsetX, l3 + model.modelHeight / 2 + itemDef.offsetY, i4 + itemDef.offsetY);
 		for (int i5 = 31; i5 >= 0; i5--) {
 			for (int j4 = 31; j4 >= 0; j4--) {
@@ -2201,7 +2201,7 @@ public final class ItemDef {
 		Texture.textureInt1 = k1;
 		Texture.textureInt2 = l1;
 		Texture.lineOffsets = ai;
-		Texture.aBoolean1464 = true;
+		Texture.highQuality = true;
 		if (itemDef.stackable) {
 			sprite2.trimWidth = 33;
 		} else {

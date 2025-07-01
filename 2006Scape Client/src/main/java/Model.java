@@ -1618,11 +1618,11 @@ public final class Model extends Animable {
 		int j = faceA[i];
 		int k = faceB[i];
 		int l = faceC[i];
-		Texture.aBoolean1462 = visibilityMap1[i];
+		Texture.clip = visibilityMap1[i];
 		if (anIntArray1639 == null) {
-			Texture.anInt1465 = 0;
+			Texture.alpha = 0;
 		} else {
-			Texture.anInt1465 = anIntArray1639[i];
+			Texture.alpha = anIntArray1639[i];
 		}
 		int i1;
 		if (anIntArray1637 == null) {
@@ -1631,11 +1631,11 @@ public final class Model extends Animable {
 			i1 = anIntArray1637[i] & 3;
 		}
 		if (i1 == 0) {
-			Texture.method374(projectedVertexY[j], projectedVertexY[k], projectedVertexY[l], projectedVertexX[j], projectedVertexX[k], projectedVertexX[l], anIntArray1634[i], anIntArray1635[i], anIntArray1636[i]);
+			Texture.drawGouraudTriangle(projectedVertexY[j], projectedVertexY[k], projectedVertexY[l], projectedVertexX[j], projectedVertexX[k], projectedVertexX[l], anIntArray1634[i], anIntArray1635[i], anIntArray1636[i]);
 			return;
 		}
 		if (i1 == 1) {
-			Texture.method376(projectedVertexY[j], projectedVertexY[k], projectedVertexY[l], projectedVertexX[j], projectedVertexX[k], projectedVertexX[l], modelIntArray3[anIntArray1634[i]]);
+			Texture.drawFlatTriangle(projectedVertexY[j], projectedVertexY[k], projectedVertexY[l], projectedVertexX[j], projectedVertexX[k], projectedVertexX[l], modelIntArray3[anIntArray1634[i]]);
 			return;
 		}
 		if (i1 == 2) {
@@ -1643,7 +1643,7 @@ public final class Model extends Animable {
 			int l1 = anIntArray1643[j1];
 			int j2 = anIntArray1644[j1];
 			int l2 = anIntArray1645[j1];
-			Texture.method378(projectedVertexY[j], projectedVertexY[k], projectedVertexY[l], projectedVertexX[j], projectedVertexX[k], projectedVertexX[l], anIntArray1634[i], anIntArray1635[i], anIntArray1636[i], projectedY[l1], projectedY[j2], projectedY[l2], projectedZ[l1], projectedZ[j2], projectedZ[l2], depthList[l1], depthList[j2], depthList[l2], faceColor[i]);
+			Texture.drawTexturedTriangle(projectedVertexY[j], projectedVertexY[k], projectedVertexY[l], projectedVertexX[j], projectedVertexX[k], projectedVertexX[l], anIntArray1634[i], anIntArray1635[i], anIntArray1636[i], projectedY[l1], projectedY[j2], projectedY[l2], projectedZ[l1], projectedZ[j2], projectedZ[l2], depthList[l1], depthList[j2], depthList[l2], faceColor[i]);
 			return;
 		}
 		if (i1 == 3) {
@@ -1651,7 +1651,7 @@ public final class Model extends Animable {
 			int i2 = anIntArray1643[k1];
 			int k2 = anIntArray1644[k1];
 			int i3 = anIntArray1645[k1];
-			Texture.method378(projectedVertexY[j], projectedVertexY[k], projectedVertexY[l], projectedVertexX[j], projectedVertexX[k], projectedVertexX[l], anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], projectedY[i2], projectedY[k2], projectedY[i3], projectedZ[i2], projectedZ[k2], projectedZ[i3], depthList[i2], depthList[k2], depthList[i3], faceColor[i]);
+			Texture.drawTexturedTriangle(projectedVertexY[j], projectedVertexY[k], projectedVertexY[l], projectedVertexX[j], projectedVertexX[k], projectedVertexX[l], anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], projectedY[i2], projectedY[k2], projectedY[i3], projectedZ[i2], projectedZ[k2], projectedZ[i3], depthList[i2], depthList[k2], depthList[i3], faceColor[i]);
 		}
 	}
 
@@ -1735,10 +1735,10 @@ public final class Model extends Animable {
 		int j7 = COSINE[1];
 		int k7 = COSINE[2];
 		if ((j3 - j4) * (k7 - j7) - (i7 - j7) * (j5 - j4) > 0) {
-			Texture.aBoolean1462 = false;
+			Texture.clip = false;
 			if (l == 3) {
 				if (j3 < 0 || j4 < 0 || j5 < 0 || j3 > DrawingArea.centerX || j4 > DrawingArea.centerX || j5 > DrawingArea.centerX) {
-					Texture.aBoolean1462 = true;
+					Texture.clip = true;
 				}
 				int l7;
 				if (anIntArray1637 == null) {
@@ -1747,26 +1747,26 @@ public final class Model extends Animable {
 					l7 = anIntArray1637[i] & 3;
 				}
 				if (l7 == 0) {
-					Texture.method374(i7, j7, k7, j3, j4, j5, HYPOT[0], HYPOT[1], HYPOT[2]);
+					Texture.drawGouraudTriangle(i7, j7, k7, j3, j4, j5, HYPOT[0], HYPOT[1], HYPOT[2]);
 				} else if (l7 == 1) {
-					Texture.method376(i7, j7, k7, j3, j4, j5, modelIntArray3[anIntArray1634[i]]);
+					Texture.drawFlatTriangle(i7, j7, k7, j3, j4, j5, modelIntArray3[anIntArray1634[i]]);
 				} else if (l7 == 2) {
 					int j8 = anIntArray1637[i] >> 2;
 					int k9 = anIntArray1643[j8];
 					int k10 = anIntArray1644[j8];
 					int k11 = anIntArray1645[j8];
-					Texture.method378(i7, j7, k7, j3, j4, j5, HYPOT[0], HYPOT[1], HYPOT[2], projectedY[k9], projectedY[k10], projectedY[k11], projectedZ[k9], projectedZ[k10], projectedZ[k11], depthList[k9], depthList[k10], depthList[k11], faceColor[i]);
+					Texture.drawTexturedTriangle(i7, j7, k7, j3, j4, j5, HYPOT[0], HYPOT[1], HYPOT[2], projectedY[k9], projectedY[k10], projectedY[k11], projectedZ[k9], projectedZ[k10], projectedZ[k11], depthList[k9], depthList[k10], depthList[k11], faceColor[i]);
 				} else if (l7 == 3) {
 					int k8 = anIntArray1637[i] >> 2;
 					int l9 = anIntArray1643[k8];
 					int l10 = anIntArray1644[k8];
 					int l11 = anIntArray1645[k8];
-					Texture.method378(i7, j7, k7, j3, j4, j5, anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], projectedY[l9], projectedY[l10], projectedY[l11], projectedZ[l9], projectedZ[l10], projectedZ[l11], depthList[l9], depthList[l10], depthList[l11], faceColor[i]);
+					Texture.drawTexturedTriangle(i7, j7, k7, j3, j4, j5, anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], projectedY[l9], projectedY[l10], projectedY[l11], projectedZ[l9], projectedZ[l10], projectedZ[l11], depthList[l9], depthList[l10], depthList[l11], faceColor[i]);
 				}
 			}
 			if (l == 4) {
 				if (j3 < 0 || j4 < 0 || j5 < 0 || j3 > DrawingArea.centerX || j4 > DrawingArea.centerX || j5 > DrawingArea.centerX || SINE[3] < 0 || SINE[3] > DrawingArea.centerX) {
-					Texture.aBoolean1462 = true;
+					Texture.clip = true;
 				}
 				int i8;
 				if (anIntArray1637 == null) {
@@ -1775,14 +1775,14 @@ public final class Model extends Animable {
 					i8 = anIntArray1637[i] & 3;
 				}
 				if (i8 == 0) {
-					Texture.method374(i7, j7, k7, j3, j4, j5, HYPOT[0], HYPOT[1], HYPOT[2]);
-					Texture.method374(i7, k7, COSINE[3], j3, j5, SINE[3], HYPOT[0], HYPOT[2], HYPOT[3]);
+					Texture.drawGouraudTriangle(i7, j7, k7, j3, j4, j5, HYPOT[0], HYPOT[1], HYPOT[2]);
+					Texture.drawGouraudTriangle(i7, k7, COSINE[3], j3, j5, SINE[3], HYPOT[0], HYPOT[2], HYPOT[3]);
 					return;
 				}
 				if (i8 == 1) {
 					int l8 = modelIntArray3[anIntArray1634[i]];
-					Texture.method376(i7, j7, k7, j3, j4, j5, l8);
-					Texture.method376(i7, k7, COSINE[3], j3, j5, SINE[3], l8);
+					Texture.drawFlatTriangle(i7, j7, k7, j3, j4, j5, l8);
+					Texture.drawFlatTriangle(i7, k7, COSINE[3], j3, j5, SINE[3], l8);
 					return;
 				}
 				if (i8 == 2) {
@@ -1790,8 +1790,8 @@ public final class Model extends Animable {
 					int i10 = anIntArray1643[i9];
 					int i11 = anIntArray1644[i9];
 					int i12 = anIntArray1645[i9];
-					Texture.method378(i7, j7, k7, j3, j4, j5, HYPOT[0], HYPOT[1], HYPOT[2], projectedY[i10], projectedY[i11], projectedY[i12], projectedZ[i10], projectedZ[i11], projectedZ[i12], depthList[i10], depthList[i11], depthList[i12], faceColor[i]);
-					Texture.method378(i7, k7, COSINE[3], j3, j5, SINE[3], HYPOT[0], HYPOT[2], HYPOT[3], projectedY[i10], projectedY[i11], projectedY[i12], projectedZ[i10], projectedZ[i11], projectedZ[i12], depthList[i10], depthList[i11], depthList[i12], faceColor[i]);
+					Texture.drawTexturedTriangle(i7, j7, k7, j3, j4, j5, HYPOT[0], HYPOT[1], HYPOT[2], projectedY[i10], projectedY[i11], projectedY[i12], projectedZ[i10], projectedZ[i11], projectedZ[i12], depthList[i10], depthList[i11], depthList[i12], faceColor[i]);
+					Texture.drawTexturedTriangle(i7, k7, COSINE[3], j3, j5, SINE[3], HYPOT[0], HYPOT[2], HYPOT[3], projectedY[i10], projectedY[i11], projectedY[i12], projectedZ[i10], projectedZ[i11], projectedZ[i12], depthList[i10], depthList[i11], depthList[i12], faceColor[i]);
 					return;
 				}
 				if (i8 == 3) {
@@ -1799,8 +1799,8 @@ public final class Model extends Animable {
 					int j10 = anIntArray1643[j9];
 					int j11 = anIntArray1644[j9];
 					int j12 = anIntArray1645[j9];
-					Texture.method378(i7, j7, k7, j3, j4, j5, anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], projectedY[j10], projectedY[j11], projectedY[j12], projectedZ[j10], projectedZ[j11], projectedZ[j12], depthList[j10], depthList[j11], depthList[j12], faceColor[i]);
-					Texture.method378(i7, k7, COSINE[3], j3, j5, SINE[3], anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], projectedY[j10], projectedY[j11], projectedY[j12], projectedZ[j10], projectedZ[j11], projectedZ[j12], depthList[j10], depthList[j11], depthList[j12], faceColor[i]);
+					Texture.drawTexturedTriangle(i7, j7, k7, j3, j4, j5, anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], projectedY[j10], projectedY[j11], projectedY[j12], projectedZ[j10], projectedZ[j11], projectedZ[j12], depthList[j10], depthList[j11], depthList[j12], faceColor[i]);
+					Texture.drawTexturedTriangle(i7, k7, COSINE[3], j3, j5, SINE[3], anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], projectedY[j10], projectedY[j11], projectedY[j12], projectedZ[j10], projectedZ[j11], projectedZ[j12], depthList[j10], depthList[j11], depthList[j12], faceColor[i]);
 				}
 			}
 		}
@@ -1890,9 +1890,9 @@ public final class Model extends Animable {
 	private static int[] modelIntArray4;
 
 	static {
-		modelIntArray1 = Texture.anIntArray1470;
-		modelIntArray2 = Texture.anIntArray1471;
-		modelIntArray3 = Texture.anIntArray1482;
-		modelIntArray4 = Texture.anIntArray1469;
+		modelIntArray1 = Texture.sineTable;
+		modelIntArray2 = Texture.cosineTable;
+		modelIntArray3 = Texture.brightnessTable;
+		modelIntArray4 = Texture.reciprocal16;
 	}
 }
