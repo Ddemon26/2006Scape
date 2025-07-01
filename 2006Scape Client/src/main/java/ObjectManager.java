@@ -525,7 +525,7 @@ final class ObjectManager {
 					if (model != null) {
 						for (int j5 = 0; j5 <= j4; j5++) {
 							for (int k5 = 0; k5 <= l4; k5++) {
-								int l5 = model.anInt1650 / 4;
+								int l5 = model.boundingRadius / 4;
 								if (l5 > 30) {
 									l5 = 30;
 								}

@@ -817,7 +817,7 @@ public class Game extends RSApplet {
 			for (int i1 = 0; i1 < j; i1++) {
 				int l1 = onDemandFetcher.getModelIndex(i1);
 				if ((l1 & 0x79) == 0) {
-					Model.method461(i1);
+					Model.unload(i1);
 				}
 			}
 
@@ -2838,7 +2838,7 @@ public class Game extends RSApplet {
 					return;
 				}
 				if (onDemandData.dataType == 0) {
-					Model.method460(onDemandData.buffer, onDemandData.ID);
+					Model.loadModelData(onDemandData.buffer, onDemandData.ID);
 					if ((onDemandFetcher.getModelIndex(onDemandData.ID) & 0x62) != 0) {
 						needDrawTabArea = true;
 						if (backDialogID != -1) {
@@ -4802,7 +4802,7 @@ public class Game extends RSApplet {
 		Player.mruNodes = null;
 		Texture.nullLoader();
 		WorldController.nullLoader();
-                Model.nullLoader();
+                Model.clearCache();
                 AnimFrame.clear();
 		System.gc();
 	}
@@ -5412,16 +5412,16 @@ public class Game extends RSApplet {
 				Model model = new Model(i2, aclass30_sub2_sub4_sub6s);
 				for (int l2 = 0; l2 < 5; l2++) {
 					if (anIntArray990[l2] != 0) {
-						model.method476(anIntArrayArray1003[l2][0], anIntArrayArray1003[l2][anIntArray990[l2]]);
+						model.recolor(anIntArrayArray1003[l2][0], anIntArrayArray1003[l2][anIntArray990[l2]]);
 						if (l2 == 1) {
-							model.method476(anIntArray1204[0], anIntArray1204[anIntArray990[l2]]);
+							model.recolor(anIntArray1204[0], anIntArray1204[anIntArray990[l2]]);
 						}
 					}
 				}
 
-				model.method469();
-				model.method470(Animation.anims[myPlayer.anInt1511].anIntArray353[0]);
-				model.method479(64, 850, -30, -50, -30, true);
+				model.buildVertexGroups();
+				model.applyFrame(Animation.anims[myPlayer.anInt1511].anIntArray353[0]);
+				model.applyLighting(64, 850, -30, -50, -30, true);
 				class9.anInt233 = 5;
 				class9.mediaID = 0;
 				RSInterface.method208(model, 0, 5);
@@ -7028,7 +7028,7 @@ public class Game extends RSApplet {
 			onDemandFetcher.start(streamLoader_6, this);
 //			musics();
                         AnimFrame.init(onDemandFetcher.getAnimCount());
-			Model.method459(onDemandFetcher.getVersionCount(0), onDemandFetcher);
+			Model.init(onDemandFetcher.getVersionCount(0), onDemandFetcher);
 			if (!lowMem) {
                                queueSong(10, musicVolume, false, 0);
 				while (onDemandFetcher.getNodeCount() > 0) {
@@ -11890,7 +11890,7 @@ public class Game extends RSApplet {
 		}
 
 		int k2 = Texture.anInt1481;
-		Model.aBoolean1684 = true;
+		Model.withinViewport = true;
 		Model.anInt1687 = 0;
 		Model.anInt1685 = super.mouseX - 4;
 		Model.anInt1686 = super.mouseY - 4;

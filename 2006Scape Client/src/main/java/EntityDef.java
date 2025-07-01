@@ -45,7 +45,7 @@ public final class EntityDef {
 		}
 		boolean flag1 = false;
 		for (int i = 0; i < anIntArray73.length; i++) {
-			if (!Model.method463(anIntArray73[i])) {
+			if (!Model.isLoaded(anIntArray73[i])) {
 				flag1 = true;
 			}
 		}
@@ -55,7 +55,7 @@ public final class EntityDef {
 		}
 		Model aclass30_sub2_sub4_sub6s[] = new Model[anIntArray73.length];
 		for (int j = 0; j < anIntArray73.length; j++) {
-			aclass30_sub2_sub4_sub6s[j] = Model.method462(anIntArray73[j]);
+			aclass30_sub2_sub4_sub6s[j] = Model.create(anIntArray73[j]);
 		}
 
 		Model model;
@@ -66,7 +66,7 @@ public final class EntityDef {
 		}
 		if (anIntArray76 != null) {
 			for (int k = 0; k < anIntArray76.length; k++) {
-				model.method476(anIntArray76[k], anIntArray70[k]);
+				model.recolor(anIntArray76[k], anIntArray70[k]);
 			}
 
 		}
@@ -132,7 +132,7 @@ public final class EntityDef {
 		if (model == null) {
 			boolean flag = false;
 			for (int i1 = 0; i1 < anIntArray94.length; i1++) {
-				if (!Model.method463(anIntArray94[i1])) {
+				if (!Model.isLoaded(anIntArray94[i1])) {
 					flag = true;
 				}
 			}
@@ -142,7 +142,7 @@ public final class EntityDef {
 			}
 			Model aclass30_sub2_sub4_sub6s[] = new Model[anIntArray94.length];
 			for (int j1 = 0; j1 < anIntArray94.length; j1++) {
-				aclass30_sub2_sub4_sub6s[j1] = Model.method462(anIntArray94[j1]);
+				aclass30_sub2_sub4_sub6s[j1] = Model.create(anIntArray94[j1]);
 			}
 
 			if (aclass30_sub2_sub4_sub6s.length == 1) {
@@ -152,27 +152,27 @@ public final class EntityDef {
 			}
 			if (anIntArray76 != null) {
 				for (int k1 = 0; k1 < anIntArray76.length; k1++) {
-					model.method476(anIntArray76[k1], anIntArray70[k1]);
+					model.recolor(anIntArray76[k1], anIntArray70[k1]);
 				}
 
 			}
-			model.method469();
-			model.method479(64 + anInt85, 850 + anInt92, -30, -50, -30, true);
+			model.buildVertexGroups();
+			model.applyLighting(64 + anInt85, 850 + anInt92, -30, -50, -30, true);
 			mruNodes.removeFromCache(model, type);
 		}
                 Model model_1 = Model.aModel_1621;
                 model_1.method464(model, AnimFrame.isNullFrame(k) & AnimFrame.isNullFrame(j));
 		if (k != -1 && j != -1) {
-			model_1.method471(ai, j, k);
+			model_1.applyFrames(ai, j, k);
 		} else if (k != -1) {
-			model_1.method470(k);
+			model_1.applyFrame(k);
 		}
 		if (anInt91 != 128 || anInt86 != 128) {
-			model_1.method478(anInt91, anInt91, anInt86);
+			model_1.scaleModel(anInt91, anInt91, anInt86);
 		}
-		model_1.method466();
-		model_1.anIntArrayArray1658 = null;
-		model_1.anIntArrayArray1657 = null;
+		model_1.calculateBounds();
+		model_1.faceGroups = null;
+		model_1.vertexGroups = null;
 		if (aByte68 == 1) {
 			model_1.aBoolean1659 = true;
 		}

@@ -58,13 +58,13 @@ public final class SpotAnim {
 		if (model != null) {
 			return model;
 		}
-		model = Model.method462(anInt405);
+		model = Model.create(anInt405);
 		if (model == null) {
 			return null;
 		}
 		for (int i = 0; i < 6; i++) {
 			if (anIntArray408[0] != 0) {
-				model.method476(anIntArray408[i], anIntArray409[i]);
+				model.recolor(anIntArray408[i], anIntArray409[i]);
 			}
 		}
 

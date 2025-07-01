@@ -53,7 +53,7 @@ public final class IDK {
 		}
 		boolean flag = true;
 		for (int j = 0; j < anIntArray658.length; j++) {
-			if (!Model.method463(anIntArray658[j])) {
+			if (!Model.isLoaded(anIntArray658[j])) {
 				flag = false;
 			}
 		}
@@ -67,7 +67,7 @@ public final class IDK {
 		}
 		Model aclass30_sub2_sub4_sub6s[] = new Model[anIntArray658.length];
 		for (int i = 0; i < anIntArray658.length; i++) {
-			aclass30_sub2_sub4_sub6s[i] = Model.method462(anIntArray658[i]);
+			aclass30_sub2_sub4_sub6s[i] = Model.create(anIntArray658[i]);
 		}
 
 		Model model;
@@ -80,7 +80,7 @@ public final class IDK {
 			if (anIntArray659[j] == 0) {
 				break;
 			}
-			model.method476(anIntArray659[j], anIntArray660[j]);
+			model.recolor(anIntArray659[j], anIntArray660[j]);
 		}
 
 		return model;
@@ -89,7 +89,7 @@ public final class IDK {
 	public boolean method539() {
 		boolean flag1 = true;
 		for (int i = 0; i < 5; i++) {
-			if (anIntArray661[i] != -1 && !Model.method463(anIntArray661[i])) {
+			if (anIntArray661[i] != -1 && !Model.isLoaded(anIntArray661[i])) {
 				flag1 = false;
 			}
 		}
@@ -102,7 +102,7 @@ public final class IDK {
 		int j = 0;
 		for (int k = 0; k < 5; k++) {
 			if (anIntArray661[k] != -1) {
-				aclass30_sub2_sub4_sub6s[j++] = Model.method462(anIntArray661[k]);
+				aclass30_sub2_sub4_sub6s[j++] = Model.create(anIntArray661[k]);
 			}
 		}
 
@@ -111,7 +111,7 @@ public final class IDK {
 			if (anIntArray659[l] == 0) {
 				break;
 			}
-			model.method476(anIntArray659[l], anIntArray660[l]);
+			model.recolor(anIntArray659[l], anIntArray660[l]);
 		}
 
 		return model;

@@ -23,15 +23,15 @@ public final class Player extends Entity {
 			Model model_2 = spotAnim.getModel();
 			if (model_2 != null) {
                                 Model model_3 = new Model(true, AnimFrame.isNullFrame(super.anInt1521), false, model_2);
-				model_3.method475(0, -super.anInt1524, 0);
-				model_3.method469();
-				model_3.method470(spotAnim.aAnimation_407.anIntArray353[super.anInt1521]);
-				model_3.anIntArrayArray1658 = null;
-				model_3.anIntArrayArray1657 = null;
+				model_3.translate(0, -super.anInt1524, 0);
+				model_3.buildVertexGroups();
+				model_3.applyFrame(spotAnim.aAnimation_407.anIntArray353[super.anInt1521]);
+				model_3.faceGroups = null;
+				model_3.vertexGroups = null;
 				if (spotAnim.anInt410 != 128 || spotAnim.anInt411 != 128) {
-					model_3.method478(spotAnim.anInt410, spotAnim.anInt410, spotAnim.anInt411);
+					model_3.scaleModel(spotAnim.anInt410, spotAnim.anInt410, spotAnim.anInt411);
 				}
-				model_3.method479(64 + spotAnim.anInt413, 850 + spotAnim.anInt414, -30, -50, -30, true);
+				model_3.applyLighting(64 + spotAnim.anInt413, 850 + spotAnim.anInt414, -30, -50, -30, true);
 				Model aclass30_sub2_sub4_sub6_1s[] = {model, model_3};
 				model = new Model(aclass30_sub2_sub4_sub6_1s);
 			}
@@ -42,30 +42,30 @@ public final class Player extends Entity {
 			}
 			if (Game.loopCycle >= anInt1707 && Game.loopCycle < anInt1708) {
 				Model model_1 = aModel_1714;
-				model_1.method475(anInt1711 - super.x, anInt1712 - anInt1709, anInt1713 - super.y);
+				model_1.translate(anInt1711 - super.x, anInt1712 - anInt1709, anInt1713 - super.y);
 				if (super.turnDirection == 512) {
-					model_1.method473();
-					model_1.method473();
-					model_1.method473();
+					model_1.calculateNormals();
+					model_1.calculateNormals();
+					model_1.calculateNormals();
 				} else if (super.turnDirection == 1024) {
-					model_1.method473();
-					model_1.method473();
+					model_1.calculateNormals();
+					model_1.calculateNormals();
 				} else if (super.turnDirection == 1536) {
-					model_1.method473();
+					model_1.calculateNormals();
 				}
 				Model aclass30_sub2_sub4_sub6s[] = {model, model_1};
 				model = new Model(aclass30_sub2_sub4_sub6s);
 				if (super.turnDirection == 512) {
-					model_1.method473();
+					model_1.calculateNormals();
 				} else if (super.turnDirection == 1024) {
-					model_1.method473();
-					model_1.method473();
+					model_1.calculateNormals();
+					model_1.calculateNormals();
 				} else if (super.turnDirection == 1536) {
-					model_1.method473();
-					model_1.method473();
-					model_1.method473();
+					model_1.calculateNormals();
+					model_1.calculateNormals();
+					model_1.calculateNormals();
 				}
-				model_1.method475(super.x - anInt1711, anInt1709 - anInt1712, super.y - anInt1713);
+				model_1.translate(super.x - anInt1711, anInt1709 - anInt1712, super.y - anInt1713);
 			}
 		}
 		model.aBoolean1659 = true;
@@ -251,15 +251,15 @@ public final class Player extends Entity {
 			model_1 = new Model(j2, aclass30_sub2_sub4_sub6s);
 			for (int j3 = 0; j3 < 5; j3++) {
 				if (anIntArray1700[j3] != 0) {
-					model_1.method476(Game.anIntArrayArray1003[j3][0], Game.anIntArrayArray1003[j3][anIntArray1700[j3]]);
+					model_1.recolor(Game.anIntArrayArray1003[j3][0], Game.anIntArrayArray1003[j3][anIntArray1700[j3]]);
 					if (j3 == 1) {
-						model_1.method476(Game.anIntArray1204[0], Game.anIntArray1204[anIntArray1700[j3]]);
+						model_1.recolor(Game.anIntArray1204[0], Game.anIntArray1204[anIntArray1700[j3]]);
 					}
 				}
 			}
 
-			model_1.method469();
-			model_1.method479(64, 850, -30, -50, -30, true);
+			model_1.buildVertexGroups();
+			model_1.applyLighting(64, 850, -30, -50, -30, true);
 			mruNodes.removeFromCache(model_1, l);
 			aLong1697 = l;
 		}
@@ -269,13 +269,13 @@ public final class Player extends Entity {
                 Model model_2 = Model.aModel_1621;
                 model_2.method464(model_1, AnimFrame.isNullFrame(k) & AnimFrame.isNullFrame(i1));
 		if (k != -1 && i1 != -1) {
-			model_2.method471(Animation.anims[super.anim].anIntArray357, i1, k);
+			model_2.applyFrames(Animation.anims[super.anim].anIntArray357, i1, k);
 		} else if (k != -1) {
-			model_2.method470(k);
+			model_2.applyFrame(k);
 		}
-		model_2.method466();
-		model_2.anIntArrayArray1658 = null;
-		model_2.anIntArrayArray1657 = null;
+		model_2.calculateBounds();
+		model_2.faceGroups = null;
+		model_2.vertexGroups = null;
 		return model_2;
 	}
 
@@ -327,9 +327,9 @@ public final class Player extends Entity {
 		Model model = new Model(k, aclass30_sub2_sub4_sub6s);
 		for (int j1 = 0; j1 < 5; j1++) {
 			if (anIntArray1700[j1] != 0) {
-				model.method476(Game.anIntArrayArray1003[j1][0], Game.anIntArrayArray1003[j1][anIntArray1700[j1]]);
+				model.recolor(Game.anIntArrayArray1003[j1][0], Game.anIntArrayArray1003[j1][anIntArray1700[j1]]);
 				if (j1 == 1) {
-					model.method476(Game.anIntArray1204[0], Game.anIntArray1204[anIntArray1700[j1]]);
+					model.recolor(Game.anIntArray1204[0], Game.anIntArray1204[anIntArray1700[j1]]);
 				}
 			}
 		}

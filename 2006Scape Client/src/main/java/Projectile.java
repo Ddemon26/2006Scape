@@ -35,16 +35,16 @@ final class Projectile extends Animable {
 		}
                 Model model_1 = new Model(true, AnimFrame.isNullFrame(j), false, model);
 		if (j != -1) {
-			model_1.method469();
-			model_1.method470(j);
-			model_1.anIntArrayArray1658 = null;
-			model_1.anIntArrayArray1657 = null;
+			model_1.buildVertexGroups();
+			model_1.applyFrame(j);
+			model_1.faceGroups = null;
+			model_1.vertexGroups = null;
 		}
 		if (spotAnim.anInt410 != 128 || spotAnim.anInt411 != 128) {
-			model_1.method478(spotAnim.anInt410, spotAnim.anInt410, spotAnim.anInt411);
+			model_1.scaleModel(spotAnim.anInt410, spotAnim.anInt410, spotAnim.anInt411);
 		}
-		model_1.method474(pitch);
-		model_1.method479(64 + spotAnim.anInt413, 850 + spotAnim.anInt414, -30, -50, -30, true);
+		model_1.rotateX(pitch);
+		model_1.applyLighting(64 + spotAnim.anInt413, 850 + spotAnim.anInt414, -30, -50, -30, true);
 		return model_1;
 	}
 
