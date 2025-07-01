@@ -8171,19 +8171,19 @@ public class Game extends RSApplet {
 	}
 
        public void processGraphicsObjects() {
-		Animable_Sub3 class30_sub2_sub4_sub3 = (Animable_Sub3) aClass19_1056.reverseGetFirst();
-		for (; class30_sub2_sub4_sub3 != null; class30_sub2_sub4_sub3 = (Animable_Sub3) aClass19_1056.reverseGetNext()) {
-			if (class30_sub2_sub4_sub3.anInt1560 != plane || class30_sub2_sub4_sub3.aBoolean1567) {
-				class30_sub2_sub4_sub3.unlink();
-			} else if (loopCycle >= class30_sub2_sub4_sub3.anInt1564) {
-				class30_sub2_sub4_sub3.method454(anInt945);
-				if (class30_sub2_sub4_sub3.aBoolean1567) {
-					class30_sub2_sub4_sub3.unlink();
-				} else {
-					worldController.method285(class30_sub2_sub4_sub3.anInt1560, 0, class30_sub2_sub4_sub3.anInt1563, -1, class30_sub2_sub4_sub3.anInt1562, 60, class30_sub2_sub4_sub3.anInt1561, class30_sub2_sub4_sub3, false);
-				}
-			}
-		}
+                GraphicsObject graphicsObject = (GraphicsObject) aClass19_1056.reverseGetFirst();
+                for (; graphicsObject != null; graphicsObject = (GraphicsObject) aClass19_1056.reverseGetNext()) {
+                        if (graphicsObject.plane != plane || graphicsObject.finished) {
+                                graphicsObject.unlink();
+                        } else if (loopCycle >= graphicsObject.endCycle) {
+                                graphicsObject.update(anInt945);
+                                if (graphicsObject.finished) {
+                                        graphicsObject.unlink();
+                                } else {
+                                        worldController.method285(graphicsObject.plane, 0, graphicsObject.height, -1, graphicsObject.y, 60, graphicsObject.x, graphicsObject, false);
+                                }
+                        }
+                }
 
 	}
 
@@ -10236,8 +10236,8 @@ public class Game extends RSApplet {
 			if (i5 >= 0 && l7 >= 0 && i5 < 104 && l7 < 104) {
 				i5 = i5 * 128 + 64;
 				l7 = l7 * 128 + 64;
-				Animable_Sub3 class30_sub2_sub4_sub3 = new Animable_Sub3(plane, loopCycle, j15, k10, method42(plane, l7, i5) - l12, l7, i5);
-				aClass19_1056.insertHead(class30_sub2_sub4_sub3);
+                                GraphicsObject graphicsObject = new GraphicsObject(plane, loopCycle, j15, k10, method42(plane, l7, i5) - l12, l7, i5);
+                                aClass19_1056.insertHead(graphicsObject);
 			}
 			return;
 		}
