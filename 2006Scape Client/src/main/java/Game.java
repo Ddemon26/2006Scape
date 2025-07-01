@@ -10102,14 +10102,14 @@ public class Game extends RSApplet {
 				int l19 = intGroundArray[plane][j4 + 1][i7 + 1];
 				int k20 = intGroundArray[plane][j4][i7 + 1];
 				if (j16 == 0) {
-					Object1 class10 = worldController.method296(plane, j4, i7);
+					BoundaryObject class10 = worldController.method296(plane, j4, i7);
 					if (class10 != null) {
 						int k21 = class10.uid >> 14 & 0x7fff;
 						if (j12 == 2) {
-							class10.aClass30_Sub2_Sub4_278 = new Animable_Sub5(k21, 4 + k14, 2, i19, l19, j18, k20, j17, false);
-							class10.aClass30_Sub2_Sub4_279 = new Animable_Sub5(k21, k14 + 1 & 3, 2, i19, l19, j18, k20, j17, false);
+							class10.primary = new Animable_Sub5(k21, 4 + k14, 2, i19, l19, j18, k20, j17, false);
+							class10.secondary = new Animable_Sub5(k21, k14 + 1 & 3, 2, i19, l19, j18, k20, j17, false);
 						} else {
-							class10.aClass30_Sub2_Sub4_278 = new Animable_Sub5(k21, k14, j12, i19, l19, j18, k20, j17, false);
+							class10.primary = new Animable_Sub5(k21, k14, j12, i19, l19, j18, k20, j17, false);
 						}
 					}
 				}
