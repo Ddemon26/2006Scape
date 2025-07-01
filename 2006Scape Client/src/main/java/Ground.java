@@ -4,8 +4,8 @@
 
 public final class Ground extends Node {
 
-	public Ground(int i, int j, int k) {
-		obj5Array = new Object5[5];
+        public Ground(int i, int j, int k) {
+                obj5Array = new SceneObject[5];
 		anIntArray1319 = new int[5];
 		anInt1310 = anInt1307 = i;
 		anInt1308 = j;
@@ -23,7 +23,7 @@ public final class Ground extends Node {
         public TileDecoration obj3;
         public ItemPile itemPile;
 	int anInt1317;
-	public final Object5[] obj5Array;
+        public final SceneObject[] obj5Array;
 	final int[] anIntArray1319;
 	int anInt1320;
 	int anInt1321;

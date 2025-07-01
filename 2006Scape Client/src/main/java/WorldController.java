@@ -10,7 +10,7 @@ final class WorldController {
 		int j = 104;// was parameter
 		int k = 4;// was parameter
 		aBoolean434 = true;
-		obj5Cache = new Object5[5000];
+        obj5Cache = new SceneObject[5000];
 		anIntArray486 = new int[10000];
 		anIntArray487 = new int[10000];
 		anInt437 = k;
@@ -79,12 +79,12 @@ final class WorldController {
 			Ground class30_sub3_1 = groundArray[l][j][i] = groundArray[l + 1][j][i];
 			if (class30_sub3_1 != null) {
 				class30_sub3_1.anInt1307--;
-				for (int j1 = 0; j1 < class30_sub3_1.anInt1317; j1++) {
-					Object5 class28 = class30_sub3_1.obj5Array[j1];
-					if ((class28.uid >> 29 & 3) == 2 && class28.anInt523 == j && class28.anInt525 == i) {
-						class28.anInt517--;
-					}
-				}
+                                for (int j1 = 0; j1 < class30_sub3_1.anInt1317; j1++) {
+                                        SceneObject sceneObject = class30_sub3_1.obj5Array[j1];
+                                        if ((sceneObject.uid >> 29 & 3) == 2 && sceneObject.startX == j && sceneObject.startY == i) {
+                                                sceneObject.plane--;
+                                        }
+                                }
 
 			}
 		}
@@ -181,8 +181,8 @@ final class WorldController {
 		Ground class30_sub3 = groundArray[l][i][i1];
 		if (class30_sub3 != null) {
 			for (int k1 = 0; k1 < class30_sub3.anInt1317; k1++) {
-				if (class30_sub3.obj5Array[k1].aClass30_Sub2_Sub4_521 instanceof Model) {
-					int l1 = ((Model) class30_sub3.obj5Array[k1].aClass30_Sub2_Sub4_521).anInt1654;
+                                if (class30_sub3.obj5Array[k1].renderable instanceof Model) {
+                                        int l1 = ((Model) class30_sub3.obj5Array[k1].renderable).anInt1654;
 					if (l1 > j1) {
 						j1 = l1;
 					}
@@ -299,19 +299,19 @@ final class WorldController {
 
 		}
 
-		Object5 class28 = new Object5();
-		class28.uid = j2;
-		class28.aByte530 = byte0;
-		class28.anInt517 = i;
-		class28.anInt519 = j1;
-		class28.anInt520 = k1;
-		class28.anInt518 = l1;
-		class28.aClass30_Sub2_Sub4_521 = class30_sub2_sub4;
-		class28.anInt522 = i2;
-		class28.anInt523 = j;
-		class28.anInt525 = k;
-		class28.anInt524 = j + l - 1;
-		class28.anInt526 = k + i1 - 1;
+                SceneObject sceneObject = new SceneObject();
+                sceneObject.uid = j2;
+                sceneObject.config = byte0;
+                sceneObject.plane = i;
+                sceneObject.x = j1;
+                sceneObject.y = k1;
+                sceneObject.height = l1;
+                sceneObject.renderable = class30_sub2_sub4;
+                sceneObject.orientation = i2;
+                sceneObject.startX = j;
+                sceneObject.startY = k;
+                sceneObject.endX = j + l - 1;
+                sceneObject.endY = k + i1 - 1;
 		for (int i3 = j; i3 < j + l; i3++) {
 			for (int j3 = k; j3 < k + i1; j3++) {
 				int k3 = 0;
@@ -333,49 +333,49 @@ final class WorldController {
 					}
 				}
 
-				Ground class30_sub3_1 = groundArray[i][i3][j3];
-				class30_sub3_1.obj5Array[class30_sub3_1.anInt1317] = class28;
-				class30_sub3_1.anIntArray1319[class30_sub3_1.anInt1317] = k3;
-				class30_sub3_1.anInt1320 |= k3;
-				class30_sub3_1.anInt1317++;
-			}
+                                Ground class30_sub3_1 = groundArray[i][i3][j3];
+                                class30_sub3_1.obj5Array[class30_sub3_1.anInt1317] = sceneObject;
+                                class30_sub3_1.anIntArray1319[class30_sub3_1.anInt1317] = k3;
+                                class30_sub3_1.anInt1320 |= k3;
+                                class30_sub3_1.anInt1317++;
+                        }
 
 		}
 
-		if (flag) {
-			obj5Cache[obj5CacheCurrPos++] = class28;
-		}
+                if (flag) {
+                        obj5Cache[obj5CacheCurrPos++] = sceneObject;
+                }
 		return true;
 	}
 
-	public void clearObj5Cache() {
-		for (int i = 0; i < obj5CacheCurrPos; i++) {
-			Object5 object5 = obj5Cache[i];
-			method289(object5);
-			obj5Cache[i] = null;
-		}
+        public void clearObj5Cache() {
+                for (int i = 0; i < obj5CacheCurrPos; i++) {
+                        SceneObject object = obj5Cache[i];
+                        method289(object);
+                        obj5Cache[i] = null;
+                }
 
 		obj5CacheCurrPos = 0;
 	}
 
-	private void method289(Object5 class28) {
-		for (int j = class28.anInt523; j <= class28.anInt524; j++) {
-			for (int k = class28.anInt525; k <= class28.anInt526; k++) {
-				Ground class30_sub3 = groundArray[class28.anInt517][j][k];
-				if (class30_sub3 != null) {
-					for (int l = 0; l < class30_sub3.anInt1317; l++) {
-						if (class30_sub3.obj5Array[l] != class28) {
-							continue;
-						}
-						class30_sub3.anInt1317--;
-						for (int i1 = l; i1 < class30_sub3.anInt1317; i1++) {
-							class30_sub3.obj5Array[i1] = class30_sub3.obj5Array[i1 + 1];
-							class30_sub3.anIntArray1319[i1] = class30_sub3.anIntArray1319[i1 + 1];
-						}
+        private void method289(SceneObject sceneObject) {
+                for (int j = sceneObject.startX; j <= sceneObject.endX; j++) {
+                        for (int k = sceneObject.startY; k <= sceneObject.endY; k++) {
+                                Ground class30_sub3 = groundArray[sceneObject.plane][j][k];
+                                if (class30_sub3 != null) {
+                                        for (int l = 0; l < class30_sub3.anInt1317; l++) {
+                                                if (class30_sub3.obj5Array[l] != sceneObject) {
+                                                        continue;
+                                                }
+                                                class30_sub3.anInt1317--;
+                                                for (int i1 = l; i1 < class30_sub3.anInt1317; i1++) {
+                                                        class30_sub3.obj5Array[i1] = class30_sub3.obj5Array[i1 + 1];
+                                                        class30_sub3.anIntArray1319[i1] = class30_sub3.anIntArray1319[i1 + 1];
+                                                }
 
-						class30_sub3.obj5Array[class30_sub3.anInt1317] = null;
-						break;
-					}
+                                                class30_sub3.obj5Array[class30_sub3.anInt1317] = null;
+                                                break;
+                                        }
 
 					class30_sub3.anInt1320 = 0;
 					for (int j1 = 0; j1 < class30_sub3.anInt1317; j1++) {
@@ -425,13 +425,13 @@ final class WorldController {
 		if (class30_sub3 == null) {
 			return;
 		}
-		for (int j1 = 0; j1 < class30_sub3.anInt1317; j1++) {
-			Object5 class28 = class30_sub3.obj5Array[j1];
-			if ((class28.uid >> 29 & 3) == 2 && class28.anInt523 == k && class28.anInt525 == l) {
-				method289(class28);
-				return;
-			}
-		}
+                for (int j1 = 0; j1 < class30_sub3.anInt1317; j1++) {
+                        SceneObject sceneObject = class30_sub3.obj5Array[j1];
+                        if ((sceneObject.uid >> 29 & 3) == 2 && sceneObject.startX == k && sceneObject.startY == l) {
+                                method289(sceneObject);
+                                return;
+                        }
+                }
 
 	}
 
@@ -468,19 +468,19 @@ final class WorldController {
                 }
 	}
 
-	public Object5 method298(int i, int j, int k) {
-		Ground class30_sub3 = groundArray[k][i][j];
-		if (class30_sub3 == null) {
-			return null;
-		}
-		for (int l = 0; l < class30_sub3.anInt1317; l++) {
-			Object5 class28 = class30_sub3.obj5Array[l];
-			if ((class28.uid >> 29 & 3) == 2 && class28.anInt523 == i && class28.anInt525 == j) {
-				return class28;
-			}
-		}
-		return null;
-	}
+        public SceneObject method298(int i, int j, int k) {
+                Ground class30_sub3 = groundArray[k][i][j];
+                if (class30_sub3 == null) {
+                        return null;
+                }
+                for (int l = 0; l < class30_sub3.anInt1317; l++) {
+                        SceneObject sceneObject = class30_sub3.obj5Array[l];
+                        if ((sceneObject.uid >> 29 & 3) == 2 && sceneObject.startX == i && sceneObject.startY == j) {
+                                return sceneObject;
+                        }
+                }
+                return null;
+        }
 
     public TileDecoration method299(int i, int j, int k) {
 		Ground class30_sub3 = groundArray[k][j][i];
@@ -514,12 +514,12 @@ final class WorldController {
 		if (class30_sub3 == null) {
 			return 0;
 		}
-		for (int l = 0; l < class30_sub3.anInt1317; l++) {
-			Object5 class28 = class30_sub3.obj5Array[l];
-			if ((class28.uid >> 29 & 3) == 2 && class28.anInt523 == j && class28.anInt525 == k) {
-				return class28.uid;
-			}
-		}
+                for (int l = 0; l < class30_sub3.anInt1317; l++) {
+                        SceneObject sceneObject = class30_sub3.obj5Array[l];
+                        if ((sceneObject.uid >> 29 & 3) == 2 && sceneObject.startX == j && sceneObject.startY == k) {
+                                return sceneObject.uid;
+                        }
+                }
 
 		return 0;
 	}
@@ -547,11 +547,11 @@ final class WorldController {
 		if (class30_sub3.obj3 != null && class30_sub3.obj3.uid == l) {
 			return class30_sub3.obj3.aByte816 & 0xff;
 		}
-		for (int i1 = 0; i1 < class30_sub3.anInt1317; i1++) {
-			if (class30_sub3.obj5Array[i1].uid == l) {
-				return class30_sub3.obj5Array[i1].aByte530 & 0xff;
-			}
-		}
+                for (int i1 = 0; i1 < class30_sub3.anInt1317; i1++) {
+                        if (class30_sub3.obj5Array[i1].uid == l) {
+                                return class30_sub3.obj5Array[i1].config & 0xff;
+                        }
+                }
 
 		return -1;
 	}
@@ -576,13 +576,13 @@ final class WorldController {
 							}
 							((Model) class10.primary).method480(j, k1, k, i, i1);
 						}
-						for (int k2 = 0; k2 < class30_sub3.anInt1317; k2++) {
-							Object5 class28 = class30_sub3.obj5Array[k2];
-							if (class28 != null && class28.aClass30_Sub2_Sub4_521 != null && class28.aClass30_Sub2_Sub4_521.vertexNormals != null) {
-								method307(l1, class28.anInt524 - class28.anInt523 + 1, class28.anInt526 - class28.anInt525 + 1, i2, j2, (Model) class28.aClass30_Sub2_Sub4_521);
-								((Model) class28.aClass30_Sub2_Sub4_521).method480(j, k1, k, i, i1);
-							}
-						}
+                                                for (int k2 = 0; k2 < class30_sub3.anInt1317; k2++) {
+                                                        SceneObject sceneObject = class30_sub3.obj5Array[k2];
+                                                        if (sceneObject != null && sceneObject.renderable != null && sceneObject.renderable.vertexNormals != null) {
+                                                                method307(l1, sceneObject.endX - sceneObject.startX + 1, sceneObject.endY - sceneObject.startY + 1, i2, j2, (Model) sceneObject.renderable);
+                                                                ((Model) sceneObject.renderable).method480(j, k1, k, i, i1);
+                                                        }
+                                                }
 
                                             TileDecoration class49 = class30_sub3.obj3;
 						if (class49 != null && class49.aClass30_Sub2_Sub4_814.vertexNormals != null) {
@@ -647,14 +647,14 @@ final class WorldController {
 									if (class10 != null && class10.secondary != null && class10.secondary.vertexNormals != null) {
 										method308(model, (Model) class10.secondary, (k2 - l) * 128 + (1 - j) * 64, i3, (l2 - i1) * 128 + (1 - k) * 64, flag);
 									}
-									for (int j3 = 0; j3 < class30_sub3.anInt1317; j3++) {
-										Object5 class28 = class30_sub3.obj5Array[j3];
-										if (class28 != null && class28.aClass30_Sub2_Sub4_521 != null && class28.aClass30_Sub2_Sub4_521.vertexNormals != null) {
-											int k3 = class28.anInt524 - class28.anInt523 + 1;
-											int l3 = class28.anInt526 - class28.anInt525 + 1;
-											method308(model, (Model) class28.aClass30_Sub2_Sub4_521, (class28.anInt523 - l) * 128 + (k3 - j) * 64, i3, (class28.anInt525 - i1) * 128 + (l3 - k) * 64, flag);
-										}
-									}
+                                                                        for (int j3 = 0; j3 < class30_sub3.anInt1317; j3++) {
+                                                                               SceneObject sceneObject = class30_sub3.obj5Array[j3];
+                                                                               if (sceneObject != null && sceneObject.renderable != null && sceneObject.renderable.vertexNormals != null) {
+                                                                               int k3 = sceneObject.endX - sceneObject.startX + 1;
+                                                                               int l3 = sceneObject.endY - sceneObject.startY + 1;
+                                                                               method308(model, (Model) sceneObject.renderable, (sceneObject.startX - l) * 128 + (k3 - j) * 64, i3, (sceneObject.startY - i1) * 128 + (l3 - k) * 64, flag);
+                                                                               }
+                                                                        }
 
 								}
 							}
@@ -1109,12 +1109,12 @@ final class WorldController {
 					if (class10 != null) {
 						class10.primary.render(0, anInt458, anInt459, anInt460, anInt461, class10.x - anInt455, class10.plane - anInt456, class10.y - anInt457, class10.uid);
 					}
-					for (int i2 = 0; i2 < class30_sub3_7.anInt1317; i2++) {
-						Object5 class28 = class30_sub3_7.obj5Array[i2];
-						if (class28 != null) {
-							class28.aClass30_Sub2_Sub4_521.render(class28.anInt522, anInt458, anInt459, anInt460, anInt461, class28.anInt519 - anInt455, class28.anInt518 - anInt456, class28.anInt520 - anInt457, class28.uid);
-						}
-					}
+                                        for (int i2 = 0; i2 < class30_sub3_7.anInt1317; i2++) {
+                                                SceneObject sceneObject = class30_sub3_7.obj5Array[i2];
+                                                if (sceneObject != null) {
+                                                        sceneObject.renderable.render(sceneObject.orientation, anInt458, anInt459, anInt460, anInt461, sceneObject.x - anInt455, sceneObject.height - anInt456, sceneObject.y - anInt457, sceneObject.uid);
+                                                }
+                                        }
 
 				}
 				boolean flag1 = false;
@@ -1254,10 +1254,10 @@ final class WorldController {
 			}
 			if (class30_sub3_1.anInt1325 != 0) {
 				boolean flag2 = true;
-				for (int k1 = 0; k1 < class30_sub3_1.anInt1317; k1++) {
-					if (class30_sub3_1.obj5Array[k1].anInt528 == anInt448 || (class30_sub3_1.anIntArray1319[k1] & class30_sub3_1.anInt1325) != class30_sub3_1.anInt1326) {
-						continue;
-					}
+                                for (int k1 = 0; k1 < class30_sub3_1.anInt1317; k1++) {
+                                        if (class30_sub3_1.obj5Array[k1].lastDrawn == anInt448 || (class30_sub3_1.anIntArray1319[k1] & class30_sub3_1.anInt1325) != class30_sub3_1.anInt1326) {
+                                                continue;
+                                        }
 					flag2 = false;
 					break;
 				}
@@ -1276,33 +1276,33 @@ final class WorldController {
 					class30_sub3_1.aBoolean1324 = false;
 					int l1 = 0;
 					label0 : for (int k2 = 0; k2 < i1; k2++) {
-						Object5 class28_1 = class30_sub3_1.obj5Array[k2];
-						if (class28_1.anInt528 == anInt448) {
-							continue;
-						}
-						for (int k3 = class28_1.anInt523; k3 <= class28_1.anInt524; k3++) {
-							for (int l4 = class28_1.anInt525; l4 <= class28_1.anInt526; l4++) {
-								Ground class30_sub3_21 = aclass30_sub3[k3][l4];
-								if (class30_sub3_21.aBoolean1322) {
-									class30_sub3_1.aBoolean1324 = true;
-								} else {
-									if (class30_sub3_21.anInt1325 == 0) {
+                                                SceneObject class28_1 = class30_sub3_1.obj5Array[k2];
+                                                if (class28_1.lastDrawn == anInt448) {
+                                                        continue;
+                                                }
+                                                for (int k3 = class28_1.startX; k3 <= class28_1.endX; k3++) {
+                                                        for (int l4 = class28_1.startY; l4 <= class28_1.endY; l4++) {
+                                                                Ground class30_sub3_21 = aclass30_sub3[k3][l4];
+                                                                if (class30_sub3_21.aBoolean1322) {
+                                                                        class30_sub3_1.aBoolean1324 = true;
+                                                                } else {
+                                                                        if (class30_sub3_21.anInt1325 == 0) {
 										continue;
 									}
-									int l6 = 0;
-									if (k3 > class28_1.anInt523) {
-										l6++;
-									}
-									if (k3 < class28_1.anInt524) {
-										l6 += 4;
-									}
-									if (l4 > class28_1.anInt525) {
-										l6 += 8;
-									}
-									if (l4 < class28_1.anInt526) {
-										l6 += 2;
-									}
-									if ((l6 & class30_sub3_21.anInt1325) != class30_sub3_1.anInt1327) {
+                                                                        int l6 = 0;
+                                                                        if (k3 > class28_1.startX) {
+                                                                                l6++;
+                                                                        }
+                                                                        if (k3 < class28_1.endX) {
+                                                                                l6 += 4;
+                                                                        }
+                                                                        if (l4 > class28_1.startY) {
+                                                                                l6 += 8;
+                                                                        }
+                                                                        if (l4 < class28_1.endY) {
+                                                                                l6 += 2;
+                                                                        }
+                                                                        if ((l6 & class30_sub3_21.anInt1325) != class30_sub3_1.anInt1327) {
 										continue;
 									}
 									class30_sub3_1.aBoolean1324 = true;
@@ -1312,55 +1312,55 @@ final class WorldController {
 
 						}
 
-						aClass28Array462[l1++] = class28_1;
-						int i5 = anInt453 - class28_1.anInt523;
-						int i6 = class28_1.anInt524 - anInt453;
+                                                aClass28Array462[l1++] = class28_1;
+                                                int i5 = anInt453 - class28_1.startX;
+                                                int i6 = class28_1.endX - anInt453;
 						if (i6 > i5) {
 							i5 = i6;
 						}
-						int i7 = anInt454 - class28_1.anInt525;
-						int j8 = class28_1.anInt526 - anInt454;
-						if (j8 > i7) {
-							class28_1.anInt527 = i5 + j8;
-						} else {
-							class28_1.anInt527 = i5 + i7;
-						}
-					}
+                                                int i7 = anInt454 - class28_1.startY;
+                                                int j8 = class28_1.endY - anInt454;
+                                                if (j8 > i7) {
+                                                        class28_1.distanceFromCamera = i5 + j8;
+                                                } else {
+                                                        class28_1.distanceFromCamera = i5 + i7;
+                                                }
+                                        }
 
 					while (l1 > 0) {
 						int i3 = -50;
 						int l3 = -1;
 						for (int j5 = 0; j5 < l1; j5++) {
-							Object5 class28_2 = aClass28Array462[j5];
-							if (class28_2.anInt528 != anInt448) {
-								if (class28_2.anInt527 > i3) {
-									i3 = class28_2.anInt527;
-									l3 = j5;
-								} else if (class28_2.anInt527 == i3) {
-									int j7 = class28_2.anInt519 - anInt455;
-									int k8 = class28_2.anInt520 - anInt457;
-									int l9 = aClass28Array462[l3].anInt519 - anInt455;
-									int l10 = aClass28Array462[l3].anInt520 - anInt457;
-									if (j7 * j7 + k8 * k8 > l9 * l9 + l10 * l10) {
-										l3 = j5;
-									}
-								}
-							}
-						}
+                                                        SceneObject class28_2 = aClass28Array462[j5];
+                                                        if (class28_2.lastDrawn != anInt448) {
+                                                                if (class28_2.distanceFromCamera > i3) {
+                                                                        i3 = class28_2.distanceFromCamera;
+                                                                        l3 = j5;
+                                                                } else if (class28_2.distanceFromCamera == i3) {
+                                                                        int j7 = class28_2.x - anInt455;
+                                                                        int k8 = class28_2.y - anInt457;
+                                                                        int l9 = aClass28Array462[l3].x - anInt455;
+                                                                        int l10 = aClass28Array462[l3].y - anInt457;
+                                                                        if (j7 * j7 + k8 * k8 > l9 * l9 + l10 * l10) {
+                                                                                l3 = j5;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
 
 						if (l3 == -1) {
 							break;
 						}
-						Object5 class28_3 = aClass28Array462[l3];
-						class28_3.anInt528 = anInt448;
-						if (!method323(l, class28_3.anInt523, class28_3.anInt524, class28_3.anInt525, class28_3.anInt526, class28_3.aClass30_Sub2_Sub4_521.modelHeight)) {
-							class28_3.aClass30_Sub2_Sub4_521.render(class28_3.anInt522, anInt458, anInt459, anInt460, anInt461, class28_3.anInt519 - anInt455, class28_3.anInt518 - anInt456, class28_3.anInt520 - anInt457, class28_3.uid);
-						}
-						for (int k7 = class28_3.anInt523; k7 <= class28_3.anInt524; k7++) {
-							for (int l8 = class28_3.anInt525; l8 <= class28_3.anInt526; l8++) {
-								Ground class30_sub3_22 = aclass30_sub3[k7][l8];
-								if (class30_sub3_22.anInt1325 != 0) {
-									aClass19_477.insertHead(class30_sub3_22);
+                                                SceneObject class28_3 = aClass28Array462[l3];
+                                                class28_3.lastDrawn = anInt448;
+                                                if (!method323(l, class28_3.startX, class28_3.endX, class28_3.startY, class28_3.endY, class28_3.renderable.modelHeight)) {
+                                                        class28_3.renderable.render(class28_3.orientation, anInt458, anInt459, anInt460, anInt461, class28_3.x - anInt455, class28_3.height - anInt456, class28_3.y - anInt457, class28_3.uid);
+                                                }
+                                                for (int k7 = class28_3.startX; k7 <= class28_3.endX; k7++) {
+                                                        for (int l8 = class28_3.startY; l8 <= class28_3.endY; l8++) {
+                                                                Ground class30_sub3_22 = aclass30_sub3[k7][l8];
+                                                                if (class30_sub3_22.anInt1325 != 0) {
+                                                                        aClass19_477.insertHead(class30_sub3_22);
 								} else if ((k7 != i || l8 != j) && class30_sub3_22.aBoolean1323) {
 									aClass19_477.insertHead(class30_sub3_22);
 								}
@@ -2056,8 +2056,8 @@ final class WorldController {
 	private final int[][][] anIntArrayArrayArray440;
 	private final Ground[][][] groundArray;
 	private int anInt442;
-	private int obj5CacheCurrPos;
-	private final Object5[] obj5Cache;
+        private int obj5CacheCurrPos;
+        private final SceneObject[] obj5Cache;
 	private final int[][][] anIntArrayArrayArray445;
 	private static int anInt446;
 	private static int anInt447;
@@ -2075,7 +2075,7 @@ final class WorldController {
 	private static int anInt459;
 	private static int anInt460;
 	private static int anInt461;
-	private static Object5[] aClass28Array462 = new Object5[100];
+        private static SceneObject[] aClass28Array462 = new SceneObject[100];
 	private static final int[] anIntArray463 = {53, -53, -53, 53};
 	private static final int[] anIntArray464 = {-53, -53, 53, 53};
 	private static final int[] anIntArray465 = {-45, 45, 45, -45};
