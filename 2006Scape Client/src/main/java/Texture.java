@@ -67,12 +67,12 @@ final class Texture extends DrawingArea {
 		textureCount = 0;
 		for (int j = 0; j < 50; j++) {
 			try {
-				textures[j] = new Background(streamLoader, String.valueOf(j), 0);
-				if (lowMem && textures[j].anInt1456 == 128) {
-					textures[j].method356();
-				} else {
-					textures[j].method357();
-				}
+                                textures[j] = new Background(streamLoader, String.valueOf(j), 0);
+                                if (lowMem && textures[j].maxWidth == 128) {
+                                        textures[j].downscaleHalf();
+                                } else {
+                                        textures[j].normalize();
+                                }
 				textureCount++;
 			} catch (Exception _ex) {
 			}
@@ -134,12 +134,12 @@ final class Texture extends DrawingArea {
 			textureImages[k] = null;
 		}
 		textureImages[i] = ai;
-		Background background = textures[i];
+                Background background = textures[i];
 		int ai1[] = texturePalettes[i];
 		if (lowMem) {
 			textureHasTransparency[i] = false;
 			for (int i1 = 0; i1 < 4096; i1++) {
-				int i2 = ai[i1] = ai1[background.aByteArray1450[i1]] & 0xf8f8ff;
+                                int i2 = ai[i1] = ai1[background.pixels[i1]] & 0xf8f8ff;
 				if (i2 == 0) {
 					textureHasTransparency[i] = true;
 				}
@@ -149,17 +149,17 @@ final class Texture extends DrawingArea {
 			}
 
 		} else {
-			if (background.anInt1452 == 64) {
+                        if (background.width == 64) {
 				for (int j1 = 0; j1 < 128; j1++) {
 					for (int j2 = 0; j2 < 128; j2++) {
-						ai[j2 + (j1 << 7)] = ai1[background.aByteArray1450[(j2 >> 1) + (j1 >> 1 << 6)]];
+                                                ai[j2 + (j1 << 7)] = ai1[background.pixels[(j2 >> 1) + (j1 >> 1 << 6)]];
 					}
 
 				}
 
 			} else {
-				for (int k1 = 0; k1 < 16384; k1++) {
-					ai[k1] = ai1[background.aByteArray1450[k1]];
+                                for (int k1 = 0; k1 < 16384; k1++) {
+                                        ai[k1] = ai1[background.pixels[k1]];
 				}
 
 			}
@@ -250,7 +250,7 @@ final class Texture extends DrawingArea {
 
 		for (int l = 0; l < 50; l++) {
 			if (textures[l] != null) {
-				int ai[] = textures[l].anIntArray1451;
+                                int ai[] = textures[l].palette;
 				texturePalettes[l] = new int[ai.length];
 				for (int j1 = 0; j1 < ai.length; j1++) {
 					texturePalettes[l][j1] = adjustBrightness(ai[j1], d);

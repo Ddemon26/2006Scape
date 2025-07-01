@@ -480,7 +480,7 @@ public final class Sprite extends DrawingArea {
 			k1 += k2;
 		}
 		if (!(j1 <= 0 || i1 <= 0)) {
-			method355(pixels, j1, background.aByteArray1450, i1, DrawingArea.pixels, 0, k1, k, l1, l);
+                        method355(pixels, j1, background.pixels, i1, DrawingArea.pixels, 0, k1, k, l1, l);
 		}
 	}
 

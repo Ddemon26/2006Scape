@@ -4,42 +4,42 @@
 
 public final class Background extends DrawingArea {
 
-	public Background(StreamLoader streamLoader, String s, int i) {
+        public Background(StreamLoader streamLoader, String s, int i) {
 		Stream stream = new Stream(streamLoader.getDataForName(s + ".dat"));
 		Stream stream_1 = new Stream(streamLoader.getDataForName("index.dat"));
 		stream_1.currentOffset = stream.readUnsignedWord();
-		anInt1456 = stream_1.readUnsignedWord();
-		anInt1457 = stream_1.readUnsignedWord();
-		int j = stream_1.readUnsignedByte();
-		anIntArray1451 = new int[j];
-		for (int k = 0; k < j - 1; k++) {
-			anIntArray1451[k + 1] = stream_1.read3Bytes();
-		}
+                maxWidth = stream_1.readUnsignedWord();
+                maxHeight = stream_1.readUnsignedWord();
+                int j = stream_1.readUnsignedByte();
+                palette = new int[j];
+                for (int k = 0; k < j - 1; k++) {
+                        palette[k + 1] = stream_1.read3Bytes();
+                }
 
-		for (int l = 0; l < i; l++) {
+                for (int l = 0; l < i; l++) {
 			stream_1.currentOffset += 2;
 			stream.currentOffset += stream_1.readUnsignedWord() * stream_1.readUnsignedWord();
 			stream_1.currentOffset++;
 		}
 
-		anInt1454 = stream_1.readUnsignedByte();
-		anInt1455 = stream_1.readUnsignedByte();
-		anInt1452 = stream_1.readUnsignedWord();
-		anInt1453 = stream_1.readUnsignedWord();
+		offsetX = stream_1.readUnsignedByte();
+		offsetY = stream_1.readUnsignedByte();
+		width = stream_1.readUnsignedWord();
+		height = stream_1.readUnsignedWord();
 		int i1 = stream_1.readUnsignedByte();
-		int j1 = anInt1452 * anInt1453;
-		aByteArray1450 = new byte[j1];
+		int j1 = width * height;
+		pixels = new byte[j1];
 		if (i1 == 0) {
 			for (int k1 = 0; k1 < j1; k1++) {
-				aByteArray1450[k1] = stream.readSignedByte();
+				pixels[k1] = stream.readSignedByte();
 			}
 
 			return;
 		}
 		if (i1 == 1) {
-			for (int l1 = 0; l1 < anInt1452; l1++) {
-				for (int i2 = 0; i2 < anInt1453; i2++) {
-					aByteArray1450[l1 + i2 * anInt1452] = stream.readSignedByte();
+			for (int l1 = 0; l1 < width; l1++) {
+				for (int i2 = 0; i2 < height; i2++) {
+					pixels[l1 + i2 * width] = stream.readSignedByte();
 				}
 
 			}
@@ -47,107 +47,107 @@ public final class Background extends DrawingArea {
 		}
 	}
 
-	public void method356() {
-		anInt1456 /= 2;
-		anInt1457 /= 2;
-		byte abyte0[] = new byte[anInt1456 * anInt1457];
+	public void downscaleHalf() {
+		maxWidth /= 2;
+		maxHeight /= 2;
+		byte abyte0[] = new byte[maxWidth * maxHeight];
 		int i = 0;
-		for (int j = 0; j < anInt1453; j++) {
-			for (int k = 0; k < anInt1452; k++) {
-				abyte0[(k + anInt1454 >> 1) + (j + anInt1455 >> 1) * anInt1456] = aByteArray1450[i++];
+		for (int j = 0; j < height; j++) {
+			for (int k = 0; k < width; k++) {
+				abyte0[(k + offsetX >> 1) + (j + offsetY >> 1) * maxWidth] = pixels[i++];
 			}
 
 		}
 
-		aByteArray1450 = abyte0;
-		anInt1452 = anInt1456;
-		anInt1453 = anInt1457;
-		anInt1454 = 0;
-		anInt1455 = 0;
+		pixels = abyte0;
+		width = maxWidth;
+		height = maxHeight;
+		offsetX = 0;
+		offsetY = 0;
 	}
 
-	public void method357() {
-		if (anInt1452 == anInt1456 && anInt1453 == anInt1457) {
+	public void normalize() {
+		if (width == maxWidth && height == maxHeight) {
 			return;
 		}
-		byte abyte0[] = new byte[anInt1456 * anInt1457];
+		byte abyte0[] = new byte[maxWidth * maxHeight];
 		int i = 0;
-		for (int j = 0; j < anInt1453; j++) {
-			for (int k = 0; k < anInt1452; k++) {
-				abyte0[k + anInt1454 + (j + anInt1455) * anInt1456] = aByteArray1450[i++];
+		for (int j = 0; j < height; j++) {
+			for (int k = 0; k < width; k++) {
+				abyte0[k + offsetX + (j + offsetY) * maxWidth] = pixels[i++];
 			}
 
 		}
 
-		aByteArray1450 = abyte0;
-		anInt1452 = anInt1456;
-		anInt1453 = anInt1457;
-		anInt1454 = 0;
-		anInt1455 = 0;
+		pixels = abyte0;
+		width = maxWidth;
+		height = maxHeight;
+		offsetX = 0;
+		offsetY = 0;
 	}
 
-	public void method358() {
-		byte abyte0[] = new byte[anInt1452 * anInt1453];
+	public void flipHorizontal() {
+		byte abyte0[] = new byte[width * height];
 		int j = 0;
-		for (int k = 0; k < anInt1453; k++) {
-			for (int l = anInt1452 - 1; l >= 0; l--) {
-				abyte0[j++] = aByteArray1450[l + k * anInt1452];
+		for (int k = 0; k < height; k++) {
+			for (int l = width - 1; l >= 0; l--) {
+				abyte0[j++] = pixels[l + k * width];
 			}
 
 		}
 
-		aByteArray1450 = abyte0;
-		anInt1454 = anInt1456 - anInt1452 - anInt1454;
+		pixels = abyte0;
+		offsetX = maxWidth - width - offsetX;
 	}
 
-	public void method359() {
-		byte abyte0[] = new byte[anInt1452 * anInt1453];
+	public void flipVertical() {
+		byte abyte0[] = new byte[width * height];
 		int i = 0;
-		for (int j = anInt1453 - 1; j >= 0; j--) {
-			for (int k = 0; k < anInt1452; k++) {
-				abyte0[i++] = aByteArray1450[k + j * anInt1452];
+		for (int j = height - 1; j >= 0; j--) {
+			for (int k = 0; k < width; k++) {
+				abyte0[i++] = pixels[k + j * width];
 			}
 
 		}
 
-		aByteArray1450 = abyte0;
-		anInt1455 = anInt1457 - anInt1453 - anInt1455;
+		pixels = abyte0;
+		offsetY = maxHeight - height - offsetY;
 	}
 
-	public void method360(int i, int j, int k) {
-		for (int i1 = 0; i1 < anIntArray1451.length; i1++) {
-			int j1 = anIntArray1451[i1] >> 16 & 0xff;
+	public void adjustPalette(int i, int j, int k) {
+		for (int i1 = 0; i1 < palette.length; i1++) {
+			int j1 = palette[i1] >> 16 & 0xff;
 			j1 += i;
 			if (j1 < 0) {
 				j1 = 0;
 			} else if (j1 > 255) {
 				j1 = 255;
 			}
-			int k1 = anIntArray1451[i1] >> 8 & 0xff;
+			int k1 = palette[i1] >> 8 & 0xff;
 			k1 += j;
 			if (k1 < 0) {
 				k1 = 0;
 			} else if (k1 > 255) {
 				k1 = 255;
 			}
-			int l1 = anIntArray1451[i1] & 0xff;
+			int l1 = palette[i1] & 0xff;
 			l1 += k;
 			if (l1 < 0) {
 				l1 = 0;
 			} else if (l1 > 255) {
 				l1 = 255;
 			}
-			anIntArray1451[i1] = (j1 << 16) + (k1 << 8) + l1;
+			palette[i1] = (j1 << 16) + (k1 << 8) + l1;
 		}
 	}
 
-	public void method361(int i, int k) {
-		i += anInt1454;
-		k += anInt1455;
+	public void draw(int i, int k) {
+		i += offsetX;
+		k += offsetY;
 		int l = i + k * DrawingArea.width;
 		int i1 = 0;
-		int j1 = anInt1453;
-		int k1 = anInt1452;
+		int j1 = height;
+		int k1 = width;
 		int l1 = DrawingArea.width - k1;
 		int i2 = 0;
 		if (k < DrawingArea.topY) {
@@ -176,11 +176,11 @@ public final class Background extends DrawingArea {
 			l1 += l2;
 		}
 		if (!(k1 <= 0 || j1 <= 0)) {
-			method362(j1, DrawingArea.pixels, aByteArray1450, l1, l, k1, i1, anIntArray1451, i2);
+			blit(j1, DrawingArea.pixels, pixels, l1, l, k1, i1, palette, i2);
 		}
 	}
 
-	private void method362(int i, int ai[], byte abyte0[], int j, int k, int l, int i1, int ai1[], int j1) {
+	private void blit(int i, int ai[], byte abyte0[], int j, int k, int l, int i1, int ai1[], int j1) {
 		int k1 = -(l >> 2);
 		l = -(l & 3);
 		for (int l1 = -i; l1 < 0; l1++) {
@@ -226,12 +226,12 @@ public final class Background extends DrawingArea {
 
 	}
 
-	public byte aByteArray1450[];
-	public final int[] anIntArray1451;
-	public int anInt1452;
-	public int anInt1453;
-	public int anInt1454;
-	public int anInt1455;
-	public int anInt1456;
-	private int anInt1457;
+	public byte pixels[];
+	public final int[] palette;
+	public int width;
+	public int height;
+	public int offsetX;
+	public int offsetY;
+	public int maxWidth;
+	private int maxHeight;
 }
