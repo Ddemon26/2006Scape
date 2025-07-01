@@ -2465,9 +2465,9 @@ public class Game extends RSApplet {
 			if (class46_2.anInt758 != -1) {
 				Background background_2 = mapScenes[class46_2.anInt758];
 				if (background_2 != null) {
-					int i6 = (class46_2.anInt744 * 4 - background_2.anInt1452) / 2;
-					int j6 = (class46_2.anInt761 * 4 - background_2.anInt1453) / 2;
-					background_2.method361(48 + l * 4 + i6, 48 + (104 - i - class46_2.anInt761) * 4 + j6);
+					int i6 = (class46_2.sizeX * 4 - background_2.anInt1452) / 2;
+					int j6 = (class46_2.sizeY * 4 - background_2.anInt1453) / 2;
+					background_2.method361(48 + l * 4 + i6, 48 + (104 - i - class46_2.sizeY) * 4 + j6);
 				}
 			} else {
 				if (i3 == 0 || i3 == 2) {
@@ -2539,9 +2539,9 @@ public class Game extends RSApplet {
 			if (class46_1.anInt758 != -1) {
 				Background background_1 = mapScenes[class46_1.anInt758];
 				if (background_1 != null) {
-					int j5 = (class46_1.anInt744 * 4 - background_1.anInt1452) / 2;
-					int k5 = (class46_1.anInt761 * 4 - background_1.anInt1453) / 2;
-					background_1.method361(48 + l * 4 + j5, 48 + (104 - i - class46_1.anInt761) * 4 + k5);
+					int j5 = (class46_1.sizeX * 4 - background_1.anInt1452) / 2;
+					int k5 = (class46_1.sizeY * 4 - background_1.anInt1453) / 2;
+					background_1.method361(48 + l * 4 + j5, 48 + (104 - i - class46_1.sizeY) * 4 + k5);
 				}
 			} else if (j3 == 9) {
 				int l4 = 0xeeeeee;
@@ -2570,9 +2570,9 @@ public class Game extends RSApplet {
 			if (class46.anInt758 != -1) {
 				Background background = mapScenes[class46.anInt758];
 				if (background != null) {
-					int i4 = (class46.anInt744 * 4 - background.anInt1452) / 2;
-					int j4 = (class46.anInt761 * 4 - background.anInt1453) / 2;
-					background.method361(48 + l * 4 + i4, 48 + (104 - i - class46.anInt761) * 4 + j4);
+					int i4 = (class46.sizeX * 4 - background.anInt1452) / 2;
+					int j4 = (class46.sizeY * 4 - background.anInt1453) / 2;
+					background.method361(48 + l * 4 + i4, 48 + (104 - i - class46.sizeY) * 4 + j4);
 				}
 			}
 		}
@@ -3410,11 +3410,11 @@ public class Game extends RSApplet {
 			int i2;
 			int j2;
 			if (l1 == 0 || l1 == 2) {
-				i2 = class46.anInt744;
-				j2 = class46.anInt761;
+				i2 = class46.sizeX;
+				j2 = class46.sizeY;
 			} else {
-				i2 = class46.anInt761;
-				j2 = class46.anInt744;
+				i2 = class46.sizeY;
+				j2 = class46.sizeX;
 			}
 			int k2 = class46.anInt768;
 			if (l1 != 0) {
@@ -4503,7 +4503,7 @@ public class Game extends RSApplet {
 			if (k1 == 2 && worldController.method304(plane, i1, j1, l) >= 0) {
 				ObjectDef class46 = ObjectDef.forID(l1);
 				if (class46.childrenIDs != null) {
-					class46 = class46.method580();
+					class46 = class46.getChildDefinition();
 				}
 				if (class46 == null) {
 					continue;
@@ -10165,17 +10165,17 @@ public class Game extends RSApplet {
 				int j22 = intGroundArray[plane][k4 + 1][j7];
 				int k22 = intGroundArray[plane][k4 + 1][j7 + 1];
 				int l22 = intGroundArray[plane][k4][j7 + 1];
-				Model model = class46.method578(j19, i20, i22, j22, k22, l22, -1);
+				Model model = class46.getModel(j19, i20, i22, j22, k22, l22, -1);
 				if (model != null) {
 					method130(k17 + 1, -1, 0, l20, j7, 0, plane, k4, l14 + 1);
 					player.anInt1707 = l14 + loopCycle;
 					player.anInt1708 = k17 + loopCycle;
 					player.aModel_1714 = model;
-					int i23 = class46.anInt744;
-					int j23 = class46.anInt761;
+					int i23 = class46.sizeX;
+					int j23 = class46.sizeY;
 					if (i20 == 1 || i20 == 3) {
-						i23 = class46.anInt761;
-						j23 = class46.anInt744;
+						i23 = class46.sizeY;
+						j23 = class46.sizeX;
 					}
 					player.anInt1711 = k4 * 128 + i23 * 64;
 					player.anInt1713 = j7 * 128 + j23 * 64;
@@ -10494,8 +10494,8 @@ public class Game extends RSApplet {
 				if (j1 == 0) {
 					worldController.method291(i1, j, i, (byte) -119);
 					ObjectDef class46 = ObjectDef.forID(j2);
-					if (class46.aBoolean767) {
-						aClass11Array1230[j].method215(l2, k2, class46.aBoolean757, i1, i);
+					if (class46.isSolid) {
+						aClass11Array1230[j].method215(l2, k2, class46.impenetrable, i1, i);
 					}
 				}
 				if (j1 == 1) {
@@ -10504,17 +10504,17 @@ public class Game extends RSApplet {
 				if (j1 == 2) {
 					worldController.method293(j, i1, i);
 					ObjectDef class46_1 = ObjectDef.forID(j2);
-					if (i1 + class46_1.anInt744 > 103 || i + class46_1.anInt744 > 103 || i1 + class46_1.anInt761 > 103 || i + class46_1.anInt761 > 103) {
+					if (i1 + class46_1.sizeX > 103 || i + class46_1.sizeX > 103 || i1 + class46_1.sizeY > 103 || i + class46_1.sizeY > 103) {
 						return;
 					}
-					if (class46_1.aBoolean767) {
-						aClass11Array1230[j].method216(l2, class46_1.anInt744, i1, i, class46_1.anInt761, class46_1.aBoolean757);
+					if (class46_1.isSolid) {
+						aClass11Array1230[j].method216(l2, class46_1.sizeX, i1, i, class46_1.sizeY, class46_1.impenetrable);
 					}
 				}
 				if (j1 == 3) {
 					worldController.method294(j, i, i1);
 					ObjectDef class46_2 = ObjectDef.forID(j2);
-					if (class46_2.aBoolean767 && class46_2.hasActions) {
+					if (class46_2.isSolid && class46_2.interactive) {
 						aClass11Array1230[j].method218(i, i1);
 					}
 				}

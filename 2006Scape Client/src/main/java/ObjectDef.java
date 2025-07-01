@@ -16,7 +16,7 @@ public final class ObjectDef {
 		stream.currentOffset = streamIndices[i];
 		class46.type = i;
 		class46.setDefaults();
-		class46.readValues(stream);
+		class46.decode(stream);
 		if (i == 6) {
 			class46.actions[1] = "Load";
 			class46.actions[2] = "Pick-up";
@@ -28,21 +28,21 @@ public final class ObjectDef {
 	}
 
 	private void setDefaults() {
-		anIntArray773 = null;
-		anIntArray776 = null;
+		modelIds = null;
+		modelTypes = null;
 		name = null;
 		description = null;
 		modifiedModelColors = null;
 		originalModelColors = null;
-		anInt744 = 1;
-		anInt761 = 1;
-		aBoolean767 = true;
-		aBoolean757 = true;
-		hasActions = false;
+		sizeX = 1;
+		sizeY = 1;
+		isSolid = true;
+		impenetrable = true;
+		interactive = false;
 		aBoolean762 = false;
 		aBoolean769 = false;
 		aBoolean764 = false;
-		anInt781 = -1;
+		animationId = -1;
 		anInt775 = 16;
 		aByte737 = 0;
 		aByte742 = 0;
@@ -51,9 +51,9 @@ public final class ObjectDef {
 		anInt758 = -1;
 		aBoolean751 = false;
 		aBoolean779 = true;
-		anInt748 = 128;
-		anInt772 = 128;
-		anInt740 = 128;
+		scaleX = 128;
+		scaleY = 128;
+		scaleZ = 128;
 		anInt768 = 0;
 		anInt738 = 0;
 		anInt745 = 0;
@@ -66,11 +66,11 @@ public final class ObjectDef {
 		childrenIDs = null;
 	}
 
-	public void method574(OnDemandFetcher class42_sub1) {
-		if (anIntArray773 == null) {
+	public void requestModels(OnDemandFetcher class42_sub1) {
+		if (modelIds == null) {
 			return;
 		}
-		for (int element : anIntArray773) {
+		for (int element : modelIds) {
 			class42_sub1.method560(element & 0xffff, 0);
 		}
 	}
@@ -103,32 +103,32 @@ public final class ObjectDef {
 
 	}
 
-	public boolean method577(int i) {
-		if (anIntArray776 == null) {
-			if (anIntArray773 == null) {
+	public boolean isModelReady(int i) {
+		if (modelTypes == null) {
+			if (modelIds == null) {
 				return true;
 			}
 			if (i != 10) {
 				return true;
 			}
 			boolean flag1 = true;
-			for (int element : anIntArray773) {
+			for (int element : modelIds) {
 				flag1 &= Model.method463(element & 0xffff);
 			}
 
 			return flag1;
 		}
-		for (int j = 0; j < anIntArray776.length; j++) {
-			if (anIntArray776[j] == i) {
-				return Model.method463(anIntArray773[j] & 0xffff);
+		for (int j = 0; j < modelTypes.length; j++) {
+			if (modelTypes[j] == i) {
+				return Model.method463(modelIds[j] & 0xffff);
 			}
 		}
 
 		return true;
 	}
 
-	public Model method578(int i, int j, int k, int l, int i1, int j1, int k1) {
-		Model model = method581(i, k1, j);
+	public Model getModel(int i, int j, int k, int l, int i1, int j1, int k1) {
+		Model model = buildModel(i, k1, j);
 		if (model == null) {
 			return null;
 		}
@@ -151,18 +151,18 @@ public final class ObjectDef {
 		return model;
 	}
 
-	public boolean method579() {
-		if (anIntArray773 == null) {
+	public boolean areModelsReady() {
+		if (modelIds == null) {
 			return true;
 		}
 		boolean flag1 = true;
-		for (int element : anIntArray773) {
+		for (int element : modelIds) {
 			flag1 &= Model.method463(element & 0xffff);
 		}
 		return flag1;
 	}
 
-	public ObjectDef method580() {
+	public ObjectDef getChildDefinition() {
 		int i = -1;
 		if (anInt774 != -1) {
 			VarBit varBit = VarBit.cache[anInt774];
@@ -181,10 +181,10 @@ public final class ObjectDef {
 		}
 	}
 
-	private Model method581(int j, int k, int l) {
+	private Model buildModel(int j, int k, int l) {
 		Model model = null;
 		long l1;
-		if (anIntArray776 == null) {
+		if (modelTypes == null) {
 			if (j != 10) {
 				return null;
 			}
@@ -193,13 +193,13 @@ public final class ObjectDef {
 			if (model_1 != null) {
 				return model_1;
 			}
-			if (anIntArray773 == null) {
+			if (modelIds == null) {
 				return null;
 			}
 			boolean flag1 = aBoolean751 ^ l > 3;
-			int k1 = anIntArray773.length;
+			int k1 = modelIds.length;
 			for (int i2 = 0; i2 < k1; i2++) {
-				int l2 = anIntArray773[i2];
+				int l2 = modelIds[i2];
 				if (flag1) {
 					l2 += 0x10000;
 				}
@@ -224,8 +224,8 @@ public final class ObjectDef {
 			}
 		} else {
 			int i1 = -1;
-			for (int j1 = 0; j1 < anIntArray776.length; j1++) {
-				if (anIntArray776[j1] != j) {
+			for (int j1 = 0; j1 < modelTypes.length; j1++) {
+				if (modelTypes[j1] != j) {
 					continue;
 				}
 				i1 = j1;
@@ -240,7 +240,7 @@ public final class ObjectDef {
 			if (model_2 != null) {
 				return model_2;
 			}
-			int j2 = anIntArray773[i1];
+			int j2 = modelIds[i1];
 			boolean flag3 = aBoolean751 ^ l > 3;
 			if (flag3) {
 				j2 += 0x10000;
@@ -258,7 +258,7 @@ public final class ObjectDef {
 			}
 		}
 		boolean flag;
-		flag = anInt748 != 128 || anInt772 != 128 || anInt740 != 128;
+		flag = scaleX != 128 || scaleY != 128 || scaleZ != 128;
 		boolean flag2;
 		flag2 = anInt738 != 0 || anInt745 != 0 || anInt783 != 0;
                 Model model_3 = new Model(modifiedModelColors == null, AnimFrame.isNullFrame(k), l == 0 && k == -1 && !flag && !flag2, model);
@@ -278,7 +278,7 @@ public final class ObjectDef {
 
 		}
 		if (flag) {
-			model_3.method478(anInt748, anInt740, anInt772);
+			model_3.method478(scaleX, scaleZ, scaleY);
 		}
 		if (flag2) {
 			model_3.method475(anInt738, anInt745, anInt783);
@@ -291,7 +291,7 @@ public final class ObjectDef {
 		return model_3;
 	}
 
-	private void readValues(Stream stream) {
+	private void decode(Stream stream) {
 		int i = -1;
 		label0 : do {
 			int j;
@@ -303,12 +303,12 @@ public final class ObjectDef {
 				if (j == 1) {
 					int k = stream.readUnsignedByte();
 					if (k > 0) {
-						if (anIntArray773 == null || lowMem) {
-							anIntArray776 = new int[k];
-							anIntArray773 = new int[k];
+						if (modelIds == null || lowMem) {
+							modelTypes = new int[k];
+							modelIds = new int[k];
 							for (int k1 = 0; k1 < k; k1++) {
-								anIntArray773[k1] = stream.readUnsignedWord();
-								anIntArray776[k1] = stream.readUnsignedByte();
+								modelIds[k1] = stream.readUnsignedWord();
+								modelTypes[k1] = stream.readUnsignedByte();
 							}
 
 						} else {
@@ -322,11 +322,11 @@ public final class ObjectDef {
 				} else if (j == 5) {
 					int l = stream.readUnsignedByte();
 					if (l > 0) {
-						if (anIntArray773 == null || lowMem) {
-							anIntArray776 = null;
-							anIntArray773 = new int[l];
+						if (modelIds == null || lowMem) {
+							modelTypes = null;
+							modelIds = new int[l];
 							for (int l1 = 0; l1 < l; l1++) {
-								anIntArray773[l1] = stream.readUnsignedWord();
+								modelIds[l1] = stream.readUnsignedWord();
 							}
 
 						} else {
@@ -334,17 +334,17 @@ public final class ObjectDef {
 						}
 					}
 				} else if (j == 14) {
-					anInt744 = stream.readUnsignedByte();
+					sizeX = stream.readUnsignedByte();
 				} else if (j == 15) {
-					anInt761 = stream.readUnsignedByte();
+					sizeY = stream.readUnsignedByte();
 				} else if (j == 17) {
-					aBoolean767 = false;
+					isSolid = false;
 				} else if (j == 18) {
-					aBoolean757 = false;
+					impenetrable = false;
 				} else if (j == 19) {
 					i = stream.readUnsignedByte();
 					if (i == 1) {
-						hasActions = true;
+						interactive = true;
 					}
 				} else if (j == 21) {
 					aBoolean762 = true;
@@ -353,9 +353,9 @@ public final class ObjectDef {
 				} else if (j == 23) {
 					aBoolean764 = true;
 				} else if (j == 24) {
-					anInt781 = stream.readUnsignedWord();
-					if (anInt781 == 65535) {
-						anInt781 = -1;
+					animationId = stream.readUnsignedWord();
+					if (animationId == 65535) {
+						animationId = -1;
 					}
 				} else if (j == 28) {
 					anInt775 = stream.readUnsignedByte();
@@ -387,11 +387,11 @@ public final class ObjectDef {
 				} else if (j == 64) {
 					aBoolean779 = false;
 				} else if (j == 65) {
-					anInt748 = stream.readUnsignedWord();
+					scaleX = stream.readUnsignedWord();
 				} else if (j == 66) {
-					anInt772 = stream.readUnsignedWord();
+					scaleY = stream.readUnsignedWord();
 				} else if (j == 67) {
-					anInt740 = stream.readUnsignedWord();
+					scaleZ = stream.readUnsignedWord();
 				} else if (j == 68) {
 					anInt758 = stream.readUnsignedWord();
 				} else if (j == 69) {
@@ -433,17 +433,17 @@ public final class ObjectDef {
 
 		} while (true);
 		if (i == -1) {
-			hasActions = anIntArray773 != null && (anIntArray776 == null || anIntArray776[0] == 10);
+			interactive = modelIds != null && (modelTypes == null || modelTypes[0] == 10);
 			if (actions != null) {
-				hasActions = true;
+				interactive = true;
 			}
 		}
 		if (aBoolean766) {
-			aBoolean767 = false;
-			aBoolean757 = false;
+			isSolid = false;
+			impenetrable = false;
 		}
 		if (anInt760 == -1) {
-			anInt760 = aBoolean767 ? 1 : 0;
+			anInt760 = isSolid ? 1 : 0;
 		}
 	}
 
@@ -455,43 +455,43 @@ public final class ObjectDef {
 	private byte aByte737;
 	private int anInt738;
 	public String name;
-	private int anInt740;
+	private int scaleZ;
 	private static final Model[] aModelArray741s = new Model[4];
 	private byte aByte742;
-	public int anInt744;
+	public int sizeX;
 	private int anInt745;
 	public int anInt746;
 	private int[] originalModelColors;
-	private int anInt748;
+	private int scaleX;
 	public int anInt749;
 	private boolean aBoolean751;
 	public static boolean lowMem;
 	private static Stream stream;
 	public int type;
 	private static int[] streamIndices;
-	public boolean aBoolean757;
+	public boolean impenetrable;
 	public int anInt758;
 	public int childrenIDs[];
 	private int anInt760;
-	public int anInt761;
+	public int sizeY;
 	public boolean aBoolean762;
 	public boolean aBoolean764;
 	public static Game clientInstance;
 	private boolean aBoolean766;
-	public boolean aBoolean767;
+	public boolean isSolid;
 	public int anInt768;
 	private boolean aBoolean769;
 	private static int cacheIndex;
-	private int anInt772;
-	private int[] anIntArray773;
+	private int scaleY;
+	private int[] modelIds;
 	public int anInt774;
 	public int anInt775;
-	private int[] anIntArray776;
+	private int[] modelTypes;
 	public byte description[];
-	public boolean hasActions;
+	public boolean interactive;
 	public boolean aBoolean779;
 	public static MRUNodes mruNodes2 = new MRUNodes(30);
-	public int anInt781;
+	public int animationId;
 	private static ObjectDef[] cache;
 	private int anInt783;
 	private int[] modifiedModelColors;
