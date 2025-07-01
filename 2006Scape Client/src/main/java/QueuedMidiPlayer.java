@@ -4,7 +4,7 @@
 
 final class QueuedMidiPlayer extends AbstractMidiController implements Runnable
 {
-    private static Runnable_Impl1 midiDevice;
+    private static MidiHandler midiDevice;
     private static boolean stopThread;
     private static boolean strictMode;
     private static int lastTimestamp;
@@ -14,7 +14,7 @@ final class QueuedMidiPlayer extends AbstractMidiController implements Runnable
     
     private static final void queueMessage(int i, int i_1_, int i_2_, int i_3_) {
     	if (messageBuffer.length <= bufferPos) {
-    		midiDevice.method10(messageBuffer, bufferPos);
+    		midiDevice.processBuffer(messageBuffer, bufferPos);
     		bufferPos = 0;
     	}
     	messageBuffer[bufferPos++] = i_1_ - lastTimestamp;
@@ -24,7 +24,7 @@ final class QueuedMidiPlayer extends AbstractMidiController implements Runnable
     
     private static final void flushMessages() {
     	if (bufferPos > 0) {
-    		midiDevice.method10(messageBuffer, bufferPos);
+    		midiDevice.processBuffer(messageBuffer, bufferPos);
     		bufferPos = 0;
     	}
     }
@@ -39,7 +39,7 @@ final class QueuedMidiPlayer extends AbstractMidiController implements Runnable
 		boolean bool_7_ = true;
 		strictMode = bool;
 		lastTimestamp = 0;
-		midiDevice.method12(false);
+		midiDevice.setActive(false);
 		applyVolumeFade(i_6_, i, (long) lastTimestamp);
 		int i_8_ = midiFile.getTrackCount();
 		for (int i_9_ = 0; i_9_ < i_8_; i_9_++) {
@@ -65,7 +65,7 @@ final class QueuedMidiPlayer extends AbstractMidiController implements Runnable
     
     final synchronized void setVolume(int i) {
 		setMasterVolume(i, (long) lastTimestamp);
-		midiDevice.method10(messageBuffer, bufferPos);
+		midiDevice.processBuffer(messageBuffer, bufferPos);
 		bufferPos = 0;
     }
     
@@ -73,7 +73,7 @@ final class QueuedMidiPlayer extends AbstractMidiController implements Runnable
 	if (midiFile.isLoaded()) {
 	    int i_11_ = lastTimestamp;
 	    int i_12_ = -200;
-	    int i_13_ = midiDevice.method14(-29810);
+	    int i_13_ = midiDevice.getPosition(-29810);
 	    long l = ((long) (i_11_ - (i_13_ + i_12_))
 		      * (long) (midiFile.timeDivision * 1000));
 	    for (;;) {
@@ -114,9 +114,9 @@ final class QueuedMidiPlayer extends AbstractMidiController implements Runnable
     }
     
     final synchronized void stopMidi() {
-		midiDevice.method12(false);
+		midiDevice.setActive(false);
 		resetAllControllers((long) lastTimestamp);
-		midiDevice.method10(messageBuffer, bufferPos);
+		midiDevice.processBuffer(messageBuffer, bufferPos);
 		bufferPos = 0;
 		midiFile.clear();
     }
@@ -132,7 +132,7 @@ final class QueuedMidiPlayer extends AbstractMidiController implements Runnable
     		}
     		Game.sleep(20L);
     	}
-    	midiDevice.method11(true);
+    	midiDevice.requestShutdown(true);
     }
     
     public final void run() {
@@ -166,12 +166,12 @@ final class QueuedMidiPlayer extends AbstractMidiController implements Runnable
     		midiFile.markTrackEnd();
     }
     
-    QueuedMidiPlayer(Runnable_Impl1 runnable_impl1) {
-		midiDevice = runnable_impl1;
-		midiDevice.method15((byte) 96);
-		midiDevice.method12(false);
-		resetAllControllers((long) lastTimestamp);
-		midiDevice.method10(messageBuffer, bufferPos);
+    QueuedMidiPlayer(MidiHandler handler) {
+                midiDevice = handler;
+                midiDevice.initialize((byte) 96);
+                midiDevice.setActive(false);
+                resetAllControllers((long) lastTimestamp);
+                midiDevice.processBuffer(messageBuffer, bufferPos);
 		bufferPos = 0;
 		Thread thread = new Thread(this);
 		thread.setDaemon(true);
