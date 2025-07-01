@@ -35,30 +35,30 @@ final class QueuedMidiPlayer extends AbstractMidiController implements Runnable
     
     final synchronized void playMidi(int i, byte[] is, int i_6_,
                                       boolean bool) {
-		midiFile.method525(is);
+		midiFile.load(is);
 		boolean bool_7_ = true;
 		strictMode = bool;
 		lastTimestamp = 0;
 		midiDevice.method12(false);
 		applyVolumeFade(i_6_, i, (long) lastTimestamp);
-		int i_8_ = midiFile.method533();
+		int i_8_ = midiFile.getTrackCount();
 		for (int i_9_ = 0; i_9_ < i_8_; i_9_++) {
-			midiFile.method526(i_9_);
-			while (!midiFile.method521()) {
-				midiFile.method520(i_9_);
-				if (midiFile.anIntArray216[i_9_] != 0) {
+			midiFile.seekTrack(i_9_);
+			while (!midiFile.isTrackFinished()) {
+				midiFile.readDeltaTime(i_9_);
+				if (midiFile.trackTicks[i_9_] != 0) {
 					bool_7_ = false;
 					break;
 				}
 				dispatchEvent(i_6_ ^ 0x70, 0L, i_9_);
 			}
-		    midiFile.method522(i_9_);
+		    midiFile.saveTrackPosition(i_9_);
 		}
 		if (bool_7_) {
 			if (strictMode)
 				throw new RuntimeException();
 			resetAllControllers((long) lastTimestamp);
-		    midiFile.method523();
+		    midiFile.clear();
 		}
 		flushMessages();
     }
@@ -70,41 +70,41 @@ final class QueuedMidiPlayer extends AbstractMidiController implements Runnable
     }
     
     final synchronized void poll(int i) {
-	if (midiFile.method527()) {
+	if (midiFile.isLoaded()) {
 	    int i_11_ = lastTimestamp;
 	    int i_12_ = -200;
 	    int i_13_ = midiDevice.method14(-29810);
 	    long l = ((long) (i_11_ - (i_13_ + i_12_))
-		      * (long) (midiFile.anInt213 * 1000));
+		      * (long) (midiFile.timeDivision * 1000));
 	    for (;;) {
-		int i_14_ = midiFile.method536();
-		int i_15_ = midiFile.anIntArray216[i_14_];
-		long l_16_ = midiFile.method532(i_15_);
+		int i_14_ = midiFile.getNextTrack();
+		int i_15_ = midiFile.trackTicks[i_14_];
+		long l_16_ = midiFile.getTimeForTick(i_15_);
 		if (l < l_16_)
 		    break;
 		while (i_15_
-		       == midiFile.anIntArray216[i_14_]) {
-		    midiFile.method526(i_14_);
+		       == midiFile.trackTicks[i_14_]) {
+		    midiFile.seekTrack(i_14_);
 		    dispatchEvent(126, l_16_, i_14_);
-		    if (midiFile.method521()) {
-			midiFile.method522(i_14_);
-			if (midiFile.method531()) {
+		    if (midiFile.isTrackFinished()) {
+			midiFile.saveTrackPosition(i_14_);
+			if (midiFile.allTracksFinished()) {
 			    if (strictMode)
-				midiFile.method534(l_16_);
+				midiFile.resetTracks(l_16_);
 			    else {
 				resetAllControllers
 				    ((long) (int) (l_16_
-						   / (long) ((midiFile.anInt213)
+						   / (long) ((midiFile.timeDivision)
 							     * 1000)));
-				midiFile.method523();
+				midiFile.clear();
 				flushMessages();
 				return;
 			    }
 			}
 			break;
 		    }
-		    midiFile.method520(i_14_);
-		    midiFile.method522(i_14_);
+		    midiFile.readDeltaTime(i_14_);
+		    midiFile.saveTrackPosition(i_14_);
 		}
 	    }
 	    if (i > -90)
@@ -118,7 +118,7 @@ final class QueuedMidiPlayer extends AbstractMidiController implements Runnable
 		resetAllControllers((long) lastTimestamp);
 		midiDevice.method10(messageBuffer, bufferPos);
 		bufferPos = 0;
-		midiFile.method523();
+		midiFile.clear();
     }
     
     final void shutdown() {
@@ -152,10 +152,10 @@ final class QueuedMidiPlayer extends AbstractMidiController implements Runnable
     }
     
     private final void dispatchEvent(int i, long l, int i_17_) {
-    	int i_18_ = midiFile.method529(i_17_);
+    	int i_18_ = midiFile.getNextEvent(i_17_);
     	if (i_18_ != 1) {
     		if ((i_18_ & 0x80) != 0) {
-    			int i_19_  = (int) (l / (long) (midiFile.anInt213 * 1000));
+    			int i_19_  = (int) (l / (long) (midiFile.timeDivision * 1000));
     			int i_20_ = i_18_ & 0xff;
     			int i_21_ = (i_18_ & 0xffe7d5) >> 16;
 				int i_22_ = (i_18_ & 0xfff6) >> 8;
@@ -163,7 +163,7 @@ final class QueuedMidiPlayer extends AbstractMidiController implements Runnable
 			    	queueMessage(i_20_, i_19_, i_22_, i_21_);
     		}
     	} else
-    		midiFile.method528();
+    		midiFile.markTrackEnd();
     }
     
     QueuedMidiPlayer(Runnable_Impl1 runnable_impl1) {
