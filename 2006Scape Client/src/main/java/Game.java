@@ -10113,12 +10113,12 @@ public class Game extends RSApplet {
 						}
 					}
 				}
-				if (j16 == 1) {
-					Object2 class26 = worldController.method297(j4, i7, plane);
-					if (class26 != null) {
-						class26.aClass30_Sub2_Sub4_504 = new Animable_Sub5(class26.uid >> 14 & 0x7fff, 0, 4, i19, l19, j18, k20, j17, false);
-					}
-				}
+                                if (j16 == 1) {
+                                        WallDecoration decoration = worldController.method297(j4, i7, plane);
+                                        if (decoration != null) {
+                                                decoration.renderable = new Animable_Sub5(decoration.uid >> 14 & 0x7fff, 0, 4, i19, l19, j18, k20, j17, false);
+                                        }
+                                }
 				if (j16 == 2) {
 					Object5 class28 = worldController.method298(j4, i7, plane);
 					if (j12 == 11) {
