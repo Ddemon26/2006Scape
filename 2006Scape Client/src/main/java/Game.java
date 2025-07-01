@@ -857,8 +857,8 @@ public class Game extends RSApplet {
 		ObjectDef.mruNodes1.unlinkAll();
 		ObjectDef.mruNodes2.unlinkAll();
 		EntityDef.mruNodes.unlinkAll();
-		ItemDef.mruNodes2.unlinkAll();
-		ItemDef.mruNodes1.unlinkAll();
+            ItemDef.modelCache.unlinkAll();
+            ItemDef.spriteCache.unlinkAll();
 		Player.mruNodes.unlinkAll();
 		SpotAnim.aMRUNodes_415.unlinkAll();
 	}
@@ -954,7 +954,7 @@ public class Game extends RSApplet {
 		long k = Long.MIN_VALUE;
 		Object obj = null;
 		for (Item item = (Item) class19.reverseGetFirst(); item != null; item = (Item) class19.reverseGetNext()) {
-			ItemDef itemDef = ItemDef.forID(item.ID);
+			ItemDef itemDef = ItemDef.lookup(item.ID);
 			long l = itemDef.value;
 			if (itemDef.stackable) {
 				l *= item.amount + 1;
@@ -1133,7 +1133,7 @@ public class Game extends RSApplet {
 								mouseInvInterfaceIndex = k2;
 								lastActiveInvInterface = class9_1.id;
 								if (class9_1.inv[k2] > 0) {
-									ItemDef itemDef = ItemDef.forID(class9_1.inv[k2] - 1);
+									ItemDef itemDef = ItemDef.lookup(class9_1.inv[k2] - 1);
 									if (itemSelected == 1 && class9_1.isInventoryInterface) {
 										if (class9_1.id != anInt1284 || k2 != anInt1283) {
 											menuActionName[menuActionRow] = "Use " + selectedItemName + " with @lre@" + itemDef.name;
@@ -1404,7 +1404,7 @@ public class Game extends RSApplet {
 			if (config == 4) {
 				Texture.method372(0.59999999999999998D);
 			}
-			ItemDef.mruNodes1.unlinkAll();
+            ItemDef.spriteCache.unlinkAll();
 			welcomeScreenRaised = true;
 		}
 		if (action == 3) {
@@ -1480,7 +1480,7 @@ public class Game extends RSApplet {
 					if (class19 != null) {
 						int offset = 5;
 						for (Item item = (Item) class19.reverseGetFirst(); item != null; item = (Item) class19.reverseGetNext()) {
-							ItemDef itemDef = ItemDef.forID(item.ID);
+							ItemDef itemDef = ItemDef.lookup(item.ID);
 							long totalValue = Math.max(1, item.amount) * Math.max(1, itemDef.value);
 							totalValue = totalValue > 0 ? totalValue : Integer.MAX_VALUE;
 							calcEntityScreenPos(k5 * 128 + 64, 20, l5 * 128 + 64);
@@ -4375,7 +4375,7 @@ public class Game extends RSApplet {
 			stream.writeShortA(k + baseY);
 		}
 		if (l == 1125) {
-			ItemDef itemDef = ItemDef.forID(i1);
+			ItemDef itemDef = ItemDef.lookup(i1);
 			RSInterface class9_4 = RSInterface.interfaceCache[k];
 			if (class9_4 != null && class9_4.invStackSizes[j] >= 1e5) {
 				DecimalFormatSymbols separator = new DecimalFormatSymbols();
@@ -4411,7 +4411,7 @@ public class Game extends RSApplet {
 			anInt1283 = j;
 			anInt1284 = k;
 			anInt1285 = i1;
-			selectedItemName = ItemDef.forID(i1).name;
+			selectedItemName = ItemDef.lookup(i1).name;
 			spellSelected = 0;
 			needDrawTabArea = true;
 			return;
@@ -4443,7 +4443,7 @@ public class Game extends RSApplet {
 			stream.writeShortA(i1);
 		}
 		if (l == 1448) {
-			ItemDef itemDef_1 = ItemDef.forID(i1);
+			ItemDef itemDef_1 = ItemDef.lookup(i1);
 			String s6;
 			if (itemDef_1.description != null) {
 				s6 = new String(itemDef_1.description) + " (" + intToKOrMil(itemDef_1.value) + "gp ea)";
@@ -4604,7 +4604,7 @@ public class Game extends RSApplet {
 				NodeList class19 = groundArray[plane][i1][j1];
 				if (class19 != null) {
 					for (Item item = (Item) class19.getFirst(); item != null; item = (Item) class19.getNext()) {
-						ItemDef itemDef = ItemDef.forID(item.ID);
+						ItemDef itemDef = ItemDef.lookup(item.ID);
 						if (itemSelected == 1) {
 							menuActionName[menuActionRow] = "Use " + selectedItemName + " with @lre@" + itemDef.name;
 							menuActionID[menuActionRow] = 511;
@@ -4789,7 +4789,7 @@ public class Game extends RSApplet {
 		nullLoader();
 		ObjectDef.nullLoader();
 		EntityDef.nullLoader();
-		ItemDef.nullLoader();
+        ItemDef.resetCache();
 		Flo.cache = null;
 		IDK.cache = null;
 		RSInterface.interfaceCache = null;
@@ -8464,7 +8464,7 @@ public class Game extends RSApplet {
 					for (int j5 = 0; j5 < component.height; j5++) {
 						for (int i6 = 0; i6 < component.width; i6++) {
 							if (component.inv[k4] > 0) {
-								ItemDef itemDef = ItemDef.forID(component.inv[k4] - 1);
+								ItemDef itemDef = ItemDef.lookup(component.inv[k4] - 1);
 								String s2 = itemDef.name;
 								if (itemDef.stackable || component.invStackSizes[k4] != 1) {
 									s2 = s2 + " x" + intToKOrMilLongName(component.invStackSizes[k4]);
@@ -9354,7 +9354,7 @@ public class Game extends RSApplet {
 				if (j1 == 4) {
 					RSInterface class9_1 = RSInterface.interfaceCache[ai[l++]];
 					int k2 = ai[l++];
-					if (k2 >= 0 && k2 < ItemDef.totalItems && (!ItemDef.forID(k2).membersObject || isMembers)) {
+					if (k2 >= 0 && k2 < ItemDef.totalItems && (!ItemDef.lookup(k2).membersObject || isMembers)) {
 						for (int j3 = 0; j3 < class9_1.inv.length; j3++) {
 							if (class9_1.inv[j3] == k2 + 1) {
 								k1 += class9_1.invStackSizes[j3];
@@ -9386,7 +9386,7 @@ public class Game extends RSApplet {
 				if (j1 == 10) {
 					RSInterface class9_2 = RSInterface.interfaceCache[ai[l++]];
 					int l2 = ai[l++] + 1;
-					if (l2 >= 0 && l2 < ItemDef.totalItems && (!ItemDef.forID(l2).membersObject || isMembers)) {
+					if (l2 >= 0 && l2 < ItemDef.totalItems && (!ItemDef.lookup(l2).membersObject || isMembers)) {
 						for (int element : class9_2.inv) {
 							if (element != l2) {
 								continue;
@@ -11431,7 +11431,7 @@ public class Game extends RSApplet {
 					pktType = -1;
 					return true;
 				} else {
-					ItemDef itemDef = ItemDef.forID(k18);
+					ItemDef itemDef = ItemDef.lookup(k18);
 					RSInterface.interfaceCache[i6].anInt233 = 4;
 					RSInterface.interfaceCache[i6].mediaID = k18;
 					RSInterface.interfaceCache[i6].anInt270 = itemDef.modelRotation1;
@@ -12814,7 +12814,7 @@ public class Game extends RSApplet {
         label0: for (int definition = 0; definition < amount; definition++) {
 			String result = "";
 			if (type == 1) {
-				ItemDef item = ItemDef.forID(definition);
+				ItemDef item = ItemDef.lookup(definition);
 				if (item.certTemplateID != -1 || item.name == null) {
 					continue;
 				}

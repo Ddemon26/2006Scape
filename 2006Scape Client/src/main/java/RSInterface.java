@@ -234,7 +234,7 @@ public final class RSInterface {
 	private Model method206(int i, int j) {
 		ItemDef itemDefinition = null;
 		if (type == 4) {
-			itemDefinition = ItemDef.forID(id);
+			itemDefinition = ItemDef.lookup(id);
                        lightness += itemDefinition.ambient;
                        shading += itemDefinition.contrast;
 		}
@@ -248,7 +248,7 @@ public final class RSInterface {
 		if (i == 3)
 			model = Game.myPlayer.method453();
 		if (i == 4)
-                       model = ItemDef.forID(j).getInterfaceModel(50);
+                       model = ItemDef.lookup(j).getInterfaceModel(50);
 		if (i == 5)
 			model = null;
 		if (model != null)
