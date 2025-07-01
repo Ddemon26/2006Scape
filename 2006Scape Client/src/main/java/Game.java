@@ -2600,9 +2600,9 @@ public class Game extends RSApplet {
 		}
 		aClass30_Sub2_Sub1_Sub1_1201 = new Sprite(128, 265);
 		aClass30_Sub2_Sub1_Sub1_1202 = new Sprite(128, 265);
-		System.arraycopy(aRSImageProducer_1110.anIntArray315, 0, aClass30_Sub2_Sub1_Sub1_1201.pixels, 0, 33920);
+               System.arraycopy(aRSImageProducer_1110.pixels, 0, aClass30_Sub2_Sub1_Sub1_1201.pixels, 0, 33920);
 
-		System.arraycopy(aRSImageProducer_1111.anIntArray315, 0, aClass30_Sub2_Sub1_Sub1_1202.pixels, 0, 33920);
+               System.arraycopy(aRSImageProducer_1111.pixels, 0, aClass30_Sub2_Sub1_Sub1_1202.pixels, 0, 33920);
 
 		anIntArray851 = new int[256];
 		for (int k1 = 0; k1 < 64; k1++) {
@@ -9789,7 +9789,7 @@ public class Game extends RSApplet {
 			System.arraycopy(anIntArray851, 0, anIntArray850, 0, 256);
 
 		}
-		System.arraycopy(aClass30_Sub2_Sub1_Sub1_1201.pixels, 0, aRSImageProducer_1110.anIntArray315, 0, 33920);
+               System.arraycopy(aClass30_Sub2_Sub1_Sub1_1201.pixels, 0, aRSImageProducer_1110.pixels, 0, 33920);
 
 		int i1 = 0;
 		int j1 = 1152;
@@ -9806,8 +9806,8 @@ public class Game extends RSApplet {
 					int l3 = j3;
 					int j4 = 256 - j3;
 					j3 = anIntArray850[j3];
-					int l4 = aRSImageProducer_1110.anIntArray315[j1];
-					aRSImageProducer_1110.anIntArray315[j1++] = ((j3 & 0xff00ff) * l3 + (l4 & 0xff00ff) * j4 & 0xff00ff00) + ((j3 & 0xff00) * l3 + (l4 & 0xff00) * j4 & 0xff0000) >> 8;
+                                   int l4 = aRSImageProducer_1110.pixels[j1];
+                                   aRSImageProducer_1110.pixels[j1++] = ((j3 & 0xff00ff) * l3 + (l4 & 0xff00ff) * j4 & 0xff00ff00) + ((j3 & 0xff00) * l3 + (l4 & 0xff00) * j4 & 0xff0000) >> 8;
 				} else {
 					j1++;
 				}
@@ -9817,7 +9817,7 @@ public class Game extends RSApplet {
 		}
 
 		aRSImageProducer_1110.drawGraphics(0, super.graphics, 0);
-		System.arraycopy(aClass30_Sub2_Sub1_Sub1_1202.pixels, 0, aRSImageProducer_1111.anIntArray315, 0, 33920);
+               System.arraycopy(aClass30_Sub2_Sub1_Sub1_1202.pixels, 0, aRSImageProducer_1111.pixels, 0, 33920);
 
 		i1 = 0;
 		j1 = 1176;
@@ -9831,8 +9831,8 @@ public class Game extends RSApplet {
 					int i5 = k4;
 					int j5 = 256 - k4;
 					k4 = anIntArray850[k4];
-					int k5 = aRSImageProducer_1111.anIntArray315[j1];
-					aRSImageProducer_1111.anIntArray315[j1++] = ((k4 & 0xff00ff) * i5 + (k5 & 0xff00ff) * j5 & 0xff00ff00) + ((k4 & 0xff00) * i5 + (k5 & 0xff00) * j5 & 0xff0000) >> 8;
+                                   int k5 = aRSImageProducer_1111.pixels[j1];
+                                   aRSImageProducer_1111.pixels[j1++] = ((k4 & 0xff00ff) * i5 + (k5 & 0xff00ff) * j5 & 0xff00ff00) + ((k4 & 0xff00) * i5 + (k5 & 0xff00) * j5 & 0xff0000) >> 8;
 				} else {
 					j1++;
 				}
