@@ -4,28 +4,28 @@
 
 final class BZip2Decompressor {
 
-	public static int method225(byte abyte0[], int i, byte abyte1[], int j, int k) {
-               synchronized (aBZip2State_305) {
-                       aBZip2State_305.input = abyte1;
-                       aBZip2State_305.nextIn = k;
-                       aBZip2State_305.output = abyte0;
-                       aBZip2State_305.nextOut = 0;
-                       aBZip2State_305.availIn = j;
-                       aBZip2State_305.outRemaining = i;
-                       aBZip2State_305.bsLive = 0;
-                       aBZip2State_305.bsBuff = 0;
-                       aBZip2State_305.totalInLo32 = 0;
-                       aBZip2State_305.totalInHi32 = 0;
-                       aBZip2State_305.totalOutLo32 = 0;
-                       aBZip2State_305.totalOutHi32 = 0;
-                       aBZip2State_305.blockNo = 0;
-                       method227(aBZip2State_305);
-                       i -= aBZip2State_305.outRemaining;
-			return i;
-		}
-	}
+       public static int decompress(byte[] outputBuffer, int outputLength, byte[] inputBuffer, int inputLength, int startIndex) {
+               synchronized (state) {
+                       state.input = inputBuffer;
+                       state.nextIn = startIndex;
+                       state.output = outputBuffer;
+                       state.nextOut = 0;
+                       state.availIn = inputLength;
+                       state.outRemaining = outputLength;
+                       state.bsLive = 0;
+                       state.bsBuff = 0;
+                       state.totalInLo32 = 0;
+                       state.totalInHi32 = 0;
+                       state.totalOutLo32 = 0;
+                       state.totalOutHi32 = 0;
+                       state.blockNo = 0;
+                       decompressStream(state);
+                       outputLength -= state.outRemaining;
+                        return outputLength;
+                }
+        }
 
-	private static void method226(BZip2State class32) {
+       private static void decompressBlock(BZip2State class32) {
                 byte byte4 = class32.stateOutCh;
                 int i = class32.stateOutLen;
                 int j = class32.nblockUsed;
@@ -142,7 +142,7 @@ final class BZip2Decompressor {
                 class32.outRemaining = j1;
 	}
 
-	private static void method227(BZip2State class32) {
+       private static void decompressStream(BZip2State class32) {
 		int k8 = 0;
 		int ai[] = null;
 		int ai1[] = null;
@@ -153,34 +153,34 @@ final class BZip2Decompressor {
 		}
 		boolean flag19 = true;
 		while (flag19) {
-			byte byte0 = method228(class32);
+			byte byte0 = readByte(class32);
 			if (byte0 == 23) {
 				return;
 			}
-                        byte0 = method228(class32);
-                        byte0 = method228(class32);
-                        byte0 = method228(class32);
-                        byte0 = method228(class32);
-                        byte0 = method228(class32);
+                        byte0 = readByte(class32);
+                        byte0 = readByte(class32);
+                        byte0 = readByte(class32);
+                        byte0 = readByte(class32);
+                        byte0 = readByte(class32);
                         class32.blockNo++;
-			byte0 = method228(class32);
-			byte0 = method228(class32);
-			byte0 = method228(class32);
-			byte0 = method228(class32);
-                        byte0 = method229(class32);
+			byte0 = readByte(class32);
+			byte0 = readByte(class32);
+			byte0 = readByte(class32);
+			byte0 = readByte(class32);
+                        byte0 = readBit(class32);
                         class32.blockRandomised = byte0 != 0;
                         if (class32.blockRandomised) {
 				System.out.println("PANIC! RANDOMISED BLOCK!");
 			}
                         class32.origPtr = 0;
-                        byte0 = method228(class32);
+                        byte0 = readByte(class32);
                         class32.origPtr = class32.origPtr << 8 | byte0 & 0xff;
-                        byte0 = method228(class32);
+                        byte0 = readByte(class32);
                         class32.origPtr = class32.origPtr << 8 | byte0 & 0xff;
-                        byte0 = method228(class32);
+                        byte0 = readByte(class32);
                         class32.origPtr = class32.origPtr << 8 | byte0 & 0xff;
                         for (int j = 0; j < 16; j++) {
-                                byte byte1 = method229(class32);
+                                byte byte1 = readBit(class32);
                                 class32.inUse16[j] = byte1 == 1;
                         }
 
@@ -191,7 +191,7 @@ final class BZip2Decompressor {
 			for (int l = 0; l < 16; l++) {
                                 if (class32.inUse16[l]) {
 					for (int i3 = 0; i3 < 16; i3++) {
-						byte byte2 = method229(class32);
+						byte byte2 = readBit(class32);
                                                 if (byte2 == 1) {
                                                         class32.inUse[l * 16 + i3] = true;
                                                 }
@@ -200,14 +200,14 @@ final class BZip2Decompressor {
 				}
 			}
 
-                        method231(class32);
+                        makeMaps(class32);
                         int i4 = class32.nInUse + 2;
-			int j4 = method230(3, class32);
-			int k4 = method230(15, class32);
+			int j4 = readBits(3, class32);
+			int k4 = readBits(15, class32);
 			for (int i1 = 0; i1 < k4; i1++) {
 				int j3 = 0;
 				do {
-					byte byte3 = method229(class32);
+					byte byte3 = readBit(class32);
 					if (byte3 == 0) {
 						break;
 					}
@@ -233,14 +233,14 @@ final class BZip2Decompressor {
 			}
 
 			for (int k3 = 0; k3 < j4; k3++) {
-				int l6 = method230(5, class32);
+				int l6 = readBits(5, class32);
 				for (int k1 = 0; k1 < i4; k1++) {
 					do {
-						byte byte4 = method229(class32);
+						byte byte4 = readBit(class32);
 						if (byte4 == 0) {
 							break;
 						}
-						byte4 = method229(class32);
+						byte4 = readBit(class32);
 						if (byte4 == 0) {
 							l6++;
 						} else {
@@ -264,7 +264,7 @@ final class BZip2Decompressor {
 					}
 				}
 
-                                method232(class32.limit[l3], class32.base[l3], class32.perm[l3], class32.tempLen[l3], byte8, i, i4);
+                                createHuffmanTables(class32.limit[l3], class32.base[l3], class32.perm[l3], class32.tempLen[l3], byte8, i, i4);
                                 class32.minLens[l3] = byte8;
 			}
 
@@ -299,9 +299,9 @@ final class BZip2Decompressor {
 			int i7 = k8;
 			int l7;
 			byte byte9;
-			for (l7 = method230(i7, class32); l7 > ai[i7]; l7 = l7 << 1 | byte9) {
+			for (l7 = readBits(i7, class32); l7 > ai[i7]; l7 = l7 << 1 | byte9) {
 				i7++;
-				byte9 = method229(class32);
+				byte9 = readBit(class32);
 			}
 
 			for (int k5 = ai2[l7 - ai1[i7]]; k5 != l4;) {
@@ -328,9 +328,9 @@ final class BZip2Decompressor {
 						int j7 = k8;
 						int i8;
 						byte byte10;
-						for (i8 = method230(j7, class32); i8 > ai[j7]; i8 = i8 << 1 | byte10) {
+						for (i8 = readBits(j7, class32); i8 > ai[j7]; i8 = i8 << 1 | byte10) {
 							j7++;
-							byte10 = method229(class32);
+							byte10 = readBit(class32);
 						}
 
 						k5 = ai2[i8 - ai1[j7]];
@@ -408,9 +408,9 @@ final class BZip2Decompressor {
 					int k7 = k8;
 					int j8;
 					byte byte11;
-					for (j8 = method230(k7, class32); j8 > ai[k7]; j8 = j8 << 1 | byte11) {
+					for (j8 = readBits(k7, class32); j8 > ai[k7]; j8 = j8 << 1 | byte11) {
 						k7++;
-						byte11 = method229(class32);
+						byte11 = readBit(class32);
 					}
 
 					k5 = ai2[j8 - ai1[k7]];
@@ -441,20 +441,20 @@ final class BZip2Decompressor {
                         class32.tPos >>= 8;
                         class32.nblockUsed++;
                         class32.saveNblock = i6;
-                        method226(class32);
+                        decompressBlock(class32);
                         flag19 = class32.nblockUsed == class32.saveNblock + 1 && class32.stateOutLen == 0;
 		}
 	}
 
-	private static byte method228(BZip2State class32) {
-		return (byte) method230(8, class32);
+	private static byte readByte(BZip2State class32) {
+		return (byte) readBits(8, class32);
 	}
 
-	private static byte method229(BZip2State class32) {
-		return (byte) method230(1, class32);
+	private static byte readBit(BZip2State class32) {
+		return (byte) readBits(1, class32);
 	}
 
-	private static int method230(int i, BZip2State class32) {
+	private static int readBits(int i, BZip2State class32) {
 		int j;
 		do {
                         if (class32.bsLive >= i) {
@@ -475,7 +475,7 @@ final class BZip2Decompressor {
 		return j;
 	}
 
-        private static void method231(BZip2State class32) {
+        private static void makeMaps(BZip2State class32) {
                 class32.nInUse = 0;
                 for (int i = 0; i < 256; i++) {
                         if (class32.inUse[i]) {
@@ -486,7 +486,7 @@ final class BZip2Decompressor {
 
 	}
 
-	private static void method232(int ai[], int ai1[], int ai2[], byte abyte0[], int i, int j, int k) {
+	private static void createHuffmanTables(int ai[], int ai1[], int ai2[], byte abyte0[], int i, int j, int k) {
 		int l = 0;
 		for (int i1 = i; i1 <= j; i1++) {
 			for (int l2 = 0; l2 < k; l2++) {
@@ -527,6 +527,6 @@ final class BZip2Decompressor {
 
 	}
 
-    private static final BZip2State aBZip2State_305 = new BZip2State();
+    private static final BZip2State state = new BZip2State();
 
 }
