@@ -4,13 +4,22 @@
 
 public class Animable extends NodeSub {
 
-	public void method443(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2) {
-		Model model = getRotatedModel();
-		if (model != null) {
-			modelHeight = model.modelHeight;
-			model.method443(i, j, k, l, i1, j1, k1, l1, i2);
-		}
-	}
+    public void render(
+            int rotation,
+            int pitchSin,
+            int pitchCos,
+            int yawSin,
+            int yawCos,
+            int x,
+            int z,
+            int y,
+            int uid) {
+        Model model = getRotatedModel();
+        if (model != null) {
+            modelHeight = model.modelHeight;
+            model.render(rotation, pitchSin, pitchCos, yawSin, yawCos, x, z, y, uid);
+        }
+    }
 
 	Model getRotatedModel() {
 		return null;
@@ -20,6 +29,6 @@ public class Animable extends NodeSub {
 		modelHeight = 1000;
 	}
 
-	VertexNormal aVertexNormalArray1425[];
+    VertexNormal[] vertexNormals;
 	public int modelHeight;
 }
