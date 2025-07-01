@@ -6,7 +6,7 @@ final class Item extends Animable {
 
 	@Override
 	public final Model getRotatedModel() {
-               ItemDef itemDef = ItemDef.forID(ID);
+               ItemDef itemDef = ItemDef.lookup(ID);
                return itemDef.getModel(amount);
 	}
 

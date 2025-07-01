@@ -4,13 +4,13 @@
 
 public final class ItemDef {
 
-	public static void nullLoader() {
-		mruNodes2 = null;
-		mruNodes1 = null;
-		streamIndices = null;
-		cache = null;
-		stream = null;
-	}
+    public static void resetCache() {
+            modelCache = null;
+            spriteCache = null;
+            streamIndices = null;
+            cache = null;
+            stream = null;
+    }
 
        public boolean areDialogueModelsCached(int gender) {
                int head = maleHeadModel;
@@ -181,7 +181,7 @@ public final class ItemDef {
 		team = 0;
 	}
 
-	public static ItemDef forID(int i) {
+    public static ItemDef lookup(int i) {
 		for (int j = 0; j < 10; j++) {
 			if (cache[j].id == i) {
 				return cache[j];
@@ -200,9 +200,9 @@ public final class ItemDef {
                         itemDef.id = i;
                         itemDef.setDefaults();
                 }
-		if (itemDef.certTemplateID != -1) {
-			itemDef.toNote();
-		}
+                if (itemDef.certTemplateID != -1) {
+                        itemDef.convertToNote();
+                }
 		if (i == 6543) {
 			itemDef.name = "Magical Lamp";
 			itemDef.description = "I wonder what will happen when I rub this...".getBytes();
@@ -2050,8 +2050,8 @@ public final class ItemDef {
                 return itemDef;
         }
 
-	private void toNote() {
-		ItemDef itemDef = forID(certTemplateID);
+        private void convertToNote() {
+                ItemDef itemDef = lookup(certTemplateID);
 		modelID = itemDef.modelID;
 		modelZoom = itemDef.modelZoom;
 		modelRotation1 = itemDef.modelRotation1;
@@ -2062,7 +2062,7 @@ public final class ItemDef {
 		offsetY = itemDef.offsetY;
 		modifiedModelColors = itemDef.modifiedModelColors;
 		originalModelColors = itemDef.originalModelColors;
-		ItemDef itemDef_1 = forID(certID);
+                ItemDef itemDef_1 = lookup(certID);
 		name = itemDef_1.name;
 		membersObject = itemDef_1.membersObject;
 		value = itemDef_1.value;
@@ -2077,7 +2077,7 @@ public final class ItemDef {
 
 	public static Sprite getSprite(int i, int j, int k) {
 		if (k == 0) {
-			Sprite sprite = (Sprite) mruNodes1.insertFromCache(i);
+        Sprite sprite = (Sprite) spriteCache.insertFromCache(i);
 			if (sprite != null && sprite.trimHeight != j && sprite.trimHeight != -1) {
 				sprite.unlink();
 				sprite = null;
@@ -2086,7 +2086,7 @@ public final class ItemDef {
 				return sprite;
 			}
 		}
-		ItemDef itemDef = forID(i);
+                ItemDef itemDef = lookup(i);
 		if (itemDef.stackIDs == null) {
 			j = -1;
 		}
@@ -2099,7 +2099,7 @@ public final class ItemDef {
 			}
 
 			if (i1 != -1) {
-				itemDef = forID(i1);
+                                itemDef = lookup(i1);
 			}
 		}
                Model model = itemDef.getModel(1);
@@ -2194,7 +2194,7 @@ public final class ItemDef {
 			sprite.trimHeight = j6;
 		}
 		if (k == 0) {
-			mruNodes1.removeFromCache(sprite2, i);
+        spriteCache.removeFromCache(sprite2, i);
 		}
 		DrawingArea.initDrawingArea(j2, i2, ai1);
 		DrawingArea.setDrawingArea(j3, k2, l2, i3);
@@ -2221,10 +2221,10 @@ public final class ItemDef {
                        }
 
                        if (id != -1) {
-                               return forID(id).getModel(1);
+                               return lookup(id).getModel(1);
                        }
                }
-               Model model = (Model) mruNodes2.insertFromCache(id);
+        Model model = (Model) modelCache.insertFromCache(id);
 		if (model != null) {
 			return model;
 		}
@@ -2243,7 +2243,7 @@ public final class ItemDef {
 		}
 		model.method479(64 + ambient, 768 + contrast, -50, -10, -50, true);
 		model.aBoolean1659 = true;
-		mruNodes2.removeFromCache(model, id);
+        modelCache.removeFromCache(model, id);
 		return model;
 	}
 
@@ -2257,7 +2257,7 @@ public final class ItemDef {
                        }
 
                        if (id != -1) {
-                               return forID(id).getInterfaceModel(1);
+                               return lookup(id).getInterfaceModel(1);
                        }
                }
                Model model = Model.method462(modelID);
@@ -2390,8 +2390,8 @@ public final class ItemDef {
 	public int value;
 	private int[] modifiedModelColors;
 	public int id;
-	static MRUNodes mruNodes1 = new MRUNodes(100);
-	public static MRUNodes mruNodes2 = new MRUNodes(50);
+    static MRUNodes spriteCache = new MRUNodes(100);
+    public static MRUNodes modelCache = new MRUNodes(50);
 	private int[] originalModelColors;
 	public boolean membersObject;
 	private int femaleModel3;
