@@ -39,7 +39,7 @@ final class DynamicObject extends Animable {
 		if (class46 == null) {
 			return null;
 		} else {
-			return class46.method578(type, orientation, tileHeight, tileHeight1, tileHeight2, tileHeight3, j);
+			return class46.getModel(type, orientation, tileHeight, tileHeight1, tileHeight2, tileHeight3, j);
 		}
 	}
 
