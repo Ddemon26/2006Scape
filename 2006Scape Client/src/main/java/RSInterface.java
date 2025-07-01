@@ -235,8 +235,8 @@ public final class RSInterface {
 		ItemDef itemDefinition = null;
 		if (type == 4) {
 			itemDefinition = ItemDef.forID(id);
-			lightness += itemDefinition.anInt196;
-			shading += itemDefinition.anInt184;
+                       lightness += itemDefinition.ambient;
+                       shading += itemDefinition.contrast;
 		}
 		Model model = (Model) aMRUNodes_264.insertFromCache((i << 16) + j);
 		if (model != null)
@@ -248,7 +248,7 @@ public final class RSInterface {
 		if (i == 3)
 			model = Game.myPlayer.method453();
 		if (i == 4)
-			model = ItemDef.forID(j).method202(50);
+                       model = ItemDef.forID(j).getInterfaceModel(50);
 		if (i == 5)
 			model = null;
 		if (model != null)

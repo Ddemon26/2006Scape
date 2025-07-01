@@ -209,7 +209,7 @@ public final class Player extends Entity {
 				if (k2 >= 256 && k2 < 512 && !IDK.cache[k2 - 256].method537()) {
 					flag = true;
 				}
-				if (k2 >= 512 && !ItemDef.forID(k2 - 512).method195(anInt1702)) {
+                               if (k2 >= 512 && !ItemDef.forID(k2 - 512).areWearModelsCached(anInt1702)) {
 					flag = true;
 				}
 			}
@@ -241,7 +241,7 @@ public final class Player extends Entity {
 					}
 				}
 				if (i3 >= 512) {
-					Model model_4 = ItemDef.forID(i3 - 512).method196(anInt1702);
+                               Model model_4 = ItemDef.forID(i3 - 512).getWearModel(anInt1702);
 					if (model_4 != null) {
 						aclass30_sub2_sub4_sub6s[j2++] = model_4;
 					}
@@ -298,7 +298,7 @@ public final class Player extends Entity {
 			if (j >= 256 && j < 512 && !IDK.cache[j - 256].method539()) {
 				flag = true;
 			}
-			if (j >= 512 && !ItemDef.forID(j - 512).method192(anInt1702)) {
+                       if (j >= 512 && !ItemDef.forID(j - 512).areDialogueModelsCached(anInt1702)) {
 				flag = true;
 			}
 		}
@@ -317,7 +317,7 @@ public final class Player extends Entity {
 				}
 			}
 			if (i1 >= 512) {
-				Model model_2 = ItemDef.forID(i1 - 512).method194(anInt1702);
+                               Model model_2 = ItemDef.forID(i1 - 512).getDialogueModel(anInt1702);
 				if (model_2 != null) {
 					aclass30_sub2_sub4_sub6s[k++] = model_2;
 				}
