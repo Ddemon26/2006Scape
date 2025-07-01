@@ -21,41 +21,41 @@ final class Censor {
 
 	private static void readTldList(Stream stream) {
 		int i = stream.readDWord();
-		aCharArrayArray624 = new char[i][];
-		anIntArray625 = new int[i];
+                topLevelDomains = new char[i][];
+                tldBehavior = new int[i];
 		for (int j = 0; j < i; j++) {
-			anIntArray625[j] = stream.readUnsignedByte();
+                        tldBehavior[j] = stream.readUnsignedByte();
 			char ac[] = new char[stream.readUnsignedByte()];
 			for (int k = 0; k < ac.length; k++) {
 				ac[k] = (char) stream.readUnsignedByte();
 			}
 
-			aCharArrayArray624[j] = ac;
+                        topLevelDomains[j] = ac;
 		}
 
 	}
 
 	private static void readBadEnc(Stream stream) {
 		int j = stream.readDWord();
-		aCharArrayArray621 = new char[j][];
-		aByteArrayArrayArray622 = new byte[j][][];
-		method493(stream, aCharArrayArray621, aByteArrayArrayArray622);
+                badWords = new char[j][];
+                badWordPatterns = new byte[j][][];
+                loadBannedWords(stream, badWords, badWordPatterns);
 	}
 
 	private static void readDomainEnc(Stream stream) {
 		int i = stream.readDWord();
-		aCharArrayArray623 = new char[i][];
-		method494(aCharArrayArray623, stream);
+                domainWords = new char[i][];
+                readCharArrayTable(domainWords, stream);
 	}
 
 	private static void readFragmentsEnc(Stream stream) {
-		anIntArray620 = new int[stream.readDWord()];
-		for (int i = 0; i < anIntArray620.length; i++) {
-			anIntArray620[i] = stream.readUnsignedWord();
-		}
+                bannedNameHashes = new int[stream.readDWord()];
+                for (int i = 0; i < bannedNameHashes.length; i++) {
+                        bannedNameHashes[i] = stream.readUnsignedWord();
+                }
 	}
 
-	private static void method493(Stream stream, char ac[][], byte abyte0[][][]) {
+        private static void loadBannedWords(Stream stream, char ac[][], byte abyte0[][][]) {
 		for (int j = 0; j < ac.length; j++) {
 			char ac1[] = new char[stream.readUnsignedByte()];
 			for (int k = 0; k < ac1.length; k++) {
@@ -76,7 +76,7 @@ final class Censor {
 
 	}
 
-	private static void method494(char ac[][], Stream stream) {
+        private static void readCharArrayTable(char ac[][], Stream stream) {
 		for (int j = 0; j < ac.length; j++) {
 			char ac1[] = new char[stream.readUnsignedByte()];
 			for (int k = 0; k < ac1.length; k++) {
@@ -88,10 +88,10 @@ final class Censor {
 
 	}
 
-	private static void method495(char ac[]) {
+        private static void sanitizeInput(char ac[]) {
 		int i = 0;
 		for (int j = 0; j < ac.length; j++) {
-			if (method496(ac[j])) {
+                        if (isAllowedCharacter(ac[j])) {
 				ac[i] = ac[j];
 			} else {
 				ac[i] = ' ';
@@ -106,20 +106,20 @@ final class Censor {
 
 	}
 
-	private static boolean method496(char c) {
+        private static boolean isAllowedCharacter(char c) {
 		return c >= ' ' && c <= '\177' || c == ' ' || c == '\n' || c == '\t' || c == '\243' || c == '\u20AC';
 	}
 
 	public static String doCensor(String s) {
 		System.currentTimeMillis();
 		char ac[] = s.toCharArray();
-		method495(ac);
+                sanitizeInput(ac);
 		String s1 = new String(ac).trim();
 		ac = s1.toLowerCase().toCharArray();
 		String s2 = s1.toLowerCase();
-		method505(ac);
-		method500(ac);
-		method501(ac);
+                censorTopLevelDomains(ac);
+                censorWords(ac);
+                censorDomains(ac);
 		method514(ac);
 		for (String exception : exceptions) {
 			for (int k = -1; (k = s2.indexOf(exception, k + 1)) != -1;) {
@@ -129,21 +129,21 @@ final class Censor {
 			}
 
 		}
-		method498(s1.toCharArray(), ac);
-		method499(ac);
+                restoreCapitalization(s1.toCharArray(), ac);
+                fixSentenceCase(ac);
 		System.currentTimeMillis();
 		return s; // xxx chat filter, return s to avoid new String(ac).trim()
 	}
 
-	private static void method498(char ac[], char ac1[]) {
-		for (int j = 0; j < ac.length; j++) {
-			if (ac1[j] != '*' && isUpperCaseLetter(ac[j])) {
-				ac1[j] = ac[j];
-			}
-		}
-	}
+        private static void restoreCapitalization(char original[], char filtered[]) {
+                for (int j = 0; j < original.length; j++) {
+                        if (filtered[j] != '*' && isUpperCaseLetter(original[j])) {
+                                filtered[j] = original[j];
+                        }
+                }
+        }
 
-	private static void method499(char ac[]) {
+        private static void fixSentenceCase(char ac[]) {
 		boolean flag = true;
 		for (int j = 0; j < ac.length; j++) {
 			char c = ac[j];
@@ -161,28 +161,28 @@ final class Censor {
 		}
 	}
 
-	private static void method500(char ac[]) {
-		for (int i = 0; i < 2; i++) {
-			for (int j = aCharArrayArray621.length - 1; j >= 0; j--) {
-				method509(aByteArrayArrayArray622[j], ac, aCharArrayArray621[j]);
-			}
+        private static void censorWords(char ac[]) {
+                for (int i = 0; i < 2; i++) {
+                        for (int j = badWords.length - 1; j >= 0; j--) {
+                                method509(badWordPatterns[j], ac, badWords[j]);
+                        }
 
-		}
-	}
+                }
+        }
 
-	private static void method501(char ac[]) {
+        private static void censorDomains(char ac[]) {
 		char ac1[] = ac.clone();
 		char ac2[] = {'(', 'a', ')'};
 		method509(null, ac1, ac2);
 		char ac3[] = ac.clone();
 		char ac4[] = {'d', 'o', 't'};
 		method509(null, ac3, ac4);
-		for (int i = aCharArrayArray623.length - 1; i >= 0; i--) {
-			method502(ac, aCharArrayArray623[i], ac3, ac1);
-		}
-	}
+                for (int i = domainWords.length - 1; i >= 0; i--) {
+                        censorDomain(ac, domainWords[i], ac3, ac1);
+                }
+        }
 
-	private static void method502(char ac[], char ac1[], char ac2[], char ac3[]) {
+        private static void censorDomain(char ac[], char ac1[], char ac2[], char ac3[]) {
 		if (ac1.length > ac.length) {
 			return;
 		}
@@ -220,8 +220,8 @@ final class Censor {
 			}
 			if (i1 >= ac1.length) {
 				boolean flag1 = false;
-				int k1 = method503(ac, ac3, k);
-				int l1 = method504(ac2, l - 1, ac);
+                                int k1 = checkPrecedingContext(ac, ac3, k);
+                                int l1 = checkFollowingContext(ac2, l - 1, ac);
 				if (k1 > 2 || l1 > 2) {
 					flag1 = true;
 				}
@@ -236,7 +236,7 @@ final class Censor {
 
 	}
 
-	private static int method503(char ac[], char ac1[], int j) {
+        private static int checkPrecedingContext(char ac[], char ac1[], int j) {
 		if (j == 0) {
 			return 2;
 		}
@@ -265,7 +265,7 @@ final class Censor {
 		return !method517(ac[j - 1]) ? 0 : 1;
 	}
 
-	private static int method504(char ac[], int i, char ac1[]) {
+        private static int checkFollowingContext(char ac[], int i, char ac1[]) {
 		if (i + 1 == ac1.length) {
 			return 2;
 		}
@@ -293,20 +293,20 @@ final class Censor {
 		return !method517(ac1[i + 1]) ? 0 : 1;
 	}
 
-	private static void method505(char ac[]) {
+        private static void censorTopLevelDomains(char ac[]) {
 		char ac1[] = ac.clone();
 		char ac2[] = {'d', 'o', 't'};
 		method509(null, ac1, ac2);
 		char ac3[] = ac.clone();
 		char ac4[] = {'s', 'l', 'a', 's', 'h'};
 		method509(null, ac3, ac4);
-		for (int i = 0; i < aCharArrayArray624.length; i++) {
-			method506(ac3, aCharArrayArray624[i], anIntArray625[i], ac1, ac);
-		}
+                for (int i = 0; i < topLevelDomains.length; i++) {
+                        censorTldHelper(ac3, topLevelDomains[i], tldBehavior[i], ac1, ac);
+                }
 
 	}
 
-	private static void method506(char ac[], char ac1[], int i, char ac2[], char ac3[]) {
+        private static void censorTldHelper(char ac[], char ac1[], int i, char ac2[], char ac3[]) {
 		if (ac1.length > ac3.length) {
 			return;
 		}
@@ -344,8 +344,8 @@ final class Censor {
 			}
 			if (i1 >= ac1.length) {
 				boolean flag1 = false;
-				int k1 = method507(ac3, k, ac2);
-				int l1 = method508(ac3, ac, l - 1);
+                                int k1 = checkPrecedingPunctuation(ac3, k, ac2);
+                                int l1 = checkFollowingPunctuation(ac3, ac, l - 1);
 				if (i == 1 && k1 > 0 && l1 > 0) {
 					flag1 = true;
 				}
@@ -427,7 +427,7 @@ final class Censor {
 		}
 	}
 
-	private static int method507(char ac[], int j, char ac1[]) {
+        private static int checkPrecedingPunctuation(char ac[], int j, char ac1[]) {
 		if (j == 0) {
 			return 2;
 		}
@@ -455,7 +455,7 @@ final class Censor {
 		return !method517(ac[j - 1]) ? 0 : 1;
 	}
 
-	private static int method508(char ac[], char ac1[], int i) {
+        private static int checkFollowingPunctuation(char ac[], char ac1[], int i) {
 		if (i + 1 == ac.length) {
 			return 2;
 		}
@@ -911,20 +911,20 @@ final class Censor {
 		}
 		int j = method524(ac);
 		int k = 0;
-		int l = anIntArray620.length - 1;
-		if (j == anIntArray620[k] || j == anIntArray620[l]) {
+                int l = bannedNameHashes.length - 1;
+                if (j == bannedNameHashes[k] || j == bannedNameHashes[l]) {
 			return true;
 		}
 		do {
 			int i1 = (k + l) / 2;
-			if (j == anIntArray620[i1]) {
-				return true;
-			}
-			if (j < anIntArray620[i1]) {
-				l = i1;
-			} else {
-				k = i1;
-			}
+                        if (j == bannedNameHashes[i1]) {
+                                return true;
+                        }
+                        if (j < bannedNameHashes[i1]) {
+                                l = i1;
+                        } else {
+                                k = i1;
+                        }
 		} while (k != l && k + 1 != l);
 		return false;
 	}
@@ -950,12 +950,12 @@ final class Censor {
 		return k;
 	}
 
-	private static int[] anIntArray620;
-	private static char[][] aCharArrayArray621;
-	private static byte[][][] aByteArrayArrayArray622;
-	private static char[][] aCharArrayArray623;
-	private static char[][] aCharArrayArray624;
-	private static int[] anIntArray625;
+        private static int[] bannedNameHashes;
+        private static char[][] badWords;
+        private static byte[][][] badWordPatterns;
+        private static char[][] domainWords;
+        private static char[][] topLevelDomains;
+        private static int[] tldBehavior;
 	private static final String[] exceptions = {"cook", "cook's", "cooks", "seeks", "sheet", "woop", "woops", "faq", "noob", "noobs"};
 
 }
