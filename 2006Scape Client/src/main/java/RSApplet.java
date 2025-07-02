@@ -257,10 +257,10 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 		}
 
 		System.currentTimeMillis();
-		while (anInt4 >= 0) {
-			if (anInt4 > 0) {
-				anInt4--;
-				if (anInt4 == 0) {
+                while (exitTimer >= 0) {
+                        if (exitTimer > 0) {
+                                exitTimer--;
+                                if (exitTimer == 0) {
 					exit();
 					return;
 				}
@@ -308,7 +308,7 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 				clickMode3 = clickMode1;
 				saveClickX = clickX;
 				saveClickY = clickY;
-				aLong29 = clickTime;
+                                lastClickTime = clickTime;
 				clickMode1 = 0;
 				processGameLoop();
 				readIndex = writeIndex;
@@ -333,13 +333,13 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 				j1 = 0;
 			}
 		}
-		if (anInt4 == -1) {
+                if (exitTimer == -1) {
 			exit();
 		}
 	}
 
 	private void exit() {
-		anInt4 = -2;
+                exitTimer = -2;
 		cleanUpForQuit();
 		if (gameFrame != null) {
 			try {
@@ -353,32 +353,32 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 		}
 	}
 
-	final void method4(int i) {
-		delayTime = 1000 / i;
-	}
+        final void setFrameRate(int fps) {
+                delayTime = 1000 / fps;
+        }
 
 	@Override
 	public final void start() {
-		if (anInt4 >= 0) {
-			anInt4 = 0;
+                if (exitTimer >= 0) {
+                        exitTimer = 0;
 		}
 	}
 
 	@Override
 	public final void stop() {
-		if (anInt4 >= 0) {
-			anInt4 = 4000 / delayTime;
+                if (exitTimer >= 0) {
+                        exitTimer = 4000 / delayTime;
 		}
 	}
 
 	@Override
 	public final void destroy() {
-		anInt4 = -1;
+                exitTimer = -1;
 		try {
 			Thread.sleep(1000L);
 		} catch (Exception _ex) {
 		}
-		if (anInt4 == -1) {
+                if (exitTimer == -1) {
 			exit();
 		}
 	}
@@ -730,7 +730,7 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 		charQueue = new int[128];
 	}
 
-	private int anInt4;
+        private int exitTimer;
 	private int delayTime;
 	int minDelay;
 	private final long[] aLongArray7;
@@ -754,7 +754,7 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 	int clickMode3;
 	int saveClickX;
 	int saveClickY;
-	long aLong29;
+        long lastClickTime;
 	final int[] keyArray;
 	private final int[] charQueue;
 	private int readIndex;
