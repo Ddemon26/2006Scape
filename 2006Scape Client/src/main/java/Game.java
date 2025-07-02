@@ -1590,8 +1590,8 @@ public class Game extends RSApplet {
 				if (((Entity) obj).textSpoken != null && (j >= playerCount || publicChatMode == 0 || publicChatMode == 3 || publicChatMode == 1 && isFriendOrSelf(((Player) obj).name))) {
 					npcScreenPos(((Entity) obj), ((Entity) obj).height);
 					if (spriteDrawX > -1 && anInt974 < anInt975) {
-						anIntArray979[anInt974] = chatTextDrawingArea.method384(((Entity) obj).textSpoken) / 2;
-						anIntArray978[anInt974] = chatTextDrawingArea.anInt1497;
+                                                anIntArray979[anInt974] = chatTextDrawingArea.measurePlainTextWidth(((Entity) obj).textSpoken) / 2;
+                                                anIntArray978[anInt974] = chatTextDrawingArea.fontHeight;
 						anIntArray976[anInt974] = spriteDrawX;
 						anIntArray977[anInt974] = spriteDrawY;
 						anIntArray980[anInt974] = ((Entity) obj).anInt1513;
@@ -1717,19 +1717,19 @@ public class Game extends RSApplet {
 						chatTextDrawingArea.textCenter(i3, s, spriteDrawY, spriteDrawX);
 					}
 					if (anIntArray981[k] == 1) {
-						chatTextDrawingArea.method386(0, s, spriteDrawX, anInt1265, spriteDrawY + 1);
-						chatTextDrawingArea.method386(i3, s, spriteDrawX, anInt1265, spriteDrawY);
+                                                chatTextDrawingArea.drawWavyCenteredText(0, s, spriteDrawX, anInt1265, spriteDrawY + 1);
+                                                chatTextDrawingArea.drawWavyCenteredText(i3, s, spriteDrawX, anInt1265, spriteDrawY);
 					}
 					if (anIntArray981[k] == 2) {
-						chatTextDrawingArea.method387(spriteDrawX, s, anInt1265, spriteDrawY + 1, 0);
-						chatTextDrawingArea.method387(spriteDrawX, s, anInt1265, spriteDrawY, i3);
+                                                chatTextDrawingArea.drawWavyText(spriteDrawX, s, anInt1265, spriteDrawY + 1, 0);
+                                                chatTextDrawingArea.drawWavyText(spriteDrawX, s, anInt1265, spriteDrawY, i3);
 					}
 					if (anIntArray981[k] == 3) {
-						chatTextDrawingArea.method388(150 - anIntArray982[k], s, anInt1265, spriteDrawY + 1, spriteDrawX, 0);
-						chatTextDrawingArea.method388(150 - anIntArray982[k], s, anInt1265, spriteDrawY, spriteDrawX, i3);
+                                                chatTextDrawingArea.drawShakeText(150 - anIntArray982[k], s, anInt1265, spriteDrawY + 1, spriteDrawX, 0);
+                                                chatTextDrawingArea.drawShakeText(150 - anIntArray982[k], s, anInt1265, spriteDrawY, spriteDrawX, i3);
 					}
 					if (anIntArray981[k] == 4) {
-						int i4 = chatTextDrawingArea.method384(s);
+                                                int i4 = chatTextDrawingArea.measurePlainTextWidth(s);
 						int k4 = (150 - anIntArray982[k]) * (i4 + 100) / 150;
 						DrawingArea.setDrawingArea(334, spriteDrawX - 50, spriteDrawX + 50, 0);
 						chatTextDrawingArea.textLeft(0, s, spriteDrawY + 1, spriteDrawX + 50 - k4);
@@ -1744,7 +1744,7 @@ public class Game extends RSApplet {
 						} else if (j4 > 125) {
 							l4 = j4 - 125;
 						}
-						DrawingArea.setDrawingArea(spriteDrawY + 5, 0, 512, spriteDrawY - chatTextDrawingArea.anInt1497 - 1);
+                                                DrawingArea.setDrawingArea(spriteDrawY + 5, 0, 512, spriteDrawY - chatTextDrawingArea.fontHeight - 1);
 						chatTextDrawingArea.textCenter(0, s, spriteDrawY + 1 + l4, spriteDrawX);
 						chatTextDrawingArea.textCenter(i3, s, spriteDrawY + l4, spriteDrawX);
 						DrawingArea.defaultDrawingAreaSize();
@@ -8368,7 +8368,7 @@ public class Game extends RSApplet {
 							i4 = 0xffffff;
 						}
 					}
-					for (int l6 = l2 + textDrawingArea.anInt1497; s.length() > 0; l6 += textDrawingArea.anInt1497) {
+                                        for (int l6 = l2 + textDrawingArea.fontHeight; s.length() > 0; l6 += textDrawingArea.fontHeight) {
 						if (s.indexOf("%") != -1) {
 							do {
 								int k7 = s.indexOf("%1");
@@ -9474,7 +9474,7 @@ public class Game extends RSApplet {
 		if (menuActionRow > 2) {
 			s = s + "@whi@ / " + (menuActionRow - 2) + " more options";
 		}
-		chatTextDrawingArea.method390(4, 0xffffff, s, loopCycle / 1000, 15);
+                chatTextDrawingArea.drawRandomColorText(4, 0xffffff, s, loopCycle / 1000, 15);
 	}
 
 	public void drawMinimap() {
