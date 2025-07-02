@@ -4,28 +4,28 @@
 
 public final class NPC extends Entity {
 
-	private Model method450() {
+       private Model getBaseModel() {
 		if (super.anim >= 0 && super.anInt1529 == 0) {
 			int k = Animation.anims[super.anim].anIntArray353[super.anInt1527];
 			int i1 = -1;
 			if (super.anInt1517 >= 0 && super.anInt1517 != super.anInt1511) {
 				i1 = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
 			}
-                       return desc.getAnimatedModel(i1, k, Animation.anims[super.anim].anIntArray357);
+                       return definition.getAnimatedModel(i1, k, Animation.anims[super.anim].anIntArray357);
 		}
 		int l = -1;
 		if (super.anInt1517 >= 0) {
 			l = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
 		}
-               return desc.getAnimatedModel(-1, l, null);
+               return definition.getAnimatedModel(-1, l, null);
 	}
 
 	@Override
 	public Model getRotatedModel() {
-		if (desc == null) {
+               if (definition == null) {
 			return null;
 		}
-		Model model = method450();
+               Model model = getBaseModel();
 		if (model == null) {
 			return null;
 		}
@@ -49,7 +49,7 @@ public final class NPC extends Entity {
 				model = new Model(aModel);
 			}
 		}
-		if (desc.aByte68 == 1) {
+               if (definition.aByte68 == 1) {
 			model.aBoolean1659 = true;
 		}
 		return model;
@@ -57,11 +57,11 @@ public final class NPC extends Entity {
 
 	@Override
 	public boolean isVisible() {
-		return desc != null;
+               return definition != null;
 	}
 
 	NPC() {
 	}
 
-	public EntityDef desc;
+       public EntityDef definition;
 }

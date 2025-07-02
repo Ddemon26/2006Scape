@@ -987,7 +987,7 @@ public class Game extends RSApplet {
 		for (int j = 0; j < npcCount; j++) {
 			NPC npc = npcArray[npcIndices[j]];
 			int k = 0x20000000 + (npcIndices[j] << 14);
-			if (npc == null || !npc.isVisible() || npc.desc.aBoolean93 != flag) {
+                       if (npc == null || !npc.isVisible() || npc.definition.aBoolean93 != flag) {
 				continue;
 			}
 			int l = npc.x >> 7;
@@ -1001,7 +1001,7 @@ public class Game extends RSApplet {
 				}
 				anIntArrayArray929[l][i1] = anInt1265;
 			}
-			if (!npc.desc.aBoolean84) {
+                       if (!npc.definition.aBoolean84) {
 				k += 0x80000000;
 			}
                    worldController.addAnimableObject(plane, npc.currentHeading, method42(plane, npc.y, npc.x), k, npc.y, (npc.anInt1540 - 1) * 64 + 60, npc.x, npc, npc.aBoolean1541);
@@ -1296,7 +1296,7 @@ public class Game extends RSApplet {
 		for (int k = 0; k < anInt839; k++) {
 			int l = anIntArray840[k];
 			if (npcArray[l].anInt1537 != loopCycle) {
-				npcArray[l].desc = null;
+                                npcArray[l].definition = null;
 				npcArray[l] = null;
 			}
 		}
@@ -1524,7 +1524,7 @@ public class Game extends RSApplet {
 					continue;
 				}
 				if (obj instanceof NPC) {
-					EntityDef entityDef = ((NPC) obj).desc;
+                                EntityDef entityDef = ((NPC) obj).definition;
 					if (entityDef.childrenIDs != null) {
                                         entityDef = entityDef.transform();
 					}
@@ -1572,7 +1572,7 @@ public class Game extends RSApplet {
 						}
 					}
 				} else {
-					EntityDef entityDef_1 = ((NPC) obj).desc;
+                                EntityDef entityDef_1 = ((NPC) obj).definition;
 					if (entityDef_1.anInt75 >= 0 && entityDef_1.anInt75 < headIcons.length) {
 						npcScreenPos(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
@@ -2253,18 +2253,18 @@ public class Game extends RSApplet {
 				i1 -= 32;
 			}
 			int j1 = stream.readBits(1);
-			npc.desc = EntityDef.forID(stream.readBits(ClientSettings.NPC_BITS));
+                        npc.definition = EntityDef.forID(stream.readBits(ClientSettings.NPC_BITS));
 			int k1 = stream.readBits(1);
 			if (k1 == 1) {
 				anIntArray894[anInt893++] = k;
 			}
-			npc.anInt1540 = npc.desc.aByte68;
-                       npc.turnSpeed = npc.desc.anInt79;
-			npc.anInt1554 = npc.desc.anInt67;
-			npc.anInt1555 = npc.desc.anInt58;
-			npc.anInt1556 = npc.desc.anInt83;
-			npc.anInt1557 = npc.desc.anInt55;
-			npc.anInt1511 = npc.desc.anInt77;
+                        npc.anInt1540 = npc.definition.aByte68;
+                       npc.turnSpeed = npc.definition.anInt79;
+                        npc.anInt1554 = npc.definition.anInt67;
+                        npc.anInt1555 = npc.definition.anInt58;
+                        npc.anInt1556 = npc.definition.anInt83;
+                        npc.anInt1557 = npc.definition.anInt55;
+                        npc.anInt1511 = npc.definition.anInt77;
 			npc.setPos(myPlayer.smallX[0] + i1, myPlayer.smallY[0] + l, j1 == 1);
 		}
 		stream.finishBitAccess();
@@ -4122,7 +4122,7 @@ public class Game extends RSApplet {
 		if (l == 1025) {
 			NPC class30_sub2_sub4_sub1_sub1_5 = npcArray[i1];
 			if (class30_sub2_sub4_sub1_sub1_5 != null) {
-				EntityDef entityDef = class30_sub2_sub4_sub1_sub1_5.desc;
+                                EntityDef entityDef = class30_sub2_sub4_sub1_sub1_5.definition;
                                 if (entityDef.childrenIDs != null) {
                                         entityDef = entityDef.transform();
                                 }
@@ -4563,11 +4563,11 @@ public class Game extends RSApplet {
 			}
 			if (k1 == 1) {
 				NPC npc = npcArray[l1];
-				if (npc.desc.aByte68 == 1 && (npc.x & 0x7f) == 64 && (npc.y & 0x7f) == 64) {
+                                if (npc.definition.aByte68 == 1 && (npc.x & 0x7f) == 64 && (npc.y & 0x7f) == 64) {
 					for (int j2 = 0; j2 < npcCount; j2++) {
 						NPC npc2 = npcArray[npcIndices[j2]];
-						if (npc2 != null && npc2 != npc && npc2.desc.aByte68 == 1 && npc2.x == npc.x && npc2.y == npc.y) {
-							buildAtNPCMenu(npc2.desc, npcIndices[j2], j1, i1);
+                                                if (npc2 != null && npc2 != npc && npc2.definition.aByte68 == 1 && npc2.x == npc.x && npc2.y == npc.y) {
+                                                        buildAtNPCMenu(npc2.definition, npcIndices[j2], j1, i1);
 						}
 					}
 
@@ -4579,15 +4579,15 @@ public class Game extends RSApplet {
 					}
 
 				}
-				buildAtNPCMenu(npc.desc, l1, j1, i1);
+                                buildAtNPCMenu(npc.definition, l1, j1, i1);
 			}
 			if (k1 == 0) {
 				Player player = playerArray[l1];
 				if ((player.x & 0x7f) == 64 && (player.y & 0x7f) == 64) {
 					for (int k2 = 0; k2 < npcCount; k2++) {
 						NPC class30_sub2_sub4_sub1_sub1_2 = npcArray[npcIndices[k2]];
-						if (class30_sub2_sub4_sub1_sub1_2 != null && class30_sub2_sub4_sub1_sub1_2.desc.aByte68 == 1 && class30_sub2_sub4_sub1_sub1_2.x == player.x && class30_sub2_sub4_sub1_sub1_2.y == player.y) {
-							buildAtNPCMenu(class30_sub2_sub4_sub1_sub1_2.desc, npcIndices[k2], j1, i1);
+                                                if (class30_sub2_sub4_sub1_sub1_2 != null && class30_sub2_sub4_sub1_sub1_2.definition.aByte68 == 1 && class30_sub2_sub4_sub1_sub1_2.x == player.x && class30_sub2_sub4_sub1_sub1_2.y == player.y) {
+                                                        buildAtNPCMenu(class30_sub2_sub4_sub1_sub1_2.definition, npcIndices[k2], j1, i1);
 						}
 					}
 
@@ -6629,14 +6629,14 @@ public class Game extends RSApplet {
 				npc.maxHealth = stream.readUnsignedByteNeg();
 			}
 			if ((l & 2) != 0) {
-				npc.desc = EntityDef.forID(stream.readShortLEAdd());
-				npc.anInt1540 = npc.desc.aByte68;
-                               npc.turnSpeed = npc.desc.anInt79;
-				npc.anInt1554 = npc.desc.anInt67;
-				npc.anInt1555 = npc.desc.anInt58;
-				npc.anInt1556 = npc.desc.anInt83;
-				npc.anInt1557 = npc.desc.anInt55;
-				npc.anInt1511 = npc.desc.anInt77;
+                                npc.definition = EntityDef.forID(stream.readShortLEAdd());
+                                npc.anInt1540 = npc.definition.aByte68;
+                               npc.turnSpeed = npc.definition.anInt79;
+                                npc.anInt1554 = npc.definition.anInt67;
+                                npc.anInt1555 = npc.definition.anInt58;
+                                npc.anInt1556 = npc.definition.anInt83;
+                                npc.anInt1557 = npc.definition.anInt55;
+                                npc.anInt1511 = npc.definition.anInt77;
 			}
 			if ((l & 4) != 0) {
 				npc.anInt1538 = stream.readShortLE();
@@ -9521,7 +9521,7 @@ public class Game extends RSApplet {
 		for (int i6 = 0; i6 < npcCount; i6++) {
 			NPC npc = npcArray[npcIndices[i6]];
 			if (npc != null && npc.isVisible()) {
-				EntityDef entityDef = npc.desc;
+                                EntityDef entityDef = npc.definition;
                                 if (entityDef.childrenIDs != null) {
                                         entityDef = entityDef.transform();
                                 }
