@@ -873,12 +873,12 @@ public class Game extends RSApplet {
 		for (int l = 1; l < 103; l++) {
 			int i1 = 24628 + (103 - l) * 512 * 4;
 			for (int k1 = 1; k1 < 103; k1++) {
-				if ((tileFlags[i][k1][l] & 0x18) == 0) {
-					worldController.method309(ai, i1, i, k1, l);
-				}
-				if (i < 3 && (tileFlags[i + 1][k1][l] & 8) != 0) {
-					worldController.method309(ai, i1, i + 1, k1, l);
-				}
+                                if ((tileFlags[i][k1][l] & 0x18) == 0) {
+                                        worldController.renderMinimapTile(ai, i1, i, k1, l);
+                                }
+                                if (i < 3 && (tileFlags[i + 1][k1][l] & 8) != 0) {
+                                        worldController.renderMinimapTile(ai, i1, i + 1, k1, l);
+                                }
 				i1 += 4;
 			}
 
@@ -905,7 +905,7 @@ public class Game extends RSApplet {
 		anInt1071 = 0;
 		for (int k2 = 0; k2 < 104; k2++) {
 			for (int l2 = 0; l2 < 104; l2++) {
-				int i3 = worldController.method303(plane, k2, l2);
+				int i3 = worldController.getTileDecorationUid(plane, k2, l2);
 				if (i3 != 0) {
 					i3 = i3 >> 14 & 0x7fff;
 					int j3 = ObjectDef.forID(i3).anInt746;
@@ -948,7 +948,7 @@ public class Game extends RSApplet {
 	public void spawnGroundItem(int i, int j) {
 		NodeList class19 = groundArray[plane][i][j];
 		if (class19 == null) {
-			worldController.method295(plane, i, j);
+                        worldController.clearItemPile(plane, i, j);
 			return;
 		}
 		long k = Long.MIN_VALUE;
@@ -2449,9 +2449,9 @@ public class Game extends RSApplet {
 	}
 
        public void drawMinimapLoc(int i, int k, int l, int i1, int j1) {
-		int k1 = worldController.method300(j1, l, i);
+		int k1 = worldController.getBoundaryObjectUid(j1, l, i);
 		if (k1 != 0) {
-			int l1 = worldController.method304(j1, l, i, k1);
+			int l1 = worldController.getObjectConfig(j1, l, i, k1);
 			int k2 = l1 >> 6 & 3;
 			int i3 = l1 & 0x1f;
 			int k3 = k;
@@ -2529,9 +2529,9 @@ public class Game extends RSApplet {
 				}
 			}
 		}
-		k1 = worldController.method302(j1, l, i);
+		k1 = worldController.getSceneObjectUid(j1, l, i);
 		if (k1 != 0) {
-			int i2 = worldController.method304(j1, l, i, k1);
+			int i2 = worldController.getObjectConfig(j1, l, i, k1);
 			int l2 = i2 >> 6 & 3;
 			int j3 = i2 & 0x1f;
 			int l3 = k1 >> 14 & 0x7fff;
@@ -2563,7 +2563,7 @@ public class Game extends RSApplet {
 				}
 			}
 		}
-		k1 = worldController.method303(j1, l, i);
+		k1 = worldController.getTileDecorationUid(j1, l, i);
 		if (k1 != 0) {
 			int j2 = k1 >> 14 & 0x7fff;
 			ObjectDef class46 = ObjectDef.forID(j2);
@@ -3400,7 +3400,7 @@ public class Game extends RSApplet {
 
 	public boolean method66(int i, int j, int k) {
 		int i1 = i >> 14 & 0x7fff;
-		int j1 = worldController.method304(plane, k, j, i);
+		int j1 = worldController.getObjectConfig(plane, k, j, i);
 		if (j1 == -1) {
 			return false;
 		}
@@ -3761,9 +3761,9 @@ public class Game extends RSApplet {
 		}
 		if (l == 516) {
 			if (!menuOpen) {
-				worldController.method312(super.saveClickY - 4, super.saveClickX - 4);
+                                worldController.queueClick(super.saveClickY - 4, super.saveClickX - 4);
 			} else {
-				worldController.method312(k - 4, j - 4);
+                                worldController.queueClick(k - 4, j - 4);
 			}
 		}
 		if (l == 1062) { //Fifth click
@@ -4501,7 +4501,7 @@ public class Game extends RSApplet {
 				continue;
 			}
 			j = l;
-			if (k1 == 2 && worldController.method304(plane, i1, j1, l) >= 0) {
+			if (k1 == 2 && worldController.getObjectConfig(plane, i1, j1, l) >= 0) {
 				ObjectDef class46 = ObjectDef.forID(l1);
 				if (class46.childrenIDs != null) {
 					class46 = class46.getChildDefinition();
@@ -6838,19 +6838,19 @@ public class Game extends RSApplet {
 		int k = 0;
 		int l = 0;
 		if (class30_sub1.category == 0) {
-			i = worldController.method300(class30_sub1.plane, class30_sub1.x, class30_sub1.y);
+			i = worldController.getBoundaryObjectUid(class30_sub1.plane, class30_sub1.x, class30_sub1.y);
 		}
 		if (class30_sub1.category == 1) {
-			i = worldController.method301(class30_sub1.plane, class30_sub1.x, class30_sub1.y);
+			i = worldController.getWallDecorationUid(class30_sub1.plane, class30_sub1.x, class30_sub1.y);
 		}
 		if (class30_sub1.category == 2) {
-			i = worldController.method302(class30_sub1.plane, class30_sub1.x, class30_sub1.y);
+			i = worldController.getSceneObjectUid(class30_sub1.plane, class30_sub1.x, class30_sub1.y);
 		}
 		if (class30_sub1.category == 3) {
-			i = worldController.method303(class30_sub1.plane, class30_sub1.x, class30_sub1.y);
+			i = worldController.getTileDecorationUid(class30_sub1.plane, class30_sub1.x, class30_sub1.y);
 		}
 		if (i != 0) {
-			int i1 = worldController.method304(class30_sub1.plane, class30_sub1.x, class30_sub1.y, i);
+			int i1 = worldController.getObjectConfig(class30_sub1.plane, class30_sub1.x, class30_sub1.y, i);
 			j = i >> 14 & 0x7fff;
 			k = i1 & 0x1f;
 			l = i1 >> 6;
@@ -7357,7 +7357,7 @@ public class Game extends RSApplet {
 				ai[i8] = l8 * i9 >> 16;
 			}
 
-			WorldController.method310(500, 800, 512, 334, ai);
+                        WorldController.buildVisibilityMap(500, 800, 512, 334, ai);
 			Censor.loadConfig(streamLoader_4);
 			mouseDetection = new MouseDetection(this);
 			startRunnable(mouseDetection, 10);
@@ -10103,7 +10103,7 @@ public class Game extends RSApplet {
 				int l19 = tileHeights[plane][j4 + 1][i7 + 1];
 				int k20 = tileHeights[plane][j4][i7 + 1];
 				if (j16 == 0) {
-					BoundaryObject class10 = worldController.method296(plane, j4, i7);
+                                       BoundaryObject class10 = worldController.getBoundaryObject(plane, j4, i7);
 					if (class10 != null) {
 						int k21 = class10.uid >> 14 & 0x7fff;
 						if (j12 == 2) {
@@ -10115,13 +10115,13 @@ public class Game extends RSApplet {
 					}
 				}
                                 if (j16 == 1) {
-                                        WallDecoration decoration = worldController.method297(j4, i7, plane);
+                                       WallDecoration decoration = worldController.getWallDecoration(j4, i7, plane);
                                         if (decoration != null) {
                                                 decoration.renderable = new DynamicObject(decoration.uid >> 14 & 0x7fff, 0, 4, i19, l19, j18, k20, j17, false);
                                         }
                                 }
                                 if (j16 == 2) {
-                                        SceneObject sceneObject = worldController.method298(j4, i7, plane);
+                                       SceneObject sceneObject = worldController.getSceneObject(j4, i7, plane);
                                         if (j12 == 11) {
                                                 j12 = 10;
                                         }
@@ -10130,7 +10130,7 @@ public class Game extends RSApplet {
                                         }
 				}
 				if (j16 == 3) {
-                                        TileDecoration class49 = worldController.method299(i7, j4, plane);
+                                       TileDecoration class49 = worldController.getTileDecoration(i7, j4, plane);
 					if (class49 != null) {
 						class49.aClass30_Sub2_Sub4_814 = new DynamicObject(class49.uid >> 14 & 0x7fff, k14, 22, i19, l19, j18, k20, j17, false);
 					}
@@ -10476,34 +10476,34 @@ public class Game extends RSApplet {
 			}
 			int i2 = 0;
 			if (j1 == 0) {
-				i2 = worldController.method300(j, i1, i);
+				i2 = worldController.getBoundaryObjectUid(j, i1, i);
 			}
 			if (j1 == 1) {
-				i2 = worldController.method301(j, i1, i);
+				i2 = worldController.getWallDecorationUid(j, i1, i);
 			}
 			if (j1 == 2) {
-				i2 = worldController.method302(j, i1, i);
+				i2 = worldController.getSceneObjectUid(j, i1, i);
 			}
 			if (j1 == 3) {
-				i2 = worldController.method303(j, i1, i);
+				i2 = worldController.getTileDecorationUid(j, i1, i);
 			}
 			if (i2 != 0) {
-				int i3 = worldController.method304(j, i1, i, i2);
+				int i3 = worldController.getObjectConfig(j, i1, i, i2);
 				int j2 = i2 >> 14 & 0x7fff;
 				int k2 = i3 & 0x1f;
 				int l2 = i3 >> 6;
 				if (j1 == 0) {
-					worldController.method291(i1, j, i, (byte) -119);
+                                        worldController.clearBoundaryObject(i1, j, i, (byte) -119);
 					ObjectDef class46 = ObjectDef.forID(j2);
 					if (class46.isSolid) {
 						aClass11Array1230[j].removeWall(l2, k2, class46.impenetrable, i1, i);
 					}
 				}
 				if (j1 == 1) {
-					worldController.method292(i, j, i1);
+                                        worldController.clearWallDecoration(i, j, i1);
 				}
 				if (j1 == 2) {
-					worldController.method293(j, i1, i);
+                                        worldController.removeSceneObject(j, i1, i);
 					ObjectDef class46_1 = ObjectDef.forID(j2);
 					if (i1 + class46_1.sizeX > 103 || i + class46_1.sizeX > 103 || i1 + class46_1.sizeY > 103 || i + class46_1.sizeY > 103) {
 						return;
@@ -10513,7 +10513,7 @@ public class Game extends RSApplet {
 					}
 				}
 				if (j1 == 3) {
-					worldController.method294(j, i, i1);
+                                        worldController.clearTileDecoration(j, i, i1);
 					ObjectDef class46_2 = ObjectDef.forID(j2);
 					if (class46_2.isSolid && class46_2.interactive) {
 						aClass11Array1230[j].unblockTile(i, i1);
@@ -11897,7 +11897,7 @@ public class Game extends RSApplet {
 		Model.anInt1686 = super.mouseY - 4;
 		DrawingArea.setAllPixelsToZero();
 		if(graphicsEnabled){
-			worldController.method313(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
+                        worldController.renderScene(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
 			worldController.clearObj5Cache();
 			updateEntities();
 			drawHeadIcon();
