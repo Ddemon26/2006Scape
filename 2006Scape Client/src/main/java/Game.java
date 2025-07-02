@@ -1386,7 +1386,7 @@ public class Game extends RSApplet {
 	}
 
        public void applyVarp(int i) {
-		int action = Varp.cache[i].anInt709;
+                int action = Varp.cache[i].actionType;
 		if (action == 0) {
 			return;
 		}
