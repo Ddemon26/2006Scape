@@ -5422,9 +5422,9 @@ public class Game extends RSApplet {
 				model.buildVertexGroups();
 				model.applyFrame(Animation.anims[myPlayer.anInt1511].anIntArray353[0]);
 				model.applyLighting(64, 850, -30, -50, -30, true);
-				class9.anInt233 = 5;
-				class9.mediaID = 0;
-				RSInterface.method208(model, 0, 5);
+                                class9.mediaType = 5;
+                                class9.mediaId = 0;
+                                RSInterface.clearModelCache(model, 0, 5);
 			}
 			return;
 		}
@@ -8448,10 +8448,10 @@ public class Game extends RSApplet {
 					}
 					Model model;
 					if (i7 == -1) {
-						model = component.method209(-1, -1, flag2);
+                                                model = component.prepareModel(-1, -1, flag2);
 					} else {
 						Animation animation = Animation.anims[i7];
-						model = component.method209(animation.anIntArray354[component.anInt246], animation.anIntArray353[component.anInt246], flag2);
+                                                model = component.prepareModel(animation.anIntArray354[component.anInt246], animation.anIntArray353[component.anInt246], flag2);
 					}
 					if (model != null) {
 						model.method482(component.anInt271, 0, component.anInt270, 0, i5, l5);
@@ -10691,11 +10691,11 @@ public class Game extends RSApplet {
 			}
 			if (pktType == 185) {
 				int k = inStream.readShortLEAdd();
-				RSInterface.interfaceCache[k].anInt233 = 3;
+                                RSInterface.interfaceCache[k].mediaType = 3;
 				if (myPlayer.desc == null) {
-					RSInterface.interfaceCache[k].mediaID = (myPlayer.anIntArray1700[0] << 25) + (myPlayer.anIntArray1700[4] << 20) + (myPlayer.equipment[0] << 15) + (myPlayer.equipment[8] << 10) + (myPlayer.equipment[11] << 5) + myPlayer.equipment[1];
+                                        RSInterface.interfaceCache[k].mediaId = (myPlayer.anIntArray1700[0] << 25) + (myPlayer.anIntArray1700[4] << 20) + (myPlayer.equipment[0] << 15) + (myPlayer.equipment[8] << 10) + (myPlayer.equipment[11] << 5) + myPlayer.equipment[1];
 				} else {
-					RSInterface.interfaceCache[k].mediaID = (int) (0x12345678L + myPlayer.desc.type);
+                                        RSInterface.interfaceCache[k].mediaId = (int) (0x12345678L + myPlayer.desc.type);
 				}
 				pktType = -1;
 				return true;
@@ -11048,8 +11048,8 @@ public class Game extends RSApplet {
 			if (pktType == 75) {
 				int j3 = inStream.readShortLEAdd();
 				int j11 = inStream.readShortLEAdd();
-				RSInterface.interfaceCache[j11].anInt233 = 2;
-				RSInterface.interfaceCache[j11].mediaID = j3;
+                                RSInterface.interfaceCache[j11].mediaType = 2;
+                                RSInterface.interfaceCache[j11].mediaId = j3;
 				pktType = -1;
 				return true;
 			}
@@ -11426,14 +11426,14 @@ public class Game extends RSApplet {
 				int i6 = inStream.readShortLE();
 				int i13 = inStream.readUnsignedWord();
 				int k18 = inStream.readUnsignedWord();
-				if (k18 == 0x00ffff) {
-					RSInterface.interfaceCache[i6].anInt233 = 0;
+                                if (k18 == 0x00ffff) {
+                                        RSInterface.interfaceCache[i6].mediaType = 0;
 					pktType = -1;
 					return true;
 				} else {
 					ItemDef itemDef = ItemDef.lookup(k18);
-					RSInterface.interfaceCache[i6].anInt233 = 4;
-					RSInterface.interfaceCache[i6].mediaID = k18;
+                                        RSInterface.interfaceCache[i6].mediaType = 4;
+                                        RSInterface.interfaceCache[i6].mediaId = k18;
 					RSInterface.interfaceCache[i6].anInt270 = itemDef.modelRotation1;
 					RSInterface.interfaceCache[i6].anInt271 = itemDef.modelRotation2;
 					RSInterface.interfaceCache[i6].anInt269 = itemDef.modelZoom * 100 / i13;
@@ -11532,8 +11532,8 @@ public class Game extends RSApplet {
 			if (pktType == 8) {
 				int k6 = inStream.readShortLEAdd();
 				int l13 = inStream.readUnsignedWord();
-				RSInterface.interfaceCache[k6].anInt233 = 1;
-				RSInterface.interfaceCache[k6].mediaID = l13;
+                                RSInterface.interfaceCache[k6].mediaType = 1;
+                                RSInterface.interfaceCache[k6].mediaId = l13;
 				pktType = -1;
 				return true;
 			}

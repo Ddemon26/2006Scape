@@ -10,7 +10,7 @@ public final class RSInterface {
 	}
 	
 	public static void unpack(StreamLoader streamLoader, TextDrawingArea textDrawingAreas[], StreamLoader streamLoader_1) {
-		aMRUNodes_238 = new MRUNodes(50000);
+               spriteCache = new MRUNodes(50000);
 		Stream stream = new Stream(streamLoader.getDataForName("data"));
 		int i = -1;
 		int j = stream.readUnsignedWord();
@@ -97,7 +97,7 @@ public final class RSInterface {
 						String s1 = stream.readString();
 						if (streamLoader_1 != null && s1.length() > 0) {
 							int i5 = s1.lastIndexOf(",");
-							rsInterface.sprites[j2] = method207(Integer.parseInt(s1.substring(i5 + 1)), streamLoader_1, s1.substring(0, i5));
+                                    rsInterface.sprites[j2] = loadSprite(Integer.parseInt(s1.substring(i5 + 1)), streamLoader_1, s1.substring(0, i5));
 						}
 					}
 				}
@@ -145,19 +145,19 @@ public final class RSInterface {
 				String s = stream.readString();
 				if (streamLoader_1 != null && s.length() > 0) {
 					int i4 = s.lastIndexOf(",");
-					rsInterface.sprite1 = method207(Integer.parseInt(s.substring(i4 + 1)), streamLoader_1, s.substring(0, i4));
+                                    rsInterface.sprite1 = loadSprite(Integer.parseInt(s.substring(i4 + 1)), streamLoader_1, s.substring(0, i4));
 				}
 				s = stream.readString();
 				if (streamLoader_1 != null && s.length() > 0) {
 					int j4 = s.lastIndexOf(",");
-					rsInterface.sprite2 = method207(Integer.parseInt(s.substring(j4 + 1)), streamLoader_1, s.substring(0, j4));
+                                    rsInterface.sprite2 = loadSprite(Integer.parseInt(s.substring(j4 + 1)), streamLoader_1, s.substring(0, j4));
 				}
 			}
 			if (rsInterface.type == 6) {
 				int l = stream.readUnsignedByte();
 				if (l != 0) {
-					rsInterface.anInt233 = 1;
-					rsInterface.mediaID = (l - 1 << 8) + stream.readUnsignedByte();
+                                        rsInterface.mediaType = 1;
+                                        rsInterface.mediaId = (l - 1 << 8) + stream.readUnsignedByte();
 				}
 				l = stream.readUnsignedByte();
 				if (l != 0) {
@@ -228,17 +228,17 @@ public final class RSInterface {
 				}
 			}
 		}
-		aMRUNodes_238 = null;
+               spriteCache = null;
 	}
 
-	private Model method206(int i, int j) {
+    private Model getModelForMedia(int i, int j) {
 		ItemDef itemDefinition = null;
 		if (type == 4) {
 			itemDefinition = ItemDef.lookup(id);
                        lightness += itemDefinition.ambient;
                        shading += itemDefinition.contrast;
 		}
-		Model model = (Model) aMRUNodes_264.insertFromCache((i << 16) + j);
+                Model model = (Model) modelCache.insertFromCache((i << 16) + j);
 		if (model != null)
 			return model;
 		if (i == 1)
@@ -252,19 +252,19 @@ public final class RSInterface {
 		if (i == 5)
 			model = null;
 		if (model != null)
-			aMRUNodes_264.removeFromCache(model, (i << 16) + j);
+                        modelCache.removeFromCache(model, (i << 16) + j);
 		return model;
 	}
 
-	private static Sprite method207(int i, StreamLoader streamLoader, String s) {
+    private static Sprite loadSprite(int i, StreamLoader streamLoader, String s) {
 		long l = (TextClass.method585(s) << 8) + i;
-		Sprite sprite = (Sprite) aMRUNodes_238.insertFromCache(l);
+                Sprite sprite = (Sprite) spriteCache.insertFromCache(l);
 		if (sprite != null) {
 			return sprite;
 		}
 		try {
 			sprite = new Sprite(streamLoader, s, i);
-			aMRUNodes_238.removeFromCache(sprite, l);
+                        spriteCache.removeFromCache(sprite, l);
 		} catch (Exception _ex) {
 			return null;
 		}
@@ -282,21 +282,21 @@ public final class RSInterface {
 
 	}
 
-	public static void method208(Model model, int id, int type) {
-		aMRUNodes_264.unlinkAll();
-		if (model != null && type != 4) {
-			aMRUNodes_264.removeFromCache(model, (type << 16) + id);
-		}
-	}
+        public static void clearModelCache(Model model, int id, int type) {
+                modelCache.unlinkAll();
+                if (model != null && type != 4) {
+                        modelCache.removeFromCache(model, (type << 16) + id);
+                }
+        }
 
-	public Model method209(int j, int k, boolean flag) {
+        public Model prepareModel(int j, int k, boolean flag) {
 		lightness = 64;
 		shading = 768;
 		Model model;
 		if (flag) {
-			model = method206(anInt255, anInt256);
+                        model = getModelForMedia(anInt255, anInt256);
 		} else {
-			model = method206(anInt233, mediaID);
+                        model = getModelForMedia(mediaType, mediaId);
 		}
 		if (model == null) {
 			return null;
@@ -344,12 +344,12 @@ public final class RSInterface {
 	public int anInt230;
 	public int invSpritePadX;
 	public int textColor;
-	public int anInt233;
-	public int mediaID;
+        public int mediaType;
+        public int mediaId;
 	public boolean aBoolean235;
 	public int parentID;
 	public int spellUsableOn;
-	private static MRUNodes aMRUNodes_238;
+        private static MRUNodes spriteCache;
 	public int anInt239;
 	public int children[];
 	public int childX[];
@@ -374,7 +374,7 @@ public final class RSInterface {
 	public int scrollMax;
 	public int type;
 	public int anInt263;
-	private static final MRUNodes aMRUNodes_264 = new MRUNodes(30);
+        private static final MRUNodes modelCache = new MRUNodes(30);
 	public int anInt265;
 	public boolean aBoolean266;
 	public int height;
