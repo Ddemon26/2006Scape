@@ -245,8 +245,8 @@ public final class RSInterface {
 			model = Model.create(j);
 		if (i == 2)
 			model = EntityDef.forID(j).method160();
-		if (i == 3)
-			model = Game.myPlayer.method453();
+                if (i == 3)
+                        model = Game.myPlayer.getDialogueModel();
 		if (i == 4)
                        model = ItemDef.lookup(j).getInterfaceModel(50);
 		if (i == 5)
