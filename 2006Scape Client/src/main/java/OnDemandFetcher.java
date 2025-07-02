@@ -169,17 +169,17 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 
 		abyte2 = streamLoader.getDataForName("map_index");
 		Stream stream2 = new Stream(abyte2);
-		j1 = abyte2.length / 7;
-		mapIndices1 = new int[j1];
-		mapIndices2 = new int[j1];
-		mapIndices3 = new int[j1];
-		mapIndices4 = new int[j1];
-		for (int i2 = 0; i2 < j1; i2++) {
-			mapIndices1[i2] = stream2.readUnsignedWord();
-			mapIndices2[i2] = stream2.readUnsignedWord();
-			mapIndices3[i2] = stream2.readUnsignedWord();
-			mapIndices4[i2] = stream2.readUnsignedByte();
-		}
+                j1 = abyte2.length / 7;
+                regionIds = new int[j1];
+                mapArchiveIds = new int[j1];
+                landArchiveIds = new int[j1];
+                mapMembershipFlags = new int[j1];
+                for (int i2 = 0; i2 < j1; i2++) {
+                        regionIds[i2] = stream2.readUnsignedWord();
+                        mapArchiveIds[i2] = stream2.readUnsignedWord();
+                        landArchiveIds[i2] = stream2.readUnsignedWord();
+                        mapMembershipFlags[i2] = stream2.readUnsignedByte();
+                }
 
 		abyte2 = streamLoader.getDataForName("anim_index");
 		stream2 = new Stream(abyte2);
@@ -212,16 +212,16 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		running = false;
 	}
 
-	public void method554(boolean flag) {
-		int j = mapIndices1.length;
-		for (int k = 0; k < j; k++) {
-			if (flag || mapIndices4[k] != 0) {
-				method563((byte) 2, 3, mapIndices3[k]);
-				method563((byte) 2, 3, mapIndices2[k]);
-			}
-		}
+        public void requestMapFiles(boolean flag) {
+                int j = regionIds.length;
+                for (int k = 0; k < j; k++) {
+                        if (flag || mapMembershipFlags[k] != 0) {
+                                validateOrQueue((byte) 2, 3, landArchiveIds[k]);
+                                validateOrQueue((byte) 2, 3, mapArchiveIds[k]);
+                        }
+                }
 
-	}
+        }
 
 	public int getVersionCount(int j) {
 		return versions[j].length;
@@ -276,7 +276,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		return anIntArray1360.length;
 	}
 
-	public void method558(int i, int j) {
+        public void queueRequest(int i, int j) {
 		if (i < 0 || i > versions.length || j < 0 || j > versions[i].length) {
 			return;
 		}
@@ -311,7 +311,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			while (running) {
 				onDemandCycle++;
 				int i = 20;
-				if (anInt1332 == 0 && clientInstance.decompressors[0] != null) {
+                                if (currentPriority == 0 && clientInstance.decompressors[0] != null) {
 					i = 50;
 				}
 				try {
@@ -329,7 +329,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 					if (uncompletedCount == 0 && j >= 5) {
 						break;
 					}
-					method568();
+                                        processExtraFiles();
 					if (inputStream != null) {
 						readData();
 					}
@@ -374,7 +374,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 					loopCycle = 0;
 					statusString = "";
 				}
-				if (clientInstance.loggedIn && socket != null && outputStream != null && (anInt1332 > 0 || clientInstance.decompressors[0] == null)) {
+                                if (clientInstance.loggedIn && socket != null && outputStream != null && (currentPriority > 0 || clientInstance.decompressors[0] == null)) {
 					writeLoopCycle++;
 					if (writeLoopCycle > 500) {
 						writeLoopCycle = 0;
@@ -395,7 +395,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		}
 	}
 
-	public void method560(int i, int j) {
+        public void requestFileNow(int i, int j) {
 		if (clientInstance.decompressors[0] == null) {
 			return;
 		}
@@ -405,7 +405,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		if (fileStatus[j][i] == 0) {
 			return;
 		}
-		if (anInt1332 == 0) {
+                if (currentPriority == 0) {
 			return;
 		}
 		OnDemandData onDemandData = new OnDemandData();
@@ -453,26 +453,26 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		return onDemandData;
 	}
 
-	public int method562(int i, int k, int l) {
-		int i1 = (l << 8) + k;
-		for (int j1 = 0; j1 < mapIndices1.length; j1++) {
-			if (mapIndices1[j1] == i1) {
-				if (i == 0) {
-					return mapIndices2[j1];
-				} else {
-					return mapIndices3[j1];
-				}
-			}
-		}
-		return -1;
+        public int method562(int i, int k, int l) {
+                int i1 = (l << 8) + k;
+                for (int j1 = 0; j1 < regionIds.length; j1++) {
+                        if (regionIds[j1] == i1) {
+                                if (i == 0) {
+                                        return mapArchiveIds[j1];
+                                } else {
+                                        return landArchiveIds[j1];
+                                }
+                        }
+                }
+                return -1;
+        }
+
+        @Override
+        public void method548(int i) {
+                queueRequest(0, i);
 	}
 
-	@Override
-	public void method548(int i) {
-		method558(0, i);
-	}
-
-	public void method563(byte byte0, int i, int j) {
+        public void validateOrQueue(byte byte0, int i, int j) {
 		if (clientInstance.decompressors[0] == null) {
 			return;
 		}
@@ -484,20 +484,20 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			return;
 		}
 		fileStatus[i][j] = byte0;
-		if (byte0 > anInt1332) {
-			anInt1332 = byte0;
-		}
+                if (byte0 > currentPriority) {
+                        currentPriority = byte0;
+                }
 		totalFiles++;
 	}
 
-	public boolean method564(int i) {
-		for (int k = 0; k < mapIndices1.length; k++) {
-			if (mapIndices3[k] == i) {
-				return true;
-			}
-		}
-		return false;
-	}
+        public boolean hasLandscape(int i) {
+                for (int k = 0; k < regionIds.length; k++) {
+                        if (landArchiveIds[k] == i) {
+                                return true;
+                        }
+                }
+                return false;
+        }
 
 	private void handleFailed() {
 		uncompletedCount = 0;
@@ -526,11 +526,11 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		}
 	}
 
-	public void method566() {
-		synchronized (aClass19_1344) {
-			aClass19_1344.removeAll();
-		}
-	}
+        public void clearPriorityQueue() {
+                synchronized (aClass19_1344) {
+                        aClass19_1344.removeAll();
+                }
+        }
 
 	private void checkReceived() {
 		OnDemandData onDemandData;
@@ -560,9 +560,9 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		}
 	}
 
-	private void method568() {
-		while (uncompletedCount == 0 && completedCount < 10) {
-			if (anInt1332 == 0) {
+        private void processExtraFiles() {
+                while (uncompletedCount == 0 && completedCount < 10) {
+                        if (currentPriority == 0) {
 				break;
 			}
 			OnDemandData onDemandData;
@@ -592,7 +592,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				byte abyte0[] = fileStatus[j];
 				int k = abyte0.length;
 				for (int l = 0; l < k; l++) {
-					if (abyte0[l] == anInt1332) {
+                                        if (abyte0[l] == currentPriority) {
 						abyte0[l] = 0;
 						OnDemandData onDemandData_1 = new OnDemandData();
 						onDemandData_1.dataType = j;
@@ -612,15 +612,15 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 					}
 				}
 
-			}
+                        }
 
-			anInt1332--;
+                        currentPriority--;
 		}
 	}
 
-	public boolean method569(int i) {
-		return anIntArray1348[i] == 1;
-	}
+        public boolean isMidiRequired(int i) {
+                return anIntArray1348[i] == 1;
+        }
 
 	public OnDemandFetcher() {
 		requested = new NodeList();
@@ -642,11 +642,11 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 
 	private int totalFiles;
 	private final NodeList requested;
-	private int anInt1332;
+        private int currentPriority;
 	public String statusString;
 	private int writeLoopCycle;
 	private long openSocketTime;
-	private int[] mapIndices3;
+        private int[] landArchiveIds;
 	private final CRC32 crc32;
 	private final byte[] ioBuffer;
 	public int onDemandCycle;
@@ -657,11 +657,11 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	private int expectedSize;
 	int[] anIntArray1348;
 	public int anInt1349;
-	private int[] mapIndices2;
+        private int[] mapArchiveIds;
 	private int filesLoaded;
 	private boolean running;
 	private OutputStream outputStream;
-	private int[] mapIndices4;
+        private int[] mapMembershipFlags;
 	private boolean waiting;
 	private final NodeList aClass19_1358;
 	private final byte[] gzipInputBuffer;
@@ -676,7 +676,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	private final NodeList aClass19_1368;
 	private OnDemandData current;
 	private final NodeList aClass19_1370;
-	private int[] mapIndices1;
+        private int[] regionIds;
 	private byte[] modelIndices;
 	private int loopCycle;
 }
