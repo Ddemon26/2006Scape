@@ -2189,7 +2189,7 @@ public final class ItemDef {
 			int j6 = sprite.trimHeight;
 			sprite.trimWidth = 32;
 			sprite.trimHeight = 32;
-			sprite.drawSprite(0, 0);
+                        sprite.drawTransparentSprite(0, 0);
 			sprite.trimWidth = l5;
 			sprite.trimHeight = j6;
 		}

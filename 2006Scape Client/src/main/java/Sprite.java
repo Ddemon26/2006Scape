@@ -10,12 +10,12 @@ import java.awt.image.PixelGrabber;
 
 public final class Sprite extends DrawingArea {
 
-	public Sprite(int i, int j) {
-		pixels = new int[i * j];
-		width = trimWidth = i;
-		height = trimHeight = j;
-		anInt1442 = anInt1443 = 0;
-	}
+        public Sprite(int i, int j) {
+                pixels = new int[i * j];
+                width = trimWidth = i;
+                height = trimHeight = j;
+                offsetX = offsetY = 0;
+        }
 
 	public Sprite(byte abyte0[], Component component) {
 		try {
@@ -29,8 +29,8 @@ public final class Sprite extends DrawingArea {
 			height = image.getHeight(component);
 			trimWidth = width;
 			trimHeight = height;
-			anInt1442 = 0;
-			anInt1443 = 0;
+                        offsetX = 0;
+                        offsetY = 0;
 			pixels = new int[width * height];
 			PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0, width, height, pixels, 0, width);
 			pixelgrabber.grabPixels();
@@ -60,8 +60,8 @@ public final class Sprite extends DrawingArea {
 			stream_1.currentOffset++;
 		}
 
-		anInt1442 = stream_1.readUnsignedByte();
-		anInt1443 = stream_1.readUnsignedByte();
+                offsetX = stream_1.readUnsignedByte();
+                offsetY = stream_1.readUnsignedByte();
 		width = stream_1.readUnsignedWord();
 		height = stream_1.readUnsignedWord();
 		int i1 = stream_1.readUnsignedByte();
@@ -85,106 +85,106 @@ public final class Sprite extends DrawingArea {
 		}
 	}
 
-	public void method343() {
-		DrawingArea.initDrawingArea(height, width, pixels);
-	}
+    public void initializeDrawingArea() {
+            DrawingArea.initDrawingArea(height, width, pixels);
+    }
 
-	public void method344(int i, int j, int k) {
-		for (int i1 = 0; i1 < pixels.length; i1++) {
-			int j1 = pixels[i1];
-			if (j1 != 0) {
-				int k1 = j1 >> 16 & 0xff;
-				k1 += i;
-				if (k1 < 1) {
-					k1 = 1;
-				} else if (k1 > 255) {
-					k1 = 255;
-				}
-				int l1 = j1 >> 8 & 0xff;
-				l1 += j;
-				if (l1 < 1) {
-					l1 = 1;
-				} else if (l1 > 255) {
-					l1 = 255;
-				}
-				int i2 = j1 & 0xff;
-				i2 += k;
-				if (i2 < 1) {
-					i2 = 1;
-				} else if (i2 > 255) {
-					i2 = 255;
-				}
+    public void adjustRgb(int redOffset, int greenOffset, int blueOffset) {
+        for (int i1 = 0; i1 < pixels.length; i1++) {
+                int j1 = pixels[i1];
+                if (j1 != 0) {
+                        int k1 = j1 >> 16 & 0xff;
+                        k1 += redOffset;
+                        if (k1 < 1) {
+                                k1 = 1;
+                        } else if (k1 > 255) {
+                                k1 = 255;
+                        }
+                        int l1 = j1 >> 8 & 0xff;
+                        l1 += greenOffset;
+                        if (l1 < 1) {
+                                l1 = 1;
+                        } else if (l1 > 255) {
+                                l1 = 255;
+                        }
+                        int i2 = j1 & 0xff;
+                        i2 += blueOffset;
+                        if (i2 < 1) {
+                                i2 = 1;
+                        } else if (i2 > 255) {
+                                i2 = 255;
+                        }
 				pixels[i1] = (k1 << 16) + (l1 << 8) + i2;
 			}
 		}
 
 	}
 
-	public void method345() {
-		/*int ai[] = new int[trimWidth * trimHeight];
-		for (int j = 0; j < height; j++) {
-			System.arraycopy(pixels, j * width, ai, j + anInt1443 * trimWidth + anInt1442, width);
-		}
+    public void crop() {
+                /*int ai[] = new int[trimWidth * trimHeight];
+                for (int j = 0; j < height; j++) {
+                        System.arraycopy(pixels, j * width, ai, j + offsetY * trimWidth + offsetX, width);
+                }
 
-		pixels = ai;
-		width = trimWidth;
-		height = trimHeight;
-		anInt1442 = 0;
-		anInt1443 = 0;*/
+                pixels = ai;
+                width = trimWidth;
+                height = trimHeight;
+                offsetX = 0;
+                offsetY = 0;*/
 		int ai[] = new int[trimWidth * trimHeight];
 		for (int j = 0; j < height; j++) {
-			for (int k = 0; k < width; k++)
-				ai[(j + anInt1443) * trimWidth + (k + anInt1442)] = pixels[j
-						* width + k];
+                        for (int k = 0; k < width; k++)
+                                ai[(j + offsetY) * trimWidth + (k + offsetX)] = pixels[j
+                                                * width + k];
 		}
 		pixels = ai;
 		width = trimWidth;
 		height = trimHeight;
-		anInt1442 = 0;
-		anInt1443 = 0;
-	}
+                offsetX = 0;
+                offsetY = 0;
+        }
 
-	public void method346(int i, int j) {
-		i += anInt1442;
-		j += anInt1443;
-		int l = i + j * DrawingArea.width;
+        public void drawSprite(int x, int y) {
+                x += offsetX;
+                y += offsetY;
+                int l = x + y * DrawingArea.width;
 		int i1 = 0;
 		int j1 = height;
 		int k1 = width;
 		int l1 = DrawingArea.width - k1;
 		int i2 = 0;
-		if (j < DrawingArea.topY) {
-			int j2 = DrawingArea.topY - j;
+                if (y < DrawingArea.topY) {
+                        int j2 = DrawingArea.topY - y;
 			j1 -= j2;
-			j = DrawingArea.topY;
+                        y = DrawingArea.topY;
 			i1 += j2 * k1;
 			l += j2 * DrawingArea.width;
 		}
-		if (j + j1 > DrawingArea.bottomY) {
-			j1 -= j + j1 - DrawingArea.bottomY;
+                if (y + j1 > DrawingArea.bottomY) {
+                        j1 -= y + j1 - DrawingArea.bottomY;
 		}
-		if (i < DrawingArea.topX) {
-			int k2 = DrawingArea.topX - i;
+                if (x < DrawingArea.topX) {
+                        int k2 = DrawingArea.topX - x;
 			k1 -= k2;
-			i = DrawingArea.topX;
+                        x = DrawingArea.topX;
 			i1 += k2;
 			l += k2;
 			i2 += k2;
 			l1 += k2;
 		}
-		if (i + k1 > DrawingArea.bottomX) {
-			int l2 = i + k1 - DrawingArea.bottomX;
+                if (x + k1 > DrawingArea.bottomX) {
+                        int l2 = x + k1 - DrawingArea.bottomX;
 			k1 -= l2;
 			i2 += l2;
 			l1 += l2;
 		}
 		if (k1 <= 0 || j1 <= 0) {
 		} else {
-			method347(l, k1, j1, i2, i1, l1, pixels, DrawingArea.pixels);
+                        copyToCanvas(l, k1, j1, i2, i1, l1, pixels, DrawingArea.pixels);
 		}
 	}
 
-	private void method347(int i, int j, int k, int l, int i1, int k1, int ai[], int ai1[]) {
+        private void copyToCanvas(int i, int j, int k, int l, int i1, int k1, int ai[], int ai1[]) {
 		int l1 = -(j >> 2);
 		j = -(j & 3);
 		for (int i2 = -k; i2 < 0; i2++) {
@@ -204,10 +204,10 @@ public final class Sprite extends DrawingArea {
 		}
 	}
 
-	public void drawSprite1(int i, int j) {
-		int k = 128;// was parameter
-		i += anInt1442;
-		j += anInt1443;
+        public void drawSprite1(int i, int j) {
+                int k = 128;// was parameter
+                i += offsetX;
+                j += offsetY;
 		int i1 = i + j * DrawingArea.width;
 		int j1 = 0;
 		int k1 = height;
@@ -240,14 +240,14 @@ public final class Sprite extends DrawingArea {
 			i2 += i3;
 		}
 		if (!(l1 <= 0 || k1 <= 0)) {
-			method351(j1, l1, DrawingArea.pixels, pixels, j2, k1, i2, k, i1);
+                        blendPixels(j1, l1, DrawingArea.pixels, pixels, j2, k1, i2, k, i1);
 		}
 	}
 
-	public void drawSprite(int i, int k) {
-		i += anInt1442;
-		k += anInt1443;
-		int l = i + k * DrawingArea.width;
+        public void drawTransparentSprite(int i, int k) {
+                i += offsetX;
+                k += offsetY;
+                int l = i + k * DrawingArea.width;
 		int i1 = 0;
 		int j1 = height;
 		int k1 = width;
@@ -278,12 +278,12 @@ public final class Sprite extends DrawingArea {
 			i2 += l2;
 			l1 += l2;
 		}
-		if (!(k1 <= 0 || j1 <= 0)) {
-			method349(DrawingArea.pixels, pixels, i1, l, k1, j1, l1, i2);
-		}
-	}
+                if (!(k1 <= 0 || j1 <= 0)) {
+                        drawTransparent(DrawingArea.pixels, pixels, i1, l, k1, j1, l1, i2);
+                }
+        }
 
-	private void method349(int ai[], int ai1[], int j, int k, int l, int i1, int j1, int k1) {
+        private void drawTransparent(int ai[], int ai1[], int j, int k, int l, int i1, int j1, int k1) {
 		int i;// was parameter
 		int l1 = -(l >> 2);
 		l = -(l & 3);
@@ -330,7 +330,7 @@ public final class Sprite extends DrawingArea {
 
 	}
 
-	private void method351(int i, int j, int ai[], int ai1[], int l, int i1, int j1, int k1, int l1) {
+        private void blendPixels(int i, int j, int ai[], int ai1[], int l, int i1, int j1, int k1, int l1) {
 		int k;// was parameter
 		int j2 = 256 - k1;
 		for (int k2 = -i1; k2 < 0; k2++) {
@@ -349,7 +349,7 @@ public final class Sprite extends DrawingArea {
 		}
 	}
 
-	public void method352(int i, int j, int ai[], int k, int ai1[], int i1, int j1, int k1, int l1, int i2) {
+	public void drawTransformed(int i, int j, int ai[], int k, int ai1[], int i1, int j1, int k1, int l1, int i2) {
 		try {
 			int j2 = -l1 / 2;
 			int k2 = -i / 2;
@@ -403,7 +403,7 @@ public final class Sprite extends DrawingArea {
 		}
 	}
 
-	public void method353(int i, double d, int l1) {
+	public void drawRotated(int i, double d, int l1) {
 		// all of the following were parameters
 		int j = 15;
 		int k = 20;
@@ -445,9 +445,9 @@ public final class Sprite extends DrawingArea {
 		}
 	}
 
-	public void method354(Background background, int i, int j) {
-		j += anInt1442;
-		i += anInt1443;
+        public void drawWithMask(Background background, int i, int j) {
+                j += offsetX;
+                i += offsetY;
 		int k = j + i * DrawingArea.width;
 		int l = 0;
 		int i1 = height;
@@ -480,11 +480,11 @@ public final class Sprite extends DrawingArea {
 			k1 += k2;
 		}
 		if (!(j1 <= 0 || i1 <= 0)) {
-                        method355(pixels, j1, background.pixels, i1, DrawingArea.pixels, 0, k1, k, l1, l);
+                        copyMasked(pixels, j1, background.pixels, i1, DrawingArea.pixels, 0, k1, k, l1, l);
 		}
 	}
 
-	private void method355(int ai[], int i, byte abyte0[], int j, int ai1[], int k, int l, int i1, int j1, int k1) {
+        private void copyMasked(int ai[], int i, byte abyte0[], int j, int ai1[], int k, int l, int i1, int j1, int k1) {
 		int l1 = -(i >> 2);
 		i = -(i & 3);
 		for (int j2 = -j; j2 < 0; j2++) {
@@ -533,8 +533,8 @@ public final class Sprite extends DrawingArea {
 	public int pixels[];
 	public int width;
 	public int height;
-	private int anInt1442;
-	private int anInt1443;
+        private int offsetX;
+        private int offsetY;
 	public int trimWidth;
 	public int trimHeight;
 }
