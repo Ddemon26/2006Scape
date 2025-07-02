@@ -36,10 +36,11 @@ public class Entity extends Animable {
 		y = smallY[0] * 128 + anInt1540 * 64;
 	}
 
-	public final void method446() {
-		smallXYIndex = 0;
-		anInt1542 = 0;
-	}
+       /** Clears the entity's movement queue. */
+       public final void clearMovement() {
+               smallXYIndex = 0;
+               anInt1542 = 0;
+       }
 
 	public final void updateHitData(int j, int k, int l) {
 		for (int i1 = 0; i1 < 4; i1++) {
@@ -110,7 +111,7 @@ public class Entity extends Animable {
 		smallX = new int[10];
 		smallY = new int[10];
 		interactingEntity = -1;
-		anInt1504 = 32;
+               turnSpeed = 32;
 		anInt1505 = -1;
 		height = 200;
 		anInt1511 = -1;
@@ -119,7 +120,7 @@ public class Entity extends Animable {
 		hitMarkTypes = new int[4];
 		hitsLoopCycle = new int[4];
 		anInt1517 = -1;
-		anInt1520 = -1;
+               spotAnimId = -1;
 		anim = -1;
 		loopCycleStatus = -1000;
 		textCycle = 100;
@@ -136,7 +137,7 @@ public class Entity extends Animable {
 	public final int[] smallY;
 	public int interactingEntity;
 	int anInt1503;
-	int anInt1504;
+       int turnSpeed;
 	int anInt1505;
 	public String textSpoken;
 	public int height;
@@ -150,11 +151,11 @@ public class Entity extends Animable {
 	int anInt1517;
 	int anInt1518;
 	int anInt1519;
-	int anInt1520;
-	int anInt1521;
-	int anInt1522;
-	int anInt1523;
-	int anInt1524;
+       int spotAnimId;
+       int spotAnimFrame;
+       int spotAnimFrameCycle;
+       int spotAnimStartTick;
+       int spotAnimHeight;
 	int smallXYIndex;
 	public int anim;
 	int anInt1527;
@@ -181,7 +182,7 @@ public class Entity extends Animable {
 	int anInt1549;
 	public int x;
 	public int y;
-	int anInt1552;
+       int currentHeading;
 	final boolean[] aBooleanArray1553;
 	int anInt1554;
 	int anInt1555;

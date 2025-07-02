@@ -1004,7 +1004,7 @@ public class Game extends RSApplet {
 			if (!npc.desc.aBoolean84) {
 				k += 0x80000000;
 			}
-			worldController.method285(plane, npc.anInt1552, method42(plane, npc.y, npc.x), k, npc.y, (npc.anInt1540 - 1) * 64 + 60, npc.x, npc, npc.aBoolean1541);
+                   worldController.method285(plane, npc.currentHeading, method42(plane, npc.y, npc.x), k, npc.y, (npc.anInt1540 - 1) * 64 + 60, npc.x, npc, npc.aBoolean1541);
 		}
 	}
 
@@ -2259,7 +2259,7 @@ public class Game extends RSApplet {
 				anIntArray894[anInt893++] = k;
 			}
 			npc.anInt1540 = npc.desc.aByte68;
-			npc.anInt1504 = npc.desc.anInt79;
+                       npc.turnSpeed = npc.desc.anInt79;
 			npc.anInt1554 = npc.desc.anInt67;
 			npc.anInt1555 = npc.desc.anInt58;
 			npc.anInt1556 = npc.desc.anInt83;
@@ -2314,7 +2314,7 @@ public class Game extends RSApplet {
 			if (player.aModel_1714 != null && loopCycle >= player.anInt1707 && loopCycle < player.anInt1708) {
 				player.aBoolean1699 = false;
 				player.anInt1709 = method42(plane, player.y, player.x);
-				worldController.method286(plane, player.y, player, player.anInt1552, player.anInt1722, player.x, player.anInt1709, player.anInt1719, player.anInt1721, i1, player.anInt1720);
+                               worldController.method286(plane, player.y, player, player.currentHeading, player.anInt1722, player.x, player.anInt1709, player.anInt1719, player.anInt1721, i1, player.anInt1720);
 				continue;
 			}
 			if ((player.x & 0x7f) == 64 && (player.y & 0x7f) == 64) {
@@ -2324,7 +2324,7 @@ public class Game extends RSApplet {
 				anIntArrayArray929[j1][k1] = anInt1265;
 			}
 			player.anInt1709 = method42(plane, player.y, player.x);
-			worldController.method285(plane, player.anInt1552, player.anInt1709, i1, player.y, 60, player.x, player, player.aBoolean1541);
+                       worldController.method285(plane, player.currentHeading, player.anInt1709, i1, player.y, 60, player.x, player, player.aBoolean1541);
 		}
 
 	}
@@ -6596,17 +6596,17 @@ public class Game extends RSApplet {
 				npc.maxHealth = stream.readUnsignedByte();
 			}
 			if ((l & 0x80) != 0) {
-				npc.anInt1520 = stream.readUnsignedWord();
+                               npc.spotAnimId = stream.readUnsignedWord();
 				int k1 = stream.readDWord();
-				npc.anInt1524 = k1 >> 16;
-				npc.anInt1523 = loopCycle + (k1 & 0xffff);
-				npc.anInt1521 = 0;
-				npc.anInt1522 = 0;
-				if (npc.anInt1523 > loopCycle) {
-					npc.anInt1521 = -1;
-				}
-				if (npc.anInt1520 == 0x00ffff) {
-					npc.anInt1520 = -1;
+                               npc.spotAnimHeight = k1 >> 16;
+                               npc.spotAnimStartTick = loopCycle + (k1 & 0xffff);
+                               npc.spotAnimFrame = 0;
+                               npc.spotAnimFrameCycle = 0;
+                               if (npc.spotAnimStartTick > loopCycle) {
+                                       npc.spotAnimFrame = -1;
+                               }
+                               if (npc.spotAnimId == 0x00ffff) {
+                                       npc.spotAnimId = -1;
 				}
 			}
 			if ((l & 0x20) != 0) {
@@ -6630,7 +6630,7 @@ public class Game extends RSApplet {
 			if ((l & 2) != 0) {
 				npc.desc = EntityDef.forID(stream.readShortLEAdd());
 				npc.anInt1540 = npc.desc.aByte68;
-				npc.anInt1504 = npc.desc.anInt79;
+                               npc.turnSpeed = npc.desc.anInt79;
 				npc.anInt1554 = npc.desc.anInt67;
 				npc.anInt1555 = npc.desc.anInt58;
 				npc.anInt1556 = npc.desc.anInt83;
@@ -7555,21 +7555,21 @@ public class Game extends RSApplet {
        public void updateEntityMovement(Entity entity) {
 		if (entity.x < 128 || entity.y < 128 || entity.x >= 13184 || entity.y >= 13184) {
 			entity.anim = -1;
-			entity.anInt1520 = -1;
+                       entity.spotAnimId = -1;
 			entity.anInt1547 = 0;
 			entity.anInt1548 = 0;
 			entity.x = entity.smallX[0] * 128 + entity.anInt1540 * 64;
 			entity.y = entity.smallY[0] * 128 + entity.anInt1540 * 64;
-			entity.method446();
+                       entity.clearMovement();
 		}
 		if (entity == myPlayer && (entity.x < 1536 || entity.y < 1536 || entity.x >= 11776 || entity.y >= 11776)) {
 			entity.anim = -1;
-			entity.anInt1520 = -1;
+                       entity.spotAnimId = -1;
 			entity.anInt1547 = 0;
 			entity.anInt1548 = 0;
 			entity.x = entity.smallX[0] * 128 + entity.anInt1540 * 64;
 			entity.y = entity.smallY[0] * 128 + entity.anInt1540 * 64;
-			entity.method446();
+                       entity.clearMovement();
 		}
                if (entity.anInt1547 > loopCycle) {
                         updateForcedMovement(entity);
@@ -7627,7 +7627,7 @@ public class Game extends RSApplet {
 		if (entity.anInt1549 == 3) {
 			entity.turnDirection = 512;
 		}
-		entity.anInt1552 = entity.turnDirection;
+               entity.currentHeading = entity.turnDirection;
 	}
 
         public void updateWalkingStep(Entity entity) {
@@ -7677,7 +7677,7 @@ public class Game extends RSApplet {
 		} else {
 			entity.turnDirection = 0;
 		}
-		int i1 = entity.turnDirection - entity.anInt1552 & 0x7ff;
+               int i1 = entity.turnDirection - entity.currentHeading & 0x7ff;
 		if (i1 > 1024) {
 			i1 -= 2048;
 		}
@@ -7694,9 +7694,9 @@ public class Game extends RSApplet {
 		}
 		entity.anInt1517 = j1;
 		int k1 = 4;
-		if (entity.anInt1552 != entity.turnDirection && entity.interactingEntity == -1 && entity.anInt1504 != 0) {
-			k1 = 2;
-		}
+               if (entity.currentHeading != entity.turnDirection && entity.interactingEntity == -1 && entity.turnSpeed != 0) {
+                       k1 = 2;
+               }
 		if (entity.smallXYIndex > 2) {
 			k1 = 6;
 		}
@@ -7744,9 +7744,9 @@ public class Game extends RSApplet {
 	}
 
        public void updateEntityFacing(Entity entity) {
-		if (entity.anInt1504 == 0) {
-			return;
-		}
+               if (entity.turnSpeed == 0) {
+                       return;
+               }
 		if (entity.interactingEntity != -1 && entity.interactingEntity < 32768) {
 			NPC npc = npcArray[entity.interactingEntity];
 			if (npc != null) {
@@ -7780,22 +7780,22 @@ public class Game extends RSApplet {
 			entity.anInt1538 = 0;
 			entity.anInt1539 = 0;
 		}
-		int l = entity.turnDirection - entity.anInt1552 & 0x7ff;
-		if (l != 0) {
-			if (l < entity.anInt1504 || l > 2048 - entity.anInt1504) {
-				entity.anInt1552 = entity.turnDirection;
-			} else if (l > 1024) {
-				entity.anInt1552 -= entity.anInt1504;
-			} else {
-				entity.anInt1552 += entity.anInt1504;
-			}
-			entity.anInt1552 &= 0x7ff;
-			if (entity.anInt1517 == entity.anInt1511 && entity.anInt1552 != entity.turnDirection) {
-				if (entity.anInt1512 != -1) {
-					entity.anInt1517 = entity.anInt1512;
-					return;
-				}
-				entity.anInt1517 = entity.anInt1554;
+               int l = entity.turnDirection - entity.currentHeading & 0x7ff;
+               if (l != 0) {
+                       if (l < entity.turnSpeed || l > 2048 - entity.turnSpeed) {
+                               entity.currentHeading = entity.turnDirection;
+                       } else if (l > 1024) {
+                               entity.currentHeading -= entity.turnSpeed;
+                       } else {
+                               entity.currentHeading += entity.turnSpeed;
+                       }
+                       entity.currentHeading &= 0x7ff;
+                       if (entity.anInt1517 == entity.anInt1511 && entity.currentHeading != entity.turnDirection) {
+                               if (entity.anInt1512 != -1) {
+                                       entity.anInt1517 = entity.anInt1512;
+                                       return;
+                               }
+                               entity.anInt1517 = entity.anInt1554;
 			}
 		}
 	}
@@ -7814,18 +7814,18 @@ public class Game extends RSApplet {
 				entity.anInt1518 = 0;
 			}
 		}
-		if (entity.anInt1520 != -1 && loopCycle >= entity.anInt1523) {
-			if (entity.anInt1521 < 0) {
-				entity.anInt1521 = 0;
-			}
-			Animation animation_1 = SpotAnim.cache[entity.anInt1520].aAnimation_407;
-			for (entity.anInt1522++; entity.anInt1521 < animation_1.anInt352 && entity.anInt1522 > animation_1.method258(entity.anInt1521); entity.anInt1521++) {
-				entity.anInt1522 -= animation_1.method258(entity.anInt1521);
-			}
+               if (entity.spotAnimId != -1 && loopCycle >= entity.spotAnimStartTick) {
+                       if (entity.spotAnimFrame < 0) {
+                               entity.spotAnimFrame = 0;
+                       }
+                       Animation animation_1 = SpotAnim.cache[entity.spotAnimId].aAnimation_407;
+                       for (entity.spotAnimFrameCycle++; entity.spotAnimFrame < animation_1.anInt352 && entity.spotAnimFrameCycle > animation_1.method258(entity.spotAnimFrame); entity.spotAnimFrame++) {
+                               entity.spotAnimFrameCycle -= animation_1.method258(entity.spotAnimFrame);
+                       }
 
-			if (entity.anInt1521 >= animation_1.anInt352 && (entity.anInt1521 < 0 || entity.anInt1521 >= animation_1.anInt352)) {
-				entity.anInt1520 = -1;
-			}
+                       if (entity.spotAnimFrame >= animation_1.anInt352 && (entity.spotAnimFrame < 0 || entity.spotAnimFrame >= animation_1.anInt352)) {
+                               entity.spotAnimId = -1;
+                       }
 		}
 		if (entity.anim != -1 && entity.anInt1529 <= 1) {
 			Animation animation_2 = Animation.anims[entity.anim];
@@ -8542,21 +8542,21 @@ public class Game extends RSApplet {
 			player.anInt1547 = stream.readShortLEAdd() + loopCycle;
 			player.anInt1548 = stream.readShortAdd() + loopCycle;
 			player.anInt1549 = stream.readUnsignedByteSub();
-			player.method446();
+                       player.clearMovement();
 		}
 		if ((i & 0x100) != 0) {
-			player.anInt1520 = stream.readShortLE();
-			int k = stream.readDWord();
-			player.anInt1524 = k >> 16;
-			player.anInt1523 = loopCycle + (k & 0xffff);
-			player.anInt1521 = 0;
-			player.anInt1522 = 0;
-			if (player.anInt1523 > loopCycle) {
-				player.anInt1521 = -1;
-			}
-			if (player.anInt1520 == 0x00ffff) {
-				player.anInt1520 = -1;
-			}
+                       player.spotAnimId = stream.readShortLE();
+                       int k = stream.readDWord();
+                       player.spotAnimHeight = k >> 16;
+                       player.spotAnimStartTick = loopCycle + (k & 0xffff);
+                       player.spotAnimFrame = 0;
+                       player.spotAnimFrameCycle = 0;
+                       if (player.spotAnimStartTick > loopCycle) {
+                               player.spotAnimFrame = -1;
+                       }
+                       if (player.spotAnimId == 0x00ffff) {
+                               player.spotAnimId = -1;
+                       }
 			//processSound(player.anInt1520, 0, player, null);
 		}
 		if ((i & 8) != 0) {

@@ -30,13 +30,13 @@ public final class NPC extends Entity {
 			return null;
 		}
 		super.height = model.modelHeight;
-		if (super.anInt1520 != -1 && super.anInt1521 != -1) {
-			SpotAnim spotAnim = SpotAnim.cache[super.anInt1520];
+               if (super.spotAnimId != -1 && super.spotAnimFrame != -1) {
+                       SpotAnim spotAnim = SpotAnim.cache[super.spotAnimId];
 			Model model_1 = spotAnim.getModel();
 			if (model_1 != null) {
-				int j = spotAnim.aAnimation_407.anIntArray353[super.anInt1521];
-                                Model model_2 = new Model(true, AnimFrame.isNullFrame(j), false, model_1);
-				model_2.translate(0, -super.anInt1524, 0);
+                               int j = spotAnim.aAnimation_407.anIntArray353[super.spotAnimFrame];
+                               Model model_2 = new Model(true, AnimFrame.isNullFrame(j), false, model_1);
+                               model_2.translate(0, -super.spotAnimHeight, 0);
 				model_2.buildVertexGroups();
 				model_2.applyFrame(j);
 				model_2.faceGroups = null;
