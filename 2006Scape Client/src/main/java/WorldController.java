@@ -151,7 +151,7 @@ final class WorldController {
                 groundArray[i][j][k].shapedTile = shapedTile;
         }
 
-	public void method280(int i, int j, int k, Animable class30_sub2_sub4, byte byte0, int i1, int j1) {
+       public void addTileDecoration(int i, int j, int k, Animable class30_sub2_sub4, byte byte0, int i1, int j1) {
 		if (class30_sub2_sub4 == null) {
 			return;
 		}
@@ -168,7 +168,7 @@ final class WorldController {
 		groundArray[i][j1][k].obj3 = class49;
 	}
 
-	public void method281(int i, int j, Animable class30_sub2_sub4, int k, Animable class30_sub2_sub4_1, Animable class30_sub2_sub4_2, int l, int i1) {
+       public void addItemPile(int i, int j, Animable class30_sub2_sub4, int k, Animable class30_sub2_sub4_1, Animable class30_sub2_sub4_2, int l, int i1) {
                 ItemPile itemPile = new ItemPile();
                 itemPile.topItem = class30_sub2_sub4_2;
                 itemPile.x = i * 128 + 64;
@@ -197,7 +197,7 @@ final class WorldController {
                 groundArray[l][i][i1].itemPile = itemPile;
 	}
 
-	public void method282(int i, Animable class30_sub2_sub4, int j, int k, byte byte0, int l, Animable class30_sub2_sub4_1, int i1, int j1, int k1) {
+       public void addBoundaryObject(int i, Animable class30_sub2_sub4, int j, int k, byte byte0, int l, Animable class30_sub2_sub4_1, int i1, int j1, int k1) {
 		if (class30_sub2_sub4 == null && class30_sub2_sub4_1 == null) {
 			return;
 		}
@@ -220,7 +220,7 @@ final class WorldController {
 		groundArray[k1][l][k].obj1 = object1;
 	}
 
-	public void method283(int i, int j, int k, int i1, int j1, int k1, Animable class30_sub2_sub4, int l1, byte byte0, int i2, int j2) {
+       public void addWallDecoration(int i, int j, int k, int i1, int j1, int k1, Animable class30_sub2_sub4, int l1, byte byte0, int i2, int j2) {
 		if (class30_sub2_sub4 == null) {
 			return;
 		}
@@ -242,7 +242,7 @@ final class WorldController {
                 groundArray[i1][l1][j].obj2 = decoration;
         }
 
-	public boolean method284(int i, byte byte0, int j, int k, Animable class30_sub2_sub4, int l, int i1, int j1, int k1, int l1) {
+       public boolean addGameObject(int i, byte byte0, int j, int k, Animable class30_sub2_sub4, int l, int i1, int j1, int k1, int l1) {
 		if (class30_sub2_sub4 == null) {
 			return true;
 		} else {
@@ -252,7 +252,7 @@ final class WorldController {
 		}
 	}
 
-	public boolean method285(int i, int j, int k, int l, int i1, int j1, int k1, Animable class30_sub2_sub4, boolean flag) {
+       public boolean addAnimableObject(int i, int j, int k, int l, int i1, int j1, int k1, Animable class30_sub2_sub4, boolean flag) {
 		if (class30_sub2_sub4 == null) {
 			return true;
 		}
@@ -281,7 +281,7 @@ final class WorldController {
 		return method287(i, l1, i2, j2 - l1 + 1, k2 - i2 + 1, k1, i1, k, class30_sub2_sub4, j, true, l, (byte) 0);
 	}
 
-	public boolean method286(int j, int k, Animable class30_sub2_sub4, int l, int i1, int j1, int k1, int l1, int i2, int j2, int k2) {
+       public boolean addAnimatingObject(int j, int k, Animable class30_sub2_sub4, int l, int i1, int j1, int k1, int l1, int i2, int j2, int k2) {
 		return class30_sub2_sub4 == null || method287(j, l1, k2, i2 - l1 + 1, i1 - k2 + 1, j1, k, k1, class30_sub2_sub4, l, true, j2, (byte) 0);
 	}
 
@@ -875,11 +875,11 @@ final class WorldController {
 	}
 
 	public void method312(int i, int j) {
-		aBoolean467 = true;
-		anInt468 = j;
-		anInt469 = i;
-		anInt470 = -1;
-		anInt471 = -1;
+                pendingClick = true;
+                pendingClickX = j;
+                pendingClickY = i;
+                clickedTileX = -1;
+                clickedTileY = -1;
 	}
 
 	public void method313(int i, int j, int k, int l, int i1, int j1) {
@@ -984,7 +984,7 @@ final class WorldController {
 							}
 						}
 						if (anInt446 == 0) {
-							aBoolean467 = false;
+                                                    pendingClick = false;
 							return;
 						}
 					}
@@ -1032,7 +1032,7 @@ final class WorldController {
 							}
 						}
 						if (anInt446 == 0) {
-							aBoolean467 = false;
+                                                   pendingClick = false;
 							return;
 						}
 					}
@@ -1042,7 +1042,7 @@ final class WorldController {
 
 		}
 
-		aBoolean467 = false;
+           pendingClick = false;
 	}
 
 	private void method314(Ground class30_sub3, boolean flag) {
@@ -1554,10 +1554,10 @@ final class WorldController {
 		Texture.alpha = 0;
 		if ((i6 - k6) * (l5 - l6) - (j6 - l6) * (k5 - k6) > 0) {
 			Texture.clip = i6 < 0 || k6 < 0 || k5 < 0 || i6 > DrawingArea.centerX || k6 > DrawingArea.centerX || k5 > DrawingArea.centerX;
-			if (aBoolean467 && method318(anInt468, anInt469, j6, l6, l5, i6, k6, k5)) {
-				anInt470 = j1;
-				anInt471 = k1;
-			}
+                        if (pendingClick && method318(pendingClickX, pendingClickY, j6, l6, l5, i6, k6, k5)) {
+                                clickedTileX = j1;
+                                clickedTileY = k1;
+                        }
                         if (class43.textureId == -1) {
                                 if (class43.northEastColor != 0xbc614e) {
                                         Texture.drawGouraudTriangle(j6, l6, l5, i6, k6, k5, class43.northEastColor, class43.northWestColor, class43.southEastColor);
@@ -1575,10 +1575,10 @@ final class WorldController {
 		}
 		if ((i5 - k5) * (l6 - l5) - (j5 - l5) * (k6 - k5) > 0) {
 			Texture.clip = i5 < 0 || k5 < 0 || k6 < 0 || i5 > DrawingArea.centerX || k5 > DrawingArea.centerX || k6 > DrawingArea.centerX;
-			if (aBoolean467 && method318(anInt468, anInt469, j5, l5, l6, i5, k5, k6)) {
-				anInt470 = j1;
-				anInt471 = k1;
-			}
+                        if (pendingClick && method318(pendingClickX, pendingClickY, j5, l5, l6, i5, k5, k6)) {
+                                clickedTileX = j1;
+                                clickedTileY = k1;
+                        }
                         if (class43.textureId == -1) {
                                 if (class43.southWestColor != 0xbc614e) {
                                         Texture.drawGouraudTriangle(j5, l5, l6, i5, k5, k6, class43.southWestColor, class43.southEastColor, class43.northWestColor);
@@ -1632,9 +1632,9 @@ final class WorldController {
                         int j5 = ShapedTile.projectedY[l3];
 			if ((i4 - j4) * (j5 - i5) - (l4 - i5) * (k4 - j4) > 0) {
 				Texture.clip = i4 < 0 || j4 < 0 || k4 < 0 || i4 > DrawingArea.centerX || j4 > DrawingArea.centerX || k4 > DrawingArea.centerX;
-				if (aBoolean467 && method318(anInt468, anInt469, l4, i5, j5, i4, j4, k4)) {
-					anInt470 = i;
-					anInt471 = i1;
+                           if (pendingClick && method318(pendingClickX, pendingClickY, l4, i5, j5, i4, j4, k4)) {
+                                   clickedTileX = i;
+                                   clickedTileY = i1;
 				}
                                 if (shapedTile.faceTexture == null || shapedTile.faceTexture[j2] == -1) {
                                         if (shapedTile.faceColorA[j2] != 0xbc614e) {
@@ -2080,11 +2080,11 @@ final class WorldController {
 	private static final int[] anIntArray464 = {-53, -53, 53, 53};
 	private static final int[] anIntArray465 = {-45, 45, 45, -45};
 	private static final int[] anIntArray466 = {45, 45, -45, -45};
-	private static boolean aBoolean467;
-	private static int anInt468;
-	private static int anInt469;
-	public static int anInt470 = -1;
-	public static int anInt471 = -1;
+        private static boolean pendingClick;
+        private static int pendingClickX;
+        private static int pendingClickY;
+        public static int clickedTileX = -1;
+        public static int clickedTileY = -1;
 	private static final int anInt472;
 	private static int[] anIntArray473;
 	private static CullingCluster[][] aCullingClusters;

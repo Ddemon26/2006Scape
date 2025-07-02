@@ -980,7 +980,7 @@ public class Game extends RSApplet {
 		}
 
 		int i1 = i + (j << 7) + 0x60000000;
-		worldController.method281(i, i1, ((Animable) obj1), method42(plane, j * 128 + 64, i * 128 + 64), ((Animable) obj2), ((Animable) obj), plane, j);
+                worldController.addItemPile(i, i1, ((Animable) obj1), method42(plane, j * 128 + 64, i * 128 + 64), ((Animable) obj2), ((Animable) obj), plane, j);
 	}
 
        public void addNpcsToScene(boolean flag) {
@@ -1004,7 +1004,7 @@ public class Game extends RSApplet {
 			if (!npc.desc.aBoolean84) {
 				k += 0x80000000;
 			}
-                   worldController.method285(plane, npc.currentHeading, method42(plane, npc.y, npc.x), k, npc.y, (npc.anInt1540 - 1) * 64 + 60, npc.x, npc, npc.aBoolean1541);
+                   worldController.addAnimableObject(plane, npc.currentHeading, method42(plane, npc.y, npc.x), k, npc.y, (npc.anInt1540 - 1) * 64 + 60, npc.x, npc, npc.aBoolean1541);
 		}
 	}
 
@@ -2314,7 +2314,7 @@ public class Game extends RSApplet {
 			if (player.aModel_1714 != null && loopCycle >= player.anInt1707 && loopCycle < player.anInt1708) {
 				player.aBoolean1699 = false;
 				player.anInt1709 = method42(plane, player.y, player.x);
-                               worldController.method286(plane, player.y, player, player.currentHeading, player.anInt1722, player.x, player.anInt1709, player.anInt1719, player.anInt1721, i1, player.anInt1720);
+                               worldController.addAnimatingObject(plane, player.y, player, player.currentHeading, player.anInt1722, player.x, player.anInt1709, player.anInt1719, player.anInt1721, i1, player.anInt1720);
 				continue;
 			}
 			if ((player.x & 0x7f) == 64 && (player.y & 0x7f) == 64) {
@@ -2324,7 +2324,7 @@ public class Game extends RSApplet {
 				anIntArrayArray929[j1][k1] = anInt1265;
 			}
 			player.anInt1709 = method42(plane, player.y, player.x);
-                       worldController.method285(plane, player.currentHeading, player.anInt1709, i1, player.y, 60, player.x, player, player.aBoolean1541);
+                      worldController.addAnimableObject(plane, player.currentHeading, player.anInt1709, i1, player.y, 60, player.x, player, player.aBoolean1541);
 		}
 
 	}
@@ -2758,7 +2758,7 @@ public class Game extends RSApplet {
                                         }
                                 }
                                 class30_sub2_sub4_sub4.update(anInt945);
-                                worldController.method285(plane, class30_sub2_sub4_sub4.yaw, (int) class30_sub2_sub4_sub4.currentHeight, -1, (int) class30_sub2_sub4_sub4.currentY, 60, (int) class30_sub2_sub4_sub4.currentX, class30_sub2_sub4_sub4, false);
+                               worldController.addAnimableObject(plane, class30_sub2_sub4_sub4.yaw, (int) class30_sub2_sub4_sub4.currentHeight, -1, (int) class30_sub2_sub4_sub4.currentY, 60, (int) class30_sub2_sub4_sub4.currentX, class30_sub2_sub4_sub4, false);
                         }
                 }
 
@@ -3202,11 +3202,12 @@ public class Game extends RSApplet {
 				super.clickMode3 = 0;
 			}
 		}
-		if (WorldController.anInt470 != -1) {
-			int k = WorldController.anInt470;
-			int k1 = WorldController.anInt471;
+                if (WorldController.clickedTileX != -1) {
+                        int k = WorldController.clickedTileX;
+                        int k1 = WorldController.clickedTileY;
 			boolean flag = doWalkTo(0, 0, 0, 0, myPlayer.smallY[0], 0, 0, k1, myPlayer.smallX[0], true, k);
-			WorldController.anInt470 = -1;
+                        WorldController.clickedTileX = -1;
+                        WorldController.clickedTileY = -1;
 			if (flag) {
 				crossX = super.saveClickX;
 				crossY = super.saveClickY;
@@ -8180,7 +8181,7 @@ public class Game extends RSApplet {
                                 if (graphicsObject.finished) {
                                         graphicsObject.unlink();
                                 } else {
-                                        worldController.method285(graphicsObject.plane, 0, graphicsObject.height, -1, graphicsObject.y, 60, graphicsObject.x, graphicsObject, false);
+                                       worldController.addAnimableObject(graphicsObject.plane, 0, graphicsObject.height, -1, graphicsObject.y, 60, graphicsObject.x, graphicsObject, false);
                                 }
                         }
                 }
