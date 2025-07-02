@@ -752,10 +752,10 @@ final class WorldController {
                 if (shapedTile == null) {
                         return;
                 }
-                int l1 = shapedTile.anInt684;
-                int i2 = shapedTile.anInt685;
-                int j2 = shapedTile.anInt686;
-                int k2 = shapedTile.anInt687;
+                int l1 = shapedTile.shape;
+                int i2 = shapedTile.rotation;
+                int j2 = shapedTile.baseColor;
+                int k2 = shapedTile.shadeColor;
 		int ai1[] = anIntArrayArray489[l1];
 		int ai2[] = anIntArrayArray490[i2];
 		int l2 = 0;
@@ -1595,11 +1595,11 @@ final class WorldController {
 	}
 
         private void method316(int i, int j, int k, ShapedTile shapedTile, int l, int i1, int j1) {
-                int k1 = shapedTile.anIntArray673.length;
+                int k1 = shapedTile.vertexX.length;
                 for (int l1 = 0; l1 < k1; l1++) {
-                        int i2 = shapedTile.anIntArray673[l1] - anInt455;
-                        int k2 = shapedTile.anIntArray674[l1] - anInt456;
-                        int i3 = shapedTile.anIntArray675[l1] - anInt457;
+                        int i2 = shapedTile.vertexX[l1] - anInt455;
+                        int k2 = shapedTile.vertexZ[l1] - anInt456;
+                        int i3 = shapedTile.vertexY[l1] - anInt457;
 			int k3 = i3 * k + i2 * j1 >> 16;
 			i3 = i3 * j1 - i2 * k >> 16;
 			i2 = k3;
@@ -1609,46 +1609,46 @@ final class WorldController {
 			if (i3 < 50) {
 				return;
 			}
-                        if (shapedTile.anIntArray682 != null) {
-                                ShapedTile.anIntArray690[l1] = i2;
-                                ShapedTile.anIntArray691[l1] = k2;
-                                ShapedTile.anIntArray692[l1] = i3;
+                        if (shapedTile.faceTexture != null) {
+                                ShapedTile.cameraVertexX[l1] = i2;
+                                ShapedTile.cameraVertexY[l1] = k2;
+                                ShapedTile.cameraVertexZ[l1] = i3;
                         }
-                        ShapedTile.anIntArray688[l1] = Texture.textureInt1 + (i2 << 9) / i3;
-                        ShapedTile.anIntArray689[l1] = Texture.textureInt2 + (k2 << 9) / i3;
+                        ShapedTile.projectedX[l1] = Texture.textureInt1 + (i2 << 9) / i3;
+                        ShapedTile.projectedY[l1] = Texture.textureInt2 + (k2 << 9) / i3;
                 }
 
 		Texture.alpha = 0;
-                k1 = shapedTile.anIntArray679.length;
+                k1 = shapedTile.faceVertexA.length;
                 for (int j2 = 0; j2 < k1; j2++) {
-                        int l2 = shapedTile.anIntArray679[j2];
-                        int j3 = shapedTile.anIntArray680[j2];
-                        int l3 = shapedTile.anIntArray681[j2];
-                        int i4 = ShapedTile.anIntArray688[l2];
-                        int j4 = ShapedTile.anIntArray688[j3];
-                        int k4 = ShapedTile.anIntArray688[l3];
-                        int l4 = ShapedTile.anIntArray689[l2];
-                        int i5 = ShapedTile.anIntArray689[j3];
-                        int j5 = ShapedTile.anIntArray689[l3];
+                        int l2 = shapedTile.faceVertexA[j2];
+                        int j3 = shapedTile.faceVertexB[j2];
+                        int l3 = shapedTile.faceVertexC[j2];
+                        int i4 = ShapedTile.projectedX[l2];
+                        int j4 = ShapedTile.projectedX[j3];
+                        int k4 = ShapedTile.projectedX[l3];
+                        int l4 = ShapedTile.projectedY[l2];
+                        int i5 = ShapedTile.projectedY[j3];
+                        int j5 = ShapedTile.projectedY[l3];
 			if ((i4 - j4) * (j5 - i5) - (l4 - i5) * (k4 - j4) > 0) {
 				Texture.clip = i4 < 0 || j4 < 0 || k4 < 0 || i4 > DrawingArea.centerX || j4 > DrawingArea.centerX || k4 > DrawingArea.centerX;
 				if (aBoolean467 && method318(anInt468, anInt469, l4, i5, j5, i4, j4, k4)) {
 					anInt470 = i;
 					anInt471 = i1;
 				}
-                                if (shapedTile.anIntArray682 == null || shapedTile.anIntArray682[j2] == -1) {
-                                        if (shapedTile.anIntArray676[j2] != 0xbc614e) {
-                                                Texture.drawGouraudTriangle(l4, i5, j5, i4, j4, k4, shapedTile.anIntArray676[j2], shapedTile.anIntArray677[j2], shapedTile.anIntArray678[j2]);
+                                if (shapedTile.faceTexture == null || shapedTile.faceTexture[j2] == -1) {
+                                        if (shapedTile.faceColorA[j2] != 0xbc614e) {
+                                                Texture.drawGouraudTriangle(l4, i5, j5, i4, j4, k4, shapedTile.faceColorA[j2], shapedTile.faceColorB[j2], shapedTile.faceColorC[j2]);
                                         }
                                 } else if (!lowMem) {
-                                        if (shapedTile.aBoolean683) {
-                                                Texture.drawTexturedTriangle(l4, i5, j5, i4, j4, k4, shapedTile.anIntArray676[j2], shapedTile.anIntArray677[j2], shapedTile.anIntArray678[j2], ShapedTile.anIntArray690[0], ShapedTile.anIntArray690[1], ShapedTile.anIntArray690[3], ShapedTile.anIntArray691[0], ShapedTile.anIntArray691[1], ShapedTile.anIntArray691[3], ShapedTile.anIntArray692[0], ShapedTile.anIntArray692[1], ShapedTile.anIntArray692[3], shapedTile.anIntArray682[j2]);
+                                        if (shapedTile.flatShading) {
+                                                Texture.drawTexturedTriangle(l4, i5, j5, i4, j4, k4, shapedTile.faceColorA[j2], shapedTile.faceColorB[j2], shapedTile.faceColorC[j2], ShapedTile.cameraVertexX[0], ShapedTile.cameraVertexX[1], ShapedTile.cameraVertexX[3], ShapedTile.cameraVertexY[0], ShapedTile.cameraVertexY[1], ShapedTile.cameraVertexY[3], ShapedTile.cameraVertexZ[0], ShapedTile.cameraVertexZ[1], ShapedTile.cameraVertexZ[3], shapedTile.faceTexture[j2]);
                                         } else {
-                                                Texture.drawTexturedTriangle(l4, i5, j5, i4, j4, k4, shapedTile.anIntArray676[j2], shapedTile.anIntArray677[j2], shapedTile.anIntArray678[j2], ShapedTile.anIntArray690[l2], ShapedTile.anIntArray690[j3], ShapedTile.anIntArray690[l3], ShapedTile.anIntArray691[l2], ShapedTile.anIntArray691[j3], ShapedTile.anIntArray691[l3], ShapedTile.anIntArray692[l2], ShapedTile.anIntArray692[j3], ShapedTile.anIntArray692[l3], shapedTile.anIntArray682[j2]);
+                                                Texture.drawTexturedTriangle(l4, i5, j5, i4, j4, k4, shapedTile.faceColorA[j2], shapedTile.faceColorB[j2], shapedTile.faceColorC[j2], ShapedTile.cameraVertexX[l2], ShapedTile.cameraVertexX[j3], ShapedTile.cameraVertexX[l3], ShapedTile.cameraVertexY[l2], ShapedTile.cameraVertexY[j3], ShapedTile.cameraVertexY[l3], ShapedTile.cameraVertexZ[l2], ShapedTile.cameraVertexZ[j3], ShapedTile.cameraVertexZ[l3], shapedTile.faceTexture[j2]);
                                         }
                                 } else {
-                                        int k5 = anIntArray485[shapedTile.anIntArray682[j2]];
-                                        Texture.drawGouraudTriangle(l4, i5, j5, i4, j4, k4, method317(k5, shapedTile.anIntArray676[j2]), method317(k5, shapedTile.anIntArray677[j2]), method317(k5, shapedTile.anIntArray678[j2]));
+                                        int k5 = anIntArray485[shapedTile.faceTexture[j2]];
+                                        Texture.drawGouraudTriangle(l4, i5, j5, i4, j4, k4, method317(k5, shapedTile.faceColorA[j2]), method317(k5, shapedTile.faceColorB[j2]), method317(k5, shapedTile.faceColorC[j2]));
                                 }
                         }
                 }

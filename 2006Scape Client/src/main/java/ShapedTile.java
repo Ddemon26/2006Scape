@@ -5,20 +5,20 @@
 final class ShapedTile {
 
         public ShapedTile(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2, int k2, int l2, int i3, int j3, int k3, int l3, int i4, int k4, int l4) {
-		aBoolean683 = !(i3 != l2 || i3 != l || i3 != k2);
-		anInt684 = j3;
-		anInt685 = k1;
-		anInt686 = i2;
-		anInt687 = l4;
+		flatShading = !(i3 != l2 || i3 != l || i3 != k2);
+		shape = j3;
+		rotation = k1;
+		baseColor = i2;
+		shadeColor = l4;
 		char c = '\200';
 		int i5 = c / 2;
 		int j5 = c / 4;
 		int k5 = c * 3 / 4;
 		int ai[] = anIntArrayArray696[j3];
 		int l5 = ai.length;
-		anIntArray673 = new int[l5];
-		anIntArray674 = new int[l5];
-		anIntArray675 = new int[l5];
+		vertexX = new int[l5];
+		vertexZ = new int[l5];
+		vertexY = new int[l5];
 		int ai1[] = new int[l5];
 		int ai2[] = new int[l5];
 		int i6 = k4 * c;
@@ -136,23 +136,23 @@ final class ShapedTile {
 				k8 = k;
 				j9 = k3;
 			}
-			anIntArray673[k6] = i7;
-			anIntArray674[k6] = i8;
-			anIntArray675[k6] = k7;
+			vertexX[k6] = i7;
+			vertexZ[k6] = i8;
+			vertexY[k6] = k7;
 			ai1[k6] = k8;
 			ai2[k6] = j9;
 		}
 
 		int ai3[] = anIntArrayArray697[j3];
 		int j7 = ai3.length / 4;
-		anIntArray679 = new int[j7];
-		anIntArray680 = new int[j7];
-		anIntArray681 = new int[j7];
-		anIntArray676 = new int[j7];
-		anIntArray677 = new int[j7];
-		anIntArray678 = new int[j7];
+		faceVertexA = new int[j7];
+		faceVertexB = new int[j7];
+		faceVertexC = new int[j7];
+		faceColorA = new int[j7];
+		faceColorB = new int[j7];
+		faceColorC = new int[j7];
 		if (i1 != -1) {
-			anIntArray682 = new int[j7];
+			faceTexture = new int[j7];
 		}
 		int l7 = 0;
 		for (int j8 = 0; j8 < j7; j8++) {
@@ -170,22 +170,22 @@ final class ShapedTile {
 			if (k10 < 4) {
 				k10 = k10 - k1 & 3;
 			}
-			anIntArray679[j8] = k9;
-			anIntArray680[j8] = i10;
-			anIntArray681[j8] = k10;
+			faceVertexA[j8] = k9;
+			faceVertexB[j8] = i10;
+			faceVertexC[j8] = k10;
 			if (l8 == 0) {
-				anIntArray676[j8] = ai1[k9];
-				anIntArray677[j8] = ai1[i10];
-				anIntArray678[j8] = ai1[k10];
-				if (anIntArray682 != null) {
-					anIntArray682[j8] = -1;
+				faceColorA[j8] = ai1[k9];
+				faceColorB[j8] = ai1[i10];
+				faceColorC[j8] = ai1[k10];
+				if (faceTexture != null) {
+					faceTexture[j8] = -1;
 				}
 			} else {
-				anIntArray676[j8] = ai2[k9];
-				anIntArray677[j8] = ai2[i10];
-				anIntArray678[j8] = ai2[k10];
-				if (anIntArray682 != null) {
-					anIntArray682[j8] = i1;
+				faceColorA[j8] = ai2[k9];
+				faceColorB[j8] = ai2[i10];
+				faceColorC[j8] = ai2[k10];
+				if (faceTexture != null) {
+					faceTexture[j8] = i1;
 				}
 			}
 		}
@@ -214,26 +214,26 @@ final class ShapedTile {
 		l9 /= 14;
 	}
 
-	final int[] anIntArray673;
-	final int[] anIntArray674;
-	final int[] anIntArray675;
-	final int[] anIntArray676;
-	final int[] anIntArray677;
-	final int[] anIntArray678;
-	final int[] anIntArray679;
-	final int[] anIntArray680;
-	final int[] anIntArray681;
-	int anIntArray682[];
-	final boolean aBoolean683;
-	final int anInt684;
-	final int anInt685;
-	final int anInt686;
-	final int anInt687;
-	static final int[] anIntArray688 = new int[6];
-	static final int[] anIntArray689 = new int[6];
-	static final int[] anIntArray690 = new int[6];
-	static final int[] anIntArray691 = new int[6];
-	static final int[] anIntArray692 = new int[6];
+        final int[] vertexX;
+        final int[] vertexZ;
+        final int[] vertexY;
+        final int[] faceColorA;
+        final int[] faceColorB;
+        final int[] faceColorC;
+        final int[] faceVertexA;
+        final int[] faceVertexB;
+        final int[] faceVertexC;
+        int faceTexture[];
+        final boolean flatShading;
+        final int shape;
+        final int rotation;
+        final int baseColor;
+        final int shadeColor;
+        static final int[] projectedX = new int[6];
+        static final int[] projectedY = new int[6];
+        static final int[] cameraVertexX = new int[6];
+        static final int[] cameraVertexY = new int[6];
+        static final int[] cameraVertexZ = new int[6];
 	static final int[] anIntArray693 = {1, 0};
 	static final int[] anIntArray694 = {2, 1};
 	static final int[] anIntArray695 = {3, 3};
