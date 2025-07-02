@@ -8,7 +8,7 @@ final class ObjectManager {
 		lowestPlane = 99;
 		anInt146 = 104;
 		anInt147 = 104;
-		anIntArrayArrayArray129 = ai;
+		tileHeights = ai;
 		aByteArrayArrayArray149 = abyte0;
 		aByteArrayArrayArray142 = new byte[4][anInt146][anInt147];
 		aByteArrayArrayArray130 = new byte[4][anInt146][anInt147];
@@ -24,14 +24,14 @@ final class ObjectManager {
 		tileCount = new int[anInt147];
 	}
 
-	private static int method170(int i, int j) {
+	private static int generateNoiseValue(int i, int j) {
 		int k = i + j * 57;
 		k = k << 13 ^ k;
 		int l = k * (k * k * 15731 + 0xc0ae5) + 0x5208dd0d & 0x7fffffff;
 		return l >> 19 & 0xff;
 	}
 
-	public final void method171(CollisionMap aclass11[], WorldController worldController) {
+	public final void buildLandscape(CollisionMap aclass11[], WorldController worldController) {
 		for (int j = 0; j < 4; j++) {
 			for (int k = 0; k < 104; k++) {
 				for (int i1 = 0; i1 < 104; i1++) {
@@ -49,19 +49,19 @@ final class ObjectManager {
 			}
 
 		}
-		anInt123 += (int) (Math.random() * 5D) - 2;
-		if (anInt123 < -8) {
-			anInt123 = -8;
+		noiseOffsetX += (int) (Math.random() * 5D) - 2;
+		if (noiseOffsetX < -8) {
+			noiseOffsetX = -8;
 		}
-		if (anInt123 > 8) {
-			anInt123 = 8;
+		if (noiseOffsetX > 8) {
+			noiseOffsetX = 8;
 		}
-		anInt133 += (int) (Math.random() * 5D) - 2;
-		if (anInt133 < -16) {
-			anInt133 = -16;
+		noiseOffsetY += (int) (Math.random() * 5D) - 2;
+		if (noiseOffsetY < -16) {
+			noiseOffsetY = -16;
 		}
-		if (anInt133 > 16) {
-			anInt133 = 16;
+		if (noiseOffsetY > 16) {
+			noiseOffsetY = 16;
 		}
 		for (int l = 0; l < 4; l++) {
 			byte abyte0[][] = aByteArrayArrayArray134[l];
@@ -74,8 +74,8 @@ final class ObjectManager {
 			int l3 = c * j3 >> 8;
 			for (int j4 = 1; j4 < anInt147 - 1; j4++) {
 				for (int j5 = 1; j5 < anInt146 - 1; j5++) {
-					int k6 = anIntArrayArrayArray129[l][j5 + 1][j4] - anIntArrayArrayArray129[l][j5 - 1][j4];
-					int l7 = anIntArrayArrayArray129[l][j5][j4 + 1] - anIntArrayArrayArray129[l][j5][j4 - 1];
+					int k6 = tileHeights[l][j5 + 1][j4] - tileHeights[l][j5 - 1][j4];
+					int l7 = tileHeights[l][j5][j4 + 1] - tileHeights[l][j5][j4 - 1];
 					int j9 = (int) Math.sqrt(k6 * k6 + 0x10000 + l7 * l7);
 					int k12 = (k6 << 8) / j9;
 					int l13 = 0x10000 / j9;
@@ -153,10 +153,10 @@ final class ObjectManager {
 							int l18 = aByteArrayArrayArray142[l][l6][k17] & 0xff;
 							int i19 = aByteArrayArrayArray130[l][l6][k17] & 0xff;
 							if (l18 > 0 || i19 > 0) {
-								int j19 = anIntArrayArrayArray129[l][l6][k17];
-								int k19 = anIntArrayArrayArray129[l][l6 + 1][k17];
-								int l19 = anIntArrayArrayArray129[l][l6 + 1][k17 + 1];
-								int i20 = anIntArrayArrayArray129[l][l6][k17 + 1];
+								int j19 = tileHeights[l][l6][k17];
+								int k19 = tileHeights[l][l6 + 1][k17];
+								int l19 = tileHeights[l][l6 + 1][k17 + 1];
+								int i20 = tileHeights[l][l6][k17 + 1];
 								int j20 = anIntArrayArray139[l6][k17];
 								int k20 = anIntArrayArray139[l6 + 1][k17];
 								int l20 = anIntArrayArray139[l6 + 1][k17 + 1];
@@ -168,8 +168,8 @@ final class ObjectManager {
 									int j22 = j13 / k16;
 									int l22 = j14 / k16;
 									j21 = method177(l21, j22, l22);
-									l21 = l21 + anInt123 & 0xff;
-									l22 += anInt133;
+									l21 = l21 + noiseOffsetX & 0xff;
+									l22 += noiseOffsetY;
 									if (l22 < 0) {
 										l22 = 0;
 									} else if (l22 > 255) {
@@ -292,8 +292,8 @@ final class ObjectManager {
 							int l10 = (k8 + 1 - i7) * (l5 - k4 + 1);
 							if (l10 >= 8) {
 								char c1 = '\360';
-								int k14 = anIntArrayArrayArray129[k8][i4][k4] - c1;
-								int l15 = anIntArrayArrayArray129[i7][i4][k4];
+								int k14 = tileHeights[k8][i4][k4] - c1;
+								int l15 = tileHeights[i7][i4][k4];
                                                             WorldController.addCullingCluster(l2, i4 * 128, l15, i4 * 128, l5 * 128 + 128, k14, k4 * 128, 1);
 								for (int l16 = i7; l16 <= k8; l16++) {
 									for (int l17 = k4; l17 <= l5; l17++) {
@@ -336,8 +336,8 @@ final class ObjectManager {
 							int k11 = (l8 + 1 - j7) * (i6 - l4 + 1);
 							if (k11 >= 8) {
 								char c2 = '\360';
-								int l14 = anIntArrayArrayArray129[l8][l4][k3] - c2;
-								int i16 = anIntArrayArrayArray129[j7][l4][k3];
+								int l14 = tileHeights[l8][l4][k3] - c2;
+								int i16 = tileHeights[j7][l4][k3];
                                                             WorldController.addCullingCluster(l2, l4 * 128, i16, i6 * 128 + 128, k3 * 128, l14, k3 * 128, 2);
 								for (int i17 = j7; i17 <= l8; i17++) {
 									for (int i18 = l4; i18 <= i6; i18++) {
@@ -378,7 +378,7 @@ final class ObjectManager {
 							}
 
 							if ((j6 - i5 + 1) * (i9 - k7 + 1) >= 4) {
-								int j12 = anIntArrayArrayArray129[i3][i5][k7];
+								int j12 = tileHeights[i3][i5][k7];
                                                             WorldController.addCullingCluster(l2, i5 * 128, j12, j6 * 128 + 128, i9 * 128 + 128, j12, k7 * 128, 4);
 								for (int k13 = i5; k13 <= j6; k13++) {
 									for (int i15 = k7; i15 <= i9; i15++) {
@@ -438,16 +438,16 @@ final class ObjectManager {
 				if (k1 >= 0 && k1 < anInt146 && j1 >= 0 && j1 < anInt147) {
 					aByteArrayArrayArray134[0][k1][j1] = 127;
 					if (k1 == i1 && k1 > 0) {
-						anIntArrayArrayArray129[0][k1][j1] = anIntArrayArrayArray129[0][k1 - 1][j1];
+						tileHeights[0][k1][j1] = tileHeights[0][k1 - 1][j1];
 					}
 					if (k1 == i1 + l && k1 < anInt146 - 1) {
-						anIntArrayArrayArray129[0][k1][j1] = anIntArrayArrayArray129[0][k1 + 1][j1];
+						tileHeights[0][k1][j1] = tileHeights[0][k1 + 1][j1];
 					}
 					if (j1 == i && j1 > 0) {
-						anIntArrayArrayArray129[0][k1][j1] = anIntArrayArrayArray129[0][k1][j1 - 1];
+						tileHeights[0][k1][j1] = tileHeights[0][k1][j1 - 1];
 					}
 					if (j1 == i + j && j1 < anInt147 - 1) {
-						anIntArrayArrayArray129[0][k1][j1] = anIntArrayArrayArray129[0][k1][j1 + 1];
+						tileHeights[0][k1][j1] = tileHeights[0][k1][j1 + 1];
 					}
 				}
 			}
@@ -467,10 +467,10 @@ final class ObjectManager {
 		if (k < lowestPlane) {
 			lowestPlane = k;
 		}
-		int k1 = anIntArrayArrayArray129[k][l][i];
-		int l1 = anIntArrayArrayArray129[k][l + 1][i];
-		int i2 = anIntArrayArrayArray129[k][l + 1][i + 1];
-		int j2 = anIntArrayArrayArray129[k][l][i + 1];
+		int k1 = tileHeights[k][l][i];
+		int l1 = tileHeights[k][l + 1][i];
+		int i2 = tileHeights[k][l + 1][i + 1];
+		int j2 = tileHeights[k][l][i + 1];
 		int k2 = k1 + l1 + i2 + j2 >> 2;
 		ObjectDef class46 = ObjectDef.forID(i1);
 		int l2 = l + (i << 7) + (i1 << 14) + 0x40000000;
@@ -882,10 +882,10 @@ final class ObjectManager {
 				int l1 = stream.readUnsignedByte();
 				if (l1 == 0) {
 					if (l == 0) {
-						anIntArrayArrayArray129[0][k][i] = -method172(0xe3b7b + k + k1, 0x87cce + i + j) * 8;
+						tileHeights[0][k][i] = -method172(0xe3b7b + k + k1, 0x87cce + i + j) * 8;
 						return;
 					} else {
-						anIntArrayArrayArray129[l][k][i] = anIntArrayArrayArray129[l - 1][k][i] - 240;
+						tileHeights[l][k][i] = tileHeights[l - 1][k][i] - 240;
 						return;
 					}
 				}
@@ -895,10 +895,10 @@ final class ObjectManager {
 						j2 = 0;
 					}
 					if (l == 0) {
-						anIntArrayArrayArray129[0][k][i] = -j2 * 8;
+						tileHeights[0][k][i] = -j2 * 8;
 						return;
 					} else {
-						anIntArrayArrayArray129[l][k][i] = anIntArrayArrayArray129[l - 1][k][i] - j2 * 8;
+						tileHeights[l][k][i] = tileHeights[l - 1][k][i] - j2 * 8;
 						return;
 					}
 				}
@@ -1011,9 +1011,9 @@ final class ObjectManager {
 	}
 
 	private static int method186(int i, int j) {
-		int k = method170(i - 1, j - 1) + method170(i + 1, j - 1) + method170(i - 1, j + 1) + method170(i + 1, j + 1);
-		int l = method170(i - 1, j) + method170(i + 1, j) + method170(i, j - 1) + method170(i, j + 1);
-		int i1 = method170(i, j);
+		int k = generateNoiseValue(i - 1, j - 1) + generateNoiseValue(i + 1, j - 1) + generateNoiseValue(i - 1, j + 1) + generateNoiseValue(i + 1, j + 1);
+		int l = generateNoiseValue(i - 1, j) + generateNoiseValue(i + 1, j) + generateNoiseValue(i, j - 1) + generateNoiseValue(i, j + 1);
+		int i1 = generateNoiseValue(i, j);
 		return k / 16 + l / 8 + i1 / 4;
 	}
 
@@ -1331,16 +1331,16 @@ final class ObjectManager {
 		}
 	}
 
-	private static int anInt123 = (int) (Math.random() * 17D) - 8;
+	private static int noiseOffsetX = (int) (Math.random() * 17D) - 8;
 	private final int[] tileHues;
 	private final int[] tileSaturations;
 	private final int[] tileLightness;
 	private final int[] tileHueMultiplier;
 	private final int[] tileCount;
-	private final int[][][] anIntArrayArrayArray129;
+	private final int[][][] tileHeights;
 	private final byte[][][] aByteArrayArrayArray130;
 	static int currentPlane;
-	private static int anInt133 = (int) (Math.random() * 33D) - 16;
+	private static int noiseOffsetY = (int) (Math.random() * 33D) - 16;
 	private final byte[][][] aByteArrayArrayArray134;
 	private final int[][][] anIntArrayArrayArray135;
 	private final byte[][][] aByteArrayArrayArray136;

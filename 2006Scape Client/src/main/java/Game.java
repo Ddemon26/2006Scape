@@ -774,7 +774,7 @@ public class Game extends RSApplet {
 
 			}
 			stream.createFrame(0);
-			objectManager.method171(aClass11Array1230, worldController);
+                        objectManager.buildLandscape(aClass11Array1230, worldController);
 			if(aRSImageProducer_1165 != null) {
 				aRSImageProducer_1165.initDrawingArea();
 				Texture.lineOffsets = chatBoxAreaOffsets;
