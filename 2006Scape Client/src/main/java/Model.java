@@ -115,7 +115,7 @@ public final class Model extends Animable {
 		}
 		ModelHeader header = modelHeaders.length < j  ? null : modelHeaders[j];
 		if (header == null) {
-			modelFetcher.method548(j);
+                        modelFetcher.requestModel(j);
 			return null;
 		} else {
 			return new Model(j);
@@ -128,7 +128,7 @@ public final class Model extends Animable {
 		}
 		ModelHeader header = modelHeaders[i];
 		if (header == null) {
-			modelFetcher.method548(i);
+                        modelFetcher.requestModel(i);
 			return false;
 		} else {
 			return true;
