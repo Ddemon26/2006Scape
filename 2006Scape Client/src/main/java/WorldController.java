@@ -10,7 +10,7 @@ final class WorldController {
 		int j = 104;// was parameter
 		int k = 4;// was parameter
 		aBoolean434 = true;
-        obj5Cache = new SceneObject[5000];
+        sceneObjectCache = new SceneObject[5000];
 		anIntArray486 = new int[10000];
 		anIntArray487 = new int[10000];
                 planeCount = k;
@@ -49,11 +49,11 @@ final class WorldController {
 			anIntArray473[l] = 0;
 		}
 
-		for (int k1 = 0; k1 < obj5CacheCurrPos; k1++) {
-			obj5Cache[k1] = null;
-		}
+                for (int k1 = 0; k1 < sceneObjectCachePos; k1++) {
+                        sceneObjectCache[k1] = null;
+                }
 
-		obj5CacheCurrPos = 0;
+                sceneObjectCachePos = 0;
 		for (int l1 = 0; l1 < aClass28Array462.length; l1++) {
 			aClass28Array462[l1] = null;
 		}
@@ -95,7 +95,7 @@ final class WorldController {
 		groundArray[3][j][i] = null;
 	}
 
-        public static void method277(int i, int j, int k, int l, int i1, int j1, int l1, int i2) {
+        public static void addCullingCluster(int i, int j, int k, int l, int i1, int j1, int l1, int i2) {
                 CullingCluster cluster = new CullingCluster();
                 cluster.minTileX = j / 128;
                 cluster.maxTileX = l / 128;
@@ -111,14 +111,14 @@ final class WorldController {
                 aCullingClusters[i][anIntArray473[i]++] = cluster;
         }
 
-	public void method278(int i, int j, int k, int l) {
+        public void setGroundFlag(int i, int j, int k, int l) {
 		Ground class30_sub3 = groundArray[i][j][k];
 		if (class30_sub3 != null) {
 			groundArray[i][j][k].anInt1321 = l;
 		}
 	}
 
-	public void method279(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2, int k2, int l2, int i3, int j3, int k3, int l3, int i4, int j4, int k4, int l4) {
+        public void addTile(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2, int k2, int l2, int i3, int j3, int k3, int l3, int i4, int j4, int k4, int l4) {
 		if (l == 0) {
                     PlainTile class43 = new PlainTile(k2, l2, i3, j3, -1, k4, false);
 			for (int i5 = i; i5 >= 0; i5--) {
@@ -343,19 +343,19 @@ final class WorldController {
 		}
 
                 if (flag) {
-                        obj5Cache[obj5CacheCurrPos++] = sceneObject;
+                        sceneObjectCache[sceneObjectCachePos++] = sceneObject;
                 }
 		return true;
 	}
 
         public void clearObj5Cache() {
-                for (int i = 0; i < obj5CacheCurrPos; i++) {
-                        SceneObject object = obj5Cache[i];
+                for (int i = 0; i < sceneObjectCachePos; i++) {
+                        SceneObject object = sceneObjectCache[i];
                         method289(object);
-                        obj5Cache[i] = null;
+                        sceneObjectCache[i] = null;
                 }
 
-		obj5CacheCurrPos = 0;
+            sceneObjectCachePos = 0;
 	}
 
         private void method289(SceneObject sceneObject) {
@@ -2056,8 +2056,8 @@ final class WorldController {
 	private final int[][][] anIntArrayArrayArray440;
 	private final Ground[][][] groundArray;
 	private int activePlane;
-        private int obj5CacheCurrPos;
-        private final SceneObject[] obj5Cache;
+        private int sceneObjectCachePos;
+        private final SceneObject[] sceneObjectCache;
 	private final int[][][] anIntArrayArrayArray445;
 	private static int anInt446;
 	private static int anInt447;

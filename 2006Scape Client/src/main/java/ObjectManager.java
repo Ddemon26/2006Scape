@@ -194,7 +194,7 @@ final class ObjectManager {
 									i22 = Texture.brightnessTable[method187(k21, 96)];
 								}
 								if (i19 == 0) {
-									worldController.method279(l, l6, k17, 0, 0, -1, j19, k19, l19, i20, method187(j21, j20), method187(j21, k20), method187(j21, l20), method187(j21, i21), 0, 0, 0, 0, i22, 0);
+                                                                        worldController.addTile(l, l6, k17, 0, 0, -1, j19, k19, l19, i20, method187(j21, j20), method187(j21, k20), method187(j21, l20), method187(j21, i21), 0, 0, 0, 0, i22, 0);
 								} else {
 									int k22 = aByteArrayArrayArray136[l][l6][k17] + 1;
 									byte byte4 = aByteArrayArrayArray148[l][l6][k17];
@@ -220,7 +220,7 @@ final class ObjectManager {
 										j23 = method177(flo_2.hue, flo_2.saturation, flo_2.lightness);
 										k23 = Texture.brightnessTable[method185(flo_2.blendColor, 96)];
 									}
-									worldController.method279(l, l6, k17, k22, byte4, i23, j19, k19, l19, i20, method187(j21, j20), method187(j21, k20), method187(j21, l20), method187(j21, i21), method185(j23, j20), method185(j23, k20), method185(j23, l20), method185(j23, i21), i22, k23);
+                                                                        worldController.addTile(l, l6, k17, k22, byte4, i23, j19, k19, l19, i20, method187(j21, j20), method187(j21, k20), method187(j21, l20), method187(j21, i21), method185(j23, j20), method185(j23, k20), method185(j23, l20), method185(j23, i21), i22, k23);
 								}
 							}
 						}
@@ -231,7 +231,7 @@ final class ObjectManager {
 
 			for (int j8 = 1; j8 < anInt147 - 1; j8++) {
 				for (int i10 = 1; i10 < anInt146 - 1; i10++) {
-					worldController.method278(l, i10, j8, method182(j8, l, i10));
+                                        worldController.setGroundFlag(l, i10, j8, method182(j8, l, i10));
 				}
 
 			}
@@ -294,7 +294,7 @@ final class ObjectManager {
 								char c1 = '\360';
 								int k14 = anIntArrayArrayArray129[k8][i4][k4] - c1;
 								int l15 = anIntArrayArrayArray129[i7][i4][k4];
-								WorldController.method277(l2, i4 * 128, l15, i4 * 128, l5 * 128 + 128, k14, k4 * 128, 1);
+                                                            WorldController.addCullingCluster(l2, i4 * 128, l15, i4 * 128, l5 * 128 + 128, k14, k4 * 128, 1);
 								for (int l16 = i7; l16 <= k8; l16++) {
 									for (int l17 = k4; l17 <= l5; l17++) {
 										anIntArrayArrayArray135[l16][i4][l17] &= ~i2;
@@ -338,7 +338,7 @@ final class ObjectManager {
 								char c2 = '\360';
 								int l14 = anIntArrayArrayArray129[l8][l4][k3] - c2;
 								int i16 = anIntArrayArrayArray129[j7][l4][k3];
-								WorldController.method277(l2, l4 * 128, i16, i6 * 128 + 128, k3 * 128, l14, k3 * 128, 2);
+                                                            WorldController.addCullingCluster(l2, l4 * 128, i16, i6 * 128 + 128, k3 * 128, l14, k3 * 128, 2);
 								for (int i17 = j7; i17 <= l8; i17++) {
 									for (int i18 = l4; i18 <= i6; i18++) {
 										anIntArrayArrayArray135[i17][i18][k3] &= ~j2;
@@ -379,7 +379,7 @@ final class ObjectManager {
 
 							if ((j6 - i5 + 1) * (i9 - k7 + 1) >= 4) {
 								int j12 = anIntArrayArrayArray129[i3][i5][k7];
-								WorldController.method277(l2, i5 * 128, j12, j6 * 128 + 128, i9 * 128 + 128, j12, k7 * 128, 4);
+                                                            WorldController.addCullingCluster(l2, i5 * 128, j12, j6 * 128 + 128, i9 * 128 + 128, j12, k7 * 128, 4);
 								for (int k13 = i5; k13 <= j6; k13++) {
 									for (int i15 = k7; i15 <= i9; i15++) {
 										anIntArrayArrayArray135[i3][k13][i15] &= ~k2;
