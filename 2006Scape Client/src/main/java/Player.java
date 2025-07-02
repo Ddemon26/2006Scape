@@ -170,7 +170,7 @@ public final class Player extends Entity {
 			} else if (super.anInt1517 >= 0) {
 				j = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
 			}
-			Model model = desc.method164(-1, j, null);
+                       Model model = desc.getAnimatedModel(-1, j, null);
 			return model;
 		}
 		long l = appearanceHash;
@@ -289,8 +289,8 @@ public final class Player extends Entity {
 		if (!visible) {
 			return null;
 		}
-		if (desc != null) {
-			return desc.method160();
+               if (desc != null) {
+                       return desc.getModel();
 		}
 		boolean flag = false;
 		for (int i = 0; i < 12; i++) {

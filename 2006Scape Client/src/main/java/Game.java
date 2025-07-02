@@ -1526,7 +1526,7 @@ public class Game extends RSApplet {
 				if (obj instanceof NPC) {
 					EntityDef entityDef = ((NPC) obj).desc;
 					if (entityDef.childrenIDs != null) {
-						entityDef = entityDef.method161();
+                                        entityDef = entityDef.transform();
 					}
 					if (entityDef == null) {
 						continue;
@@ -4123,9 +4123,9 @@ public class Game extends RSApplet {
 			NPC class30_sub2_sub4_sub1_sub1_5 = npcArray[i1];
 			if (class30_sub2_sub4_sub1_sub1_5 != null) {
 				EntityDef entityDef = class30_sub2_sub4_sub1_sub1_5.desc;
-				if (entityDef.childrenIDs != null) {
-					entityDef = entityDef.method161();
-				}
+                                if (entityDef.childrenIDs != null) {
+                                        entityDef = entityDef.transform();
+                                }
 				if (entityDef != null) {
 					String s9;
 					if (entityDef.description != null) {
@@ -6649,9 +6649,9 @@ public class Game extends RSApplet {
 		if (menuActionRow >= 400) {
 			return;
 		}
-		if (entityDef.childrenIDs != null) {
-			entityDef = entityDef.method161();
-		}
+                if (entityDef.childrenIDs != null) {
+                        entityDef = entityDef.transform();
+                }
 		if (entityDef == null) {
 			return;
 		}
@@ -9522,9 +9522,9 @@ public class Game extends RSApplet {
 			NPC npc = npcArray[npcIndices[i6]];
 			if (npc != null && npc.isVisible()) {
 				EntityDef entityDef = npc.desc;
-				if (entityDef.childrenIDs != null) {
-					entityDef = entityDef.method161();
-				}
+                                if (entityDef.childrenIDs != null) {
+                                        entityDef = entityDef.transform();
+                                }
 				if (entityDef != null && entityDef.aBoolean87 && entityDef.aBoolean84) {
 					int i1 = npc.x / 32 - myPlayer.x / 32;
 					int k3 = npc.y / 32 - myPlayer.y / 32;
