@@ -15,8 +15,8 @@ public final class TextDrawingArea extends DrawingArea {
                 glyphAdvances = new int[256];
                 random = new Random();
                 strikethrough = false;
-		Stream stream = new Stream(streamLoader.getDataForName(s + ".dat"));
-		Stream stream_1 = new Stream(streamLoader.getDataForName("index.dat"));
+		Stream stream = new Stream(streamLoader.getFileData(s + ".dat"));
+		Stream stream_1 = new Stream(streamLoader.getFileData("index.dat"));
 		stream_1.currentOffset = stream.readUnsignedWord() + 4;
 		int k = stream_1.readUnsignedByte();
 		if (k > 0) {

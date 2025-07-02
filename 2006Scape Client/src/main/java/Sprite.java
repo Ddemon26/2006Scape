@@ -40,8 +40,8 @@ public final class Sprite extends DrawingArea {
 	}
 
 	public Sprite(StreamLoader streamLoader, String s, int i) {
-		Stream stream = new Stream(streamLoader.getDataForName(s + ".dat"));
-		Stream stream_1 = new Stream(streamLoader.getDataForName("index.dat"));
+		Stream stream = new Stream(streamLoader.getFileData(s + ".dat"));
+		Stream stream_1 = new Stream(streamLoader.getFileData("index.dat"));
 		stream_1.currentOffset = stream.readUnsignedWord();
 		trimWidth = stream_1.readUnsignedWord();
 		trimHeight = stream_1.readUnsignedWord();

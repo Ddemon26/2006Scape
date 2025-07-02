@@ -5,8 +5,8 @@
 public final class Background extends DrawingArea {
 
         public Background(StreamLoader streamLoader, String s, int i) {
-		Stream stream = new Stream(streamLoader.getDataForName(s + ".dat"));
-		Stream stream_1 = new Stream(streamLoader.getDataForName("index.dat"));
+		Stream stream = new Stream(streamLoader.getFileData(s + ".dat"));
+		Stream stream_1 = new Stream(streamLoader.getFileData("index.dat"));
 		stream_1.currentOffset = stream.readUnsignedWord();
                 maxWidth = stream_1.readUnsignedWord();
                 maxHeight = stream_1.readUnsignedWord();

@@ -5,7 +5,7 @@
 public final class SpotAnim {
 
 	public static void unpackConfig(StreamLoader streamLoader) {
-		Stream stream = new Stream(streamLoader.getDataForName("spotanim.dat"));
+		Stream stream = new Stream(streamLoader.getFileData("spotanim.dat"));
 		int length = stream.readUnsignedWord();
 		if (cache == null) {
 			cache = new SpotAnim[length];

@@ -8,7 +8,7 @@ import java.util.GregorianCalendar;
 public final class FloorOverlay {
 
 	public static void unpackConfig(StreamLoader streamLoader) {
-		Stream stream = new Stream(streamLoader.getDataForName("flo.dat"));
+		Stream stream = new Stream(streamLoader.getFileData("flo.dat"));
 		int cacheSize = stream.readUnsignedWord();
 		if (cache == null) {
 			cache = new FloorOverlay[cacheSize];

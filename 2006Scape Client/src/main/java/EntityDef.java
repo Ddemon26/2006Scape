@@ -95,8 +95,8 @@ public final class EntityDef {
 	public static int totalNPCs;
 
 	public static void unpackConfig(StreamLoader streamLoader) {
-		stream = new Stream(streamLoader.getDataForName("npc.dat"));
-		Stream stream2 = new Stream(streamLoader.getDataForName("npc.idx"));
+		stream = new Stream(streamLoader.getFileData("npc.dat"));
+		Stream stream2 = new Stream(streamLoader.getFileData("npc.idx"));
 		totalNPCs = stream2.readUnsignedWord();
 		streamIndices = new int[totalNPCs];
 		int i = 2;
