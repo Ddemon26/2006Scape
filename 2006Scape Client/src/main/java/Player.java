@@ -18,14 +18,14 @@ public final class Player extends Entity {
 		if (aBoolean1699) {
 			return model;
 		}
-		if (super.anInt1520 != -1 && super.anInt1521 != -1) {
-			SpotAnim spotAnim = SpotAnim.cache[super.anInt1520];
+               if (super.spotAnimId != -1 && super.spotAnimFrame != -1) {
+                       SpotAnim spotAnim = SpotAnim.cache[super.spotAnimId];
 			Model model_2 = spotAnim.getModel();
 			if (model_2 != null) {
-                                Model model_3 = new Model(true, AnimFrame.isNullFrame(super.anInt1521), false, model_2);
-				model_3.translate(0, -super.anInt1524, 0);
+                               Model model_3 = new Model(true, AnimFrame.isNullFrame(super.spotAnimFrame), false, model_2);
+                               model_3.translate(0, -super.spotAnimHeight, 0);
 				model_3.buildVertexGroups();
-				model_3.applyFrame(spotAnim.aAnimation_407.anIntArray353[super.anInt1521]);
+                               model_3.applyFrame(spotAnim.aAnimation_407.anIntArray353[super.spotAnimFrame]);
 				model_3.faceGroups = null;
 				model_3.vertexGroups = null;
 				if (spotAnim.anInt410 != 128 || spotAnim.anInt411 != 128) {
