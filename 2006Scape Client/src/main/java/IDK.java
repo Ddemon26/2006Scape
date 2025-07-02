@@ -25,111 +25,111 @@ public final class IDK {
 				return;
 			}
 			if (i == 1) {
-				anInt657 = stream.readUnsignedByte();
+                                bodyPartId = stream.readUnsignedByte();
 			} else if (i == 2) {
 				int j = stream.readUnsignedByte();
-				anIntArray658 = new int[j];
+                                modelIds = new int[j];
 				for (int k = 0; k < j; k++) {
-					anIntArray658[k] = stream.readUnsignedWord();
+                                        modelIds[k] = stream.readUnsignedWord();
 				}
 
 			} else if (i == 3) {
-				aBoolean662 = true;
+                                nonSelectable = true;
 			} else if (i >= 40 && i < 50) {
-				anIntArray659[i - 40] = stream.readUnsignedWord();
+                                recolorOriginal[i - 40] = stream.readUnsignedWord();
 			} else if (i >= 50 && i < 60) {
-				anIntArray660[i - 50] = stream.readUnsignedWord();
+                                recolorTarget[i - 50] = stream.readUnsignedWord();
 			} else if (i >= 60 && i < 70) {
-				anIntArray661[i - 60] = stream.readUnsignedWord();
+                                headModelIds[i - 60] = stream.readUnsignedWord();
 			} else {
 				System.out.println("Error unrecognised config code: " + i);
 			}
 		} while (true);
 	}
 
-	public boolean method537() {
-		if (anIntArray658 == null) {
-			return true;
-		}
-		boolean flag = true;
-		for (int j = 0; j < anIntArray658.length; j++) {
-			if (!Model.isLoaded(anIntArray658[j])) {
-				flag = false;
-			}
-		}
+        public boolean ready() {
+                if (modelIds == null) {
+                        return true;
+                }
+                boolean flag = true;
+                for (int j = 0; j < modelIds.length; j++) {
+                        if (!Model.isLoaded(modelIds[j])) {
+                                flag = false;
+                        }
+                }
 
-		return flag;
-	}
+                return flag;
+        }
 
-	public Model method538() {
-		if (anIntArray658 == null) {
-			return null;
-		}
-		Model aclass30_sub2_sub4_sub6s[] = new Model[anIntArray658.length];
-		for (int i = 0; i < anIntArray658.length; i++) {
-			aclass30_sub2_sub4_sub6s[i] = Model.create(anIntArray658[i]);
-		}
+        public Model getBodyModel() {
+                if (modelIds == null) {
+                        return null;
+                }
+                Model aclass30_sub2_sub4_sub6s[] = new Model[modelIds.length];
+                for (int i = 0; i < modelIds.length; i++) {
+                        aclass30_sub2_sub4_sub6s[i] = Model.create(modelIds[i]);
+                }
 
 		Model model;
-		if (aclass30_sub2_sub4_sub6s.length == 1) {
-			model = aclass30_sub2_sub4_sub6s[0];
-		} else {
-			model = new Model(aclass30_sub2_sub4_sub6s.length, aclass30_sub2_sub4_sub6s);
-		}
-		for (int j = 0; j < 6; j++) {
-			if (anIntArray659[j] == 0) {
-				break;
-			}
-			model.recolor(anIntArray659[j], anIntArray660[j]);
-		}
+                if (aclass30_sub2_sub4_sub6s.length == 1) {
+                        model = aclass30_sub2_sub4_sub6s[0];
+                } else {
+                        model = new Model(aclass30_sub2_sub4_sub6s.length, aclass30_sub2_sub4_sub6s);
+                }
+                for (int j = 0; j < 6; j++) {
+                        if (recolorOriginal[j] == 0) {
+                                break;
+                        }
+                        model.recolor(recolorOriginal[j], recolorTarget[j]);
+                }
 
-		return model;
-	}
+                return model;
+        }
 
-	public boolean method539() {
-		boolean flag1 = true;
-		for (int i = 0; i < 5; i++) {
-			if (anIntArray661[i] != -1 && !Model.isLoaded(anIntArray661[i])) {
-				flag1 = false;
-			}
-		}
+        public boolean headLoaded() {
+                boolean flag1 = true;
+                for (int i = 0; i < 5; i++) {
+                        if (headModelIds[i] != -1 && !Model.isLoaded(headModelIds[i])) {
+                                flag1 = false;
+                        }
+                }
 
 		return flag1;
 	}
 
-	public Model method540() {
-		Model aclass30_sub2_sub4_sub6s[] = new Model[5];
-		int j = 0;
-		for (int k = 0; k < 5; k++) {
-			if (anIntArray661[k] != -1) {
-				aclass30_sub2_sub4_sub6s[j++] = Model.create(anIntArray661[k]);
-			}
-		}
+        public Model getHeadModel() {
+                Model aclass30_sub2_sub4_sub6s[] = new Model[5];
+                int j = 0;
+                for (int k = 0; k < 5; k++) {
+                        if (headModelIds[k] != -1) {
+                                aclass30_sub2_sub4_sub6s[j++] = Model.create(headModelIds[k]);
+                        }
+                }
 
-		Model model = new Model(j, aclass30_sub2_sub4_sub6s);
-		for (int l = 0; l < 6; l++) {
-			if (anIntArray659[l] == 0) {
-				break;
-			}
-			model.recolor(anIntArray659[l], anIntArray660[l]);
-		}
+                Model model = new Model(j, aclass30_sub2_sub4_sub6s);
+                for (int l = 0; l < 6; l++) {
+                        if (recolorOriginal[l] == 0) {
+                                break;
+                        }
+                        model.recolor(recolorOriginal[l], recolorTarget[l]);
+                }
 
-		return model;
-	}
+                return model;
+        }
 
-	private IDK() {
-		anInt657 = -1;
-		anIntArray659 = new int[6];
-		anIntArray660 = new int[6];
-		aBoolean662 = false;
-	}
+        private IDK() {
+                bodyPartId = -1;
+                recolorOriginal = new int[6];
+                recolorTarget = new int[6];
+                nonSelectable = false;
+        }
 
 	public static int length;
 	public static IDK cache[];
-	public int anInt657;
-	private int[] anIntArray658;
-	private final int[] anIntArray659;
-	private final int[] anIntArray660;
-	private final int[] anIntArray661 = {-1, -1, -1, -1, -1};
-	public boolean aBoolean662;
+        public int bodyPartId;
+        private int[] modelIds;
+        private final int[] recolorOriginal;
+        private final int[] recolorTarget;
+        private final int[] headModelIds = {-1, -1, -1, -1, -1};
+        public boolean nonSelectable;
 }
