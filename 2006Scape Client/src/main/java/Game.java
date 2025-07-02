@@ -4911,7 +4911,7 @@ public class Game extends RSApplet {
 						stream.writeWordBigEndian(0);
 						int k = stream.currentOffset;
 						stream.writeQWord(aLong953);
-						TextInput.method526(promptInput, stream);
+                                                TextInput.encodeChatMessage(promptInput, stream);
 						stream.writeBytes(stream.currentOffset - k);
 						promptInput = TextInput.processText(promptInput);
 						promptInput = Censor.doCensor(promptInput);
@@ -5171,7 +5171,7 @@ public class Game extends RSApplet {
                                                 stream.writeByteSub(i3);
                                                 stream.writeByteSub(j2);
 						aStream_834.currentOffset = 0;
-						TextInput.method526(inputString, aStream_834);
+                                                TextInput.encodeChatMessage(inputString, aStream_834);
 						stream.writeBytesReverseAdd(0, aStream_834.buffer, aStream_834.currentOffset);
 						stream.writeBytes(stream.currentOffset - j3);
 						inputString = TextInput.processText(inputString);
@@ -8621,7 +8621,7 @@ public class Game extends RSApplet {
 						aStream_834.currentOffset = 0;
 						stream.readBytesReverse(j3, 0, aStream_834.buffer);
 						aStream_834.currentOffset = 0;
-						String s = TextInput.method525(j3, aStream_834);
+                                                String s = TextInput.decodeChatMessage(j3, aStream_834);
 						s = Censor.doCensor(s);
 						player.textSpoken = s;
 						player.anInt1513 = i1 >> 8;
@@ -11388,7 +11388,7 @@ public class Game extends RSApplet {
 				if (!flag5 && restrictedArea == 0) {
 					try {
 						// Direct message
-						String s9 = TextInput.method525(pktSize - 13, inStream);
+                                                String s9 = TextInput.decodeChatMessage(pktSize - 13, inStream);
 						if (l21 == 2 || l21 == 3) {
 							pushMessage(s9, 7, "@cr2@" + TextClass.fixName(TextClass.nameForLong(l5)));
 						} else if (l21 == 1) {
