@@ -65,16 +65,16 @@ public final class IDK {
                 if (modelIds == null) {
                         return null;
                 }
-                Model aclass30_sub2_sub4_sub6s[] = new Model[modelIds.length];
+                Model[] models = new Model[modelIds.length];
                 for (int i = 0; i < modelIds.length; i++) {
-                        aclass30_sub2_sub4_sub6s[i] = Model.create(modelIds[i]);
+                        models[i] = Model.create(modelIds[i]);
                 }
 
-		Model model;
-                if (aclass30_sub2_sub4_sub6s.length == 1) {
-                        model = aclass30_sub2_sub4_sub6s[0];
+                Model model;
+                if (models.length == 1) {
+                        model = models[0];
                 } else {
-                        model = new Model(aclass30_sub2_sub4_sub6s.length, aclass30_sub2_sub4_sub6s);
+                        model = new Model(models.length, models);
                 }
                 for (int j = 0; j < 6; j++) {
                         if (recolorOriginal[j] == 0) {
@@ -98,15 +98,15 @@ public final class IDK {
 	}
 
         public Model getHeadModel() {
-                Model aclass30_sub2_sub4_sub6s[] = new Model[5];
+                Model[] models = new Model[5];
                 int j = 0;
                 for (int k = 0; k < 5; k++) {
                         if (headModelIds[k] != -1) {
-                                aclass30_sub2_sub4_sub6s[j++] = Model.create(headModelIds[k]);
+                                models[j++] = Model.create(headModelIds[k]);
                         }
                 }
 
-                Model model = new Model(j, aclass30_sub2_sub4_sub6s);
+                Model model = new Model(j, models);
                 for (int l = 0; l < 6; l++) {
                         if (recolorOriginal[l] == 0) {
                                 break;

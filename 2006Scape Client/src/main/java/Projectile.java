@@ -73,8 +73,8 @@ final class Projectile extends Animable {
                 yaw = (int) (Math.atan2(speedX, speedY) * 325.94900000000001D) + 1024 & 0x7ff;
                 pitch = (int) (Math.atan2(speedZ, speed) * 325.94900000000001D) & 0x7ff;
                 if (spotAnim.aAnimation_407 != null) {
-                        for (frameCycle += elapsed; frameCycle > spotAnim.aAnimation_407.method258(frame);) {
-                                frameCycle -= spotAnim.aAnimation_407.method258(frame) + 1;
+                        for (frameCycle += elapsed; frameCycle > spotAnim.aAnimation_407.getFrameDelay(frame);) {
+                                frameCycle -= spotAnim.aAnimation_407.getFrameDelay(frame) + 1;
                                 frame++;
                                 if (frame >= spotAnim.aAnimation_407.anInt352) {
                                         frame = 0;
