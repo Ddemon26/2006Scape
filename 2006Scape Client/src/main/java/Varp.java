@@ -6,13 +6,13 @@ public final class Varp {
 
 	public static void unpackConfig(StreamLoader streamLoader) {
 		Stream stream = new Stream(streamLoader.getDataForName("varp.dat"));
-		anInt702 = 0;
+                varpCount = 0;
 		int cacheSize = stream.readUnsignedWord();
 		if (cache == null) {
 			cache = new Varp[cacheSize];
 		}
-		if (anIntArray703 == null) {
-			anIntArray703 = new int[cacheSize];
+                if (varpIndices == null) {
+                        varpIndices = new int[cacheSize];
 		}
 		for (int j = 0; j < cacheSize; j++) {
 			if (cache[j] == null) {
@@ -36,19 +36,19 @@ public final class Varp {
 			} else if (j == 2) {
 				stream.readUnsignedByte();
 			} else if (j == 3) {
-				anIntArray703[anInt702++] = i;
+                                varpIndices[varpCount++] = i;
 			} else if (j == 4) {
 			} else if (j == 5) {
-				anInt709 = stream.readUnsignedWord();
+                                actionType = stream.readUnsignedWord();
 			} else if (j == 6) {
 			} else if (j == 7) {
 				stream.readDWord();
 			} else if (j == 8) {
-				aBoolean713 = true;
+                                isActive = true;
 			} else if (j == 10) {
 				stream.readString();
 			} else if (j == 11) {
-				aBoolean713 = true;
+                                isActive = true;
 			} else if (j == 12) {
 				stream.readDWord();
 			} else if (j == 13) {
@@ -58,14 +58,14 @@ public final class Varp {
 		} while (true);
 	}
 
-	private Varp() {
-		aBoolean713 = false;
-	}
+        private Varp() {
+                isActive = false;
+        }
 
-	public static Varp cache[];
-	private static int anInt702;
-	private static int[] anIntArray703;
-	public int anInt709;
-	public boolean aBoolean713;
+        public static Varp cache[];
+        private static int varpCount;
+        private static int[] varpIndices;
+        public int actionType;
+        public boolean isActive;
 
 }

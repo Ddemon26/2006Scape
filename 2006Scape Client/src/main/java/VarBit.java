@@ -16,8 +16,8 @@ public final class VarBit {
 			}
 			cache[j].readValues(stream);
                         if (cache[j].isActive) {
-                                Varp.cache[cache[j].configId].aBoolean713 = true;
-			}
+                                Varp.cache[cache[j].configId].isActive = true;
+                        }
 		}
 
 		if (stream.currentOffset != stream.buffer.length) {
