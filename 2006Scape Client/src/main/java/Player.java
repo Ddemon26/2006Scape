@@ -206,7 +206,7 @@ public final class Player extends Entity {
 				if (j1 >= 0 && i2 == 5) {
 					k2 = j1;
 				}
-				if (k2 >= 256 && k2 < 512 && !IDK.cache[k2 - 256].method537()) {
+                                if (k2 >= 256 && k2 < 512 && !IDK.cache[k2 - 256].ready()) {
 					flag = true;
 				}
                                if (k2 >= 512 && !ItemDef.lookup(k2 - 512).areWearModelsCached(gender)) {
@@ -235,7 +235,7 @@ public final class Player extends Entity {
 					i3 = j1;
 				}
 				if (i3 >= 256 && i3 < 512) {
-					Model model_3 = IDK.cache[i3 - 256].method538();
+                                        Model model_3 = IDK.cache[i3 - 256].getBodyModel();
 					if (model_3 != null) {
 						aclass30_sub2_sub4_sub6s[j2++] = model_3;
 					}
@@ -295,7 +295,7 @@ public final class Player extends Entity {
 		boolean flag = false;
 		for (int i = 0; i < 12; i++) {
 			int j = equipment[i];
-			if (j >= 256 && j < 512 && !IDK.cache[j - 256].method539()) {
+                        if (j >= 256 && j < 512 && !IDK.cache[j - 256].headLoaded()) {
 				flag = true;
 			}
                        if (j >= 512 && !ItemDef.lookup(j - 512).areDialogueModelsCached(gender)) {
@@ -311,7 +311,7 @@ public final class Player extends Entity {
 		for (int l = 0; l < 12; l++) {
 			int i1 = equipment[l];
 			if (i1 >= 256 && i1 < 512) {
-				Model model_1 = IDK.cache[i1 - 256].method540();
+                                Model model_1 = IDK.cache[i1 - 256].getHeadModel();
 				if (model_1 != null) {
 					aclass30_sub2_sub4_sub6s[k++] = model_1;
 				}
