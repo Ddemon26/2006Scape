@@ -31,13 +31,13 @@ public final class EntityDef {
 		return entityDef;
 	}
 
-	public Model method160() {
+       public Model getModel() {
 		if (childrenIDs != null) {
-			EntityDef entityDef = method161();
+                       EntityDef entityDef = transform();
 			if (entityDef == null) {
 				return null;
 			} else {
-				return entityDef.method160();
+                               return entityDef.getModel();
 			}
 		}
 		if (anIntArray73 == null) {
@@ -73,7 +73,7 @@ public final class EntityDef {
 		return model;
 	}
 
-	public EntityDef method161() {
+       public EntityDef transform() {
 		int j = -1;
 		if (anInt57 != -1) {
 			VarBit varBit = VarBit.cache[anInt57];
@@ -119,17 +119,17 @@ public final class EntityDef {
 		stream = null;
 	}
 
-	public Model method164(int j, int k, int ai[]) {
-		if (childrenIDs != null) {
-			EntityDef entityDef = method161();
-			if (entityDef == null) {
-				return null;
-			} else {
-				return entityDef.method164(j, k, ai);
-			}
-		}
-		Model model = (Model) mruNodes.insertFromCache(type);
-		if (model == null) {
+       public Model getAnimatedModel(int primaryFrame, int secondaryFrame, int[] frameData) {
+               if (childrenIDs != null) {
+                       EntityDef entityDef = transform();
+                       if (entityDef == null) {
+                               return null;
+                       } else {
+                               return entityDef.getAnimatedModel(primaryFrame, secondaryFrame, frameData);
+                       }
+               }
+               Model model = (Model) mruNodes.insertFromCache(type);
+               if (model == null) {
 			boolean flag = false;
 			for (int i1 = 0; i1 < anIntArray94.length; i1++) {
 				if (!Model.isLoaded(anIntArray94[i1])) {
@@ -160,16 +160,16 @@ public final class EntityDef {
 			model.applyLighting(64 + anInt85, 850 + anInt92, -30, -50, -30, true);
 			mruNodes.removeFromCache(model, type);
 		}
-                Model model_1 = Model.aModel_1621;
-                model_1.method464(model, AnimFrame.isNullFrame(k) & AnimFrame.isNullFrame(j));
-		if (k != -1 && j != -1) {
-			model_1.applyFrames(ai, j, k);
-		} else if (k != -1) {
-			model_1.applyFrame(k);
-		}
-		if (anInt91 != 128 || anInt86 != 128) {
-			model_1.scaleModel(anInt91, anInt91, anInt86);
-		}
+               Model model_1 = Model.aModel_1621;
+               model_1.method464(model, AnimFrame.isNullFrame(secondaryFrame) & AnimFrame.isNullFrame(primaryFrame));
+               if (secondaryFrame != -1 && primaryFrame != -1) {
+                       model_1.applyFrames(frameData, primaryFrame, secondaryFrame);
+               } else if (secondaryFrame != -1) {
+                       model_1.applyFrame(secondaryFrame);
+               }
+               if (modelScaleXy != 128 || modelScaleZ != 128) {
+                       model_1.scaleModel(modelScaleXy, modelScaleXy, modelScaleZ);
+               }
 		model_1.calculateBounds();
 		model_1.faceGroups = null;
 		model_1.vertexGroups = null;
@@ -241,10 +241,10 @@ public final class EntityDef {
 				aBoolean87 = false;
 			} else if (i == 95) {
 				combatLevel = stream.readUnsignedWord();
-			} else if (i == 97) {
-				anInt91 = stream.readUnsignedWord();
-			} else if (i == 98) {
-				anInt86 = stream.readUnsignedWord();
+                       } else if (i == 97) {
+                               modelScaleXy = stream.readUnsignedWord();
+                       } else if (i == 98) {
+                               modelScaleZ = stream.readUnsignedWord();
 			} else if (i == 99) {
 				aBoolean93 = true;
 			} else if (i == 100) {
@@ -293,9 +293,9 @@ public final class EntityDef {
 		anInt79 = 32;
 		anInt83 = -1;
 		aBoolean84 = true;
-		anInt86 = 128;
+               modelScaleZ = 128;
 		aBoolean87 = true;
-		anInt91 = 128;
+               modelScaleXy = 128;
 		aBoolean93 = false;
 	}
 
@@ -323,11 +323,11 @@ public final class EntityDef {
 	public int anInt83;
 	public boolean aBoolean84;
 	private int anInt85;
-	private int anInt86;
+       private int modelScaleZ;
 	public boolean aBoolean87;
 	public int childrenIDs[];
 	public byte description[];
-	private int anInt91;
+       private int modelScaleXy;
 	private int anInt92;
 	public boolean aBoolean93;
 	private int[] anIntArray94;

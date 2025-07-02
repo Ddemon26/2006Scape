@@ -11,13 +11,13 @@ public final class NPC extends Entity {
 			if (super.anInt1517 >= 0 && super.anInt1517 != super.anInt1511) {
 				i1 = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
 			}
-			return desc.method164(i1, k, Animation.anims[super.anim].anIntArray357);
+                       return desc.getAnimatedModel(i1, k, Animation.anims[super.anim].anIntArray357);
 		}
 		int l = -1;
 		if (super.anInt1517 >= 0) {
 			l = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
 		}
-		return desc.method164(-1, l, null);
+               return desc.getAnimatedModel(-1, l, null);
 	}
 
 	@Override
