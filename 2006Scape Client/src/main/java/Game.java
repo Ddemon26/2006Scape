@@ -788,9 +788,9 @@ public class Game extends RSApplet {
 				k3 = plane - 1;
 			}
 			if (lowMem) {
-				worldController.method275(ObjectManager.lowestPlane);
+                                worldController.setActivePlane(ObjectManager.lowestPlane);
 			} else {
-				worldController.method275(0);
+                                worldController.setActivePlane(0);
 			}
 			for (int i5 = 0; i5 < 104; i5++) {
 				for (int i7 = 0; i7 < 104; i7++) {
