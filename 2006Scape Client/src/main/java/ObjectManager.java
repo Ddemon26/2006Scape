@@ -5,7 +5,7 @@
 final class ObjectManager {
 
 	public ObjectManager(byte abyte0[][][], int ai[][][]) {
-		anInt145 = 99;
+		lowestPlane = 99;
 		anInt146 = 104;
 		anInt147 = 104;
 		anIntArrayArrayArray129 = ai;
@@ -17,11 +17,11 @@ final class ObjectManager {
 		anIntArrayArrayArray135 = new int[4][anInt146 + 1][anInt147 + 1];
 		aByteArrayArrayArray134 = new byte[4][anInt146 + 1][anInt147 + 1];
 		anIntArrayArray139 = new int[anInt146 + 1][anInt147 + 1];
-		anIntArray124 = new int[anInt147];
-		anIntArray125 = new int[anInt147];
-		anIntArray126 = new int[anInt147];
-		anIntArray127 = new int[anInt147];
-		anIntArray128 = new int[anInt147];
+		tileHues = new int[anInt147];
+		tileSaturations = new int[anInt147];
+		tileLightness = new int[anInt147];
+		tileHueMultiplier = new int[anInt147];
+		tileCount = new int[anInt147];
 	}
 
 	private static int method170(int i, int j) {
@@ -88,11 +88,11 @@ final class ObjectManager {
 			}
 
 			for (int k5 = 0; k5 < anInt147; k5++) {
-				anIntArray124[k5] = 0;
-				anIntArray125[k5] = 0;
-				anIntArray126[k5] = 0;
-				anIntArray127[k5] = 0;
-				anIntArray128[k5] = 0;
+				tileHues[k5] = 0;
+				tileSaturations[k5] = 0;
+				tileLightness[k5] = 0;
+				tileHueMultiplier[k5] = 0;
+				tileCount[k5] = 0;
 			}
 
 			for (int l6 = -5; l6 < anInt146 + 5; l6++) {
@@ -102,11 +102,11 @@ final class ObjectManager {
 						int l12 = aByteArrayArrayArray142[l][k9][i8] & 0xff;
 						if (l12 > 0) {
 							Flo flo = Flo.cache[l12 - 1];
-							anIntArray124[i8] += flo.anInt397;
-							anIntArray125[i8] += flo.anInt395;
-							anIntArray126[i8] += flo.anInt396;
-							anIntArray127[i8] += flo.anInt398;
-							anIntArray128[i8]++;
+							tileHues[i8] += flo.anInt397;
+							tileSaturations[i8] += flo.anInt395;
+							tileLightness[i8] += flo.anInt396;
+							tileHueMultiplier[i8] += flo.anInt398;
+							tileCount[i8]++;
 						}
 					}
 					int i13 = l6 - 5;
@@ -114,11 +114,11 @@ final class ObjectManager {
 						int i14 = aByteArrayArrayArray142[l][i13][i8] & 0xff;
 						if (i14 > 0) {
 							Flo flo_1 = Flo.cache[i14 - 1];
-							anIntArray124[i8] -= flo_1.anInt397;
-							anIntArray125[i8] -= flo_1.anInt395;
-							anIntArray126[i8] -= flo_1.anInt396;
-							anIntArray127[i8] -= flo_1.anInt398;
-							anIntArray128[i8]--;
+							tileHues[i8] -= flo_1.anInt397;
+							tileSaturations[i8] -= flo_1.anInt395;
+							tileLightness[i8] -= flo_1.anInt396;
+							tileHueMultiplier[i8] -= flo_1.anInt398;
+							tileCount[i8]--;
 						}
 					}
 				}
@@ -132,23 +132,23 @@ final class ObjectManager {
 					for (int k17 = -5; k17 < anInt147 + 5; k17++) {
 						int j18 = k17 + 5;
 						if (j18 >= 0 && j18 < anInt147) {
-							l9 += anIntArray124[j18];
-							j13 += anIntArray125[j18];
-							j14 += anIntArray126[j18];
-							k15 += anIntArray127[j18];
-							k16 += anIntArray128[j18];
+							l9 += tileHues[j18];
+							j13 += tileSaturations[j18];
+							j14 += tileLightness[j18];
+							k15 += tileHueMultiplier[j18];
+							k16 += tileCount[j18];
 						}
 						int k18 = k17 - 5;
 						if (k18 >= 0 && k18 < anInt147) {
-							l9 -= anIntArray124[k18];
-							j13 -= anIntArray125[k18];
-							j14 -= anIntArray126[k18];
-							k15 -= anIntArray127[k18];
-							k16 -= anIntArray128[k18];
+							l9 -= tileHues[k18];
+							j13 -= tileSaturations[k18];
+							j14 -= tileLightness[k18];
+							k15 -= tileHueMultiplier[k18];
+							k16 -= tileCount[k18];
 						}
-						if (k17 >= 1 && k17 < anInt147 - 1 && ((!hideBuggyVarrockSwordShopSnow && !hideRoofs && !lowMem) || (aByteArrayArrayArray149[0][l6][k17] & 2) != 0 || (aByteArrayArrayArray149[l][l6][k17] & 0x10) == 0 && method182(k17, l, l6) == anInt131)) {
-							if (l < anInt145) {
-								anInt145 = l;
+						if (k17 >= 1 && k17 < anInt147 - 1 && ((!hideBuggyVarrockSwordShopSnow && !hideRoofs && !lowMem) || (aByteArrayArrayArray149[0][l6][k17] & 2) != 0 || (aByteArrayArrayArray149[l][l6][k17] & 0x10) == 0 && method182(k17, l, l6) == currentPlane)) {
+							if (l < lowestPlane) {
+								lowestPlane = l;
 							}
 							int l18 = aByteArrayArrayArray142[l][l6][k17] & 0xff;
 							int i19 = aByteArrayArrayArray130[l][l6][k17] & 0xff;
@@ -432,7 +432,7 @@ final class ObjectManager {
 		}
 	}
 
-	public final void method174(int i, int j, int l, int i1) {
+	public final void clearRegion(int i, int j, int l, int i1) {
 		for (int j1 = i; j1 <= i + j; j1++) {
 			for (int k1 = i1; k1 <= i1 + l; k1++) {
 				if (k1 >= 0 && k1 < anInt146 && j1 >= 0 && j1 < anInt147) {
@@ -455,17 +455,17 @@ final class ObjectManager {
 		}
 	}
 
-	private void method175(int i, WorldController worldController, CollisionMap class11, int j, int k, int l, int i1, int j1) {
+	private void placeObject(int i, WorldController worldController, CollisionMap class11, int j, int k, int l, int i1, int j1) {
 		if ((hideRoofs || lowMem) && (aByteArrayArrayArray149[0][l][i] & 2) == 0) {
 			if ((aByteArrayArrayArray149[k][l][i] & 0x10) != 0) {
 				return;
 			}
-			if (method182(i, k, l) != anInt131) {
+			if (method182(i, k, l) != currentPlane) {
 				return;
 			}
 		}
-		if (k < anInt145) {
-			anInt145 = k;
+		if (k < lowestPlane) {
+			lowestPlane = k;
 		}
 		int k1 = anIntArrayArrayArray129[k][l][i];
 		int l1 = anIntArrayArrayArray129[k][l + 1][i];
@@ -824,7 +824,7 @@ final class ObjectManager {
 		return class46.isModelReady(j);
 	}
 
-	public final void method179(int i, int j, CollisionMap aclass11[], int l, int i1, byte abyte0[], int j1, int k1, int l1) {
+	public final void loadChunk(int i, int j, CollisionMap aclass11[], int l, int i1, byte abyte0[], int j1, int k1, int l1) {
 		for (int i2 = 0; i2 < 8; i2++) {
 			for (int j2 = 0; j2 < 8; j2++) {
 				if (l + i2 > 0 && l + i2 < 103 && l1 + j2 > 0 && l1 + j2 < 103) {
@@ -838,9 +838,9 @@ final class ObjectManager {
 			for (int i3 = 0; i3 < 64; i3++) {
 				for (int j3 = 0; j3 < 64; j3++) {
 					if (l2 == i && i3 >= i1 && i3 < i1 + 8 && j3 >= j1 && j3 < j1 + 8) {
-						method181(l1 + TileRotation.rotateY(j3 & 7, j, i3 & 7), 0, stream, l + TileRotation.rotateX(j, j3 & 7, i3 & 7), k1, j, 0);
+						readTile(l1 + TileRotation.rotateY(j3 & 7, j, i3 & 7), 0, stream, l + TileRotation.rotateX(j, j3 & 7, i3 & 7), k1, j, 0);
 					} else {
-						method181(-1, 0, stream, -1, 0, 0, 0);
+						readTile(-1, 0, stream, -1, 0, 0, 0);
 					}
 				}
 
@@ -850,7 +850,7 @@ final class ObjectManager {
 
 	}
 
-	public final void method180(byte abyte0[], int i, int j, int k, int l, CollisionMap aclass11[]) {
+	public final void loadRegion(byte abyte0[], int i, int j, int k, int l, CollisionMap aclass11[]) {
 		for (int i1 = 0; i1 < 4; i1++) {
 			for (int j1 = 0; j1 < 64; j1++) {
 				for (int k1 = 0; k1 < 64; k1++) {
@@ -867,7 +867,7 @@ final class ObjectManager {
 		for (int l1 = 0; l1 < 4; l1++) {
 			for (int i2 = 0; i2 < 64; i2++) {
 				for (int j2 = 0; j2 < 64; j2++) {
-					method181(j2 + i, l, stream, i2 + j, l1, 0, k);
+					readTile(j2 + i, l, stream, i2 + j, l1, 0, k);
 				}
 
 			}
@@ -875,7 +875,7 @@ final class ObjectManager {
 		}
 	}
 
-	private void method181(int i, int j, Stream stream, int k, int l, int i1, int k1) {
+	private void readTile(int i, int j, Stream stream, int k, int l, int i1, int k1) {
 		if (k >= 0 && k < 104 && i >= 0 && i < 104) {
 			aByteArrayArrayArray149[l][k][i] = 0;
 			do {
@@ -939,7 +939,7 @@ final class ObjectManager {
 		}
 	}
 
-	public final void method183(CollisionMap aclass11[], WorldController worldController, int i, int j, int k, int l, byte abyte0[], int i1, int j1, int k1) {
+	public final void loadObjectChunk(CollisionMap aclass11[], WorldController worldController, int i, int j, int k, int l, byte abyte0[], int i1, int j1, int k1) {
 		label0 : {
 			Stream stream = new Stream(abyte0);
 			int l1 = -1;
@@ -975,7 +975,7 @@ final class ObjectManager {
 							if (l4 >= 0) {
 								class11 = aclass11[l4];
 							}
-							method175(k4, worldController, class11, l3, l, j4, l1, i4 + j1 & 3);
+							placeObject(k4, worldController, class11, l3, l, j4, l1, i4 + j1 & 3);
 						}
 					}
 				} while (true);
@@ -1030,7 +1030,7 @@ final class ObjectManager {
 		return (i & 0xff80) + j;
 	}
 
-	public static void method188(WorldController worldController, int i, int j, int k, int l, CollisionMap class11, int ai[][][], int i1, int j1, int k1) {
+	public static void addObject(WorldController worldController, int i, int j, int k, int l, CollisionMap class11, int ai[][][], int i1, int j1, int k1) {
 		int l1 = ai[l][i1][j];
 		int i2 = ai[l][i1 + 1][j];
 		int j2 = ai[l][i1 + 1][j + 1];
@@ -1243,7 +1243,7 @@ final class ObjectManager {
 		}
 	}
 
-	public static boolean method189(int i, byte[] is, int i_250_) // xxx bad
+	public static boolean areObjectsReady(int i, byte[] is, int i_250_) // xxx bad
 																	// method,
 																	// decompiled
 																	// with JODE
@@ -1290,7 +1290,7 @@ final class ObjectManager {
 		return bool;
 	}
 
-	public final void method190(int i, CollisionMap aclass11[], int j, WorldController worldController, byte abyte0[]) {
+	public final void loadObjects(int i, CollisionMap aclass11[], int j, WorldController worldController, byte abyte0[]) {
 		label0 : {
 			Stream stream = new Stream(abyte0);
 			int l = -1;
@@ -1324,7 +1324,7 @@ final class ObjectManager {
 						if (l3 >= 0) {
 							class11 = aclass11[l3];
 						}
-						method175(k3, worldController, class11, l2, j2, j3, l, i3);
+						placeObject(k3, worldController, class11, l2, j2, j3, l, i3);
 					}
 				} while (true);
 			} while (true);
@@ -1332,14 +1332,14 @@ final class ObjectManager {
 	}
 
 	private static int anInt123 = (int) (Math.random() * 17D) - 8;
-	private final int[] anIntArray124;
-	private final int[] anIntArray125;
-	private final int[] anIntArray126;
-	private final int[] anIntArray127;
-	private final int[] anIntArray128;
+	private final int[] tileHues;
+	private final int[] tileSaturations;
+	private final int[] tileLightness;
+	private final int[] tileHueMultiplier;
+	private final int[] tileCount;
 	private final int[][][] anIntArrayArrayArray129;
 	private final byte[][][] aByteArrayArrayArray130;
-	static int anInt131;
+	static int currentPlane;
 	private static int anInt133 = (int) (Math.random() * 33D) - 16;
 	private final byte[][][] aByteArrayArrayArray134;
 	private final int[][][] anIntArrayArrayArray135;
@@ -1349,7 +1349,7 @@ final class ObjectManager {
 	private static final int anIntArray140[] = {16, 32, 64, 128};
 	private final byte[][][] aByteArrayArrayArray142;
 	private static final int anIntArray144[] = {0, -1, 0, 1};
-	static int anInt145 = 99;
+	static int lowestPlane = 99;
 	private final int anInt146;
 	private final int anInt147;
 	private final byte[][][] aByteArrayArrayArray148;
