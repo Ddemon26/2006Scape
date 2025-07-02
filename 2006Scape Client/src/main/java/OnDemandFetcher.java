@@ -53,11 +53,11 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				int i2 = ioBuffer[5] & 0xff;
 				current = null;
 				for (OnDemandData onDemandData = (OnDemandData) requested.reverseGetFirst(); onDemandData != null; onDemandData = (OnDemandData) requested.reverseGetNext()) {
-					if (onDemandData.dataType == l && onDemandData.ID == j1) {
-						current = onDemandData;
-					}
-					if (current != null) {
-						onDemandData.loopCycle = 0;
+                                       if (onDemandData.type == l && onDemandData.id == j1) {
+                                               current = onDemandData;
+                                       }
+                                       if (current != null) {
+                                               onDemandData.cycleCount = 0;
 					}
 				}
 
@@ -65,7 +65,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 					loopCycle = 0;
 					if (l1 == 0) {
 						Signlink.reporterror("Rej: " + l + "," + j1);
-						current.buffer = null;
+                                               current.data = null;
 						if (current.incomplete) {
 							synchronized (aClass19_1358) {
 								aClass19_1358.insertHead(current);
@@ -75,12 +75,12 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 						}
 						current = null;
 					} else {
-						if (current.buffer == null && i2 == 0) {
-							current.buffer = new byte[l1];
-						}
-						if (current.buffer == null && i2 != 0) {
-							throw new IOException("missing start of file");
-						}
+                                               if (current.data == null && i2 == 0) {
+                                                       current.data = new byte[l1];
+                                               }
+                                               if (current.data == null && i2 != 0) {
+                                                       throw new IOException("missing start of file");
+                                               }
 					}
 				}
 				completedSize = i2 * 500;
@@ -91,23 +91,23 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			}
 			if (expectedSize > 0 && available >= expectedSize) {
 				waiting = true;
-				byte abyte0[] = ioBuffer;
-				int i1 = 0;
-				if (current != null) {
-					abyte0 = current.buffer;
-					i1 = completedSize;
+                               byte abyte0[] = ioBuffer;
+                               int i1 = 0;
+                               if (current != null) {
+                                       abyte0 = current.data;
+                                       i1 = completedSize;
 				}
 				for (int k1 = 0; k1 < expectedSize; k1 += inputStream.read(abyte0, k1 + i1, expectedSize - k1)) {
 					;
 				}
 				if (expectedSize + completedSize >= abyte0.length && current != null) {
-                                        if (clientInstance.decompressors[0] != null) {
-                                                clientInstance.decompressors[current.dataType + 1].writeEntry(abyte0.length, abyte0, current.ID);
-					}
-					if (!current.incomplete && current.dataType == 3) {
-						current.incomplete = true;
-						current.dataType = 93;
-					}
+                                       if (clientInstance.decompressors[0] != null) {
+                                               clientInstance.decompressors[current.type + 1].writeEntry(abyte0.length, abyte0, current.id);
+                                       }
+                                       if (!current.incomplete && current.type == 3) {
+                                               current.incomplete = true;
+                                               current.type = 93;
+                                       }
 					if (current.incomplete) {
 						synchronized (aClass19_1358) {
 							aClass19_1358.insertHead(current);
@@ -245,9 +245,9 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 
 				loopCycle = 0;
 			}
-			ioBuffer[0] = (byte) onDemandData.dataType;
-			ioBuffer[1] = (byte) (onDemandData.ID >> 8);
-			ioBuffer[2] = (byte) onDemandData.ID;
+                       ioBuffer[0] = (byte) onDemandData.type;
+                       ioBuffer[1] = (byte) (onDemandData.id >> 8);
+                       ioBuffer[2] = (byte) onDemandData.id;
 			if (onDemandData.incomplete) {
 				ioBuffer[3] = 2;
 			} else if (!clientInstance.loggedIn) {
@@ -284,15 +284,15 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			return;
 		}
 		synchronized (nodeSubList) {
-			for (OnDemandData onDemandData = (OnDemandData) nodeSubList.reverseGetFirst(); onDemandData != null; onDemandData = (OnDemandData) nodeSubList.reverseGetNext()) {
-				if (onDemandData.dataType == i && onDemandData.ID == j) {
-					return;
-				}
-			}
+                       for (OnDemandData onDemandData = (OnDemandData) nodeSubList.reverseGetFirst(); onDemandData != null; onDemandData = (OnDemandData) nodeSubList.reverseGetNext()) {
+                               if (onDemandData.type == i && onDemandData.id == j) {
+                                       return;
+                               }
+                       }
 
-			OnDemandData onDemandData_1 = new OnDemandData();
-			onDemandData_1.dataType = i;
-			onDemandData_1.ID = j;
+                       OnDemandData onDemandData_1 = new OnDemandData();
+                       onDemandData_1.type = i;
+                       onDemandData_1.id = j;
 			onDemandData_1.incomplete = true;
 			synchronized (aClass19_1370) {
 				aClass19_1370.insertHead(onDemandData_1);
@@ -339,23 +339,23 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				for (OnDemandData onDemandData = (OnDemandData) requested.reverseGetFirst(); onDemandData != null; onDemandData = (OnDemandData) requested.reverseGetNext()) {
 					if (onDemandData.incomplete) {
 						flag = true;
-						onDemandData.loopCycle++;
-						if (onDemandData.loopCycle > 50) {
-							onDemandData.loopCycle = 0;
-							closeRequest(onDemandData);
-						}
+                                               onDemandData.cycleCount++;
+                                               if (onDemandData.cycleCount > 50) {
+                                                       onDemandData.cycleCount = 0;
+                                                       closeRequest(onDemandData);
+                                               }
 					}
 				}
 
 				if (!flag) {
-					for (OnDemandData onDemandData_1 = (OnDemandData) requested.reverseGetFirst(); onDemandData_1 != null; onDemandData_1 = (OnDemandData) requested.reverseGetNext()) {
-						flag = true;
-						onDemandData_1.loopCycle++;
-						if (onDemandData_1.loopCycle > 50) {
-							onDemandData_1.loopCycle = 0;
-							closeRequest(onDemandData_1);
-						}
-					}
+                                       for (OnDemandData onDemandData_1 = (OnDemandData) requested.reverseGetFirst(); onDemandData_1 != null; onDemandData_1 = (OnDemandData) requested.reverseGetNext()) {
+                                               flag = true;
+                                               onDemandData_1.cycleCount++;
+                                               if (onDemandData_1.cycleCount > 50) {
+                                                       onDemandData_1.cycleCount = 0;
+                                                       closeRequest(onDemandData_1);
+                                               }
+                                       }
 
 				}
 				if (flag) {
@@ -408,9 +408,9 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
                 if (currentPriority == 0) {
 			return;
 		}
-		OnDemandData onDemandData = new OnDemandData();
-		onDemandData.dataType = j;
-		onDemandData.ID = i;
+               OnDemandData onDemandData = new OnDemandData();
+               onDemandData.type = j;
+               onDemandData.id = i;
 		onDemandData.incomplete = false;
                 synchronized (requestedQueue) {
                         requestedQueue.insertHead(onDemandData);
@@ -428,12 +428,12 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		synchronized (nodeSubList) {
 			onDemandData.unlinkSub();
 		}
-		if (onDemandData.buffer == null) {
-			return onDemandData;
-		}
-		int i = 0;
-		try {
-			GZIPInputStream gzipinputstream = new GZIPInputStream(new ByteArrayInputStream(onDemandData.buffer));
+               if (onDemandData.data == null) {
+                       return onDemandData;
+               }
+               int i = 0;
+               try {
+                       GZIPInputStream gzipinputstream = new GZIPInputStream(new ByteArrayInputStream(onDemandData.data));
 			do {
 				if (i == gzipInputBuffer.length) {
 					throw new RuntimeException("buffer overflow!");
@@ -447,8 +447,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		} catch (IOException _ex) {
 			throw new RuntimeException("error unzipping");
 		}
-		onDemandData.buffer = new byte[i];
-		System.arraycopy(gzipInputBuffer, 0, onDemandData.buffer, 0, i);
+               onDemandData.data = new byte[i];
+               System.arraycopy(gzipInputBuffer, 0, onDemandData.data, 0, i);
 
 		return onDemandData;
 	}
@@ -515,11 +515,11 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			if (onDemandData_1 == null) {
 				break;
 			}
-			if (fileStatus[onDemandData_1.dataType][onDemandData_1.ID] != 0) {
-				filesLoaded++;
-			}
-			fileStatus[onDemandData_1.dataType][onDemandData_1.ID] = 0;
-			requested.insertHead(onDemandData_1);
+                       if (fileStatus[onDemandData_1.type][onDemandData_1.id] != 0) {
+                               filesLoaded++;
+                       }
+                       fileStatus[onDemandData_1.type][onDemandData_1.id] = 0;
+                       requested.insertHead(onDemandData_1);
 			uncompletedCount++;
 			closeRequest(onDemandData_1);
 			waiting = true;
@@ -541,16 +541,16 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			waiting = true;
 			byte abyte0[] = null;
 			if (clientInstance.decompressors[0] != null) {
-				abyte0 = clientInstance.decompressors[onDemandData.dataType + 1].decompress(onDemandData.ID);
-			}
-			if (!crcMatches(versions[onDemandData.dataType][onDemandData.ID], crcs[onDemandData.dataType][onDemandData.ID], abyte0)) {
-				abyte0 = null;
-			}
+                               abyte0 = clientInstance.decompressors[onDemandData.type + 1].decompress(onDemandData.id);
+                       }
+                       if (!crcMatches(versions[onDemandData.type][onDemandData.id], crcs[onDemandData.type][onDemandData.id], abyte0)) {
+                               abyte0 = null;
+                       }
 			synchronized (aClass19_1370) {
 				if (abyte0 == null) {
 					aClass19_1368.insertHead(onDemandData);
 				} else {
-					onDemandData.buffer = abyte0;
+                                       onDemandData.data = abyte0;
 					synchronized (aClass19_1358) {
 						aClass19_1358.insertHead(onDemandData);
 					}
@@ -570,11 +570,11 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
                                 onDemandData = (OnDemandData) requestedQueue.popHead();
                         }
                         while (onDemandData != null) {
-				if (fileStatus[onDemandData.dataType][onDemandData.ID] != 0) {
-					fileStatus[onDemandData.dataType][onDemandData.ID] = 0;
-					requested.insertHead(onDemandData);
-					closeRequest(onDemandData);
-					waiting = true;
+                               if (fileStatus[onDemandData.type][onDemandData.id] != 0) {
+                                       fileStatus[onDemandData.type][onDemandData.id] = 0;
+                                       requested.insertHead(onDemandData);
+                                       closeRequest(onDemandData);
+                                       waiting = true;
 					if (filesLoaded < totalFiles) {
 						filesLoaded++;
 					}
@@ -594,10 +594,10 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				for (int l = 0; l < k; l++) {
                                         if (abyte0[l] == currentPriority) {
 						abyte0[l] = 0;
-						OnDemandData onDemandData_1 = new OnDemandData();
-						onDemandData_1.dataType = j;
-						onDemandData_1.ID = l;
-						onDemandData_1.incomplete = false;
+                                               OnDemandData onDemandData_1 = new OnDemandData();
+                                               onDemandData_1.type = j;
+                                               onDemandData_1.id = l;
+                                               onDemandData_1.incomplete = false;
 						requested.insertHead(onDemandData_1);
 						closeRequest(onDemandData_1);
 						waiting = true;

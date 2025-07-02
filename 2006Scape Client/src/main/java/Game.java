@@ -2837,45 +2837,45 @@ public class Game extends RSApplet {
 				if (onDemandData == null) {
 					return;
 				}
-				if (onDemandData.dataType == 0) {
-					Model.loadModelData(onDemandData.buffer, onDemandData.ID);
-					if ((onDemandFetcher.getModelIndex(onDemandData.ID) & 0x62) != 0) {
-						needDrawTabArea = true;
-						if (backDialogID != -1) {
-							inputTaken = true;
-						}
-					}
-				}
-                                if (onDemandData.dataType == 1 && onDemandData.buffer != null) {
-                                        AnimFrame.load(onDemandData.buffer);
-				}
-				if (onDemandData.dataType == 2 && onDemandData.ID == nextSong && onDemandData.buffer != null) {
-					musicData = new byte[onDemandData.buffer.length];
-					System.arraycopy(onDemandData.buffer, 0, musicData, 0, musicData.length);
-					fetchMusic = true;
-				}
-				if (onDemandData.dataType == 3 && loadingStage == 1) {
-					for (int i = 0; i < aByteArrayArray1183.length; i++) {
-						if (anIntArray1235[i] == onDemandData.ID) {
-							aByteArrayArray1183[i] = onDemandData.buffer;
-							if (onDemandData.buffer == null) {
-								anIntArray1235[i] = -1;
-							}
-							break;
-						}
-						if (anIntArray1236[i] != onDemandData.ID) {
-							continue;
-						}
-						aByteArrayArray1247[i] = onDemandData.buffer;
-						if (onDemandData.buffer == null) {
-							anIntArray1236[i] = -1;
-						}
-						break;
-					}
+                               if (onDemandData.type == 0) {
+                                       Model.loadModelData(onDemandData.data, onDemandData.id);
+                                       if ((onDemandFetcher.getModelIndex(onDemandData.id) & 0x62) != 0) {
+                                               needDrawTabArea = true;
+                                               if (backDialogID != -1) {
+                                                       inputTaken = true;
+                                               }
+                                       }
+                               }
+                               if (onDemandData.type == 1 && onDemandData.data != null) {
+                                       AnimFrame.load(onDemandData.data);
+                               }
+                               if (onDemandData.type == 2 && onDemandData.id == nextSong && onDemandData.data != null) {
+                                       musicData = new byte[onDemandData.data.length];
+                                       System.arraycopy(onDemandData.data, 0, musicData, 0, musicData.length);
+                                       fetchMusic = true;
+                               }
+                               if (onDemandData.type == 3 && loadingStage == 1) {
+                                       for (int i = 0; i < aByteArrayArray1183.length; i++) {
+                                               if (anIntArray1235[i] == onDemandData.id) {
+                                                       aByteArrayArray1183[i] = onDemandData.data;
+                                                       if (onDemandData.data == null) {
+                                                               anIntArray1235[i] = -1;
+                                                       }
+                                                       break;
+                                               }
+                                               if (anIntArray1236[i] != onDemandData.id) {
+                                                       continue;
+                                               }
+                                               aByteArrayArray1247[i] = onDemandData.data;
+                                               if (onDemandData.data == null) {
+                                                       anIntArray1236[i] = -1;
+                                               }
+                                               break;
+                                       }
 
-				}
-                        } while (onDemandData.dataType != 93 || !onDemandFetcher.hasLandscape(onDemandData.ID));
-			ObjectManager.method173(new Stream(onDemandData.buffer), onDemandFetcher);
+                               }
+                       } while (onDemandData.type != 93 || !onDemandFetcher.hasLandscape(onDemandData.id));
+                       ObjectManager.method173(new Stream(onDemandData.data), onDemandFetcher);
 		} while (true);
 	}
 
