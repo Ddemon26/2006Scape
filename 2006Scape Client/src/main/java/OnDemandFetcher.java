@@ -256,8 +256,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				ioBuffer[3] = 0;
 			}
 			outputStream.write(ioBuffer, 0, 4);
-			writeLoopCycle = 0;
-			anInt1349 = -10000;
+                        writeLoopCycle = 0;
+                        socketErrorCount = -10000;
 			return;
 		} catch (IOException ioexception) {
 		}
@@ -268,8 +268,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		socket = null;
 		inputStream = null;
 		outputStream = null;
-		expectedSize = 0;
-		anInt1349++;
+                expectedSize = 0;
+                socketErrorCount++;
 	}
 
 	public int getAnimCount() {
@@ -412,10 +412,10 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		onDemandData.dataType = j;
 		onDemandData.ID = i;
 		onDemandData.incomplete = false;
-		synchronized (aClass19_1344) {
-			aClass19_1344.insertHead(onDemandData);
-		}
-	}
+                synchronized (requestedQueue) {
+                        requestedQueue.insertHead(onDemandData);
+                }
+        }
 
 	public OnDemandData getNextNode() {
 		OnDemandData onDemandData;
@@ -453,11 +453,11 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		return onDemandData;
 	}
 
-        public int method562(int i, int k, int l) {
-                int i1 = (l << 8) + k;
+        public int getRegionArchiveId(int type, int regionX, int regionY) {
+                int i1 = (regionY << 8) + regionX;
                 for (int j1 = 0; j1 < regionIds.length; j1++) {
                         if (regionIds[j1] == i1) {
-                                if (i == 0) {
+                                if (type == 0) {
                                         return mapArchiveIds[j1];
                                 } else {
                                         return landArchiveIds[j1];
@@ -468,9 +468,9 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
         }
 
         @Override
-        public void method548(int i) {
-                queueRequest(0, i);
-	}
+        public void requestModel(int modelId) {
+                queueRequest(0, modelId);
+        }
 
         public void validateOrQueue(byte byte0, int i, int j) {
 		if (clientInstance.decompressors[0] == null) {
@@ -527,8 +527,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	}
 
         public void clearPriorityQueue() {
-                synchronized (aClass19_1344) {
-                        aClass19_1344.removeAll();
+                synchronized (requestedQueue) {
+                        requestedQueue.removeAll();
                 }
         }
 
@@ -565,11 +565,11 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
                         if (currentPriority == 0) {
 				break;
 			}
-			OnDemandData onDemandData;
-			synchronized (aClass19_1344) {
-				onDemandData = (OnDemandData) aClass19_1344.popHead();
-			}
-			while (onDemandData != null) {
+                        OnDemandData onDemandData;
+                        synchronized (requestedQueue) {
+                                onDemandData = (OnDemandData) requestedQueue.popHead();
+                        }
+                        while (onDemandData != null) {
 				if (fileStatus[onDemandData.dataType][onDemandData.ID] != 0) {
 					fileStatus[onDemandData.dataType][onDemandData.ID] = 0;
 					requested.insertHead(onDemandData);
@@ -584,10 +584,10 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 						return;
 					}
 				}
-				synchronized (aClass19_1344) {
-					onDemandData = (OnDemandData) aClass19_1344.popHead();
-				}
-			}
+                                synchronized (requestedQueue) {
+                                        onDemandData = (OnDemandData) requestedQueue.popHead();
+                                }
+                        }
 			for (int j = 0; j < 4; j++) {
 				byte abyte0[] = fileStatus[j];
 				int k = abyte0.length;
@@ -627,8 +627,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		statusString = "";
 		crc32 = new CRC32();
 		ioBuffer = new byte[500];
-		fileStatus = new byte[4][];
-		aClass19_1344 = new NodeList();
+                fileStatus = new byte[4][];
+                requestedQueue = new NodeList();
 		running = true;
 		waiting = false;
 		aClass19_1358 = new NodeList();
@@ -652,11 +652,11 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	public int onDemandCycle;
 	private final byte[][] fileStatus;
 	private Game clientInstance;
-	private final NodeList aClass19_1344;
+        private final NodeList requestedQueue;
 	private int completedSize;
 	private int expectedSize;
 	int[] anIntArray1348;
-	public int anInt1349;
+        public int socketErrorCount;
         private int[] mapArchiveIds;
 	private int filesLoaded;
 	private boolean running;

@@ -4,8 +4,8 @@
 
 public class OnDemandFetcherParent {
 
-	public void method548(int i) {
-	}
+    public void requestModel(int i) {
+    }
 
 	OnDemandFetcherParent() {
 	}
