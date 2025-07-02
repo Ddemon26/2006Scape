@@ -11,14 +11,14 @@ final class WorldController {
 		int k = 4;// was parameter
 		aBoolean434 = true;
         sceneObjectCache = new SceneObject[5000];
-		anIntArray486 = new int[10000];
-		anIntArray487 = new int[10000];
+                vertexVisitA = new int[10000];
+                vertexVisitB = new int[10000];
                 planeCount = k;
                 worldWidth = j;
                 worldHeight = i;
 		groundArray = new Ground[k][j][i];
-		anIntArrayArrayArray445 = new int[k][j + 1][i + 1];
-		anIntArrayArrayArray440 = ai;
+                tileVisibility = new int[k][j + 1][i + 1];
+                tileHeights = ai;
 		initToNull();
 	}
 
@@ -248,7 +248,7 @@ final class WorldController {
 		} else {
 			int i2 = l1 * 128 + 64 * l;
 			int j2 = k1 * 128 + 64 * k;
-			return method287(i1, l1, k1, l, k, i2, j2, j, class30_sub2_sub4, j1, false, i, byte0);
+			return addSceneObject(i1, l1, k1, l, k, i2, j2, j, class30_sub2_sub4, j1, false, i, byte0);
 		}
 	}
 
@@ -278,14 +278,14 @@ final class WorldController {
 		i2 /= 128;
 		j2 /= 128;
 		k2 /= 128;
-		return method287(i, l1, i2, j2 - l1 + 1, k2 - i2 + 1, k1, i1, k, class30_sub2_sub4, j, true, l, (byte) 0);
+		return addSceneObject(i, l1, i2, j2 - l1 + 1, k2 - i2 + 1, k1, i1, k, class30_sub2_sub4, j, true, l, (byte) 0);
 	}
 
        public boolean addAnimatingObject(int j, int k, Animable class30_sub2_sub4, int l, int i1, int j1, int k1, int l1, int i2, int j2, int k2) {
-		return class30_sub2_sub4 == null || method287(j, l1, k2, i2 - l1 + 1, i1 - k2 + 1, j1, k, k1, class30_sub2_sub4, l, true, j2, (byte) 0);
+		return class30_sub2_sub4 == null || addSceneObject(j, l1, k2, i2 - l1 + 1, i1 - k2 + 1, j1, k, k1, class30_sub2_sub4, l, true, j2, (byte) 0);
 	}
 
-	private boolean method287(int i, int j, int k, int l, int i1, int j1, int k1, int l1, Animable class30_sub2_sub4, int i2, boolean flag, int j2, byte byte0) {
+	private boolean addSceneObject(int i, int j, int k, int l, int i1, int j1, int k1, int l1, Animable class30_sub2_sub4, int i2, boolean flag, int j2, byte byte0) {
 		for (int k2 = j; k2 < j + l; k2++) {
 			for (int l2 = k; l2 < k + i1; l2++) {
 				if (k2 < 0 || l2 < 0 || k2 >= worldWidth || l2 >= worldHeight) {
@@ -351,14 +351,14 @@ final class WorldController {
         public void clearObj5Cache() {
                 for (int i = 0; i < sceneObjectCachePos; i++) {
                         SceneObject object = sceneObjectCache[i];
-                        method289(object);
+                        removeSceneObject(object);
                         sceneObjectCache[i] = null;
                 }
 
             sceneObjectCachePos = 0;
 	}
 
-        private void method289(SceneObject sceneObject) {
+        private void removeSceneObject(SceneObject sceneObject) {
                 for (int j = sceneObject.startX; j <= sceneObject.endX; j++) {
                         for (int k = sceneObject.startY; k <= sceneObject.endY; k++) {
                                 Ground class30_sub3 = groundArray[sceneObject.plane][j][k];
@@ -428,7 +428,7 @@ final class WorldController {
                 for (int j1 = 0; j1 < class30_sub3.anInt1317; j1++) {
                         SceneObject sceneObject = class30_sub3.obj5Array[j1];
                         if ((sceneObject.uid >> 29 & 3) == 2 && sceneObject.startX == k && sceneObject.startY == l) {
-                                method289(sceneObject);
+                                removeSceneObject(sceneObject);
                                 return;
                         }
                 }
@@ -639,7 +639,7 @@ final class WorldController {
 							if (l2 >= 0 && l2 < worldHeight && (!flag || k2 >= k1 || l2 >= i2 || l2 < i1 && k2 != l)) {
 								Ground class30_sub3 = groundArray[j2][k2][l2];
 								if (class30_sub3 != null) {
-									int i3 = (anIntArrayArrayArray440[j2][k2][l2] + anIntArrayArrayArray440[j2][k2 + 1][l2] + anIntArrayArrayArray440[j2][k2][l2 + 1] + anIntArrayArrayArray440[j2][k2 + 1][l2 + 1]) / 4 - (anIntArrayArrayArray440[i][l][i1] + anIntArrayArrayArray440[i][l + 1][i1] + anIntArrayArrayArray440[i][l][i1 + 1] + anIntArrayArrayArray440[i][l + 1][i1 + 1]) / 4;
+									int i3 = (tileHeights[j2][k2][l2] + tileHeights[j2][k2 + 1][l2] + tileHeights[j2][k2][l2 + 1] + tileHeights[j2][k2 + 1][l2 + 1]) / 4 - (tileHeights[i][l][i1] + tileHeights[i][l + 1][i1] + tileHeights[i][l][i1 + 1] + tileHeights[i][l + 1][i1 + 1]) / 4;
 									BoundaryObject class10 = class30_sub3.obj1;
 									if (class10 != null && class10.primary != null && class10.primary.vertexNormals != null) {
 										method308(model, (Model) class10.primary, (k2 - l) * 128 + (1 - j) * 64, i3, (l2 - i1) * 128 + (1 - k) * 64, flag);
@@ -698,8 +698,8 @@ final class WorldController {
 									class33_2.z += class33_1.z;
 									class33_2.magnitude += class33_1.magnitude;
 									l++;
-									anIntArray486[j1] = anInt488;
-									anIntArray487[l2] = anInt488;
+									vertexVisitA[j1] = anInt488;
+									vertexVisitB[l2] = anInt488;
 								}
 							}
 
@@ -713,13 +713,13 @@ final class WorldController {
 			return;
 		}
 		for (int k1 = 0; k1 < model.anInt1630; k1++) {
-			if (anIntArray486[model.faceA[k1]] == anInt488 && anIntArray486[model.faceB[k1]] == anInt488 && anIntArray486[model.faceC[k1]] == anInt488) {
+			if (vertexVisitA[model.faceA[k1]] == anInt488 && vertexVisitA[model.faceB[k1]] == anInt488 && vertexVisitA[model.faceC[k1]] == anInt488) {
 				model.anIntArray1637[k1] = -1;
 			}
 		}
 
 		for (int l1 = 0; l1 < model_1.anInt1630; l1++) {
-			if (anIntArray487[model_1.faceA[l1]] == anInt488 && anIntArray487[model_1.faceB[l1]] == anInt488 && anIntArray487[model_1.faceC[l1]] == anInt488) {
+			if (vertexVisitB[model_1.faceA[l1]] == anInt488 && vertexVisitB[model_1.faceB[l1]] == anInt488 && vertexVisitB[model_1.faceC[l1]] == anInt488) {
 				model_1.anIntArray1637[l1] = -1;
 			}
 		}
@@ -929,7 +929,7 @@ final class WorldController {
 				for (int k2 = anInt451; k2 < anInt452; k2++) {
 					Ground class30_sub3 = aclass30_sub3[i2][k2];
 					if (class30_sub3 != null) {
-						if (class30_sub3.anInt1321 > i1 || !aBooleanArrayArray492[i2 - anInt453 + drawDistance][k2 - anInt454 + drawDistance] && anIntArrayArrayArray440[k1][i2][k2] - l < 50) {
+						if (class30_sub3.anInt1321 > i1 || !aBooleanArrayArray492[i2 - anInt453 + drawDistance][k2 - anInt454 + drawDistance] && tileHeights[k1][i2][k2] - l < 50) {
 							class30_sub3.aBoolean1322 = false;
 							class30_sub3.aBoolean1323 = false;
 							class30_sub3.anInt1325 = 0;
@@ -1503,10 +1503,10 @@ final class WorldController {
 		int i3 = l2 = i2 + 128;
 		int j3;
 		int k3 = j3 = k2 + 128;
-		int l3 = anIntArrayArrayArray440[i][j1][k1] - cameraZ;
-		int i4 = anIntArrayArrayArray440[i][j1 + 1][k1] - cameraZ;
-		int j4 = anIntArrayArrayArray440[i][j1 + 1][k1 + 1] - cameraZ;
-		int k4 = anIntArrayArrayArray440[i][j1][k1 + 1] - cameraZ;
+		int l3 = tileHeights[i][j1][k1] - cameraZ;
+		int i4 = tileHeights[i][j1 + 1][k1] - cameraZ;
+		int j4 = tileHeights[i][j1 + 1][k1 + 1] - cameraZ;
+		int k4 = tileHeights[i][j1][k1 + 1] - cameraZ;
 		int l4 = k2 * l + i2 * i1 >> 16;
 		k2 = k2 * i1 - i2 * l >> 16;
 		i2 = l4;
@@ -1817,7 +1817,7 @@ final class WorldController {
 	}
 
 	private boolean isTileVisible(int i, int j, int k) {
-		int l = anIntArrayArrayArray445[i][j][k];
+		int l = tileVisibility[i][j][k];
 		if (l == -anInt448) {
 			return false;
 		}
@@ -1826,11 +1826,11 @@ final class WorldController {
 		}
 		int i1 = j << 7;
 		int j1 = k << 7;
-		if (isPointVisible(i1 + 1, anIntArrayArrayArray440[i][j][k], j1 + 1) && isPointVisible(i1 + 128 - 1, anIntArrayArrayArray440[i][j + 1][k], j1 + 1) && isPointVisible(i1 + 128 - 1, anIntArrayArrayArray440[i][j + 1][k + 1], j1 + 128 - 1) && isPointVisible(i1 + 1, anIntArrayArrayArray440[i][j][k + 1], j1 + 128 - 1)) {
-			anIntArrayArrayArray445[i][j][k] = anInt448;
+		if (isPointVisible(i1 + 1, tileHeights[i][j][k], j1 + 1) && isPointVisible(i1 + 128 - 1, tileHeights[i][j + 1][k], j1 + 1) && isPointVisible(i1 + 128 - 1, tileHeights[i][j + 1][k + 1], j1 + 128 - 1) && isPointVisible(i1 + 1, tileHeights[i][j][k + 1], j1 + 128 - 1)) {
+			tileVisibility[i][j][k] = anInt448;
 			return true;
 		} else {
-			anIntArrayArrayArray445[i][j][k] = -anInt448;
+			tileVisibility[i][j][k] = -anInt448;
 			return false;
 		}
 	}
@@ -1841,7 +1841,7 @@ final class WorldController {
 		}
 		int i1 = j << 7;
 		int j1 = k << 7;
-		int k1 = anIntArrayArrayArray440[i][j][k] - 1;
+		int k1 = tileHeights[i][j][k] - 1;
 		int l1 = k1 - 120;
 		int i2 = k1 - 230;
 		int j2 = k1 - 238;
@@ -1949,7 +1949,7 @@ final class WorldController {
 		}
 		int i1 = j << 7;
 		int j1 = k << 7;
-		return isPointVisible(i1 + 1, anIntArrayArrayArray440[i][j][k] - l, j1 + 1) && isPointVisible(i1 + 128 - 1, anIntArrayArrayArray440[i][j + 1][k] - l, j1 + 1) && isPointVisible(i1 + 128 - 1, anIntArrayArrayArray440[i][j + 1][k + 1] - l, j1 + 128 - 1) && isPointVisible(i1 + 1, anIntArrayArrayArray440[i][j][k + 1] - l, j1 + 128 - 1);
+		return isPointVisible(i1 + 1, tileHeights[i][j][k] - l, j1 + 1) && isPointVisible(i1 + 128 - 1, tileHeights[i][j + 1][k] - l, j1 + 1) && isPointVisible(i1 + 128 - 1, tileHeights[i][j + 1][k + 1] - l, j1 + 128 - 1) && isPointVisible(i1 + 1, tileHeights[i][j][k + 1] - l, j1 + 128 - 1);
 	}
 
 	private boolean isAreaVisible(int i, int j, int k, int l, int i1, int j1) {
@@ -1959,11 +1959,11 @@ final class WorldController {
 			}
 			int k1 = j << 7;
 			int i2 = l << 7;
-			return isPointVisible(k1 + 1, anIntArrayArrayArray440[i][j][l] - j1, i2 + 1) && isPointVisible(k1 + 128 - 1, anIntArrayArrayArray440[i][j + 1][l] - j1, i2 + 1) && isPointVisible(k1 + 128 - 1, anIntArrayArrayArray440[i][j + 1][l + 1] - j1, i2 + 128 - 1) && isPointVisible(k1 + 1, anIntArrayArrayArray440[i][j][l + 1] - j1, i2 + 128 - 1);
+			return isPointVisible(k1 + 1, tileHeights[i][j][l] - j1, i2 + 1) && isPointVisible(k1 + 128 - 1, tileHeights[i][j + 1][l] - j1, i2 + 1) && isPointVisible(k1 + 128 - 1, tileHeights[i][j + 1][l + 1] - j1, i2 + 128 - 1) && isPointVisible(k1 + 1, tileHeights[i][j][l + 1] - j1, i2 + 128 - 1);
 		}
 		for (int l1 = j; l1 <= k; l1++) {
 			for (int j2 = l; j2 <= i1; j2++) {
-				if (anIntArrayArrayArray445[i][l1][j2] == -anInt448) {
+				if (tileVisibility[i][l1][j2] == -anInt448) {
 					return false;
 				}
 			}
@@ -1972,7 +1972,7 @@ final class WorldController {
 
 		int k2 = (j << 7) + 1;
 		int l2 = (l << 7) + 2;
-		int i3 = anIntArrayArrayArray440[i][j][l] - j1;
+		int i3 = tileHeights[i][j][l] - j1;
 		if (!isPointVisible(k2, i3, l2)) {
 			return false;
 		}
@@ -2053,12 +2053,12 @@ final class WorldController {
 	private final int planeCount;
 	private final int worldWidth;
 	private final int worldHeight;
-	private final int[][][] anIntArrayArrayArray440;
+	private final int[][][] tileHeights;
 	private final Ground[][][] groundArray;
 	private int activePlane;
         private int sceneObjectCachePos;
         private final SceneObject[] sceneObjectCache;
-	private final int[][][] anIntArrayArrayArray445;
+	private final int[][][] tileVisibility;
 	private static int anInt446;
 	private static int anInt447;
 	private static int anInt448;
@@ -2099,8 +2099,8 @@ final class WorldController {
 	private static final int[] anIntArray483 = {0, 4, 4, 8, 0, 0, 8, 0, 0};
 	private static final int[] anIntArray484 = {1, 1, 0, 0, 0, 8, 0, 0, 8};
 	private static final int[] anIntArray485 = {41, 39248, 41, 4643, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 43086, 41, 41, 41, 41, 41, 41, 41, 8602, 41, 28992, 41, 41, 41, 41, 41, 5056, 41, 41, 41, 7079, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 3131, 41, 41, 41};
-	private final int[] anIntArray486;
-	private final int[] anIntArray487;
+	private final int[] vertexVisitA;
+	private final int[] vertexVisitB;
 	private int anInt488;
 	private final int[][] anIntArrayArray489 = {new int[16], {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1}, {1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1}, {0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1}, {1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1}};
 	private final int[][] anIntArrayArray490 = {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}, {12, 8, 4, 0, 13, 9, 5, 1, 14, 10, 6, 2, 15, 11, 7, 3}, {15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0}, {3, 7, 11, 15, 2, 6, 10, 14, 1, 5, 9, 13, 0, 4, 8, 12}};
