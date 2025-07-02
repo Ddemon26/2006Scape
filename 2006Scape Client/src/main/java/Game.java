@@ -886,7 +886,7 @@ public class Game extends RSApplet {
 
 		int j1 = (238 + (int) (Math.random() * 20D) - 10 << 16) + (238 + (int) (Math.random() * 20D) - 10 << 8) + 238 + (int) (Math.random() * 20D) - 10;
 		int l1 = 238 + (int) (Math.random() * 20D) - 10 << 16;
-		aClass30_Sub2_Sub1_Sub1_1263.method343();
+		aClass30_Sub2_Sub1_Sub1_1263.initializeDrawingArea();
 		for (int i2 = 1; i2 < 103; i2++) {
 			for (int j2 = 1; j2 < 103; j2++) {
 				if ((byteGroundArray[i][j2][i2] & 0x18) == 0) {
@@ -1539,7 +1539,7 @@ public class Game extends RSApplet {
 						if (customSettingVisiblePlayerNames) {
 							// Show shops
 							npcScreenPos(((Entity) obj), ((Entity) obj).height + 15);
-							// ItemDef.getSprite(995, 1000, 0xffff00).drawSprite(spriteDrawX - 16, spriteDrawY - l);
+							// ItemDef.getSprite(995, 1000, 0xffff00).drawTransparentSprite(spriteDrawX - 16, spriteDrawY - l);
 							aTextDrawingArea_1270.textCenter(0x00ffff, "[SHOP]", spriteDrawY - 5, spriteDrawX);
 						}
 					} else if (customSettingVisiblePlayerNames) {
@@ -1556,11 +1556,11 @@ public class Game extends RSApplet {
 						npcScreenPos(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
 							if (player.skullIcon < 2) {
-								skullIcons[player.skullIcon].drawSprite(spriteDrawX - 12, spriteDrawY - l);
+								skullIcons[player.skullIcon].drawTransparentSprite(spriteDrawX - 12, spriteDrawY - l);
 								l += 25;
 							}
 							if (player.headIcon < 7) {
-								headIcons[player.headIcon].drawSprite(spriteDrawX - 12, spriteDrawY - l);
+								headIcons[player.headIcon].drawTransparentSprite(spriteDrawX - 12, spriteDrawY - l);
 								l += 18;
 							}
 						}
@@ -1568,7 +1568,7 @@ public class Game extends RSApplet {
 					if (j >= 0 && anInt855 == 10 && anInt933 == playerIndices[j]) {
 						npcScreenPos(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
-							headIconsHint[1].drawSprite(spriteDrawX - 12, spriteDrawY - l);
+							headIconsHint[1].drawTransparentSprite(spriteDrawX - 12, spriteDrawY - l);
 						}
 					}
 				} else {
@@ -1576,13 +1576,13 @@ public class Game extends RSApplet {
 					if (entityDef_1.anInt75 >= 0 && entityDef_1.anInt75 < headIcons.length) {
 						npcScreenPos(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
-							headIcons[entityDef_1.anInt75].drawSprite(spriteDrawX - 12, spriteDrawY - 30);
+							headIcons[entityDef_1.anInt75].drawTransparentSprite(spriteDrawX - 12, spriteDrawY - 30);
 						}
 					}
 					if (anInt855 == 1 && anInt1222 == npcIndices[j - playerCount] && loopCycle % 20 < 10) {
 						npcScreenPos(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
-							headIconsHint[0].drawSprite(spriteDrawX - 12, spriteDrawY - 28);
+							headIconsHint[0].drawTransparentSprite(spriteDrawX - 12, spriteDrawY - 28);
 						}
 					}
 				}
@@ -1641,7 +1641,7 @@ public class Game extends RSApplet {
 								spriteDrawX += 15;
 								spriteDrawY -= 10;
 							}
-							hitMarks[((Entity) obj).hitMarkTypes[j1]].drawSprite(spriteDrawX - 12, spriteDrawY - 12);
+							hitMarks[((Entity) obj).hitMarkTypes[j1]].drawTransparentSprite(spriteDrawX - 12, spriteDrawY - 12);
 							aTextDrawingArea_1270.textCenter(0, String.valueOf(((Entity) obj).hitArray[j1]), spriteDrawY + 4, spriteDrawX);
 							aTextDrawingArea_1270.textCenter(0xffffff, String.valueOf(((Entity) obj).hitArray[j1]), spriteDrawY + 3, spriteDrawX - 1);
 						}
@@ -1791,12 +1791,12 @@ public class Game extends RSApplet {
 		Sprite buttonLeft = new Sprite(streamLoader_2, "miscgraphics", enabled ? 7 : 4);
 		Sprite buttonRight = new Sprite(streamLoader_2, "miscgraphics", enabled ? 8 : 6);
 		int curWidth = 30;
-		buttonLeft.drawSprite(x, y);
+		buttonLeft.drawTransparentSprite(x, y);
 		while ((curWidth + 26) < width) {
-			buttonRight.drawSprite(x + curWidth, y);
+			buttonRight.drawTransparentSprite(x + curWidth, y);
 			curWidth += 26;
 		}
-		buttonRight.drawSprite(x + width - 30, y);
+		buttonRight.drawTransparentSprite(x + width - 30, y);
 	}
 
 	public void drawCheckbox(boolean enabled, int x, int y) {
@@ -1820,7 +1820,7 @@ public class Game extends RSApplet {
 						int textBottom = 29;
 
 						drawButton(customSettingVisiblePlayerNames, centerX - 73, currentY, 146);
-						// buttonLeftDisabled.drawSprite(centerX - 73, currentY);
+						// buttonLeftDisabled.drawTransparentSprite(centerX - 73, currentY);
 						aTextDrawingArea_1271.textCenterShadow(Color.YELLOW.hashCode(), centerX, "always visible", currentY + textTop, true);
 						aTextDrawingArea_1271.textCenterShadow(Color.YELLOW.hashCode(), centerX, "player names", currentY + textBottom, true);
 						
@@ -2776,23 +2776,23 @@ public class Game extends RSApplet {
 		byte abyte0[] = titleStreamLoader.getDataForName("title.dat");
 		Sprite sprite = new Sprite(abyte0, this);
 		aRSImageProducer_1110.initDrawingArea();
-		sprite.method346(0, 0);
+		sprite.drawSprite(0, 0);
 		aRSImageProducer_1111.initDrawingArea();
-		sprite.method346(-637, 0);
+		sprite.drawSprite(-637, 0);
 		aRSImageProducer_1107.initDrawingArea();
-		sprite.method346(-128, 0);
+		sprite.drawSprite(-128, 0);
 		aRSImageProducer_1108.initDrawingArea();
-		sprite.method346(-202, -371);
+		sprite.drawSprite(-202, -371);
 		aRSImageProducer_1109.initDrawingArea();
-		sprite.method346(-202, -171);
+		sprite.drawSprite(-202, -171);
 		aRSImageProducer_1112.initDrawingArea();
-		sprite.method346(0, -265);
+		sprite.drawSprite(0, -265);
 		aRSImageProducer_1113.initDrawingArea();
-		sprite.method346(-562, -265);
+		sprite.drawSprite(-562, -265);
 		aRSImageProducer_1114.initDrawingArea();
-		sprite.method346(-128, -171);
+		sprite.drawSprite(-128, -171);
 		aRSImageProducer_1115.initDrawingArea();
-		sprite.method346(-562, -171);
+		sprite.drawSprite(-562, -171);
 		int ai[] = new int[sprite.width];
 		for (int j = 0; j < sprite.height; j++) {
 			for (int k = 0; k < sprite.width; k++) {
@@ -2804,26 +2804,26 @@ public class Game extends RSApplet {
 		}
 
 		aRSImageProducer_1110.initDrawingArea();
-		sprite.method346(382, 0);
+		sprite.drawSprite(382, 0);
 		aRSImageProducer_1111.initDrawingArea();
-		sprite.method346(-255, 0);
+		sprite.drawSprite(-255, 0);
 		aRSImageProducer_1107.initDrawingArea();
-		sprite.method346(254, 0);
+		sprite.drawSprite(254, 0);
 		aRSImageProducer_1108.initDrawingArea();
-		sprite.method346(180, -371);
+		sprite.drawSprite(180, -371);
 		aRSImageProducer_1109.initDrawingArea();
-		sprite.method346(180, -171);
+		sprite.drawSprite(180, -171);
 		aRSImageProducer_1112.initDrawingArea();
-		sprite.method346(382, -265);
+		sprite.drawSprite(382, -265);
 		aRSImageProducer_1113.initDrawingArea();
-		sprite.method346(-180, -265);
+		sprite.drawSprite(-180, -265);
 		aRSImageProducer_1114.initDrawingArea();
-		sprite.method346(254, -171);
+		sprite.drawSprite(254, -171);
 		aRSImageProducer_1115.initDrawingArea();
-		sprite.method346(-180, -171);
+		sprite.drawSprite(-180, -171);
 		sprite = new Sprite(titleStreamLoader, "logo", 0);
 		aRSImageProducer_1107.initDrawingArea();
-		sprite.drawSprite(382 - sprite.width / 2 - 128, 18);
+		sprite.drawTransparentSprite(382 - sprite.width / 2 - 128, 18);
 		sprite = null;
 		System.gc();
 
@@ -2967,7 +2967,7 @@ public class Game extends RSApplet {
 		}
 		calcEntityScreenPos((anInt934 - baseX << 7) + anInt937, anInt936 * 2, (anInt935 - baseY << 7) + anInt938);
 		if (spriteDrawX > -1 && loopCycle % 20 < 10) {
-			headIconsHint[0].drawSprite(spriteDrawX - 12, spriteDrawY - 28);
+			headIconsHint[0].drawTransparentSprite(spriteDrawX - 12, spriteDrawY - 28);
 		}
 	}
 
@@ -5913,7 +5913,7 @@ public class Game extends RSApplet {
 			double d = Math.atan2((double) l1, (double) i2);
 			int j2 = (int) (Math.sin(d) * 63D);
 			int k2 = (int) (Math.cos(d) * 57D);
-			mapEdge.method353(83 - k2 - 20, d, 94 + j2 + 4 - 10);
+			mapEdge.drawRotated(83 - k2 - 20, d, 94 + j2 + 4 - 10);
 		} else {
 			markMinimap(sprite, x, y);
 		}
@@ -7162,7 +7162,7 @@ public class Game extends RSApplet {
 
 			compass = new Sprite(streamLoader_2, "compass", 0);
 			mapEdge = new Sprite(streamLoader_2, "mapedge", 0);
-			mapEdge.method345();
+			mapEdge.crop();
 
 			multiOverlay = new Sprite(streamLoader_2, "overlay_multiway", 0);
 			try {
@@ -7236,38 +7236,38 @@ public class Game extends RSApplet {
 
 			Sprite sprite = new Sprite(streamLoader_2, "backleft1", 0);
 			backLeftIP1 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
-			sprite.method346(0, 0);
+			sprite.drawSprite(0, 0);
 			sprite = new Sprite(streamLoader_2, "backleft2", 0);
 			backLeftIP2 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
-			sprite.method346(0, 0);
+			sprite.drawSprite(0, 0);
 			sprite = new Sprite(streamLoader_2, "backright1", 0);
 			backRightIP1 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
-			sprite.method346(0, 0);
+			sprite.drawSprite(0, 0);
 			sprite = new Sprite(streamLoader_2, "backright2", 0);
 			backRightIP2 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
-			sprite.method346(0, 0);
+			sprite.drawSprite(0, 0);
 			sprite = new Sprite(streamLoader_2, "backtop1", 0);
 			backTopIP1 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
-			sprite.method346(0, 0);
+			sprite.drawSprite(0, 0);
 			sprite = new Sprite(streamLoader_2, "backvmid1", 0);
 			backVmidIP1 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
-			sprite.method346(0, 0);
+			sprite.drawSprite(0, 0);
 			sprite = new Sprite(streamLoader_2, "backvmid2", 0);
 			backVmidIP2 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
-			sprite.method346(0, 0);
+			sprite.drawSprite(0, 0);
 			sprite = new Sprite(streamLoader_2, "backvmid3", 0);
 			backVmidIP3 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
-			sprite.method346(0, 0);
+			sprite.drawSprite(0, 0);
 			sprite = new Sprite(streamLoader_2, "backhmid2", 0);
 			backVmidIP2_2 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
-			sprite.method346(0, 0);
+			sprite.drawSprite(0, 0);
 			int i5 = (int) (Math.random() * 21D) - 10;
 			int j5 = (int) (Math.random() * 21D) - 10;
 			int k5 = (int) (Math.random() * 21D) - 10;
 			int l5 = (int) (Math.random() * 41D) - 20;
 			for (int i6 = 0; i6 < 100; i6++) {
 				if (mapFunctions[i6] != null) {
-					mapFunctions[i6].method344(i5 + l5, j5 + l5, k5 + l5);
+					mapFunctions[i6].adjustRgb(i5 + l5, j5 + l5, k5 + l5);
 				}
 				if (mapScenes[i6] != null) {
                                         mapScenes[i6].adjustPalette(i5 + l5, j5 + l5, k5 + l5);
@@ -8284,7 +8284,7 @@ public class Game extends RSApplet {
 											class30_sub2_sub1_sub1_2.drawSprite1(k5, j6);
 										} else {
 											// Draw item in inventory/equipment etc
-											class30_sub2_sub1_sub1_2.drawSprite(k5, j6);
+											class30_sub2_sub1_sub1_2.drawTransparentSprite(k5, j6);
 										}
 										if (class30_sub2_sub1_sub1_2.trimWidth == 33 || component.invStackSizes[i3] != 1) {
 											// Draw item amounts
@@ -8298,7 +8298,7 @@ public class Game extends RSApplet {
 								Sprite class30_sub2_sub1_sub1_1 = component.sprites[i3];
 								if (class30_sub2_sub1_sub1_1 != null) {
 									// Empty slots in equipment
-									class30_sub2_sub1_sub1_1.drawSprite(k5, j6);
+									class30_sub2_sub1_sub1_1.drawTransparentSprite(k5, j6);
 								}
 							}
 							i3++;
@@ -8430,7 +8430,7 @@ public class Game extends RSApplet {
 						sprite = component.sprite1;
 					}
 					if (sprite != null) {
-						sprite.drawSprite(k2, l2);
+						sprite.drawTransparentSprite(k2, l2);
 					}
 				} else if (component.type == 6) {
 					int k3 = Texture.textureInt1;
@@ -8840,7 +8840,7 @@ public class Game extends RSApplet {
 	public void draw3dScreen() {
 		drawSplitpublicChat();
 		if (crossType == 1) {
-			crosses[crossIndex / 100].drawSprite(crossX - 8 - 4, crossY - 8 - 4);
+			crosses[crossIndex / 100].drawTransparentSprite(crossX - 8 - 4, crossY - 8 - 4);
 			anInt1142++;
 			if (anInt1142 > 67) {
 				anInt1142 = 0;
@@ -8848,7 +8848,7 @@ public class Game extends RSApplet {
 			}
 		}
 		if (crossType == 2) {
-			crosses[4 + crossIndex / 100].drawSprite(crossX - 8 - 4, crossY - 8 - 4);
+			crosses[4 + crossIndex / 100].drawTransparentSprite(crossX - 8 - 4, crossY - 8 - 4);
 		}
 		if (anInt1018 != -1) {
 			method119(anInt945, anInt1018);
@@ -9489,7 +9489,7 @@ public class Game extends RSApplet {
 				}
 			}
 
-			compass.method352(33, minimapInt1, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
+			compass.drawTransformed(33, minimapInt1, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
 			aRSImageProducer_1165.initDrawingArea();
 			Texture.lineOffsets = chatBoxAreaOffsets;
 			return;
@@ -9497,8 +9497,8 @@ public class Game extends RSApplet {
 		int i = minimapInt1 + minimapInt2 & 0x7ff;
 		int j = 48 + myPlayer.x / 32;
 		int l2 = 464 - myPlayer.y / 32;
-		aClass30_Sub2_Sub1_Sub1_1263.method352(151, i, anIntArray1229, 256 + minimapInt3, anIntArray1052, l2, 5, 25, 146, j);
-		compass.method352(33, minimapInt1, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
+		aClass30_Sub2_Sub1_Sub1_1263.drawTransformed(151, i, anIntArray1229, 256 + minimapInt3, anIntArray1052, l2, 5, 25, 146, j);
+		compass.drawTransformed(33, minimapInt1, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
 		// Minimap icons (shops, quest etc)
 		for (int j5 = 0; j5 < anInt1071; j5++) {
 			int k = anIntArray1072[j5] * 4 + 2 - myPlayer.x / 32;
@@ -10462,9 +10462,9 @@ public class Game extends RSApplet {
 		int k1 = j * i1 + i * j1 >> 16;
 		int l1 = j * j1 - i * i1 >> 16;
 		if (l > 2500) {
-			sprite.method354(mapBack, 83 - l1 - sprite.trimHeight / 2 - 4, 94 + k1 - sprite.trimWidth / 2 + 4);
+			sprite.drawWithMask(mapBack, 83 - l1 - sprite.trimHeight / 2 - 4, 94 + k1 - sprite.trimWidth / 2 + 4);
 		} else {
-			sprite.drawSprite(94 + k1 - sprite.trimWidth / 2 + 4, 83 - l1 - sprite.trimHeight / 2 - 4);
+			sprite.drawTransparentSprite(94 + k1 - sprite.trimWidth / 2 + 4, 83 - l1 - sprite.trimHeight / 2 - 4);
 		}
 	}
 
