@@ -257,7 +257,7 @@ public final class RSInterface {
 	}
 
     private static Sprite loadSprite(int i, StreamLoader streamLoader, String s) {
-		long l = (TextClass.method585(s) << 8) + i;
+               long l = (TextClass.hashSpriteName(s) << 8) + i;
                 Sprite sprite = (Sprite) spriteCache.insertFromCache(l);
 		if (sprite != null) {
 			return sprite;

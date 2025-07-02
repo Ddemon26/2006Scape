@@ -46,7 +46,10 @@ final class TextClass {
 		throw new RuntimeException();
 	}
 
-	public static long method585(String s) {
+       /**
+        * Creates a stable hash for sprite names used in caching.
+        */
+       public static long hashSpriteName(String s) {
 		s = s.toUpperCase();
 		long l = 0L;
 		for (int i = 0; i < s.length(); i++) {
@@ -56,9 +59,12 @@ final class TextClass {
 		return l;
 	}
 
-	public static String method586(int i) {
-		return (i >> 24 & 0xff) + "." + (i >> 16 & 0xff) + "." + (i >> 8 & 0xff) + "." + (i & 0xff);
-	}
+       /**
+        * Converts an integer representation of an IP address to dotted notation.
+        */
+       public static String intToIpString(int i) {
+               return (i >> 24 & 0xff) + "." + (i >> 16 & 0xff) + "." + (i >> 8 & 0xff) + "." + (i & 0xff);
+       }
 
 	public static String fixName(String s) {
 		if (s.length() > 0) {
