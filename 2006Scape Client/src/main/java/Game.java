@@ -680,7 +680,7 @@ public class Game extends RSApplet {
 					int k5 = (anIntArray1234[i3] & 0xff) * 64 - baseY;
 					byte abyte0[] = aByteArrayArray1183[i3];
 					if (abyte0 != null) {
-						objectManager.method180(abyte0, k5, i4, (anInt1069 - 6) * 8, (anInt1070 - 6) * 8, aClass11Array1230);
+						objectManager.loadRegion(abyte0, k5, i4, (anInt1069 - 6) * 8, (anInt1070 - 6) * 8, aClass11Array1230);
 					}
 				}
 
@@ -689,7 +689,7 @@ public class Game extends RSApplet {
 					int k7 = (anIntArray1234[j4] & 0xff) * 64 - baseY;
 					byte abyte2[] = aByteArrayArray1183[j4];
 					if (abyte2 == null && anInt1070 < 800) {
-						objectManager.method174(k7, 64, 64, l5);
+						objectManager.clearRegion(k7, 64, 64, l5);
 					}
 				}
 
@@ -705,7 +705,7 @@ public class Game extends RSApplet {
 					if (abyte1 != null) {
 						int l8 = (anIntArray1234[i6] >> 8) * 64 - baseX;
 						int k9 = (anIntArray1234[i6] & 0xff) * 64 - baseY;
-						objectManager.method190(l8, aClass11Array1230, k9, worldController, abyte1);
+						objectManager.loadObjects(l8, aClass11Array1230, k9, worldController, abyte1);
 					}
 				}
 
@@ -725,7 +725,7 @@ public class Game extends RSApplet {
 									if (anIntArray1234[l11] != j11 || aByteArrayArray1183[l11] == null) {
 										continue;
 									}
-									objectManager.method179(i9, l9, aClass11Array1230, k4 * 8, (j10 & 7) * 8, aByteArrayArray1183[l11], (l10 & 7) * 8, j3, j6 * 8);
+									objectManager.loadChunk(i9, l9, aClass11Array1230, k4 * 8, (j10 & 7) * 8, aByteArrayArray1183[l11], (l10 & 7) * 8, j3, j6 * 8);
 									break;
 								}
 
@@ -740,7 +740,7 @@ public class Game extends RSApplet {
 					for (int k6 = 0; k6 < 13; k6++) {
 						int i8 = anIntArrayArrayArray1129[0][l4][k6];
 						if (i8 == -1) {
-							objectManager.method174(k6 * 8, 8, 8, l4 * 8);
+							objectManager.clearRegion(k6 * 8, 8, 8, l4 * 8);
 						}
 					}
 
@@ -761,7 +761,7 @@ public class Game extends RSApplet {
 									if (anIntArray1234[k12] != j12 || aByteArrayArray1247[k12] == null) {
 										continue;
 									}
-									objectManager.method183(aClass11Array1230, worldController, k10, j8 * 8, (i12 & 7) * 8, l6, aByteArrayArray1247[k12], (k11 & 7) * 8, i11, j9 * 8);
+									objectManager.loadObjectChunk(aClass11Array1230, worldController, k10, j8 * 8, (i12 & 7) * 8, l6, aByteArrayArray1247[k12], (k11 & 7) * 8, i11, j9 * 8);
 									break;
 								}
 
@@ -780,7 +780,7 @@ public class Game extends RSApplet {
 				Texture.lineOffsets = chatBoxAreaOffsets;
 			}
 			stream.createFrame(0);
-			int k3 = ObjectManager.anInt145;
+			int k3 = ObjectManager.lowestPlane;
 			if (k3 > plane) {
 				k3 = plane;
 			}
@@ -788,7 +788,7 @@ public class Game extends RSApplet {
 				k3 = plane - 1;
 			}
 			if (lowMem) {
-				worldController.method275(ObjectManager.anInt145);
+				worldController.method275(ObjectManager.lowestPlane);
 			} else {
 				worldController.method275(0);
 			}
@@ -2678,7 +2678,7 @@ public class Game extends RSApplet {
 	}
 
 	public void loadingStages() {
-		if (lowMem && loadingStage == 2 && ObjectManager.anInt131 != plane) {
+		if (lowMem && loadingStage == 2 && ObjectManager.currentPlane != plane) {
 			drawTextOnScreen(null, "Loading - please wait.");
 			loadingStage = 1;
 			aLong824 = System.currentTimeMillis();
@@ -2716,7 +2716,7 @@ public class Game extends RSApplet {
 					k = 10;
 					l = 10;
 				}
-				flag &= ObjectManager.method189(k, abyte0, l);
+				flag &= ObjectManager.areObjectsReady(k, abyte0, l);
 			}
 		}
 
@@ -2727,7 +2727,7 @@ public class Game extends RSApplet {
 			return -4;
 		} else {
 			loadingStage = 2;
-			ObjectManager.anInt131 = plane;
+			ObjectManager.currentPlane = plane;
                        constructMapRegion();
 			stream.createFrame(121);
 			return 0;
@@ -9132,7 +9132,7 @@ public class Game extends RSApplet {
 				ObjectManager.hideRoofs = false;
 				ObjectManager.hideBuggyVarrockSwordShopSnow = false;
 			}
-			ObjectManager.anInt131 = plane;
+			ObjectManager.currentPlane = plane;
                        constructMapRegion();
 		}
 	}
@@ -10524,7 +10524,7 @@ public class Game extends RSApplet {
 				if (j3 < 3 && (byteGroundArray[1][i1][i] & 2) == 2) {
 					j3++;
 				}
-				ObjectManager.method188(worldController, k, i, l, j3, aClass11Array1230[j], intGroundArray, i1, k1, j);
+				ObjectManager.addObject(worldController, k, i, l, j3, aClass11Array1230[j], intGroundArray, i1, k1, j);
 			}
 		}
 	}
