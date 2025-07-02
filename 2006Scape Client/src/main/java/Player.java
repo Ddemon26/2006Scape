@@ -9,7 +9,7 @@ public final class Player extends Entity {
 		if (!visible) {
 			return null;
 		}
-		Model model = method452();
+                Model model = getBaseModel();
 		if (model == null) {
 			return null;
 		}
@@ -74,7 +74,7 @@ public final class Player extends Entity {
 
 	public void updatePlayer(Stream stream) {
 		stream.currentOffset = 0;
-		anInt1702 = stream.readUnsignedByte();
+                gender = stream.readUnsignedByte();
 		headIcon = stream.readUnsignedByte();
 		skullIcon = stream.readUnsignedByte();
 		desc = null;
@@ -104,7 +104,7 @@ public final class Player extends Entity {
 			if (j1 < 0 || j1 >= Game.anIntArrayArray1003[l].length) {
 				j1 = 0;
 			}
-			anIntArray1700[l] = j1;
+                        bodyColors[l] = j1;
 		}
 
 		super.anInt1511 = stream.readUnsignedWord();
@@ -155,14 +155,14 @@ public final class Player extends Entity {
 		}
 		for (int i2 = 0; i2 < 5; i2++) {
 			aLong1718 <<= 3;
-			aLong1718 += anIntArray1700[i2];
+                        aLong1718 += bodyColors[i2];
 		}
 
-		aLong1718 <<= 1;
-		aLong1718 += anInt1702;
+                aLong1718 <<= 1;
+                aLong1718 += gender;
 	}
 
-	private Model method452() {
+        private Model getBaseModel() {
 		if (desc != null) {
 			int j = -1;
 			if (super.anim >= 0 && super.anInt1529 == 0) {
@@ -209,7 +209,7 @@ public final class Player extends Entity {
 				if (k2 >= 256 && k2 < 512 && !IDK.cache[k2 - 256].method537()) {
 					flag = true;
 				}
-                               if (k2 >= 512 && !ItemDef.lookup(k2 - 512).areWearModelsCached(anInt1702)) {
+                               if (k2 >= 512 && !ItemDef.lookup(k2 - 512).areWearModelsCached(gender)) {
 					flag = true;
 				}
 			}
@@ -241,7 +241,7 @@ public final class Player extends Entity {
 					}
 				}
 				if (i3 >= 512) {
-                               Model model_4 = ItemDef.lookup(i3 - 512).getWearModel(anInt1702);
+                               Model model_4 = ItemDef.lookup(i3 - 512).getWearModel(gender);
 					if (model_4 != null) {
 						aclass30_sub2_sub4_sub6s[j2++] = model_4;
 					}
@@ -249,11 +249,11 @@ public final class Player extends Entity {
 			}
 
 			model_1 = new Model(j2, aclass30_sub2_sub4_sub6s);
-			for (int j3 = 0; j3 < 5; j3++) {
-				if (anIntArray1700[j3] != 0) {
-					model_1.recolor(Game.anIntArrayArray1003[j3][0], Game.anIntArrayArray1003[j3][anIntArray1700[j3]]);
-					if (j3 == 1) {
-						model_1.recolor(Game.anIntArray1204[0], Game.anIntArray1204[anIntArray1700[j3]]);
+                        for (int j3 = 0; j3 < 5; j3++) {
+                                if (bodyColors[j3] != 0) {
+                                        model_1.recolor(Game.anIntArrayArray1003[j3][0], Game.anIntArrayArray1003[j3][bodyColors[j3]]);
+                                        if (j3 == 1) {
+                                                model_1.recolor(Game.anIntArray1204[0], Game.anIntArray1204[bodyColors[j3]]);
 					}
 				}
 			}
@@ -285,7 +285,7 @@ public final class Player extends Entity {
 	}
 
 	public int privelage;
-	public Model method453() {
+        public Model getDialogueModel() {
 		if (!visible) {
 			return null;
 		}
@@ -298,7 +298,7 @@ public final class Player extends Entity {
 			if (j >= 256 && j < 512 && !IDK.cache[j - 256].method539()) {
 				flag = true;
 			}
-                       if (j >= 512 && !ItemDef.lookup(j - 512).areDialogueModelsCached(anInt1702)) {
+                       if (j >= 512 && !ItemDef.lookup(j - 512).areDialogueModelsCached(gender)) {
 				flag = true;
 			}
 		}
@@ -317,7 +317,7 @@ public final class Player extends Entity {
 				}
 			}
 			if (i1 >= 512) {
-                               Model model_2 = ItemDef.lookup(i1 - 512).getDialogueModel(anInt1702);
+                               Model model_2 = ItemDef.lookup(i1 - 512).getDialogueModel(gender);
 				if (model_2 != null) {
 					aclass30_sub2_sub4_sub6s[k++] = model_2;
 				}
@@ -325,11 +325,11 @@ public final class Player extends Entity {
 		}
 
 		Model model = new Model(k, aclass30_sub2_sub4_sub6s);
-		for (int j1 = 0; j1 < 5; j1++) {
-			if (anIntArray1700[j1] != 0) {
-				model.recolor(Game.anIntArrayArray1003[j1][0], Game.anIntArrayArray1003[j1][anIntArray1700[j1]]);
-				if (j1 == 1) {
-					model.recolor(Game.anIntArray1204[0], Game.anIntArray1204[anIntArray1700[j1]]);
+                for (int j1 = 0; j1 < 5; j1++) {
+                        if (bodyColors[j1] != 0) {
+                                model.recolor(Game.anIntArrayArray1003[j1][0], Game.anIntArrayArray1003[j1][bodyColors[j1]]);
+                                if (j1 == 1) {
+                                        model.recolor(Game.anIntArray1204[0], Game.anIntArray1204[bodyColors[j1]]);
 				}
 			}
 		}
@@ -340,7 +340,7 @@ public final class Player extends Entity {
 	Player() {
 		aLong1697 = -1L;
 		aBoolean1699 = false;
-		anIntArray1700 = new int[5];
+                bodyColors = new int[5];
 		visible = false;
 		equipment = new int[12];
 	}
@@ -348,9 +348,9 @@ public final class Player extends Entity {
 	private long aLong1697;
 	public EntityDef desc;
 	boolean aBoolean1699;
-	final int[] anIntArray1700;
+        final int[] bodyColors;
 	public int team;
-	private int anInt1702;
+        private int gender;
 	public String name;
 	static MRUNodes mruNodes = new MRUNodes(260);
 	public int combatLevel;

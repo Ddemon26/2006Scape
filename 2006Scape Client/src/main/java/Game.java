@@ -10693,7 +10693,7 @@ public class Game extends RSApplet {
 				int k = inStream.readShortLEAdd();
                                 RSInterface.interfaceCache[k].mediaType = 3;
 				if (myPlayer.desc == null) {
-                                        RSInterface.interfaceCache[k].mediaId = (myPlayer.anIntArray1700[0] << 25) + (myPlayer.anIntArray1700[4] << 20) + (myPlayer.equipment[0] << 15) + (myPlayer.equipment[8] << 10) + (myPlayer.equipment[11] << 5) + myPlayer.equipment[1];
+                                        RSInterface.interfaceCache[k].mediaId = (myPlayer.bodyColors[0] << 25) + (myPlayer.bodyColors[4] << 20) + (myPlayer.equipment[0] << 15) + (myPlayer.equipment[8] << 10) + (myPlayer.equipment[11] << 5) + myPlayer.equipment[1];
 				} else {
                                         RSInterface.interfaceCache[k].mediaId = (int) (0x12345678L + myPlayer.desc.type);
 				}
