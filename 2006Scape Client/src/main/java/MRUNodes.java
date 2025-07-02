@@ -9,18 +9,18 @@ public final class MRUNodes {
 		nodeSubList = new NodeSubList();
 		initialCount = i;
 		spaceLeft = i;
-		nodeCache = new NodeCache();
+                nodeCache = new NodeHashTable();
 	}
 
 	public NodeSub insertFromCache(long l) {
-		NodeSub nodeSub = (NodeSub) nodeCache.findNodeByID(l);
+                NodeSub nodeSub = (NodeSub) nodeCache.findNodeById(l);
 		if (nodeSub != null) {
 			nodeSubList.insertHead(nodeSub);
 		}
 		return nodeSub;
 	}
 
-	public void removeFromCache(NodeSub nodeSub, long l) {
+        public void removeFromCache(NodeSub nodeSub, long l) {
 		try {
 			if (spaceLeft == 0) {
 				NodeSub nodeSub_1 = nodeSubList.popTail();
@@ -34,7 +34,7 @@ public final class MRUNodes {
 			} else {
 				spaceLeft--;
 			}
-			nodeCache.removeFromCache(nodeSub, l);
+                        nodeCache.insertNode(nodeSub, l);
 			nodeSubList.insertHead(nodeSub);
 			return;
 		} catch (RuntimeException runtimeexception) {
@@ -59,6 +59,6 @@ public final class MRUNodes {
 	private final NodeSub emptyNodeSub;
 	private final int initialCount;
 	private int spaceLeft;
-	private final NodeCache nodeCache;
+        private final NodeHashTable nodeCache;
 	private final NodeSubList nodeSubList;
 }
