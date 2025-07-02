@@ -2311,10 +2311,10 @@ public class Game extends RSApplet {
 			if (j1 < 0 || j1 >= 104 || k1 < 0 || k1 >= 104) {
 				continue;
 			}
-			if (player.aModel_1714 != null && loopCycle >= player.anInt1707 && loopCycle < player.anInt1708) {
+                        if (player.aModel_1714 != null && loopCycle >= player.animationStartCycle && loopCycle < player.animationEndCycle) {
 				player.aBoolean1699 = false;
-				player.anInt1709 = method42(plane, player.y, player.x);
-                               worldController.addAnimatingObject(plane, player.y, player, player.currentHeading, player.anInt1722, player.x, player.anInt1709, player.anInt1719, player.anInt1721, i1, player.anInt1720);
+                                player.animationBaseY = method42(plane, player.y, player.x);
+                               worldController.addAnimatingObject(plane, player.y, player, player.currentHeading, player.anInt1722, player.x, player.animationBaseY, player.anInt1719, player.anInt1721, i1, player.anInt1720);
 				continue;
 			}
 			if ((player.x & 0x7f) == 64 && (player.y & 0x7f) == 64) {
@@ -2323,8 +2323,8 @@ public class Game extends RSApplet {
 				}
 				anIntArrayArray929[j1][k1] = anInt1265;
 			}
-			player.anInt1709 = method42(plane, player.y, player.x);
-                      worldController.addAnimableObject(plane, player.currentHeading, player.anInt1709, i1, player.y, 60, player.x, player, player.aBoolean1541);
+                        player.animationBaseY = method42(plane, player.y, player.x);
+                      worldController.addAnimableObject(plane, player.currentHeading, player.animationBaseY, i1, player.y, 60, player.x, player, player.aBoolean1541);
 		}
 
 	}
@@ -10169,8 +10169,8 @@ public class Game extends RSApplet {
 				Model model = class46.getModel(j19, i20, i22, j22, k22, l22, -1);
 				if (model != null) {
 					method130(k17 + 1, -1, 0, l20, j7, 0, plane, k4, l14 + 1);
-					player.anInt1707 = l14 + loopCycle;
-					player.anInt1708 = k17 + loopCycle;
+                                player.animationStartCycle = l14 + loopCycle;
+                                player.animationEndCycle = k17 + loopCycle;
 					player.aModel_1714 = model;
 					int i23 = class46.sizeX;
 					int j23 = class46.sizeY;
@@ -10178,9 +10178,9 @@ public class Game extends RSApplet {
 						i23 = class46.sizeY;
 						j23 = class46.sizeX;
 					}
-					player.anInt1711 = k4 * 128 + i23 * 64;
-					player.anInt1713 = j7 * 128 + j23 * 64;
-					player.anInt1712 = method42(plane, player.anInt1713, player.anInt1711);
+                                player.animationBaseX = k4 * 128 + i23 * 64;
+                                player.animationBaseZ = j7 * 128 + j23 * 64;
+                                player.animationBaseHeight = method42(plane, player.animationBaseZ, player.animationBaseX);
 					if (byte2 > byte0) {
 						byte byte4 = byte2;
 						byte2 = byte0;

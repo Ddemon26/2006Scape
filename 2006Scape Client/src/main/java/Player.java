@@ -37,12 +37,12 @@ public final class Player extends Entity {
 			}
 		}
 		if (aModel_1714 != null) {
-			if (Game.loopCycle >= anInt1708) {
+			if (Game.loopCycle >= animationEndCycle) {
 				aModel_1714 = null;
 			}
-			if (Game.loopCycle >= anInt1707 && Game.loopCycle < anInt1708) {
+			if (Game.loopCycle >= animationStartCycle && Game.loopCycle < animationEndCycle) {
 				Model model_1 = aModel_1714;
-				model_1.translate(anInt1711 - super.x, anInt1712 - anInt1709, anInt1713 - super.y);
+				model_1.translate(animationBaseX - super.x, animationBaseHeight - animationBaseY, animationBaseZ - super.y);
 				if (super.turnDirection == 512) {
 					model_1.calculateNormals();
 					model_1.calculateNormals();
@@ -65,7 +65,7 @@ public final class Player extends Entity {
 					model_1.calculateNormals();
 					model_1.calculateNormals();
 				}
-				model_1.translate(super.x - anInt1711, anInt1709 - anInt1712, super.y - anInt1713);
+				model_1.translate(super.x - animationBaseX, animationBaseY - animationBaseHeight, super.y - animationBaseZ);
 			}
 		}
 		model.aBoolean1659 = true;
@@ -139,27 +139,27 @@ public final class Player extends Entity {
 		combatLevel = stream.readUnsignedByte();
 		skill = stream.readUnsignedWord();
 		visible = true;
-		aLong1718 = 0L;
+		appearanceHash = 0L;
 		for (int k1 = 0; k1 < 12; k1++) {
-			aLong1718 <<= 4;
+			appearanceHash <<= 4;
 			if (equipment[k1] >= 256) {
-				aLong1718 += equipment[k1] - 256;
+				appearanceHash += equipment[k1] - 256;
 			}
 		}
 
 		if (equipment[0] >= 256) {
-			aLong1718 += equipment[0] - 256 >> 4;
+			appearanceHash += equipment[0] - 256 >> 4;
 		}
 		if (equipment[1] >= 256) {
-			aLong1718 += equipment[1] - 256 >> 8;
+			appearanceHash += equipment[1] - 256 >> 8;
 		}
 		for (int i2 = 0; i2 < 5; i2++) {
-			aLong1718 <<= 3;
-                        aLong1718 += bodyColors[i2];
+			appearanceHash <<= 3;
+                        appearanceHash += bodyColors[i2];
 		}
 
-                aLong1718 <<= 1;
-                aLong1718 += gender;
+                appearanceHash <<= 1;
+                appearanceHash += gender;
 	}
 
         private Model getBaseModel() {
@@ -173,7 +173,7 @@ public final class Player extends Entity {
 			Model model = desc.method164(-1, j, null);
 			return model;
 		}
-		long l = aLong1718;
+		long l = appearanceHash;
 		int k = -1;
 		int i1 = -1;
 		int j1 = -1;
@@ -215,8 +215,8 @@ public final class Player extends Entity {
 			}
 
 			if (flag) {
-				if (aLong1697 != -1L) {
-					model_1 = (Model) mruNodes.insertFromCache(aLong1697);
+				if (cachedModelHash != -1L) {
+					model_1 = (Model) mruNodes.insertFromCache(cachedModelHash);
 				}
 				if (model_1 == null) {
 					return null;
@@ -261,7 +261,7 @@ public final class Player extends Entity {
 			model_1.buildVertexGroups();
 			model_1.applyLighting(64, 850, -30, -50, -30, true);
 			mruNodes.removeFromCache(model_1, l);
-			aLong1697 = l;
+			cachedModelHash = l;
 		}
 		if (aBoolean1699) {
 			return model_1;
@@ -338,14 +338,14 @@ public final class Player extends Entity {
 	}
 
 	Player() {
-		aLong1697 = -1L;
+		cachedModelHash = -1L;
 		aBoolean1699 = false;
                 bodyColors = new int[5];
 		visible = false;
 		equipment = new int[12];
 	}
 
-	private long aLong1697;
+        private long cachedModelHash;
 	public EntityDef desc;
 	boolean aBoolean1699;
         final int[] bodyColors;
@@ -357,16 +357,16 @@ public final class Player extends Entity {
 	public int headIcon;
 	public int skullIcon;
 	public int hintIcon;
-	public int anInt1707;
-	int anInt1708;
-	int anInt1709;
+        public int animationStartCycle;
+        int animationEndCycle;
+        int animationBaseY;
 	boolean visible;
-	int anInt1711;
-	int anInt1712;
-	int anInt1713;
+        int animationBaseX;
+        int animationBaseHeight;
+        int animationBaseZ;
 	Model aModel_1714;
 	public final int[] equipment;
-	private long aLong1718;
+        private long appearanceHash;
 	int anInt1719;
 	int anInt1720;
 	int anInt1721;
