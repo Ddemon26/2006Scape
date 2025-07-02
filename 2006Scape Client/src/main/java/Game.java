@@ -2773,7 +2773,7 @@ public class Game extends RSApplet {
 	}
 
 	public void drawLogo() {
-		byte abyte0[] = titleStreamLoader.getDataForName("title.dat");
+		byte abyte0[] = titleStreamLoader.getFileData("title.dat");
 		Sprite sprite = new Sprite(abyte0, this);
 		aRSImageProducer_1110.initDrawingArea();
 		sprite.drawSprite(0, 0);
@@ -7292,7 +7292,7 @@ public class Game extends RSApplet {
 			ItemDef.isMembers = isMembers;
 			// if (!lowMem) {
 			drawLoadingText(90, "Unpacking sounds");
-			byte abyte0[] = streamLoader_5.getDataForName("sounds.dat");
+			byte abyte0[] = streamLoader_5.getFileData("sounds.dat");
 			Stream stream = new Stream(abyte0);
 			Sounds.unpack(stream);
 			// }

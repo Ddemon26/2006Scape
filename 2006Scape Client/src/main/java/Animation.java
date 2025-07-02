@@ -5,7 +5,7 @@
 public final class Animation {
 
 	public static void unpackConfig(StreamLoader streamLoader) {
-		Stream stream = new Stream(streamLoader.getDataForName("seq.dat"));
+		Stream stream = new Stream(streamLoader.getFileData("seq.dat"));
 		int length = stream.readUnsignedWord();
 		if (anims == null) {
 			anims = new Animation[length];

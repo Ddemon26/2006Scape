@@ -33,8 +33,8 @@ public final class ItemDef {
        }
 
 	public static void unpackConfig(StreamLoader streamLoader) {
-		stream = new Stream(streamLoader.getDataForName("obj.dat"));
-		Stream stream = new Stream(streamLoader.getDataForName("obj.idx"));
+		stream = new Stream(streamLoader.getFileData("obj.dat"));
+		Stream stream = new Stream(streamLoader.getFileData("obj.idx"));
 		totalItems = stream.readUnsignedWord();
 		streamIndices = new int[totalItems];
 		int i = 2;

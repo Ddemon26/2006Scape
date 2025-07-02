@@ -86,8 +86,8 @@ public final class ObjectDef {
 	public static int totalObjects;
 
 	public static void unpackConfig(StreamLoader streamLoader) {
-		stream = new Stream(streamLoader.getDataForName("loc.dat"));
-		Stream stream = new Stream(streamLoader.getDataForName("loc.idx"));
+		stream = new Stream(streamLoader.getFileData("loc.dat"));
+		Stream stream = new Stream(streamLoader.getFileData("loc.idx"));
 		totalObjects = stream.readUnsignedWord();
 		streamIndices = new int[totalObjects];
 		int i = 2;

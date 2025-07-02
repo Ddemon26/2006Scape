@@ -133,7 +133,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	public void start(StreamLoader streamLoader, Game client1) {
 		String as[] = {"model_version", "anim_version", "midi_version", "map_version"};
 		for (int i = 0; i < 4; i++) {
-			byte abyte0[] = streamLoader.getDataForName(as[i]);
+			byte abyte0[] = streamLoader.getFileData(as[i]);
 			int j = abyte0.length / 2;
 			Stream stream = new Stream(abyte0);
 			versions[i] = new int[j];
@@ -146,7 +146,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 
 		String as1[] = {"model_crc", "anim_crc", "midi_crc", "map_crc"};
 		for (int k = 0; k < 4; k++) {
-			byte abyte1[] = streamLoader.getDataForName(as1[k]);
+			byte abyte1[] = streamLoader.getFileData(as1[k]);
 			int i1 = abyte1.length / 4;
 			Stream stream_1 = new Stream(abyte1);
 			crcs[k] = new int[i1];
@@ -156,7 +156,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 
 		}
 
-		byte abyte2[] = streamLoader.getDataForName("model_index");
+		byte abyte2[] = streamLoader.getFileData("model_index");
 		int j1 = versions[0].length;
 		modelIndices = new byte[j1];
 		for (int k1 = 0; k1 < j1; k1++) {
@@ -167,7 +167,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			}
 		}
 
-		abyte2 = streamLoader.getDataForName("map_index");
+		abyte2 = streamLoader.getFileData("map_index");
 		Stream stream2 = new Stream(abyte2);
                 j1 = abyte2.length / 7;
                 regionIds = new int[j1];
@@ -181,7 +181,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
                         mapMembershipFlags[i2] = stream2.readUnsignedByte();
                 }
 
-		abyte2 = streamLoader.getDataForName("anim_index");
+		abyte2 = streamLoader.getFileData("anim_index");
 		stream2 = new Stream(abyte2);
 		j1 = abyte2.length / 2;
 		anIntArray1360 = new int[j1];
@@ -189,7 +189,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			anIntArray1360[j2] = stream2.readUnsignedWord();
 		}
 
-		abyte2 = streamLoader.getDataForName("midi_index");
+		abyte2 = streamLoader.getFileData("midi_index");
 		stream2 = new Stream(abyte2);
 		j1 = abyte2.length;
 		anIntArray1348 = new int[j1];
