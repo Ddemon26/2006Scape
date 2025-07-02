@@ -8,9 +8,9 @@ public final class OnDemandData extends NodeSub {
 		incomplete = true;
 	}
 
-	int dataType;
-	byte buffer[];
-	int ID;
-	boolean incomplete;
-	int loopCycle;
+       int type;
+       byte data[];
+       int id;
+       boolean incomplete;
+       int cycleCount;
 }
