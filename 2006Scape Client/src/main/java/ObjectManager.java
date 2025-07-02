@@ -488,7 +488,7 @@ final class ObjectManager {
 			} else {
 				obj = new DynamicObject(i1, j1, 22, l1, i2, k1, j2, class46.animationId, true);
 			}
-			worldController.method280(k, k2, i, ((Animable) obj), byte0, l2, l);
+                        worldController.addTileDecoration(k, k2, i, ((Animable) obj), byte0, l2, l);
 			if (class46.isSolid && class46.interactive && class11 != null) {
 				class11.blockTile(i, l);
 			}
@@ -515,7 +515,7 @@ final class ObjectManager {
 					j4 = class46.sizeX;
 					l4 = class46.sizeY;
 				}
-				if (worldController.method284(l2, byte0, k2, l4, ((Animable) obj1), j4, k, i5, i, l) && class46.aBoolean779) {
+                        if (worldController.addGameObject(l2, byte0, k2, l4, ((Animable) obj1), j4, k, i5, i, l) && class46.aBoolean779) {
 					Model model;
 					if (obj1 instanceof Model) {
 						model = (Model) obj1;
@@ -551,7 +551,7 @@ final class ObjectManager {
 			} else {
 				obj2 = new DynamicObject(i1, j1, j, l1, i2, k1, j2, class46.animationId, true);
 			}
-			worldController.method284(l2, byte0, k2, 1, ((Animable) obj2), 1, k, 0, i, l);
+                    worldController.addGameObject(l2, byte0, k2, 1, ((Animable) obj2), 1, k, 0, i, l);
 			if (j >= 12 && j <= 17 && j != 13 && k > 0) {
 				anIntArrayArrayArray135[k][l][i] |= 0x924;
 			}
@@ -567,7 +567,7 @@ final class ObjectManager {
 			} else {
 				obj3 = new DynamicObject(i1, j1, 0, l1, i2, k1, j2, class46.animationId, true);
 			}
-			worldController.method282(anIntArray152[j1], ((Animable) obj3), l2, i, byte0, l, null, k2, 0, k);
+                    worldController.addBoundaryObject(anIntArray152[j1], ((Animable) obj3), l2, i, byte0, l, null, k2, 0, k);
 			if (j1 == 0) {
 				if (class46.aBoolean779) {
 					aByteArrayArrayArray134[k][l][i] = 50;
@@ -616,7 +616,7 @@ final class ObjectManager {
 			} else {
 				obj4 = new DynamicObject(i1, j1, 1, l1, i2, k1, j2, class46.animationId, true);
 			}
-			worldController.method282(anIntArray140[j1], ((Animable) obj4), l2, i, byte0, l, null, k2, 0, k);
+                    worldController.addBoundaryObject(anIntArray140[j1], ((Animable) obj4), l2, i, byte0, l, null, k2, 0, k);
 			if (class46.aBoolean779) {
 				if (j1 == 0) {
 					aByteArrayArrayArray134[k][l][i + 1] = 50;
@@ -644,7 +644,7 @@ final class ObjectManager {
 				obj11 = new DynamicObject(i1, 4 + j1, 2, l1, i2, k1, j2, class46.animationId, true);
 				obj12 = new DynamicObject(i1, i3, 2, l1, i2, k1, j2, class46.animationId, true);
 			}
-			worldController.method282(anIntArray152[j1], ((Animable) obj11), l2, i, byte0, l, ((Animable) obj12), k2, anIntArray152[i3], k);
+                    worldController.addBoundaryObject(anIntArray152[j1], ((Animable) obj11), l2, i, byte0, l, ((Animable) obj12), k2, anIntArray152[i3], k);
 			if (class46.aBoolean764) {
 				if (j1 == 0) {
 					anIntArrayArrayArray135[k][l][i] |= 0x249;
@@ -675,7 +675,7 @@ final class ObjectManager {
 			} else {
 				obj5 = new DynamicObject(i1, j1, 3, l1, i2, k1, j2, class46.animationId, true);
 			}
-			worldController.method282(anIntArray140[j1], ((Animable) obj5), l2, i, byte0, l, null, k2, 0, k);
+                    worldController.addBoundaryObject(anIntArray140[j1], ((Animable) obj5), l2, i, byte0, l, null, k2, 0, k);
 			if (class46.aBoolean779) {
 				if (j1 == 0) {
 					aByteArrayArrayArray134[k][l][i + 1] = 50;
@@ -699,7 +699,7 @@ final class ObjectManager {
 			} else {
 				obj6 = new DynamicObject(i1, j1, j, l1, i2, k1, j2, class46.animationId, true);
 			}
-			worldController.method284(l2, byte0, k2, 1, ((Animable) obj6), 1, k, 0, i, l);
+                    worldController.addGameObject(l2, byte0, k2, 1, ((Animable) obj6), 1, k, 0, i, l);
 			if (class46.isSolid && class11 != null) {
 				class11.addObject(class46.impenetrable, class46.sizeX, class46.sizeY, l, i, j1);
 			}
@@ -734,7 +734,7 @@ final class ObjectManager {
 			} else {
 				obj7 = new DynamicObject(i1, 0, 4, l1, i2, k1, j2, class46.animationId, true);
 			}
-			worldController.method283(l2, i, j1 * 512, k, 0, k2, ((Animable) obj7), l, byte0, 0, anIntArray152[j1]);
+                    worldController.addWallDecoration(l2, i, j1 * 512, k, 0, k2, ((Animable) obj7), l, byte0, 0, anIntArray152[j1]);
 			return;
 		}
 		if (j == 5) {
@@ -749,7 +749,7 @@ final class ObjectManager {
 			} else {
 				obj13 = new DynamicObject(i1, 0, 4, l1, i2, k1, j2, class46.animationId, true);
 			}
-			worldController.method283(l2, i, j1 * 512, k, anIntArray137[j1] * i4, k2, ((Animable) obj13), l, byte0, anIntArray144[j1] * i4, anIntArray152[j1]);
+                    worldController.addWallDecoration(l2, i, j1 * 512, k, anIntArray137[j1] * i4, k2, ((Animable) obj13), l, byte0, anIntArray144[j1] * i4, anIntArray152[j1]);
 			return;
 		}
 		if (j == 6) {
@@ -759,7 +759,7 @@ final class ObjectManager {
 			} else {
 				obj8 = new DynamicObject(i1, 0, 4, l1, i2, k1, j2, class46.animationId, true);
 			}
-			worldController.method283(l2, i, j1, k, 0, k2, ((Animable) obj8), l, byte0, 0, 256);
+                    worldController.addWallDecoration(l2, i, j1, k, 0, k2, ((Animable) obj8), l, byte0, 0, 256);
 			return;
 		}
 		if (j == 7) {
@@ -769,7 +769,7 @@ final class ObjectManager {
 			} else {
 				obj9 = new DynamicObject(i1, 0, 4, l1, i2, k1, j2, class46.animationId, true);
 			}
-			worldController.method283(l2, i, j1, k, 0, k2, ((Animable) obj9), l, byte0, 0, 512);
+                    worldController.addWallDecoration(l2, i, j1, k, 0, k2, ((Animable) obj9), l, byte0, 0, 512);
 			return;
 		}
 		if (j == 8) {
@@ -779,7 +779,7 @@ final class ObjectManager {
 			} else {
 				obj10 = new DynamicObject(i1, 0, 4, l1, i2, k1, j2, class46.animationId, true);
 			}
-			worldController.method283(l2, i, j1, k, 0, k2, ((Animable) obj10), l, byte0, 0, 768);
+                    worldController.addWallDecoration(l2, i, j1, k, 0, k2, ((Animable) obj10), l, byte0, 0, 768);
 		}
 	}
 
@@ -1049,7 +1049,7 @@ final class ObjectManager {
 			} else {
 				obj = new DynamicObject(j1, i, 22, i2, j2, l1, k2, class46.animationId, true);
 			}
-			worldController.method280(k1, l2, j, ((Animable) obj), byte1, i3, i1);
+                        worldController.addTileDecoration(k1, l2, j, ((Animable) obj), byte1, i3, i1);
 			if (class46.isSolid && class46.interactive) {
 				class11.blockTile(j, i1);
 			}
@@ -1076,7 +1076,7 @@ final class ObjectManager {
 					k4 = class46.sizeX;
 					i5 = class46.sizeY;
 				}
-				worldController.method284(i3, byte1, l2, i5, ((Animable) obj1), k4, k1, j5, j, i1);
+                           worldController.addGameObject(i3, byte1, l2, i5, ((Animable) obj1), k4, k1, j5, j, i1);
 			}
 			if (class46.isSolid) {
 				class11.addObject(class46.impenetrable, class46.sizeX, class46.sizeY, i1, j, i);
@@ -1090,7 +1090,7 @@ final class ObjectManager {
 			} else {
 				obj2 = new DynamicObject(j1, i, k, i2, j2, l1, k2, class46.animationId, true);
 			}
-			worldController.method284(i3, byte1, l2, 1, ((Animable) obj2), 1, k1, 0, j, i1);
+                   worldController.addGameObject(i3, byte1, l2, 1, ((Animable) obj2), 1, k1, 0, j, i1);
 			if (class46.isSolid) {
 				class11.addObject(class46.impenetrable, class46.sizeX, class46.sizeY, i1, j, i);
 			}
@@ -1103,7 +1103,7 @@ final class ObjectManager {
 			} else {
 				obj3 = new DynamicObject(j1, i, 0, i2, j2, l1, k2, class46.animationId, true);
 			}
-			worldController.method282(anIntArray152[i], ((Animable) obj3), i3, j, byte1, i1, null, l2, 0, k1);
+                        worldController.addBoundaryObject(anIntArray152[i], ((Animable) obj3), i3, j, byte1, i1, null, l2, 0, k1);
 			if (class46.isSolid) {
 				class11.addWall(j, i, i1, k, class46.impenetrable);
 			}
@@ -1116,7 +1116,7 @@ final class ObjectManager {
 			} else {
 				obj4 = new DynamicObject(j1, i, 1, i2, j2, l1, k2, class46.animationId, true);
 			}
-			worldController.method282(anIntArray140[i], ((Animable) obj4), i3, j, byte1, i1, null, l2, 0, k1);
+                        worldController.addBoundaryObject(anIntArray140[i], ((Animable) obj4), i3, j, byte1, i1, null, l2, 0, k1);
 			if (class46.isSolid) {
 				class11.addWall(j, i, i1, k, class46.impenetrable);
 			}
@@ -1133,7 +1133,7 @@ final class ObjectManager {
 				obj11 = new DynamicObject(j1, 4 + i, 2, i2, j2, l1, k2, class46.animationId, true);
 				obj12 = new DynamicObject(j1, j3, 2, i2, j2, l1, k2, class46.animationId, true);
 			}
-			worldController.method282(anIntArray152[i], ((Animable) obj11), i3, j, byte1, i1, ((Animable) obj12), l2, anIntArray152[j3], k1);
+                        worldController.addBoundaryObject(anIntArray152[i], ((Animable) obj11), i3, j, byte1, i1, ((Animable) obj12), l2, anIntArray152[j3], k1);
 			if (class46.isSolid) {
 				class11.addWall(j, i, i1, k, class46.impenetrable);
 			}
@@ -1146,7 +1146,7 @@ final class ObjectManager {
 			} else {
 				obj5 = new DynamicObject(j1, i, 3, i2, j2, l1, k2, class46.animationId, true);
 			}
-			worldController.method282(anIntArray140[i], ((Animable) obj5), i3, j, byte1, i1, null, l2, 0, k1);
+                        worldController.addBoundaryObject(anIntArray140[i], ((Animable) obj5), i3, j, byte1, i1, null, l2, 0, k1);
 			if (class46.isSolid) {
 				class11.addWall(j, i, i1, k, class46.impenetrable);
 			}
@@ -1159,7 +1159,7 @@ final class ObjectManager {
 			} else {
 				obj6 = new DynamicObject(j1, i, k, i2, j2, l1, k2, class46.animationId, true);
 			}
-			worldController.method284(i3, byte1, l2, 1, ((Animable) obj6), 1, k1, 0, j, i1);
+                   worldController.addGameObject(i3, byte1, l2, 1, ((Animable) obj6), 1, k1, 0, j, i1);
 			if (class46.isSolid) {
 				class11.addObject(class46.impenetrable, class46.sizeX, class46.sizeY, i1, j, i);
 			}
@@ -1194,7 +1194,7 @@ final class ObjectManager {
 			} else {
 				obj7 = new DynamicObject(j1, 0, 4, i2, j2, l1, k2, class46.animationId, true);
 			}
-			worldController.method283(i3, j, i * 512, k1, 0, l2, ((Animable) obj7), i1, byte1, 0, anIntArray152[i]);
+                    worldController.addWallDecoration(i3, j, i * 512, k1, 0, l2, ((Animable) obj7), i1, byte1, 0, anIntArray152[i]);
 			return;
 		}
 		if (k == 5) {
@@ -1209,7 +1209,7 @@ final class ObjectManager {
 			} else {
 				obj13 = new DynamicObject(j1, 0, 4, i2, j2, l1, k2, class46.animationId, true);
 			}
-			worldController.method283(i3, j, i * 512, k1, anIntArray137[i] * j4, l2, ((Animable) obj13), i1, byte1, anIntArray144[i] * j4, anIntArray152[i]);
+                    worldController.addWallDecoration(i3, j, i * 512, k1, anIntArray137[i] * j4, l2, ((Animable) obj13), i1, byte1, anIntArray144[i] * j4, anIntArray152[i]);
 			return;
 		}
 		if (k == 6) {
@@ -1219,7 +1219,7 @@ final class ObjectManager {
 			} else {
 				obj8 = new DynamicObject(j1, 0, 4, i2, j2, l1, k2, class46.animationId, true);
 			}
-			worldController.method283(i3, j, i, k1, 0, l2, ((Animable) obj8), i1, byte1, 0, 256);
+                    worldController.addWallDecoration(i3, j, i, k1, 0, l2, ((Animable) obj8), i1, byte1, 0, 256);
 			return;
 		}
 		if (k == 7) {
@@ -1229,7 +1229,7 @@ final class ObjectManager {
 			} else {
 				obj9 = new DynamicObject(j1, 0, 4, i2, j2, l1, k2, class46.animationId, true);
 			}
-			worldController.method283(i3, j, i, k1, 0, l2, ((Animable) obj9), i1, byte1, 0, 512);
+                    worldController.addWallDecoration(i3, j, i, k1, 0, l2, ((Animable) obj9), i1, byte1, 0, 512);
 			return;
 		}
 		if (k == 8) {
@@ -1239,7 +1239,7 @@ final class ObjectManager {
 			} else {
 				obj10 = new DynamicObject(j1, 0, 4, i2, j2, l1, k2, class46.animationId, true);
 			}
-			worldController.method283(i3, j, i, k1, 0, l2, ((Animable) obj10), i1, byte1, 0, 768);
+                    worldController.addWallDecoration(i3, j, i, k1, 0, l2, ((Animable) obj10), i1, byte1, 0, 768);
 		}
 	}
 
