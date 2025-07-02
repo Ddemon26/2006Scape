@@ -3062,11 +3062,11 @@ public class Game extends RSApplet {
 			}
 		}
 		if (super.clickMode3 != 0) {
-			long l = (super.aLong29 - aLong1220) / 50L;
+                        long l = (super.lastClickTime - aLong1220) / 50L;
 			if (l > 4095L) {
 				l = 4095L;
 			}
-			aLong1220 = super.aLong29;
+                        aLong1220 = super.lastClickTime;
 			int k2 = super.saveClickY;
 			if (k2 < 0) {
 				k2 = 0;
@@ -7480,7 +7480,7 @@ public class Game extends RSApplet {
 		Graphics g = getGameComponent().getGraphics();
 		g.setColor(Color.black);
 		g.fillRect(0, 0, 765, 503);
-		method4(1);
+                setFrameRate(1);
 		if (loadingError) {
 			aBoolean831 = false;
 			g.setFont(new Font("Helvetica", 1, 16));
