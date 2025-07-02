@@ -15,8 +15,8 @@ public final class VarBit {
 				cache[j] = new VarBit();
 			}
 			cache[j].readValues(stream);
-			if (cache[j].aBoolean651) {
-				Varp.cache[cache[j].anInt648].aBoolean713 = true;
+                        if (cache[j].isActive) {
+                                Varp.cache[cache[j].configId].aBoolean713 = true;
 			}
 		}
 
@@ -32,13 +32,13 @@ public final class VarBit {
 				return;
 			}
 			if (j == 1) {
-				anInt648 = stream.readUnsignedWord();
-				anInt649 = stream.readUnsignedByte();
-				anInt650 = stream.readUnsignedByte();
+                                configId = stream.readUnsignedWord();
+                                leastSignificantBit = stream.readUnsignedByte();
+                                mostSignificantBit = stream.readUnsignedByte();
 			} else if (j == 10) {
 				stream.readString();
 			} else if (j == 2) {
-				aBoolean651 = true;
+                                isActive = true;
 			} else if (j == 3) {
 				stream.readDWord();
 			} else if (j == 4) {
@@ -50,12 +50,12 @@ public final class VarBit {
 	}
 
 	private VarBit() {
-		aBoolean651 = false;
+                isActive = false;
 	}
 
 	public static VarBit cache[];
-	public int anInt648;
-	public int anInt649;
-	public int anInt650;
-	private boolean aBoolean651;
+        public int configId;
+        public int leastSignificantBit;
+        public int mostSignificantBit;
+        private boolean isActive;
 }
