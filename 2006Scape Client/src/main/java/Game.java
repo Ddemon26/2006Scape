@@ -194,7 +194,7 @@ public class Game extends RSApplet {
                     boolean bool, int music) {
 		if (musicIsntNull()) {
 			nextSong = music;
-			onDemandFetcher.method558(2, nextSong);
+                        onDemandFetcher.queueRequest(2, nextSong);
 			musicVolume2 = volume;
 			anInt139 = -1;
 			aBoolean995 = true;
@@ -205,7 +205,7 @@ public class Game extends RSApplet {
        final synchronized void playSong(int i, boolean bool, int music) {
 		if (musicIsntNull()) {
 			nextSong = music;
-			onDemandFetcher.method558(2, nextSong);
+                        onDemandFetcher.queueRequest(2, nextSong);
 			musicVolume2 = i;
 			anInt139 = -1;
 			aBoolean995 = true;
@@ -823,8 +823,8 @@ public class Game extends RSApplet {
 
 		}
 		System.gc();
-		Texture.initCache();
-		onDemandFetcher.method566();
+                Texture.initCache();
+                onDemandFetcher.clearPriorityQueue();
 		int k = (anInt1069 - 6) / 8 - 1;
 		int j1 = (anInt1069 + 6) / 8 + 1;
 		int i2 = (anInt1070 - 6) / 8 - 1;
@@ -838,14 +838,14 @@ public class Game extends RSApplet {
 		for (int l3 = k; l3 <= j1; l3++) {
 			for (int j5 = i2; j5 <= l2; j5++) {
 				if (l3 == k || l3 == j1 || j5 == i2 || j5 == l2) {
-					int j7 = onDemandFetcher.method562(0, j5, l3);
-					if (j7 != -1) {
-						onDemandFetcher.method560(j7, 3);
-					}
-					int k8 = onDemandFetcher.method562(1, j5, l3);
-					if (k8 != -1) {
-						onDemandFetcher.method560(k8, 3);
-					}
+                                        int j7 = onDemandFetcher.method562(0, j5, l3);
+                                        if (j7 != -1) {
+                                                onDemandFetcher.requestFileNow(j7, 3);
+                                        }
+                                        int k8 = onDemandFetcher.method562(1, j5, l3);
+                                        if (k8 != -1) {
+                                                onDemandFetcher.requestFileNow(k8, 3);
+                                        }
 				}
 			}
 
@@ -2874,7 +2874,7 @@ public class Game extends RSApplet {
 					}
 
 				}
-			} while (onDemandData.dataType != 93 || !onDemandFetcher.method564(onDemandData.ID));
+                        } while (onDemandData.dataType != 93 || !onDemandFetcher.hasLandscape(onDemandData.ID));
 			ObjectManager.method173(new Stream(onDemandData.buffer), onDemandFetcher);
 		} while (true);
 	}
@@ -5080,9 +5080,9 @@ public class Game extends RSApplet {
 							return;
 						}
 						if (inputString.equals("::prefetchmusic")) {
-							for (int j1 = 0; j1 < onDemandFetcher.getVersionCount(2); j1++) {
-								onDemandFetcher.method563((byte) 1, 2, j1);
-							}
+                                                        for (int j1 = 0; j1 < onDemandFetcher.getVersionCount(2); j1++) {
+                                                                onDemandFetcher.validateOrQueue((byte) 1, 2, j1);
+                                                        }
 						}
 					}
 						if (inputString.startsWith("::dd")) {
@@ -7046,7 +7046,7 @@ public class Game extends RSApplet {
 			drawLoadingText(65, "Requesting animations");
 			int k = onDemandFetcher.getVersionCount(1);
 			for (int i1 = 0; i1 < k; i1++) {
-				onDemandFetcher.method558(1, i1);
+                                onDemandFetcher.queueRequest(1, i1);
 			}
 
 			while (onDemandFetcher.getNodeCount() > 0) {
@@ -7069,7 +7069,7 @@ public class Game extends RSApplet {
 			for (int k1 = 0; k1 < k; k1++) {
 				int l1 = onDemandFetcher.getModelIndex(k1);
 				if ((l1 & 1) != 0) {
-					onDemandFetcher.method558(0, k1);
+                                        onDemandFetcher.queueRequest(0, k1);
 				}
 			}
 
@@ -7087,18 +7087,18 @@ public class Game extends RSApplet {
 			}
 			if (decompressors[0] != null) {
 				drawLoadingText(75, "Requesting maps");
-				onDemandFetcher.method558(3, onDemandFetcher.method562(0, 48, 47));
-				onDemandFetcher.method558(3, onDemandFetcher.method562(1, 48, 47));
-				onDemandFetcher.method558(3, onDemandFetcher.method562(0, 48, 48));
-				onDemandFetcher.method558(3, onDemandFetcher.method562(1, 48, 48));
-				onDemandFetcher.method558(3, onDemandFetcher.method562(0, 48, 49));
-				onDemandFetcher.method558(3, onDemandFetcher.method562(1, 48, 49));
-				onDemandFetcher.method558(3, onDemandFetcher.method562(0, 47, 47));
-				onDemandFetcher.method558(3, onDemandFetcher.method562(1, 47, 47));
-				onDemandFetcher.method558(3, onDemandFetcher.method562(0, 47, 48));
-				onDemandFetcher.method558(3, onDemandFetcher.method562(1, 47, 48));
-				onDemandFetcher.method558(3, onDemandFetcher.method562(0, 148, 48));
-				onDemandFetcher.method558(3, onDemandFetcher.method562(1, 148, 48));
+                                onDemandFetcher.queueRequest(3, onDemandFetcher.method562(0, 48, 47));
+                                onDemandFetcher.queueRequest(3, onDemandFetcher.method562(1, 48, 47));
+                                onDemandFetcher.queueRequest(3, onDemandFetcher.method562(0, 48, 48));
+                                onDemandFetcher.queueRequest(3, onDemandFetcher.method562(1, 48, 48));
+                                onDemandFetcher.queueRequest(3, onDemandFetcher.method562(0, 48, 49));
+                                onDemandFetcher.queueRequest(3, onDemandFetcher.method562(1, 48, 49));
+                                onDemandFetcher.queueRequest(3, onDemandFetcher.method562(0, 47, 47));
+                                onDemandFetcher.queueRequest(3, onDemandFetcher.method562(1, 47, 47));
+                                onDemandFetcher.queueRequest(3, onDemandFetcher.method562(0, 47, 48));
+                                onDemandFetcher.queueRequest(3, onDemandFetcher.method562(1, 47, 48));
+                                onDemandFetcher.queueRequest(3, onDemandFetcher.method562(0, 148, 48));
+                                onDemandFetcher.queueRequest(3, onDemandFetcher.method562(1, 148, 48));
 				k = onDemandFetcher.getNodeCount();
 				while (onDemandFetcher.getNodeCount() > 0) {
 					int j2 = k - onDemandFetcher.getNodeCount();
@@ -7134,19 +7134,19 @@ public class Game extends RSApplet {
 				if ((l2 & 1) != 0) {
 					byte0 = 3;
 				}
-				if (byte0 != 0) {
-					onDemandFetcher.method563(byte0, 0, k2);
-				}
-			}
+                                if (byte0 != 0) {
+                                        onDemandFetcher.validateOrQueue(byte0, 0, k2);
+                                }
+                        }
 
-			onDemandFetcher.method554(isMembers);
-			if (!lowMem) {
-				int l = onDemandFetcher.getVersionCount(2);
-				for (int i3 = 1; i3 < l; i3++) {
-					if (onDemandFetcher.method569(i3)) {
-						onDemandFetcher.method563((byte) 1, 2, i3);
-					}
-				}
+                        onDemandFetcher.requestMapFiles(isMembers);
+                        if (!lowMem) {
+                                int l = onDemandFetcher.getVersionCount(2);
+                                for (int i3 = 1; i3 < l; i3++) {
+                                        if (onDemandFetcher.isMidiRequired(i3)) {
+                                                onDemandFetcher.validateOrQueue((byte) 1, 2, i3);
+                                        }
+                                }
 
 			}
 			drawLoadingText(80, "Unpacking media");
@@ -10888,14 +10888,14 @@ public class Game extends RSApplet {
 								anIntArray1236[k16] = -1;
 								k16++;
 							} else {
-								int k28 = anIntArray1235[k16] = onDemandFetcher.method562(0, j26, l23);
-								if (k28 != -1) {
-									onDemandFetcher.method558(3, k28);
-								}
-								int j30 = anIntArray1236[k16] = onDemandFetcher.method562(1, j26, l23);
-								if (j30 != -1) {
-									onDemandFetcher.method558(3, j30);
-								}
+                                                                int k28 = anIntArray1235[k16] = onDemandFetcher.method562(0, j26, l23);
+                                                                if (k28 != -1) {
+                                                                        onDemandFetcher.queueRequest(3, k28);
+                                                                }
+                                                                int j30 = anIntArray1236[k16] = onDemandFetcher.method562(1, j26, l23);
+                                                                if (j30 != -1) {
+                                                                        onDemandFetcher.queueRequest(3, j30);
+                                                                }
 								k16++;
 							}
 						}
@@ -10941,14 +10941,14 @@ public class Game extends RSApplet {
 						int i29 = anIntArray1234[l26] = ai[l26];
 						int l30 = i29 >> 8 & 0xff;
 						int l31 = i29 & 0xff;
-						int j32 = anIntArray1235[l26] = onDemandFetcher.method562(0, l31, l30);
-						if (j32 != -1) {
-							onDemandFetcher.method558(3, j32);
-						}
-						int i33 = anIntArray1236[l26] = onDemandFetcher.method562(1, l31, l30);
-						if (i33 != -1) {
-							onDemandFetcher.method558(3, i33);
-						}
+                                                int j32 = anIntArray1235[l26] = onDemandFetcher.method562(0, l31, l30);
+                                                if (j32 != -1) {
+                                                        onDemandFetcher.queueRequest(3, j32);
+                                                }
+                                                int i33 = anIntArray1236[l26] = onDemandFetcher.method562(1, l31, l30);
+                                                if (i33 != -1) {
+                                                        onDemandFetcher.queueRequest(3, i33);
+                                                }
 					}
 
 				}

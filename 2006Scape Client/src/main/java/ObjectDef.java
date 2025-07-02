@@ -70,9 +70,9 @@ public final class ObjectDef {
 		if (modelIds == null) {
 			return;
 		}
-		for (int element : modelIds) {
-			class42_sub1.method560(element & 0xffff, 0);
-		}
+                for (int element : modelIds) {
+                        class42_sub1.requestFileNow(element & 0xffff, 0);
+                }
 	}
 
 	public static void nullLoader() {
