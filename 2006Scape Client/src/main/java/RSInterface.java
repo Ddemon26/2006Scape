@@ -159,26 +159,26 @@ public final class RSInterface {
                                         rsInterface.mediaType = 1;
                                         rsInterface.mediaId = (l - 1 << 8) + stream.readUnsignedByte();
 				}
-				l = stream.readUnsignedByte();
-				if (l != 0) {
-					rsInterface.anInt255 = 1;
-					rsInterface.anInt256 = (l - 1 << 8) + stream.readUnsignedByte();
-				}
-				l = stream.readUnsignedByte();
-				if (l != 0) {
-					rsInterface.anInt257 = (l - 1 << 8) + stream.readUnsignedByte();
-				} else {
-					rsInterface.anInt257 = -1;
-				}
-				l = stream.readUnsignedByte();
-				if (l != 0) {
-					rsInterface.anInt258 = (l - 1 << 8) + stream.readUnsignedByte();
-				} else {
-					rsInterface.anInt258 = -1;
-				}
-				rsInterface.anInt269 = stream.readUnsignedWord();
-				rsInterface.anInt270 = stream.readUnsignedWord();
-				rsInterface.anInt271 = stream.readUnsignedWord();
+                                l = stream.readUnsignedByte();
+                                if (l != 0) {
+                                        rsInterface.enabledMediaType = 1;
+                                        rsInterface.enabledMediaId = (l - 1 << 8) + stream.readUnsignedByte();
+                                }
+                                l = stream.readUnsignedByte();
+                                if (l != 0) {
+                                        rsInterface.disabledAnimation = (l - 1 << 8) + stream.readUnsignedByte();
+                                } else {
+                                        rsInterface.disabledAnimation = -1;
+                                }
+                                l = stream.readUnsignedByte();
+                                if (l != 0) {
+                                        rsInterface.enabledAnimation = (l - 1 << 8) + stream.readUnsignedByte();
+                                } else {
+                                        rsInterface.enabledAnimation = -1;
+                                }
+                                rsInterface.modelZoom = stream.readUnsignedWord();
+                                rsInterface.modelRotation1 = stream.readUnsignedWord();
+                                rsInterface.modelRotation2 = stream.readUnsignedWord();
 			}
 			if (rsInterface.type == 7) {
 				rsInterface.inv = new int[rsInterface.width * rsInterface.height];
@@ -293,8 +293,8 @@ public final class RSInterface {
 		lightness = 64;
 		shading = 768;
 		Model model;
-		if (flag) {
-                        model = getModelForMedia(anInt255, anInt256);
+                if (flag) {
+                        model = getModelForMedia(enabledMediaType, enabledMediaId);
 		} else {
                         model = getModelForMedia(mediaType, mediaId);
 		}
@@ -365,15 +365,15 @@ public final class RSInterface {
 	public int invStackSizes[];
 	public int inv[];
 	public byte aByte254;
-	private int anInt255;
-	private int anInt256;
-	public int anInt257;
-	public int anInt258;
+        private int enabledMediaType;
+        private int enabledMediaId;
+        public int disabledAnimation;
+        public int enabledAnimation;
 	public boolean aBoolean259;
 	public Sprite sprite2;
 	public int scrollMax;
 	public int type;
-	public int anInt263;
+        public int offsetX;
         private static final MRUNodes modelCache = new MRUNodes(30);
 	public int anInt265;
 	public boolean aBoolean266;
@@ -381,9 +381,9 @@ public final class RSInterface {
 	public static int shading;
 	public static int lightness;
 	public boolean aBoolean268;
-	public int anInt269;
-	public int anInt270;
-	public int anInt271;
+        public int modelZoom;
+        public int modelRotation1;
+        public int modelRotation2;
 	public int childY[];
 
 }
