@@ -12,8 +12,8 @@ final class DynamicObject extends Animable {
 			if (k > 100 && animation.anInt356 > 0) {
 				k = 100;
 			}
-			while (k > animation.method258(currentFrame)) {
-				k -= animation.method258(currentFrame);
+                       while (k > animation.getFrameDelay(currentFrame)) {
+                               k -= animation.getFrameDelay(currentFrame);
 				currentFrame++;
 				if (currentFrame < animation.anInt352) {
 					continue;
@@ -76,7 +76,7 @@ final class DynamicObject extends Animable {
 			cycleStart = Game.loopCycle;
 			if (flag && animation.anInt356 != -1) {
 				currentFrame = (int) (Math.random() * animation.anInt352);
-				cycleStart -= (int) (Math.random() * animation.method258(currentFrame));
+                                cycleStart -= (int) (Math.random() * animation.getFrameDelay(currentFrame));
 			}
 		}
 		ObjectDef class46 = ObjectDef.forID(id);

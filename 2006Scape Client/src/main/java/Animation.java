@@ -18,19 +18,19 @@ public final class Animation {
 		}
 	}
 
-	public int method258(int i) {
-                int j = anIntArray355[i];
-                if (j == 0) {
-                        AnimFrame frame = AnimFrame.forId(anIntArray353[i]);
-                        if (frame != null) {
-                                j = anIntArray355[i] = frame.delay;
-                        }
-		}
-		if (j == 0) {
-			j = 1;
-		}
-		return j;
-	}
+       public int getFrameDelay(int frameIndex) {
+               int j = anIntArray355[frameIndex];
+               if (j == 0) {
+                       AnimFrame frame = AnimFrame.forId(anIntArray353[frameIndex]);
+                       if (frame != null) {
+                               j = anIntArray355[frameIndex] = frame.delay;
+                       }
+               }
+               if (j == 0) {
+                       j = 1;
+               }
+               return j;
+       }
 
 	private void readValues(Stream stream) {
 		do {

@@ -7605,7 +7605,7 @@ public class Game extends RSApplet {
 	}
 
         public void updateInterpolatedMovement(Entity entity) {
-		if (entity.anInt1548 == loopCycle || entity.anim == -1 || entity.anInt1529 != 0 || entity.anInt1528 + 1 > Animation.anims[entity.anim].method258(entity.anInt1527)) {
+        if (entity.anInt1548 == loopCycle || entity.anim == -1 || entity.anInt1529 != 0 || entity.anInt1528 + 1 > Animation.anims[entity.anim].getFrameDelay(entity.anInt1527)) {
 			int i = entity.anInt1548 - entity.anInt1547;
 			int j = loopCycle - entity.anInt1547;
 			int k = entity.anInt1543 * 128 + entity.anInt1540 * 64;
@@ -7806,7 +7806,7 @@ public class Game extends RSApplet {
 		if (entity.anInt1517 != -1) {
 			Animation animation = Animation.anims[entity.anInt1517];
 			entity.anInt1519++;
-			if (entity.anInt1518 < animation.anInt352 && entity.anInt1519 > animation.method258(entity.anInt1518)) {
+                        if (entity.anInt1518 < animation.anInt352 && entity.anInt1519 > animation.getFrameDelay(entity.anInt1518)) {
 				entity.anInt1519 = 0;
 				entity.anInt1518++;
 			}
@@ -7820,8 +7820,8 @@ public class Game extends RSApplet {
                                entity.spotAnimFrame = 0;
                        }
                        Animation animation_1 = SpotAnim.cache[entity.spotAnimId].aAnimation_407;
-                       for (entity.spotAnimFrameCycle++; entity.spotAnimFrame < animation_1.anInt352 && entity.spotAnimFrameCycle > animation_1.method258(entity.spotAnimFrame); entity.spotAnimFrame++) {
-                               entity.spotAnimFrameCycle -= animation_1.method258(entity.spotAnimFrame);
+                       for (entity.spotAnimFrameCycle++; entity.spotAnimFrame < animation_1.anInt352 && entity.spotAnimFrameCycle > animation_1.getFrameDelay(entity.spotAnimFrame); entity.spotAnimFrame++) {
+                               entity.spotAnimFrameCycle -= animation_1.getFrameDelay(entity.spotAnimFrame);
                        }
 
                        if (entity.spotAnimFrame >= animation_1.anInt352 && (entity.spotAnimFrame < 0 || entity.spotAnimFrame >= animation_1.anInt352)) {
@@ -7837,8 +7837,8 @@ public class Game extends RSApplet {
 		}
 		if (entity.anim != -1 && entity.anInt1529 == 0) {
 			Animation animation_3 = Animation.anims[entity.anim];
-			for (entity.anInt1528++; entity.anInt1527 < animation_3.anInt352 && entity.anInt1528 > animation_3.method258(entity.anInt1527); entity.anInt1527++) {
-				entity.anInt1528 -= animation_3.method258(entity.anInt1527);
+                        for (entity.anInt1528++; entity.anInt1527 < animation_3.anInt352 && entity.anInt1528 > animation_3.getFrameDelay(entity.anInt1527); entity.anInt1527++) {
+                                entity.anInt1528 -= animation_3.getFrameDelay(entity.anInt1527);
 			}
 
 			if (entity.anInt1527 >= animation_3.anInt352) {
@@ -9185,8 +9185,8 @@ public class Game extends RSApplet {
 				}
 				if (l != -1) {
 					Animation animation = Animation.anims[l];
-					for (class9_1.anInt208 += i; class9_1.anInt208 > animation.method258(class9_1.anInt246);) {
-						class9_1.anInt208 -= animation.method258(class9_1.anInt246) + 1;
+                                        for (class9_1.anInt208 += i; class9_1.anInt208 > animation.getFrameDelay(class9_1.anInt246);) {
+                                                class9_1.anInt208 -= animation.getFrameDelay(class9_1.anInt246) + 1;
 						class9_1.anInt246++;
 						if (class9_1.anInt246 >= animation.anInt352) {
 							class9_1.anInt246 -= animation.anInt356;

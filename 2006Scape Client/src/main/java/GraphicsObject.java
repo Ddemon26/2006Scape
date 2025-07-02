@@ -51,8 +51,8 @@ final class GraphicsObject extends Animable {
     }
 
     public void update(int elapsed) {
-        for (frameCycle += elapsed; frameCycle > spotAnimation.aAnimation_407.method258(frame); ) {
-            frameCycle -= spotAnimation.aAnimation_407.method258(frame) + 1;
+        for (frameCycle += elapsed; frameCycle > spotAnimation.aAnimation_407.getFrameDelay(frame); ) {
+            frameCycle -= spotAnimation.aAnimation_407.getFrameDelay(frame) + 1;
             frame++;
             if (frame >= spotAnimation.aAnimation_407.anInt352 && (frame < 0 || frame >= spotAnimation.aAnimation_407.anInt352)) {
                 frame = 0;
