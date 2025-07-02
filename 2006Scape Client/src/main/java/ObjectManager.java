@@ -101,11 +101,11 @@ final class ObjectManager {
 					if (k9 >= 0 && k9 < anInt146) {
 						int l12 = aByteArrayArrayArray142[l][k9][i8] & 0xff;
 						if (l12 > 0) {
-							Flo flo = Flo.cache[l12 - 1];
-							tileHues[i8] += flo.anInt397;
-							tileSaturations[i8] += flo.anInt395;
-							tileLightness[i8] += flo.anInt396;
-							tileHueMultiplier[i8] += flo.anInt398;
+							FloorOverlay flo = FloorOverlay.cache[l12 - 1];
+							tileHues[i8] += flo.hslValue;
+							tileSaturations[i8] += flo.saturation;
+							tileLightness[i8] += flo.lightness;
+							tileHueMultiplier[i8] += flo.hslMultiplier;
 							tileCount[i8]++;
 						}
 					}
@@ -113,11 +113,11 @@ final class ObjectManager {
 					if (i13 >= 0 && i13 < anInt146) {
 						int i14 = aByteArrayArrayArray142[l][i13][i8] & 0xff;
 						if (i14 > 0) {
-							Flo flo_1 = Flo.cache[i14 - 1];
-							tileHues[i8] -= flo_1.anInt397;
-							tileSaturations[i8] -= flo_1.anInt395;
-							tileLightness[i8] -= flo_1.anInt396;
-							tileHueMultiplier[i8] -= flo_1.anInt398;
+							FloorOverlay flo_1 = FloorOverlay.cache[i14 - 1];
+							tileHues[i8] -= flo_1.hslValue;
+							tileSaturations[i8] -= flo_1.saturation;
+							tileLightness[i8] -= flo_1.lightness;
+							tileHueMultiplier[i8] -= flo_1.hslMultiplier;
 							tileCount[i8]--;
 						}
 					}
@@ -182,7 +182,7 @@ final class ObjectManager {
 									if (l18 == 0 && aByteArrayArrayArray136[l][l6][k17] != 0) {
 										flag = false;
 									}
-									if (i19 > 0 && !Flo.cache[i19 - 1].aBoolean393) {
+									if (i19 > 0 && !FloorOverlay.cache[i19 - 1].isWalkable) {
 										flag = false;
 									}
 									if (flag && j19 == k19 && j19 == l19 && j19 == i20) {
@@ -198,27 +198,27 @@ final class ObjectManager {
 								} else {
 									int k22 = aByteArrayArrayArray136[l][l6][k17] + 1;
 									byte byte4 = aByteArrayArrayArray148[l][l6][k17];
-									Flo flo_2 = Flo.cache[i19 - 1];
-									int i23 = flo_2.anInt391;
+									FloorOverlay flo_2 = FloorOverlay.cache[i19 - 1];
+									int i23 = flo_2.textureId;
 									int j23;
 									int k23;
 									if (i23 >= 0) {
 										k23 = Texture.getAverageTextureColor(i23);
 										j23 = -1;
-									} else if (flo_2.anInt390 == 0xff00ff) {
+									} else if (flo_2.rgbColor == 0xff00ff) {
 										/*j23 = -2;
 										i23 = -1;
-										k23 = Texture.brightnessTable[method185(flo_2.anInt399, 96)];*/
+										k23 = Texture.brightnessTable[method185(flo_2.blendColor, 96)];*/
 										k23 = 0;
 										j23 = -2;
 										i23 = -1;
-									} else if(flo_2.anInt390 == 0x333333) {
-										k23 = Texture.brightnessTable[method185(flo_2.anInt399, 96)];								
+									} else if(flo_2.rgbColor == 0x333333) {
+										k23 = Texture.brightnessTable[method185(flo_2.blendColor, 96)];								
 										j23 = -2;
 										i23 = -1;
 									} else {
-										j23 = method177(flo_2.anInt394, flo_2.anInt395, flo_2.anInt396);
-										k23 = Texture.brightnessTable[method185(flo_2.anInt399, 96)];
+										j23 = method177(flo_2.hue, flo_2.saturation, flo_2.lightness);
+										k23 = Texture.brightnessTable[method185(flo_2.blendColor, 96)];
 									}
 									worldController.method279(l, l6, k17, k22, byte4, i23, j19, k19, l19, i20, method187(j21, j20), method187(j21, k20), method187(j21, l20), method187(j21, i21), method185(j23, j20), method185(j23, k20), method185(j23, l20), method185(j23, i21), i22, k23);
 								}
