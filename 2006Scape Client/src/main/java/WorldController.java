@@ -13,9 +13,9 @@ final class WorldController {
         obj5Cache = new SceneObject[5000];
 		anIntArray486 = new int[10000];
 		anIntArray487 = new int[10000];
-		anInt437 = k;
-		anInt438 = j;
-		anInt439 = i;
+                planeCount = k;
+                worldWidth = j;
+                worldHeight = i;
 		groundArray = new Ground[k][j][i];
 		anIntArrayArrayArray445 = new int[k][j + 1][i + 1];
 		anIntArrayArrayArray440 = ai;
@@ -32,9 +32,9 @@ final class WorldController {
 	}
 
 	public void initToNull() {
-		for (int j = 0; j < anInt437; j++) {
-			for (int k = 0; k < anInt438; k++) {
-				for (int i1 = 0; i1 < anInt439; i1++) {
+		for (int j = 0; j < planeCount; j++) {
+			for (int k = 0; k < worldWidth; k++) {
+				for (int i1 = 0; i1 < worldHeight; i1++) {
 					groundArray[j][k][i1] = null;
 				}
 
@@ -60,10 +60,10 @@ final class WorldController {
 
 	}
 
-	public void method275(int i) {
-		anInt442 = i;
-		for (int k = 0; k < anInt438; k++) {
-			for (int l = 0; l < anInt439; l++) {
+	public void setActivePlane(int i) {
+		activePlane = i;
+		for (int k = 0; k < worldWidth; k++) {
+			for (int l = 0; l < worldHeight; l++) {
 				if (groundArray[i][k][l] == null) {
 					groundArray[i][k][l] = new Ground(i, k, l);
 				}
@@ -73,7 +73,7 @@ final class WorldController {
 
 	}
 
-	public void method276(int i, int j) {
+	public void shiftDownPlanes(int i, int j) {
 		Ground class30_sub3 = groundArray[0][j][i];
 		for (int l = 0; l < 3; l++) {
 			Ground class30_sub3_1 = groundArray[l][j][i] = groundArray[l + 1][j][i];
@@ -288,7 +288,7 @@ final class WorldController {
 	private boolean method287(int i, int j, int k, int l, int i1, int j1, int k1, int l1, Animable class30_sub2_sub4, int i2, boolean flag, int j2, byte byte0) {
 		for (int k2 = j; k2 < j + l; k2++) {
 			for (int l2 = k; l2 < k + i1; l2++) {
-				if (k2 < 0 || l2 < 0 || k2 >= anInt438 || l2 >= anInt439) {
+				if (k2 < 0 || l2 < 0 || k2 >= worldWidth || l2 >= worldHeight) {
 					return false;
 				}
 				Ground class30_sub3 = groundArray[i][k2][l2];
@@ -561,9 +561,9 @@ final class WorldController {
 		int l = 768;// was parameter
 		int j1 = (int) Math.sqrt(k * k + i * i + i1 * i1);
 		int k1 = l * j1 >> 8;
-		for (int l1 = 0; l1 < anInt437; l1++) {
-			for (int i2 = 0; i2 < anInt438; i2++) {
-				for (int j2 = 0; j2 < anInt439; j2++) {
+		for (int l1 = 0; l1 < planeCount; l1++) {
+			for (int i2 = 0; i2 < worldWidth; i2++) {
+				for (int j2 = 0; j2 < worldHeight; j2++) {
 					Ground class30_sub3 = groundArray[l1][i2][j2];
 					if (class30_sub3 != null) {
 						BoundaryObject class10 = class30_sub3.obj1;
@@ -599,25 +599,25 @@ final class WorldController {
 	}
 
 	private void method306(int i, int j, Model model, int k) {
-		if (i < anInt438) {
+		if (i < worldWidth) {
 			Ground class30_sub3 = groundArray[j][i + 1][k];
 			if (class30_sub3 != null && class30_sub3.obj3 != null && class30_sub3.obj3.aClass30_Sub2_Sub4_814.vertexNormals != null) {
 				method308(model, (Model) class30_sub3.obj3.aClass30_Sub2_Sub4_814, 128, 0, 0, true);
 			}
 		}
-		if (k < anInt438) {
+		if (k < worldWidth) {
 			Ground class30_sub3_1 = groundArray[j][i][k + 1];
 			if (class30_sub3_1 != null && class30_sub3_1.obj3 != null && class30_sub3_1.obj3.aClass30_Sub2_Sub4_814.vertexNormals != null) {
 				method308(model, (Model) class30_sub3_1.obj3.aClass30_Sub2_Sub4_814, 0, 0, 128, true);
 			}
 		}
-		if (i < anInt438 && k < anInt439) {
+		if (i < worldWidth && k < worldHeight) {
 			Ground class30_sub3_2 = groundArray[j][i + 1][k + 1];
 			if (class30_sub3_2 != null && class30_sub3_2.obj3 != null && class30_sub3_2.obj3.aClass30_Sub2_Sub4_814.vertexNormals != null) {
 				method308(model, (Model) class30_sub3_2.obj3.aClass30_Sub2_Sub4_814, 128, 0, 128, true);
 			}
 		}
-		if (i < anInt438 && k > 0) {
+		if (i < worldWidth && k > 0) {
 			Ground class30_sub3_3 = groundArray[j][i + 1][k - 1];
 			if (class30_sub3_3 != null && class30_sub3_3.obj3 != null && class30_sub3_3.obj3.aClass30_Sub2_Sub4_814.vertexNormals != null) {
 				method308(model, (Model) class30_sub3_3.obj3.aClass30_Sub2_Sub4_814, 128, 0, -128, true);
@@ -632,11 +632,11 @@ final class WorldController {
 		int l1 = i1 - 1;
 		int i2 = i1 + k;
 		for (int j2 = i; j2 <= i + 1; j2++) {
-			if (j2 != anInt437) {
+			if (j2 != planeCount) {
 				for (int k2 = j1; k2 <= k1; k2++) {
-					if (k2 >= 0 && k2 < anInt438) {
+					if (k2 >= 0 && k2 < worldWidth) {
 						for (int l2 = l1; l2 <= i2; l2++) {
-							if (l2 >= 0 && l2 < anInt439 && (!flag || k2 >= k1 || l2 >= i2 || l2 < i1 && k2 != l)) {
+							if (l2 >= 0 && l2 < worldHeight && (!flag || k2 >= k1 || l2 >= i2 || l2 < i1 && k2 != l)) {
 								Ground class30_sub3 = groundArray[j2][k2][l2];
 								if (class30_sub3 != null) {
 									int i3 = (anIntArrayArrayArray440[j2][k2][l2] + anIntArrayArrayArray440[j2][k2 + 1][l2] + anIntArrayArrayArray440[j2][k2][l2 + 1] + anIntArrayArrayArray440[j2][k2 + 1][l2 + 1]) / 4 - (anIntArrayArrayArray440[i][l][i1] + anIntArrayArrayArray440[i][l + 1][i1] + anIntArrayArrayArray440[i][l][i1 + 1] + anIntArrayArrayArray440[i][l + 1][i1 + 1]) / 4;
@@ -885,13 +885,13 @@ final class WorldController {
 	public void method313(int i, int j, int k, int l, int i1, int j1) {
 		if (i < 0) {
 			i = 0;
-		} else if (i >= anInt438 * 128) {
-			i = anInt438 * 128 - 1;
+		} else if (i >= worldWidth * 128) {
+			i = worldWidth * 128 - 1;
 		}
 		if (j < 0) {
 			j = 0;
-		} else if (j >= anInt439 * 128) {
-			j = anInt439 * 128 - 1;
+		} else if (j >= worldHeight * 128) {
+			j = worldHeight * 128 - 1;
 		}
 		anInt448++;
 		anInt458 = Model.modelIntArray1[j1];
@@ -914,16 +914,16 @@ final class WorldController {
 			anInt451 = 0;
 		}
 		anInt450 = anInt453 + drawDistance;
-		if (anInt450 > anInt438) {
-			anInt450 = anInt438;
+		if (anInt450 > worldWidth) {
+			anInt450 = worldWidth;
 		}
 		anInt452 = anInt454 + drawDistance;
-		if (anInt452 > anInt439) {
-			anInt452 = anInt439;
+		if (anInt452 > worldHeight) {
+			anInt452 = worldHeight;
 		}
 		method319();
 		anInt446 = 0;
-		for (int k1 = anInt442; k1 < anInt437; k1++) {
+		for (int k1 = activePlane; k1 < planeCount; k1++) {
 			Ground aclass30_sub3[][] = groundArray[k1];
 			for (int i2 = anInt449; i2 < anInt450; i2++) {
 				for (int k2 = anInt451; k2 < anInt452; k2++) {
@@ -946,7 +946,7 @@ final class WorldController {
 
 		}
 
-		for (int l1 = anInt442; l1 < anInt437; l1++) {
+		for (int l1 = activePlane; l1 < planeCount; l1++) {
 			Ground aclass30_sub3_1[][] = groundArray[l1];
 			for (int l2 = -drawDistance; l2 <= 0; l2++) {
 				int i3 = anInt453 + l2;
@@ -994,7 +994,7 @@ final class WorldController {
 
 		}
 
-		for (int j2 = anInt442; j2 < anInt437; j2++) {
+		for (int j2 = activePlane; j2 < planeCount; j2++) {
 			Ground aclass30_sub3_2[][] = groundArray[j2];
 			for (int j3 = -drawDistance; j3 <= 0; j3++) {
 				int l3 = anInt453 + j3;
@@ -1461,7 +1461,7 @@ final class WorldController {
 					}
 				}
 			}
-			if (k < anInt437 - 1) {
+			if (k < planeCount - 1) {
 				Ground class30_sub3_12 = groundArray[k + 1][i][j];
 				if (class30_sub3_12 != null && class30_sub3_12.aBoolean1323) {
 					aClass19_477.insertHead(class30_sub3_12);
@@ -2050,12 +2050,12 @@ final class WorldController {
 
 	private boolean aBoolean434;
 	public static boolean lowMem = true;
-	private final int anInt437;
-	private final int anInt438;
-	private final int anInt439;
+	private final int planeCount;
+	private final int worldWidth;
+	private final int worldHeight;
 	private final int[][][] anIntArrayArrayArray440;
 	private final Ground[][][] groundArray;
-	private int anInt442;
+	private int activePlane;
         private int obj5CacheCurrPos;
         private final SceneObject[] obj5Cache;
 	private final int[][][] anIntArrayArrayArray445;

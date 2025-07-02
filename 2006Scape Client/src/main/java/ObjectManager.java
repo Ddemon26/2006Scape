@@ -242,7 +242,7 @@ final class ObjectManager {
 		for (int j1 = 0; j1 < anInt146; j1++) {
 			for (int l1 = 0; l1 < anInt147; l1++) {
 				if ((aByteArrayArrayArray149[1][j1][l1] & 2) == 2) {
-					worldController.method276(l1, j1);
+                                        worldController.shiftDownPlanes(l1, j1);
 				}
 			}
 
