@@ -664,14 +664,14 @@ public class Game extends RSApplet {
 			for (int l = 0; l < 4; l++) {
 				for (int k1 = 0; k1 < 104; k1++) {
 					for (int j2 = 0; j2 < 104; j2++) {
-						byteGroundArray[l][k1][j2] = 0;
+						tileFlags[l][k1][j2] = 0;
 					}
 
 				}
 
 			}
 
-			ObjectManager objectManager = new ObjectManager(byteGroundArray, intGroundArray);
+			ObjectManager objectManager = new ObjectManager(tileFlags, tileHeights);
 			int k2 = aByteArrayArray1183.length;
 			stream.createFrame(0);
 			if (!aBoolean1159) {
@@ -873,10 +873,10 @@ public class Game extends RSApplet {
 		for (int l = 1; l < 103; l++) {
 			int i1 = 24628 + (103 - l) * 512 * 4;
 			for (int k1 = 1; k1 < 103; k1++) {
-				if ((byteGroundArray[i][k1][l] & 0x18) == 0) {
+				if ((tileFlags[i][k1][l] & 0x18) == 0) {
 					worldController.method309(ai, i1, i, k1, l);
 				}
-				if (i < 3 && (byteGroundArray[i + 1][k1][l] & 8) != 0) {
+				if (i < 3 && (tileFlags[i + 1][k1][l] & 8) != 0) {
 					worldController.method309(ai, i1, i + 1, k1, l);
 				}
 				i1 += 4;
@@ -889,10 +889,10 @@ public class Game extends RSApplet {
 		aClass30_Sub2_Sub1_Sub1_1263.initializeDrawingArea();
 		for (int i2 = 1; i2 < 103; i2++) {
 			for (int j2 = 1; j2 < 103; j2++) {
-				if ((byteGroundArray[i][j2][i2] & 0x18) == 0) {
+				if ((tileFlags[i][j2][i2] & 0x18) == 0) {
                                        drawMinimapLoc(i2, j1, j2, l1, i);
 				}
-				if (i < 3 && (byteGroundArray[i + 1][j2][i2] & 8) != 0) {
+				if (i < 3 && (tileFlags[i + 1][j2][i2] & 8) != 0) {
                                        drawMinimapLoc(i2, j1, j2, l1, i + 1);
 				}
 			}
@@ -980,7 +980,7 @@ public class Game extends RSApplet {
 		}
 
 		int i1 = i + (j << 7) + 0x60000000;
-                worldController.addItemPile(i, i1, ((Animable) obj1), method42(plane, j * 128 + 64, i * 128 + 64), ((Animable) obj2), ((Animable) obj), plane, j);
+                worldController.addItemPile(i, i1, ((Animable) obj1), getTileHeight(plane, j * 128 + 64, i * 128 + 64), ((Animable) obj2), ((Animable) obj), plane, j);
 	}
 
        public void addNpcsToScene(boolean flag) {
@@ -1004,7 +1004,7 @@ public class Game extends RSApplet {
                        if (!npc.definition.aBoolean84) {
 				k += 0x80000000;
 			}
-                   worldController.addAnimableObject(plane, npc.currentHeading, method42(plane, npc.y, npc.x), k, npc.y, (npc.anInt1540 - 1) * 64 + 60, npc.x, npc, npc.aBoolean1541);
+                   worldController.addAnimableObject(plane, npc.currentHeading, getTileHeight(plane, npc.y, npc.x), k, npc.y, (npc.anInt1540 - 1) * 64 + 60, npc.x, npc, npc.aBoolean1541);
 		}
 	}
 
@@ -1951,7 +1951,7 @@ public class Game extends RSApplet {
 	public void calcCameraPos() {
 		int i = anInt1098 * 128 + 64;
 		int j = anInt1099 * 128 + 64;
-		int k = method42(plane, j, i) - anInt1100;
+		int k = getTileHeight(plane, j, i) - anInt1100;
 		if (xCameraPos < i) {
 			xCameraPos += anInt1101 + (i - xCameraPos) * anInt1102 / 1000;
 			if (xCameraPos > i) {
@@ -1990,7 +1990,7 @@ public class Game extends RSApplet {
 		}
 		i = anInt995 * 128 + 64;
 		j = anInt996 * 128 + 64;
-		k = method42(plane, j, i) - anInt997;
+		k = getTileHeight(plane, j, i) - anInt997;
 		int l = i - xCameraPos;
 		int i1 = k - zCameraPos;
 		int j1 = j - yCameraPos;
@@ -2141,22 +2141,22 @@ public class Game extends RSApplet {
 		throw new RuntimeException();
 	}
 
-	public int method42(int i, int j, int k) {
-		int l = k >> 7;
-		int i1 = j >> 7;
-		if (l < 0 || i1 < 0 || l > 103 || i1 > 103) {
-			return 0;
-		}
-		int j1 = i;
-		if (j1 < 3 && (byteGroundArray[1][l][i1] & 2) == 2) {
-			j1++;
-		}
-		int k1 = k & 0x7f;
-		int l1 = j & 0x7f;
-		int i2 = intGroundArray[j1][l][i1] * (128 - k1) + intGroundArray[j1][l + 1][i1] * k1 >> 7;
-		int j2 = intGroundArray[j1][l][i1 + 1] * (128 - k1) + intGroundArray[j1][l + 1][i1 + 1] * k1 >> 7;
-		return i2 * (128 - l1) + j2 * l1 >> 7;
-	}
+        public int getTileHeight(int plane, int worldY, int worldX) {
+                int l = worldX >> 7;
+                int i1 = worldY >> 7;
+                if (l < 0 || i1 < 0 || l > 103 || i1 > 103) {
+                        return 0;
+                }
+                int j1 = plane;
+                if (j1 < 3 && (tileFlags[1][l][i1] & 2) == 2) {
+                        j1++;
+                }
+                int k1 = worldX & 0x7f;
+                int l1 = worldY & 0x7f;
+                int i2 = tileHeights[j1][l][i1] * (128 - k1) + tileHeights[j1][l + 1][i1] * k1 >> 7;
+                int j2 = tileHeights[j1][l][i1 + 1] * (128 - k1) + tileHeights[j1][l + 1][i1 + 1] * k1 >> 7;
+                return i2 * (128 - l1) + j2 * l1 >> 7;
+        }
 
 	public static String intToKOrMil(int j) {
 		if (j < 0x186a0) {
@@ -2313,7 +2313,7 @@ public class Game extends RSApplet {
 			}
                         if (player.aModel_1714 != null && loopCycle >= player.animationStartCycle && loopCycle < player.animationEndCycle) {
 				player.aBoolean1699 = false;
-                                player.animationBaseY = method42(plane, player.y, player.x);
+                                player.animationBaseY = getTileHeight(plane, player.y, player.x);
                                worldController.addAnimatingObject(plane, player.y, player, player.currentHeading, player.anInt1722, player.x, player.animationBaseY, player.anInt1719, player.anInt1721, i1, player.anInt1720);
 				continue;
 			}
@@ -2323,7 +2323,7 @@ public class Game extends RSApplet {
 				}
 				anIntArrayArray929[j1][k1] = anInt1265;
 			}
-                        player.animationBaseY = method42(plane, player.y, player.x);
+                        player.animationBaseY = getTileHeight(plane, player.y, player.x);
                       worldController.addAnimableObject(plane, player.currentHeading, player.animationBaseY, i1, player.y, 60, player.x, player, player.aBoolean1541);
 		}
 
@@ -2742,7 +2742,7 @@ public class Game extends RSApplet {
                                 if (class30_sub2_sub4_sub4.targetIndex > 0) {
                                         NPC npc = npcArray[class30_sub2_sub4_sub4.targetIndex - 1];
                                         if (npc != null && npc.x >= 0 && npc.x < 13312 && npc.y >= 0 && npc.y < 13312) {
-                                                class30_sub2_sub4_sub4.track(loopCycle, npc.y, method42(class30_sub2_sub4_sub4.plane, npc.y, npc.x) - class30_sub2_sub4_sub4.heightOffset, npc.x);
+                                                class30_sub2_sub4_sub4.track(loopCycle, npc.y, getTileHeight(class30_sub2_sub4_sub4.plane, npc.y, npc.x) - class30_sub2_sub4_sub4.heightOffset, npc.x);
                                         }
                                 }
                                 if (class30_sub2_sub4_sub4.targetIndex < 0) {
@@ -2754,7 +2754,7 @@ public class Game extends RSApplet {
                                                 player = playerArray[j];
                                         }
                                         if (player != null && player.x >= 0 && player.x < 13312 && player.y >= 0 && player.y < 13312) {
-                                                class30_sub2_sub4_sub4.track(loopCycle, player.y, method42(class30_sub2_sub4_sub4.plane, player.y, player.x) - class30_sub2_sub4_sub4.heightOffset, player.x);
+                                                class30_sub2_sub4_sub4.track(loopCycle, player.y, getTileHeight(class30_sub2_sub4_sub4.plane, player.y, player.x) - class30_sub2_sub4_sub4.heightOffset, player.x);
                                         }
                                 }
                                 class30_sub2_sub4_sub4.update(anInt945);
@@ -4697,8 +4697,8 @@ public class Game extends RSApplet {
 		aByteArrayArray1247 = null;
 		anIntArray1235 = null;
 		anIntArray1236 = null;
-		intGroundArray = null;
-		byteGroundArray = null;
+		tileHeights = null;
+		tileFlags = null;
 		worldController = null;
 		aClass11Array1230 = null;
 		anIntArrayArray901 = null;
@@ -7015,9 +7015,9 @@ public class Game extends RSApplet {
 			StreamLoader streamLoader_3 = streamLoaderForName(6, "textures", "textures", expectedCRCs[6], 45);
 			StreamLoader streamLoader_4 = streamLoaderForName(7, "chat system", "wordenc", expectedCRCs[7], 50);
 			StreamLoader streamLoader_5 = streamLoaderForName(8, "sound effects", "sounds", expectedCRCs[8], 55);
-			byteGroundArray = new byte[4][104][104];
-			intGroundArray = new int[4][105][105];
-			worldController = new WorldController(intGroundArray);
+			tileFlags = new byte[4][104][104];
+			tileHeights = new int[4][105][105];
+			worldController = new WorldController(tileHeights);
 			for (int j = 0; j < 4; j++) {
 				aClass11Array1230[j] = new CollisionMap();
 			}
@@ -8720,16 +8720,16 @@ public class Game extends RSApplet {
 			}
 			int l = anInt1014 >> 7;
 			int i1 = anInt1015 >> 7;
-			int j1 = method42(plane, anInt1015, anInt1014);
+			int j1 = getTileHeight(plane, anInt1015, anInt1014);
 			int k1 = 0;
 			if (l > 3 && i1 > 3 && l < 100 && i1 < 100) {
 				for (int l1 = l - 4; l1 <= l + 4; l1++) {
 					for (int k2 = i1 - 4; k2 <= i1 + 4; k2++) {
 						int l2 = plane;
-						if (l2 < 3 && (byteGroundArray[1][l1][k2] & 2) == 2) {
+						if (l2 < 3 && (tileFlags[1][l1][k2] & 2) == 2) {
 							l2++;
 						}
-						int i3 = j1 - intGroundArray[l2][l1][k2];
+						int i3 = j1 - tileHeights[l2][l1][k2];
 						if (i3 > k1) {
 							k1 = i3;
 						}
@@ -9211,7 +9211,7 @@ public class Game extends RSApplet {
 			int l = Math.max(0, Math.min(103, yCameraPos >> 7));
 			int i1 = myPlayer.x >> 7;
 			int j1 = myPlayer.y >> 7;
-			if ((byteGroundArray[plane][k][l] & 4) != 0) {
+			if ((tileFlags[plane][k][l] & 4) != 0) {
 				j = plane;
 			}
 			int k1;
@@ -9235,7 +9235,7 @@ public class Game extends RSApplet {
 					} else if (k > i1) {
 						k--;
 					}
-					if ((byteGroundArray[plane][k][l] & 4) != 0) {
+					if ((tileFlags[plane][k][l] & 4) != 0) {
 						j = plane;
 					}
 					k2 += i2;
@@ -9246,7 +9246,7 @@ public class Game extends RSApplet {
 						} else if (l > j1) {
 							l--;
 						}
-						if ((byteGroundArray[plane][k][l] & 4) != 0) {
+						if ((tileFlags[plane][k][l] & 4) != 0) {
 							j = plane;
 						}
 					}
@@ -9260,7 +9260,7 @@ public class Game extends RSApplet {
 					} else if (l > j1) {
 						l--;
 					}
-					if ((byteGroundArray[plane][k][l] & 4) != 0) {
+					if ((tileFlags[plane][k][l] & 4) != 0) {
 						j = plane;
 					}
 					l2 += j2;
@@ -9271,14 +9271,14 @@ public class Game extends RSApplet {
 						} else if (k > i1) {
 							k--;
 						}
-						if ((byteGroundArray[plane][k][l] & 4) != 0) {
+						if ((tileFlags[plane][k][l] & 4) != 0) {
 							j = plane;
 						}
 					}
 				}
 			}
 		}
-		if ((byteGroundArray[plane][myPlayer.x >> 7][myPlayer.y >> 7] & 4) != 0) {
+		if ((tileFlags[plane][myPlayer.x >> 7][myPlayer.y >> 7] & 4) != 0) {
 			j = plane;
 		}
 		return j;
@@ -9287,8 +9287,8 @@ public class Game extends RSApplet {
 	public int method121() {
 		// Hide other planes when using fixed camera
 		return plane;
-		// int j = method42(plane, yCameraPos, xCameraPos);
-		// if (j - zCameraPos < 800 && (byteGroundArray[plane][xCameraPos >> 7][yCameraPos >> 7] & 4) != 0) {
+		// int j = getTileHeight(plane, yCameraPos, xCameraPos);
+		// if (j - zCameraPos < 800 && (tileFlags[plane][xCameraPos >> 7][yCameraPos >> 7] & 4) != 0) {
 		// 	return plane;
 		// } else {
 		// 	return 3;
@@ -9611,7 +9611,7 @@ public class Game extends RSApplet {
 			spriteDrawY = -1;
 			return;
 		}
-		int i1 = method42(plane, l, i) - j;
+		int i1 = getTileHeight(plane, l, i) - j;
 		i -= xCameraPos;
 		i1 -= zCameraPos;
 		l -= yCameraPos;
@@ -10098,10 +10098,10 @@ public class Game extends RSApplet {
 			int j16 = anIntArray1177[j12];
 			int j17 = stream.readShortAdd();
 			if (j4 >= 0 && i7 >= 0 && j4 < 103 && i7 < 103) {
-				int j18 = intGroundArray[plane][j4][i7];
-				int i19 = intGroundArray[plane][j4 + 1][i7];
-				int l19 = intGroundArray[plane][j4 + 1][i7 + 1];
-				int k20 = intGroundArray[plane][j4][i7 + 1];
+				int j18 = tileHeights[plane][j4][i7];
+				int i19 = tileHeights[plane][j4 + 1][i7];
+				int l19 = tileHeights[plane][j4 + 1][i7 + 1];
+				int k20 = tileHeights[plane][j4][i7 + 1];
 				if (j16 == 0) {
 					BoundaryObject class10 = worldController.method296(plane, j4, i7);
 					if (class10 != null) {
@@ -10162,10 +10162,10 @@ public class Game extends RSApplet {
 			}
 			if (player != null) {
 				ObjectDef class46 = ObjectDef.forID(l21);
-				int i22 = intGroundArray[plane][k4][j7];
-				int j22 = intGroundArray[plane][k4 + 1][j7];
-				int k22 = intGroundArray[plane][k4 + 1][j7 + 1];
-				int l22 = intGroundArray[plane][k4][j7 + 1];
+				int i22 = tileHeights[plane][k4][j7];
+				int j22 = tileHeights[plane][k4 + 1][j7];
+				int k22 = tileHeights[plane][k4 + 1][j7 + 1];
+				int l22 = tileHeights[plane][k4][j7 + 1];
 				Model model = class46.getModel(j19, i20, i22, j22, k22, l22, -1);
 				if (model != null) {
 					method130(k17 + 1, -1, 0, l20, j7, 0, plane, k4, l14 + 1);
@@ -10180,7 +10180,7 @@ public class Game extends RSApplet {
 					}
                                 player.animationBaseX = k4 * 128 + i23 * 64;
                                 player.animationBaseZ = j7 * 128 + j23 * 64;
-                                player.animationBaseHeight = method42(plane, player.animationBaseZ, player.animationBaseX);
+                                player.animationBaseHeight = getTileHeight(plane, player.animationBaseZ, player.animationBaseX);
 					if (byte2 > byte0) {
 						byte byte4 = byte2;
 						byte2 = byte0;
@@ -10237,7 +10237,7 @@ public class Game extends RSApplet {
 			if (i5 >= 0 && l7 >= 0 && i5 < 104 && l7 < 104) {
 				i5 = i5 * 128 + 64;
 				l7 = l7 * 128 + 64;
-                                GraphicsObject graphicsObject = new GraphicsObject(plane, loopCycle, j15, k10, method42(plane, l7, i5) - l12, l7, i5);
+                                GraphicsObject graphicsObject = new GraphicsObject(plane, loopCycle, j15, k10, getTileHeight(plane, l7, i5) - l12, l7, i5);
                                 aClass19_1056.insertHead(graphicsObject);
 			}
 			return;
@@ -10279,8 +10279,8 @@ public class Game extends RSApplet {
 				k8 = k8 * 128 + 64;
 				j11 = j11 * 128 + 64;
 				k13 = k13 * 128 + 64;
-                                Projectile class30_sub2_sub4_sub4 = new Projectile(i21, l18, k19 + loopCycle, j20 + loopCycle, j21, plane, method42(plane, k8, l5) - i18, k8, l5, l15, i17);
-                                class30_sub2_sub4_sub4.track(k19 + loopCycle, k13, method42(plane, k13, j11) - l18, j11);
+                                Projectile class30_sub2_sub4_sub4 = new Projectile(i21, l18, k19 + loopCycle, j20 + loopCycle, j21, plane, getTileHeight(plane, k8, l5) - i18, k8, l5, l15, i17);
+                                class30_sub2_sub4_sub4.track(k19 + loopCycle, k13, getTileHeight(plane, k13, j11) - l18, j11);
                                 aClass19_1013.insertHead(class30_sub2_sub4_sub4);
 			}
 		}
@@ -10522,10 +10522,10 @@ public class Game extends RSApplet {
 			}
 			if (k1 >= 0) {
 				int j3 = j;
-				if (j3 < 3 && (byteGroundArray[1][i1][i] & 2) == 2) {
+				if (j3 < 3 && (tileFlags[1][i1][i] & 2) == 2) {
 					j3++;
 				}
-				ObjectManager.addObject(worldController, k, i, l, j3, aClass11Array1230[j], intGroundArray, i1, k1, j);
+				ObjectManager.addObject(worldController, k, i, l, j3, aClass11Array1230[j], tileHeights, i1, k1, j);
 			}
 		}
 	}
@@ -10740,7 +10740,7 @@ public class Game extends RSApplet {
 				if (anInt1102 >= 100) {
 					xCameraPos = anInt1098 * 128 + 64;
 					yCameraPos = anInt1099 * 128 + 64;
-					zCameraPos = method42(plane, yCameraPos, xCameraPos) - anInt1100;
+					zCameraPos = getTileHeight(plane, yCameraPos, xCameraPos) - anInt1100;
 				}
 				pktType = -1;
 				return true;
@@ -11597,7 +11597,7 @@ public class Game extends RSApplet {
 				if (anInt999 >= 100) {
 					int k7 = anInt995 * 128 + 64;
 					int k14 = anInt996 * 128 + 64;
-					int i20 = method42(plane, k14, k7) - anInt997;
+					int i20 = getTileHeight(plane, k14, k7) - anInt997;
 					int l22 = k7 - xCameraPos;
 					int k25 = i20 - zCameraPos;
 					int j28 = k14 - yCameraPos;
@@ -11850,7 +11850,7 @@ public class Game extends RSApplet {
 			}
 			int k = minimapInt1 + anInt896 & 0x7ff;
 			// Camera zoom control
-			setCameraPos(600 + i * zoom, i, anInt1014, method42(plane, myPlayer.y, myPlayer.x) - 70, k, anInt1015);
+			setCameraPos(600 + i * zoom, i, anInt1014, getTileHeight(plane, myPlayer.y, myPlayer.x) - 70, k, anInt1015);
 		}
 		int j;
 		if (!aBoolean1160) {
@@ -12524,7 +12524,7 @@ public class Game extends RSApplet {
 	public int anInt1211;
 	public String promptInput;
 	public int anInt1213;
-	public int[][][] intGroundArray;
+        public int[][][] tileHeights;
 	public long aLong1215;
 	public int loginScreenCursorPos;
 	public final Background[] modIcons;
@@ -12564,7 +12564,7 @@ public class Game extends RSApplet {
 	public boolean welcomeScreenRaised;
 	public boolean messagePromptRaised;
 	public static int anInt1257;
-	public byte[][][] byteGroundArray;
+        public byte[][][] tileFlags;
 	public int previousSong;
 	public int destX;
 	public int destY;
