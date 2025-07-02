@@ -4790,7 +4790,7 @@ public class Game extends RSApplet {
 		ObjectDef.nullLoader();
 		EntityDef.nullLoader();
         ItemDef.resetCache();
-		Flo.cache = null;
+		FloorOverlay.cache = null;
 		IDK.cache = null;
 		RSInterface.interfaceCache = null;
 		CachePlaceholder.cache = null;
@@ -7281,7 +7281,7 @@ public class Game extends RSApplet {
 			drawLoadingText(86, "Unpacking config");
 			Animation.unpackConfig(streamLoader);
 			ObjectDef.unpackConfig(streamLoader);
-			Flo.unpackConfig(streamLoader);
+			FloorOverlay.unpackConfig(streamLoader);
 			ItemDef.unpackConfig(streamLoader);
 			EntityDef.unpackConfig(streamLoader);
 			IDK.unpackConfig(streamLoader);
@@ -11664,7 +11664,7 @@ public class Game extends RSApplet {
 				// 15774 = Good/Bad Password
 				// 15767 = Drama Type 
 				if (l7 == 15244) {
-					if (ClientSettings.SNOW_OVERLAY_FORCE_ENABLED || (ClientSettings.SNOW_OVERLAY_ENABLED && Flo.getTodaysDate().contains(ClientSettings.SNOW_MONTH))) {
+					if (ClientSettings.SNOW_OVERLAY_FORCE_ENABLED || (ClientSettings.SNOW_OVERLAY_ENABLED && FloorOverlay.getTodaysDate().contains(ClientSettings.SNOW_MONTH))) {
 						openInterfaceID = 15819;
 					} else {
 						openInterfaceID = 15801;
@@ -12889,7 +12889,7 @@ public class Game extends RSApplet {
 			inputTaken = true;
 		}
 		if (interfaceID == 15244) {
-			if (ClientSettings.SNOW_OVERLAY_FORCE_ENABLED || (ClientSettings.SNOW_OVERLAY_ENABLED && Flo.getTodaysDate().contains(ClientSettings.SNOW_MONTH))) {
+			if (ClientSettings.SNOW_OVERLAY_FORCE_ENABLED || (ClientSettings.SNOW_OVERLAY_ENABLED && FloorOverlay.getTodaysDate().contains(ClientSettings.SNOW_MONTH))) {
 				openInterfaceID = 15819;
 			} else {
 				openInterfaceID = 15801;
