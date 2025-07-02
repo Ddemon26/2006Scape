@@ -267,7 +267,7 @@ public final class Player extends Entity {
 			return model_1;
 		}
                 Model model_2 = Model.aModel_1621;
-                model_2.method464(model_1, AnimFrame.isNullFrame(k) & AnimFrame.isNullFrame(i1));
+                model_2.copyFromModel(model_1, AnimFrame.isNullFrame(k) & AnimFrame.isNullFrame(i1));
 		if (k != -1 && i1 != -1) {
 			model_2.applyFrames(Animation.anims[super.anim].anIntArray357, i1, k);
 		} else if (k != -1) {

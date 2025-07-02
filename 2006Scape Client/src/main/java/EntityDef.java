@@ -161,7 +161,7 @@ public final class EntityDef {
 			mruNodes.removeFromCache(model, type);
 		}
                Model model_1 = Model.aModel_1621;
-               model_1.method464(model, AnimFrame.isNullFrame(secondaryFrame) & AnimFrame.isNullFrame(primaryFrame));
+               model_1.copyFromModel(model, AnimFrame.isNullFrame(secondaryFrame) & AnimFrame.isNullFrame(primaryFrame));
                if (secondaryFrame != -1 && primaryFrame != -1) {
                        model_1.applyFrames(frameData, primaryFrame, secondaryFrame);
                } else if (secondaryFrame != -1) {

@@ -648,57 +648,57 @@ public final class Model extends Animable {
 		maxX = model.maxX;
 	}
 
-	public void method464(Model model, boolean flag) {
-		anInt1626 = model.anInt1626;
-		anInt1630 = model.anInt1630;
-		anInt1642 = model.anInt1642;
-		if (anIntArray1622.length < anInt1626) {
-			anIntArray1622 = new int[anInt1626 + 100];
-			anIntArray1623 = new int[anInt1626 + 100];
-			anIntArray1624 = new int[anInt1626 + 100];
-		}
-		vertexX = anIntArray1622;
-		vertexY = anIntArray1623;
-		vertexZ = anIntArray1624;
-		for (int k = 0; k < anInt1626; k++) {
-			vertexX[k] = model.vertexX[k];
-			vertexY[k] = model.vertexY[k];
-			vertexZ[k] = model.vertexZ[k];
-		}
+        public void copyFromModel(Model src, boolean shareColor) {
+                anInt1626 = src.anInt1626;
+                anInt1630 = src.anInt1630;
+                anInt1642 = src.anInt1642;
+                if (anIntArray1622.length < anInt1626) {
+                        anIntArray1622 = new int[anInt1626 + 100];
+                        anIntArray1623 = new int[anInt1626 + 100];
+                        anIntArray1624 = new int[anInt1626 + 100];
+                }
+                vertexX = anIntArray1622;
+                vertexY = anIntArray1623;
+                vertexZ = anIntArray1624;
+                for (int k = 0; k < anInt1626; k++) {
+                        vertexX[k] = src.vertexX[k];
+                        vertexY[k] = src.vertexY[k];
+                        vertexZ[k] = src.vertexZ[k];
+                }
 
-		if (flag) {
-			anIntArray1639 = model.anIntArray1639;
-		} else {
-			if (anIntArray1625.length < anInt1630) {
-				anIntArray1625 = new int[anInt1630 + 100];
-			}
-			anIntArray1639 = anIntArray1625;
-			if (model.anIntArray1639 == null) {
-				for (int l = 0; l < anInt1630; l++) {
-					anIntArray1639[l] = 0;
-				}
+                if (shareColor) {
+                        anIntArray1639 = src.anIntArray1639;
+                } else {
+                        if (anIntArray1625.length < anInt1630) {
+                                anIntArray1625 = new int[anInt1630 + 100];
+                        }
+                        anIntArray1639 = anIntArray1625;
+                        if (src.anIntArray1639 == null) {
+                                for (int l = 0; l < anInt1630; l++) {
+                                        anIntArray1639[l] = 0;
+                                }
 
-			} else {
-				System.arraycopy(model.anIntArray1639, 0, anIntArray1639, 0, anInt1630);
+                        } else {
+                                System.arraycopy(src.anIntArray1639, 0, anIntArray1639, 0, anInt1630);
 
-			}
-		}
-		anIntArray1637 = model.anIntArray1637;
-		faceColor = model.faceColor;
-		anIntArray1638 = model.anIntArray1638;
-		anInt1641 = model.anInt1641;
-		faceGroups = model.faceGroups;
-		vertexGroups = model.vertexGroups;
-		faceA = model.faceA;
-		faceB = model.faceB;
-		faceC = model.faceC;
-		anIntArray1634 = model.anIntArray1634;
-		anIntArray1635 = model.anIntArray1635;
-		anIntArray1636 = model.anIntArray1636;
-		anIntArray1643 = model.anIntArray1643;
-		anIntArray1644 = model.anIntArray1644;
-		anIntArray1645 = model.anIntArray1645;
-	}
+                        }
+                }
+                anIntArray1637 = src.anIntArray1637;
+                faceColor = src.faceColor;
+                anIntArray1638 = src.anIntArray1638;
+                anInt1641 = src.anInt1641;
+                faceGroups = src.faceGroups;
+                vertexGroups = src.vertexGroups;
+                faceA = src.faceA;
+                faceB = src.faceB;
+                faceC = src.faceC;
+                anIntArray1634 = src.anIntArray1634;
+                anIntArray1635 = src.anIntArray1635;
+                anIntArray1636 = src.anIntArray1636;
+                anIntArray1643 = src.anIntArray1643;
+                anIntArray1644 = src.anIntArray1644;
+                anIntArray1645 = src.anIntArray1645;
+        }
 
 	private int getOrCreateVertex(Model model, int i) {
 		int j = -1;
