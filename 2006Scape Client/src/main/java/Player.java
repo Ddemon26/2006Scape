@@ -195,7 +195,7 @@ public final class Player extends Entity {
 		} else if (super.anInt1517 >= 0) {
 			k = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
 		}
-		Model model_1 = (Model) mruNodes.insertFromCache(l);
+            Model model_1 = (Model) mruNodes.get(l);
 		if (model_1 == null) {
 			boolean flag = false;
 			for (int i2 = 0; i2 < 12; i2++) {
@@ -216,7 +216,7 @@ public final class Player extends Entity {
 
 			if (flag) {
 				if (cachedModelHash != -1L) {
-					model_1 = (Model) mruNodes.insertFromCache(cachedModelHash);
+                                    model_1 = (Model) mruNodes.get(cachedModelHash);
 				}
 				if (model_1 == null) {
 					return null;
@@ -260,7 +260,7 @@ public final class Player extends Entity {
 
 			model_1.buildVertexGroups();
 			model_1.applyLighting(64, 850, -30, -50, -30, true);
-			mruNodes.removeFromCache(model_1, l);
+                    mruNodes.put(model_1, l);
 			cachedModelHash = l;
 		}
 		if (aBoolean1699) {
@@ -352,7 +352,7 @@ public final class Player extends Entity {
 	public int team;
         private int gender;
 	public String name;
-	static MRUNodes mruNodes = new MRUNodes(260);
+        static MRUCache mruNodes = new MRUCache(260);
 	public int combatLevel;
 	public int headIcon;
 	public int skullIcon;

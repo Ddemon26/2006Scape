@@ -10,7 +10,7 @@ public final class RSInterface {
 	}
 	
 	public static void unpack(StreamLoader streamLoader, TextDrawingArea textDrawingAreas[], StreamLoader streamLoader_1) {
-               spriteCache = new MRUNodes(50000);
+              spriteCache = new MRUCache(50000);
 		Stream stream = new Stream(streamLoader.getFileData("data"));
 		int i = -1;
 		int j = stream.readUnsignedWord();
@@ -238,7 +238,7 @@ public final class RSInterface {
                        lightness += itemDefinition.ambient;
                        shading += itemDefinition.contrast;
 		}
-                Model model = (Model) modelCache.insertFromCache((i << 16) + j);
+                Model model = (Model) modelCache.get((i << 16) + j);
 		if (model != null)
 			return model;
 		if (i == 1)
@@ -252,19 +252,19 @@ public final class RSInterface {
 		if (i == 5)
 			model = null;
 		if (model != null)
-                        modelCache.removeFromCache(model, (i << 16) + j);
+                        modelCache.put(model, (i << 16) + j);
 		return model;
 	}
 
     private static Sprite loadSprite(int i, StreamLoader streamLoader, String s) {
                long l = (TextClass.hashSpriteName(s) << 8) + i;
-                Sprite sprite = (Sprite) spriteCache.insertFromCache(l);
+                Sprite sprite = (Sprite) spriteCache.get(l);
 		if (sprite != null) {
 			return sprite;
 		}
 		try {
 			sprite = new Sprite(streamLoader, s, i);
-                        spriteCache.removeFromCache(sprite, l);
+                        spriteCache.put(sprite, l);
 		} catch (Exception _ex) {
 			return null;
 		}
@@ -285,7 +285,7 @@ public final class RSInterface {
         public static void clearModelCache(Model model, int id, int type) {
                 modelCache.unlinkAll();
                 if (model != null && type != 4) {
-                        modelCache.removeFromCache(model, (type << 16) + id);
+                        modelCache.put(model, (type << 16) + id);
                 }
         }
 
@@ -349,7 +349,7 @@ public final class RSInterface {
 	public boolean aBoolean235;
 	public int parentID;
 	public int spellUsableOn;
-        private static MRUNodes spriteCache;
+        private static MRUCache spriteCache;
 	public int anInt239;
 	public int children[];
 	public int childX[];
@@ -374,7 +374,7 @@ public final class RSInterface {
 	public int scrollMax;
 	public int type;
         public int offsetX;
-        private static final MRUNodes modelCache = new MRUNodes(30);
+        private static final MRUCache modelCache = new MRUCache(30);
 	public int anInt265;
 	public boolean aBoolean266;
 	public int height;

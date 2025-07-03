@@ -54,7 +54,7 @@ public final class SpotAnim {
 	}
 
 	public Model getModel() {
-		Model model = (Model) aMRUNodes_415.insertFromCache(anInt404);
+                Model model = (Model) aMRUCache_415.get(anInt404);
 		if (model != null) {
 			return model;
 		}
@@ -68,7 +68,7 @@ public final class SpotAnim {
 			}
 		}
 
-		aMRUNodes_415.removeFromCache(model, anInt404);
+                aMRUCache_415.put(model, anInt404);
 		return model;
 	}
 
@@ -92,6 +92,6 @@ public final class SpotAnim {
 	public int anInt412;
 	public int anInt413;
 	public int anInt414;
-	public static MRUNodes aMRUNodes_415 = new MRUNodes(30);
+        public static MRUCache aMRUCache_415 = new MRUCache(30);
 
 }

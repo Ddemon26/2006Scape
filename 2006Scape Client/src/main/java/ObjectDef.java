@@ -189,7 +189,7 @@ public final class ObjectDef {
 				return null;
 			}
 			l1 = (type << 6) + l + ((long) (k + 1) << 32);
-			Model model_1 = (Model) mruNodes2.insertFromCache(l1);
+                    Model model_1 = (Model) mruNodes2.get(l1);
 			if (model_1 != null) {
 				return model_1;
 			}
@@ -203,7 +203,7 @@ public final class ObjectDef {
 				if (flag1) {
 					l2 += 0x10000;
 				}
-				model = (Model) mruNodes1.insertFromCache(l2);
+                            model = (Model) mruNodes1.get(l2);
 				if (model == null) {
 					model = Model.create(l2 & 0xffff);
 					if (model == null) {
@@ -212,7 +212,7 @@ public final class ObjectDef {
 					if (flag1) {
 						model.mirror();
 					}
-					mruNodes1.removeFromCache(model, l2);
+                                    mruNodes1.put(model, l2);
 				}
 				if (k1 > 1) {
 					aModelArray741s[i2] = model;
@@ -236,7 +236,7 @@ public final class ObjectDef {
 				return null;
 			}
 			l1 = (type << 6) + (i1 << 3) + l + ((long) (k + 1) << 32);
-			Model model_2 = (Model) mruNodes2.insertFromCache(l1);
+                    Model model_2 = (Model) mruNodes2.get(l1);
 			if (model_2 != null) {
 				return model_2;
 			}
@@ -245,7 +245,7 @@ public final class ObjectDef {
 			if (flag3) {
 				j2 += 0x10000;
 			}
-			model = (Model) mruNodes1.insertFromCache(j2);
+                    model = (Model) mruNodes1.get(j2);
 			if (model == null) {
 				model = Model.create(j2 & 0xffff);
 				if (model == null) {
@@ -254,7 +254,7 @@ public final class ObjectDef {
 				if (flag3) {
 					model.mirror();
 				}
-				mruNodes1.removeFromCache(model, j2);
+                            mruNodes1.put(model, j2);
 			}
 		}
 		boolean flag;
@@ -287,7 +287,7 @@ public final class ObjectDef {
 		if (anInt760 == 1) {
 			model_3.anInt1654 = model_3.modelHeight;
 		}
-		mruNodes2.removeFromCache(model_3, l1);
+            mruNodes2.put(model_3, l1);
 		return model_3;
 	}
 
@@ -490,12 +490,12 @@ public final class ObjectDef {
 	public byte description[];
 	public boolean interactive;
 	public boolean aBoolean779;
-	public static MRUNodes mruNodes2 = new MRUNodes(30);
+        public static MRUCache mruNodes2 = new MRUCache(30);
 	public int animationId;
 	private static ObjectDef[] cache;
 	private int anInt783;
 	private int[] modifiedModelColors;
-	public static MRUNodes mruNodes1 = new MRUNodes(500);
+        public static MRUCache mruNodes1 = new MRUCache(500);
 	public String actions[];
 
 }

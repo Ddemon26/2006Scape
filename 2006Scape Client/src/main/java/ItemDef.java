@@ -2077,7 +2077,7 @@ public final class ItemDef {
 
 	public static Sprite getSprite(int i, int j, int k) {
 		if (k == 0) {
-        Sprite sprite = (Sprite) spriteCache.insertFromCache(i);
+        Sprite sprite = (Sprite) spriteCache.get(i);
 			if (sprite != null && sprite.trimHeight != j && sprite.trimHeight != -1) {
 				sprite.unlink();
 				sprite = null;
@@ -2194,7 +2194,7 @@ public final class ItemDef {
 			sprite.trimHeight = j6;
 		}
 		if (k == 0) {
-        spriteCache.removeFromCache(sprite2, i);
+        spriteCache.put(sprite2, i);
 		}
 		DrawingArea.initDrawingArea(j2, i2, ai1);
 		DrawingArea.setDrawingArea(j3, k2, l2, i3);
@@ -2224,7 +2224,7 @@ public final class ItemDef {
                                return lookup(id).getModel(1);
                        }
                }
-        Model model = (Model) modelCache.insertFromCache(id);
+        Model model = (Model) modelCache.get(id);
 		if (model != null) {
 			return model;
 		}
@@ -2243,7 +2243,7 @@ public final class ItemDef {
 		}
 		model.applyLighting(64 + ambient, 768 + contrast, -50, -10, -50, true);
 		model.aBoolean1659 = true;
-        modelCache.removeFromCache(model, id);
+        modelCache.put(model, id);
 		return model;
 	}
 
@@ -2390,8 +2390,8 @@ public final class ItemDef {
 	public int value;
 	private int[] modifiedModelColors;
 	public int id;
-    static MRUNodes spriteCache = new MRUNodes(100);
-    public static MRUNodes modelCache = new MRUNodes(50);
+    static MRUCache spriteCache = new MRUCache(100);
+    public static MRUCache modelCache = new MRUCache(50);
 	private int[] originalModelColors;
 	public boolean membersObject;
 	private int femaleModel3;
