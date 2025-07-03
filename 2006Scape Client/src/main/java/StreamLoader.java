@@ -4,57 +4,57 @@
 
 final class StreamLoader {
 
-	public StreamLoader(byte abyte0[]) {
-                Stream stream = new Stream(abyte0);
-		int i = stream.read3Bytes();
-		int j = stream.read3Bytes();
-		if (j != i) {
-                        byte abyte1[] = new byte[i];
-                        BZip2Decompressor.decompress(abyte1, i, abyte0, j, 6);
-                        dataBuffer = abyte1;
-                        stream = new Stream(dataBuffer);
-                        usesCompression = true;
-                } else {
-                        dataBuffer = abyte0;
-                        usesCompression = false;
-                }
+       public StreamLoader(byte archiveData[]) {
+               Stream stream = new Stream(archiveData);
+               int expectedLength = stream.read3Bytes();
+               int actualLength = stream.read3Bytes();
+               if (actualLength != expectedLength) {
+                       byte decompressedData[] = new byte[expectedLength];
+                       BZip2Decompressor.decompress(decompressedData, expectedLength, archiveData, actualLength, 6);
+                       dataBuffer = decompressedData;
+                       stream = new Stream(dataBuffer);
+                       usesCompression = true;
+               } else {
+                       dataBuffer = archiveData;
+                       usesCompression = false;
+               }
                 fileCount = stream.readUnsignedWord();
                 fileHashes = new int[fileCount];
                 uncompressedSizes = new int[fileCount];
                 compressedSizes = new int[fileCount];
                 fileOffsets = new int[fileCount];
-                int k = stream.currentOffset + fileCount * 10;
-                for (int l = 0; l < fileCount; l++) {
-                        fileHashes[l] = stream.readDWord();
-                        uncompressedSizes[l] = stream.read3Bytes();
-                        compressedSizes[l] = stream.read3Bytes();
-                        fileOffsets[l] = k;
-                        k += compressedSizes[l];
-                }
-        }
+               int offset = stream.currentOffset + fileCount * 10;
+               for (int index = 0; index < fileCount; index++) {
+                       fileHashes[index] = stream.readDWord();
+                       uncompressedSizes[index] = stream.read3Bytes();
+                       compressedSizes[index] = stream.read3Bytes();
+                       fileOffsets[index] = offset;
+                       offset += compressedSizes[index];
+               }
+       }
 
-        public byte[] getFileData(String s) {
-                byte abyte0[] = null; // was a parameter
-                int i = 0;
-                s = s.toUpperCase();
-                for (int j = 0; j < s.length(); j++) {
-                        i = i * 61 + s.charAt(j) - 32;
-                }
+       public byte[] getFileData(String s) {
+               byte fileBuffer[] = null; // was a parameter
+               int fileHash = 0;
+               s = s.toUpperCase();
+               for (int i = 0; i < s.length(); i++) {
+                       fileHash = fileHash * 61 + s.charAt(i) - 32;
+               }
 
-                for (int k = 0; k < fileCount; k++) {
-                        if (fileHashes[k] == i) {
-                                if (abyte0 == null) {
-                                        abyte0 = new byte[uncompressedSizes[k]];
-                                }
-                                if (!usesCompression) {
-                                        BZip2Decompressor.decompress(abyte0, uncompressedSizes[k], dataBuffer, compressedSizes[k], fileOffsets[k]);
-                                } else {
-                                        System.arraycopy(dataBuffer, fileOffsets[k], abyte0, 0, uncompressedSizes[k]);
+               for (int index = 0; index < fileCount; index++) {
+                       if (fileHashes[index] == fileHash) {
+                               if (fileBuffer == null) {
+                                       fileBuffer = new byte[uncompressedSizes[index]];
+                               }
+                               if (!usesCompression) {
+                                       BZip2Decompressor.decompress(fileBuffer, uncompressedSizes[index], dataBuffer, compressedSizes[index], fileOffsets[index]);
+                               } else {
+                                       System.arraycopy(dataBuffer, fileOffsets[index], fileBuffer, 0, uncompressedSizes[index]);
 
-                                }
-                                return abyte0;
-                        }
-                }
+                               }
+                               return fileBuffer;
+                       }
+               }
 
 		return null;
 	}
