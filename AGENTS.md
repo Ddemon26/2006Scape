@@ -67,7 +67,7 @@ unavailable. The agent **MUST** follow this exact sequence:
    ```bash
    git ls-files '2006Scape Client/src/main/java/*.java' -z | xargs -0 javac
    ```
-2. **Scope limits** – net line‑count change < 25 000 **and** touched files ≤ 35.
+2. **Scope limits** – net line‑count change < 25,000 **and** touched files ≤ 35 unless we are asked to organize systems directory's, e.g., moving files into new folders for proper structure.
 3. **Rebase** – branch is rebased onto the latest `main`.
 4. **PR Template** – description follows `.github/PULL_REQUEST_TEMPLATE/bot.md`.
 
