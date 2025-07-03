@@ -6,10 +6,10 @@ public final class TileDecoration {
 
         public TileDecoration() {}
 
-	int anInt811;
-	int anInt812;
-	int anInt813;
-	public Animable aClass30_Sub2_Sub4_814;
-	public int uid;
-	byte aByte816;
+       int tileHeight;
+       int x;
+       int y;
+       public Animable renderable;
+       public int uid;
+       byte config;
 }
