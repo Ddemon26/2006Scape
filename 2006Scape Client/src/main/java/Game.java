@@ -6538,7 +6538,7 @@ public class Game extends RSApplet {
 		return i != 1;
 	}
 	
-	static final int method77(int i, int i_1_) {
+       static final int adjustColorBrightness(int i, int i_1_) {
 		if (i_1_ == -2)
 	   		return 12345678;
 		if (i_1_ == -1) {
@@ -7861,9 +7861,9 @@ public class Game extends RSApplet {
 	public void drawGameScreen() {
 		if (fullScreenInterfaceId != -1 && (loadingStage == 2 || super.fullGameScreen != null)) {
 			if (loadingStage == 2) {
-				method119(anInt945, fullScreenInterfaceId);
+				updateInterfaceAnimations(anInt945, fullScreenInterfaceId);
 				if (fullScreenInterfaceId != -1)
-					method119(anInt945, fullScreenInterfaceId);
+					updateInterfaceAnimations(anInt945, fullScreenInterfaceId);
 				anInt945 = 0;
 				resetAllImageProducers();
 				super.fullGameScreen.initDrawingArea();
@@ -7924,7 +7924,7 @@ public class Game extends RSApplet {
 			needDrawTabArea = true;
 		}
 		if (invOverlayInterfaceID != -1) {
-			boolean flag1 = method119(anInt945, invOverlayInterfaceID);
+			boolean flag1 = updateInterfaceAnimations(anInt945, invOverlayInterfaceID);
 			if (flag1) {
 				needDrawTabArea = true;
 			}
@@ -7957,7 +7957,7 @@ public class Game extends RSApplet {
 			}
 		}
 		if (backDialogID != -1) {
-			boolean flag2 = method119(anInt945, backDialogID);
+			boolean flag2 = updateInterfaceAnimations(anInt945, backDialogID);
 			if (flag2) {
 				inputTaken = true;
 			}
@@ -8852,11 +8852,11 @@ public class Game extends RSApplet {
 			crosses[4 + crossIndex / 100].drawTransparentSprite(crossX - 8 - 4, crossY - 8 - 4);
 		}
 		if (anInt1018 != -1) {
-			method119(anInt945, anInt1018);
+			updateInterfaceAnimations(anInt945, anInt1018);
 			drawInterface(0, 0, RSInterface.interfaceCache[anInt1018], 0);
 		}
 		if (openInterfaceID != -1) {
-			method119(anInt945, openInterfaceID);
+			updateInterfaceAnimations(anInt945, openInterfaceID);
 			drawInterface(0, 0, RSInterface.interfaceCache[openInterfaceID], 0);
 		}
                updateRestrictedArea();
@@ -9162,7 +9162,7 @@ public class Game extends RSApplet {
 		aClass30_Sub2_Sub1_Sub1_1202 = null;
 	}
 
-	public boolean method119(int i, int j) {
+       public boolean updateInterfaceAnimations(int i, int j) {
 		boolean flag1 = false;
 		RSInterface class9 = RSInterface.interfaceCache[j];
 		if (class9 == null || class9.children == null)
@@ -9173,7 +9173,7 @@ public class Game extends RSApplet {
 			}
 			RSInterface class9_1 = RSInterface.interfaceCache[element];
 			if (class9_1.type == 1) {
-				flag1 |= method119(i, class9_1.id);
+				flag1 |= updateInterfaceAnimations(i, class9_1.id);
 			}
                         if (class9_1.type == 6 && (class9_1.disabledAnimation != -1 || class9_1.enabledAnimation != -1)) {
                                boolean flag2 = interfaceIsSelected(class9_1);
