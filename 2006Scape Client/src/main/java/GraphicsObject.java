@@ -21,7 +21,7 @@ final class GraphicsObject extends Animable {
         if (model == null) {
             return null;
         }
-        int   j       = spotAnimation.aAnimation_407.anIntArray353[frame];
+        int   j       = spotAnimation.animation.anIntArray353[frame];
         Model model_1 = new Model(true, AnimFrame.isNullFrame(j), false, model);
         if (!finished) {
             model_1.buildVertexGroups();
@@ -29,32 +29,32 @@ final class GraphicsObject extends Animable {
             model_1.faceGroups = null;
             model_1.vertexGroups = null;
         }
-        if (spotAnimation.anInt410 != 128 || spotAnimation.anInt411 != 128) {
-            model_1.scaleModel(spotAnimation.anInt410, spotAnimation.anInt410, spotAnimation.anInt411);
+        if (spotAnimation.scaleX != 128 || spotAnimation.scaleY != 128) {
+            model_1.scaleModel(spotAnimation.scaleX, spotAnimation.scaleX, spotAnimation.scaleY);
         }
-        if (spotAnimation.anInt412 != 0) {
-            if (spotAnimation.anInt412 == 90) {
+        if (spotAnimation.rotation != 0) {
+            if (spotAnimation.rotation == 90) {
                 model_1.calculateNormals();
             }
-            if (spotAnimation.anInt412 == 180) {
+            if (spotAnimation.rotation == 180) {
                 model_1.calculateNormals();
                 model_1.calculateNormals();
             }
-            if (spotAnimation.anInt412 == 270) {
+            if (spotAnimation.rotation == 270) {
                 model_1.calculateNormals();
                 model_1.calculateNormals();
                 model_1.calculateNormals();
             }
         }
-        model_1.applyLighting(64 + spotAnimation.anInt413, 850 + spotAnimation.anInt414, -30, -50, -30, true);
+        model_1.applyLighting(64 + spotAnimation.ambient, 850 + spotAnimation.contrast, -30, -50, -30, true);
         return model_1;
     }
 
     public void update(int elapsed) {
-        for (frameCycle += elapsed; frameCycle > spotAnimation.aAnimation_407.getFrameDelay(frame); ) {
-            frameCycle -= spotAnimation.aAnimation_407.getFrameDelay(frame) + 1;
+        for (frameCycle += elapsed; frameCycle > spotAnimation.animation.getFrameDelay(frame); ) {
+            frameCycle -= spotAnimation.animation.getFrameDelay(frame) + 1;
             frame++;
-            if (frame >= spotAnimation.aAnimation_407.anInt352 && (frame < 0 || frame >= spotAnimation.aAnimation_407.anInt352)) {
+            if (frame >= spotAnimation.animation.anInt352 && (frame < 0 || frame >= spotAnimation.animation.anInt352)) {
                 frame = 0;
                 finished = true;
             }

@@ -25,13 +25,13 @@ public final class Player extends Entity {
                                Model model_3 = new Model(true, AnimFrame.isNullFrame(super.spotAnimFrame), false, model_2);
                                model_3.translate(0, -super.spotAnimHeight, 0);
 				model_3.buildVertexGroups();
-                               model_3.applyFrame(spotAnim.aAnimation_407.anIntArray353[super.spotAnimFrame]);
+                               model_3.applyFrame(spotAnim.animation.anIntArray353[super.spotAnimFrame]);
 				model_3.faceGroups = null;
 				model_3.vertexGroups = null;
-				if (spotAnim.anInt410 != 128 || spotAnim.anInt411 != 128) {
-					model_3.scaleModel(spotAnim.anInt410, spotAnim.anInt410, spotAnim.anInt411);
-				}
-				model_3.applyLighting(64 + spotAnim.anInt413, 850 + spotAnim.anInt414, -30, -50, -30, true);
+                                if (spotAnim.scaleX != 128 || spotAnim.scaleY != 128) {
+                                        model_3.scaleModel(spotAnim.scaleX, spotAnim.scaleX, spotAnim.scaleY);
+                                }
+                                model_3.applyLighting(64 + spotAnim.ambient, 850 + spotAnim.contrast, -30, -50, -30, true);
 				Model aclass30_sub2_sub4_sub6_1s[] = {model, model_3};
 				model = new Model(aclass30_sub2_sub4_sub6_1s);
 			}
