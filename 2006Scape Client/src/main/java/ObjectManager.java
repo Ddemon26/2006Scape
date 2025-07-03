@@ -6,22 +6,22 @@ final class ObjectManager {
 
 	public ObjectManager(byte abyte0[][][], int ai[][][]) {
 		lowestPlane = 99;
-		anInt146 = 104;
-		anInt147 = 104;
+		mapWidth = 104;
+		mapHeight = 104;
 		tileHeights = ai;
 		aByteArrayArrayArray149 = abyte0;
-		aByteArrayArrayArray142 = new byte[4][anInt146][anInt147];
-		aByteArrayArrayArray130 = new byte[4][anInt146][anInt147];
-		aByteArrayArrayArray136 = new byte[4][anInt146][anInt147];
-		aByteArrayArrayArray148 = new byte[4][anInt146][anInt147];
-		anIntArrayArrayArray135 = new int[4][anInt146 + 1][anInt147 + 1];
-		aByteArrayArrayArray134 = new byte[4][anInt146 + 1][anInt147 + 1];
-		anIntArrayArray139 = new int[anInt146 + 1][anInt147 + 1];
-		tileHues = new int[anInt147];
-		tileSaturations = new int[anInt147];
-		tileLightness = new int[anInt147];
-		tileHueMultiplier = new int[anInt147];
-		tileCount = new int[anInt147];
+		aByteArrayArrayArray142 = new byte[4][mapWidth][mapHeight];
+		aByteArrayArrayArray130 = new byte[4][mapWidth][mapHeight];
+		aByteArrayArrayArray136 = new byte[4][mapWidth][mapHeight];
+		aByteArrayArrayArray148 = new byte[4][mapWidth][mapHeight];
+		anIntArrayArrayArray135 = new int[4][mapWidth + 1][mapHeight + 1];
+		aByteArrayArrayArray134 = new byte[4][mapWidth + 1][mapHeight + 1];
+		anIntArrayArray139 = new int[mapWidth + 1][mapHeight + 1];
+		tileHues = new int[mapHeight];
+		tileSaturations = new int[mapHeight];
+		tileLightness = new int[mapHeight];
+		tileHueMultiplier = new int[mapHeight];
+		tileCount = new int[mapHeight];
 	}
 
 	private static int generateNoiseValue(int i, int j) {
@@ -72,8 +72,8 @@ final class ObjectManager {
 			byte byte3 = -50;
 			int j3 = (int) Math.sqrt(byte1 * byte1 + byte2 * byte2 + byte3 * byte3);
 			int l3 = c * j3 >> 8;
-			for (int j4 = 1; j4 < anInt147 - 1; j4++) {
-				for (int j5 = 1; j5 < anInt146 - 1; j5++) {
+			for (int j4 = 1; j4 < mapHeight - 1; j4++) {
+				for (int j5 = 1; j5 < mapWidth - 1; j5++) {
 					int k6 = tileHeights[l][j5 + 1][j4] - tileHeights[l][j5 - 1][j4];
 					int l7 = tileHeights[l][j5][j4 + 1] - tileHeights[l][j5][j4 - 1];
 					int j9 = (int) Math.sqrt(k6 * k6 + 0x10000 + l7 * l7);
@@ -87,7 +87,7 @@ final class ObjectManager {
 
 			}
 
-			for (int k5 = 0; k5 < anInt147; k5++) {
+			for (int k5 = 0; k5 < mapHeight; k5++) {
 				tileHues[k5] = 0;
 				tileSaturations[k5] = 0;
 				tileLightness[k5] = 0;
@@ -95,10 +95,10 @@ final class ObjectManager {
 				tileCount[k5] = 0;
 			}
 
-			for (int l6 = -5; l6 < anInt146 + 5; l6++) {
-				for (int i8 = 0; i8 < anInt147; i8++) {
+			for (int l6 = -5; l6 < mapWidth + 5; l6++) {
+				for (int i8 = 0; i8 < mapHeight; i8++) {
 					int k9 = l6 + 5;
-					if (k9 >= 0 && k9 < anInt146) {
+					if (k9 >= 0 && k9 < mapWidth) {
 						int l12 = aByteArrayArrayArray142[l][k9][i8] & 0xff;
 						if (l12 > 0) {
 							FloorOverlay flo = FloorOverlay.cache[l12 - 1];
@@ -110,7 +110,7 @@ final class ObjectManager {
 						}
 					}
 					int i13 = l6 - 5;
-					if (i13 >= 0 && i13 < anInt146) {
+					if (i13 >= 0 && i13 < mapWidth) {
 						int i14 = aByteArrayArrayArray142[l][i13][i8] & 0xff;
 						if (i14 > 0) {
 							FloorOverlay flo_1 = FloorOverlay.cache[i14 - 1];
@@ -123,15 +123,15 @@ final class ObjectManager {
 					}
 				}
 
-				if (l6 >= 1 && l6 < anInt146 - 1) {
+				if (l6 >= 1 && l6 < mapWidth - 1) {
 					int l9 = 0;
 					int j13 = 0;
 					int j14 = 0;
 					int k15 = 0;
 					int k16 = 0;
-					for (int k17 = -5; k17 < anInt147 + 5; k17++) {
+					for (int k17 = -5; k17 < mapHeight + 5; k17++) {
 						int j18 = k17 + 5;
-						if (j18 >= 0 && j18 < anInt147) {
+						if (j18 >= 0 && j18 < mapHeight) {
 							l9 += tileHues[j18];
 							j13 += tileSaturations[j18];
 							j14 += tileLightness[j18];
@@ -139,14 +139,14 @@ final class ObjectManager {
 							k16 += tileCount[j18];
 						}
 						int k18 = k17 - 5;
-						if (k18 >= 0 && k18 < anInt147) {
+						if (k18 >= 0 && k18 < mapHeight) {
 							l9 -= tileHues[k18];
 							j13 -= tileSaturations[k18];
 							j14 -= tileLightness[k18];
 							k15 -= tileHueMultiplier[k18];
 							k16 -= tileCount[k18];
 						}
-						if (k17 >= 1 && k17 < anInt147 - 1 && ((!hideBuggyVarrockSwordShopSnow && !hideRoofs && !lowMem) || (aByteArrayArrayArray149[0][l6][k17] & 2) != 0 || (aByteArrayArrayArray149[l][l6][k17] & 0x10) == 0 && method182(k17, l, l6) == currentPlane)) {
+						if (k17 >= 1 && k17 < mapHeight - 1 && ((!hideBuggyVarrockSwordShopSnow && !hideRoofs && !lowMem) || (aByteArrayArrayArray149[0][l6][k17] & 2) != 0 || (aByteArrayArrayArray149[l][l6][k17] & 0x10) == 0 && method182(k17, l, l6) == currentPlane)) {
 							if (l < lowestPlane) {
 								lowestPlane = l;
 							}
@@ -167,7 +167,7 @@ final class ObjectManager {
 									int l21 = l9 * 256 / k15;
 									int j22 = j13 / k16;
 									int l22 = j14 / k16;
-									j21 = method177(l21, j22, l22);
+                                                                        j21 = encodeHsl(l21, j22, l22);
 									l21 = l21 + noiseOffsetX & 0xff;
 									l22 += noiseOffsetY;
 									if (l22 < 0) {
@@ -175,7 +175,7 @@ final class ObjectManager {
 									} else if (l22 > 255) {
 										l22 = 255;
 									}
-									k21 = method177(l21, j22, l22);
+                                                                        k21 = encodeHsl(l21, j22, l22);
 								}
 								if (l > 0) {
 									boolean flag = true;
@@ -191,10 +191,10 @@ final class ObjectManager {
 								}
 								int i22 = 0;
 								if (j21 != -1) {
-									i22 = Texture.brightnessTable[method187(k21, 96)];
+                                                                        i22 = Texture.brightnessTable[applyBrightness(k21, 96)];
 								}
 								if (i19 == 0) {
-                                                                        worldController.addTile(l, l6, k17, 0, 0, -1, j19, k19, l19, i20, method187(j21, j20), method187(j21, k20), method187(j21, l20), method187(j21, i21), 0, 0, 0, 0, i22, 0);
+                                                                        worldController.addTile(l, l6, k17, 0, 0, -1, j19, k19, l19, i20, applyBrightness(j21, j20), applyBrightness(j21, k20), applyBrightness(j21, l20), applyBrightness(j21, i21), 0, 0, 0, 0, i22, 0);
 								} else {
 									int k22 = aByteArrayArrayArray136[l][l6][k17] + 1;
 									byte byte4 = aByteArrayArrayArray148[l][l6][k17];
@@ -208,19 +208,19 @@ final class ObjectManager {
 									} else if (flo_2.rgbColor == 0xff00ff) {
 										/*j23 = -2;
 										i23 = -1;
-										k23 = Texture.brightnessTable[method185(flo_2.blendColor, 96)];*/
+                                                                               k23 = Texture.brightnessTable[adjustBrightness(flo_2.blendColor, 96)];*/
 										k23 = 0;
 										j23 = -2;
 										i23 = -1;
 									} else if(flo_2.rgbColor == 0x333333) {
-										k23 = Texture.brightnessTable[method185(flo_2.blendColor, 96)];								
+                                                                               k23 = Texture.brightnessTable[adjustBrightness(flo_2.blendColor, 96)];
 										j23 = -2;
 										i23 = -1;
 									} else {
-										j23 = method177(flo_2.hue, flo_2.saturation, flo_2.lightness);
-										k23 = Texture.brightnessTable[method185(flo_2.blendColor, 96)];
+                                                                               j23 = encodeHsl(flo_2.hue, flo_2.saturation, flo_2.lightness);
+                                                                               k23 = Texture.brightnessTable[adjustBrightness(flo_2.blendColor, 96)];
 									}
-                                                                        worldController.addTile(l, l6, k17, k22, byte4, i23, j19, k19, l19, i20, method187(j21, j20), method187(j21, k20), method187(j21, l20), method187(j21, i21), method185(j23, j20), method185(j23, k20), method185(j23, l20), method185(j23, i21), i22, k23);
+                                                                        worldController.addTile(l, l6, k17, k22, byte4, i23, j19, k19, l19, i20, applyBrightness(j21, j20), applyBrightness(j21, k20), applyBrightness(j21, l20), applyBrightness(j21, i21), adjustBrightness(j23, j20), adjustBrightness(j23, k20), adjustBrightness(j23, l20), adjustBrightness(j23, i21), i22, k23);
 								}
 							}
 						}
@@ -229,8 +229,8 @@ final class ObjectManager {
 				}
 			}
 
-			for (int j8 = 1; j8 < anInt147 - 1; j8++) {
-				for (int i10 = 1; i10 < anInt146 - 1; i10++) {
+			for (int j8 = 1; j8 < mapHeight - 1; j8++) {
+				for (int i10 = 1; i10 < mapWidth - 1; i10++) {
                                         worldController.setGroundFlag(l, i10, j8, method182(j8, l, i10));
 				}
 
@@ -239,8 +239,8 @@ final class ObjectManager {
 		}
 
                 worldController.applySceneLighting(-10, -50, -50);
-		for (int j1 = 0; j1 < anInt146; j1++) {
-			for (int l1 = 0; l1 < anInt147; l1++) {
+		for (int j1 = 0; j1 < mapWidth; j1++) {
+			for (int l1 = 0; l1 < mapHeight; l1++) {
 				if ((aByteArrayArrayArray149[1][j1][l1] & 2) == 2) {
                                         worldController.shiftDownPlanes(l1, j1);
 				}
@@ -258,8 +258,8 @@ final class ObjectManager {
 				k2 <<= 3;
 			}
 			for (int i3 = 0; i3 <= l2; i3++) {
-				for (int k3 = 0; k3 <= anInt147; k3++) {
-					for (int i4 = 0; i4 <= anInt146; i4++) {
+				for (int k3 = 0; k3 <= mapHeight; k3++) {
+					for (int i4 = 0; i4 <= mapWidth; i4++) {
 						if ((anIntArrayArrayArray135[i3][i4][k3] & i2) != 0) {
 							int k4 = k3;
 							int l5 = k3;
@@ -268,7 +268,7 @@ final class ObjectManager {
 							for (; k4 > 0 && (anIntArrayArrayArray135[i3][i4][k4 - 1] & i2) != 0; k4--) {
 								;
 							}
-							for (; l5 < anInt147 && (anIntArrayArrayArray135[i3][i4][l5 + 1] & i2) != 0; l5++) {
+							for (; l5 < mapHeight && (anIntArrayArrayArray135[i3][i4][l5 + 1] & i2) != 0; l5++) {
 								;
 							}
 							label0 : for (; i7 > 0; i7--) {
@@ -312,7 +312,7 @@ final class ObjectManager {
 							for (; l4 > 0 && (anIntArrayArrayArray135[i3][l4 - 1][k3] & j2) != 0; l4--) {
 								;
 							}
-							for (; i6 < anInt146 && (anIntArrayArrayArray135[i3][i6 + 1][k3] & j2) != 0; i6++) {
+							for (; i6 < mapWidth && (anIntArrayArrayArray135[i3][i6 + 1][k3] & j2) != 0; i6++) {
 								;
 							}
 							label2 : for (; j7 > 0; j7--) {
@@ -356,7 +356,7 @@ final class ObjectManager {
 							for (; k7 > 0 && (anIntArrayArrayArray135[i3][i4][k7 - 1] & k2) != 0; k7--) {
 								;
 							}
-							for (; i9 < anInt147 && (anIntArrayArrayArray135[i3][i4][i9 + 1] & k2) != 0; i9++) {
+							for (; i9 < mapHeight && (anIntArrayArrayArray135[i3][i4][i9 + 1] & k2) != 0; i9++) {
 								;
 							}
 							label4 : for (; i5 > 0; i5--) {
@@ -368,7 +368,7 @@ final class ObjectManager {
 
 							}
 
-							label5 : for (; j6 < anInt146; j6++) {
+							label5 : for (; j6 < mapWidth; j6++) {
 								for (int i12 = k7; i12 <= i9; i12++) {
 									if ((anIntArrayArrayArray135[i3][j6 + 1][i12] & k2) == 0) {
 										break label5;
@@ -400,7 +400,7 @@ final class ObjectManager {
 	}
 
 	private static int method172(int i, int j) {
-		int k = method176(i + 45365, j + 0x16713, 4) - 128 + (method176(i + 10294, j + 37821, 2) - 128 >> 1) + (method176(i, j, 1) - 128 >> 2);
+            int k = perlinNoise(i + 45365, j + 0x16713, 4) - 128 + (perlinNoise(i + 10294, j + 37821, 2) - 128 >> 1) + (perlinNoise(i, j, 1) - 128 >> 2);
 		k = (int) (k * 0.29999999999999999D) + 35;
 		if (k < 10) {
 			k = 10;
@@ -435,18 +435,18 @@ final class ObjectManager {
 	public final void clearRegion(int i, int j, int l, int i1) {
 		for (int j1 = i; j1 <= i + j; j1++) {
 			for (int k1 = i1; k1 <= i1 + l; k1++) {
-				if (k1 >= 0 && k1 < anInt146 && j1 >= 0 && j1 < anInt147) {
+				if (k1 >= 0 && k1 < mapWidth && j1 >= 0 && j1 < mapHeight) {
 					aByteArrayArrayArray134[0][k1][j1] = 127;
 					if (k1 == i1 && k1 > 0) {
 						tileHeights[0][k1][j1] = tileHeights[0][k1 - 1][j1];
 					}
-					if (k1 == i1 + l && k1 < anInt146 - 1) {
+					if (k1 == i1 + l && k1 < mapWidth - 1) {
 						tileHeights[0][k1][j1] = tileHeights[0][k1 + 1][j1];
 					}
 					if (j1 == i && j1 > 0) {
 						tileHeights[0][k1][j1] = tileHeights[0][k1][j1 - 1];
 					}
-					if (j1 == i + j && j1 < anInt147 - 1) {
+					if (j1 == i + j && j1 < mapHeight - 1) {
 						tileHeights[0][k1][j1] = tileHeights[0][k1][j1 + 1];
 					}
 				}
@@ -567,7 +567,7 @@ final class ObjectManager {
 			} else {
 				obj3 = new DynamicObject(i1, j1, 0, l1, i2, k1, j2, class46.animationId, true);
 			}
-                    worldController.addBoundaryObject(anIntArray152[j1], ((Animable) obj3), l2, i, byte0, l, null, k2, 0, k);
+                    worldController.addBoundaryObject(wallFlags[j1], ((Animable) obj3), l2, i, byte0, l, null, k2, 0, k);
 			if (j1 == 0) {
 				if (class46.aBoolean779) {
 					aByteArrayArrayArray134[k][l][i] = 50;
@@ -644,7 +644,7 @@ final class ObjectManager {
 				obj11 = new DynamicObject(i1, 4 + j1, 2, l1, i2, k1, j2, class46.animationId, true);
 				obj12 = new DynamicObject(i1, i3, 2, l1, i2, k1, j2, class46.animationId, true);
 			}
-                    worldController.addBoundaryObject(anIntArray152[j1], ((Animable) obj11), l2, i, byte0, l, ((Animable) obj12), k2, anIntArray152[i3], k);
+                    worldController.addBoundaryObject(wallFlags[j1], ((Animable) obj11), l2, i, byte0, l, ((Animable) obj12), k2, wallFlags[i3], k);
 			if (class46.aBoolean764) {
 				if (j1 == 0) {
 					anIntArrayArrayArray135[k][l][i] |= 0x249;
@@ -734,7 +734,7 @@ final class ObjectManager {
 			} else {
 				obj7 = new DynamicObject(i1, 0, 4, l1, i2, k1, j2, class46.animationId, true);
 			}
-                    worldController.addWallDecoration(l2, i, j1 * 512, k, 0, k2, ((Animable) obj7), l, byte0, 0, anIntArray152[j1]);
+                    worldController.addWallDecoration(l2, i, j1 * 512, k, 0, k2, ((Animable) obj7), l, byte0, 0, wallFlags[j1]);
 			return;
 		}
 		if (j == 5) {
@@ -749,7 +749,7 @@ final class ObjectManager {
 			} else {
 				obj13 = new DynamicObject(i1, 0, 4, l1, i2, k1, j2, class46.animationId, true);
 			}
-                    worldController.addWallDecoration(l2, i, j1 * 512, k, anIntArray137[j1] * i4, k2, ((Animable) obj13), l, byte0, anIntArray144[j1] * i4, anIntArray152[j1]);
+                    worldController.addWallDecoration(l2, i, j1 * 512, k, deltaX[j1] * i4, k2, ((Animable) obj13), l, byte0, deltaY[j1] * i4, wallFlags[j1]);
 			return;
 		}
 		if (j == 6) {
@@ -783,21 +783,21 @@ final class ObjectManager {
 		}
 	}
 
-	private static int method176(int i, int j, int k) {
+        private static int perlinNoise(int i, int j, int k) {
 		int l = i / k;
 		int i1 = i & k - 1;
 		int j1 = j / k;
 		int k1 = j & k - 1;
-		int l1 = method186(l, j1);
-		int i2 = method186(l + 1, j1);
-		int j2 = method186(l, j1 + 1);
-		int k2 = method186(l + 1, j1 + 1);
-		int l2 = method184(l1, i2, i1, k);
-		int i3 = method184(j2, k2, i1, k);
-		return method184(l2, i3, k1, k);
-	}
+                int l1 = smoothNoise(l, j1);
+                int i2 = smoothNoise(l + 1, j1);
+                int j2 = smoothNoise(l, j1 + 1);
+                int k2 = smoothNoise(l + 1, j1 + 1);
+                int l2 = interpolate(l1, i2, i1, k);
+                int i3 = interpolate(j2, k2, i1, k);
+                return interpolate(l2, i3, k1, k);
+        }
 
-	private int method177(int i, int j, int k) {
+        private int encodeHsl(int i, int j, int k) {
 		if (k > 179) {
 			j /= 2;
 		}
@@ -983,12 +983,12 @@ final class ObjectManager {
 		}
 	}
 
-	private static int method184(int i, int j, int k, int l) {
+        private static int interpolate(int i, int j, int k, int l) {
 		int i1 = 0x10000 - Texture.cosineTable[k * 1024 / l] >> 1;
 		return (i * (0x10000 - i1) >> 16) + (j * i1 >> 16);
 	}
 
-	private int method185(int i, int j) {
+        private int adjustBrightness(int i, int j) {
 		if (i == -2) {
 			return 0xbc614e;
 		}
@@ -1010,14 +1010,14 @@ final class ObjectManager {
 		return (i & 0xff80) + j;
 	}
 
-	private static int method186(int i, int j) {
+        private static int smoothNoise(int i, int j) {
 		int k = generateNoiseValue(i - 1, j - 1) + generateNoiseValue(i + 1, j - 1) + generateNoiseValue(i - 1, j + 1) + generateNoiseValue(i + 1, j + 1);
 		int l = generateNoiseValue(i - 1, j) + generateNoiseValue(i + 1, j) + generateNoiseValue(i, j - 1) + generateNoiseValue(i, j + 1);
 		int i1 = generateNoiseValue(i, j);
 		return k / 16 + l / 8 + i1 / 4;
 	}
 
-	private static int method187(int i, int j) {
+        private static int applyBrightness(int i, int j) {
 		if (i == -1) {
 			return 0xbc614e;
 		}
@@ -1103,7 +1103,7 @@ final class ObjectManager {
 			} else {
 				obj3 = new DynamicObject(j1, i, 0, i2, j2, l1, k2, class46.animationId, true);
 			}
-                        worldController.addBoundaryObject(anIntArray152[i], ((Animable) obj3), i3, j, byte1, i1, null, l2, 0, k1);
+                        worldController.addBoundaryObject(wallFlags[i], ((Animable) obj3), i3, j, byte1, i1, null, l2, 0, k1);
 			if (class46.isSolid) {
 				class11.addWall(j, i, i1, k, class46.impenetrable);
 			}
@@ -1133,7 +1133,7 @@ final class ObjectManager {
 				obj11 = new DynamicObject(j1, 4 + i, 2, i2, j2, l1, k2, class46.animationId, true);
 				obj12 = new DynamicObject(j1, j3, 2, i2, j2, l1, k2, class46.animationId, true);
 			}
-                        worldController.addBoundaryObject(anIntArray152[i], ((Animable) obj11), i3, j, byte1, i1, ((Animable) obj12), l2, anIntArray152[j3], k1);
+                        worldController.addBoundaryObject(wallFlags[i], ((Animable) obj11), i3, j, byte1, i1, ((Animable) obj12), l2, wallFlags[j3], k1);
 			if (class46.isSolid) {
 				class11.addWall(j, i, i1, k, class46.impenetrable);
 			}
@@ -1194,7 +1194,7 @@ final class ObjectManager {
 			} else {
 				obj7 = new DynamicObject(j1, 0, 4, i2, j2, l1, k2, class46.animationId, true);
 			}
-                    worldController.addWallDecoration(i3, j, i * 512, k1, 0, l2, ((Animable) obj7), i1, byte1, 0, anIntArray152[i]);
+                    worldController.addWallDecoration(i3, j, i * 512, k1, 0, l2, ((Animable) obj7), i1, byte1, 0, wallFlags[i]);
 			return;
 		}
 		if (k == 5) {
@@ -1209,7 +1209,7 @@ final class ObjectManager {
 			} else {
 				obj13 = new DynamicObject(j1, 0, 4, i2, j2, l1, k2, class46.animationId, true);
 			}
-                    worldController.addWallDecoration(i3, j, i * 512, k1, anIntArray137[i] * j4, l2, ((Animable) obj13), i1, byte1, anIntArray144[i] * j4, anIntArray152[i]);
+                    worldController.addWallDecoration(i3, j, i * 512, k1, deltaX[i] * j4, l2, ((Animable) obj13), i1, byte1, deltaY[i] * j4, wallFlags[i]);
 			return;
 		}
 		if (k == 6) {
@@ -1344,14 +1344,14 @@ final class ObjectManager {
 	private final byte[][][] aByteArrayArrayArray134;
 	private final int[][][] anIntArrayArrayArray135;
 	private final byte[][][] aByteArrayArrayArray136;
-	private static final int anIntArray137[] = {1, 0, -1, 0};
+	private static final int deltaX[] = {1, 0, -1, 0};
 	private final int[][] anIntArrayArray139;
 	private static final int anIntArray140[] = {16, 32, 64, 128};
 	private final byte[][][] aByteArrayArrayArray142;
-	private static final int anIntArray144[] = {0, -1, 0, 1};
+	private static final int deltaY[] = {0, -1, 0, 1};
 	static int lowestPlane = 99;
-	private final int anInt146;
-	private final int anInt147;
+	private final int mapWidth;
+	private final int mapHeight;
 	private final byte[][][] aByteArrayArrayArray148;
 	private final byte[][][] aByteArrayArrayArray149;
 	static boolean lowMem = true;
@@ -1359,6 +1359,6 @@ final class ObjectManager {
 	static boolean hideRoofs = ClientSettings.HIDE_ROOFS;
 	
 	static boolean hideBuggyVarrockSwordShopSnow = ClientSettings.HIDE_BUGGY_VARROCK_SWORD_SHOP_SNOW; //There is some buggy snow near Varrock sword shop, let's hide it. I know, this is not ideal, but it does work.
-	private static final int anIntArray152[] = {1, 2, 4, 8};
+	private static final int wallFlags[] = {1, 2, 4, 8};
 
 }
