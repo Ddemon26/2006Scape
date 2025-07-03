@@ -1,0 +1,20 @@
+package com.rs2.domain;
+
+// Decompiled by Jad v1.5.8f. Copyright 2001 Pavel Kouznetsov.
+// Jad home page: http://www.kpdus.com/jad.html
+// Decompiler options: packimports(3) 
+
+final class ItemPile {
+
+        ItemPile() {
+        }
+
+        int height;
+        int x;
+        int y;
+        Animable topItem;
+        Animable secondItem;
+        Animable thirdItem;
+        int uid;
+        int offsetY;
+}

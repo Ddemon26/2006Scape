@@ -28,7 +28,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>Main</mainClass>
+                            <mainClass>com.rs2.boot.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
