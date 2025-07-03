@@ -2137,7 +2137,7 @@ public final class ItemDef {
 		}
 		int l3 = Texture.sineTable[itemDef.modelRotation1] * k3 >> 16;
 		int i4 = Texture.cosineTable[itemDef.modelRotation1] * k3 >> 16;
-		model.method482(itemDef.modelRotation2, itemDef.zRotation, itemDef.modelRotation1, itemDef.offsetX, l3 + model.modelHeight / 2 + itemDef.offsetY, i4 + itemDef.offsetY);
+		model.transformVertices(itemDef.modelRotation2, itemDef.zRotation, itemDef.modelRotation1, itemDef.offsetX, l3 + model.modelHeight / 2 + itemDef.offsetY, i4 + itemDef.offsetY);
 		for (int i5 = 31; i5 >= 0; i5--) {
 			for (int j4 = 31; j4 >= 0; j4--) {
 				if (sprite2.pixels[i5 + j4 * 32] == 0) {
