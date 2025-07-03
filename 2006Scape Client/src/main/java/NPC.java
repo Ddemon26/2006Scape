@@ -34,17 +34,17 @@ public final class NPC extends Entity {
                        SpotAnim spotAnim = SpotAnim.cache[super.spotAnimId];
 			Model model_1 = spotAnim.getModel();
 			if (model_1 != null) {
-                               int j = spotAnim.aAnimation_407.anIntArray353[super.spotAnimFrame];
+                       int j = spotAnim.animation.anIntArray353[super.spotAnimFrame];
                                Model model_2 = new Model(true, AnimFrame.isNullFrame(j), false, model_1);
                                model_2.translate(0, -super.spotAnimHeight, 0);
 				model_2.buildVertexGroups();
 				model_2.applyFrame(j);
 				model_2.faceGroups = null;
 				model_2.vertexGroups = null;
-				if (spotAnim.anInt410 != 128 || spotAnim.anInt411 != 128) {
-					model_2.scaleModel(spotAnim.anInt410, spotAnim.anInt410, spotAnim.anInt411);
-				}
-				model_2.applyLighting(64 + spotAnim.anInt413, 850 + spotAnim.anInt414, -30, -50, -30, true);
+                                if (spotAnim.scaleX != 128 || spotAnim.scaleY != 128) {
+                                        model_2.scaleModel(spotAnim.scaleX, spotAnim.scaleX, spotAnim.scaleY);
+                                }
+                                model_2.applyLighting(64 + spotAnim.ambient, 850 + spotAnim.contrast, -30, -50, -30, true);
 				Model aModel[] = {model, model_2};
 				model = new Model(aModel);
 			}

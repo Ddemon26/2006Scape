@@ -30,9 +30,9 @@ final class Projectile extends Animable {
 			return null;
 		}
 		int j = -1;
-		if (spotAnim.aAnimation_407 != null) {
-			j = spotAnim.aAnimation_407.anIntArray353[frame];
-		}
+                if (spotAnim.animation != null) {
+                        j = spotAnim.animation.anIntArray353[frame];
+                }
                 Model model_1 = new Model(true, AnimFrame.isNullFrame(j), false, model);
 		if (j != -1) {
 			model_1.buildVertexGroups();
@@ -40,11 +40,11 @@ final class Projectile extends Animable {
 			model_1.faceGroups = null;
 			model_1.vertexGroups = null;
 		}
-		if (spotAnim.anInt410 != 128 || spotAnim.anInt411 != 128) {
-			model_1.scaleModel(spotAnim.anInt410, spotAnim.anInt410, spotAnim.anInt411);
-		}
-		model_1.rotateX(pitch);
-		model_1.applyLighting(64 + spotAnim.anInt413, 850 + spotAnim.anInt414, -30, -50, -30, true);
+                if (spotAnim.scaleX != 128 || spotAnim.scaleY != 128) {
+                        model_1.scaleModel(spotAnim.scaleX, spotAnim.scaleX, spotAnim.scaleY);
+                }
+                model_1.rotateX(pitch);
+                model_1.applyLighting(64 + spotAnim.ambient, 850 + spotAnim.contrast, -30, -50, -30, true);
 		return model_1;
 	}
 
@@ -72,11 +72,11 @@ final class Projectile extends Animable {
                 speedZ += accelerationZ * elapsed;
                 yaw = (int) (Math.atan2(speedX, speedY) * 325.94900000000001D) + 1024 & 0x7ff;
                 pitch = (int) (Math.atan2(speedZ, speed) * 325.94900000000001D) & 0x7ff;
-                if (spotAnim.aAnimation_407 != null) {
-                        for (frameCycle += elapsed; frameCycle > spotAnim.aAnimation_407.getFrameDelay(frame);) {
-                                frameCycle -= spotAnim.aAnimation_407.getFrameDelay(frame) + 1;
+                if (spotAnim.animation != null) {
+                        for (frameCycle += elapsed; frameCycle > spotAnim.animation.getFrameDelay(frame);) {
+                                frameCycle -= spotAnim.animation.getFrameDelay(frame) + 1;
                                 frame++;
-                                if (frame >= spotAnim.aAnimation_407.anInt352) {
+                                if (frame >= spotAnim.animation.anInt352) {
                                         frame = 0;
                                 }
                         }

@@ -860,7 +860,7 @@ public class Game extends RSApplet {
             ItemDef.modelCache.unlinkAll();
             ItemDef.spriteCache.unlinkAll();
 		Player.mruNodes.unlinkAll();
-            SpotAnim.aMRUCache_415.unlinkAll();
+            SpotAnim.modelCache.unlinkAll();
 	}
 
        public void generateMinimap(int i) {
@@ -4797,7 +4797,7 @@ public class Game extends RSApplet {
 		CachePlaceholder.cache = null;
 		Animation.anims = null;
 		SpotAnim.cache = null;
-           SpotAnim.aMRUCache_415 = null;
+           SpotAnim.modelCache = null;
 		Varp.cache = null;
 		super.fullGameScreen = null;
 		Player.mruNodes = null;
@@ -7819,7 +7819,7 @@ public class Game extends RSApplet {
                        if (entity.spotAnimFrame < 0) {
                                entity.spotAnimFrame = 0;
                        }
-                       Animation animation_1 = SpotAnim.cache[entity.spotAnimId].aAnimation_407;
+                       Animation animation_1 = SpotAnim.cache[entity.spotAnimId].animation;
                        for (entity.spotAnimFrameCycle++; entity.spotAnimFrame < animation_1.anInt352 && entity.spotAnimFrameCycle > animation_1.getFrameDelay(entity.spotAnimFrame); entity.spotAnimFrame++) {
                                entity.spotAnimFrameCycle -= animation_1.getFrameDelay(entity.spotAnimFrame);
                        }
