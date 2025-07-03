@@ -41,7 +41,7 @@ final class WorldController {
 			}
 
 		}
-                for (int l = 0; l < anInt472; l++) {
+                for (int l = 0; l < CLUSTER_PLANES; l++) {
                         for (int j1 = 0; j1 < cullingClusterCounts[l]; j1++) {
                                 aCullingClusters[l][j1] = null;
                         }
@@ -921,7 +921,7 @@ final class WorldController {
 		if (maxVisibleY > worldHeight) {
 			maxVisibleY = worldHeight;
 		}
-		method319();
+		updateCullingClusters();
 		visibleTileCount = 0;
 		for (int k1 = activePlane; k1 < planeCount; k1++) {
 			Ground aclass30_sub3[][] = groundArray[k1];
@@ -959,13 +959,13 @@ final class WorldController {
 							if (k4 >= minVisibleY) {
 								Ground class30_sub3_1 = aclass30_sub3_1[i3][k4];
 								if (class30_sub3_1 != null && class30_sub3_1.aBoolean1322) {
-									method314(class30_sub3_1, true);
+									processTile(class30_sub3_1, true);
 								}
 							}
 							if (i5 < maxVisibleY) {
 								Ground class30_sub3_2 = aclass30_sub3_1[i3][i5];
 								if (class30_sub3_2 != null && class30_sub3_2.aBoolean1322) {
-									method314(class30_sub3_2, true);
+									processTile(class30_sub3_2, true);
 								}
 							}
 						}
@@ -973,13 +973,13 @@ final class WorldController {
 							if (k4 >= minVisibleY) {
 								Ground class30_sub3_3 = aclass30_sub3_1[k3][k4];
 								if (class30_sub3_3 != null && class30_sub3_3.aBoolean1322) {
-									method314(class30_sub3_3, true);
+									processTile(class30_sub3_3, true);
 								}
 							}
 							if (i5 < maxVisibleY) {
 								Ground class30_sub3_4 = aclass30_sub3_1[k3][i5];
 								if (class30_sub3_4 != null && class30_sub3_4.aBoolean1322) {
-									method314(class30_sub3_4, true);
+									processTile(class30_sub3_4, true);
 								}
 							}
 						}
@@ -1007,13 +1007,13 @@ final class WorldController {
 							if (j5 >= minVisibleY) {
 								Ground class30_sub3_5 = aclass30_sub3_2[l3][j5];
 								if (class30_sub3_5 != null && class30_sub3_5.aBoolean1322) {
-									method314(class30_sub3_5, false);
+									processTile(class30_sub3_5, false);
 								}
 							}
 							if (k5 < maxVisibleY) {
 								Ground class30_sub3_6 = aclass30_sub3_2[l3][k5];
 								if (class30_sub3_6 != null && class30_sub3_6.aBoolean1322) {
-									method314(class30_sub3_6, false);
+									processTile(class30_sub3_6, false);
 								}
 							}
 						}
@@ -1021,13 +1021,13 @@ final class WorldController {
 							if (j5 >= minVisibleY) {
 								Ground class30_sub3_7 = aclass30_sub3_2[j4][j5];
 								if (class30_sub3_7 != null && class30_sub3_7.aBoolean1322) {
-									method314(class30_sub3_7, false);
+									processTile(class30_sub3_7, false);
 								}
 							}
 							if (k5 < maxVisibleY) {
 								Ground class30_sub3_8 = aclass30_sub3_2[j4][k5];
 								if (class30_sub3_8 != null && class30_sub3_8.aBoolean1322) {
-									method314(class30_sub3_8, false);
+									processTile(class30_sub3_8, false);
 								}
 							}
 						}
@@ -1045,7 +1045,7 @@ final class WorldController {
            pendingClick = false;
 	}
 
-	private void method314(Ground class30_sub3, boolean flag) {
+	private void processTile(Ground class30_sub3, boolean flag) {
 		aClass19_477.insertHead(class30_sub3);
 		do {
 			Ground class30_sub3_1;
@@ -1100,10 +1100,10 @@ final class WorldController {
                                         Ground class30_sub3_7 = class30_sub3_1.linkedTile;
                                         if (class30_sub3_7.plainTile != null) {
 						if (!isTileVisible(0, i, j)) {
-                                                        method315(class30_sub3_7.plainTile, 0, pitchSin, pitchCos, yawSin, yawCos, i, j);
+                                                        drawPlainTile(class30_sub3_7.plainTile, 0, pitchSin, pitchCos, yawSin, yawCos, i, j);
 						}
                                 } else if (class30_sub3_7.shapedTile != null && !isTileVisible(0, i, j)) {
-                                                method316(i, pitchSin, yawSin, class30_sub3_7.shapedTile, pitchCos, j, yawCos);
+                                                drawShapedTile(i, pitchSin, yawSin, class30_sub3_7.shapedTile, pitchCos, j, yawCos);
 					}
 					BoundaryObject class10 = class30_sub3_7.obj1;
 					if (class10 != null) {
@@ -1121,11 +1121,11 @@ final class WorldController {
                                 if (class30_sub3_1.plainTile != null) {
 					if (!isTileVisible(l, i, j)) {
 						flag1 = true;
-                                                method315(class30_sub3_1.plainTile, l, pitchSin, pitchCos, yawSin, yawCos, i, j);
+                                                drawPlainTile(class30_sub3_1.plainTile, l, pitchSin, pitchCos, yawSin, yawCos, i, j);
 					}
                                 } else if (class30_sub3_1.shapedTile != null && !isTileVisible(l, i, j)) {
                                         flag1 = true;
-                                        method316(i, pitchSin, yawSin, class30_sub3_1.shapedTile, pitchCos, j, yawCos);
+                                        drawShapedTile(i, pitchSin, yawSin, class30_sub3_1.shapedTile, pitchCos, j, yawCos);
 				}
 				int j1 = 0;
 				int j2 = 0;
@@ -1494,7 +1494,7 @@ final class WorldController {
 		} while (true);
 	}
 
-       private void method315(PlainTile class43, int i, int j, int k, int l, int i1, int j1, int k1) {
+       private void drawPlainTile(PlainTile class43, int i, int j, int k, int l, int i1, int j1, int k1) {
 		int l1;
 		int i2 = l1 = (j1 << 7) - cameraX;
 		int j2;
@@ -1554,7 +1554,7 @@ final class WorldController {
 		Texture.alpha = 0;
 		if ((i6 - k6) * (l5 - l6) - (j6 - l6) * (k5 - k6) > 0) {
 			Texture.clip = i6 < 0 || k6 < 0 || k5 < 0 || i6 > DrawingArea.centerX || k6 > DrawingArea.centerX || k5 > DrawingArea.centerX;
-                        if (pendingClick && method318(pendingClickX, pendingClickY, j6, l6, l5, i6, k6, k5)) {
+                        if (pendingClick && pointInsideTriangle(pendingClickX, pendingClickY, j6, l6, l5, i6, k6, k5)) {
                                 clickedTileX = j1;
                                 clickedTileY = k1;
                         }
@@ -1570,12 +1570,12 @@ final class WorldController {
                                 }
                         } else {
                                 int i7 = anIntArray485[class43.textureId];
-                                Texture.drawGouraudTriangle(j6, l6, l5, i6, k6, k5, method317(i7, class43.northEastColor), method317(i7, class43.northWestColor), method317(i7, class43.southEastColor));
+                                Texture.drawGouraudTriangle(j6, l6, l5, i6, k6, k5, applyBrightness(i7, class43.northEastColor), applyBrightness(i7, class43.northWestColor), applyBrightness(i7, class43.southEastColor));
                         }
 		}
 		if ((i5 - k5) * (l6 - l5) - (j5 - l5) * (k6 - k5) > 0) {
 			Texture.clip = i5 < 0 || k5 < 0 || k6 < 0 || i5 > DrawingArea.centerX || k5 > DrawingArea.centerX || k6 > DrawingArea.centerX;
-                        if (pendingClick && method318(pendingClickX, pendingClickY, j5, l5, l6, i5, k5, k6)) {
+                        if (pendingClick && pointInsideTriangle(pendingClickX, pendingClickY, j5, l5, l6, i5, k5, k6)) {
                                 clickedTileX = j1;
                                 clickedTileY = k1;
                         }
@@ -1589,12 +1589,12 @@ final class WorldController {
                                         return;
                                 }
                                 int j7 = anIntArray485[class43.textureId];
-                                Texture.drawGouraudTriangle(j5, l5, l6, i5, k5, k6, method317(j7, class43.southWestColor), method317(j7, class43.southEastColor), method317(j7, class43.northWestColor));
+                                Texture.drawGouraudTriangle(j5, l5, l6, i5, k5, k6, applyBrightness(j7, class43.southWestColor), applyBrightness(j7, class43.southEastColor), applyBrightness(j7, class43.northWestColor));
                         }
 		}
 	}
 
-        private void method316(int i, int j, int k, ShapedTile shapedTile, int l, int i1, int j1) {
+        private void drawShapedTile(int i, int j, int k, ShapedTile shapedTile, int l, int i1, int j1) {
                 int k1 = shapedTile.vertexX.length;
                 for (int l1 = 0; l1 < k1; l1++) {
                         int i2 = shapedTile.vertexX[l1] - cameraX;
@@ -1632,7 +1632,7 @@ final class WorldController {
                         int j5 = ShapedTile.projectedY[l3];
 			if ((i4 - j4) * (j5 - i5) - (l4 - i5) * (k4 - j4) > 0) {
 				Texture.clip = i4 < 0 || j4 < 0 || k4 < 0 || i4 > DrawingArea.centerX || j4 > DrawingArea.centerX || k4 > DrawingArea.centerX;
-                           if (pendingClick && method318(pendingClickX, pendingClickY, l4, i5, j5, i4, j4, k4)) {
+                           if (pendingClick && pointInsideTriangle(pendingClickX, pendingClickY, l4, i5, j5, i4, j4, k4)) {
                                    clickedTileX = i;
                                    clickedTileY = i1;
 				}
@@ -1648,14 +1648,14 @@ final class WorldController {
                                         }
                                 } else {
                                         int k5 = anIntArray485[shapedTile.faceTexture[j2]];
-                                        Texture.drawGouraudTriangle(l4, i5, j5, i4, j4, k4, method317(k5, shapedTile.faceColorA[j2]), method317(k5, shapedTile.faceColorB[j2]), method317(k5, shapedTile.faceColorC[j2]));
+                                        Texture.drawGouraudTriangle(l4, i5, j5, i4, j4, k4, applyBrightness(k5, shapedTile.faceColorA[j2]), applyBrightness(k5, shapedTile.faceColorB[j2]), applyBrightness(k5, shapedTile.faceColorC[j2]));
                                 }
                         }
                 }
 
 	}
 
-	private int method317(int j, int k) {
+	private int applyBrightness(int j, int k) {
 		k = 127 - k;
 		k = k * (j & 0x7f) / 160;
 		if (k < 2) {
@@ -1666,7 +1666,7 @@ final class WorldController {
 		return (j & 0xff80) + k;
 	}
 
-	private boolean method318(int i, int j, int k, int l, int i1, int j1, int k1, int l1) {
+	private boolean pointInsideTriangle(int i, int j, int k, int l, int i1, int j1, int k1, int l1) {
 		if (j < k && j < l && j < i1) {
 			return false;
 		}
@@ -1685,7 +1685,7 @@ final class WorldController {
 		return i2 * k2 > 0 && k2 * j2 > 0;
 	}
 
-        private void method319() {
+        private void updateCullingClusters() {
                int j = cullingClusterCounts[cameraPlane];
                CullingCluster aclass47[] = aCullingClusters[cameraPlane];
                cullingClusterBufferCount = 0;
@@ -2085,7 +2085,7 @@ final class WorldController {
         private static int pendingClickY;
         public static int clickedTileX = -1;
         public static int clickedTileY = -1;
-        private static final int anInt472;
+        private static final int CLUSTER_PLANES;
         private static int[] cullingClusterCounts;
 	private static CullingCluster[][] aCullingClusters;
        private static int cullingClusterBufferCount;
@@ -2113,9 +2113,9 @@ final class WorldController {
 	private static int viewportMaxX;
 	private static int viewportMaxY;
 
-	static {
-		anInt472 = 4;
-                cullingClusterCounts = new int[anInt472];
-                aCullingClusters = new CullingCluster[anInt472][500];
+        static {
+                CLUSTER_PLANES = 4;
+                cullingClusterCounts = new int[CLUSTER_PLANES];
+                aCullingClusters = new CullingCluster[CLUSTER_PLANES][500];
         }
 }
