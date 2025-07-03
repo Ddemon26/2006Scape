@@ -14,9 +14,9 @@ final class ObjectManager {
 		aByteArrayArrayArray130 = new byte[4][mapWidth][mapHeight];
 		aByteArrayArrayArray136 = new byte[4][mapWidth][mapHeight];
 		aByteArrayArrayArray148 = new byte[4][mapWidth][mapHeight];
-		anIntArrayArrayArray135 = new int[4][mapWidth + 1][mapHeight + 1];
+                renderFlags = new int[4][mapWidth + 1][mapHeight + 1];
 		aByteArrayArrayArray134 = new byte[4][mapWidth + 1][mapHeight + 1];
-		anIntArrayArray139 = new int[mapWidth + 1][mapHeight + 1];
+                tileShading = new int[mapWidth + 1][mapHeight + 1];
 		tileHues = new int[mapHeight];
 		tileSaturations = new int[mapHeight];
 		tileLightness = new int[mapHeight];
@@ -82,7 +82,7 @@ final class ObjectManager {
 					int j15 = (l7 << 8) / j9;
 					int j16 = byte0 + (byte1 * k12 + byte2 * l13 + byte3 * j15) / l3;
 					int j17 = (abyte0[j5 - 1][j4] >> 2) + (abyte0[j5 + 1][j4] >> 3) + (abyte0[j5][j4 - 1] >> 2) + (abyte0[j5][j4 + 1] >> 3) + (abyte0[j5][j4] >> 1);
-					anIntArrayArray139[j5][j4] = j16 - j17;
+					tileShading[j5][j4] = j16 - j17;
 				}
 
 			}
@@ -146,7 +146,7 @@ final class ObjectManager {
 							k15 -= tileHueMultiplier[k18];
 							k16 -= tileCount[k18];
 						}
-						if (k17 >= 1 && k17 < mapHeight - 1 && ((!hideBuggyVarrockSwordShopSnow && !hideRoofs && !lowMem) || (aByteArrayArrayArray149[0][l6][k17] & 2) != 0 || (aByteArrayArrayArray149[l][l6][k17] & 0x10) == 0 && method182(k17, l, l6) == currentPlane)) {
+						if (k17 >= 1 && k17 < mapHeight - 1 && ((!hideBuggyVarrockSwordShopSnow && !hideRoofs && !lowMem) || (aByteArrayArrayArray149[0][l6][k17] & 2) != 0 || (aByteArrayArrayArray149[l][l6][k17] & 0x10) == 0 && getCorrectPlane(k17, l, l6) == currentPlane)) {
 							if (l < lowestPlane) {
 								lowestPlane = l;
 							}
@@ -157,10 +157,10 @@ final class ObjectManager {
 								int k19 = tileHeights[l][l6 + 1][k17];
 								int l19 = tileHeights[l][l6 + 1][k17 + 1];
 								int i20 = tileHeights[l][l6][k17 + 1];
-								int j20 = anIntArrayArray139[l6][k17];
-								int k20 = anIntArrayArray139[l6 + 1][k17];
-								int l20 = anIntArrayArray139[l6 + 1][k17 + 1];
-								int i21 = anIntArrayArray139[l6][k17 + 1];
+								int j20 = tileShading[l6][k17];
+								int k20 = tileShading[l6 + 1][k17];
+								int l20 = tileShading[l6 + 1][k17 + 1];
+								int i21 = tileShading[l6][k17 + 1];
 								int j21 = -1;
 								int k21 = -1;
 								if (l18 > 0) {
@@ -186,7 +186,7 @@ final class ObjectManager {
 										flag = false;
 									}
 									if (flag && j19 == k19 && j19 == l19 && j19 == i20) {
-										anIntArrayArrayArray135[l][l6][k17] |= 0x924;
+										renderFlags[l][l6][k17] |= 0x924;
 									}
 								}
 								int i22 = 0;
@@ -231,7 +231,7 @@ final class ObjectManager {
 
 			for (int j8 = 1; j8 < mapHeight - 1; j8++) {
 				for (int i10 = 1; i10 < mapWidth - 1; i10++) {
-                                        worldController.setGroundFlag(l, i10, j8, method182(j8, l, i10));
+                                        worldController.setGroundFlag(l, i10, j8, getCorrectPlane(j8, l, i10));
 				}
 
 			}
@@ -260,20 +260,20 @@ final class ObjectManager {
 			for (int i3 = 0; i3 <= l2; i3++) {
 				for (int k3 = 0; k3 <= mapHeight; k3++) {
 					for (int i4 = 0; i4 <= mapWidth; i4++) {
-						if ((anIntArrayArrayArray135[i3][i4][k3] & i2) != 0) {
+						if ((renderFlags[i3][i4][k3] & i2) != 0) {
 							int k4 = k3;
 							int l5 = k3;
 							int i7 = i3;
 							int k8 = i3;
-							for (; k4 > 0 && (anIntArrayArrayArray135[i3][i4][k4 - 1] & i2) != 0; k4--) {
+							for (; k4 > 0 && (renderFlags[i3][i4][k4 - 1] & i2) != 0; k4--) {
 								;
 							}
-							for (; l5 < mapHeight && (anIntArrayArrayArray135[i3][i4][l5 + 1] & i2) != 0; l5++) {
+							for (; l5 < mapHeight && (renderFlags[i3][i4][l5 + 1] & i2) != 0; l5++) {
 								;
 							}
 							label0 : for (; i7 > 0; i7--) {
 								for (int j10 = k4; j10 <= l5; j10++) {
-									if ((anIntArrayArrayArray135[i7 - 1][i4][j10] & i2) == 0) {
+									if ((renderFlags[i7 - 1][i4][j10] & i2) == 0) {
 										break label0;
 									}
 								}
@@ -282,7 +282,7 @@ final class ObjectManager {
 
 							label1 : for (; k8 < l2; k8++) {
 								for (int k10 = k4; k10 <= l5; k10++) {
-									if ((anIntArrayArrayArray135[k8 + 1][i4][k10] & i2) == 0) {
+									if ((renderFlags[k8 + 1][i4][k10] & i2) == 0) {
 										break label1;
 									}
 								}
@@ -297,27 +297,27 @@ final class ObjectManager {
                                                             WorldController.addCullingCluster(l2, i4 * 128, l15, i4 * 128, l5 * 128 + 128, k14, k4 * 128, 1);
 								for (int l16 = i7; l16 <= k8; l16++) {
 									for (int l17 = k4; l17 <= l5; l17++) {
-										anIntArrayArrayArray135[l16][i4][l17] &= ~i2;
+										renderFlags[l16][i4][l17] &= ~i2;
 									}
 
 								}
 
 							}
 						}
-						if ((anIntArrayArrayArray135[i3][i4][k3] & j2) != 0) {
+						if ((renderFlags[i3][i4][k3] & j2) != 0) {
 							int l4 = i4;
 							int i6 = i4;
 							int j7 = i3;
 							int l8 = i3;
-							for (; l4 > 0 && (anIntArrayArrayArray135[i3][l4 - 1][k3] & j2) != 0; l4--) {
+							for (; l4 > 0 && (renderFlags[i3][l4 - 1][k3] & j2) != 0; l4--) {
 								;
 							}
-							for (; i6 < mapWidth && (anIntArrayArrayArray135[i3][i6 + 1][k3] & j2) != 0; i6++) {
+							for (; i6 < mapWidth && (renderFlags[i3][i6 + 1][k3] & j2) != 0; i6++) {
 								;
 							}
 							label2 : for (; j7 > 0; j7--) {
 								for (int i11 = l4; i11 <= i6; i11++) {
-									if ((anIntArrayArrayArray135[j7 - 1][i11][k3] & j2) == 0) {
+									if ((renderFlags[j7 - 1][i11][k3] & j2) == 0) {
 										break label2;
 									}
 								}
@@ -326,7 +326,7 @@ final class ObjectManager {
 
 							label3 : for (; l8 < l2; l8++) {
 								for (int j11 = l4; j11 <= i6; j11++) {
-									if ((anIntArrayArrayArray135[l8 + 1][j11][k3] & j2) == 0) {
+									if ((renderFlags[l8 + 1][j11][k3] & j2) == 0) {
 										break label3;
 									}
 								}
@@ -341,27 +341,27 @@ final class ObjectManager {
                                                             WorldController.addCullingCluster(l2, l4 * 128, i16, i6 * 128 + 128, k3 * 128, l14, k3 * 128, 2);
 								for (int i17 = j7; i17 <= l8; i17++) {
 									for (int i18 = l4; i18 <= i6; i18++) {
-										anIntArrayArrayArray135[i17][i18][k3] &= ~j2;
+										renderFlags[i17][i18][k3] &= ~j2;
 									}
 
 								}
 
 							}
 						}
-						if ((anIntArrayArrayArray135[i3][i4][k3] & k2) != 0) {
+						if ((renderFlags[i3][i4][k3] & k2) != 0) {
 							int i5 = i4;
 							int j6 = i4;
 							int k7 = k3;
 							int i9 = k3;
-							for (; k7 > 0 && (anIntArrayArrayArray135[i3][i4][k7 - 1] & k2) != 0; k7--) {
+							for (; k7 > 0 && (renderFlags[i3][i4][k7 - 1] & k2) != 0; k7--) {
 								;
 							}
-							for (; i9 < mapHeight && (anIntArrayArrayArray135[i3][i4][i9 + 1] & k2) != 0; i9++) {
+							for (; i9 < mapHeight && (renderFlags[i3][i4][i9 + 1] & k2) != 0; i9++) {
 								;
 							}
 							label4 : for (; i5 > 0; i5--) {
 								for (int l11 = k7; l11 <= i9; l11++) {
-									if ((anIntArrayArrayArray135[i3][i5 - 1][l11] & k2) == 0) {
+									if ((renderFlags[i3][i5 - 1][l11] & k2) == 0) {
 										break label4;
 									}
 								}
@@ -370,7 +370,7 @@ final class ObjectManager {
 
 							label5 : for (; j6 < mapWidth; j6++) {
 								for (int i12 = k7; i12 <= i9; i12++) {
-									if ((anIntArrayArrayArray135[i3][j6 + 1][i12] & k2) == 0) {
+									if ((renderFlags[i3][j6 + 1][i12] & k2) == 0) {
 										break label5;
 									}
 								}
@@ -382,7 +382,7 @@ final class ObjectManager {
                                                             WorldController.addCullingCluster(l2, i5 * 128, j12, j6 * 128 + 128, i9 * 128 + 128, j12, k7 * 128, 4);
 								for (int k13 = i5; k13 <= j6; k13++) {
 									for (int i15 = k7; i15 <= i9; i15++) {
-										anIntArrayArrayArray135[i3][k13][i15] &= ~k2;
+										renderFlags[i3][k13][i15] &= ~k2;
 									}
 
 								}
@@ -399,7 +399,7 @@ final class ObjectManager {
 
 	}
 
-	private static int method172(int i, int j) {
+	private static int getTerrainNoise(int i, int j) {
             int k = perlinNoise(i + 45365, j + 0x16713, 4) - 128 + (perlinNoise(i + 10294, j + 37821, 2) - 128 >> 1) + (perlinNoise(i, j, 1) - 128 >> 2);
 		k = (int) (k * 0.29999999999999999D) + 35;
 		if (k < 10) {
@@ -410,7 +410,7 @@ final class ObjectManager {
 		return k;
 	}
 
-	public static void method173(Stream stream, OnDemandFetcher class42_sub1) {
+	public static void loadObjectModels(Stream stream, OnDemandFetcher class42_sub1) {
 		label0 : {
 			int i = -1;
 			do {
@@ -460,7 +460,7 @@ final class ObjectManager {
 			if ((aByteArrayArrayArray149[k][l][i] & 0x10) != 0) {
 				return;
 			}
-			if (method182(i, k, l) != currentPlane) {
+			if (getCorrectPlane(i, k, l) != currentPlane) {
 				return;
 			}
 		}
@@ -553,7 +553,7 @@ final class ObjectManager {
 			}
                     worldController.addGameObject(l2, byte0, k2, 1, ((Animable) obj2), 1, k, 0, i, l);
 			if (j >= 12 && j <= 17 && j != 13 && k > 0) {
-				anIntArrayArrayArray135[k][l][i] |= 0x924;
+				renderFlags[k][l][i] |= 0x924;
 			}
 			if (class46.isSolid && class11 != null) {
 				class11.addObject(class46.impenetrable, class46.sizeX, class46.sizeY, l, i, j1);
@@ -574,7 +574,7 @@ final class ObjectManager {
 					aByteArrayArrayArray134[k][l][i + 1] = 50;
 				}
 				if (class46.aBoolean764) {
-					anIntArrayArrayArray135[k][l][i] |= 0x249;
+					renderFlags[k][l][i] |= 0x249;
 				}
 			} else if (j1 == 1) {
 				if (class46.aBoolean779) {
@@ -582,7 +582,7 @@ final class ObjectManager {
 					aByteArrayArrayArray134[k][l + 1][i + 1] = 50;
 				}
 				if (class46.aBoolean764) {
-					anIntArrayArrayArray135[k][l][i + 1] |= 0x492;
+					renderFlags[k][l][i + 1] |= 0x492;
 				}
 			} else if (j1 == 2) {
 				if (class46.aBoolean779) {
@@ -590,7 +590,7 @@ final class ObjectManager {
 					aByteArrayArrayArray134[k][l + 1][i + 1] = 50;
 				}
 				if (class46.aBoolean764) {
-					anIntArrayArrayArray135[k][l + 1][i] |= 0x249;
+					renderFlags[k][l + 1][i] |= 0x249;
 				}
 			} else if (j1 == 3) {
 				if (class46.aBoolean779) {
@@ -598,7 +598,7 @@ final class ObjectManager {
 					aByteArrayArrayArray134[k][l + 1][i] = 50;
 				}
 				if (class46.aBoolean764) {
-					anIntArrayArrayArray135[k][l][i] |= 0x492;
+					renderFlags[k][l][i] |= 0x492;
 				}
 			}
 			if (class46.isSolid && class11 != null) {
@@ -647,17 +647,17 @@ final class ObjectManager {
                     worldController.addBoundaryObject(wallFlags[j1], ((Animable) obj11), l2, i, byte0, l, ((Animable) obj12), k2, wallFlags[i3], k);
 			if (class46.aBoolean764) {
 				if (j1 == 0) {
-					anIntArrayArrayArray135[k][l][i] |= 0x249;
-					anIntArrayArrayArray135[k][l][i + 1] |= 0x492;
+					renderFlags[k][l][i] |= 0x249;
+					renderFlags[k][l][i + 1] |= 0x492;
 				} else if (j1 == 1) {
-					anIntArrayArrayArray135[k][l][i + 1] |= 0x492;
-					anIntArrayArrayArray135[k][l + 1][i] |= 0x249;
+					renderFlags[k][l][i + 1] |= 0x492;
+					renderFlags[k][l + 1][i] |= 0x249;
 				} else if (j1 == 2) {
-					anIntArrayArrayArray135[k][l + 1][i] |= 0x249;
-					anIntArrayArrayArray135[k][l][i] |= 0x492;
+					renderFlags[k][l + 1][i] |= 0x249;
+					renderFlags[k][l][i] |= 0x492;
 				} else if (j1 == 3) {
-					anIntArrayArrayArray135[k][l][i] |= 0x492;
-					anIntArrayArrayArray135[k][l][i] |= 0x249;
+					renderFlags[k][l][i] |= 0x492;
+					renderFlags[k][l][i] |= 0x249;
 				}
 			}
 			if (class46.isSolid && class11 != null) {
@@ -813,7 +813,7 @@ final class ObjectManager {
 		return (i / 4 << 10) + (j / 32 << 7) + k / 2;
 	}
 
-	public static boolean method178(int i, int j) {
+	public static boolean isObjectVisible(int i, int j) {
 		ObjectDef class46 = ObjectDef.forID(i);
 		if (j == 11) {
 			j = 10;
@@ -882,7 +882,7 @@ final class ObjectManager {
 				int l1 = stream.readUnsignedByte();
 				if (l1 == 0) {
 					if (l == 0) {
-						tileHeights[0][k][i] = -method172(0xe3b7b + k + k1, 0x87cce + i + j) * 8;
+						tileHeights[0][k][i] = -getTerrainNoise(0xe3b7b + k + k1, 0x87cce + i + j) * 8;
 						return;
 					} else {
 						tileHeights[l][k][i] = tileHeights[l - 1][k][i] - 240;
@@ -928,7 +928,7 @@ final class ObjectManager {
 		} while (true);
 	}
 
-	private int method182(int i, int j, int k) {
+	private int getCorrectPlane(int i, int j, int k) {
 		if ((aByteArrayArrayArray149[j][k][i] & 8) != 0) {
 			return 0;
 		}
@@ -1342,10 +1342,10 @@ final class ObjectManager {
 	static int currentPlane;
 	private static int noiseOffsetY = (int) (Math.random() * 33D) - 16;
 	private final byte[][][] aByteArrayArrayArray134;
-	private final int[][][] anIntArrayArrayArray135;
+	private final int[][][] renderFlags;
 	private final byte[][][] aByteArrayArrayArray136;
 	private static final int deltaX[] = {1, 0, -1, 0};
-	private final int[][] anIntArrayArray139;
+	private final int[][] tileShading;
 	private static final int anIntArray140[] = {16, 32, 64, 128};
 	private final byte[][][] aByteArrayArrayArray142;
 	private static final int deltaY[] = {0, -1, 0, 1};

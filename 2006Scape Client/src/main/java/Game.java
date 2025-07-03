@@ -2875,7 +2875,7 @@ public class Game extends RSApplet {
 
                                }
                        } while (onDemandData.type != 93 || !onDemandFetcher.hasLandscape(onDemandData.id));
-                       ObjectManager.method173(new Stream(onDemandData.data), onDemandFetcher);
+                       ObjectManager.loadObjectModels(new Stream(onDemandData.data), onDemandFetcher);
 		} while (true);
 	}
 
@@ -8978,7 +8978,7 @@ public class Game extends RSApplet {
 					class30_sub1.delay--;
 				}
 				if (class30_sub1.delay == 0) {
-					if (class30_sub1.oldId < 0 || ObjectManager.method178(class30_sub1.oldId, class30_sub1.oldOrientation)) {
+					if (class30_sub1.oldId < 0 || ObjectManager.isObjectVisible(class30_sub1.oldId, class30_sub1.oldOrientation)) {
 						method142(class30_sub1.y, class30_sub1.plane, class30_sub1.oldType, class30_sub1.oldOrientation, class30_sub1.x, class30_sub1.category, class30_sub1.oldId);
 						class30_sub1.unlink();
 					}
@@ -8986,7 +8986,7 @@ public class Game extends RSApplet {
 					if (class30_sub1.spawnDelay > 0) {
 						class30_sub1.spawnDelay--;
 					}
-					if (class30_sub1.spawnDelay == 0 && class30_sub1.x >= 1 && class30_sub1.y >= 1 && class30_sub1.x <= 102 && class30_sub1.y <= 102 && (class30_sub1.id < 0 || ObjectManager.method178(class30_sub1.id, class30_sub1.type))) {
+					if (class30_sub1.spawnDelay == 0 && class30_sub1.x >= 1 && class30_sub1.y >= 1 && class30_sub1.x <= 102 && class30_sub1.y <= 102 && (class30_sub1.id < 0 || ObjectManager.isObjectVisible(class30_sub1.id, class30_sub1.type))) {
 						method142(class30_sub1.y, class30_sub1.plane, class30_sub1.orientation, class30_sub1.type, class30_sub1.x, class30_sub1.category, class30_sub1.id);
 						class30_sub1.spawnDelay = -1;
 						if (class30_sub1.id == class30_sub1.oldId && class30_sub1.oldId == -1) {
