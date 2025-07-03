@@ -128,7 +128,7 @@ public final class EntityDef {
                                return entityDef.getAnimatedModel(primaryFrame, secondaryFrame, frameData);
                        }
                }
-               Model model = (Model) mruNodes.insertFromCache(type);
+               Model model = (Model) mruNodes.get(type);
                if (model == null) {
 			boolean flag = false;
 			for (int i1 = 0; i1 < anIntArray94.length; i1++) {
@@ -158,7 +158,7 @@ public final class EntityDef {
 			}
 			model.buildVertexGroups();
 			model.applyLighting(64 + anInt85, 850 + anInt92, -30, -50, -30, true);
-			mruNodes.removeFromCache(model, type);
+                        mruNodes.put(model, type);
 		}
                Model model_1 = Model.aModel_1621;
                model_1.copyFromModel(model, AnimFrame.isNullFrame(secondaryFrame) & AnimFrame.isNullFrame(primaryFrame));
@@ -331,6 +331,6 @@ public final class EntityDef {
 	private int anInt92;
 	public boolean aBoolean93;
 	private int[] anIntArray94;
-	public static MRUNodes mruNodes = new MRUNodes(30);
+    public static MRUCache mruNodes = new MRUCache(30);
 
 }

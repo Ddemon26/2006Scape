@@ -860,7 +860,7 @@ public class Game extends RSApplet {
             ItemDef.modelCache.unlinkAll();
             ItemDef.spriteCache.unlinkAll();
 		Player.mruNodes.unlinkAll();
-		SpotAnim.aMRUNodes_415.unlinkAll();
+            SpotAnim.aMRUCache_415.unlinkAll();
 	}
 
        public void generateMinimap(int i) {
@@ -4797,7 +4797,7 @@ public class Game extends RSApplet {
 		CachePlaceholder.cache = null;
 		Animation.anims = null;
 		SpotAnim.cache = null;
-		SpotAnim.aMRUNodes_415 = null;
+           SpotAnim.aMRUCache_415 = null;
 		Varp.cache = null;
 		super.fullGameScreen = null;
 		Player.mruNodes = null;
