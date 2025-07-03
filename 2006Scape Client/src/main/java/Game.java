@@ -10131,9 +10131,9 @@ public class Game extends RSApplet {
 				}
 				if (j16 == 3) {
                                        TileDecoration class49 = worldController.getTileDecoration(i7, j4, plane);
-					if (class49 != null) {
-						class49.aClass30_Sub2_Sub4_814 = new DynamicObject(class49.uid >> 14 & 0x7fff, k14, 22, i19, l19, j18, k20, j17, false);
-					}
+                                        if (class49 != null) {
+                                                class49.renderable = new DynamicObject(class49.uid >> 14 & 0x7fff, k14, 22, i19, l19, j18, k20, j17, false);
+                                        }
 				}
 			}
 			return;

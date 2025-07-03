@@ -151,22 +151,22 @@ final class WorldController {
                 groundArray[i][j][k].shapedTile = shapedTile;
         }
 
-       public void addTileDecoration(int i, int j, int k, Animable class30_sub2_sub4, byte byte0, int i1, int j1) {
-		if (class30_sub2_sub4 == null) {
-			return;
-		}
+       public void addTileDecoration(int plane, int height, int tileY, Animable renderable, byte config, int uid, int tileX) {
+                if (renderable == null) {
+                        return;
+                }
             TileDecoration class49 = new TileDecoration();
-		class49.aClass30_Sub2_Sub4_814 = class30_sub2_sub4;
-		class49.anInt812 = j1 * 128 + 64;
-		class49.anInt813 = k * 128 + 64;
-		class49.anInt811 = j;
-		class49.uid = i1;
-		class49.aByte816 = byte0;
-		if (groundArray[i][j1][k] == null) {
-			groundArray[i][j1][k] = new Ground(i, j1, k);
-		}
-		groundArray[i][j1][k].obj3 = class49;
-	}
+                class49.renderable = renderable;
+                class49.x = tileX * 128 + 64;
+                class49.y = tileY * 128 + 64;
+                class49.tileHeight = height;
+                class49.uid = uid;
+                class49.config = config;
+                if (groundArray[plane][tileX][tileY] == null) {
+                        groundArray[plane][tileX][tileY] = new Ground(plane, tileX, tileY);
+                }
+                groundArray[plane][tileX][tileY].obj3 = class49;
+        }
 
        public void addItemPile(int i, int j, Animable class30_sub2_sub4, int k, Animable class30_sub2_sub4_1, Animable class30_sub2_sub4_2, int l, int i1) {
                 ItemPile itemPile = new ItemPile();
@@ -544,9 +544,9 @@ final class WorldController {
                 if (class30_sub3.obj2 != null && class30_sub3.obj2.uid == l) {
                         return class30_sub3.obj2.config & 0xff;
                 }
-		if (class30_sub3.obj3 != null && class30_sub3.obj3.uid == l) {
-			return class30_sub3.obj3.aByte816 & 0xff;
-		}
+                if (class30_sub3.obj3 != null && class30_sub3.obj3.uid == l) {
+                        return class30_sub3.obj3.config & 0xff;
+                }
                 for (int i1 = 0; i1 < class30_sub3.sceneObjectCount; i1++) {
                         if (class30_sub3.obj5Array[i1].uid == l) {
                                 return class30_sub3.obj5Array[i1].config & 0xff;
@@ -585,10 +585,10 @@ final class WorldController {
                                                 }
 
                                             TileDecoration class49 = class30_sub3.obj3;
-						if (class49 != null && class49.aClass30_Sub2_Sub4_814.vertexNormals != null) {
-                                                       blendDecorationLighting(i2, l1, (Model) class49.aClass30_Sub2_Sub4_814, j2);
-							((Model) class49.aClass30_Sub2_Sub4_814).applyShading(j, k1, k, i, i1);
-						}
+                                                if (class49 != null && class49.renderable.vertexNormals != null) {
+                                                       blendDecorationLighting(i2, l1, (Model) class49.renderable, j2);
+                                                        ((Model) class49.renderable).applyShading(j, k1, k, i, i1);
+                                                }
 					}
 				}
 
@@ -601,28 +601,28 @@ final class WorldController {
        private void blendDecorationLighting(int i, int j, Model model, int k) {
 		if (i < worldWidth) {
 			Ground class30_sub3 = groundArray[j][i + 1][k];
-			if (class30_sub3 != null && class30_sub3.obj3 != null && class30_sub3.obj3.aClass30_Sub2_Sub4_814.vertexNormals != null) {
-                                mergeNormals(model, (Model) class30_sub3.obj3.aClass30_Sub2_Sub4_814, 128, 0, 0, true);
-			}
-		}
-		if (k < worldWidth) {
-			Ground class30_sub3_1 = groundArray[j][i][k + 1];
-			if (class30_sub3_1 != null && class30_sub3_1.obj3 != null && class30_sub3_1.obj3.aClass30_Sub2_Sub4_814.vertexNormals != null) {
-                                mergeNormals(model, (Model) class30_sub3_1.obj3.aClass30_Sub2_Sub4_814, 0, 0, 128, true);
-			}
-		}
-		if (i < worldWidth && k < worldHeight) {
-			Ground class30_sub3_2 = groundArray[j][i + 1][k + 1];
-			if (class30_sub3_2 != null && class30_sub3_2.obj3 != null && class30_sub3_2.obj3.aClass30_Sub2_Sub4_814.vertexNormals != null) {
-                                mergeNormals(model, (Model) class30_sub3_2.obj3.aClass30_Sub2_Sub4_814, 128, 0, 128, true);
-			}
-		}
-		if (i < worldWidth && k > 0) {
-			Ground class30_sub3_3 = groundArray[j][i + 1][k - 1];
-			if (class30_sub3_3 != null && class30_sub3_3.obj3 != null && class30_sub3_3.obj3.aClass30_Sub2_Sub4_814.vertexNormals != null) {
-                                mergeNormals(model, (Model) class30_sub3_3.obj3.aClass30_Sub2_Sub4_814, 128, 0, -128, true);
-			}
-		}
+                        if (class30_sub3 != null && class30_sub3.obj3 != null && class30_sub3.obj3.renderable.vertexNormals != null) {
+                                mergeNormals(model, (Model) class30_sub3.obj3.renderable, 128, 0, 0, true);
+                        }
+                }
+                if (k < worldWidth) {
+                        Ground class30_sub3_1 = groundArray[j][i][k + 1];
+                        if (class30_sub3_1 != null && class30_sub3_1.obj3 != null && class30_sub3_1.obj3.renderable.vertexNormals != null) {
+                                mergeNormals(model, (Model) class30_sub3_1.obj3.renderable, 0, 0, 128, true);
+                        }
+                }
+                if (i < worldWidth && k < worldHeight) {
+                        Ground class30_sub3_2 = groundArray[j][i + 1][k + 1];
+                        if (class30_sub3_2 != null && class30_sub3_2.obj3 != null && class30_sub3_2.obj3.renderable.vertexNormals != null) {
+                                mergeNormals(model, (Model) class30_sub3_2.obj3.renderable, 128, 0, 128, true);
+                        }
+                }
+                if (i < worldWidth && k > 0) {
+                        Ground class30_sub3_3 = groundArray[j][i + 1][k - 1];
+                        if (class30_sub3_3 != null && class30_sub3_3.obj3 != null && class30_sub3_3.obj3.renderable.vertexNormals != null) {
+                                mergeNormals(model, (Model) class30_sub3_3.obj3.renderable, 128, 0, -128, true);
+                        }
+                }
 	}
 
         private void blendModels(int i, int j, int k, int l, int i1, Model model) {
@@ -1208,9 +1208,9 @@ final class WorldController {
                                 }
 				if (flag1) {
                                    TileDecoration class49 = class30_sub3_1.obj3;
-					if (class49 != null) {
-						class49.aClass30_Sub2_Sub4_814.render(0, pitchSin, pitchCos, yawSin, yawCos, class49.anInt812 - cameraX, class49.anInt811 - cameraZ, class49.anInt813 - cameraY, class49.uid);
-					}
+                                        if (class49 != null) {
+                                                class49.renderable.render(0, pitchSin, pitchCos, yawSin, yawCos, class49.x - cameraX, class49.tileHeight - cameraZ, class49.y - cameraY, class49.uid);
+                                        }
                                         ItemPile pile1 = class30_sub3_1.itemPile;
                                         if (pile1 != null && pile1.offsetY == 0) {
                                                 if (pile1.secondItem != null) {
