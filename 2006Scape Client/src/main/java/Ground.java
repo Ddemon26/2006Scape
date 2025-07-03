@@ -6,27 +6,27 @@ public final class Ground extends Node {
 
         public Ground(int i, int j, int k) {
                 obj5Array = new SceneObject[5];
-		anIntArray1319 = new int[5];
-		anInt1310 = anInt1307 = i;
-		anInt1308 = j;
-		anInt1309 = k;
+                sceneObjectFlags = new int[5];
+                basePlane = plane = i;
+                x = j;
+                y = k;
 	}
 
-	int anInt1307;
-	final int anInt1308;
-	final int anInt1309;
-	final int anInt1310;
+        int plane;
+        final int x;
+        final int y;
+        final int basePlane;
         public PlainTile plainTile;
         public ShapedTile shapedTile;
         public BoundaryObject obj1;
         public WallDecoration obj2;
         public TileDecoration obj3;
         public ItemPile itemPile;
-	int anInt1317;
+        int sceneObjectCount;
         public final SceneObject[] obj5Array;
-	final int[] anIntArray1319;
-	int anInt1320;
-	int anInt1321;
+        final int[] sceneObjectFlags;
+        int combinedFlags;
+        int groundFlag;
 	boolean aBoolean1322;
 	boolean aBoolean1323;
 	boolean aBoolean1324;
@@ -34,5 +34,5 @@ public final class Ground extends Node {
 	int anInt1326;
 	int anInt1327;
 	int anInt1328;
-	public Ground aClass30_Sub3_1329;
+        public Ground linkedTile;
 }
