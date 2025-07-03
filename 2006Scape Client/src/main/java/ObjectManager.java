@@ -604,8 +604,8 @@ final class ObjectManager {
 			if (class46.isSolid && class11 != null) {
 				class11.addWall(i, j1, l, j, class46.impenetrable);
 			}
-			if (class46.anInt775 != 16) {
-				worldController.method290(i, class46.anInt775, l, k);
+                        if (class46.anInt775 != 16) {
+                                worldController.updateWallDecorationPosition(i, class46.anInt775, l, k);
 			}
 			return;
 		}
@@ -663,8 +663,8 @@ final class ObjectManager {
 			if (class46.isSolid && class11 != null) {
 				class11.addWall(i, j1, l, j, class46.impenetrable);
 			}
-			if (class46.anInt775 != 16) {
-				worldController.method290(i, class46.anInt775, l, k);
+                        if (class46.anInt775 != 16) {
+                                worldController.updateWallDecorationPosition(i, class46.anInt775, l, k);
 			}
 			return;
 		}

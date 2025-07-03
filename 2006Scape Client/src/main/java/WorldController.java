@@ -3,24 +3,24 @@
 // Decompiler options: packimports(3) 
 
 final class WorldController {
-	public static int drawDistance = 25;
+        public static int drawDistance = 25;
 
-	public WorldController(int ai[][][]) {
-		int i = 104;// was parameter
-		int j = 104;// was parameter
-		int k = 4;// was parameter
-		aBoolean434 = true;
+        public WorldController(int[][][] heights) {
+                int regionHeight = 104; // was parameter
+                int regionWidth = 104; // was parameter
+                int planeLevels = 4; // was parameter
+                aBoolean434 = true;
         sceneObjectCache = new SceneObject[5000];
                 vertexVisitA = new int[10000];
                 vertexVisitB = new int[10000];
-                planeCount = k;
-                worldWidth = j;
-                worldHeight = i;
-		groundArray = new Ground[k][j][i];
-                tileVisibility = new int[k][j + 1][i + 1];
-                tileHeights = ai;
-		initToNull();
-	}
+                planeCount = planeLevels;
+                worldWidth = regionWidth;
+                worldHeight = regionHeight;
+                groundArray = new Ground[planeLevels][regionWidth][regionHeight];
+                tileVisibility = new int[planeLevels][regionWidth + 1][regionHeight + 1];
+                tileHeights = heights;
+                initToNull();
+        }
 
 	public static void nullLoader() {
                 aClass28Array462 = null;
@@ -389,7 +389,7 @@ final class WorldController {
 
 	}
 
-	public void method290(int i, int k, int l, int i1) {
+       public void updateWallDecorationPosition(int i, int k, int l, int i1) {
 		Ground class30_sub3 = groundArray[i1][l][i];
 		if (class30_sub3 == null) {
 			return;
@@ -671,7 +671,7 @@ final class WorldController {
 	}
 
         private void mergeNormals(Model model, Model model_1, int i, int j, int k, boolean flag) {
-		anInt488++;
+		mergeCycleId++;
 		int l = 0;
 		int ai[] = model_1.vertexX;
 		int i1 = model_1.anInt1626;
@@ -698,8 +698,8 @@ final class WorldController {
 									class33_2.z += class33_1.z;
 									class33_2.magnitude += class33_1.magnitude;
 									l++;
-									vertexVisitA[j1] = anInt488;
-									vertexVisitB[l2] = anInt488;
+									vertexVisitA[j1] = mergeCycleId;
+									vertexVisitB[l2] = mergeCycleId;
 								}
 							}
 
@@ -713,13 +713,13 @@ final class WorldController {
 			return;
 		}
 		for (int k1 = 0; k1 < model.anInt1630; k1++) {
-			if (vertexVisitA[model.faceA[k1]] == anInt488 && vertexVisitA[model.faceB[k1]] == anInt488 && vertexVisitA[model.faceC[k1]] == anInt488) {
+			if (vertexVisitA[model.faceA[k1]] == mergeCycleId && vertexVisitA[model.faceB[k1]] == mergeCycleId && vertexVisitA[model.faceC[k1]] == mergeCycleId) {
 				model.anIntArray1637[k1] = -1;
 			}
 		}
 
 		for (int l1 = 0; l1 < model_1.anInt1630; l1++) {
-			if (vertexVisitB[model_1.faceA[l1]] == anInt488 && vertexVisitB[model_1.faceB[l1]] == anInt488 && vertexVisitB[model_1.faceC[l1]] == anInt488) {
+			if (vertexVisitB[model_1.faceA[l1]] == mergeCycleId && vertexVisitB[model_1.faceB[l1]] == mergeCycleId && vertexVisitB[model_1.faceC[l1]] == mergeCycleId) {
 				model_1.anIntArray1637[l1] = -1;
 			}
 		}
@@ -789,12 +789,12 @@ final class WorldController {
 	}
 
         public static void buildVisibilityMap(int i, int j, int k, int l, int ai[]) {
-		anInt495 = 0;
-		anInt496 = 0;
-		anInt497 = k;
-		anInt498 = l;
-		anInt493 = k / 2;
-		anInt494 = l / 2;
+		viewportMinX = 0;
+		viewportMinY = 0;
+		viewportMaxX = k;
+		viewportMaxY = l;
+		halfViewportWidth = k / 2;
+		halfViewportHeight = l / 2;
 		boolean aflag[][][][] = new boolean[9][32][256][256];
 		for (int i1 = 128; i1 <= 384; i1 += 32) {
 			for (int j1 = 0; j1 < 2048; j1 += 64) {
@@ -869,9 +869,9 @@ final class WorldController {
 		if (j1 < 50 || j1 > 3500) {
 			return false;
 		}
-		int l1 = anInt493 + (l << 9) / j1;
-		int i2 = anInt494 + (k1 << 9) / j1;
-		return l1 >= anInt495 && l1 <= anInt497 && i2 >= anInt496 && i2 <= anInt498;
+		int l1 = halfViewportWidth + (l << 9) / j1;
+		int i2 = halfViewportHeight + (k1 << 9) / j1;
+		return l1 >= viewportMinX && l1 <= viewportMaxX && i2 >= viewportMinY && i2 <= viewportMaxY;
 	}
 
         public void queueClick(int i, int j) {
@@ -922,7 +922,7 @@ final class WorldController {
 			maxVisibleY = worldHeight;
 		}
 		method319();
-		anInt446 = 0;
+		visibleTileCount = 0;
 		for (int k1 = activePlane; k1 < planeCount; k1++) {
 			Ground aclass30_sub3[][] = groundArray[k1];
 			for (int i2 = minVisibleX; i2 < maxVisibleX; i2++) {
@@ -937,7 +937,7 @@ final class WorldController {
 							class30_sub3.aBoolean1322 = true;
 							class30_sub3.aBoolean1323 = true;
 							class30_sub3.aBoolean1324 = class30_sub3.anInt1317 > 0;
-							anInt446++;
+							visibleTileCount++;
 						}
 					}
 				}
@@ -983,7 +983,7 @@ final class WorldController {
 								}
 							}
 						}
-						if (anInt446 == 0) {
+						if (visibleTileCount == 0) {
                                                     pendingClick = false;
 							return;
 						}
@@ -1031,7 +1031,7 @@ final class WorldController {
 								}
 							}
 						}
-						if (anInt446 == 0) {
+						if (visibleTileCount == 0) {
                                                    pendingClick = false;
 							return;
 						}
@@ -1404,7 +1404,7 @@ final class WorldController {
 				}
 			}
 			class30_sub3_1.aBoolean1323 = false;
-			anInt446--;
+			visibleTileCount--;
                         ItemPile pile = class30_sub3_1.itemPile;
                         if (pile != null && pile.offsetY != 0) {
                                 if (pile.secondItem != null) {
@@ -1688,7 +1688,7 @@ final class WorldController {
         private void method319() {
                int j = cullingClusterCounts[cameraPlane];
                CullingCluster aclass47[] = aCullingClusters[cameraPlane];
-		anInt475 = 0;
+               cullingClusterBufferCount = 0;
 		for (int k = 0; k < j; k++) {
 			CullingCluster class47 = aclass47[k];
 			if (class47.type == 1) {
@@ -1728,7 +1728,7 @@ final class WorldController {
 				class47.endZFactor = (class47.maxZ - cameraY << 8) / j3;
 				class47.startYFactor = (class47.minY - cameraZ << 8) / j3;
 				class47.endYFactor = (class47.maxY - cameraZ << 8) / j3;
-				cullingClusterBuffer[anInt475++] = class47;
+                               cullingClusterBuffer[cullingClusterBufferCount++] = class47;
 				continue;
 			}
 			if (class47.type == 2) {
@@ -1768,7 +1768,7 @@ final class WorldController {
 				class47.endXFactor = (class47.maxX - cameraX << 8) / k3;
 				class47.startYFactor = (class47.minY - cameraZ << 8) / k3;
 				class47.endYFactor = (class47.maxY - cameraZ << 8) / k3;
-				cullingClusterBuffer[anInt475++] = class47;
+                               cullingClusterBuffer[cullingClusterBufferCount++] = class47;
 			} else if (class47.type == 4) {
 				int j1 = class47.minY - cameraZ;
 				if (j1 > 128) {
@@ -1807,7 +1807,7 @@ final class WorldController {
 							class47.endXFactor = (class47.maxX - cameraX << 8) / j1;
 							class47.startZFactor = (class47.minZ - cameraY << 8) / j1;
 							class47.endZFactor = (class47.maxZ - cameraY << 8) / j1;
-							cullingClusterBuffer[anInt475++] = class47;
+                                                   cullingClusterBuffer[cullingClusterBufferCount++] = class47;
 						}
 					}
 				}
@@ -1985,7 +1985,7 @@ final class WorldController {
 	}
 
 	private boolean isPointVisible(int i, int j, int k) {
-		for (int l = 0; l < anInt475; l++) {
+           for (int l = 0; l < cullingClusterBufferCount; l++) {
 			CullingCluster class47 = cullingClusterBuffer[l];
 			if (class47.searchMask == 1) {
 				int i1 = class47.minX - i;
@@ -2059,7 +2059,7 @@ final class WorldController {
         private int sceneObjectCachePos;
         private final SceneObject[] sceneObjectCache;
 	private final int[][][] tileVisibility;
-	private static int anInt446;
+	private static int visibleTileCount;
        private static int cameraPlane;
 	private static int renderCycle;
 	private static int minVisibleX;
@@ -2088,7 +2088,7 @@ final class WorldController {
         private static final int anInt472;
         private static int[] cullingClusterCounts;
 	private static CullingCluster[][] aCullingClusters;
-	private static int anInt475;
+       private static int cullingClusterBufferCount;
 	private static final CullingCluster[] cullingClusterBuffer = new CullingCluster[500];
 	private static NodeList aClass19_477 = new NodeList();
 	private static final int[] anIntArray478 = {19, 55, 38, 155, 255, 110, 137, 205, 76};
@@ -2101,17 +2101,17 @@ final class WorldController {
 	private static final int[] anIntArray485 = {41, 39248, 41, 4643, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 43086, 41, 41, 41, 41, 41, 41, 41, 8602, 41, 28992, 41, 41, 41, 41, 41, 5056, 41, 41, 41, 7079, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 3131, 41, 41, 41};
 	private final int[] vertexVisitA;
 	private final int[] vertexVisitB;
-	private int anInt488;
+	private int mergeCycleId;
 	private final int[][] anIntArrayArray489 = {new int[16], {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1}, {1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1}, {0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1}, {1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1}};
 	private final int[][] anIntArrayArray490 = {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}, {12, 8, 4, 0, 13, 9, 5, 1, 14, 10, 6, 2, 15, 11, 7, 3}, {15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0}, {3, 7, 11, 15, 2, 6, 10, 14, 1, 5, 9, 13, 0, 4, 8, 12}};
 	private static boolean[][][][] aBooleanArrayArrayArrayArray491 = new boolean[8][32][256][256];
 	private static boolean[][] aBooleanArrayArray492;
-	private static int anInt493;
-	private static int anInt494;
-	private static int anInt495;
-	private static int anInt496;
-	private static int anInt497;
-	private static int anInt498;
+	private static int halfViewportWidth;
+	private static int halfViewportHeight;
+	private static int viewportMinX;
+	private static int viewportMinY;
+	private static int viewportMaxX;
+	private static int viewportMaxY;
 
 	static {
 		anInt472 = 4;
