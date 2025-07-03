@@ -8455,7 +8455,7 @@ public class Game extends RSApplet {
                                                 model = component.prepareModel(animation.anIntArray354[component.anInt246], animation.anIntArray353[component.anInt246], flag2);
 					}
                                         if (model != null) {
-                                                model.method482(component.modelRotation2, 0, component.modelRotation1, 0, i5, l5);
+                                                model.transformVertices(component.modelRotation2, 0, component.modelRotation1, 0, i5, l5);
                                         }
 					Texture.textureInt1 = k3;
 					Texture.textureInt2 = j4;

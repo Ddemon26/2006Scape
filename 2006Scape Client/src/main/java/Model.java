@@ -870,9 +870,9 @@ public final class Model extends Animable {
 			return;
 		}
                 FrameBase class18 = class36.frameBase;
-		anInt1681 = 0;
-		anInt1682 = 0;
-		anInt1683 = 0;
+		transformX = 0;
+		transformY = 0;
+		transformZ = 0;
                 for (int k = 0; k < class36.transformationCount; k++) {
                         int l = class36.transformationIndices[k];
                         transformVertices(class18.transformationType[l], class18.transformationList[l], class36.transformX[k], class36.transformY[k], class36.transformZ[k]);
@@ -898,9 +898,9 @@ public final class Model extends Animable {
 			return;
 		}
                 FrameBase class18 = class36.frameBase;
-		anInt1681 = 0;
-		anInt1682 = 0;
-		anInt1683 = 0;
+		transformX = 0;
+		transformY = 0;
+		transformZ = 0;
 		int l = 0;
 		int i1 = ai[l++];
                 for (int j1 = 0; j1 < class36.transformationCount; j1++) {
@@ -913,9 +913,9 @@ public final class Model extends Animable {
 			}
 		}
 
-		anInt1681 = 0;
-		anInt1682 = 0;
-		anInt1683 = 0;
+		transformX = 0;
+		transformY = 0;
+		transformZ = 0;
 		l = 0;
 		i1 = ai[l++];
                 for (int l1 = 0; l1 < class36_1.transformationCount; l1++) {
@@ -934,17 +934,17 @@ public final class Model extends Animable {
 		int i1 = ai.length;
 		if (i == 0) {
 			int j1 = 0;
-			anInt1681 = 0;
-			anInt1682 = 0;
-			anInt1683 = 0;
+			transformX = 0;
+			transformY = 0;
+			transformZ = 0;
 			for (int k2 = 0; k2 < i1; k2++) {
 				int l3 = ai[k2];
 				if (l3 < vertexGroups.length) {
 					int ai5[] = vertexGroups[l3];
 					for (int j6 : ai5) {
-						anInt1681 += vertexX[j6];
-						anInt1682 += vertexY[j6];
-						anInt1683 += vertexZ[j6];
+						transformX += vertexX[j6];
+						transformY += vertexY[j6];
+						transformZ += vertexZ[j6];
 						j1++;
 					}
 
@@ -952,14 +952,14 @@ public final class Model extends Animable {
 			}
 
 			if (j1 > 0) {
-				anInt1681 = anInt1681 / j1 + j;
-				anInt1682 = anInt1682 / j1 + k;
-				anInt1683 = anInt1683 / j1 + l;
+				transformX = transformX / j1 + j;
+				transformY = transformY / j1 + k;
+				transformZ = transformZ / j1 + l;
 				return;
 			} else {
-				anInt1681 = j;
-				anInt1682 = k;
-				anInt1683 = l;
+				transformX = j;
+				transformY = k;
+				transformZ = l;
 				return;
 			}
 		}
@@ -987,9 +987,9 @@ public final class Model extends Animable {
 					int ai2[] = vertexGroups[i3];
 					for (int element : ai2) {
 						int k5 = element;
-						vertexX[k5] -= anInt1681;
-						vertexY[k5] -= anInt1682;
-						vertexZ[k5] -= anInt1683;
+						vertexX[k5] -= transformX;
+						vertexY[k5] -= transformY;
+						vertexZ[k5] -= transformZ;
 						int k6 = (j & 0xff) * 8;
 						int l6 = (k & 0xff) * 8;
 						int i7 = (l & 0xff) * 8;
@@ -1014,9 +1014,9 @@ public final class Model extends Animable {
 							vertexZ[k5] = vertexZ[k5] * k8 - vertexX[k5] * l7 >> 16;
 							vertexX[k5] = j9;
 						}
-						vertexX[k5] += anInt1681;
-						vertexY[k5] += anInt1682;
-						vertexZ[k5] += anInt1683;
+						vertexX[k5] += transformX;
+						vertexY[k5] += transformY;
+						vertexZ[k5] += transformZ;
 					}
 
 				}
@@ -1031,15 +1031,15 @@ public final class Model extends Animable {
 					int ai3[] = vertexGroups[j3];
 					for (int element : ai3) {
 						int l5 = element;
-						vertexX[l5] -= anInt1681;
-						vertexY[l5] -= anInt1682;
-						vertexZ[l5] -= anInt1683;
+						vertexX[l5] -= transformX;
+						vertexY[l5] -= transformY;
+						vertexZ[l5] -= transformZ;
 						vertexX[l5] = vertexX[l5] * j / 128;
 						vertexY[l5] = vertexY[l5] * k / 128;
 						vertexZ[l5] = vertexZ[l5] * l / 128;
-						vertexX[l5] += anInt1681;
-						vertexY[l5] += anInt1682;
-						vertexZ[l5] += anInt1683;
+						vertexX[l5] += transformX;
+						vertexY[l5] += transformY;
+						vertexZ[l5] += transformZ;
 					}
 
 				}
@@ -1185,7 +1185,7 @@ public final class Model extends Animable {
 				class33_2.magnitude++;
 			} else {
 				int l5 = i + (k * l4 + l * i5 + i1 * j5) / (k1 + k1 / 2);
-				anIntArray1634[i2] = method481(faceColor[i2], l5, anIntArray1637[i2]);
+                                anIntArray1634[i2] = calculateShadedColor(faceColor[i2], l5, anIntArray1637[i2]);
 			}
 		}
 
@@ -1219,25 +1219,25 @@ public final class Model extends Animable {
 				int i3 = faceColor[j1];
                                 VertexNormal class33 = super.vertexNormals[k1];
 				int k2 = i + (k * class33.x + l * class33.y + i1 * class33.z) / (j * class33.magnitude);
-				anIntArray1634[j1] = method481(i3, k2, 0);
+                                anIntArray1634[j1] = calculateShadedColor(i3, k2, 0);
                                 class33 = super.vertexNormals[i2];
-				k2 = i + (k * class33.x + l * class33.y + i1 * class33.z) / (j * class33.magnitude);
-				anIntArray1635[j1] = method481(i3, k2, 0);
+                                k2 = i + (k * class33.x + l * class33.y + i1 * class33.z) / (j * class33.magnitude);
+                                anIntArray1635[j1] = calculateShadedColor(i3, k2, 0);
                                 class33 = super.vertexNormals[j2];
-				k2 = i + (k * class33.x + l * class33.y + i1 * class33.z) / (j * class33.magnitude);
-				anIntArray1636[j1] = method481(i3, k2, 0);
+                                k2 = i + (k * class33.x + l * class33.y + i1 * class33.z) / (j * class33.magnitude);
+                                anIntArray1636[j1] = calculateShadedColor(i3, k2, 0);
 			} else if ((anIntArray1637[j1] & 1) == 0) {
 				int j3 = faceColor[j1];
 				int k3 = anIntArray1637[j1];
                                 VertexNormal class33_1 = super.vertexNormals[k1];
 				int l2 = i + (k * class33_1.x + l * class33_1.y + i1 * class33_1.z) / (j * class33_1.magnitude);
-				anIntArray1634[j1] = method481(j3, l2, k3);
+                                anIntArray1634[j1] = calculateShadedColor(j3, l2, k3);
                                 class33_1 = super.vertexNormals[i2];
 				l2 = i + (k * class33_1.x + l * class33_1.y + i1 * class33_1.z) / (j * class33_1.magnitude);
-				anIntArray1635[j1] = method481(j3, l2, k3);
+                                anIntArray1635[j1] = calculateShadedColor(j3, l2, k3);
                                 class33_1 = super.vertexNormals[j2];
 				l2 = i + (k * class33_1.x + l * class33_1.y + i1 * class33_1.z) / (j * class33_1.magnitude);
-				anIntArray1636[j1] = method481(j3, l2, k3);
+                                anIntArray1636[j1] = calculateShadedColor(j3, l2, k3);
 			}
 		}
 
@@ -1256,7 +1256,7 @@ public final class Model extends Animable {
 		faceColor = null;
 	}
 
-	private static int method481(int i, int j, int k) {
+        private static int calculateShadedColor(int i, int j, int k) {
 		if ((k & 2) == 2) {
 			if (j < 0) {
 				j = 0;
@@ -1275,7 +1275,7 @@ public final class Model extends Animable {
 		return (i & 0xff80) + j;
 	}
 
-	public void method482(int j, int k, int l, int i1, int j1, int k1) {
+        public void transformVertices(int j, int k, int l, int i1, int j1, int k1) {
 		int i = 0; // was a parameter
 		int l1 = Texture.textureInt1;
 		int i2 = Texture.textureInt2;
@@ -1323,10 +1323,10 @@ public final class Model extends Animable {
 			}
 		}
 
-		try {
-			method483(false, false, 0);
-		} catch (Exception _ex) {
-		}
+                try {
+                        processVisibility(false, false, 0);
+                } catch (Exception _ex) {
+                }
 	}
 
 	@Override
@@ -1437,13 +1437,13 @@ public final class Model extends Animable {
 			}
 		}
 
-		try {
-			method483(flag, flag1, i2);
-		} catch (Exception _ex) {
-		}
+                try {
+                        processVisibility(flag, flag1, i2);
+                } catch (Exception _ex) {
+                }
 	}
 
-	private void method483(boolean flag, boolean flag1, int i) {
+        private void processVisibility(boolean flag, boolean flag1, int i) {
 		for (int j = 0; j < diagonal3D; j++) {
 			vertexQueue[j] = 0;
 		}
@@ -1461,7 +1461,7 @@ public final class Model extends Animable {
 					int j5 = (projectedX[l] + projectedX[k1] + projectedX[j2]) / 3 + diagonal2D;
 					vertexGroups2D[j5][vertexQueue[j5]++] = k;
 				} else {
-					if (flag1 && method486(anInt1685, anInt1686, projectedVertexY[l], projectedVertexY[k1], projectedVertexY[j2], i3, l3, k4)) {
+                                        if (flag1 && isTriangleVisible(anInt1685, anInt1686, projectedVertexY[l], projectedVertexY[k1], projectedVertexY[j2], i3, l3, k4)) {
 						anIntArray1688[anInt1687++] = i;
 						flag1 = false;
 					}
@@ -1481,7 +1481,7 @@ public final class Model extends Animable {
 				if (l1 > 0) {
 					int ai[] = vertexGroups2D[i1];
 					for (int j3 = 0; j3 < l1; j3++) {
-						method484(ai[j3]);
+                                                drawFace(ai[j3]);
 					}
 
 				}
@@ -1545,7 +1545,7 @@ public final class Model extends Animable {
 		}
 		for (int l6 = 0; l6 < 10; l6++) {
 			while (l6 == 0 && i5 > l2) {
-				method484(ai2[i6++]);
+				drawFace(ai2[i6++]);
 				if (i6 == k6 && ai2 != faceLists[11]) {
 					i6 = 0;
 					k6 = cameraSine[11];
@@ -1559,7 +1559,7 @@ public final class Model extends Animable {
 				}
 			}
 			while (l6 == 3 && i5 > k3) {
-				method484(ai2[i6++]);
+				drawFace(ai2[i6++]);
 				if (i6 == k6 && ai2 != faceLists[11]) {
 					i6 = 0;
 					k6 = cameraSine[11];
@@ -1573,7 +1573,7 @@ public final class Model extends Animable {
 				}
 			}
 			while (l6 == 5 && i5 > j4) {
-				method484(ai2[i6++]);
+				drawFace(ai2[i6++]);
 				if (i6 == k6 && ai2 != faceLists[11]) {
 					i6 = 0;
 					k6 = cameraSine[11];
@@ -1589,13 +1589,13 @@ public final class Model extends Animable {
 			int i7 = cameraSine[l6];
 			int ai4[] = faceLists[l6];
 			for (int j7 = 0; j7 < i7; j7++) {
-				method484(ai4[j7]);
+				drawFace(ai4[j7]);
 			}
 
 		}
 
 		while (i5 != -1000) {
-			method484(ai2[i6++]);
+			drawFace(ai2[i6++]);
 			if (i6 == k6 && ai2 != faceLists[11]) {
 				i6 = 0;
 				ai2 = faceLists[11];
@@ -1610,9 +1610,9 @@ public final class Model extends Animable {
 		}
 	}
 
-	private void method484(int i) {
+	private void drawFace(int i) {
 		if (visibilityMap2[i]) {
-			method485(i);
+			drawClippedFace(i);
 			return;
 		}
 		int j = faceA[i];
@@ -1655,7 +1655,7 @@ public final class Model extends Animable {
 		}
 	}
 
-	private void method485(int i) {
+	private void drawClippedFace(int i) {
 		int j = Texture.textureInt1;
 		int k = Texture.textureInt2;
 		int l = 0;
@@ -1806,7 +1806,7 @@ public final class Model extends Animable {
 		}
 	}
 
-	private boolean method486(int i, int j, int k, int l, int i1, int j1, int k1, int l1) {
+        private boolean isTriangleVisible(int i, int j, int k, int l, int i1, int j1, int k1, int l1) {
 		if (j < k && j < l && j < i1) {
 			return false;
 		}
@@ -1876,9 +1876,9 @@ public final class Model extends Animable {
 	private static final int[] SINE = new int[10];
 	private static final int[] COSINE = new int[10];
 	private static final int[] HYPOT = new int[10];
-	private static int anInt1681;
-	private static int anInt1682;
-	private static int anInt1683;
+	private static int transformX;
+	private static int transformY;
+	private static int transformZ;
 	public static boolean withinViewport;
 	public static int anInt1685;
 	public static int anInt1686;
