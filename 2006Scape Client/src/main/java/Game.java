@@ -558,7 +558,7 @@ public class Game extends RSApplet {
 					k -= 17;
 					j1 -= 357;
 				}
-				if (k < menuOffsetX - 10 || k > menuOffsetX + menuWidth + 10 || j1 < menuOffsetY - 10 || j1 > menuOffsetY + anInt952 + 10) {
+				if (k < menuOffsetX - 10 || k > menuOffsetX + menuWidth + 10 || j1 < menuOffsetY - 10 || j1 > menuOffsetY + menuHeight + 10) {
 					menuOpen = false;
 					if (menuScreenArea == 1) {
 						needDrawTabArea = true;
@@ -614,12 +614,12 @@ public class Game extends RSApplet {
 					RSInterface class9 = RSInterface.interfaceCache[j2];
 					if (class9.aBoolean259 || class9.aBoolean235) {
 						aBoolean1242 = false;
-						anInt989 = 0;
-						anInt1084 = j2;
-						anInt1085 = l1;
+						dragCounter = 0;
+						dragInterfaceId = j2;
+						draggedSlot = l1;
 						activeInterfaceType = 2;
-						anInt1087 = super.saveClickX;
-						anInt1088 = super.saveClickY;
+						dragStartX = super.saveClickX;
+						dragStartY = super.saveClickY;
 						if (RSInterface.interfaceCache[j2].parentID == openInterfaceID) {
 							activeInterfaceType = 1;
 						}
@@ -2046,7 +2046,7 @@ public class Game extends RSApplet {
 		int xPos = menuOffsetX;
 		int yPos = menuOffsetY;
 		int menuW = menuWidth;
-		int menuH = anInt952;
+		int menuH = menuHeight;
 		int fill = 0x5d5447;
 
 		DrawingArea.fillArea(menuH, yPos, fill, menuW, xPos);
@@ -3141,8 +3141,8 @@ public class Game extends RSApplet {
 			}
 		}
 		if (activeInterfaceType != 0) {
-			anInt989++;
-			if (super.mouseX > anInt1087 + 5 || super.mouseX < anInt1087 - 5 || super.mouseY > anInt1088 + 5 || super.mouseY < anInt1088 - 5) {
+			dragCounter++;
+			if (super.mouseX > dragStartX + 5 || super.mouseX < dragStartX - 5 || super.mouseY > dragStartY + 5 || super.mouseY < dragStartY - 5) {
 				aBoolean1242 = true;
 			}
 			if (super.clickMode2 == 0) {
@@ -3153,11 +3153,11 @@ public class Game extends RSApplet {
 					inputTaken = true;
 				}
 				activeInterfaceType = 0;
-				if (aBoolean1242 && anInt989 >= 5) {
+				if (aBoolean1242 && dragCounter >= 5) {
 					lastActiveInvInterface = -1;
 					processRightClick();
-					if (lastActiveInvInterface == anInt1084 && mouseInvInterfaceIndex != anInt1085) {
-						RSInterface class9 = RSInterface.interfaceCache[anInt1084];
+					if (lastActiveInvInterface == dragInterfaceId && mouseInvInterfaceIndex != draggedSlot) {
+						RSInterface class9 = RSInterface.interfaceCache[dragInterfaceId];
 						int j1 = 0;
 						if (anInt913 == 1 && class9.anInt214 == 206) {
 							j1 = 1;
@@ -3166,14 +3166,14 @@ public class Game extends RSApplet {
 							j1 = 0;
 						}
 						if (class9.aBoolean235) {
-							int l2 = anInt1085;
+							int l2 = draggedSlot;
 							int l3 = mouseInvInterfaceIndex;
 							class9.inv[l3] = class9.inv[l2];
 							class9.invStackSizes[l3] = class9.invStackSizes[l2];
 							class9.inv[l2] = -1;
 							class9.invStackSizes[l2] = 0;
 						} else if (j1 == 1) {
-							int i3 = anInt1085;
+							int i3 = draggedSlot;
 							for (int i4 = mouseInvInterfaceIndex; i3 != i4;) {
 								if (i3 > i4) {
 									class9.swapInventoryItems(i3, i3 - 1);
@@ -3185,12 +3185,12 @@ public class Game extends RSApplet {
 							}
 
 						} else {
-							class9.swapInventoryItems(anInt1085, mouseInvInterfaceIndex);
+							class9.swapInventoryItems(draggedSlot, mouseInvInterfaceIndex);
 						}
 						stream.createFrame(214);
-						stream.writeShortLEA(anInt1084);
+						stream.writeShortLEA(dragInterfaceId);
                                                 stream.writeByteNeg(j1);
-						stream.writeShortLEA(anInt1085);
+						stream.writeShortLEA(draggedSlot);
 						stream.writeShortLEDup(mouseInvInterfaceIndex);
 					}
 				} else if ((anInt1253 == 1 || menuHasAddFriend(menuActionRow - 1)) && menuActionRow > 2) {
@@ -3245,9 +3245,9 @@ public class Game extends RSApplet {
 			super.idleTime -= 500;
 			stream.createFrame(202);
 		}*/
-		anInt988++;
-		if (anInt988 > 500) {
-			anInt988 = 0;
+		idleCycleCounter++;
+		if (idleCycleCounter > 500) {
+			idleCycleCounter = 0;
 			int l1 = (int) (Math.random() * 8D);
 			if ((l1 & 1) == 1) {
 				anInt1278 += anInt1279;
@@ -8236,23 +8236,23 @@ public class Game extends RSApplet {
 								int k6 = 0;
 								int j7 = 0;
 								int j9 = component.inv[i3] - 1;
-								if (k5 > DrawingArea.topX - 32 && k5 < DrawingArea.bottomX && j6 > DrawingArea.topY - 32 && j6 < DrawingArea.bottomY || activeInterfaceType != 0 && anInt1085 == i3) {
+								if (k5 > DrawingArea.topX - 32 && k5 < DrawingArea.bottomX && j6 > DrawingArea.topY - 32 && j6 < DrawingArea.bottomY || activeInterfaceType != 0 && draggedSlot == i3) {
 									int l9 = 0;
 									if (itemSelected == 1 && selectedItemSlot == i3 && selectedItemInterfaceId == component.id) {
 										l9 = 0xffffff;
 									}
 									Sprite class30_sub2_sub1_sub1_2 = ItemDef.getSprite(j9, component.invStackSizes[i3], l9);
 									if (class30_sub2_sub1_sub1_2 != null) {
-										if (activeInterfaceType != 0 && anInt1085 == i3 && anInt1084 == component.id) {
-											k6 = super.mouseX - anInt1087;
-											j7 = super.mouseY - anInt1088;
+										if (activeInterfaceType != 0 && draggedSlot == i3 && dragInterfaceId == component.id) {
+											k6 = super.mouseX - dragStartX;
+											j7 = super.mouseY - dragStartY;
 											if (k6 < 5 && k6 > -5) {
 												k6 = 0;
 											}
 											if (j7 < 5 && j7 > -5) {
 												j7 = 0;
 											}
-											if (anInt989 < 5) {
+											if (dragCounter < 5) {
 												k6 = 0;
 												j7 = 0;
 											}
@@ -8267,7 +8267,7 @@ public class Game extends RSApplet {
 													i10 = class9.scrollPosition;
 												}
 												class9.scrollPosition -= i10;
-												anInt1088 += i10;
+												dragStartY += i10;
 											}
 											if (j6 + j7 + 32 > DrawingArea.bottomY && class9.scrollPosition < class9.scrollMax - class9.height) {
 												int j10 = anInt945 * (j6 + j7 + 32 - DrawingArea.bottomY) / 3;
@@ -8278,7 +8278,7 @@ public class Game extends RSApplet {
 													j10 = class9.scrollMax - class9.height - class9.scrollPosition;
 												}
 												class9.scrollPosition += j10;
-												anInt1088 -= j10;
+												dragStartY -= j10;
 											}
 										} else if (atInventoryInterfaceType != 0 && atInventoryIndex == i3 && atInventoryInterface == component.id) {
 											// Using item? wear/unequip etc
@@ -9032,7 +9032,7 @@ public class Game extends RSApplet {
 			menuOffsetX = i1;
 			menuOffsetY = l1;
 			menuWidth = i;
-			anInt952 = 15 * menuActionRow + 22;
+			menuHeight = 15 * menuActionRow + 22;
 		}
 		if (super.saveClickX > 553 && super.saveClickY > 205 && super.saveClickX < 743 && super.saveClickY < 466) {
 			int j1 = super.saveClickX - 553 - i / 2;
@@ -9052,7 +9052,7 @@ public class Game extends RSApplet {
 			menuOffsetX = j1;
 			menuOffsetY = i2;
 			menuWidth = i;
-			anInt952 = 15 * menuActionRow + 22;
+			menuHeight = 15 * menuActionRow + 22;
 		}
 		if (super.saveClickX > 17 && super.saveClickY > 357 && super.saveClickX < 496 && super.saveClickY < 453) {
 			int k1 = super.saveClickX - 17 - i / 2;
@@ -9072,7 +9072,7 @@ public class Game extends RSApplet {
 			menuOffsetX = k1;
 			menuOffsetY = j2;
 			menuWidth = i;
-			anInt952 = 15 * menuActionRow + 22;
+			menuHeight = 15 * menuActionRow + 22;
 		}
 	}
 
@@ -12285,7 +12285,7 @@ public class Game extends RSApplet {
 	public int menuOffsetX;
 	public int menuOffsetY;
 	public int menuWidth;
-	public int anInt952;
+	public int menuHeight;
 	public long aLong953;
 	public boolean aBoolean954;
 	public long[] friendsListAsLongs;
@@ -12318,8 +12318,8 @@ public class Game extends RSApplet {
 	public int anInt985;
 	public static int anInt986;
 	public Sprite[] hitMarks;
-	public int anInt988;
-	public int anInt989;
+	public int idleCycleCounter;
+	public int dragCounter;
 	public final int[] anIntArray990;
 	public static boolean aBoolean993;
 	public int anInt995;
@@ -12404,11 +12404,11 @@ public class Game extends RSApplet {
 	public boolean aBoolean1080;
 	public String[] friendsList;
 	public Stream inStream;
-	public int anInt1084;
-	public int anInt1085;
+	public int dragInterfaceId;
+	public int draggedSlot;
 	public int activeInterfaceType;
-        public int anInt1087;
-        public int anInt1088;
+        public int dragStartX;
+        public int dragStartY;
         public int chatScrollPosition;
 	public final int[] expectedCRCs;
 	public int[] menuActionCmd2;
