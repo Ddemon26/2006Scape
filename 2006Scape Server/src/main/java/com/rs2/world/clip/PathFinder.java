@@ -1,5 +1,6 @@
 package com.rs2.world.clip;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,9 +51,9 @@ public class PathFinder {
 
         private List<int[]> computeFullPath(int startX, int startY, int endX, int endY, int height) {
                 LinkGraph graph = new LinkGraph(
-                                Path.of(System.getProperty("user.dir"), "data", "doors.json"),
-                                Path.of(System.getProperty("user.dir"), "data", "teleports.json"),
-                                Path.of(System.getProperty("user.dir"), "data", "boats.json"));
+						Paths.get(System.getProperty("user.dir"), "data", "doors.json"),
+						Paths.get(System.getProperty("user.dir"), "data", "teleports.json"),
+						Paths.get(System.getProperty("user.dir"), "data", "boats.json"));
                 LinkGraph.Node start = new LinkGraph.Node(startX, startY, height);
                 LinkGraph.Node goal = new LinkGraph.Node(endX, endY, height);
                 List<LinkGraph.Node> nodes = graph.shortestPath(start, goal);
