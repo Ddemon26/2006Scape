@@ -160,8 +160,8 @@ public class Game extends RSApplet {
        static final void setMidiVolume(int i) {
             if (midiPlayer != null) {
 			if (midiFadeCycles == 0) {
-				if (anInt478 >= 0) {
-					anInt478 = i;
+				if (currentMidiVolume >= 0) {
+					currentMidiVolume = i;
                                     midiPlayer.adjustVolume(i, 0);
 				}
 			} else if (aByteArray347 != null)
@@ -196,9 +196,9 @@ public class Game extends RSApplet {
 			nextSong = music;
                         onDemandFetcher.queueRequest(2, nextSong);
 			musicVolume2 = volume;
-			anInt139 = -1;
-			aBoolean995 = true;
-			anInt116 = i_30_;
+			queuedSongId = -1;
+			autoPlaySong = true;
+			nextSongDelay = i_30_;
 		}
 	}
 	
@@ -207,9 +207,9 @@ public class Game extends RSApplet {
 			nextSong = music;
                         onDemandFetcher.queueRequest(2, nextSong);
 			musicVolume2 = i;
-			anInt139 = -1;
-			aBoolean995 = true;
-		    anInt116 = -1;
+			queuedSongId = -1;
+			autoPlaySong = true;
+		    nextSongDelay = -1;
 		}
 	}
 	
@@ -226,12 +226,12 @@ public class Game extends RSApplet {
 			if (fetchMusic) {
 				byte[] is = musicData;
 				if (is != null) {
-                                       if (anInt116 >= 0)
-                                               initiateMidiFade(aBoolean995, anInt116, musicVolume2, is);
-                                       else if (anInt139 >= 0)
-                                               queueMidiTrack(anInt139, -1, aBoolean995, is, musicVolume2);
+                                       if (nextSongDelay >= 0)
+                                               initiateMidiFade(autoPlaySong, nextSongDelay, musicVolume2, is);
+                                       else if (queuedSongId >= 0)
+                                               queueMidiTrack(queuedSongId, -1, autoPlaySong, is, musicVolume2);
 					else
-                                               playMidiTrack(musicVolume2, is, aBoolean995);
+                                               playMidiTrack(musicVolume2, is, autoPlaySong);
 					fetchMusic = false;
 				}
 			}
@@ -245,19 +245,19 @@ public class Game extends RSApplet {
 	
        static final void playMidiTrack(int i_2_, byte[] is, boolean bool) {
             if (midiPlayer != null) {
-			if (anInt478 >= 0) {
+			if (currentMidiVolume >= 0) {
                     midiPlayer.stopMidi();
-				anInt478 = -1;
+				currentMidiVolume = -1;
 				aByteArray347 = null;
 				midiFadeCycles = 20;
-				anInt155 = 0;
+				fadeVolume = 0;
 			}
 		    if (is != null) {
 		    	if (midiFadeCycles > 0) {
                             midiPlayer.setVolume(i_2_);
 		    		midiFadeCycles = 0;
 		    	}
-		    	anInt478 = i_2_;
+		    	currentMidiVolume = i_2_;
                     midiPlayer.playMidi(i_2_, is, 0, bool);
 		    }
 		}
@@ -265,23 +265,23 @@ public class Game extends RSApplet {
 	
        static final void queueMidiTrack(int i, int i_29_, boolean bool, byte[] is, int i_30_) {
             if (midiPlayer != null) {
-			if (i_29_ >= (anInt478 ^ 0xffffffff)) {
+			if (i_29_ >= (currentMidiVolume ^ 0xffffffff)) {
 				i -= 20;
 				if (i < 1)
 					i = 1;
 				midiFadeCycles = i;
-				if (anInt478 == 0)
-					anInt2200 = 0;
+				if (currentMidiVolume == 0)
+					fadeStep = 0;
 				else {
-                                       int i_31_ = calculateLogVolume(anInt478);
-					i_31_ -= anInt155;
-					anInt2200 = ((anInt2200 - 1 + (i_31_ + 3600)) / anInt2200);
+                                       int i_31_ = calculateLogVolume(currentMidiVolume);
+					i_31_ -= fadeVolume;
+					fadeStep = ((fadeStep - 1 + (i_31_ + 3600)) / fadeStep);
 				}
-				aBoolean475 = bool;
+				midiLooping = bool;
 				aByteArray347 = is;
 				queuedMidiVolume = i_30_;
 			} else if (midiFadeCycles != 0) {
-				aBoolean475 = bool;
+				midiLooping = bool;
 				aByteArray347 = is;
 				queuedMidiVolume = i_30_;
                        } else
@@ -291,11 +291,11 @@ public class Game extends RSApplet {
 	
        static final void initiateMidiFade(boolean bool, int i, int i_2_, byte[] is) {
             if (midiPlayer != null) {
-			if (anInt478 >= 0) {
-				anInt2200 = i;
-				if (anInt478 != 0) {
-                                       int i_4_ = calculateLogVolume(anInt478);
-					i_4_ -= anInt155;
+			if (currentMidiVolume >= 0) {
+				fadeStep = i;
+				if (currentMidiVolume != 0) {
+                                       int i_4_ = calculateLogVolume(currentMidiVolume);
+					i_4_ -= fadeVolume;
 					midiFadeCycles = (i_4_ + 3600) / i;
 					if (midiFadeCycles < 1)
 						midiFadeCycles = 1;
@@ -303,12 +303,12 @@ public class Game extends RSApplet {
 					midiFadeCycles = 1;
 				aByteArray347 = is;
 				queuedMidiVolume = i_2_;
-				aBoolean475 = bool;
+				midiLooping = bool;
                        } else if (midiFadeCycles == 0)
                                playMidiTrack(i_2_, is, bool);
 			else {
 				queuedMidiVolume = i_2_;
-				aBoolean475 = bool;
+				midiLooping = bool;
 				aByteArray347 = is;
 			}
 		}
@@ -316,7 +316,7 @@ public class Game extends RSApplet {
 	
        static final void updateMidiFade(int i) {
             if (midiPlayer != null) {
-			if (anInt478 < i) {
+			if (currentMidiVolume < i) {
 				if (midiFadeCycles > 0) {
 					midiFadeCycles--;
 					if (midiFadeCycles == 0) {
@@ -324,21 +324,21 @@ public class Game extends RSApplet {
                                                         midiPlayer.setVolume(256);
                                                 else {
                                                         midiPlayer.setVolume(queuedMidiVolume);
-                                                        anInt478 = queuedMidiVolume;
-                                                        midiPlayer.playMidi(queuedMidiVolume, aByteArray347, 0, aBoolean475);
+                                                        currentMidiVolume = queuedMidiVolume;
+                                                        midiPlayer.playMidi(queuedMidiVolume, aByteArray347, 0, midiLooping);
 							aByteArray347 = null;
 						}
-						anInt155 = 0;
+						fadeVolume = 0;
 					}
 				}
 			} else if (midiFadeCycles > 0) {
-				anInt155 += anInt2200;
-                                midiPlayer.adjustVolume(anInt478, anInt155);
+				fadeVolume += fadeStep;
+                                midiPlayer.adjustVolume(currentMidiVolume, fadeVolume);
 				midiFadeCycles--;
 				if (midiFadeCycles == 0) {
                                         midiPlayer.stopMidi();
 					midiFadeCycles = 20;
-					anInt478 = -1;
+					currentMidiVolume = -1;
 				}
 			}
                         midiPlayer.poll(i - 122);
@@ -1290,7 +1290,7 @@ public class Game extends RSApplet {
 	public void updateNPCs(Stream stream, int i) {
 		anInt839 = 0;
 		anInt893 = 0;
-		method139(stream);
+               updateNpcList(stream);
                addLocalNPCs(i, stream);
                processNpcUpdateMasks(stream);
 		for (int k = 0; k < anInt839; k++) {
@@ -7917,9 +7917,9 @@ public class Game extends RSApplet {
 				aRSImageProducer_1164.drawGraphics(4, super.graphics, 550);
 			}
 		}
-		if (loadingStage == 2) {
-			method146();
-		}
+                if (loadingStage == 2) {
+                        renderGameView();
+                }
 		if (menuOpen && menuScreenArea == 1) {
 			needDrawTabArea = true;
 		}
@@ -8979,7 +8979,7 @@ public class Game extends RSApplet {
 				}
 				if (class30_sub1.delay == 0) {
 					if (class30_sub1.oldId < 0 || ObjectManager.isObjectVisible(class30_sub1.oldId, class30_sub1.oldOrientation)) {
-						method142(class30_sub1.y, class30_sub1.plane, class30_sub1.oldType, class30_sub1.oldOrientation, class30_sub1.x, class30_sub1.category, class30_sub1.oldId);
+                                                updateSceneObjects(class30_sub1.y, class30_sub1.plane, class30_sub1.oldType, class30_sub1.oldOrientation, class30_sub1.x, class30_sub1.category, class30_sub1.oldId);
 						class30_sub1.unlink();
 					}
 				} else {
@@ -8987,7 +8987,7 @@ public class Game extends RSApplet {
 						class30_sub1.spawnDelay--;
 					}
 					if (class30_sub1.spawnDelay == 0 && class30_sub1.x >= 1 && class30_sub1.y >= 1 && class30_sub1.x <= 102 && class30_sub1.y <= 102 && (class30_sub1.id < 0 || ObjectManager.isObjectVisible(class30_sub1.id, class30_sub1.type))) {
-						method142(class30_sub1.y, class30_sub1.plane, class30_sub1.orientation, class30_sub1.type, class30_sub1.x, class30_sub1.category, class30_sub1.id);
+                                                updateSceneObjects(class30_sub1.y, class30_sub1.plane, class30_sub1.orientation, class30_sub1.type, class30_sub1.x, class30_sub1.category, class30_sub1.id);
 						class30_sub1.spawnDelay = -1;
 						if (class30_sub1.id == class30_sub1.oldId && class30_sub1.oldId == -1) {
 							class30_sub1.unlink();
@@ -9076,7 +9076,7 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method117(Stream stream) {
+       public void updateSelfMovement(Stream stream) {
 		stream.initBitAccess();
 		int j = stream.readBits(1);
 		if (j == 0) {
@@ -9204,7 +9204,7 @@ public class Game extends RSApplet {
 		return flag1;
 	}
 
-	public int method120() {
+       public int determineCameraPlane() {
 		int j = 3;
 		if (yCameraCurve < 310) {
 			int k = Math.max(0, Math.min(103, xCameraPos >> 7));
@@ -9284,7 +9284,7 @@ public class Game extends RSApplet {
 		return j;
 	}
 
-	public int method121() {
+       public int getCurrentPlane() {
 		// Hide other planes when using fixed camera
 		return plane;
 		// int j = getTileHeight(plane, yCameraPos, xCameraPos);
@@ -9688,7 +9688,7 @@ public class Game extends RSApplet {
 
 	}
 
-	public void method130(int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2) {
+       public void queuePendingSpawn(int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2) {
 		PendingSpawn class30_sub1 = null;
 		for (PendingSpawn class30_sub1_1 = (PendingSpawn) aClass19_1179.reverseGetFirst(); class30_sub1_1 != null; class30_sub1_1 = (PendingSpawn) aClass19_1179.reverseGetNext()) {
 			if (class30_sub1_1.plane != l1 || class30_sub1_1.x != i2 || class30_sub1_1.y != j1 || class30_sub1_1.category != i1) {
@@ -9846,7 +9846,7 @@ public class Game extends RSApplet {
 		aRSImageProducer_1111.drawGraphics(0, super.graphics, 637);
 	}
 
-	public void method134(Stream stream) {
+       public void updateOtherPlayers(Stream stream) {
 		int j = stream.readBits(8);
 		if (j < playerCount) {
 			for (int k = j; k < playerCount; k++) {
@@ -10006,7 +10006,7 @@ public class Game extends RSApplet {
 		welcomeScreenRaised = true;
 	}
 
-	public void method137(Stream stream, int j) {
+       public void handleMapPackets(Stream stream, int j) {
 		if (j == 84) {
 			int k = stream.readUnsignedByte();
 			int j3 = anInt1268 + (k >> 4 & 7);
@@ -10168,7 +10168,7 @@ public class Game extends RSApplet {
 				int l22 = tileHeights[plane][k4][j7 + 1];
 				Model model = class46.getModel(j19, i20, i22, j22, k22, l22, -1);
 				if (model != null) {
-					method130(k17 + 1, -1, 0, l20, j7, 0, plane, k4, l14 + 1);
+					queuePendingSpawn(k17 + 1, -1, 0, l20, j7, 0, plane, k4, l14 + 1);
                                 player.animationStartCycle = l14 + loopCycle;
                                 player.animationEndCycle = k17 + loopCycle;
 					player.aModel_1714 = model;
@@ -10208,7 +10208,7 @@ public class Game extends RSApplet {
 			int l16 = anInt1269 + (j13 & 7);
 
 			if (k15 >= 0 && l16 >= 0 && k15 < 104 && l16 < 104) {
-				method130(-1, -1, j8, i11, l16, k5, plane, k15, 0);
+				queuePendingSpawn(-1, -1, j8, i11, l16, k5, plane, k15, 0);
 			}
 			return;
 		}
@@ -10223,7 +10223,7 @@ public class Game extends RSApplet {
 			int l17 = anIntArray1177[i15];
 			//System.out.println("id: " + j10 + " x:" + (this.baseX + anInt1268) + " y:" + (this.baseY + anInt1269));
 			if (l4 >= 0 && k7 >= 0 && l4 < 104 && k7 < 104)
-				method130(-1, j10, k16, l17, k7, i15, plane, l4, 0);
+				queuePendingSpawn(-1, j10, k16, l17, k7, i15, plane, l4, 0);
 			return;
 		}
 
@@ -10294,7 +10294,7 @@ public class Game extends RSApplet {
 		ObjectDef.lowMem = true;
 	}
 
-	public void method139(Stream stream) {
+       public void updateNpcList(Stream stream) {
 		stream.initBitAccess();
 		int k = stream.readBits(8);
 		if (k < npcCount) {
@@ -10469,7 +10469,7 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method142(int i, int j, int k, int l, int i1, int j1, int k1) {
+       public void updateSceneObjects(int i, int j, int k, int l, int i1, int j1, int k1) {
 		if (i1 >= 1 && i >= 1 && i1 <= 102 && i <= 102) {
 			if (lowMem && j != plane) {
 				return;
@@ -10533,8 +10533,8 @@ public class Game extends RSApplet {
 	public void updatePlayers(int i, Stream stream) {
 		anInt839 = 0;
 		anInt893 = 0;
-               method117(stream);
-               method134(stream);
+               updateSelfMovement(stream);
+               updateOtherPlayers(stream);
                addLocalPlayers(stream, i);
                processPlayerUpdateMasks(stream);
 		for (int k = 0; k < anInt839; k++) {
@@ -11064,7 +11064,7 @@ public class Game extends RSApplet {
 				anInt1268 = inStream.readUnsignedByteNeg();
 				while (inStream.currentOffset < pktSize) {
 					int k3 = inStream.readUnsignedByte();
-					method137(inStream, k3);
+                                        handleMapPackets(inStream, k3);
 				}
 				pktType = -1;
 				return true;
@@ -11776,7 +11776,7 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 105 || pktType == 84 || pktType == 147 || pktType == 215 || pktType == 4 || pktType == 117 || pktType == 156 || pktType == 44 || pktType == 160 || pktType == 101 || pktType == 151) {
-				method137(inStream, pktType);
+                                handleMapPackets(inStream, pktType);
 				pktType = -1;
 				return true;
 			}
@@ -11832,7 +11832,7 @@ public class Game extends RSApplet {
 
 	public static int zoom = 3;
 
-	public void method146() {
+        public void renderGameView() {
 		anInt1265++;
           addPlayersToScene(true);
                addNpcsToScene(true);
@@ -11854,9 +11854,9 @@ public class Game extends RSApplet {
 		}
 		int j;
 		if (!aBoolean1160) {
-			j = method120();
+               j = determineCameraPlane();
 		} else {
-			j = method121();
+               j = getCurrentPlane();
 		}
 		int l = xCameraPos;
 		int i1 = zCameraPos;
@@ -12602,15 +12602,15 @@ public class Game extends RSApplet {
         public static MidiPlayer midiPlayer;
 	public static boolean fetchMusic = false;
 	public static int musicVolume2;
-	public static int anInt478 = -1;
+	public static int currentMidiVolume = -1;
 	public static byte[] aByteArray347;
-	public static int anInt155 = 0;
-	public static int anInt2200 = 0;
+	public static int fadeVolume = 0;
+	public static int fadeStep = 0;
 	public static int queuedMidiVolume;
-	public static boolean aBoolean475;
-	public static int anInt116;
-	public static boolean aBoolean995;
-	public static int anInt139;
+	public static boolean midiLooping;
+	public static int nextSongDelay;
+	public static boolean autoPlaySong;
+	public static int queuedSongId;
 	public static int musicVolume = 0;
 	public int[] gameScreenOffsets;
 	public int anInt1170;
