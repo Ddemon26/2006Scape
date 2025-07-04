@@ -90,7 +90,7 @@ public class Constants {
     /**
      * The directory of the file system.
      */
-    public static final String FILE_SYSTEM_DIR = "./data/cache/";
+    public static final String FILE_SYSTEM_DIR = "./.jagex_cache_32/runescape/";
 
     public final static String SERVER_LOG_DIR = "./data/logs/";
 

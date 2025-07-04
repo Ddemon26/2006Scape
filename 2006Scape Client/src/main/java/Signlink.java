@@ -278,14 +278,14 @@ public final class Signlink implements Runnable {
 	public static Synthesizer synthesizer = null;
 
 	public static String findcachedir() {
-		String path = System.getProperty("user.home") + "/.2006Scape_file_system/";
-		File file = new File(path);
-		if (!file.exists()) {
-			if (!file.mkdirs()) {
-				return secondDir();
-			}
-		}
-		return path;
+                String path = "./.jagex_cache_32/runescape/";
+                File file = new File(path);
+                if (!file.exists()) {
+                        if (!file.mkdirs()) {
+                                return secondDir();
+                        }
+                }
+                return path;
 	}
 
 	public static String secondDir() {
