@@ -393,7 +393,7 @@ public class Game extends RSApplet {
 			for (int k = 0; k < 100; k++) {
 				if (chatMessages[k] != null) {
 					int l = chatTypes[k];
-					int i1 = 70 - j * 14 + anInt1089;
+					int i1 = 70 - j * 14 + chatScrollPosition;
 					String s1 = chatNames[k];
 					byte byte0 = 0;
 					if (s1 != null && s1.startsWith("@cr1@")) {
@@ -479,11 +479,11 @@ public class Game extends RSApplet {
 			}
 
 			DrawingArea.defaultDrawingAreaSize();
-			anInt1211 = j * 14 + 7;
-			if (anInt1211 < 78) {
-				anInt1211 = 78;
+			chatScrollHeight = j * 14 + 7;
+			if (chatScrollHeight < 78) {
+				chatScrollHeight = 78;
 			}
-			drawScrollThumb(77, anInt1211 - anInt1089 - 77, 0, 463, anInt1211);
+			drawScrollThumb(77, chatScrollHeight - chatScrollPosition - 77, 0, 463, chatScrollHeight);
 			String s;
 			if (myPlayer != null && myPlayer.name != null) {
 				s = myPlayer.name;
@@ -1135,7 +1135,7 @@ public class Game extends RSApplet {
 								if (class9_1.inv[k2] > 0) {
 									ItemDef itemDef = ItemDef.lookup(class9_1.inv[k2] - 1);
 									if (itemSelected == 1 && class9_1.isInventoryInterface) {
-										if (class9_1.id != anInt1284 || k2 != anInt1283) {
+										if (class9_1.id != selectedItemInterfaceId || k2 != selectedItemSlot) {
 											menuActionName[menuActionRow] = "Use " + selectedItemName + " with @lre@" + itemDef.name;
 											menuActionID[menuActionRow] = 870;
 											menuActionCmd1[menuActionRow] = itemDef.id;
@@ -3645,10 +3645,10 @@ public class Game extends RSApplet {
 				crossType = 2;
 				crossIndex = 0;
 				stream.createFrame(57);
-				stream.writeShortA(anInt1285);
+				stream.writeShortA(selectedItemId);
 				stream.writeShortA(i1);
-				stream.writeShortLEDup(anInt1283);
-				stream.writeShortA(anInt1284);
+				stream.writeShortLEDup(selectedItemSlot);
+				stream.writeShortA(selectedItemInterfaceId);
 			}
 		}
 		if (l == 234) {
@@ -3667,12 +3667,12 @@ public class Game extends RSApplet {
 		}
 		if (l == 62 && walkToObject(i1, k, j)) {
 			stream.createFrame(192);
-			stream.writeWord(anInt1284);
+			stream.writeWord(selectedItemInterfaceId);
 			stream.writeShortLEDup(i1 >> 14 & 0x7fff);
 			stream.writeShortLEA(k + baseY);
-			stream.writeShortLEDup(anInt1283);
+			stream.writeShortLEDup(selectedItemSlot);
 			stream.writeShortLEA(j + baseX);
-			stream.writeWord(anInt1285);
+			stream.writeWord(selectedItemId);
 		}
 		if (l == 511) {
 			boolean flag2 = doWalkTo(2, 0, 0, 0, myPlayer.smallY[0], 0, 0, k, myPlayer.smallX[0], false, j);
@@ -3684,11 +3684,11 @@ public class Game extends RSApplet {
 			crossType = 2;
 			crossIndex = 0;
 			stream.createFrame(25);
-			stream.writeShortLEDup(anInt1284);
-			stream.writeShortA(anInt1285);
+			stream.writeShortLEDup(selectedItemInterfaceId);
+			stream.writeShortA(selectedItemId);
 			stream.writeWord(i1);
 			stream.writeShortA(k + baseY);
-			stream.writeShortLEA(anInt1283);
+			stream.writeShortLEA(selectedItemSlot);
 			stream.writeWord(j + baseX);
 		}
 		if (l == 74) {
@@ -3890,10 +3890,10 @@ public class Game extends RSApplet {
 		if (l == 870) {
 			stream.createFrame(53);
 			stream.writeWord(j);
-			stream.writeShortA(anInt1283);
+			stream.writeShortA(selectedItemSlot);
 			stream.writeShortLEA(i1);
-			stream.writeWord(anInt1284);
-			stream.writeShortLEDup(anInt1285);
+			stream.writeWord(selectedItemInterfaceId);
+			stream.writeShortLEDup(selectedItemId);
 			stream.writeWord(k);
 			atInventoryLoopCycle = 0;
 			atInventoryInterface = k;
@@ -4285,10 +4285,10 @@ public class Game extends RSApplet {
 				crossType = 2;
 				crossIndex = 0;
 				stream.createFrame(14);
-				// stream.writeShortA(anInt1284);
+				// stream.writeShortA(selectedItemInterfaceId);
 				stream.writeWord(i1);
-				// stream.writeWord(anInt1285);
-				stream.writeShortLEDup(anInt1283);
+				// stream.writeWord(selectedItemId);
+				stream.writeShortLEDup(selectedItemSlot);
 			}
 		}
 		if (l == 639) {
@@ -4409,9 +4409,9 @@ public class Game extends RSApplet {
 				return;
 			}
 			itemSelected = 1;
-			anInt1283 = j;
-			anInt1284 = k;
-			anInt1285 = i1;
+			selectedItemSlot = j;
+			selectedItemInterfaceId = k;
+			selectedItemId = i1;
 			selectedItemName = ItemDef.lookup(i1).name;
 			spellSelected = 0;
 			needDrawTabArea = true;
@@ -5209,7 +5209,7 @@ public class Game extends RSApplet {
 				continue;
 			}
 			int j1 = chatTypes[i1];
-			int k1 = 70 - l * 14 + anInt1089 + 4;
+			int k1 = 70 - l * 14 + chatScrollPosition + 4;
 			if (k1 < -20) {
 				break;
 			}
@@ -6445,7 +6445,7 @@ public class Game extends RSApplet {
 				anIntArrayArray825[j3 + 1][k3 + 1] = l4;
 			}
 		}
-		anInt1264 = 0;
+		alternatePathFound = 0;
 		if (!flag1) {
 			if (flag) {
 				int i5 = 100;
@@ -6456,7 +6456,7 @@ public class Game extends RSApplet {
 								i5 = anIntArrayArray825[i6][l6];
 								j3 = i6;
 								k3 = l6;
-								anInt1264 = 1;
+								alternatePathFound = 1;
 								flag1 = true;
 							}
 						}
@@ -7437,7 +7437,7 @@ public class Game extends RSApplet {
 					stream.writeWordBigEndian(89);
 					stream.writeWord(myPlayer.x);
 					stream.writeWord(myPlayer.y);
-					stream.writeWordBigEndian(anInt1264);
+					stream.writeWordBigEndian(alternatePathFound);
 					stream.writeWordBigEndian(63);
 				}
 			}
@@ -7940,19 +7940,19 @@ public class Game extends RSApplet {
 			needDrawTabArea = false;
 		}
 		if (backDialogID == -1) {
-			aClass9_1059.scrollPosition = anInt1211 - anInt1089 - 77;
+			aClass9_1059.scrollPosition = chatScrollHeight - chatScrollPosition - 77;
 			if (super.mouseX > 448 && super.mouseX < 560 && super.mouseY > 332) {
-                               handleScrollbarInput(463, 77, super.mouseX - 17, super.mouseY - 357, aClass9_1059, 0, false, anInt1211);
+                               handleScrollbarInput(463, 77, super.mouseX - 17, super.mouseY - 357, aClass9_1059, 0, false, chatScrollHeight);
 			}
-			int i = anInt1211 - 77 - aClass9_1059.scrollPosition;
+			int i = chatScrollHeight - 77 - aClass9_1059.scrollPosition;
 			if (i < 0) {
 				i = 0;
 			}
-			if (i > anInt1211 - 77) {
-				i = anInt1211 - 77;
+			if (i > chatScrollHeight - 77) {
+				i = chatScrollHeight - 77;
 			}
-			if (anInt1089 != i) {
-				anInt1089 = i;
+			if (chatScrollPosition != i) {
+				chatScrollPosition = i;
 				inputTaken = true;
 			}
 		}
@@ -8238,7 +8238,7 @@ public class Game extends RSApplet {
 								int j9 = component.inv[i3] - 1;
 								if (k5 > DrawingArea.topX - 32 && k5 < DrawingArea.bottomX && j6 > DrawingArea.topY - 32 && j6 < DrawingArea.bottomY || activeInterfaceType != 0 && anInt1085 == i3) {
 									int l9 = 0;
-									if (itemSelected == 1 && anInt1283 == i3 && anInt1284 == component.id) {
+									if (itemSelected == 1 && selectedItemSlot == i3 && selectedItemInterfaceId == component.id) {
 										l9 = 0xffffff;
 									}
 									Sprite class30_sub2_sub1_sub1_2 = ItemDef.getSprite(j9, component.invStackSizes[i3], l9);
@@ -12140,7 +12140,7 @@ public class Game extends RSApplet {
 		anIntArray1203 = new int[5];
 		sound = new int[50];
 		anInt1210 = 2;
-		anInt1211 = 78;
+		chatScrollHeight = 78;
 		promptInput = "";
 		modIcons = new Background[2];
 		tabID = 3;
@@ -12407,9 +12407,9 @@ public class Game extends RSApplet {
 	public int anInt1084;
 	public int anInt1085;
 	public int activeInterfaceType;
-	public int anInt1087;
-	public int anInt1088;
-	public int anInt1089;
+        public int anInt1087;
+        public int anInt1088;
+        public int chatScrollPosition;
 	public final int[] expectedCRCs;
 	public int[] menuActionCmd2;
 	public int[] menuActionCmd3;
@@ -12520,8 +12520,8 @@ public class Game extends RSApplet {
 	public final int[] sound;
 	public int anInt1208;
 	public int minimapInt2;
-	public int anInt1210;
-	public int anInt1211;
+        public int anInt1210;
+        public int chatScrollHeight;
 	public String promptInput;
 	public int anInt1213;
         public int[][][] tileHeights;
@@ -12568,8 +12568,8 @@ public class Game extends RSApplet {
 	public int previousSong;
 	public int destX;
 	public int destY;
-	public Sprite aClass30_Sub2_Sub1_Sub1_1263;
-	public int anInt1264;
+        public Sprite aClass30_Sub2_Sub1_Sub1_1263;
+        public int alternatePathFound;
 	public int anInt1265;
 	public String loginMessage1;
 	public String loginMessage2;
@@ -12585,9 +12585,9 @@ public class Game extends RSApplet {
 	public int[] bigX;
 	public int[] bigY;
 	public int itemSelected;
-	public int anInt1283;
-	public int anInt1284;
-	public int anInt1285;
+        public int selectedItemSlot;
+        public int selectedItemInterfaceId;
+        public int selectedItemId;
 	public String selectedItemName;
 	public static int anInt1288;
 	public int anInt1289;
