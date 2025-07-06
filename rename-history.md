@@ -139,7 +139,14 @@ This document lists variable or identifier renames found in the commit history.
  - method58 -> queueSong
  - method56 -> playSong
  - method853 -> playMidiTrack
- - method899 -> queueMidiTrack
+- method899 -> queueMidiTrack
+
+ - anInt1104 -> systemUpdateTimer
+ - anInt1071 -> minimapIconCount
+ - anIntArray1072 -> minimapIconX
+ - anIntArray1073 -> minimapIconY
+ - aClass30_Sub2_Sub1_Sub1Array1140 -> minimapIconSprites
+ - aBoolean1233 -> chatSettingsUpdateNeeded
 
 ## RSApplet
  - TextDrawingArea -> clean
