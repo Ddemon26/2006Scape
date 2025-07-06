@@ -379,8 +379,8 @@ public class Game extends RSApplet {
 		} else if (inputDialogState == 2) {
 			chatTextDrawingArea.textCenter(0, "Enter name:", 40, 239);
 			chatTextDrawingArea.textCenter(128, amountOrNameInput + "*", 60, 239);
-		} else if (aString844 != null) {
-			chatTextDrawingArea.textCenter(0, aString844, 40, 239);
+		} else if (messagePrompt != null) {
+			chatTextDrawingArea.textCenter(0, messagePrompt, 40, 239);
 			chatTextDrawingArea.textCenter(128, "Click to continue", 60, 239);
 		} else if (backDialogID != -1) {
 			drawInterface(0, 0, RSInterface.interfaceCache[backDialogID], 0);//CHANGED THIS - andrew was 0, 0
@@ -650,7 +650,7 @@ public class Game extends RSApplet {
 
        public void constructMapRegion() {
 		try {
-			anInt985 = -1;
+			lastPlane = -1;
 			aClass19_1056.removeAll();
 			aClass19_1013.removeAll();
 			Texture.clearCache();
@@ -1062,9 +1062,9 @@ public class Game extends RSApplet {
 			j2 += class9_1.anInt265;
 			if ((class9_1.anInt230 >= 0 || class9_1.anInt216 != 0) && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
 				if (class9_1.anInt230 >= 0) {
-					anInt886 = class9_1.anInt230;
+					hoveredWidgetId = class9_1.anInt230;
 				} else {
-					anInt886 = class9_1.id;
+					hoveredWidgetId = class9_1.id;
 				}
 			}
 			if (class9_1.type == 0) {
@@ -1288,13 +1288,13 @@ public class Game extends RSApplet {
 	}
 
 	public void updateNPCs(Stream stream, int i) {
-		anInt839 = 0;
-		anInt893 = 0;
+		entityRemovalCount = 0;
+		playerUpdateCount = 0;
                updateNpcList(stream);
                addLocalNPCs(i, stream);
                processNpcUpdateMasks(stream);
-		for (int k = 0; k < anInt839; k++) {
-			int l = anIntArray840[k];
+		for (int k = 0; k < entityRemovalCount; k++) {
+			int l = removedEntityIndices[k];
 			if (npcArray[l].anInt1537 != loopCycle) {
                                 npcArray[l].definition = null;
 				npcArray[l] = null;
@@ -1360,9 +1360,9 @@ public class Game extends RSApplet {
 					pushMessage("Please close the interface you have open before using 'report abuse'", 0, "");
 				}
 			}
-			anInt940++;
-			if (anInt940 > 1386) {
-				anInt940 = 0;
+			abuseReportCounter++;
+			if (abuseReportCounter > 1386) {
+				abuseReportCounter = 0;
 				stream.createFrame(165);
 				stream.writeWordBigEndian(0);
 				int j = stream.currentOffset;
@@ -1437,23 +1437,23 @@ public class Game extends RSApplet {
 		if (action == 4) {
 			SoundPlayer.setVolume(config);
 			if (config == 0) {
-				aBoolean848 = true;
+				soundEffectEnabled = true;
 				setWaveVolume(0);
 			}
 			if (config == 1) {
-				aBoolean848 = true;
+				soundEffectEnabled = true;
 				setWaveVolume(-400);
 			}
 			if (config == 2) {
-				aBoolean848 = true;
+				soundEffectEnabled = true;
 				setWaveVolume(-800);
 			}
 			if (config == 3) {
-				aBoolean848 = true;
+				soundEffectEnabled = true;
 				setWaveVolume(-1200);
 			}
 			if (config == 4) {
-				aBoolean848 = false;
+				soundEffectEnabled = false;
 			}
 		}
 		if (action == 5) {
@@ -1467,7 +1467,7 @@ public class Game extends RSApplet {
 			inputTaken = true;
 		}
 		if (action == 9) {
-			anInt913 = config;
+			configActionId = config;
 		}
 	}
 
@@ -1565,7 +1565,7 @@ public class Game extends RSApplet {
 							}
 						}
 					}
-					if (j >= 0 && anInt855 == 10 && anInt933 == playerIndices[j]) {
+					if (j >= 0 && hintIconState == 10 && selectedPlayerId == playerIndices[j]) {
 						npcScreenPos(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
 							headIconsHint[1].drawTransparentSprite(spriteDrawX - 12, spriteDrawY - l);
@@ -1579,7 +1579,7 @@ public class Game extends RSApplet {
 							headIcons[entityDef_1.anInt75].drawTransparentSprite(spriteDrawX - 12, spriteDrawY - 30);
 						}
 					}
-					if (anInt855 == 1 && anInt1222 == npcIndices[j - playerCount] && loopCycle % 20 < 10) {
+					if (hintIconState == 1 && anInt1222 == npcIndices[j - playerCount] && loopCycle % 20 < 10) {
 						npcScreenPos(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
 							headIconsHint[0].drawTransparentSprite(spriteDrawX - 12, spriteDrawY - 28);
@@ -1862,7 +1862,7 @@ public class Game extends RSApplet {
 			if (Texture.textureLastUsed[17] >= j) {
 				Background background = Texture.textures[17];
 				int k = background.width * background.height - 1;
-				int j1 = background.width * anInt945 * 2;
+				int j1 = background.width * animationCycle * 2;
 				byte abyte0[] = background.pixels;
 				byte abyte3[] = aByteArray912;
 				for (int i2 = 0; i2 <= k; i2++) {
@@ -1876,7 +1876,7 @@ public class Game extends RSApplet {
 			if (Texture.textureLastUsed[24] >= j) {
 				Background background_1 = Texture.textures[24];
 				int l = background_1.width * background_1.height - 1;
-				int k1 = background_1.width * anInt945 * 2;
+				int k1 = background_1.width * animationCycle * 2;
 				byte abyte1[] = background_1.pixels;
 				byte abyte4[] = aByteArray912;
 				for (int j2 = 0; j2 <= l; j2++) {
@@ -1890,7 +1890,7 @@ public class Game extends RSApplet {
 			if (Texture.textureLastUsed[34] >= j) {
 				Background background_2 = Texture.textures[34];
 				int i1 = background_2.width * background_2.height - 1;
-				int l1 = background_2.width * anInt945 * 2;
+				int l1 = background_2.width * animationCycle * 2;
 				byte abyte2[] = background_2.pixels;
 				byte abyte5[] = aByteArray912;
 				for (int k2 = 0; k2 <= i1; k2++) {
@@ -1904,7 +1904,7 @@ public class Game extends RSApplet {
 			if (Texture.textureLastUsed[40] >= j) {
 				Background background_2 = Texture.textures[40];
 				int i1 = background_2.width * background_2.height - 1;
-				int l1 = background_2.width * anInt945 * 2;
+				int l1 = background_2.width * animationCycle * 2;
 				byte abyte2[] = background_2.pixels;
 				byte abyte5[] = aByteArray912;
 				for (int k2 = 0; k2 <= i1; k2++) {
@@ -1988,9 +1988,9 @@ public class Game extends RSApplet {
 				yCameraPos = j;
 			}
 		}
-		i = anInt995 * 128 + 64;
-		j = anInt996 * 128 + 64;
-		k = getTileHeight(plane, j, i) - anInt997;
+		i = cameraFocusX * 128 + 64;
+		j = cameraFocusY * 128 + 64;
+		k = getTileHeight(plane, j, i) - cameraFocusHeight;
 		int l = i - xCameraPos;
 		int i1 = k - zCameraPos;
 		int j1 = j - yCameraPos;
@@ -2004,13 +2004,13 @@ public class Game extends RSApplet {
 			l1 = 383;
 		}
 		if (yCameraCurve < l1) {
-			yCameraCurve += anInt998 + (l1 - yCameraCurve) * anInt999 / 1000;
+			yCameraCurve += cameraAdjustSpeed + (l1 - yCameraCurve) * cameraAdjustAcceleration / 1000;
 			if (yCameraCurve > l1) {
 				yCameraCurve = l1;
 			}
 		}
 		if (yCameraCurve > l1) {
-			yCameraCurve -= anInt998 + (yCameraCurve - l1) * anInt999 / 1000;
+			yCameraCurve -= cameraAdjustSpeed + (yCameraCurve - l1) * cameraAdjustAcceleration / 1000;
 			if (yCameraCurve < l1) {
 				yCameraCurve = l1;
 			}
@@ -2023,11 +2023,11 @@ public class Game extends RSApplet {
 			j2 += 2048;
 		}
 		if (j2 > 0) {
-			xCameraCurve += anInt998 + j2 * anInt999 / 1000;
+			xCameraCurve += cameraAdjustSpeed + j2 * cameraAdjustAcceleration / 1000;
 			xCameraCurve &= 0x7ff;
 		}
 		if (j2 < 0) {
-			xCameraCurve -= anInt998 + -j2 * anInt999 / 1000;
+			xCameraCurve -= cameraAdjustSpeed + -j2 * cameraAdjustAcceleration / 1000;
 			xCameraCurve &= 0x7ff;
 		}
 		int k2 = i2 - xCameraCurve;
@@ -2256,7 +2256,7 @@ public class Game extends RSApplet {
                         npc.definition = EntityDef.forID(stream.readBits(ClientSettings.NPC_BITS));
 			int k1 = stream.readBits(1);
 			if (k1 == 1) {
-				anIntArray894[anInt893++] = k;
+				playerUpdateIndices[playerUpdateCount++] = k;
 			}
                         npc.anInt1540 = npc.definition.aByte68;
                        npc.turnSpeed = npc.definition.anInt79;
@@ -2331,7 +2331,7 @@ public class Game extends RSApplet {
 
 	public boolean promptUserForInput(RSInterface class9) {
 		int j = class9.anInt214;
-		if (anInt900 == 2) {
+		if (interfaceMode == 2) {
 			if (j == 201) {
 				inputTaken = true;
 				inputDialogState = 0;
@@ -2436,8 +2436,8 @@ public class Game extends RSApplet {
 	}
 
        public void processPlayerUpdateMasks(Stream stream) {
-		for (int j = 0; j < anInt893; j++) {
-			int k = anIntArray894[j];
+		for (int j = 0; j < playerUpdateCount; j++) {
+			int k = playerUpdateIndices[j];
 			Player player = playerArray[k];
 			int l = stream.readUnsignedByte();
 			if ((l & 0x40) != 0) {
@@ -2604,58 +2604,58 @@ public class Game extends RSApplet {
 
                System.arraycopy(aRSImageProducer_1111.pixels, 0, aClass30_Sub2_Sub1_Sub1_1202.pixels, 0, 33920);
 
-		anIntArray851 = new int[256];
+		flamePaletteRed = new int[256];
 		for (int k1 = 0; k1 < 64; k1++) {
-			anIntArray851[k1] = k1 * 0x40000;
+			flamePaletteRed[k1] = k1 * 0x40000;
 		}
 
 		for (int l1 = 0; l1 < 64; l1++) {
-			anIntArray851[l1 + 64] = 0xff0000 + 1024 * l1;
+			flamePaletteRed[l1 + 64] = 0xff0000 + 1024 * l1;
 		}
 
 		for (int i2 = 0; i2 < 64; i2++) {
-			anIntArray851[i2 + 128] = 0xffff00 + 4 * i2;
+			flamePaletteRed[i2 + 128] = 0xffff00 + 4 * i2;
 		}
 
 		for (int j2 = 0; j2 < 64; j2++) {
-			anIntArray851[j2 + 192] = 0xffffff;
+			flamePaletteRed[j2 + 192] = 0xffffff;
 		}
 
-		anIntArray852 = new int[256];
+		flamePaletteGreen = new int[256];
 		for (int k2 = 0; k2 < 64; k2++) {
-			anIntArray852[k2] = k2 * 1024;
+			flamePaletteGreen[k2] = k2 * 1024;
 		}
 
 		for (int l2 = 0; l2 < 64; l2++) {
-			anIntArray852[l2 + 64] = 0x00ff00 + 4 * l2;
+			flamePaletteGreen[l2 + 64] = 0x00ff00 + 4 * l2;
 		}
 
 		for (int i3 = 0; i3 < 64; i3++) {
-			anIntArray852[i3 + 128] = 0x00ffff + 0x40000 * i3;
+			flamePaletteGreen[i3 + 128] = 0x00ffff + 0x40000 * i3;
 		}
 
 		for (int j3 = 0; j3 < 64; j3++) {
-			anIntArray852[j3 + 192] = 0xffffff;
+			flamePaletteGreen[j3 + 192] = 0xffffff;
 		}
 
-		anIntArray853 = new int[256];
+		flamePaletteBlue = new int[256];
 		for (int k3 = 0; k3 < 64; k3++) {
-			anIntArray853[k3] = k3 * 4;
+			flamePaletteBlue[k3] = k3 * 4;
 		}
 
 		for (int l3 = 0; l3 < 64; l3++) {
-			anIntArray853[l3 + 64] = 255 + 0x40000 * l3;
+			flamePaletteBlue[l3 + 64] = 255 + 0x40000 * l3;
 		}
 
 		for (int i4 = 0; i4 < 64; i4++) {
-			anIntArray853[i4 + 128] = 0xff00ff + 1024 * i4;
+			flamePaletteBlue[i4 + 128] = 0xff00ff + 1024 * i4;
 		}
 
 		for (int j4 = 0; j4 < 64; j4++) {
-			anIntArray853[j4 + 192] = 0xffffff;
+			flamePaletteBlue[j4 + 192] = 0xffffff;
 		}
 
-		anIntArray850 = new int[256];
+		flameBuffer = new int[256];
 		anIntArray1190 = new int[32768];
 		anIntArray1191 = new int[32768];
 		randomizeBackground(null);
@@ -2690,8 +2690,8 @@ public class Game extends RSApplet {
 				aLong824 = System.currentTimeMillis();
 			}
 		}
-		if (loadingStage == 2 && plane != anInt985) {
-			anInt985 = plane;
+		if (loadingStage == 2 && plane != lastPlane) {
+			lastPlane = plane;
                        generateMinimap(plane);
 		}
 	}
@@ -2757,7 +2757,7 @@ public class Game extends RSApplet {
                                                 class30_sub2_sub4_sub4.track(loopCycle, player.y, getTileHeight(class30_sub2_sub4_sub4.plane, player.y, player.x) - class30_sub2_sub4_sub4.heightOffset, player.x);
                                         }
                                 }
-                                class30_sub2_sub4_sub4.update(anInt945);
+                                class30_sub2_sub4_sub4.update(animationCycle);
                                worldController.addAnimableObject(plane, class30_sub2_sub4_sub4.yaw, (int) class30_sub2_sub4_sub4.currentHeight, -1, (int) class30_sub2_sub4_sub4.currentY, 60, (int) class30_sub2_sub4_sub4.currentX, class30_sub2_sub4_sub4, false);
                         }
                 }
@@ -2962,10 +2962,10 @@ public class Game extends RSApplet {
 	}
 
 	public void drawHeadIcon() {
-		if (anInt855 != 2) {
+		if (hintIconState != 2) {
 			return;
 		}
-		calcEntityScreenPos((anInt934 - baseX << 7) + anInt937, anInt936 * 2, (anInt935 - baseY << 7) + anInt938);
+		calcEntityScreenPos((selectedNpcId - baseX << 7) + lastMouseX, destinationY * 2, (destinationX - baseY << 7) + lastMouseY);
 		if (spriteDrawX > -1 && loopCycle % 20 < 10) {
 			headIconsHint[0].drawTransparentSprite(spriteDrawX - 12, spriteDrawY - 28);
 		}
@@ -3121,7 +3121,7 @@ public class Game extends RSApplet {
                animatePlayers();
                animateNpcs();
                updateEntityText();
-		anInt945++;
+		animationCycle++;
 		if (crossType != 0) {
 			crossIndex += 20;
 			if (crossIndex >= 400) {
@@ -3159,7 +3159,7 @@ public class Game extends RSApplet {
 					if (lastActiveInvInterface == dragInterfaceId && mouseInvInterfaceIndex != draggedSlot) {
 						RSInterface class9 = RSInterface.interfaceCache[dragInterfaceId];
 						int j1 = 0;
-						if (anInt913 == 1 && class9.anInt214 == 206) {
+						if (configActionId == 1 && class9.anInt214 == 206) {
 							j1 = 1;
 						}
 						if (class9.inv[mouseInvInterfaceIndex] <= 0) {
@@ -3215,8 +3215,8 @@ public class Game extends RSApplet {
 				crossIndex = 0;
 			}
 		}
-		if (super.clickMode3 == 1 && aString844 != null) {
-			aString844 = null;
+		if (super.clickMode3 == 1 && messagePrompt != null) {
+			messagePrompt = null;
 			inputTaken = true;
 			super.clickMode3 = 0;
 		}
@@ -4755,9 +4755,9 @@ public class Game extends RSApplet {
 		anIntArrayArray929 = null;
 		playerArray = null;
 		playerIndices = null;
-		anIntArray894 = null;
+		playerUpdateIndices = null;
 		aStreamArray895s = null;
-		anIntArray840 = null;
+		removedEntityIndices = null;
 		npcArray = null;
 		npcIndices = null;
 		groundArray = null;
@@ -5287,23 +5287,23 @@ public class Game extends RSApplet {
 	public void drawFriendsListOrWelcomeScreen(RSInterface class9) {
 		int j = class9.anInt214;
 		if (j >= 1 && j <= 100 || j >= 701 && j <= 800) {
-			if (j == 1 && anInt900 == 0) {
+			if (j == 1 && interfaceMode == 0) {
 				class9.disabledText = "Loading friend list";
 				class9.atActionType = 0;
 				return;
 			}
-			if (j == 1 && anInt900 == 1) {
+			if (j == 1 && interfaceMode == 1) {
 				class9.disabledText = "Connecting to friendserver";
 				class9.atActionType = 0;
 				return;
 			}
-			if (j == 2 && anInt900 != 2) {
+			if (j == 2 && interfaceMode != 2) {
 				class9.disabledText = "Please wait...";
 				class9.atActionType = 0;
 				return;
 			}
 			int k = friendsCount;
-			if (anInt900 != 2) {
+			if (interfaceMode != 2) {
 				k = 0;
 			}
 			if (j > 700) {
@@ -5323,7 +5323,7 @@ public class Game extends RSApplet {
 		}
 		if (j >= 101 && j <= 200 || j >= 801 && j <= 900) {
 			int l = friendsCount;
-			if (anInt900 != 2) {
+			if (interfaceMode != 2) {
 				l = 0;
 			}
 			if (j > 800) {
@@ -5348,7 +5348,7 @@ public class Game extends RSApplet {
 		}
 		if (j == 203) {
 			int i1 = friendsCount;
-			if (anInt900 != 2) {
+			if (interfaceMode != 2) {
 				i1 = 0;
 			}
 			class9.scrollMax = i1 * 15 + 20;
@@ -5358,18 +5358,18 @@ public class Game extends RSApplet {
 			return;
 		}
 		if (j >= 401 && j <= 500) {
-			if ((j -= 401) == 0 && anInt900 == 0) {
+			if ((j -= 401) == 0 && interfaceMode == 0) {
 				class9.disabledText = "Loading ignore list";
 				class9.atActionType = 0;
 				return;
 			}
-			if (j == 1 && anInt900 == 0) {
+			if (j == 1 && interfaceMode == 0) {
 				class9.disabledText = "Please wait...";
 				class9.atActionType = 0;
 				return;
 			}
 			int j1 = ignoreCount;
-			if (anInt900 == 0) {
+			if (interfaceMode == 0) {
 				j1 = 0;
 			}
 			if (j >= j1) {
@@ -5638,7 +5638,7 @@ public class Game extends RSApplet {
 	}
 	public void pushMessage(String s, int i, String s1) {
 		if (i == 0 && dialogID != -1) {
-			aString844 = s;
+			messagePrompt = s;
 			super.clickMode3 = 0;
 		}
 		if (backDialogID == -1) {
@@ -5928,15 +5928,15 @@ public class Game extends RSApplet {
 		menuActionID[0] = 1107;
 		menuActionRow = 1;
 		 if (fullScreenInterfaceId != -1) {
-			anInt886 = 0;
+			hoveredWidgetId = 0;
 			buildInterfaceMenu(0, RSInterface.interfaceCache[fullScreenInterfaceId], super.mouseX, 0, super.mouseY, 0);
-			if (anInt886 != anInt1026) {
-				anInt1026 = anInt886;
+			if (hoveredWidgetId != anInt1026) {
+				anInt1026 = hoveredWidgetId;
 			}
 			return;
 		}
 		buildSplitPrivateChatMenu();
-		anInt886 = 0;
+		hoveredWidgetId = 0;
 		if (super.mouseX > 4 && super.mouseY > 4 && super.mouseX < 516 && super.mouseY < 338) {
 			if (openInterfaceID != -1) {
 				buildInterfaceMenu(4, RSInterface.interfaceCache[openInterfaceID], super.mouseX, 4, super.mouseY, 0);
@@ -5944,10 +5944,10 @@ public class Game extends RSApplet {
 				build3dScreenMenu();
 			}
 		}
-		if (anInt886 != anInt1026) {
-			anInt1026 = anInt886;
+		if (hoveredWidgetId != anInt1026) {
+			anInt1026 = hoveredWidgetId;
 		}
-		anInt886 = 0;
+		hoveredWidgetId = 0;
 		if (super.mouseX > 553 && super.mouseY > 205 && super.mouseX < 743 && super.mouseY < 466) {
 			if (invOverlayInterfaceID != -1) {
 				buildInterfaceMenu(553, RSInterface.interfaceCache[invOverlayInterfaceID], super.mouseX, 205, super.mouseY, 0);
@@ -5955,11 +5955,11 @@ public class Game extends RSApplet {
 				buildInterfaceMenu(553, RSInterface.interfaceCache[tabInterfaceIDs[tabID]], super.mouseX, 205, super.mouseY, 0);
 			}
 		}
-		if (anInt886 != hoveredTabId) {
+		if (hoveredWidgetId != hoveredTabId) {
 			needDrawTabArea = true;
-			hoveredTabId = anInt886;
+			hoveredTabId = hoveredWidgetId;
 		}
-		anInt886 = 0;
+		hoveredWidgetId = 0;
 		if (super.mouseX > 17 && super.mouseY > 357 && super.mouseX < 496 && super.mouseY < 453) {
 			if (backDialogID != -1) {
 				buildInterfaceMenu(17, RSInterface.interfaceCache[backDialogID], super.mouseX, 357, super.mouseY, 0);
@@ -5969,9 +5969,9 @@ public class Game extends RSApplet {
 				buildChatAreaMenu(super.mouseY - 357);
 			}
 		}
-		if ((backDialogID != -1 || dialogID != -1) && anInt886 != lastInteractionId) {//TODO remove if any issues
+		if ((backDialogID != -1 || dialogID != -1) && hoveredWidgetId != lastInteractionId) {//TODO remove if any issues
 			inputTaken = true;
-			lastInteractionId = anInt886;
+			lastInteractionId = hoveredWidgetId;
 		}
 		processMinimapActions();
 		boolean flag = false;
@@ -6090,14 +6090,14 @@ public class Game extends RSApplet {
 				stream.currentOffset = 0;
 				inStream.currentOffset = 0;
 				pktType = -1;
-				anInt841 = -1;
+				lastPacketType = -1;
 				prevPktType = -1;
 				prevPktType2 = -1;
 				pktSize = 0;
 				anInt1009 = 0;
 				systemUpdateTimer = 0;
 				anInt1011 = 0;
-				anInt855 = 0;
+				hintIconState = 0;
 				menuActionRow = 0;
 				menuOpen = false;
 				super.idleTime = 0;
@@ -6116,7 +6116,7 @@ public class Game extends RSApplet {
 				minimapInt3 = (int) (Math.random() * 30D) - 20;
 				cameraYaw = (int) (Math.random() * 20D) - 10 & 0x7ff;
 				anInt1021 = 0;
-				anInt985 = -1;
+				lastPlane = -1;
 				destX = 0;
 				destY = 0;
 				playerCount = 0;
@@ -6142,7 +6142,7 @@ public class Game extends RSApplet {
 				}
 
 				aClass19_1179 = new NodeList();
-				anInt900 = 0;
+				interfaceMode = 0;
 				friendsCount = 0;
 				dialogID = -1;
 				backDialogID = -1;
@@ -6155,7 +6155,7 @@ public class Game extends RSApplet {
 				inputDialogState = 0;
 				menuOpen = false;
 				messagePromptRaised = false;
-				aString844 = null;
+				messagePrompt = null;
 				multiCombatZone = 0;
 				flashingTabId = -1;
 				aBoolean1047 = true;
@@ -6247,7 +6247,7 @@ public class Game extends RSApplet {
 				stream.currentOffset = 0;
 				inStream.currentOffset = 0;
 				pktType = -1;
-				anInt841 = -1;
+				lastPacketType = -1;
 				prevPktType = -1;
 				prevPktType2 = -1;
 				pktSize = 0;
@@ -6558,8 +6558,8 @@ public class Game extends RSApplet {
 	}
 
        public void processNpcUpdateMasks(Stream stream) {
-		for (int j = 0; j < anInt893; j++) {
-			int k = anIntArray894[j];
+		for (int j = 0; j < playerUpdateCount; j++) {
+			int k = playerUpdateIndices[j];
 			NPC npc = npcArray[k];
 			int l = stream.readUnsignedByte();
 			if ((l & 0x10) != 0) {
@@ -7391,7 +7391,7 @@ public class Game extends RSApplet {
 			player.anInt1537 = loopCycle;
 			int k = stream.readBits(1);
 			if (k == 1) {
-				anIntArray894[anInt893++] = j;
+				playerUpdateIndices[playerUpdateCount++] = j;
 			}
 			int l = stream.readBits(1);
 			int i1 = stream.readBits(5);
@@ -7861,10 +7861,10 @@ public class Game extends RSApplet {
 	public void drawGameScreen() {
 		if (fullScreenInterfaceId != -1 && (loadingStage == 2 || super.fullGameScreen != null)) {
 			if (loadingStage == 2) {
-				updateInterfaceAnimations(anInt945, fullScreenInterfaceId);
+				updateInterfaceAnimations(animationCycle, fullScreenInterfaceId);
 				if (fullScreenInterfaceId != -1)
-					updateInterfaceAnimations(anInt945, fullScreenInterfaceId);
-				anInt945 = 0;
+					updateInterfaceAnimations(animationCycle, fullScreenInterfaceId);
+				animationCycle = 0;
 				resetAllImageProducers();
 				super.fullGameScreen.initDrawingArea();
 				Texture.lineOffsets = gameScreenOffsets;
@@ -7924,7 +7924,7 @@ public class Game extends RSApplet {
 			needDrawTabArea = true;
 		}
 		if (invOverlayInterfaceID != -1) {
-			boolean flag1 = updateInterfaceAnimations(anInt945, invOverlayInterfaceID);
+			boolean flag1 = updateInterfaceAnimations(animationCycle, invOverlayInterfaceID);
 			if (flag1) {
 				needDrawTabArea = true;
 			}
@@ -7957,7 +7957,7 @@ public class Game extends RSApplet {
 			}
 		}
 		if (backDialogID != -1) {
-			boolean flag2 = updateInterfaceAnimations(anInt945, backDialogID);
+			boolean flag2 = updateInterfaceAnimations(animationCycle, backDialogID);
 			if (flag2) {
 				inputTaken = true;
 			}
@@ -7971,7 +7971,7 @@ public class Game extends RSApplet {
 		if (activeInterfaceType == 3) {
 			inputTaken = true;
 		}
-		if (aString844 != null) {
+		if (messagePrompt != null) {
 			inputTaken = true;
 		}
 		if (menuOpen && menuScreenArea == 2) {
@@ -8138,7 +8138,7 @@ public class Game extends RSApplet {
 			aRSImageProducer_1165.initDrawingArea();
 			Texture.lineOffsets = chatBoxAreaOffsets;
 		}
-		anInt945 = 0;
+		animationCycle = 0;
 	}
 
 	public boolean buildFriendsListMenu(RSInterface class9) {
@@ -8177,7 +8177,7 @@ public class Game extends RSApplet {
                         if (graphicsObject.plane != plane || graphicsObject.finished) {
                                 graphicsObject.unlink();
                         } else if (loopCycle >= graphicsObject.endCycle) {
-                                graphicsObject.update(anInt945);
+                                graphicsObject.update(animationCycle);
                                 if (graphicsObject.finished) {
                                         graphicsObject.unlink();
                                 } else {
@@ -8259,9 +8259,9 @@ public class Game extends RSApplet {
 											// Draw item being moved
 											class30_sub2_sub1_sub1_2.drawSprite1(k5 + k6, j6 + j7);
 											if (j6 + j7 < DrawingArea.topY && class9.scrollPosition > 0) {
-												int i10 = anInt945 * (DrawingArea.topY - j6 - j7) / 3;
-												if (i10 > anInt945 * 10) {
-													i10 = anInt945 * 10;
+												int i10 = animationCycle * (DrawingArea.topY - j6 - j7) / 3;
+												if (i10 > animationCycle * 10) {
+													i10 = animationCycle * 10;
 												}
 												if (i10 > class9.scrollPosition) {
 													i10 = class9.scrollPosition;
@@ -8270,9 +8270,9 @@ public class Game extends RSApplet {
 												dragStartY += i10;
 											}
 											if (j6 + j7 + 32 > DrawingArea.bottomY && class9.scrollPosition < class9.scrollMax - class9.height) {
-												int j10 = anInt945 * (j6 + j7 + 32 - DrawingArea.bottomY) / 3;
-												if (j10 > anInt945 * 10) {
-													j10 = anInt945 * 10;
+												int j10 = animationCycle * (j6 + j7 + 32 - DrawingArea.bottomY) / 3;
+												if (j10 > animationCycle * 10) {
+													j10 = animationCycle * 10;
 												}
 												if (j10 > class9.scrollMax - class9.height - class9.scrollPosition) {
 													j10 = class9.scrollMax - class9.height - class9.scrollPosition;
@@ -8852,11 +8852,11 @@ public class Game extends RSApplet {
 			crosses[4 + crossIndex / 100].drawTransparentSprite(crossX - 8 - 4, crossY - 8 - 4);
 		}
 		if (anInt1018 != -1) {
-			updateInterfaceAnimations(anInt945, anInt1018);
+			updateInterfaceAnimations(animationCycle, anInt1018);
 			drawInterface(0, 0, RSInterface.interfaceCache[anInt1018], 0);
 		}
 		if (openInterfaceID != -1) {
-			updateInterfaceAnimations(anInt945, openInterfaceID);
+			updateInterfaceAnimations(animationCycle, openInterfaceID);
 			drawInterface(0, 0, RSInterface.interfaceCache[openInterfaceID], 0);
 		}
                updateRestrictedArea();
@@ -8913,9 +8913,9 @@ public class Game extends RSApplet {
 			chatTextDrawingArea.textRightShadow(true, debugX + debugWidth - 4, Color.YELLOW.hashCode(), message, debugY);
 
 			// Not sure what this is for
-			anInt849++;
-			if (anInt849 > 75) {
-				anInt849 = 0;
+			systemUpdateCounter++;
+			if (systemUpdateCounter > 75) {
+				systemUpdateCounter = 0;
 				stream.createFrame(148);
 			}
 		}
@@ -9084,7 +9084,7 @@ public class Game extends RSApplet {
 		}
 		int k = stream.readBits(2);
 		if (k == 0) {
-			anIntArray894[anInt893++] = myPlayerIndex;
+			playerUpdateIndices[playerUpdateCount++] = myPlayerIndex;
 			return;
 		}
 		if (k == 1) {
@@ -9092,7 +9092,7 @@ public class Game extends RSApplet {
 			myPlayer.moveInDir(false, l);
 			int k1 = stream.readBits(1);
 			if (k1 == 1) {
-				anIntArray894[anInt893++] = myPlayerIndex;
+				playerUpdateIndices[playerUpdateCount++] = myPlayerIndex;
 			}
 			return;
 		}
@@ -9103,7 +9103,7 @@ public class Game extends RSApplet {
 			myPlayer.moveInDir(true, l1);
 			int j2 = stream.readBits(1);
 			if (j2 == 1) {
-				anIntArray894[anInt893++] = myPlayerIndex;
+				playerUpdateIndices[playerUpdateCount++] = myPlayerIndex;
 			}
 			return;
 		}
@@ -9119,7 +9119,7 @@ public class Game extends RSApplet {
 			int j1 = stream.readBits(1);
 			int i2 = stream.readBits(1);
 			if (i2 == 1) {
-				anIntArray894[anInt893++] = myPlayerIndex;
+				playerUpdateIndices[playerUpdateCount++] = myPlayerIndex;
 			}
 			int k2 = stream.readBits(7);
 			int l2 = stream.readBits(7);
@@ -9150,10 +9150,10 @@ public class Game extends RSApplet {
 		aBackground_966 = null;
 		aBackground_967 = null;
 		aBackgroundArray1152s = null;
-		anIntArray850 = null;
-		anIntArray851 = null;
-		anIntArray852 = null;
-		anIntArray853 = null;
+		flameBuffer = null;
+		flamePaletteRed = null;
+		flamePaletteGreen = null;
+		flamePaletteBlue = null;
 		anIntArray1190 = null;
 		anIntArray1191 = null;
 		anIntArray828 = null;
@@ -9564,8 +9564,8 @@ public class Game extends RSApplet {
 			}
 		}
 
-		if (anInt855 != 0 && loopCycle % 20 < 10) {
-			if (anInt855 == 1 && anInt1222 >= 0 && anInt1222 < npcArray.length) {
+		if (hintIconState != 0 && loopCycle % 20 < 10) {
+			if (hintIconState == 1 && anInt1222 >= 0 && anInt1222 < npcArray.length) {
 				NPC class30_sub2_sub4_sub1_sub1_1 = npcArray[anInt1222];
 				if (class30_sub2_sub4_sub1_sub1_1 != null) {
 					int k1 = class30_sub2_sub4_sub1_sub1_1.x / 32 - myPlayer.x / 32;
@@ -9573,13 +9573,13 @@ public class Game extends RSApplet {
 					drawMinimapHint(mapMarker, i4, k1);
 				}
 			}
-			if (anInt855 == 2) {
-				int l1 = (anInt934 - baseX) * 4 + 2 - myPlayer.x / 32;
-				int j4 = (anInt935 - baseY) * 4 + 2 - myPlayer.y / 32;
+			if (hintIconState == 2) {
+				int l1 = (selectedNpcId - baseX) * 4 + 2 - myPlayer.x / 32;
+				int j4 = (destinationX - baseY) * 4 + 2 - myPlayer.y / 32;
 				drawMinimapHint(mapMarker, j4, l1);
 			}
-			if (anInt855 == 10 && anInt933 >= 0 && anInt933 < playerArray.length) {
-				Player class30_sub2_sub4_sub1_sub2_1 = playerArray[anInt933];
+			if (hintIconState == 10 && selectedPlayerId >= 0 && selectedPlayerId < playerArray.length) {
+				Player class30_sub2_sub4_sub1_sub2_1 = playerArray[selectedPlayerId];
 				if (class30_sub2_sub4_sub1_sub2_1 != null) {
 					int i2 = class30_sub2_sub4_sub1_sub2_1.x / 32 - myPlayer.x / 32;
 					int k4 = class30_sub2_sub4_sub1_sub2_1.y / 32 - myPlayer.y / 32;
@@ -9767,27 +9767,27 @@ public class Game extends RSApplet {
 		if (flameMainColor > 0) {
 			for (int i = 0; i < 256; i++) {
 				if (flameMainColor > 768) {
-					anIntArray850[i] = blendColors(anIntArray851[i], anIntArray852[i], 1024 - flameMainColor);
+					flameBuffer[i] = blendColors(flamePaletteRed[i], flamePaletteGreen[i], 1024 - flameMainColor);
 				} else if (flameMainColor > 256) {
-					anIntArray850[i] = anIntArray852[i];
+					flameBuffer[i] = flamePaletteGreen[i];
 				} else {
-					anIntArray850[i] = blendColors(anIntArray852[i], anIntArray851[i], 256 - flameMainColor);
+					flameBuffer[i] = blendColors(flamePaletteGreen[i], flamePaletteRed[i], 256 - flameMainColor);
 				}
 			}
 
 		} else if (flameSecondaryColor > 0) {
 			for (int j = 0; j < 256; j++) {
 				if (flameSecondaryColor > 768) {
-					anIntArray850[j] = blendColors(anIntArray851[j], anIntArray853[j], 1024 - flameSecondaryColor);
+					flameBuffer[j] = blendColors(flamePaletteRed[j], flamePaletteBlue[j], 1024 - flameSecondaryColor);
 				} else if (flameSecondaryColor > 256) {
-					anIntArray850[j] = anIntArray853[j];
+					flameBuffer[j] = flamePaletteBlue[j];
 				} else {
-					anIntArray850[j] = blendColors(anIntArray853[j], anIntArray851[j], 256 - flameSecondaryColor);
+					flameBuffer[j] = blendColors(flamePaletteBlue[j], flamePaletteRed[j], 256 - flameSecondaryColor);
 				}
 			}
 
 		} else {
-			System.arraycopy(anIntArray851, 0, anIntArray850, 0, 256);
+			System.arraycopy(flamePaletteRed, 0, flameBuffer, 0, 256);
 
 		}
                System.arraycopy(aClass30_Sub2_Sub1_Sub1_1201.pixels, 0, aRSImageProducer_1110.pixels, 0, 33920);
@@ -9806,7 +9806,7 @@ public class Game extends RSApplet {
 				if (j3 != 0) {
 					int l3 = j3;
 					int j4 = 256 - j3;
-					j3 = anIntArray850[j3];
+					j3 = flameBuffer[j3];
                                    int l4 = aRSImageProducer_1110.pixels[j1];
                                    aRSImageProducer_1110.pixels[j1++] = ((j3 & 0xff00ff) * l3 + (l4 & 0xff00ff) * j4 & 0xff00ff00) + ((j3 & 0xff00) * l3 + (l4 & 0xff00) * j4 & 0xff0000) >> 8;
 				} else {
@@ -9831,7 +9831,7 @@ public class Game extends RSApplet {
 				if (k4 != 0) {
 					int i5 = k4;
 					int j5 = 256 - k4;
-					k4 = anIntArray850[k4];
+					k4 = flameBuffer[k4];
                                    int k5 = aRSImageProducer_1111.pixels[j1];
                                    aRSImageProducer_1111.pixels[j1++] = ((k4 & 0xff00ff) * i5 + (k5 & 0xff00ff) * j5 & 0xff00ff00) + ((k4 & 0xff00) * i5 + (k5 & 0xff00) * j5 & 0xff0000) >> 8;
 				} else {
@@ -9850,7 +9850,7 @@ public class Game extends RSApplet {
 		int j = stream.readBits(8);
 		if (j < playerCount) {
 			for (int k = j; k < playerCount; k++) {
-				anIntArray840[anInt839++] = playerIndices[k];
+				removedEntityIndices[entityRemovalCount++] = playerIndices[k];
 			}
 
 		}
@@ -9871,7 +9871,7 @@ public class Game extends RSApplet {
 				if (k1 == 0) {
 					playerIndices[playerCount++] = i1;
 					player.anInt1537 = loopCycle;
-					anIntArray894[anInt893++] = i1;
+					playerUpdateIndices[playerUpdateCount++] = i1;
 				} else if (k1 == 1) {
 					playerIndices[playerCount++] = i1;
 					player.anInt1537 = loopCycle;
@@ -9879,7 +9879,7 @@ public class Game extends RSApplet {
 					player.moveInDir(false, l1);
 					int j2 = stream.readBits(1);
 					if (j2 == 1) {
-						anIntArray894[anInt893++] = i1;
+						playerUpdateIndices[playerUpdateCount++] = i1;
 					}
 				} else if (k1 == 2) {
 					playerIndices[playerCount++] = i1;
@@ -9890,10 +9890,10 @@ public class Game extends RSApplet {
 					player.moveInDir(true, k2);
 					int l2 = stream.readBits(1);
 					if (l2 == 1) {
-						anIntArray894[anInt893++] = i1;
+						playerUpdateIndices[playerUpdateCount++] = i1;
 					}
 				} else if (k1 == 3) {
-					anIntArray840[anInt839++] = i1;
+					removedEntityIndices[entityRemovalCount++] = i1;
 				}
 			}
 		}
@@ -10038,7 +10038,7 @@ public class Game extends RSApplet {
 			int l11 = stream.readUnsignedByte();
 			int i14 = l11 >> 4 & 0xf;
 			int i16 = l11 & 7;
-			if (myPlayer.smallX[0] >= k3 - i14 && myPlayer.smallX[0] <= k3 + i14 && myPlayer.smallY[0] >= j6 - i14 && myPlayer.smallY[0] <= j6 + i14 && aBoolean848 && !lowMem && currentSound < 50) {
+			if (myPlayer.smallX[0] >= k3 - i14 && myPlayer.smallX[0] <= k3 + i14 && myPlayer.smallY[0] >= j6 - i14 && myPlayer.smallY[0] <= j6 + i14 && soundEffectEnabled && !lowMem && currentSound < 50) {
 				sound[currentSound] = i9;
 				soundType[currentSound] = i16;
                                 soundDelay[currentSound] = Sounds.delays[i9];
@@ -10299,7 +10299,7 @@ public class Game extends RSApplet {
 		int k = stream.readBits(8);
 		if (k < npcCount) {
 			for (int l = k; l < npcCount; l++) {
-				anIntArray840[anInt839++] = npcIndices[l];
+				removedEntityIndices[entityRemovalCount++] = npcIndices[l];
 			}
 
 		}
@@ -10320,7 +10320,7 @@ public class Game extends RSApplet {
 				if (l1 == 0) {
 					npcIndices[npcCount++] = j1;
 					npc.anInt1537 = loopCycle;
-					anIntArray894[anInt893++] = j1;
+					playerUpdateIndices[playerUpdateCount++] = j1;
 				} else if (l1 == 1) {
 					npcIndices[npcCount++] = j1;
 					npc.anInt1537 = loopCycle;
@@ -10328,7 +10328,7 @@ public class Game extends RSApplet {
 					npc.moveInDir(false, i2);
 					int k2 = stream.readBits(1);
 					if (k2 == 1) {
-						anIntArray894[anInt893++] = j1;
+						playerUpdateIndices[playerUpdateCount++] = j1;
 					}
 				} else if (l1 == 2) {
 					npcIndices[npcCount++] = j1;
@@ -10339,10 +10339,10 @@ public class Game extends RSApplet {
 					npc.moveInDir(true, l2);
 					int i3 = stream.readBits(1);
 					if (i3 == 1) {
-						anIntArray894[anInt893++] = j1;
+						playerUpdateIndices[playerUpdateCount++] = j1;
 					}
 				} else if (l1 == 3) {
-					anIntArray840[anInt839++] = j1;
+					removedEntityIndices[entityRemovalCount++] = j1;
 				}
 			}
 		}
@@ -10531,14 +10531,14 @@ public class Game extends RSApplet {
 	}
 
 	public void updatePlayers(int i, Stream stream) {
-		anInt839 = 0;
-		anInt893 = 0;
+		entityRemovalCount = 0;
+		playerUpdateCount = 0;
                updateSelfMovement(stream);
                updateOtherPlayers(stream);
                addLocalPlayers(stream, i);
                processPlayerUpdateMasks(stream);
-		for (int k = 0; k < anInt839; k++) {
-			int l = anIntArray840[k];
+		for (int k = 0; k < entityRemovalCount; k++) {
+			int l = removedEntityIndices[k];
 			if (playerArray[l].anInt1537 != loopCycle) {
 				playerArray[l] = null;
 			}
@@ -10633,8 +10633,8 @@ public class Game extends RSApplet {
 			socketStream.flushInputStream(inStream.buffer, pktSize);
 			anInt1009 = 0;
 			prevPktType2 = prevPktType;
-			prevPktType = anInt841;
-			anInt841 = pktType;
+			prevPktType = lastPacketType;
+			lastPacketType = pktType;
 			if (pktType == 81) {
 				updatePlayers(pktSize, inStream);
 				aBoolean1080 = false;
@@ -10704,7 +10704,7 @@ public class Game extends RSApplet {
 			if (pktType == 107) {
 				isCameraLocked = false;
 				for (int l = 0; l < 5; l++) {
-					aBooleanArray876[l] = false;
+					tabFlashing[l] = false;
 				}
 
 				pktType = -1;
@@ -11074,7 +11074,7 @@ public class Game extends RSApplet {
 				int k11 = inStream.readUnsignedByte();
 				int j17 = inStream.readUnsignedByte();
 				int k21 = inStream.readUnsignedByte();
-				aBooleanArray876[l3] = true;
+				tabFlashing[l3] = true;
 				anIntArray873[l3] = k11;
 				anIntArray1203[l3] = j17;
 				anIntArray928[l3] = k21;
@@ -11271,38 +11271,38 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 254) {
-				anInt855 = inStream.readUnsignedByte();
-				if (anInt855 == 1) {
+				hintIconState = inStream.readUnsignedByte();
+				if (hintIconState == 1) {
 					anInt1222 = inStream.readUnsignedWord();
 				}
-				if (anInt855 >= 2 && anInt855 <= 6) {
-					if (anInt855 == 2) {
-						anInt937 = 64;
-						anInt938 = 64;
+				if (hintIconState >= 2 && hintIconState <= 6) {
+					if (hintIconState == 2) {
+						lastMouseX = 64;
+						lastMouseY = 64;
 					}
-					if (anInt855 == 3) {
-						anInt937 = 0;
-						anInt938 = 64;
+					if (hintIconState == 3) {
+						lastMouseX = 0;
+						lastMouseY = 64;
 					}
-					if (anInt855 == 4) {
-						anInt937 = 128;
-						anInt938 = 64;
+					if (hintIconState == 4) {
+						lastMouseX = 128;
+						lastMouseY = 64;
 					}
-					if (anInt855 == 5) {
-						anInt937 = 64;
-						anInt938 = 0;
+					if (hintIconState == 5) {
+						lastMouseX = 64;
+						lastMouseY = 0;
 					}
-					if (anInt855 == 6) {
-						anInt937 = 64;
-						anInt938 = 128;
+					if (hintIconState == 6) {
+						lastMouseX = 64;
+						lastMouseY = 128;
 					}
-					anInt855 = 2;
-					anInt934 = inStream.readUnsignedWord();
-					anInt935 = inStream.readUnsignedWord();
-					anInt936 = inStream.readUnsignedByte();
+					hintIconState = 2;
+					selectedNpcId = inStream.readUnsignedWord();
+					destinationX = inStream.readUnsignedWord();
+					destinationY = inStream.readUnsignedByte();
 				}
-				if (anInt855 == 10) {
-					anInt933 = inStream.readUnsignedWord();
+				if (hintIconState == 10) {
+					selectedPlayerId = inStream.readUnsignedWord();
 				}
 				pktType = -1;
 				return true;
@@ -11582,22 +11582,22 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 221) {
-				anInt900 = inStream.readUnsignedByte();
+				interfaceMode = inStream.readUnsignedByte();
 				needDrawTabArea = true;
 				pktType = -1;
 				return true;
 			}
 			if (pktType == 177) {
 				isCameraLocked = true;
-				anInt995 = inStream.readUnsignedByte();
-				anInt996 = inStream.readUnsignedByte();
-				anInt997 = inStream.readUnsignedWord();
-				anInt998 = inStream.readUnsignedByte();
-				anInt999 = inStream.readUnsignedByte();
-				if (anInt999 >= 100) {
-					int k7 = anInt995 * 128 + 64;
-					int k14 = anInt996 * 128 + 64;
-					int i20 = getTileHeight(plane, k14, k7) - anInt997;
+				cameraFocusX = inStream.readUnsignedByte();
+				cameraFocusY = inStream.readUnsignedByte();
+				cameraFocusHeight = inStream.readUnsignedWord();
+				cameraAdjustSpeed = inStream.readUnsignedByte();
+				cameraAdjustAcceleration = inStream.readUnsignedByte();
+				if (cameraAdjustAcceleration >= 100) {
+					int k7 = cameraFocusX * 128 + 64;
+					int k14 = cameraFocusY * 128 + 64;
+					int i20 = getTileHeight(plane, k14, k7) - cameraFocusHeight;
 					int l22 = k7 - xCameraPos;
 					int k25 = i20 - zCameraPos;
 					int j28 = k14 - yCameraPos;
@@ -11845,7 +11845,7 @@ public class Game extends RSApplet {
 			if (cameraZoom / 256 > i) {
 				i = cameraZoom / 256;
 			}
-			if (aBooleanArray876[4] && anIntArray1203[4] + 128 > i) {
+			if (tabFlashing[4] && anIntArray1203[4] + 128 > i) {
 				i = anIntArray1203[4] + 128;
 			}
 			int k = cameraYaw + cameraYawOffset & 0x7ff;
@@ -11864,7 +11864,7 @@ public class Game extends RSApplet {
 		int k1 = yCameraCurve;
 		int l1 = xCameraCurve;
 		for (int i2 = 0; i2 < 5; i2++) {
-			if (aBooleanArray876[i2]) {
+			if (tabFlashing[i2]) {
 				int j2 = (int) (Math.random() * (double) (anIntArray873[i2] * 2 + 1) - (double) anIntArray873[i2] + Math.sin((double) anIntArray1030[i2] * (double) anIntArray928[i2] / 100D) * (double) anIntArray1203[i2]);
 				if (i2 == 0) {
 					xCameraPos += j2;
@@ -12021,15 +12021,15 @@ public class Game extends RSApplet {
 		aStream_834 = new Stream(new byte[5000]);
 		npcArray = new NPC[16384];
 		npcIndices = new int[16384];
-		anIntArray840 = new int[1000];
+		removedEntityIndices = new int[1000];
 		aStream_847 = Stream.create();
-		aBoolean848 = true;
+		soundEffectEnabled = true;
 		openInterfaceID = -1;
 		currentExp = new int[Skills.skillsCount];
 		aBoolean872 = false;
 		anIntArray873 = new int[5];
-		anInt874 = -1;
-		aBooleanArray876 = new boolean[5];
+		selectedTargetId = -1;
+		tabFlashing = new boolean[5];
 		drawFlames = false;
 		reportAbuseInput = "";
 		unknownInt10 = -1;
@@ -12039,7 +12039,7 @@ public class Game extends RSApplet {
 		myPlayerIndex = 2047;
 		playerArray = new Player[maxPlayers];
 		playerIndices = new int[maxPlayers];
-		anIntArray894 = new int[maxPlayers];
+		playerUpdateIndices = new int[maxPlayers];
 		aStreamArray895s = new Stream[maxPlayers];
 		cameraYawOffsetSpeed = 1;
 		anIntArrayArray901 = new int[104][104];
@@ -12075,7 +12075,7 @@ public class Game extends RSApplet {
 		anIntArray981 = new int[anInt975];
 		anIntArray982 = new int[anInt975];
 		aStringArray983 = new String[anInt975];
-		anInt985 = -1;
+		lastPlane = -1;
 		hitMarks = new Sprite[20];
 		anIntArray990 = new int[5];
 		anInt1002 = 0x23201b;
@@ -12181,23 +12181,23 @@ public class Game extends RSApplet {
 	public NPC[] npcArray;
 	public int npcCount;
 	public int[] npcIndices;
-	public int anInt839;
-	public int[] anIntArray840;
-	public int anInt841;
+	public int entityRemovalCount;
+	public int[] removedEntityIndices;
+	public int lastPacketType;
 	public int prevPktType;
 	public int prevPktType2;
-	public String aString844;
+	public String messagePrompt;
 	public int publicChatMode;
 	public int privateChatMode;
 	public Stream aStream_847;
-	public boolean aBoolean848;
-	public static int anInt849;
-	public int[] anIntArray850;
-	public int[] anIntArray851;
-	public int[] anIntArray852;
-	public int[] anIntArray853;
-	public static int anInt854;
-	public int anInt855;
+	public boolean soundEffectEnabled;
+	public static int systemUpdateCounter;
+	public int[] flameBuffer;
+	public int[] flamePaletteRed;
+	public int[] flamePaletteGreen;
+	public int[] flamePaletteBlue;
+	public static int unusedCounter;
+	public int hintIconState;
 	public int openInterfaceID;
 	public int fullScreenInterfaceId = -1;
 	public int xCameraPos;
@@ -12219,28 +12219,28 @@ public class Game extends RSApplet {
 	public Sprite mapMarker;
 	public boolean aBoolean872;
 	public final int[] anIntArray873;
-	public int anInt874;
-	public final boolean[] aBooleanArray876;
+	public int selectedTargetId;
+	public final boolean[] tabFlashing;
 	public int weight;
 	public MouseDetection mouseDetection;
 	public volatile boolean drawFlames;
 	public String reportAbuseInput;
 	public int unknownInt10;
 	public boolean menuOpen;
-	public int anInt886;
+	public int hoveredWidgetId;
 	public String inputString;
 	public final int maxPlayers;
 	public final int myPlayerIndex;
 	public Player[] playerArray;
 	public int playerCount;
 	public int[] playerIndices;
-	public int anInt893;
-	public int[] anIntArray894;
+	public int playerUpdateCount;
+	public int[] playerUpdateIndices;
 	public Stream[] aStreamArray895s;
 	public int cameraYawOffset;
 	public int cameraYawOffsetSpeed;
 	public int friendsCount;
-	public int anInt900;
+	public int interfaceMode;
 	public int[][] anIntArrayArray901;
 	public final int anInt902;
 	public RSImageProducer backLeftIP1;
@@ -12253,7 +12253,7 @@ public class Game extends RSApplet {
 	public RSImageProducer backVmidIP3;
 	public RSImageProducer backVmidIP2_2;
 	public byte[] aByteArray912;
-	public int anInt913;
+	public int configActionId;
 	public int crossX;
 	public int crossY;
 	public int crossIndex;
@@ -12268,17 +12268,17 @@ public class Game extends RSApplet {
 	public int[][] anIntArrayArray929;
 	public Sprite aClass30_Sub2_Sub1_Sub1_931;
 	public Sprite aClass30_Sub2_Sub1_Sub1_932;
-	public int anInt933;
-	public int anInt934;
-	public int anInt935;
-	public int anInt936;
-	public int anInt937;
-	public int anInt938;
-	public static int anInt940;
+	public int selectedPlayerId;
+	public int selectedNpcId;
+	public int destinationX;
+	public int destinationY;
+	public int lastMouseX;
+	public int lastMouseY;
+	public static int abuseReportCounter;
 	public final int[] chatTypes;
 	public final String[] chatNames;
 	public final String[] chatMessages;
-	public int anInt945;
+	public int animationCycle;
 	public WorldController worldController;
 	public Background[] sideIcons;
 	public int menuScreenArea;
@@ -12315,18 +12315,18 @@ public class Game extends RSApplet {
 	public final int[] anIntArray982;
 	public final String[] aStringArray983;
 	public int cameraZoom;
-	public int anInt985;
+	public int lastPlane;
 	public static int anInt986;
 	public Sprite[] hitMarks;
 	public int idleCycleCounter;
 	public int dragCounter;
 	public final int[] anIntArray990;
 	public static boolean aBoolean993;
-	public int anInt995;
-	public int anInt996;
-	public int anInt997;
-	public int anInt998;
-	public int anInt999;
+	public int cameraFocusX;
+	public int cameraFocusY;
+	public int cameraFocusHeight;
+	public int cameraAdjustSpeed;
+	public int cameraAdjustAcceleration;
 	public ISAACRandomGen encryption;
 	public Sprite mapEdge;
 	public final int anInt1002;
