@@ -47,6 +47,7 @@ Otherwise, skip automatic formatting.
 4. **Dependency update** – bump Maven or Docker images **within the same major version**.
 5. **CI / workflow** – patch .github/workflows/*.yml for build health.
 6. **Convert/Update Cache** – update the runescape cache files to the latest format.
+7. **Change/Refactor Documentation** – update or add documentation files (e.g. README, wiki, AGENTS, Rename-History).
 
 Any other class of change **MUST** be expressly permitted by a maintainer comment containing /allow‑bot <task> on the **PR** itself.
 
