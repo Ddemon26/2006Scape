@@ -6,8 +6,8 @@ abstract class AbstractMidiController extends MidiPlayer
 {
     final void applyVolumeFade(int step, int volume, long timestamp) {
         volume = (int) ((double) volume * Math.pow(0.1, (double) step * 5.0E-4) + 0.5);
-        if (volume != Game.anInt1401) {
-            Game.anInt1401 = volume;
+        if (volume != Game.midiVolume) {
+            Game.midiVolume = volume;
             for (int channel = 0; channel < 16; channel++) {
                 int scaled = calculateChannelVolume(channel);
                 sendShortMessage(channel + 176, 7, scaled >> 7, timestamp);
@@ -60,7 +60,7 @@ abstract class AbstractMidiController extends MidiPlayer
     }
     
     final void setMasterVolume(int volume, long timestamp) {
-        Game.anInt1401 = volume;
+        Game.midiVolume = volume;
         for (int channel = 0; channel < 16; channel++)
             Game.anIntArray385[channel] = 12800;
         for (int channel = 0; channel < 16; channel++) {
@@ -72,7 +72,7 @@ abstract class AbstractMidiController extends MidiPlayer
     
     private static final int calculateChannelVolume(int channel) {
         int value = Game.anIntArray385[channel];
-        value = (value * Game.anInt1401 >> 8) * value;
+        value = (value * Game.midiVolume >> 8) * value;
         return (int) (Math.sqrt((double) value) + 0.5);
     }
 }
