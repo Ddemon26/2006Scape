@@ -254,3 +254,4 @@ method479 -> applyLighting
 - method33 -> applyVarp
 - method38 -> updateEntityText
 <!-- crawled up to commit 0e1f8ccd -->
+<!-- crawled up to commit 6e7842b5 -->
