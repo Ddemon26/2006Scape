@@ -3098,8 +3098,8 @@ public class Game extends RSApplet {
 			anInt1016 = 20;
 			aBoolean1017 = false;
 			stream.createFrame(86);
-			stream.writeWord(anInt1184);
-			stream.writeShortA(minimapInt1);
+			stream.writeWord(cameraPitch);
+			stream.writeShortA(cameraYaw);
 		}
 		if (super.awtFocus && !aBoolean954) {
 			aBoolean954 = true;
@@ -3229,8 +3229,8 @@ public class Game extends RSApplet {
 			anInt1213++;
 		}
                if (loadingStage == 2) {
-                        updateCameraMovement();
-                }
+                        updateCameraPosition();
+               }
                 if (loadingStage == 2 && aBoolean1160) {
                         calcCameraPos();
                 }
@@ -3250,32 +3250,32 @@ public class Game extends RSApplet {
 			idleCycleCounter = 0;
 			int l1 = (int) (Math.random() * 8D);
 			if ((l1 & 1) == 1) {
-				anInt1278 += anInt1279;
+				cameraXOffset += cameraXOffsetSpeed;
 			}
 			if ((l1 & 2) == 2) {
-				anInt1131 += anInt1132;
+				cameraYOffset += cameraYOffsetSpeed;
 			}
 			if ((l1 & 4) == 4) {
-				anInt896 += anInt897;
+				cameraYawOffset += cameraYawOffsetSpeed;
 			}
 		}
-		if (anInt1278 < -50) {
-			anInt1279 = 2;
+		if (cameraXOffset < -50) {
+			cameraXOffsetSpeed = 2;
 		}
-		if (anInt1278 > 50) {
-			anInt1279 = -2;
+		if (cameraXOffset > 50) {
+			cameraXOffsetSpeed = -2;
 		}
-		if (anInt1131 < -55) {
-			anInt1132 = 2;
+		if (cameraYOffset < -55) {
+			cameraYOffsetSpeed = 2;
 		}
-		if (anInt1131 > 55) {
-			anInt1132 = -2;
+		if (cameraYOffset > 55) {
+			cameraYOffsetSpeed = -2;
 		}
-		if (anInt896 < -40) {
-			anInt897 = 1;
+		if (cameraYawOffset < -40) {
+			cameraYawOffsetSpeed = 1;
 		}
-		if (anInt896 > 40) {
-			anInt897 = -1;
+		if (cameraYawOffset > 40) {
+			cameraYawOffsetSpeed = -1;
 		}
 		anInt1254++;
 		if (anInt1254 > 500) {
@@ -3633,8 +3633,8 @@ public class Game extends RSApplet {
 			l -= 2000;
 		}
 		if (l == 696) {
-			minimapInt1 = 0;
-            anInt1184 = 120;
+			cameraYaw = 0;
+            cameraPitch = 120;
         }
 		if (l == 582) {
 			NPC npc = npcArray[i1];
@@ -5904,7 +5904,7 @@ public class Game extends RSApplet {
        public void drawMinimapHint(Sprite sprite, int y, int x) {
 		int l = x * x + y * y;
 		if (l > 4225 && l < 90000) {
-			int i1 = minimapInt1 + minimapInt2 & 0x7ff;
+			int i1 = cameraYaw + minimapInt2 & 0x7ff;
 			int j1 = Model.modelIntArray1[i1];
 			int k1 = Model.modelIntArray2[i1];
 			j1 = (j1 * 256) / (minimapInt3 + 256);
@@ -6109,12 +6109,12 @@ public class Game extends RSApplet {
 				spellSelected = 0;
 				loadingStage = 0;
 				currentSound = 0;
-				anInt1278 = (int) (Math.random() * 100D) - 50;
-				anInt1131 = (int) (Math.random() * 110D) - 55;
-				anInt896 = (int) (Math.random() * 80D) - 40;
+				cameraXOffset = (int) (Math.random() * 100D) - 50;
+				cameraYOffset = (int) (Math.random() * 110D) - 55;
+				cameraYawOffset = (int) (Math.random() * 80D) - 40;
 				minimapInt2 = (int) (Math.random() * 120D) - 60;
 				minimapInt3 = (int) (Math.random() * 30D) - 20;
-				minimapInt1 = (int) (Math.random() * 20D) - 10 & 0x7ff;
+				cameraYaw = (int) (Math.random() * 20D) - 10 & 0x7ff;
 				anInt1021 = 0;
 				anInt985 = -1;
 				destX = 0;
@@ -7417,7 +7417,7 @@ public class Game extends RSApplet {
 			if (i >= 0 && j >= 0 && i < 146 && j < 151) {
 				i -= 73;
 				j -= 75;
-				int k = minimapInt1 + minimapInt2 & 0x7ff;
+				int k = cameraYaw + minimapInt2 & 0x7ff;
 				int i1 = Texture.sineTable[k];
 				int j1 = Texture.cosineTable[k];
 				i1 = i1 * (minimapInt3 + 256) >> 8;
@@ -7430,7 +7430,7 @@ public class Game extends RSApplet {
 				if (flag1) {
 					stream.writeWordBigEndian(i);
 					stream.writeWordBigEndian(j);
-					stream.writeWord(minimapInt1);
+					stream.writeWord(cameraYaw);
 					stream.writeWordBigEndian(57);
 					stream.writeWordBigEndian(minimapInt2);
 					stream.writeWordBigEndian(minimapInt3);
@@ -8682,45 +8682,45 @@ public class Game extends RSApplet {
 		}
 	}
 
-       public void updateCameraMovement() {
+       public void updateCameraPosition() {
 		try {
-			int j = myPlayer.x + anInt1278;
-			int k = myPlayer.y + anInt1131;
-			if (anInt1014 - j < -500 || anInt1014 - j > 500 || anInt1015 - k < -500 || anInt1015 - k > 500) {
-				anInt1014 = j;
-				anInt1015 = k;
+			int j = myPlayer.x + cameraXOffset;
+			int k = myPlayer.y + cameraYOffset;
+			if (cameraX - j < -500 || cameraX - j > 500 || cameraY - k < -500 || cameraY - k > 500) {
+				cameraX = j;
+				cameraY = k;
 			}
-			if (anInt1014 != j) {
-				anInt1014 += (j - anInt1014) / 16;
+			if (cameraX != j) {
+				cameraX += (j - cameraX) / 16;
 			}
-			if (anInt1015 != k) {
-				anInt1015 += (k - anInt1015) / 16;
+			if (cameraY != k) {
+				cameraY += (k - cameraY) / 16;
 			}
-			if (super.keyArray[1] == 1) {
-				anInt1186 += (-24 - anInt1186) / 2;
-			} else if (super.keyArray[2] == 1) {
-				anInt1186 += (24 - anInt1186) / 2;
-			} else {
-				anInt1186 /= 2;
+                        if (super.keyArray[1] == 1) {
+                                cameraYawAccel += (-24 - cameraYawAccel) / 2;
+                        } else if (super.keyArray[2] == 1) {
+                                cameraYawAccel += (24 - cameraYawAccel) / 2;
+                        } else {
+                                cameraYawAccel /= 2;
+                        }
+                        if (super.keyArray[3] == 1) {
+                                cameraPitchAccel += (12 - cameraPitchAccel) / 2;
+                        } else if (super.keyArray[4] == 1) {
+                                cameraPitchAccel += (-12 - cameraPitchAccel) / 2;
+                        } else {
+                                cameraPitchAccel /= 2;
+                        }
+                        cameraYaw = cameraYaw + cameraYawAccel / 2 & 0x7ff;
+                        cameraPitch += cameraPitchAccel / 2;
+			if (cameraPitch < 128) {
+				cameraPitch = 128;
 			}
-			if (super.keyArray[3] == 1) {
-				anInt1187 += (12 - anInt1187) / 2;
-			} else if (super.keyArray[4] == 1) {
-				anInt1187 += (-12 - anInt1187) / 2;
-			} else {
-				anInt1187 /= 2;
+			if (cameraPitch > 383) {
+				cameraPitch = 383;
 			}
-			minimapInt1 = minimapInt1 + anInt1186 / 2 & 0x7ff;
-			anInt1184 += anInt1187 / 2;
-			if (anInt1184 < 128) {
-				anInt1184 = 128;
-			}
-			if (anInt1184 > 383) {
-				anInt1184 = 383;
-			}
-			int l = anInt1014 >> 7;
-			int i1 = anInt1015 >> 7;
-			int j1 = getTileHeight(plane, anInt1015, anInt1014);
+			int l = cameraX >> 7;
+			int i1 = cameraY >> 7;
+			int j1 = getTileHeight(plane, cameraY, cameraX);
 			int k1 = 0;
 			if (l > 3 && i1 > 3 && l < 100 && i1 < 100) {
 				for (int l1 = l - 4; l1 <= l + 4; l1++) {
@@ -8738,9 +8738,9 @@ public class Game extends RSApplet {
 				}
 
 			}
-			anInt1005++;
-			if (anInt1005 > 1512) {
-				anInt1005 = 0;
+			cameraMoveCycle++;
+			if (cameraMoveCycle > 1512) {
+				cameraMoveCycle = 0;
 				stream.createFrame(77);
 				stream.writeWordBigEndian(0);
 				int i2 = stream.currentOffset;
@@ -8765,15 +8765,15 @@ public class Game extends RSApplet {
 			if (j2 < 32768) {
 				j2 = 32768;
 			}
-			if (j2 > anInt984) {
-				anInt984 += (j2 - anInt984) / 24;
+			if (j2 > cameraZoom) {
+				cameraZoom += (j2 - cameraZoom) / 24;
 				return;
 			}
-			if (j2 < anInt984) {
-				anInt984 += (j2 - anInt984) / 80;
+			if (j2 < cameraZoom) {
+				cameraZoom += (j2 - cameraZoom) / 80;
 			}
 		} catch (Exception _ex) {
-			Signlink.reporterror("glfc_ex " + myPlayer.x + "," + myPlayer.y + "," + anInt1014 + "," + anInt1015 + "," + anInt1069 + "," + anInt1070 + "," + baseX + "," + baseY);
+			Signlink.reporterror("glfc_ex " + myPlayer.x + "," + myPlayer.y + "," + cameraX + "," + cameraY + "," + anInt1069 + "," + anInt1070 + "," + baseX + "," + baseY);
 			throw new RuntimeException("eek");
 		}
 	}
@@ -9490,16 +9490,16 @@ public class Game extends RSApplet {
 				}
 			}
 
-			compass.drawTransformed(33, minimapInt1, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
+			compass.drawTransformed(33, cameraYaw, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
 			aRSImageProducer_1165.initDrawingArea();
 			Texture.lineOffsets = chatBoxAreaOffsets;
 			return;
 		}
-		int i = minimapInt1 + minimapInt2 & 0x7ff;
+		int i = cameraYaw + minimapInt2 & 0x7ff;
 		int j = 48 + myPlayer.x / 32;
 		int l2 = 464 - myPlayer.y / 32;
 		aClass30_Sub2_Sub1_Sub1_1263.drawTransformed(151, i, anIntArray1229, 256 + minimapInt3, anIntArray1052, l2, 5, 25, 146, j);
-		compass.drawTransformed(33, minimapInt1, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
+		compass.drawTransformed(33, cameraYaw, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
 		// Minimap icons (shops, quest etc)
 		for (int j5 = 0; j5 < anInt1071; j5++) {
 			int k = anIntArray1072[j5] * 4 + 2 - myPlayer.x / 32;
@@ -10451,7 +10451,7 @@ public class Game extends RSApplet {
 	}
 
 	public void markMinimap(Sprite sprite, int i, int j) {
-		int k = minimapInt1 + minimapInt2 & 0x7ff;
+		int k = cameraYaw + minimapInt2 & 0x7ff;
 		int l = i * i + j * j;
 		if (l > 6400) {
 			return;
@@ -11841,16 +11841,16 @@ public class Game extends RSApplet {
                processProjectiles();
                 processGraphicsObjects();
 		if (!aBoolean1160) {
-			int i = anInt1184;
-			if (anInt984 / 256 > i) {
-				i = anInt984 / 256;
+			int i = cameraPitch;
+			if (cameraZoom / 256 > i) {
+				i = cameraZoom / 256;
 			}
 			if (aBooleanArray876[4] && anIntArray1203[4] + 128 > i) {
 				i = anIntArray1203[4] + 128;
 			}
-			int k = minimapInt1 + anInt896 & 0x7ff;
+			int k = cameraYaw + cameraYawOffset & 0x7ff;
 			// Camera zoom control
-			setCameraPos(600 + i * zoom, i, anInt1014, getTileHeight(plane, myPlayer.y, myPlayer.x) - 70, k, anInt1015);
+			setCameraPos(600 + i * zoom, i, cameraX, getTileHeight(plane, myPlayer.y, myPlayer.x) - 70, k, cameraY);
 		}
 		int j;
 		if (!aBoolean1160) {
@@ -12041,7 +12041,7 @@ public class Game extends RSApplet {
 		playerIndices = new int[maxPlayers];
 		anIntArray894 = new int[maxPlayers];
 		aStreamArray895s = new Stream[maxPlayers];
-		anInt897 = 1;
+		cameraYawOffsetSpeed = 1;
 		anIntArrayArray901 = new int[104][104];
 		anInt902 = 0x766654;
 		aByteArray912 = new byte[16384];
@@ -12116,7 +12116,7 @@ public class Game extends RSApplet {
 		atPlayerActions = new String[5];
 		atPlayerArray = new boolean[5];
 		anIntArrayArrayArray1129 = new int[4][13][13];
-		anInt1132 = 2;
+		cameraYOffsetSpeed = 2;
 		aClass30_Sub2_Sub1_Sub1Array1140 = new Sprite[1000];
 		aBoolean1141 = false;
 		aBoolean1149 = false;
@@ -12133,7 +12133,7 @@ public class Game extends RSApplet {
 		genericLoadingError = false;
 		reportAbuseInterfaceID = -1;
 		aClass19_1179 = new NodeList();
-		anInt1184 = 128;
+		cameraPitch = 128;
 		invOverlayInterfaceID = -1;
 		stream = Stream.create();
 		menuActionName = new String[500];
@@ -12159,7 +12159,7 @@ public class Game extends RSApplet {
 		loginMessage1 = "";
 		loginMessage2 = "";
 		backDialogID = -1;
-		anInt1279 = 2;
+		cameraXOffsetSpeed = 2;
 		bigX = new int[4000];
 		bigY = new int[4000];
 		anInt1289 = -1;
@@ -12237,8 +12237,8 @@ public class Game extends RSApplet {
 	public int anInt893;
 	public int[] anIntArray894;
 	public Stream[] aStreamArray895s;
-	public int anInt896;
-	public int anInt897;
+	public int cameraYawOffset;
+	public int cameraYawOffsetSpeed;
 	public int friendsCount;
 	public int anInt900;
 	public int[][] anIntArrayArray901;
@@ -12314,7 +12314,7 @@ public class Game extends RSApplet {
 	public final int[] anIntArray981;
 	public final int[] anIntArray982;
 	public final String[] aStringArray983;
-	public int anInt984;
+	public int cameraZoom;
 	public int anInt985;
 	public static int anInt986;
 	public Sprite[] hitMarks;
@@ -12332,7 +12332,7 @@ public class Game extends RSApplet {
 	public final int anInt1002;
 	static final int[][] anIntArrayArray1003 = {{6798, 107, 10283, 16, 4797, 7744, 5799, 4634, 33697, 22433, 2983, 54193}, {8741, 12, 64030, 43162, 7735, 8404, 1701, 38430, 24094, 10153, 56621, 4783, 1341, 16578, 35003, 25239}, {25238, 8742, 12, 64030, 43162, 7735, 8404, 1701, 38430, 24094, 10153, 56621, 4783, 1341, 16578, 35003}, {4626, 11146, 6439, 12, 4758, 10270}, {4550, 4537, 5681, 5673, 5790, 6806, 8076, 4574}};
 	public String amountOrNameInput;
-	public static int anInt1005;
+	public static int cameraMoveCycle;
 	public int daysSinceLastLogin;
 	public int pktSize;
 	public int pktType;
@@ -12340,8 +12340,8 @@ public class Game extends RSApplet {
 	public int anInt1010;
 	public int anInt1011;
 	public NodeList aClass19_1013;
-	public int anInt1014;
-	public int anInt1015;
+	public int cameraX;
+	public int cameraY;
 	public int anInt1016;
 	public boolean aBoolean1017;
 	public int anInt1018;
@@ -12447,8 +12447,8 @@ public class Game extends RSApplet {
 	public final boolean[] atPlayerArray;
 	public final int[][][] anIntArrayArrayArray1129;
 	public final int[] tabInterfaceIDs = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-	public int anInt1131;
-	public int anInt1132;
+	public int cameraYOffset;
+	public int cameraYOffsetSpeed;
 	public int menuActionRow;
 	public static int anInt1134;
 	public int spellSelected;
@@ -12497,10 +12497,10 @@ public class Game extends RSApplet {
 	public int[] tabAreaOffsets;
 	public int[] chatBoxAreaOffsets;
 	public byte[][] aByteArrayArray1183;
-	public int anInt1184;
-	public int minimapInt1;
-	public int anInt1186;
-	public int anInt1187;
+	public int cameraPitch;
+	public int cameraYaw;
+       public int cameraYawAccel;
+       public int cameraPitchAccel;
 	public static int anInt1188;
 	public int invOverlayInterfaceID;
 	public int[] anIntArray1190;
@@ -12580,8 +12580,8 @@ public class Game extends RSApplet {
 	public TextDrawingArea chatTextDrawingArea;
 	public int anInt1275;
 	public int backDialogID;
-	public int anInt1278;
-	public int anInt1279;
+	public int cameraXOffset;
+	public int cameraXOffsetSpeed;
 	public int[] bigX;
 	public int[] bigY;
 	public int itemSelected;
@@ -12642,9 +12642,9 @@ public class Game extends RSApplet {
 	void mouseWheelDragged(int i, int j) {
 		if (!mouseWheelDown)
 			return;
-		this.anInt1186 += i * 3;
-		this.anInt1187 += (j << 1);
-	}
+               this.cameraYawAccel += i * 3;
+               this.cameraPitchAccel += (j << 1);
+       }
 
 	public void keyPressed(KeyEvent keyevent)
 	{
