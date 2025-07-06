@@ -649,5 +649,3 @@ This document lists variable or identifier renames found in the commit history.
  - anIntArray703 -> varpIndices
  - anInt709 -> actionType
  - aBoolean713 -> isActive
-
-<!-- crawled all commits through e2ce83d797b62e3e9dfce607976260f42a9d2696 -->
