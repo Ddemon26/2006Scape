@@ -149,6 +149,18 @@ This document lists variable or identifier renames found in the commit history.
  - method548 -> requestModel
  - method225 -> decompress
  - method234 -> writeEntry
+ - method558 -> queueRequest
+ - method560 -> requestFileNow
+ - method563 -> validateOrQueue
+ - method566 -> clearPriorityQueue
+ - method554 -> requestMapFiles
+ - method568 -> processExtraFiles
+ - method569 -> isMidiRequired
+ - anInt1332 -> currentPriority
+ - mapIndices1 -> regionIds
+ - mapIndices2 -> mapArchiveIds
+ - mapIndices3 -> landArchiveIds
+ - mapIndices4 -> mapMembershipFlags
 
 ## Runnable_Impl1 -> MidiHandler
 
@@ -156,6 +168,40 @@ This document lists variable or identifier renames found in the commit history.
  - anInt404 -> id
  - anInt812 -> x
  - anInt813 -> y
+
+## Stream
+ - anIntArray1409 -> BIT_MASKS
+ - anInt1412 -> poolSize
+ - nodeList -> pool
+ - method426 -> readUnsignedByteAdd
+ - method400 -> writeShortLE
+ - method403 -> writeIntLE
+ - method421 -> readSignedSmart
+ - method422 -> readUnsignedSmart
+ - doKeys -> rsaEncrypt
+ - method424 -> writeByteNeg
+ - method425 -> writeByteSub
+ - method427 -> readUnsignedByteNeg
+ - method428 -> readUnsignedByteSub
+ - method429 -> readByteNeg
+ - method430 -> readByteSub
+ - method431 -> writeShortLEDup
+ - method432 -> writeShortA
+ - method433 -> writeShortLEA
+ - method434 -> readShortLE
+ - method435 -> readShortAdd
+ - method436 -> readShortLEAdd
+ - method437 -> readShortLESigned
+ - method438 -> readShortLEAddSigned
+ - method439 -> readIntV1
+ - method440 -> readIntV2
+ - method441 -> writeBytesReverseAdd
+ - method442 -> readBytesReverse
+
+## TextInput
+ - method525 -> decodeChatMessage
+ - method526 -> encodeChatMessage
+ - aCharArray631 -> charBuffer
 
 ## Object5 -> SceneObject
 
@@ -168,8 +214,26 @@ This document lists variable or identifier renames found in the commit history.
 
 ## Object1 -> BoundaryObject
 
+ - anInt273 -> plane
+ - anInt274 -> x
+ - anInt275 -> y
+ - orientation1 -> orientation2
+ - aClass30_Sub2_Sub4_278 -> primary
+ - aClass30_Sub2_Sub4_279 -> secondary
+ - aByte281 -> config
+
 ## Animable_Sub3 -> GraphicsObject
  - anInt412 -> rotation
+ - anInt1560 -> plane
+ - anInt1561 -> x
+ - anInt1562 -> y
+ - anInt1563 -> height
+ - anInt1564 -> endCycle
+ - aBoolean1567 -> finished
+ - aSpotAnim_1568 -> spotAnimation
+ - anInt1569 -> frame
+ - anInt1570 -> frameCycle
+ - method454 -> update
 
 ## Object4 -> ItemPile
 
@@ -192,11 +256,35 @@ This document lists variable or identifier renames found in the commit history.
  - method827 -> playMidi
  - method828 -> shutdown
  - method830 -> adjustVolume
- - method831 -> setVolume
- - method832 -> poll
- - method833 -> stopMidi
+- method831 -> setVolume
+- method832 -> poll
+- method833 -> stopMidi
 
 ## Class56_Sub1 -> AbstractMidiController
+
+## Sprite
+ - method343 -> initializeDrawingArea
+ - method344 -> adjustRgb
+ - method345 -> crop
+ - method346 -> drawSprite
+ - method347 -> copyToCanvas
+ - method349 -> drawTransparent
+ - method351 -> blendPixels
+ - method352 -> drawTransformed
+ - method353 -> drawRotated
+ - method354 -> drawWithMask
+ - method355 -> copyMasked
+ - anInt1442 -> offsetX
+ - anInt1443 -> offsetY
+
+## RSImageProducer
+ - anIntArray315 -> pixels
+ - anInt316 -> width
+ - anInt317 -> height
+ - aColorModel318 -> colorModel
+ - anImageConsumer319 -> imageConsumer
+ - anImage320 -> image
+ - method239 -> updateImage
 
 ## Class40 -> ShapedTile
 
@@ -266,6 +354,10 @@ This document lists variable or identifier renames found in the commit history.
 ## Class6 -> SoundFilter
 
 ## Class39 -> Instrument
+
+## Class29 -> SoundEnvelope
+
+## Class33 -> VertexNormal
 
 ## DummyClass -> CachePlaceholder
 
@@ -351,3 +443,211 @@ This document lists variable or identifier renames found in the commit history.
 
 ## Decompressor
  - method235 -> writeBlock
+
+## CollisionMap
+ - anInt290 -> xInset
+ - anInt291 -> yInset
+ - anInt292 -> width
+ - anInt293 -> height
+ - anIntArrayArray294 -> clippingFlags
+ - method210 -> reset
+ - method211 -> addWall
+ - method212 -> addObject
+ - method213 -> blockTile
+ - method214 -> addFlag
+ - method215 -> removeWall
+ - method216 -> removeObject
+ - method217 -> removeFlag
+ - method218 -> unblockTile
+ - method219 -> canReachWall
+
+## Censor
+ - aCharArrayArray624 -> topLevelDomains
+ - anIntArray625 -> tldBehavior
+ - aCharArrayArray621 -> badWords
+ - aByteArrayArrayArray622 -> badWordPatterns
+ - aCharArrayArray623 -> domainWords
+ - anIntArray620 -> bannedNameHashes
+ - method493 -> loadBannedWords
+ - method494 -> readCharArrayTable
+ - method495 -> sanitizeInput
+ - method496 -> isAllowedCharacter
+ - method505 -> censorTopLevelDomains
+ - method500 -> censorWords
+ - method501 -> censorDomains
+ - method502 -> censorDomain
+ - method503 -> checkPrecedingContext
+ - method504 -> checkFollowingContext
+ - method506 -> censorTldHelper
+ - method507 -> checkPrecedingPunctuation
+ - method508 -> checkFollowingPunctuation
+ - method498 -> restoreCapitalization
+- method499 -> fixSentenceCase
+- method511 -> matchDomainCharacter
+- method512 -> matchLeetCharacter
+- method513 -> charToByte
+- method514 -> censorLongNumbers
+- method515 -> findNextDigit
+- method516 -> findNonDigit
+- method517 -> isNonAlphanumeric
+- method518 -> isFillerCharacter
+- method510 -> lookupCharPair
+- method523 -> isBannedName
+- method524 -> computeNameHash
+
+## Background
+ - anInt1456 -> maxWidth
+ - anInt1457 -> maxHeight
+ - anIntArray1451 -> palette
+ - anInt1454 -> offsetX
+ - anInt1455 -> offsetY
+ - anInt1452 -> width
+ - anInt1453 -> height
+ - aByteArray1450 -> pixels
+ - method356 -> downscaleHalf
+ - method357 -> normalize
+ - method358 -> flipHorizontal
+ - method359 -> flipVertical
+ - method360 -> adjustPalette
+ - method361 -> draw
+ - method362 -> blit
+
+## Texture
+ - nullLoader -> reset
+ - method364 -> init
+ - method365 -> resize
+ - method366 -> clearCache
+ - method367 -> initCache
+ - method368 -> loadTextures
+ - method369 -> getAverageTextureColor
+ - method370 -> unloadTexture
+ - method371 -> getTexturePixels
+ - method372 -> setBrightness
+ - method373 -> adjustBrightness
+ - method374 -> drawGouraudTriangle
+ - method375 -> drawGouraudScanline
+ - method378 -> drawTexturedTriangle
+ - method379 -> drawTexturedScanline
+ - anIntArray1468 -> reciprocalTable
+ - anIntArray1469 -> reciprocal16
+ - anIntArray1470 -> sineTable
+ - anIntArray1471 -> cosineTable
+ - anInt1473 -> textureCount
+ - aBackgroundArray1474s -> textures
+ - aBooleanArray1475 -> textureHasTransparency
+ - anIntArray1476 -> averageTextureColor
+ - anInt1477 -> cachePointer
+ - anIntArrayArray1478 -> texturePool
+ - anIntArrayArray1479 -> textureImages
+ - anIntArray1480 -> textureLastUsed
+ - anInt1481 -> cycle
+ - anIntArray1482 -> brightnessTable
+ - anIntArrayArray1483 -> texturePalettes
+ - aBoolean1462 -> clip
+ - aBoolean1463 -> textureIsOpaque
+ - aBoolean1464 -> highQuality
+ - anInt1465 -> alpha
+
+## Model
+ - method476 -> recolor
+
+## ObjectDef
+ - anIntArray773 -> modelIds
+ - anIntArray776 -> modelTypes
+ - anInt744 -> sizeX
+ - anInt761 -> sizeY
+ - aBoolean767 -> isSolid
+ - aBoolean757 -> impenetrable
+ - hasActions -> interactive
+ - anInt781 -> animationId
+ - anInt748 -> scaleX
+ - anInt772 -> scaleY
+ - anInt740 -> scaleZ
+ - method574 -> requestModels
+ - method577 -> isModelReady
+ - method578 -> getModel
+ - method579 -> areModelsReady
+ - method580 -> getChildDefinition
+ - method581 -> buildModel
+ - readValues -> decode
+
+## VarBit
+ - anInt648 -> configId
+ - anInt649 -> leastSignificantBit
+ - anInt650 -> mostSignificantBit
+ - aBoolean651 -> isActive
+
+## OnDemandData
+ - dataType -> type
+ - buffer -> data
+ - ID -> id
+ - loopCycle -> cycleCount
+
+## TextClass
+ - method585 -> hashSpriteName
+ - method586 -> intToIpString
+
+## TextDrawingArea
+ - aByteArrayArray1491 -> glyphPixels
+ - anIntArray1492 -> glyphWidths
+ - anIntArray1493 -> glyphHeights
+ - anIntArray1494 -> xOffsets
+ - anIntArray1495 -> yOffsets
+ - anIntArray1496 -> glyphAdvances
+ - aRandom1498 -> random
+ - aBoolean1499 -> strikethrough
+ - anInt1497 -> fontHeight
+ - method384 -> measurePlainTextWidth
+ - method386 -> drawWavyCenteredText
+ - method387 -> drawWavyText
+ - method388 -> drawShakeText
+ - method390 -> drawRandomColorText
+
+## Player
+ - anIntArray1700 -> bodyColors
+ - anInt1702 -> gender
+ - method452 -> getBaseModel
+ - method453 -> getDialogueModel
+ - aLong1697 -> cachedModelHash
+ - aLong1718 -> appearanceHash
+ - anInt1707 -> animationStartCycle
+ - anInt1708 -> animationEndCycle
+ - anInt1709 -> animationBaseY
+ - anInt1711 -> animationBaseX
+ - anInt1712 -> animationBaseHeight
+ - anInt1713 -> animationBaseZ
+
+## Entity
+ - anInt1504 -> turnSpeed
+ - anInt1520 -> spotAnimId
+ - anInt1521 -> spotAnimFrame
+ - anInt1522 -> spotAnimFrameCycle
+ - anInt1523 -> spotAnimStartTick
+ - anInt1524 -> spotAnimHeight
+ - anInt1552 -> currentHeading
+ - method446 -> clearMovement
+
+## ShapedTile
+ - aBoolean683 -> flatShading
+ - anInt684 -> shape
+ - anInt685 -> rotation
+ - anInt686 -> baseColor
+ - anInt687 -> shadeColor
+ - anIntArray673 -> vertexX
+ - anIntArray674 -> vertexZ
+ - anIntArray675 -> vertexY
+ - anIntArray679 -> faceVertexA
+ - anIntArray680 -> faceVertexB
+ - anIntArray681 -> faceVertexC
+ - anIntArray676 -> faceColorA
+ - anIntArray677 -> faceColorB
+ - anIntArray678 -> faceColorC
+ - anIntArray682 -> faceTexture
+
+## Varp
+ - anInt702 -> varpCount
+ - anIntArray703 -> varpIndices
+ - anInt709 -> actionType
+ - aBoolean713 -> isActive
+
+<!-- crawled all commits through e2ce83d797b62e3e9dfce607976260f42a9d2696 -->
