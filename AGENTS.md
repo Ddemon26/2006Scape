@@ -208,6 +208,7 @@ intent.                                                          |
 | **6 Follow‑up classes**     | If class *B* depends on renamed class *A*, update *B's references* in the same PR, but 
 rename *B* itself in a future PR.                            |
 | **7 Review artefacts** | PR body **MUST** include an Old→New mapping table and the full `git diff --stat` output. |
+| **8 Record mapping**    | Append each rename entry to `rename-history.md` for project tracking. |
 
 ---
 
