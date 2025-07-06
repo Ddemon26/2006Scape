@@ -127,4 +127,20 @@ This document lists variable or identifier renames found in the commit history.
 - anInt414 -> contrast
 - anIntArray408 -> originalModelColors
 - anIntArray409 -> modifiedModelColors
-<!-- crawled up to commit e1577d80 -->
+- method482 -> transformVertices
+- method481 -> calculateShadedColor
+- method483 -> processVisibility
+- method484 -> drawFace
+- method485 -> drawClippedFace
+- method486 -> isTriangleVisible
+- anInt1681 -> transformX
+- anInt1682 -> transformY
+- anInt1683 -> transformZ
+- anInt720 -> midiFadeCycles
+- anInt1478 -> queuedMidiVolume
+- method115 -> processPendingSpawns
+- processPendingSpawns -> locatePendingSpawns
+- method54 -> checkMapLoadStatus
+- method66 -> walkToObject
+- method83 -> blendColors
+<!-- crawled up to commit a02fabe6 -->
