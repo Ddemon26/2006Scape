@@ -145,8 +145,41 @@ This document lists variable or identifier renames found in the commit history.
  - anInt1071 -> minimapIconCount
  - anIntArray1072 -> minimapIconX
  - anIntArray1073 -> minimapIconY
- - aClass30_Sub2_Sub1_Sub1Array1140 -> minimapIconSprites
- - aBoolean1233 -> chatSettingsUpdateNeeded
+- aClass30_Sub2_Sub1_Sub1Array1140 -> minimapIconSprites
+- aBoolean1233 -> chatSettingsUpdateNeeded
+- aClass30_Sub2_Sub1_Sub1_1263 -> minimapImage
+- anInt1288 -> walkPacketCounter
+- anInt1036 -> prevBaseX
+- anInt1037 -> prevBaseY
+- anInt1039 -> lastInteractionId
+- anInt1040 -> flameMainColor
+- anInt1041 -> flameSecondaryColor
+- anInt1046 -> friendsListStatus
+- anInt1048 -> hoveredTabId
+- aString1049 -> errorMessage
+- anInt1051 -> terrainLoadCycle
+- anIntArray1052 -> minimapLineOffset
+- anInt1054 -> flashingTabId
+- anInt1055 -> multiCombatZone
+- anInt1061 -> drawCycle
+- anInt1097 -> mapLoadPacketCounter
+- anInt1098 -> cameraTargetX
+- anInt1099 -> cameraTargetY
+- anInt1100 -> cameraTargetZ
+- anInt1101 -> cameraMoveSpeed
+- anInt1102 -> cameraMoveAcceleration
+- anInt1117 -> antiCheatPacketCounter
+- aString1121 -> inputPrompt
+- anInt1134 -> npcAttackCounter
+- anInt1142 -> clickPacketCounter
+- aBoolean1149 -> actionPending
+- anInt1155 -> npcInteractionCounter
+- aBoolean1159 -> isDynamicRegion
+- aBoolean1160 -> isCameraLocked
+- anInt1171 -> minimapVerticalSpeed
+- anInt1175 -> itemUseCounter
+- anInt1208 -> flameDrawingCounter
+- anInt1210 -> minimapHorizontalSpeed
 
 ## RSApplet
  - TextDrawingArea -> clean
