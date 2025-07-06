@@ -143,7 +143,6 @@ This document lists variable or identifier renames found in the commit history.
 - method54 -> checkMapLoadStatus
 - method66 -> walkToObject
 - method83 -> blendColors
-<!-- crawled up to commit a02fabe6 -->
 Model.nullLoader -> clearCache
 method459 -> init
 method460 -> loadModelData
@@ -198,7 +197,6 @@ method473 -> calculateNormals
 method475 -> translate
 method478 -> scaleModel
 method479 -> applyLighting
-<!-- crawled up to commit d9384e99 -->
 - anInt811 -> tileHeight
 - anInt812 -> x
 - anInt813 -> y
@@ -253,4 +251,3 @@ method479 -> applyLighting
 - method37 -> animateTextures
 - method33 -> applyVarp
 - method38 -> updateEntityText
-<!-- crawled up to commit 0e1f8ccd -->
