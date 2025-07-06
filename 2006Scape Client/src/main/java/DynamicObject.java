@@ -50,7 +50,7 @@ final class DynamicObject extends Animable {
                         int k = varBit.configId;
                         int l = varBit.leastSignificantBit;
                         int i1 = varBit.mostSignificantBit;
-			int j1 = Game.anIntArray1232[i1 - l];
+			int j1 = Game.bitMasks[i1 - l];
 			i = client.variousSettings[k] >> l & j1;
 		} else if (varpId != -1) {
 			i = client.variousSettings[varpId];

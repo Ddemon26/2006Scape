@@ -247,7 +247,48 @@ This document lists variable or identifier renames found in the commit history.
  - anInt1269 -> mapEventY
  - anInt1275 -> flameOffset
  - anInt1289 -> unknownInt1289
- - anInt1290 -> unknownInt1290
+- anInt1290 -> unknownInt1290
+ - anIntArrayArray825 -> pathDistances
+ - anIntArray828 -> flameBuffer1
+ - anIntArray829 -> flameBuffer2
+ - anIntArray873 -> cameraShakeAmplitude
+ - anIntArrayArray901 -> pathDirections
+ - anInt902 -> scrollBarLightColor
+ - anInt924 -> objectClickCounter
+ - anInt927 -> scrollBarDarkColor
+ - anIntArray928 -> cameraShakeSpeed
+ - anIntArrayArray929 -> occupiedTiles
+ - anIntArray965 -> hitmarkColors
+ - anIntArray968 -> mapBackLeft
+ - anIntArray969 -> flameLineOffsets
+ - anInt975 -> maxDisplayedText
+ - anIntArray976 -> textX
+ - anIntArray977 -> textY
+ - anIntArray978 -> textHeight
+ - anIntArray979 -> textWidth
+ - anIntArray980 -> textColors
+ - anIntArray981 -> textEffects
+ - anIntArray982 -> textCycles
+ - anInt986 -> playerOptionCounter
+ - anIntArray990 -> characterColorIndices
+ - anIntArray1019 -> levelExperience
+ - anIntArray1030 -> cameraShakeCycle
+ - anIntArray1045 -> varpArray
+ - anIntArray1057 -> mapBackWidths
+ - anIntArray1065 -> characterStyle
+ - anIntArrayArrayArray1129 -> dynamicRegionData
+ - anIntArray1177 -> objectData
+ - anIntArray1190 -> flameGradient1
+ - anIntArray1191 -> flameGradient2
+ - anIntArray1203 -> cameraShakeFrequency
+ - anIntArray1229 -> minimapLineLengths
+ - anIntArray1232 -> bitMasks
+ - anIntArray1234 -> regionBaseIds
+ - anIntArray1235 -> terrainArchiveIds
+ - anIntArray1236 -> objectArchiveIds
+ - anInt1401 -> midiVolume
+ - anInt992 -> scrollPadding
+ - anInt1273 -> unusedField1273
 
 ## RSApplet
  - TextDrawingArea -> clean

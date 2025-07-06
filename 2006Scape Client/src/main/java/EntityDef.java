@@ -80,7 +80,7 @@ public final class EntityDef {
                         int k = varBit.configId;
                         int l = varBit.leastSignificantBit;
                         int i1 = varBit.mostSignificantBit;
-			int j1 = Game.anIntArray1232[i1 - l];
+			int j1 = Game.bitMasks[i1 - l];
 			j = clientInstance.variousSettings[k] >> l & j1;
 		} else if (anInt59 != -1) {
 			j = clientInstance.variousSettings[anInt59];

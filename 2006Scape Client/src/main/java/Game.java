@@ -676,8 +676,8 @@ public class Game extends RSApplet {
 			stream.createFrame(0);
 			if (!isDynamicRegion) {
 				for (int i3 = 0; i3 < k2; i3++) {
-					int i4 = (anIntArray1234[i3] >> 8) * 64 - baseX;
-					int k5 = (anIntArray1234[i3] & 0xff) * 64 - baseY;
+					int i4 = (regionBaseIds[i3] >> 8) * 64 - baseX;
+					int k5 = (regionBaseIds[i3] & 0xff) * 64 - baseY;
 					byte abyte0[] = aByteArrayArray1183[i3];
 					if (abyte0 != null) {
 						objectManager.loadRegion(abyte0, k5, i4, (currentRegionX - 6) * 8, (currentRegionY - 6) * 8, aClass11Array1230);
@@ -685,8 +685,8 @@ public class Game extends RSApplet {
 				}
 
 				for (int j4 = 0; j4 < k2; j4++) {
-					int l5 = (anIntArray1234[j4] >> 8) * 64 - baseX;
-					int k7 = (anIntArray1234[j4] & 0xff) * 64 - baseY;
+					int l5 = (regionBaseIds[j4] >> 8) * 64 - baseX;
+					int k7 = (regionBaseIds[j4] & 0xff) * 64 - baseY;
 					byte abyte2[] = aByteArrayArray1183[j4];
 					if (abyte2 == null && currentRegionY < 800) {
 						objectManager.clearRegion(k7, 64, 64, l5);
@@ -703,8 +703,8 @@ public class Game extends RSApplet {
 				for (int i6 = 0; i6 < k2; i6++) {
 					byte abyte1[] = aByteArrayArray1247[i6];
 					if (abyte1 != null) {
-						int l8 = (anIntArray1234[i6] >> 8) * 64 - baseX;
-						int k9 = (anIntArray1234[i6] & 0xff) * 64 - baseY;
+						int l8 = (regionBaseIds[i6] >> 8) * 64 - baseX;
+						int k9 = (regionBaseIds[i6] & 0xff) * 64 - baseY;
 						objectManager.loadObjects(l8, aClass11Array1230, k9, worldController, abyte1);
 					}
 				}
@@ -714,15 +714,15 @@ public class Game extends RSApplet {
 				for (int j3 = 0; j3 < 4; j3++) {
 					for (int k4 = 0; k4 < 13; k4++) {
 						for (int j6 = 0; j6 < 13; j6++) {
-							int l7 = anIntArrayArrayArray1129[j3][k4][j6];
+							int l7 = dynamicRegionData[j3][k4][j6];
 							if (l7 != -1) {
 								int i9 = l7 >> 24 & 3;
 								int l9 = l7 >> 1 & 3;
 								int j10 = l7 >> 14 & 0x3ff;
 								int l10 = l7 >> 3 & 0x7ff;
 								int j11 = (j10 / 8 << 8) + l10 / 8;
-								for (int l11 = 0; l11 < anIntArray1234.length; l11++) {
-									if (anIntArray1234[l11] != j11 || aByteArrayArray1183[l11] == null) {
+								for (int l11 = 0; l11 < regionBaseIds.length; l11++) {
+									if (regionBaseIds[l11] != j11 || aByteArrayArray1183[l11] == null) {
 										continue;
 									}
 									objectManager.loadChunk(i9, l9, aClass11Array1230, k4 * 8, (j10 & 7) * 8, aByteArrayArray1183[l11], (l10 & 7) * 8, j3, j6 * 8);
@@ -738,7 +738,7 @@ public class Game extends RSApplet {
 
 				for (int l4 = 0; l4 < 13; l4++) {
 					for (int k6 = 0; k6 < 13; k6++) {
-						int i8 = anIntArrayArrayArray1129[0][l4][k6];
+						int i8 = dynamicRegionData[0][l4][k6];
 						if (i8 == -1) {
 							objectManager.clearRegion(k6 * 8, 8, 8, l4 * 8);
 						}
@@ -750,15 +750,15 @@ public class Game extends RSApplet {
 				for (int l6 = 0; l6 < 4; l6++) {
 					for (int j8 = 0; j8 < 13; j8++) {
 						for (int j9 = 0; j9 < 13; j9++) {
-							int i10 = anIntArrayArrayArray1129[l6][j8][j9];
+							int i10 = dynamicRegionData[l6][j8][j9];
 							if (i10 != -1) {
 								int k10 = i10 >> 24 & 3;
 								int i11 = i10 >> 1 & 3;
 								int k11 = i10 >> 14 & 0x3ff;
 								int i12 = i10 >> 3 & 0x7ff;
 								int j12 = (k11 / 8 << 8) + i12 / 8;
-								for (int k12 = 0; k12 < anIntArray1234.length; k12++) {
-									if (anIntArray1234[k12] != j12 || aByteArrayArray1247[k12] == null) {
+								for (int k12 = 0; k12 < regionBaseIds.length; k12++) {
+									if (regionBaseIds[k12] != j12 || aByteArrayArray1247[k12] == null) {
 										continue;
 									}
 									objectManager.loadObjectChunk(aClass11Array1230, worldController, k10, j8 * 8, (i12 & 7) * 8, l6, aByteArrayArray1247[k12], (k11 & 7) * 8, i11, j9 * 8);
@@ -996,10 +996,10 @@ public class Game extends RSApplet {
 				continue;
 			}
 			if (npc.anInt1540 == 1 && (npc.x & 0x7f) == 64 && (npc.y & 0x7f) == 64) {
-				if (anIntArrayArray929[l][i1] == waveCycle) {
+				if (occupiedTiles[l][i1] == waveCycle) {
 					continue;
 				}
-				anIntArrayArray929[l][i1] = waveCycle;
+				occupiedTiles[l][i1] = waveCycle;
 			}
                        if (!npc.definition.aBoolean84) {
 				k += 0x80000000;
@@ -1277,14 +1277,14 @@ public class Game extends RSApplet {
 		}
 		int l1 = (j - 32 - k1) * k / (j1 - j);
 		DrawingArea.fillArea(k1, l + 16 + l1, scrollBarHandleColor, 16, i1);
-		DrawingArea.drawVerticalLine(l + 16 + l1, anInt902, k1, i1);
-		DrawingArea.drawVerticalLine(l + 16 + l1, anInt902, k1, i1 + 1);
-		DrawingArea.drawHorizontalLine(l + 16 + l1, anInt902, 16, i1);
-		DrawingArea.drawHorizontalLine(l + 17 + l1, anInt902, 16, i1);
-		DrawingArea.drawVerticalLine(l + 16 + l1, anInt927, k1, i1 + 15);
-		DrawingArea.drawVerticalLine(l + 17 + l1, anInt927, k1 - 1, i1 + 14);
-		DrawingArea.drawHorizontalLine(l + 15 + l1 + k1, anInt927, 16, i1);
-		DrawingArea.drawHorizontalLine(l + 14 + l1 + k1, anInt927, 15, i1 + 1);
+		DrawingArea.drawVerticalLine(l + 16 + l1, scrollBarLightColor, k1, i1);
+		DrawingArea.drawVerticalLine(l + 16 + l1, scrollBarLightColor, k1, i1 + 1);
+		DrawingArea.drawHorizontalLine(l + 16 + l1, scrollBarLightColor, 16, i1);
+		DrawingArea.drawHorizontalLine(l + 17 + l1, scrollBarLightColor, 16, i1);
+		DrawingArea.drawVerticalLine(l + 16 + l1, scrollBarDarkColor, k1, i1 + 15);
+		DrawingArea.drawVerticalLine(l + 17 + l1, scrollBarDarkColor, k1 - 1, i1 + 14);
+		DrawingArea.drawHorizontalLine(l + 15 + l1 + k1, scrollBarDarkColor, 16, i1);
+		DrawingArea.drawHorizontalLine(l + 14 + l1 + k1, scrollBarDarkColor, 15, i1 + 1);
 	}
 
 	public void updateNPCs(Stream stream, int i) {
@@ -1589,24 +1589,24 @@ public class Game extends RSApplet {
 				// Chat messages sent
 				if (((Entity) obj).textSpoken != null && (j >= playerCount || publicChatMode == 0 || publicChatMode == 3 || publicChatMode == 1 && isFriendOrSelf(((Player) obj).name))) {
 					npcScreenPos(((Entity) obj), ((Entity) obj).height);
-					if (spriteDrawX > -1 && anInt974 < anInt975) {
-                                                anIntArray979[anInt974] = chatTextDrawingArea.measurePlainTextWidth(((Entity) obj).textSpoken) / 2;
-                                                anIntArray978[anInt974] = chatTextDrawingArea.fontHeight;
-						anIntArray976[anInt974] = spriteDrawX;
-						anIntArray977[anInt974] = spriteDrawY;
-						anIntArray980[anInt974] = ((Entity) obj).anInt1513;
-						anIntArray981[anInt974] = ((Entity) obj).anInt1531;
-						anIntArray982[anInt974] = ((Entity) obj).textCycle;
+					if (spriteDrawX > -1 && anInt974 < maxDisplayedText) {
+                                                textWidth[anInt974] = chatTextDrawingArea.measurePlainTextWidth(((Entity) obj).textSpoken) / 2;
+                                                textHeight[anInt974] = chatTextDrawingArea.fontHeight;
+						textX[anInt974] = spriteDrawX;
+						textY[anInt974] = spriteDrawY;
+						textColors[anInt974] = ((Entity) obj).anInt1513;
+						textEffects[anInt974] = ((Entity) obj).anInt1531;
+						textCycles[anInt974] = ((Entity) obj).textCycle;
 						aStringArray983[anInt974++] = ((Entity) obj).textSpoken;
 						if (chatEffectsState == 0 && ((Entity) obj).anInt1531 >= 1 && ((Entity) obj).anInt1531 <= 3) {
-							anIntArray978[anInt974] += 10;
-							anIntArray977[anInt974] += 5;
+							textHeight[anInt974] += 10;
+							textY[anInt974] += 5;
 						}
 						if (chatEffectsState == 0 && ((Entity) obj).anInt1531 == 4) {
-							anIntArray979[anInt974] = 60;
+							textWidth[anInt974] = 60;
 						}
 						if (chatEffectsState == 0 && ((Entity) obj).anInt1531 == 5) {
-							anIntArray978[anInt974] += 5;
+							textHeight[anInt974] += 5;
 						}
 					}
 				}
@@ -1650,40 +1650,40 @@ public class Game extends RSApplet {
 			}
 			// Hit markers
 			for (int k = 0; k < anInt974; k++) {
-				int k1 = anIntArray976[k];
-				int l1 = anIntArray977[k];
-				int j2 = anIntArray979[k];
-				int k2 = anIntArray978[k];
+				int k1 = textX[k];
+				int l1 = textY[k];
+				int j2 = textWidth[k];
+				int k2 = textHeight[k];
 				boolean flag = true;
 				while (flag) {
 					flag = false;
 					for (int l2 = 0; l2 < k; l2++) {
-						if (l1 + 2 > anIntArray977[l2] - anIntArray978[l2] && l1 - k2 < anIntArray977[l2] + 2 && k1 - j2 < anIntArray976[l2] + anIntArray979[l2] && k1 + j2 > anIntArray976[l2] - anIntArray979[l2] && anIntArray977[l2] - anIntArray978[l2] < l1) {
-							l1 = anIntArray977[l2] - anIntArray978[l2];
+						if (l1 + 2 > textY[l2] - textHeight[l2] && l1 - k2 < textY[l2] + 2 && k1 - j2 < textX[l2] + textWidth[l2] && k1 + j2 > textX[l2] - textWidth[l2] && textY[l2] - textHeight[l2] < l1) {
+							l1 = textY[l2] - textHeight[l2];
 							flag = true;
 						}
 					}
 
 				}
-				spriteDrawX = anIntArray976[k];
-				spriteDrawY = anIntArray977[k] = l1;
+				spriteDrawX = textX[k];
+				spriteDrawY = textY[k] = l1;
 				String s = aStringArray983[k];
 				if (chatEffectsState == 0) {
 					int i3 = 0xffff00;
-					if (anIntArray980[k] < 6) {
-						i3 = anIntArray965[anIntArray980[k]];
+					if (textColors[k] < 6) {
+						i3 = hitmarkColors[textColors[k]];
 					}
-					if (anIntArray980[k] == 6) {
+					if (textColors[k] == 6) {
 						i3 = waveCycle % 20 >= 10 ? 0xffff00 : 0xff0000;
 					}
-					if (anIntArray980[k] == 7) {
+					if (textColors[k] == 7) {
 						i3 = waveCycle % 20 >= 10 ? 0x00ffff : 255;
 					}
-					if (anIntArray980[k] == 8) {
+					if (textColors[k] == 8) {
 						i3 = waveCycle % 20 >= 10 ? 0x80ff80 : 45056;
 					}
-					if (anIntArray980[k] == 9) {
-						int j3 = 150 - anIntArray982[k];
+					if (textColors[k] == 9) {
+						int j3 = 150 - textCycles[k];
 						if (j3 < 50) {
 							i3 = 0xff0000 + 1280 * j3;
 						} else if (j3 < 100) {
@@ -1692,8 +1692,8 @@ public class Game extends RSApplet {
 							i3 = 0x00ff00 + 5 * (j3 - 100);
 						}
 					}
-					if (anIntArray980[k] == 10) {
-						int k3 = 150 - anIntArray982[k];
+					if (textColors[k] == 10) {
+						int k3 = 150 - textCycles[k];
 						if (k3 < 50) {
 							i3 = 0xff0000 + 5 * k3;
 						} else if (k3 < 100) {
@@ -1702,8 +1702,8 @@ public class Game extends RSApplet {
 							i3 = 255 + 0x50000 * (k3 - 100) - 5 * (k3 - 100);
 						}
 					}
-					if (anIntArray980[k] == 11) {
-						int l3 = 150 - anIntArray982[k];
+					if (textColors[k] == 11) {
+						int l3 = 150 - textCycles[k];
 						if (l3 < 50) {
 							i3 = 0xffffff - 0x50005 * l3;
 						} else if (l3 < 100) {
@@ -1712,32 +1712,32 @@ public class Game extends RSApplet {
 							i3 = 0xffffff - 0x50000 * (l3 - 100);
 						}
 					}
-					if (anIntArray981[k] == 0) {
+					if (textEffects[k] == 0) {
 						chatTextDrawingArea.textCenter(0, s, spriteDrawY + 1, spriteDrawX);
 						chatTextDrawingArea.textCenter(i3, s, spriteDrawY, spriteDrawX);
 					}
-					if (anIntArray981[k] == 1) {
+					if (textEffects[k] == 1) {
                                                 chatTextDrawingArea.drawWavyCenteredText(0, s, spriteDrawX, waveCycle, spriteDrawY + 1);
                                                 chatTextDrawingArea.drawWavyCenteredText(i3, s, spriteDrawX, waveCycle, spriteDrawY);
 					}
-					if (anIntArray981[k] == 2) {
+					if (textEffects[k] == 2) {
                                                 chatTextDrawingArea.drawWavyText(spriteDrawX, s, waveCycle, spriteDrawY + 1, 0);
                                                 chatTextDrawingArea.drawWavyText(spriteDrawX, s, waveCycle, spriteDrawY, i3);
 					}
-					if (anIntArray981[k] == 3) {
-                                                chatTextDrawingArea.drawShakeText(150 - anIntArray982[k], s, waveCycle, spriteDrawY + 1, spriteDrawX, 0);
-                                                chatTextDrawingArea.drawShakeText(150 - anIntArray982[k], s, waveCycle, spriteDrawY, spriteDrawX, i3);
+					if (textEffects[k] == 3) {
+                                                chatTextDrawingArea.drawShakeText(150 - textCycles[k], s, waveCycle, spriteDrawY + 1, spriteDrawX, 0);
+                                                chatTextDrawingArea.drawShakeText(150 - textCycles[k], s, waveCycle, spriteDrawY, spriteDrawX, i3);
 					}
-					if (anIntArray981[k] == 4) {
+					if (textEffects[k] == 4) {
                                                 int i4 = chatTextDrawingArea.measurePlainTextWidth(s);
-						int k4 = (150 - anIntArray982[k]) * (i4 + 100) / 150;
+						int k4 = (150 - textCycles[k]) * (i4 + 100) / 150;
 						DrawingArea.setDrawingArea(334, spriteDrawX - 50, spriteDrawX + 50, 0);
 						chatTextDrawingArea.textLeft(0, s, spriteDrawY + 1, spriteDrawX + 50 - k4);
 						chatTextDrawingArea.textLeft(i3, s, spriteDrawY, spriteDrawX + 50 - k4);
 						DrawingArea.defaultDrawingAreaSize();
 					}
-					if (anIntArray981[k] == 5) {
-						int j4 = 150 - anIntArray982[k];
+					if (textEffects[k] == 5) {
+						int j4 = 150 - textCycles[k];
 						int l4 = 0;
 						if (j4 < 25) {
 							l4 = j4 - 25;
@@ -2219,12 +2219,12 @@ public class Game extends RSApplet {
        public void resetCharacterOptions() {
 		aBoolean1031 = true;
 		for (int j = 0; j < 7; j++) {
-			anIntArray1065[j] = -1;
+			characterStyle[j] = -1;
 			for (int k = 0; k < IDK.length; k++) {
                                 if (IDK.cache[k].nonSelectable || IDK.cache[k].bodyPartId != j + (aBoolean1047 ? 0 : 7)) {
                                         continue;
                                 }
-				anIntArray1065[j] = k;
+				characterStyle[j] = k;
 				break;
 			}
 
@@ -2318,10 +2318,10 @@ public class Game extends RSApplet {
 				continue;
 			}
 			if ((player.x & 0x7f) == 64 && (player.y & 0x7f) == 64) {
-				if (anIntArrayArray929[j1][k1] == waveCycle) {
+				if (occupiedTiles[j1][k1] == waveCycle) {
 					continue;
 				}
-				anIntArrayArray929[j1][k1] = waveCycle;
+				occupiedTiles[j1][k1] = waveCycle;
 			}
                         player.animationBaseY = getTileHeight(plane, player.y, player.x);
                       worldController.addAnimableObject(plane, player.currentHeading, player.animationBaseY, i1, player.y, 60, player.x, player, player.aBoolean1541);
@@ -2372,7 +2372,7 @@ public class Game extends RSApplet {
 		if (j >= 300 && j <= 313) {
 			int k = (j - 300) / 2;
 			int j1 = j & 1;
-			int i2 = anIntArray1065[k];
+			int i2 = characterStyle[k];
 			if (i2 != -1) {
 				do {
 					if (j1 == 0 && --i2 < 0) {
@@ -2382,21 +2382,21 @@ public class Game extends RSApplet {
 						i2 = 0;
 					}
                                 } while (IDK.cache[i2].nonSelectable || IDK.cache[i2].bodyPartId != k + (aBoolean1047 ? 0 : 7));
-				anIntArray1065[k] = i2;
+				characterStyle[k] = i2;
 				aBoolean1031 = true;
 			}
 		}
 		if (j >= 314 && j <= 323) {
 			int l = (j - 314) / 2;
 			int k1 = j & 1;
-			int j2 = anIntArray990[l];
+			int j2 = characterColorIndices[l];
 			if (k1 == 0 && --j2 < 0) {
 				j2 = anIntArrayArray1003[l].length - 1;
 			}
 			if (k1 == 1 && ++j2 >= anIntArrayArray1003[l].length) {
 				j2 = 0;
 			}
-			anIntArray990[l] = j2;
+			characterColorIndices[l] = j2;
 			aBoolean1031 = true;
 		}
 		if (j == 324 && !aBoolean1047) {
@@ -2411,11 +2411,11 @@ public class Game extends RSApplet {
 			stream.createFrame(101);
 			stream.writeWordBigEndian(aBoolean1047 ? 0 : 1);
 			for (int i1 = 0; i1 < 7; i1++) {
-				stream.writeWordBigEndian(anIntArray1065[i1]);
+				stream.writeWordBigEndian(characterStyle[i1]);
 			}
 
 			for (int l1 = 0; l1 < 5; l1++) {
-				stream.writeWordBigEndian(anIntArray990[l1]);
+				stream.writeWordBigEndian(characterColorIndices[l1]);
 			}
 
 			return true;
@@ -2656,11 +2656,11 @@ public class Game extends RSApplet {
 		}
 
 		flameBuffer = new int[256];
-		anIntArray1190 = new int[32768];
-		anIntArray1191 = new int[32768];
+		flameGradient1 = new int[32768];
+		flameGradient2 = new int[32768];
 		randomizeBackground(null);
-		anIntArray828 = new int[32768];
-		anIntArray829 = new int[32768];
+		flameBuffer1 = new int[32768];
+		flameBuffer2 = new int[32768];
 		drawLoadingText(10, "Connecting to fileserver");
 		if (!aBoolean831) {
 			drawFlames = true;
@@ -2698,10 +2698,10 @@ public class Game extends RSApplet {
 
 	public int checkMapLoadStatus() {
 		for (int i = 0; i < aByteArrayArray1183.length; i++) {
-			if (aByteArrayArray1183[i] == null && anIntArray1235[i] != -1) {
+			if (aByteArrayArray1183[i] == null && terrainArchiveIds[i] != -1) {
 				return -1;
 			}
-			if (aByteArrayArray1247[i] == null && anIntArray1236[i] != -1) {
+			if (aByteArrayArray1247[i] == null && objectArchiveIds[i] != -1) {
 				return -2;
 			}
 		}
@@ -2710,8 +2710,8 @@ public class Game extends RSApplet {
 		for (int j = 0; j < aByteArrayArray1183.length; j++) {
 			byte abyte0[] = aByteArrayArray1247[j];
 			if (abyte0 != null) {
-				int k = (anIntArray1234[j] >> 8) * 64 - baseX;
-				int l = (anIntArray1234[j] & 0xff) * 64 - baseY;
+				int k = (regionBaseIds[j] >> 8) * 64 - baseX;
+				int l = (regionBaseIds[j] & 0xff) * 64 - baseY;
 				if (isDynamicRegion) {
 					k = 10;
 					l = 10;
@@ -2856,19 +2856,19 @@ public class Game extends RSApplet {
                                }
                                if (onDemandData.type == 3 && loadingStage == 1) {
                                        for (int i = 0; i < aByteArrayArray1183.length; i++) {
-                                               if (anIntArray1235[i] == onDemandData.id) {
+                                               if (terrainArchiveIds[i] == onDemandData.id) {
                                                        aByteArrayArray1183[i] = onDemandData.data;
                                                        if (onDemandData.data == null) {
-                                                               anIntArray1235[i] = -1;
+                                                               terrainArchiveIds[i] = -1;
                                                        }
                                                        break;
                                                }
-                                               if (anIntArray1236[i] != onDemandData.id) {
+                                               if (objectArchiveIds[i] != onDemandData.id) {
                                                        continue;
                                                }
                                                aByteArrayArray1247[i] = onDemandData.data;
                                                if (onDemandData.data == null) {
-                                                       anIntArray1236[i] = -1;
+                                                       objectArchiveIds[i] = -1;
                                                }
                                                break;
                                        }
@@ -2884,45 +2884,45 @@ public class Game extends RSApplet {
 		for (int j = 10; j < 117; j++) {
 			int k = (int) (Math.random() * 100D);
 			if (k < 50) {
-				anIntArray828[j + (c - 2 << 7)] = 255;
+				flameBuffer1[j + (c - 2 << 7)] = 255;
 			}
 		}
 		for (int l = 0; l < 100; l++) {
 			int i1 = (int) (Math.random() * 124D) + 2;
 			int k1 = (int) (Math.random() * 128D) + 128;
 			int k2 = i1 + (k1 << 7);
-			anIntArray828[k2] = 192;
+			flameBuffer1[k2] = 192;
 		}
 
 		for (int j1 = 1; j1 < c - 1; j1++) {
 			for (int l1 = 1; l1 < 127; l1++) {
 				int l2 = l1 + (j1 << 7);
-				anIntArray829[l2] = (anIntArray828[l2 - 1] + anIntArray828[l2 + 1] + anIntArray828[l2 - 128] + anIntArray828[l2 + 128]) / 4;
+				flameBuffer2[l2] = (flameBuffer1[l2 - 1] + flameBuffer1[l2 + 1] + flameBuffer1[l2 - 128] + flameBuffer1[l2 + 128]) / 4;
 			}
 
 		}
 
 		flameOffset += 128;
-		if (flameOffset > anIntArray1190.length) {
-			flameOffset -= anIntArray1190.length;
+		if (flameOffset > flameGradient1.length) {
+			flameOffset -= flameGradient1.length;
 			int i2 = (int) (Math.random() * 12D);
 			randomizeBackground(aBackgroundArray1152s[i2]);
 		}
 		for (int j2 = 1; j2 < c - 1; j2++) {
 			for (int i3 = 1; i3 < 127; i3++) {
 				int k3 = i3 + (j2 << 7);
-				int i4 = anIntArray829[k3 + 128] - anIntArray1190[k3 + flameOffset & anIntArray1190.length - 1] / 5;
+				int i4 = flameBuffer2[k3 + 128] - flameGradient1[k3 + flameOffset & flameGradient1.length - 1] / 5;
 				if (i4 < 0) {
 					i4 = 0;
 				}
-				anIntArray828[k3] = i4;
+				flameBuffer1[k3] = i4;
 			}
 
 		}
 
-		System.arraycopy(anIntArray969, 1, anIntArray969, 0, c - 1);
+		System.arraycopy(flameLineOffsets, 1, flameLineOffsets, 0, c - 1);
 
-		anIntArray969[c - 1] = (int) (Math.sin((double) loopCycle / 14D) * 16D + Math.sin((double) loopCycle / 15D) * 14D + Math.sin((double) loopCycle / 16D) * 12D);
+		flameLineOffsets[c - 1] = (int) (Math.sin((double) loopCycle / 14D) * 16D + Math.sin((double) loopCycle / 15D) * 14D + Math.sin((double) loopCycle / 16D) * 12D);
 		if (flameMainColor > 0) {
 			flameMainColor -= 4;
 		}
@@ -3235,7 +3235,7 @@ public class Game extends RSApplet {
                         calcCameraPos();
                 }
 		for (int i1 = 0; i1 < 5; i1++) {
-			anIntArray1030[i1]++;
+			cameraShakeCycle[i1]++;
 		}
 
                processInput();
@@ -3366,11 +3366,11 @@ public class Game extends RSApplet {
 	}
 
        public void handleScrollbarInput(int i, int j, int k, int l, RSInterface class9, int i1, boolean flag, int j1) {
-		int anInt992;
+		int scrollPadding;
 		if (aBoolean972) {
-			anInt992 = 32;
+			scrollPadding = 32;
 		} else {
-			anInt992 = 0;
+			scrollPadding = 0;
 		}
 		aBoolean972 = false;
 		if (k >= i && k < i + 16 && l >= i1 && l < i1 + 16) {
@@ -3383,7 +3383,7 @@ public class Game extends RSApplet {
 			if (flag) {
 				needDrawTabArea = true;
 			}
-		} else if (k >= i - anInt992 && k < i + 16 + anInt992 && l >= i1 + 16 && l < i1 + j - 16 && clickCycle > 0) {
+		} else if (k >= i - scrollPadding && k < i + 16 + scrollPadding && l >= i1 + 16 && l < i1 + j - 16 && clickCycle > 0) {
 			int l1 = (j - 32) * j / j1;
 			if (l1 < 8) {
 				l1 = 8;
@@ -3767,11 +3767,11 @@ public class Game extends RSApplet {
 			}
 		}
 		if (l == 1062) { //Fifth click
-			anInt924 += baseX;
-			if (anInt924 >= 113) {
+			objectClickCounter += baseX;
+			if (objectClickCounter >= 113) {
 				stream.createFrame(183);
 				stream.writeDWordBigEndian(0xe63271);
-				anInt924 = 0;
+				objectClickCounter = 0;
 			}
 			walkToObject(i1, k, j);
 			stream.createFrame(228);
@@ -3969,11 +3969,11 @@ public class Game extends RSApplet {
 				crossY = super.saveClickY;
 				crossType = 2;
 				crossIndex = 0;
-				anInt986 += i1;
-				if (anInt986 >= 54) {
+				playerOptionCounter += i1;
+				if (playerOptionCounter >= 54) {
 					stream.createFrame(189);
 					stream.writeWordBigEndian(234);
-					anInt986 = 0;
+					playerOptionCounter = 0;
 				}
 				stream.createFrame(73);
 				stream.writeShortLEDup(i1);
@@ -4692,17 +4692,17 @@ public class Game extends RSApplet {
 		stream = null;
 		aStream_847 = null;
 		inStream = null;
-		anIntArray1234 = null;
+		regionBaseIds = null;
 		aByteArrayArray1183 = null;
 		aByteArrayArray1247 = null;
-		anIntArray1235 = null;
-		anIntArray1236 = null;
+		terrainArchiveIds = null;
+		objectArchiveIds = null;
 		tileHeights = null;
 		tileFlags = null;
 		worldController = null;
 		aClass11Array1230 = null;
-		anIntArrayArray901 = null;
-		anIntArrayArray825 = null;
+		pathDirections = null;
+		pathDistances = null;
 		bigX = null;
 		bigY = null;
 		aByteArray912 = null;
@@ -4752,7 +4752,7 @@ public class Game extends RSApplet {
 		mapDotTeam = null;
 		mapScenes = null;
 		mapFunctions = null;
-		anIntArrayArray929 = null;
+		occupiedTiles = null;
 		playerArray = null;
 		playerIndices = null;
 		playerUpdateIndices = null;
@@ -5394,7 +5394,7 @@ public class Game extends RSApplet {
                         class9.modelRotation2 = (int) (Math.sin((double) loopCycle / 40D) * 256D) & 0x7ff;
 			if (aBoolean1031) {
 				for (int k1 = 0; k1 < 7; k1++) {
-					int l1 = anIntArray1065[k1];
+					int l1 = characterStyle[k1];
                                         if (l1 >= 0 && !IDK.cache[l1].ready()) {
 						return;
 					}
@@ -5404,7 +5404,7 @@ public class Game extends RSApplet {
 				Model aclass30_sub2_sub4_sub6s[] = new Model[7];
 				int i2 = 0;
 				for (int j2 = 0; j2 < 7; j2++) {
-					int k2 = anIntArray1065[j2];
+					int k2 = characterStyle[j2];
 					if (k2 >= 0) {
                                                 aclass30_sub2_sub4_sub6s[i2++] = IDK.cache[k2].getBodyModel();
 					}
@@ -5412,10 +5412,10 @@ public class Game extends RSApplet {
 
 				Model model = new Model(i2, aclass30_sub2_sub4_sub6s);
 				for (int l2 = 0; l2 < 5; l2++) {
-					if (anIntArray990[l2] != 0) {
-						model.recolor(anIntArrayArray1003[l2][0], anIntArrayArray1003[l2][anIntArray990[l2]]);
+					if (characterColorIndices[l2] != 0) {
+						model.recolor(anIntArrayArray1003[l2][0], anIntArrayArray1003[l2][characterColorIndices[l2]]);
 						if (l2 == 1) {
-							model.recolor(anIntArray1204[0], anIntArray1204[anIntArray990[l2]]);
+							model.recolor(anIntArray1204[0], anIntArray1204[characterColorIndices[l2]]);
 						}
 					}
 				}
@@ -6161,7 +6161,7 @@ public class Game extends RSApplet {
 				aBoolean1047 = true;
                            resetCharacterOptions();
 				for (int j3 = 0; j3 < 5; j3++) {
-					anIntArray990[j3] = 0;
+					characterColorIndices[j3] = 0;
 				}
 
 				for (int l3 = 0; l3 < 5; l3++) {
@@ -6171,9 +6171,9 @@ public class Game extends RSApplet {
 
 				itemUseCounter = 0;
 				npcAttackCounter = 0;
-				anInt986 = 0;
+				playerOptionCounter = 0;
                                walkPacketCounter = 0;
-				anInt924 = 0;
+				objectClickCounter = 0;
 				actionCounter = 0;
 				npcInteractionCounter = 0;
 				npcClickCounter = 0;
@@ -6349,15 +6349,15 @@ public class Game extends RSApplet {
 		byte byte1 = 104;
 		for (int l2 = 0; l2 < byte0; l2++) {
 			for (int i3 = 0; i3 < byte1; i3++) {
-				anIntArrayArray901[l2][i3] = 0;
-				anIntArrayArray825[l2][i3] = 0x5f5e0ff;
+				pathDirections[l2][i3] = 0;
+				pathDistances[l2][i3] = 0x5f5e0ff;
 			}
 
 		}
 		int j3 = j2;
 		int k3 = j1;
-		anIntArrayArray901[j2][j1] = 99;
-		anIntArrayArray825[j2][j1] = 0;
+		pathDirections[j2][j1] = 99;
+		pathDistances[j2][j1] = 0;
 		int l3 = 0;
 		int i4 = 0;
 		bigX[l3] = j2;
@@ -6387,62 +6387,62 @@ public class Game extends RSApplet {
 				flag1 = true;
 				break;
 			}
-			int l4 = anIntArrayArray825[j3][k3] + 1;
-			if (j3 > 0 && anIntArrayArray901[j3 - 1][k3] == 0 && (ai[j3 - 1][k3] & 0x1280108) == 0) {
+			int l4 = pathDistances[j3][k3] + 1;
+			if (j3 > 0 && pathDirections[j3 - 1][k3] == 0 && (ai[j3 - 1][k3] & 0x1280108) == 0) {
 				bigX[l3] = j3 - 1;
 				bigY[l3] = k3;
 				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3 - 1][k3] = 2;
-				anIntArrayArray825[j3 - 1][k3] = l4;
+				pathDirections[j3 - 1][k3] = 2;
+				pathDistances[j3 - 1][k3] = l4;
 			}
-			if (j3 < byte0 - 1 && anIntArrayArray901[j3 + 1][k3] == 0 && (ai[j3 + 1][k3] & 0x1280180) == 0) {
+			if (j3 < byte0 - 1 && pathDirections[j3 + 1][k3] == 0 && (ai[j3 + 1][k3] & 0x1280180) == 0) {
 				bigX[l3] = j3 + 1;
 				bigY[l3] = k3;
 				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3 + 1][k3] = 8;
-				anIntArrayArray825[j3 + 1][k3] = l4;
+				pathDirections[j3 + 1][k3] = 8;
+				pathDistances[j3 + 1][k3] = l4;
 			}
-			if (k3 > 0 && anIntArrayArray901[j3][k3 - 1] == 0 && (ai[j3][k3 - 1] & 0x1280102) == 0) {
+			if (k3 > 0 && pathDirections[j3][k3 - 1] == 0 && (ai[j3][k3 - 1] & 0x1280102) == 0) {
 				bigX[l3] = j3;
 				bigY[l3] = k3 - 1;
 				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3][k3 - 1] = 1;
-				anIntArrayArray825[j3][k3 - 1] = l4;
+				pathDirections[j3][k3 - 1] = 1;
+				pathDistances[j3][k3 - 1] = l4;
 			}
-			if (k3 < byte1 - 1 && anIntArrayArray901[j3][k3 + 1] == 0 && (ai[j3][k3 + 1] & 0x1280120) == 0) {
+			if (k3 < byte1 - 1 && pathDirections[j3][k3 + 1] == 0 && (ai[j3][k3 + 1] & 0x1280120) == 0) {
 				bigX[l3] = j3;
 				bigY[l3] = k3 + 1;
 				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3][k3 + 1] = 4;
-				anIntArrayArray825[j3][k3 + 1] = l4;
+				pathDirections[j3][k3 + 1] = 4;
+				pathDistances[j3][k3 + 1] = l4;
 			}
-			if (j3 > 0 && k3 > 0 && anIntArrayArray901[j3 - 1][k3 - 1] == 0 && (ai[j3 - 1][k3 - 1] & 0x128010e) == 0 && (ai[j3 - 1][k3] & 0x1280108) == 0 && (ai[j3][k3 - 1] & 0x1280102) == 0) {
+			if (j3 > 0 && k3 > 0 && pathDirections[j3 - 1][k3 - 1] == 0 && (ai[j3 - 1][k3 - 1] & 0x128010e) == 0 && (ai[j3 - 1][k3] & 0x1280108) == 0 && (ai[j3][k3 - 1] & 0x1280102) == 0) {
 				bigX[l3] = j3 - 1;
 				bigY[l3] = k3 - 1;
 				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3 - 1][k3 - 1] = 3;
-				anIntArrayArray825[j3 - 1][k3 - 1] = l4;
+				pathDirections[j3 - 1][k3 - 1] = 3;
+				pathDistances[j3 - 1][k3 - 1] = l4;
 			}
-			if (j3 < byte0 - 1 && k3 > 0 && anIntArrayArray901[j3 + 1][k3 - 1] == 0 && (ai[j3 + 1][k3 - 1] & 0x1280183) == 0 && (ai[j3 + 1][k3] & 0x1280180) == 0 && (ai[j3][k3 - 1] & 0x1280102) == 0) {
+			if (j3 < byte0 - 1 && k3 > 0 && pathDirections[j3 + 1][k3 - 1] == 0 && (ai[j3 + 1][k3 - 1] & 0x1280183) == 0 && (ai[j3 + 1][k3] & 0x1280180) == 0 && (ai[j3][k3 - 1] & 0x1280102) == 0) {
 				bigX[l3] = j3 + 1;
 				bigY[l3] = k3 - 1;
 				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3 + 1][k3 - 1] = 9;
-				anIntArrayArray825[j3 + 1][k3 - 1] = l4;
+				pathDirections[j3 + 1][k3 - 1] = 9;
+				pathDistances[j3 + 1][k3 - 1] = l4;
 			}
-			if (j3 > 0 && k3 < byte1 - 1 && anIntArrayArray901[j3 - 1][k3 + 1] == 0 && (ai[j3 - 1][k3 + 1] & 0x1280138) == 0 && (ai[j3 - 1][k3] & 0x1280108) == 0 && (ai[j3][k3 + 1] & 0x1280120) == 0) {
+			if (j3 > 0 && k3 < byte1 - 1 && pathDirections[j3 - 1][k3 + 1] == 0 && (ai[j3 - 1][k3 + 1] & 0x1280138) == 0 && (ai[j3 - 1][k3] & 0x1280108) == 0 && (ai[j3][k3 + 1] & 0x1280120) == 0) {
 				bigX[l3] = j3 - 1;
 				bigY[l3] = k3 + 1;
 				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3 - 1][k3 + 1] = 6;
-				anIntArrayArray825[j3 - 1][k3 + 1] = l4;
+				pathDirections[j3 - 1][k3 + 1] = 6;
+				pathDistances[j3 - 1][k3 + 1] = l4;
 			}
-			if (j3 < byte0 - 1 && k3 < byte1 - 1 && anIntArrayArray901[j3 + 1][k3 + 1] == 0 && (ai[j3 + 1][k3 + 1] & 0x12801e0) == 0 && (ai[j3 + 1][k3] & 0x1280180) == 0 && (ai[j3][k3 + 1] & 0x1280120) == 0) {
+			if (j3 < byte0 - 1 && k3 < byte1 - 1 && pathDirections[j3 + 1][k3 + 1] == 0 && (ai[j3 + 1][k3 + 1] & 0x12801e0) == 0 && (ai[j3 + 1][k3] & 0x1280180) == 0 && (ai[j3][k3 + 1] & 0x1280120) == 0) {
 				bigX[l3] = j3 + 1;
 				bigY[l3] = k3 + 1;
 				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3 + 1][k3 + 1] = 12;
-				anIntArrayArray825[j3 + 1][k3 + 1] = l4;
+				pathDirections[j3 + 1][k3 + 1] = 12;
+				pathDistances[j3 + 1][k3 + 1] = l4;
 			}
 		}
 		alternatePathFound = 0;
@@ -6452,8 +6452,8 @@ public class Game extends RSApplet {
 				for (int k5 = 1; k5 < 2; k5++) {
 					for (int i6 = k2 - k5; i6 <= k2 + k5; i6++) {
 						for (int l6 = i2 - k5; l6 <= i2 + k5; l6++) {
-							if (i6 >= 0 && l6 >= 0 && i6 < 104 && l6 < 104 && anIntArrayArray825[i6][l6] < i5) {
-								i5 = anIntArrayArray825[i6][l6];
+							if (i6 >= 0 && l6 >= 0 && i6 < 104 && l6 < 104 && pathDistances[i6][l6] < i5) {
+								i5 = pathDistances[i6][l6];
 								j3 = i6;
 								k3 = l6;
 								alternatePathFound = 1;
@@ -6477,7 +6477,7 @@ public class Game extends RSApplet {
 		bigX[i4] = j3;
 		bigY[i4++] = k3;
 		int l5;
-		for (int j5 = l5 = anIntArrayArray901[j3][k3]; j3 != j2 || k3 != j1; j5 = anIntArrayArray901[j3][k3]) {
+		for (int j5 = l5 = pathDirections[j3][k3]; j3 != j2 || k3 != j1; j5 = pathDirections[j3][k3]) {
 			if (j5 != l5) {
 				l5 = j5;
 				bigX[i4] = j3;
@@ -7317,8 +7317,8 @@ public class Game extends RSApplet {
 					break;
 				}
 
-				anIntArray968[j6] = k6;
-				anIntArray1057[j6] = i7 - k6;
+				mapBackLeft[j6] = k6;
+				mapBackWidths[j6] = i7 - k6;
 			}
 
 			for (int l6 = 5; l6 < 156; l6++) {
@@ -7339,7 +7339,7 @@ public class Game extends RSApplet {
 				}
 
 				minimapLineOffset[l6 - 5] = j7 - 25;
-				anIntArray1229[l6 - 5] = l7 - j7;
+				minimapLineLengths[l6 - 5] = l7 - j7;
 			}
 			Texture.resize(765, 503);
 			gameScreenOffsets = Texture.lineOffsets;
@@ -8494,27 +8494,27 @@ public class Game extends RSApplet {
 
 	public void randomizeBackground(Background background) {
 		int j = 256;
-		for (int k = 0; k < anIntArray1190.length; k++) {
-			anIntArray1190[k] = 0;
+		for (int k = 0; k < flameGradient1.length; k++) {
+			flameGradient1[k] = 0;
 		}
 
 		for (int l = 0; l < 5000; l++) {
 			int i1 = (int) (Math.random() * 128D * (double) j);
-			anIntArray1190[i1] = (int) (Math.random() * 256D);
+			flameGradient1[i1] = (int) (Math.random() * 256D);
 		}
 
 		for (int j1 = 0; j1 < 20; j1++) {
 			for (int k1 = 1; k1 < j - 1; k1++) {
 				for (int i2 = 1; i2 < 127; i2++) {
 					int k2 = i2 + (k1 << 7);
-					anIntArray1191[k2] = (anIntArray1190[k2 - 1] + anIntArray1190[k2 + 1] + anIntArray1190[k2 - 128] + anIntArray1190[k2 + 128]) / 4;
+					flameGradient2[k2] = (flameGradient1[k2 - 1] + flameGradient1[k2 + 1] + flameGradient1[k2 - 128] + flameGradient1[k2 + 128]) / 4;
 				}
 
 			}
 
-			int ai[] = anIntArray1190;
-			anIntArray1190 = anIntArray1191;
-			anIntArray1191 = ai;
+			int ai[] = flameGradient1;
+			flameGradient1 = flameGradient2;
+			flameGradient2 = ai;
 		}
 
 		if (background != null) {
@@ -8525,7 +8525,7 @@ public class Game extends RSApplet {
 						int i3 = l2 + 16 + background.offsetX;
 						int j3 = j2 + 16 + background.offsetY;
 						int k3 = i3 + (j3 << 7);
-						anIntArray1190[k3] = 0;
+						flameGradient1[k3] = 0;
 					}
 				}
 
@@ -9154,10 +9154,10 @@ public class Game extends RSApplet {
 		flamePaletteRed = null;
 		flamePaletteGreen = null;
 		flamePaletteBlue = null;
-		anIntArray1190 = null;
-		anIntArray1191 = null;
-		anIntArray828 = null;
-		anIntArray829 = null;
+		flameGradient1 = null;
+		flameGradient2 = null;
+		flameBuffer1 = null;
+		flameBuffer2 = null;
 		aClass30_Sub2_Sub1_Sub1_1201 = null;
 		aClass30_Sub2_Sub1_Sub1_1202 = null;
 	}
@@ -9368,7 +9368,7 @@ public class Game extends RSApplet {
 					k1 = variousSettings[ai[l++]];
 				}
 				if (j1 == 6) {
-					k1 = anIntArray1019[maxStats[ai[l++]] - 1];
+					k1 = levelExperience[maxStats[ai[l++]] - 1];
 				}
 				if (j1 == 7) {
 					k1 = variousSettings[ai[l++]] * 100 / 46875;
@@ -9415,7 +9415,7 @@ public class Game extends RSApplet {
                                         int l3 = varBit.configId;
                                         int i4 = varBit.leastSignificantBit;
                                         int j4 = varBit.mostSignificantBit;
-					int k4 = anIntArray1232[j4 - i4];
+					int k4 = bitMasks[j4 - i4];
 					k1 = variousSettings[l3] >> i4 & k4;
 				}
 				if (j1 == 15) {
@@ -9490,7 +9490,7 @@ public class Game extends RSApplet {
 				}
 			}
 
-			compass.drawTransformed(33, cameraYaw, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
+			compass.drawTransformed(33, cameraYaw, mapBackWidths, 256, mapBackLeft, 25, 0, 0, 33, 25);
 			aRSImageProducer_1165.initDrawingArea();
 			Texture.lineOffsets = chatBoxAreaOffsets;
 			return;
@@ -9498,8 +9498,8 @@ public class Game extends RSApplet {
 		int i = cameraYaw + minimapInt2 & 0x7ff;
 		int j = 48 + myPlayer.x / 32;
 		int l2 = 464 - myPlayer.y / 32;
-           minimapImage.drawTransformed(151, i, anIntArray1229, 256 + minimapInt3, minimapLineOffset, l2, 5, 25, 146, j);
-		compass.drawTransformed(33, cameraYaw, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
+           minimapImage.drawTransformed(151, i, minimapLineLengths, 256 + minimapInt3, minimapLineOffset, l2, 5, 25, 146, j);
+		compass.drawTransformed(33, cameraYaw, mapBackWidths, 256, mapBackLeft, 25, 0, 0, 33, 25);
 		// Minimap icons (shops, quest etc)
 		for (int j5 = 0; j5 < minimapIconCount; j5++) {
 			int k = minimapIconX[j5] * 4 + 2 - myPlayer.x / 32;
@@ -9795,14 +9795,14 @@ public class Game extends RSApplet {
 		int i1 = 0;
 		int j1 = 1152;
 		for (int k1 = 1; k1 < c - 1; k1++) {
-			int l1 = anIntArray969[k1] * (c - k1) / c;
+			int l1 = flameLineOffsets[k1] * (c - k1) / c;
 			int j2 = 22 + l1;
 			if (j2 < 0) {
 				j2 = 0;
 			}
 			i1 += j2;
 			for (int l2 = j2; l2 < 128; l2++) {
-				int j3 = anIntArray828[i1++];
+				int j3 = flameBuffer1[i1++];
 				if (j3 != 0) {
 					int l3 = j3;
 					int j4 = 256 - j3;
@@ -9823,11 +9823,11 @@ public class Game extends RSApplet {
 		i1 = 0;
 		j1 = 1176;
 		for (int k2 = 1; k2 < c - 1; k2++) {
-			int i3 = anIntArray969[k2] * (c - k2) / c;
+			int i3 = flameLineOffsets[k2] * (c - k2) / c;
 			int k3 = 103 - i3;
 			j1 += i3;
 			for (int i4 = 0; i4 < k3; i4++) {
-				int k4 = anIntArray828[i1++];
+				int k4 = flameBuffer1[i1++];
 				if (k4 != 0) {
 					int i5 = k4;
 					int j5 = 256 - k4;
@@ -10095,7 +10095,7 @@ public class Game extends RSApplet {
 			int l9 = stream.readUnsignedByteSub();
 			int j12 = l9 >> 2;
 			int k14 = l9 & 3;
-			int j16 = anIntArray1177[j12];
+			int j16 = objectData[j12];
 			int j17 = stream.readShortAdd();
 			if (j4 >= 0 && i7 >= 0 && j4 < 103 && i7 < 103) {
 				int j18 = tileHeights[plane][j4][i7];
@@ -10150,7 +10150,7 @@ public class Game extends RSApplet {
 			int k18 = stream.readUnsignedByteSub();
 			int j19 = k18 >> 2;
 			int i20 = k18 & 3;
-			int l20 = anIntArray1177[j19];
+			int l20 = objectData[j19];
 			byte byte2 = stream.readSignedByte();
 			int l21 = stream.readUnsignedWord();
 			byte byte3 = stream.readByteNeg();
@@ -10202,7 +10202,7 @@ public class Game extends RSApplet {
 			int l2 = stream.readUnsignedByteNeg();
 			int k5 = l2 >> 2;
 			int j8 = l2 & 3;
-			int i11 = anIntArray1177[k5];
+			int i11 = objectData[k5];
 			int j13 = stream.readUnsignedByte();
 			int k15 = mapEventX + (j13 >> 4 & 7);
 			int l16 = mapEventY + (j13 & 7);
@@ -10220,7 +10220,7 @@ public class Game extends RSApplet {
 			int k12 = stream.readUnsignedByteSub();
 			int i15 = k12 >> 2;
 			int k16 = k12 & 3;
-			int l17 = anIntArray1177[i15];
+			int l17 = objectData[i15];
 			//System.out.println("id: " + j10 + " x:" + (this.baseX + mapEventX) + " y:" + (this.baseY + mapEventY));
 			if (l4 >= 0 && k7 >= 0 && l4 < 104 && k7 < 104)
 				queuePendingSpawn(-1, j10, k16, l17, k7, i15, plane, l4, 0);
@@ -10758,7 +10758,7 @@ public class Game extends RSApplet {
 					myPlayer.currentHealth = level;
 				}
 				for (int k20 = 0; k20 < 98; k20++) {
-					if (experience >= anIntArray1019[k20]) {
+					if (experience >= levelExperience[k20]) {
 						maxStats[skillID] = k20 + 2;
 					}
 				}
@@ -10837,9 +10837,9 @@ public class Game extends RSApplet {
 							for (int j23 = 0; j23 < 13; j23++) {
 								int i26 = inStream.readBits(1);
 								if (i26 == 1) {
-									anIntArrayArrayArray1129[j16][l20][j23] = inStream.readBits(26);
+									dynamicRegionData[j16][l20][j23] = inStream.readBits(26);
 								} else {
-									anIntArrayArrayArray1129[j16][l20][j23] = -1;
+									dynamicRegionData[j16][l20][j23] = -1;
 								}
 							}
 
@@ -10877,23 +10877,23 @@ public class Game extends RSApplet {
 
 					aByteArrayArray1183 = new byte[k16][];
 					aByteArrayArray1247 = new byte[k16][];
-					anIntArray1234 = new int[k16];
-					anIntArray1235 = new int[k16];
-					anIntArray1236 = new int[k16];
+					regionBaseIds = new int[k16];
+					terrainArchiveIds = new int[k16];
+					objectArchiveIds = new int[k16];
 					k16 = 0;
 					for (int l23 = (currentRegionX - 6) / 8; l23 <= (currentRegionX + 6) / 8; l23++) {
 						for (int j26 = (currentRegionY - 6) / 8; j26 <= (currentRegionY + 6) / 8; j26++) {
-							anIntArray1234[k16] = (l23 << 8) + j26;
+							regionBaseIds[k16] = (l23 << 8) + j26;
 							if (aBoolean1141 && (j26 == 49 || j26 == 149 || j26 == 147 || l23 == 50 || l23 == 49 && j26 == 47)) {
-								anIntArray1235[k16] = -1;
-								anIntArray1236[k16] = -1;
+								terrainArchiveIds[k16] = -1;
+								objectArchiveIds[k16] = -1;
 								k16++;
 							} else {
-                                                                int k28 = anIntArray1235[k16] = onDemandFetcher.getRegionArchiveId(0, j26, l23);
+                                                                int k28 = terrainArchiveIds[k16] = onDemandFetcher.getRegionArchiveId(0, j26, l23);
                                                                 if (k28 != -1) {
                                                                         onDemandFetcher.queueRequest(3, k28);
                                                                 }
-                                                                int j30 = anIntArray1236[k16] = onDemandFetcher.getRegionArchiveId(1, j26, l23);
+                                                                int j30 = objectArchiveIds[k16] = onDemandFetcher.getRegionArchiveId(1, j26, l23);
                                                                 if (j30 != -1) {
                                                                         onDemandFetcher.queueRequest(3, j30);
                                                                 }
@@ -10910,7 +10910,7 @@ public class Game extends RSApplet {
 					for (int i24 = 0; i24 < 4; i24++) {
 						for (int k26 = 0; k26 < 13; k26++) {
 							for (int l28 = 0; l28 < 13; l28++) {
-								int k30 = anIntArrayArrayArray1129[i24][k26][l28];
+								int k30 = dynamicRegionData[i24][k26][l28];
 								if (k30 != -1) {
 									int k31 = k30 >> 14 & 0x3ff;
 									int i32 = k30 >> 3 & 0x7ff;
@@ -10935,18 +10935,18 @@ public class Game extends RSApplet {
 
 					aByteArrayArray1183 = new byte[l16][];
 					aByteArrayArray1247 = new byte[l16][];
-					anIntArray1234 = new int[l16];
-					anIntArray1235 = new int[l16];
-					anIntArray1236 = new int[l16];
+					regionBaseIds = new int[l16];
+					terrainArchiveIds = new int[l16];
+					objectArchiveIds = new int[l16];
 					for (int l26 = 0; l26 < l16; l26++) {
-						int i29 = anIntArray1234[l26] = ai[l26];
+						int i29 = regionBaseIds[l26] = ai[l26];
 						int l30 = i29 >> 8 & 0xff;
 						int l31 = i29 & 0xff;
-                                                int j32 = anIntArray1235[l26] = onDemandFetcher.getRegionArchiveId(0, l31, l30);
+                                                int j32 = terrainArchiveIds[l26] = onDemandFetcher.getRegionArchiveId(0, l31, l30);
                                                 if (j32 != -1) {
                                                         onDemandFetcher.queueRequest(3, j32);
                                                 }
-                                                int i33 = anIntArray1236[l26] = onDemandFetcher.getRegionArchiveId(1, l31, l30);
+                                                int i33 = objectArchiveIds[l26] = onDemandFetcher.getRegionArchiveId(1, l31, l30);
                                                 if (i33 != -1) {
                                                         onDemandFetcher.queueRequest(3, i33);
                                                 }
@@ -11075,10 +11075,10 @@ public class Game extends RSApplet {
 				int j17 = inStream.readUnsignedByte();
 				int k21 = inStream.readUnsignedByte();
 				tabFlashing[l3] = true;
-				anIntArray873[l3] = k11;
-				anIntArray1203[l3] = j17;
-				anIntArray928[l3] = k21;
-				anIntArray1030[l3] = 0;
+				cameraShakeAmplitude[l3] = k11;
+				cameraShakeFrequency[l3] = j17;
+				cameraShakeSpeed[l3] = k21;
+				cameraShakeCycle[l3] = 0;
 				pktType = -1;
 				return true;
 			}
@@ -11361,8 +11361,8 @@ public class Game extends RSApplet {
 			}
 			if (pktType == 68) {
 				for (int k5 = 0; k5 < variousSettings.length; k5++) {
-					if (variousSettings[k5] != anIntArray1045[k5]) {
-						variousSettings[k5] = anIntArray1045[k5];
+					if (variousSettings[k5] != varpArray[k5]) {
+						variousSettings[k5] = varpArray[k5];
                                           applyVarp(k5);
 						needDrawTabArea = true;
 					}
@@ -11688,7 +11688,7 @@ public class Game extends RSApplet {
 			if (pktType == 87) {
 				int j8 = inStream.readShortLE();
 				int l14 = inStream.readIntV1();
-				anIntArray1045[j8] = l14;
+				varpArray[j8] = l14;
 				if (variousSettings[j8] != l14) {
 					variousSettings[j8] = l14;
                                   applyVarp(j8);
@@ -11703,7 +11703,7 @@ public class Game extends RSApplet {
 			if (pktType == 36) {
 				int k8 = inStream.readShortLE();
 				byte byte0 = inStream.readSignedByte();
-				anIntArray1045[k8] = byte0;
+				varpArray[k8] = byte0;
 				if (variousSettings[k8] != byte0) {
 					variousSettings[k8] = byte0;
                                   applyVarp(k8);
@@ -11845,8 +11845,8 @@ public class Game extends RSApplet {
 			if (cameraZoom / 256 > i) {
 				i = cameraZoom / 256;
 			}
-			if (tabFlashing[4] && anIntArray1203[4] + 128 > i) {
-				i = anIntArray1203[4] + 128;
+			if (tabFlashing[4] && cameraShakeFrequency[4] + 128 > i) {
+				i = cameraShakeFrequency[4] + 128;
 			}
 			int k = cameraYaw + cameraYawOffset & 0x7ff;
 			// Camera zoom control
@@ -11865,7 +11865,7 @@ public class Game extends RSApplet {
 		int l1 = xCameraCurve;
 		for (int i2 = 0; i2 < 5; i2++) {
 			if (tabFlashing[i2]) {
-				int j2 = (int) (Math.random() * (double) (anIntArray873[i2] * 2 + 1) - (double) anIntArray873[i2] + Math.sin((double) anIntArray1030[i2] * (double) anIntArray928[i2] / 100D) * (double) anIntArray1203[i2]);
+				int j2 = (int) (Math.random() * (double) (cameraShakeAmplitude[i2] * 2 + 1) - (double) cameraShakeAmplitude[i2] + Math.sin((double) cameraShakeCycle[i2] * (double) cameraShakeSpeed[i2] / 100D) * (double) cameraShakeFrequency[i2]);
 				if (i2 == 0) {
 					xCameraPos += j2;
 				}
@@ -12014,7 +12014,7 @@ public class Game extends RSApplet {
 			System.out.println("Please downgrade to Java 8 to avoid problems! (AdoptOpenJDK.net)");
 		}
 		server = ClientSettings.SERVER_IP;
-		anIntArrayArray825 = new int[104][104];
+		pathDistances = new int[104][104];
 		friendsNodeIDs = new int[200];
 		groundArray = new NodeList[4][104][104];
 		aBoolean831 = false;
@@ -12027,7 +12027,7 @@ public class Game extends RSApplet {
 		openInterfaceID = -1;
 		currentExp = new int[Skills.skillsCount];
 		aBoolean872 = false;
-		anIntArray873 = new int[5];
+		cameraShakeAmplitude = new int[5];
 		selectedTargetId = -1;
 		tabFlashing = new boolean[5];
 		drawFlames = false;
@@ -12042,15 +12042,15 @@ public class Game extends RSApplet {
 		playerUpdateIndices = new int[maxPlayers];
 		aStreamArray895s = new Stream[maxPlayers];
 		cameraYawOffsetSpeed = 1;
-		anIntArrayArray901 = new int[104][104];
-		anInt902 = 0x766654;
+		pathDirections = new int[104][104];
+		scrollBarLightColor = 0x766654;
 		aByteArray912 = new byte[16384];
 		currentStats = new int[Skills.skillsCount];
 		ignoreListAsLongs = new long[100];
 		loadingError = false;
-		anInt927 = 0x332d25;
-		anIntArray928 = new int[5];
-		anIntArrayArray929 = new int[104][104];
+		scrollBarDarkColor = 0x332d25;
+		cameraShakeSpeed = new int[5];
+		occupiedTiles = new int[104][104];
 		chatTypes = new int[100];
 		chatNames = new String[100];
 		chatMessages = new String[100];
@@ -12061,43 +12061,43 @@ public class Game extends RSApplet {
 		drawingFlames = false;
 		spriteDrawX = -1;
 		spriteDrawY = -1;
-		anIntArray968 = new int[33];
-		anIntArray969 = new int[256];
+		mapBackLeft = new int[33];
+		flameLineOffsets = new int[256];
 		decompressors = new Decompressor[5];
 		variousSettings = new int[2000];
 		aBoolean972 = false;
-		anInt975 = 50;
-		anIntArray976 = new int[anInt975];
-		anIntArray977 = new int[anInt975];
-		anIntArray978 = new int[anInt975];
-		anIntArray979 = new int[anInt975];
-		anIntArray980 = new int[anInt975];
-		anIntArray981 = new int[anInt975];
-		anIntArray982 = new int[anInt975];
-		aStringArray983 = new String[anInt975];
+		maxDisplayedText = 50;
+		textX = new int[maxDisplayedText];
+		textY = new int[maxDisplayedText];
+		textHeight = new int[maxDisplayedText];
+		textWidth = new int[maxDisplayedText];
+		textColors = new int[maxDisplayedText];
+		textEffects = new int[maxDisplayedText];
+		textCycles = new int[maxDisplayedText];
+		aStringArray983 = new String[maxDisplayedText];
 		lastPlane = -1;
 		hitMarks = new Sprite[20];
-		anIntArray990 = new int[5];
+		characterColorIndices = new int[5];
 		scrollBarColor = 0x23201b;
 		amountOrNameInput = "";
 		aClass19_1013 = new NodeList();
 		aBoolean1017 = false;
 		overlayInterfaceId = -1;
-		anIntArray1030 = new int[5];
+		cameraShakeCycle = new int[5];
 		aBoolean1031 = false;
 		mapFunctions = new Sprite[100];
 		dialogID = -1;
 		maxStats = new int[Skills.skillsCount];
-		anIntArray1045 = new int[2000];
+		varpArray = new int[2000];
 		aBoolean1047 = true;
 		minimapLineOffset = new int[151];
 		flashingTabId = -1;
 		aClass19_1056 = new NodeList();
-		anIntArray1057 = new int[33];
+		mapBackWidths = new int[33];
 		aClass9_1059 = new RSInterface();
 		mapScenes = new Background[100];
 		scrollBarHandleColor = 0x4d4233;
-		anIntArray1065 = new int[7];
+		characterStyle = new int[7];
 		minimapIconX = new int[1000];
 		minimapIconY = new int[1000];
 		aBoolean1080 = false;
@@ -12115,7 +12115,7 @@ public class Game extends RSApplet {
 		inputPrompt = "";
 		atPlayerActions = new String[5];
 		atPlayerArray = new boolean[5];
-		anIntArrayArrayArray1129 = new int[4][13][13];
+		dynamicRegionData = new int[4][13][13];
 		cameraYOffsetSpeed = 2;
 		minimapIconSprites = new Sprite[1000];
 		aBoolean1141 = false;
@@ -12137,7 +12137,7 @@ public class Game extends RSApplet {
 		invOverlayInterfaceID = -1;
 		stream = Stream.create();
 		menuActionName = new String[500];
-		anIntArray1203 = new int[5];
+		cameraShakeFrequency = new int[5];
 		sound = new int[50];
 		minimapHorizontalSpeed = 2;
 		chatScrollHeight = 78;
@@ -12146,7 +12146,7 @@ public class Game extends RSApplet {
 		tabID = 3;
 		inputTaken = false;
 		songChanging = true;
-		anIntArray1229 = new int[151];
+		minimapLineLengths = new int[151];
 		aClass11Array1230 = new CollisionMap[4];
 		chatSettingsUpdateNeeded = false;
 		soundType = new int[50];
@@ -12169,11 +12169,11 @@ public class Game extends RSApplet {
 	public static String server;
 	public int ignoreCount;
 	public long aLong824;
-	public int[][] anIntArrayArray825;
+        public int[][] pathDistances;
 	public int[] friendsNodeIDs;
 	public NodeList[][][] groundArray;
-	public int[] anIntArray828;
-	public int[] anIntArray829;
+        public int[] flameBuffer1;
+        public int[] flameBuffer2;
 	public volatile boolean aBoolean831;
 	public Socket aSocket832;
 	public int loginScreenState;
@@ -12218,7 +12218,7 @@ public class Game extends RSApplet {
 	public Sprite mapFlag;
 	public Sprite mapMarker;
 	public boolean aBoolean872;
-	public final int[] anIntArray873;
+        public final int[] cameraShakeAmplitude;
 	public int selectedTargetId;
 	public final boolean[] tabFlashing;
 	public int weight;
@@ -12241,8 +12241,8 @@ public class Game extends RSApplet {
 	public int cameraYawOffsetSpeed;
 	public int friendsCount;
 	public int interfaceMode;
-	public int[][] anIntArrayArray901;
-	public final int anInt902;
+        public int[][] pathDirections;
+        public final int scrollBarLightColor;
 	public RSImageProducer backLeftIP1;
 	public RSImageProducer backLeftIP2;
 	public RSImageProducer backRightIP1;
@@ -12260,12 +12260,12 @@ public class Game extends RSApplet {
 	public int crossType;
 	public int plane;
 	public final int[] currentStats;
-	public static int anInt924;
+        public static int objectClickCounter;
 	public final long[] ignoreListAsLongs;
 	public boolean loadingError;
-	public final int anInt927;
-	public final int[] anIntArray928;
-	public int[][] anIntArrayArray929;
+        public final int scrollBarDarkColor;
+        public final int[] cameraShakeSpeed;
+        public int[][] occupiedTiles;
 	public Sprite aClass30_Sub2_Sub1_Sub1_931;
 	public Sprite aClass30_Sub2_Sub1_Sub1_932;
 	public int selectedPlayerId;
@@ -12297,30 +12297,30 @@ public class Game extends RSApplet {
 	public volatile boolean drawingFlames;
 	public int spriteDrawX;
 	public int spriteDrawY;
-	public final int[] anIntArray965 = {0xffff00, 0xff0000, 0x00ff00, 0x00ffff, 0xff00ff, 0xffffff};
+        public final int[] hitmarkColors = {0xffff00, 0xff0000, 0x00ff00, 0x00ffff, 0xff00ff, 0xffffff};
 	public Background aBackground_966;
 	public Background aBackground_967;
-	public final int[] anIntArray968;
-	public final int[] anIntArray969;
+        public final int[] mapBackLeft;
+        public final int[] flameLineOffsets;
 	final Decompressor[] decompressors;
 	public int variousSettings[];
 	public boolean aBoolean972;
-	public final int anInt975;
-	public final int[] anIntArray976;
-	public final int[] anIntArray977;
-	public final int[] anIntArray978;
-	public final int[] anIntArray979;
-	public final int[] anIntArray980;
-	public final int[] anIntArray981;
-	public final int[] anIntArray982;
-	public final String[] aStringArray983;
-	public int cameraZoom;
-	public int lastPlane;
-	public static int anInt986;
+        public final int maxDisplayedText;
+        public final int[] textX;
+        public final int[] textY;
+        public final int[] textHeight;
+        public final int[] textWidth;
+        public final int[] textColors;
+        public final int[] textEffects;
+        public final int[] textCycles;
+        public final String[] aStringArray983;
+        public int cameraZoom;
+        public int lastPlane;
+        public static int playerOptionCounter;
 	public Sprite[] hitMarks;
 	public int idleCycleCounter;
 	public int dragCounter;
-	public final int[] anIntArray990;
+        public final int[] characterColorIndices;
 	public static boolean aBoolean993;
 	public int cameraFocusX;
 	public int cameraFocusY;
@@ -12332,7 +12332,7 @@ public class Game extends RSApplet {
 	public final int scrollBarColor;
 	static final int[][] anIntArrayArray1003 = {{6798, 107, 10283, 16, 4797, 7744, 5799, 4634, 33697, 22433, 2983, 54193}, {8741, 12, 64030, 43162, 7735, 8404, 1701, 38430, 24094, 10153, 56621, 4783, 1341, 16578, 35003, 25239}, {25238, 8742, 12, 64030, 43162, 7735, 8404, 1701, 38430, 24094, 10153, 56621, 4783, 1341, 16578, 35003}, {4626, 11146, 6439, 12, 4758, 10270}, {4550, 4537, 5681, 5673, 5790, 6806, 8076, 4574}};
 	public String amountOrNameInput;
-	public static int cameraMoveCycle;
+        public static int cameraMoveCycle;
 	public int daysSinceLastLogin;
 	public int pktSize;
 	public int pktType;
@@ -12345,7 +12345,7 @@ public class Game extends RSApplet {
 	public int cameraUpdateDelay;
 	public boolean aBoolean1017;
 	public int overlayInterfaceId;
-	public static final int[] anIntArray1019;
+        public static final int[] levelExperience;
 	public int minimapState;
 	public int mouseIdleTicks;
 	public int loadingStage;
@@ -12355,7 +12355,7 @@ public class Game extends RSApplet {
 	public Background backBase1;
 	public Background backBase2;
 	public Background backHmid1;
-	public final int[] anIntArray1030;
+        public final int[] cameraShakeCycle;
 	public boolean aBoolean1031;
 	public Sprite[] mapFunctions;
 	public int baseX;
@@ -12368,7 +12368,7 @@ public class Game extends RSApplet {
 	public int flameSecondaryColor;
 	public int dialogID;
 	public final int[] maxStats;
-	public final int[] anIntArray1045;
+        public final int[] varpArray;
 	public int friendsListStatus;
 	public boolean aBoolean1047;
 	public int hoveredTabId;
@@ -12379,14 +12379,14 @@ public class Game extends RSApplet {
 	public int flashingTabId;
 	public int multiCombatZone;
 	public NodeList aClass19_1056;
-	public final int[] anIntArray1057;
+        public final int[] mapBackWidths;
 	public final RSInterface aClass9_1059;
 	public Background[] mapScenes;
 	public static int drawCycle;
 	public int currentSound;
 	public final int scrollBarHandleColor;
 	public int friendsListAction;
-	public final int[] anIntArray1065;
+        public final int[] characterStyle;
 	public int mouseInvInterfaceIndex;
 	public int lastActiveInvInterface;
 	public OnDemandFetcher onDemandFetcher;
@@ -12445,10 +12445,10 @@ public class Game extends RSApplet {
 	public static Player myPlayer;
 	public final String[] atPlayerActions;
 	public final boolean[] atPlayerArray;
-	public final int[][][] anIntArrayArrayArray1129;
+        public final int[][][] dynamicRegionData;
 	public final int[] tabInterfaceIDs = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-	public int cameraYOffset;
-	public int cameraYOffsetSpeed;
+        public int cameraYOffset;
+        public int cameraYOffsetSpeed;
 	public int menuActionRow;
 	public static int npcAttackCounter;
 	public int spellSelected;
@@ -12456,8 +12456,8 @@ public class Game extends RSApplet {
 	public int spellUsableOn;
 	public String spellTooltip;
 	public Sprite[] minimapIconSprites;
-	public boolean aBoolean1141;
-	public static int clickPacketCounter;
+        public boolean aBoolean1141;
+        public static int clickPacketCounter;
 	public Background redStone1;
 	public Background redStone2;
 	public Background redStone3;
@@ -12490,7 +12490,7 @@ public class Game extends RSApplet {
 	public String myPassword;
 	public static int itemUseCounter;
 	public boolean genericLoadingError;
-	public final int[] anIntArray1177 = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3};
+	public final int[] objectData = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3};
 	public int reportAbuseInterfaceID;
 	public NodeList aClass19_1179;
 	public int[] chatAreaOffsets;
@@ -12503,8 +12503,8 @@ public class Game extends RSApplet {
        public int cameraPitchAccel;
 	public static int actionCounter;
 	public int invOverlayInterfaceID;
-	public int[] anIntArray1190;
-	public int[] anIntArray1191;
+        public int[] flameGradient1;
+        public int[] flameGradient2;
 	public Stream stream;
 	public int lastLoginIp;
 	public int splitpublicChat;
@@ -12514,7 +12514,7 @@ public class Game extends RSApplet {
 	public String[] menuActionName;
 	public Sprite aClass30_Sub2_Sub1_Sub1_1201;
 	public Sprite aClass30_Sub2_Sub1_Sub1_1202;
-	public final int[] anIntArray1203;
+        public final int[] cameraShakeFrequency;
 	static final int[] anIntArray1204 = {9104, 10275, 7595, 3610, 7975, 8526, 918, 38802, 24466, 10145, 58654, 5027, 1457, 16565, 34991, 25486};
 	public static boolean flagged;
 	public final int[] sound;
@@ -12536,16 +12536,16 @@ public class Game extends RSApplet {
 	public static int npcClickCounter;
 	public int nextSong;
 	public boolean songChanging;
-	public final int[] anIntArray1229;
+        public final int[] minimapLineLengths;
 	public CollisionMap[] aClass11Array1230;
-	public static int anIntArray1232[];
+        public static int bitMasks[];
 	public boolean chatSettingsUpdateNeeded;
-	public int[] anIntArray1234;
-	public int[] anIntArray1235;
-	public int[] anIntArray1236;
+        public int[] regionBaseIds;
+        public int[] terrainArchiveIds;
+        public int[] objectArchiveIds;
 	public int lastMousePacketX;
 	public int lastMousePacketY;
-	public final int anInt1239 = 100;
+        public final int anInt1239 = 100;
 	public final int[] soundType;
 	public boolean aBoolean1242;
 	public int atInventoryLoopCycle;
@@ -12594,7 +12594,7 @@ public class Game extends RSApplet {
 	public static int tiara;
 	public static int unknownInt1290;
 	public boolean showInfo = false;
-	public static int anInt1401 = 256;
+        public static int midiVolume = 256;
 	public static int[] anIntArray385 = new int[] { 12800, 12800, 12800, 12800, 12800, 12800,
 	12800, 12800, 12800, 12800, 12800, 12800,
 	12800, 12800, 12800, 12800 };
@@ -12616,24 +12616,24 @@ public class Game extends RSApplet {
 	public int currentDateOffset;
 	public int unusedInt1215;
 	public int lastPasswordChange;
-	public int anInt992;
-	public int anInt1273;
+        public int scrollPadding;
+        public int unusedField1273;
 	public int recoveryQuestionChangeDate;
 
 	static {
-		anIntArray1019 = new int[99];
+		levelExperience = new int[99];
 		int i = 0;
 		for (int j = 0; j < 99; j++) {
 			int l = j + 1;
 			int i1 = (int) ((double) l + 300D * Math.pow(2D, (double) l / 7D));
 			i += i1;
-			anIntArray1019[j] = i / 4;
+			levelExperience[j] = i / 4;
 		}
 
-		anIntArray1232 = new int[32];
+		bitMasks = new int[32];
 		i = 2;
 		for (int k = 0; k < 32; k++) {
-			anIntArray1232[k] = i - 1;
+			bitMasks[k] = i - 1;
 			i += i;
 		}
 

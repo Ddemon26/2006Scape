@@ -169,7 +169,7 @@ public final class ObjectDef {
                         int j = varBit.configId;
                         int k = varBit.leastSignificantBit;
                         int l = varBit.mostSignificantBit;
-			int i1 = Game.anIntArray1232[l - k];
+			int i1 = Game.bitMasks[l - k];
 			i = clientInstance.variousSettings[j] >> k & i1;
 		} else if (anInt749 != -1) {
 			i = clientInstance.variousSettings[anInt749];
