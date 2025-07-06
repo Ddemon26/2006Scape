@@ -211,6 +211,14 @@ rename *B* itself in a future PR.                            |
 | **7 Review artefacts** | PR body **MUST** include an Old→New mapping table and the full `git diff --stat` output. |
 | **8 Record mapping**    | Append each rename entry to `rename-history.md` for project tracking. |
 
+Rename sections in that file should use the following layout:
+
+```markdown
+## Class123 -> (if class was renamed do -> newname)
+ - Method123 -> NamedMethod
+ - AnInt123 -> NamedVariable
+```
+
 ---
 
 
