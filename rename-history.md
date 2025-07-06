@@ -284,4 +284,12 @@ method479 -> applyLighting
 - method134 -> decodePlayerMovement
 - method81 -> drawMinimapSprite
 - method70 -> updateMultiCombatArea
-<!-- crawled up to commit 9e24d645 -->
+- method790 -> closeMidiSystem
+- method900 -> setMidiVolume
+- method55 -> stopMusic
+- method891 -> stopMidiPlayback
+- method58 -> queueSong
+- method56 -> playSong
+- method853 -> playMidiTrack
+- method899 -> queueMidiTrack
+<!-- crawled up to commit f13f0af1 -->
