@@ -902,7 +902,7 @@ public class Game extends RSApplet {
 			aRSImageProducer_1165.initDrawingArea();
 			Texture.lineOffsets = chatBoxAreaOffsets;
 		}
-		anInt1071 = 0;
+		minimapIconCount = 0;
 		for (int k2 = 0; k2 < 104; k2++) {
 			for (int l2 = 0; l2 < 104; l2++) {
 				int i3 = worldController.getTileDecorationUid(plane, k2, l2);
@@ -933,10 +933,10 @@ public class Game extends RSApplet {
 							}
 
 						}
-						aClass30_Sub2_Sub1_Sub1Array1140[anInt1071] = mapFunctions[j3];
-						anIntArray1072[anInt1071] = k3;
-						anIntArray1073[anInt1071] = l3;
-						anInt1071++;
+						minimapIconSprites[minimapIconCount] = mapFunctions[j3];
+						minimapIconX[minimapIconCount] = k3;
+						minimapIconY[minimapIconCount] = l3;
+						minimapIconCount++;
 					}
 				}
 			}
@@ -1318,7 +1318,7 @@ public class Game extends RSApplet {
 		if (super.clickMode3 == 1) {
 			if (super.saveClickX >= 6 && super.saveClickX <= 106 && super.saveClickY >= 467 && super.saveClickY <= 499) {
 				publicChatMode = (publicChatMode + 1) % 4;
-				aBoolean1233 = true;
+				chatSettingsUpdateNeeded = true;
 				inputTaken = true;
 				stream.createFrame(95);
 				stream.writeWordBigEndian(publicChatMode);
@@ -1327,7 +1327,7 @@ public class Game extends RSApplet {
 			}
 			if (super.saveClickX >= 135 && super.saveClickX <= 235 && super.saveClickY >= 467 && super.saveClickY <= 499) {
 				privateChatMode = (privateChatMode + 1) % 3;
-				aBoolean1233 = true;
+				chatSettingsUpdateNeeded = true;
 				inputTaken = true;
 				stream.createFrame(95);
 				stream.writeWordBigEndian(publicChatMode);
@@ -1336,7 +1336,7 @@ public class Game extends RSApplet {
 			}
 			if (super.saveClickX >= 273 && super.saveClickX <= 373 && super.saveClickY >= 467 && super.saveClickY <= 499) {
 				tradeMode = (tradeMode + 1) % 3;
-				aBoolean1233 = true;
+				chatSettingsUpdateNeeded = true;
 				inputTaken = true;
 				stream.createFrame(95);
 				stream.writeWordBigEndian(publicChatMode);
@@ -2972,8 +2972,8 @@ public class Game extends RSApplet {
 	}
 
 	public void mainGameProcessor() {
-		if (anInt1104 > 1) {
-			anInt1104--;
+		if (systemUpdateTimer > 1) {
+			systemUpdateTimer--;
 		}
 		if (anInt1011 > 0) {
 			anInt1011--;
@@ -4770,9 +4770,9 @@ public class Game extends RSApplet {
 		menuActionCmd1 = null;
 		menuActionName = null;
 		variousSettings = null;
-		anIntArray1072 = null;
-		anIntArray1073 = null;
-		aClass30_Sub2_Sub1_Sub1Array1140 = null;
+		minimapIconX = null;
+		minimapIconY = null;
+		minimapIconSprites = null;
 		aClass30_Sub2_Sub1_Sub1_1263 = null;
 		friendsList = null;
 		friendsListAsLongs = null;
@@ -4919,7 +4919,7 @@ public class Game extends RSApplet {
 						pushMessage(promptInput, 6, TextClass.fixName(TextClass.nameForLong(aLong953)));
 						if (privateChatMode == 2) {
 							privateChatMode = 1;
-							aBoolean1233 = true;
+							chatSettingsUpdateNeeded = true;
 							stream.createFrame(95);
 							stream.writeWordBigEndian(publicChatMode);
 							stream.writeWordBigEndian(privateChatMode);
@@ -5188,7 +5188,7 @@ public class Game extends RSApplet {
 						}
 						if (publicChatMode == 2) {
 							publicChatMode = 3;
-							aBoolean1233 = true;
+							chatSettingsUpdateNeeded = true;
 							stream.createFrame(95);
 							stream.writeWordBigEndian(publicChatMode);
 							stream.writeWordBigEndian(privateChatMode);
@@ -5535,7 +5535,7 @@ public class Game extends RSApplet {
 		}
 		TextDrawingArea textDrawingArea = aTextDrawingArea_1271;
 		int i = 0;
-		if (anInt1104 != 0) {
+		if (systemUpdateTimer != 0) {
 			i = 1;
 		}
 		for (int j = 0; j < 100; j++) {
@@ -6095,7 +6095,7 @@ public class Game extends RSApplet {
 				prevPktType2 = -1;
 				pktSize = 0;
 				anInt1009 = 0;
-				anInt1104 = 0;
+				systemUpdateTimer = 0;
 				anInt1011 = 0;
 				anInt855 = 0;
 				menuActionRow = 0;
@@ -6252,7 +6252,7 @@ public class Game extends RSApplet {
 				prevPktType2 = -1;
 				pktSize = 0;
 				anInt1009 = 0;
-				anInt1104 = 0;
+				systemUpdateTimer = 0;
 				menuActionRow = 0;
 				menuOpen = false;
 				aLong824 = System.currentTimeMillis();
@@ -7911,7 +7911,7 @@ public class Game extends RSApplet {
 			needDrawTabArea = true;
 			inputTaken = true;
 			tabAreaAltered = true;
-			aBoolean1233 = true;
+			chatSettingsUpdateNeeded = true;
 			if (loadingStage != 2) {
 				aRSImageProducer_1165.drawGraphics(4, super.graphics, 4);
 				aRSImageProducer_1164.drawGraphics(4, super.graphics, 550);
@@ -8096,8 +8096,8 @@ public class Game extends RSApplet {
 			aRSImageProducer_1165.initDrawingArea();
 			Texture.lineOffsets = chatBoxAreaOffsets;
 		}
-		if (aBoolean1233) {
-			aBoolean1233 = false;
+		if (chatSettingsUpdateNeeded) {
+			chatSettingsUpdateNeeded = false;
 			aRSImageProducer_1123.initDrawingArea();
 			backBase1.draw(0, 0);
 			aTextDrawingArea_1271.textCenterShadow(0xffffff, 55, "Public chat", 28, true);
@@ -8869,9 +8869,9 @@ public class Game extends RSApplet {
 		if (anInt1055 == 1) {
 			multiOverlay.drawSprite(472, 296);
 		}
-		if (anInt1104 != 0) {
+		if (systemUpdateTimer != 0) {
 			String message = "";
-			int seconds = anInt1104 / 50;
+			int seconds = systemUpdateTimer / 50;
 			int minutes = seconds / 60;
 			int hours = minutes / 60;
 			seconds %= 60;
@@ -9501,10 +9501,10 @@ public class Game extends RSApplet {
 		aClass30_Sub2_Sub1_Sub1_1263.drawTransformed(151, i, anIntArray1229, 256 + minimapInt3, anIntArray1052, l2, 5, 25, 146, j);
 		compass.drawTransformed(33, cameraYaw, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
 		// Minimap icons (shops, quest etc)
-		for (int j5 = 0; j5 < anInt1071; j5++) {
-			int k = anIntArray1072[j5] * 4 + 2 - myPlayer.x / 32;
-			int i3 = anIntArray1073[j5] * 4 + 2 - myPlayer.y / 32;
-			markMinimap(aClass30_Sub2_Sub1_Sub1Array1140[j5], k, i3);
+		for (int j5 = 0; j5 < minimapIconCount; j5++) {
+			int k = minimapIconX[j5] * 4 + 2 - myPlayer.x / 32;
+			int i3 = minimapIconY[j5] * 4 + 2 - myPlayer.y / 32;
+			markMinimap(minimapIconSprites[j5], k, i3);
 		}
 
 		for (int k5 = 0; k5 < 104; k5++) {
@@ -9639,7 +9639,7 @@ public class Game extends RSApplet {
 			return;
 		}
 		int i = 0;
-		if (anInt1104 != 0) {
+		if (systemUpdateTimer != 0) {
 			i = 1;
 		}
 		for (int j = 0; j < 100; j++) {
@@ -11055,7 +11055,7 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 114) {
-				anInt1104 = inStream.readShortLE() * 30;
+				systemUpdateTimer = inStream.readShortLE() * 30;
 				pktType = -1;
 				return true;
 			}
@@ -11494,7 +11494,7 @@ public class Game extends RSApplet {
 				publicChatMode = inStream.readUnsignedByte();
 				privateChatMode = inStream.readUnsignedByte();
 				tradeMode = inStream.readUnsignedByte();
-				aBoolean1233 = true;
+				chatSettingsUpdateNeeded = true;
 				inputTaken = true;
 				pktType = -1;
 				return true;
@@ -12098,8 +12098,8 @@ public class Game extends RSApplet {
 		mapScenes = new Background[100];
 		anInt1063 = 0x4d4233;
 		anIntArray1065 = new int[7];
-		anIntArray1072 = new int[1000];
-		anIntArray1073 = new int[1000];
+		minimapIconX = new int[1000];
+		minimapIconY = new int[1000];
 		aBoolean1080 = false;
 		friendsList = new String[200];
 		inStream = Stream.create();
@@ -12117,7 +12117,7 @@ public class Game extends RSApplet {
 		atPlayerArray = new boolean[5];
 		anIntArrayArrayArray1129 = new int[4][13][13];
 		cameraYOffsetSpeed = 2;
-		aClass30_Sub2_Sub1_Sub1Array1140 = new Sprite[1000];
+		minimapIconSprites = new Sprite[1000];
 		aBoolean1141 = false;
 		aBoolean1149 = false;
 		crosses = new Sprite[8];
@@ -12148,7 +12148,7 @@ public class Game extends RSApplet {
 		songChanging = true;
 		anIntArray1229 = new int[151];
 		aClass11Array1230 = new CollisionMap[4];
-		aBoolean1233 = false;
+		chatSettingsUpdateNeeded = false;
 		soundType = new int[50];
 		aBoolean1242 = false;
 		soundDelay = new int[50];
@@ -12392,9 +12392,9 @@ public class Game extends RSApplet {
 	public OnDemandFetcher onDemandFetcher;
 	public int anInt1069;
 	public int anInt1070;
-	public int anInt1071;
-	public int[] anIntArray1072;
-	public int[] anIntArray1073;
+	public int minimapIconCount;
+	public int[] minimapIconX;
+	public int[] minimapIconY;
 	public Sprite mapDotItem;
 	public Sprite mapDotNPC;
 	public Sprite mapDotPlayer;
@@ -12425,7 +12425,7 @@ public class Game extends RSApplet {
 	public int anInt1101;
 	public int anInt1102;
 	public boolean tabAreaAltered;
-	public int anInt1104;
+	public int systemUpdateTimer;
 	public RSImageProducer aRSImageProducer_1107;
 	public RSImageProducer aRSImageProducer_1108;
 	public RSImageProducer aRSImageProducer_1109;
@@ -12455,7 +12455,7 @@ public class Game extends RSApplet {
 	public int anInt1137;
 	public int spellUsableOn;
 	public String spellTooltip;
-	public Sprite[] aClass30_Sub2_Sub1_Sub1Array1140;
+	public Sprite[] minimapIconSprites;
 	public boolean aBoolean1141;
 	public static int anInt1142;
 	public Background redStone1;
@@ -12539,7 +12539,7 @@ public class Game extends RSApplet {
 	public final int[] anIntArray1229;
 	public CollisionMap[] aClass11Array1230;
 	public static int anIntArray1232[];
-	public boolean aBoolean1233;
+	public boolean chatSettingsUpdateNeeded;
 	public int[] anIntArray1234;
 	public int[] anIntArray1235;
 	public int[] anIntArray1236;
