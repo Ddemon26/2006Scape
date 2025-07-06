@@ -213,6 +213,41 @@ This document lists variable or identifier renames found in the commit history.
 - anInt997 -> cameraFocusHeight
 - anInt998 -> cameraAdjustSpeed
 - anInt999 -> cameraAdjustAcceleration
+ - anInt1002 -> scrollBarColor
+ - anInt1063 -> scrollBarHandleColor
+ - anInt1009 -> connectionTimeoutCounter
+ - anInt1010 -> keepAliveCounter
+ - anInt1011 -> reconnectDelay
+ - anInt1016 -> cameraUpdateDelay
+ - anInt1018 -> overlayInterfaceId
+ - anInt1021 -> minimapState
+ - anInt1022 -> mouseIdleTicks
+ - anInt1026 -> lastHoveredWidgetId
+ - anInt1034 -> recoveryQuestionChangeDate
+ - anInt1069 -> currentRegionX
+ - anInt1070 -> currentRegionY
+ - anInt1079 -> loadingPercent
+ - anInt1083 -> lastPasswordChange
+ - anInt1137 -> selectedSpellId
+ - anInt1170 -> currentDateOffset
+ - anInt1188 -> actionCounter
+ - anInt1193 -> lastLoginIp
+ - anInt1213 -> clickCycle
+ - anInt1215 -> unusedInt1215
+ - anInt1222 -> hintNpcIndex
+ - anInt1226 -> npcClickCounter
+ - anInt1237 -> lastMousePacketX
+ - anInt1238 -> lastMousePacketY
+ - anInt1249 -> chatEffectsState
+ - anInt1253 -> oneMouseButtonMode
+ - anInt1254 -> minimapRandomTimer
+ - anInt1257 -> soundBufferOffset
+ - anInt1265 -> waveCycle
+ - anInt1268 -> mapEventX
+ - anInt1269 -> mapEventY
+ - anInt1275 -> flameOffset
+ - anInt1289 -> unknownInt1289
+ - anInt1290 -> unknownInt1290
 
 ## RSApplet
  - TextDrawingArea -> clean
