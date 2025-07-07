@@ -101,7 +101,7 @@ public final class Player extends Entity {
 
 		for (int l = 0; l < 5; l++) {
 			int j1 = stream.readUnsignedByte();
-			if (j1 < 0 || j1 >= Game.anIntArrayArray1003[l].length) {
+			if (j1 < 0 || j1 >= Game.appearanceColorOptions[l].length) {
 				j1 = 0;
 			}
                         bodyColors[l] = j1;
@@ -251,9 +251,9 @@ public final class Player extends Entity {
 			model_1 = new Model(j2, aclass30_sub2_sub4_sub6s);
                         for (int j3 = 0; j3 < 5; j3++) {
                                 if (bodyColors[j3] != 0) {
-                                        model_1.recolor(Game.anIntArrayArray1003[j3][0], Game.anIntArrayArray1003[j3][bodyColors[j3]]);
+                                        model_1.recolor(Game.appearanceColorOptions[j3][0], Game.appearanceColorOptions[j3][bodyColors[j3]]);
                                         if (j3 == 1) {
-                                                model_1.recolor(Game.anIntArray1204[0], Game.anIntArray1204[bodyColors[j3]]);
+                                                model_1.recolor(Game.additionalColorCodes[0], Game.additionalColorCodes[bodyColors[j3]]);
 					}
 				}
 			}
@@ -327,9 +327,9 @@ public final class Player extends Entity {
 		Model model = new Model(k, aclass30_sub2_sub4_sub6s);
                 for (int j1 = 0; j1 < 5; j1++) {
                         if (bodyColors[j1] != 0) {
-                                model.recolor(Game.anIntArrayArray1003[j1][0], Game.anIntArrayArray1003[j1][bodyColors[j1]]);
+                                model.recolor(Game.appearanceColorOptions[j1][0], Game.appearanceColorOptions[j1][bodyColors[j1]]);
                                 if (j1 == 1) {
-                                        model.recolor(Game.anIntArray1204[0], Game.anIntArray1204[bodyColors[j1]]);
+                                        model.recolor(Game.additionalColorCodes[0], Game.additionalColorCodes[bodyColors[j1]]);
 				}
 			}
 		}
