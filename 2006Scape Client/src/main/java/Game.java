@@ -995,7 +995,7 @@ public class Game extends RSApplet {
 			if (l < 0 || l >= 104 || i1 < 0 || i1 >= 104) {
 				continue;
 			}
-			if (npc.anInt1540 == 1 && (npc.x & 0x7f) == 64 && (npc.y & 0x7f) == 64) {
+			if (npc.size == 1 && (npc.x & 0x7f) == 64 && (npc.y & 0x7f) == 64) {
 				if (occupiedTiles[l][i1] == waveCycle) {
 					continue;
 				}
@@ -1004,7 +1004,7 @@ public class Game extends RSApplet {
                        if (!npc.definition.aBoolean84) {
 				k += 0x80000000;
 			}
-                   worldController.addAnimableObject(plane, npc.currentHeading, getTileHeight(plane, npc.y, npc.x), k, npc.y, (npc.anInt1540 - 1) * 64 + 60, npc.x, npc, npc.aBoolean1541);
+                   worldController.addAnimableObject(plane, npc.currentHeading, getTileHeight(plane, npc.y, npc.x), k, npc.y, (npc.size - 1) * 64 + 60, npc.x, npc, npc.aBoolean1541);
 		}
 	}
 
@@ -1295,7 +1295,7 @@ public class Game extends RSApplet {
                processNpcUpdateMasks(stream);
 		for (int k = 0; k < entityRemovalCount; k++) {
 			int l = removedEntityIndices[k];
-			if (npcArray[l].anInt1537 != loopCycle) {
+			if (npcArray[l].lastUpdateCycle != loopCycle) {
                                 npcArray[l].definition = null;
 				npcArray[l] = null;
 			}
@@ -1594,18 +1594,18 @@ public class Game extends RSApplet {
                                                 textHeight[anInt974] = chatTextDrawingArea.fontHeight;
 						textX[anInt974] = spriteDrawX;
 						textY[anInt974] = spriteDrawY;
-						textColors[anInt974] = ((Entity) obj).anInt1513;
-						textEffects[anInt974] = ((Entity) obj).anInt1531;
+						textColors[anInt974] = ((Entity) obj).chatColor;
+						textEffects[anInt974] = ((Entity) obj).chatEffect;
 						textCycles[anInt974] = ((Entity) obj).textCycle;
 						aStringArray983[anInt974++] = ((Entity) obj).textSpoken;
-						if (chatEffectsState == 0 && ((Entity) obj).anInt1531 >= 1 && ((Entity) obj).anInt1531 <= 3) {
+						if (chatEffectsState == 0 && ((Entity) obj).chatEffect >= 1 && ((Entity) obj).chatEffect <= 3) {
 							textHeight[anInt974] += 10;
 							textY[anInt974] += 5;
 						}
-						if (chatEffectsState == 0 && ((Entity) obj).anInt1531 == 4) {
+						if (chatEffectsState == 0 && ((Entity) obj).chatEffect == 4) {
 							textWidth[anInt974] = 60;
 						}
-						if (chatEffectsState == 0 && ((Entity) obj).anInt1531 == 5) {
+						if (chatEffectsState == 0 && ((Entity) obj).chatEffect == 5) {
 							textHeight[anInt974] += 5;
 						}
 					}
@@ -2243,7 +2243,7 @@ public class Game extends RSApplet {
 			}
 			NPC npc = npcArray[k];
 			npcIndices[npcCount++] = k;
-			npc.anInt1537 = loopCycle;
+			npc.lastUpdateCycle = loopCycle;
 			int l = stream.readBits(5);
 			if (l > 15) {
 				l -= 32;
@@ -2258,13 +2258,13 @@ public class Game extends RSApplet {
 			if (k1 == 1) {
 				playerUpdateIndices[playerUpdateCount++] = k;
 			}
-                        npc.anInt1540 = npc.definition.aByte68;
+                        npc.size = npc.definition.aByte68;
                        npc.turnSpeed = npc.definition.anInt79;
-                        npc.anInt1554 = npc.definition.anInt67;
-                        npc.anInt1555 = npc.definition.anInt58;
-                        npc.anInt1556 = npc.definition.anInt83;
-                        npc.anInt1557 = npc.definition.anInt55;
-                        npc.anInt1511 = npc.definition.anInt77;
+                        npc.walkAnimation = npc.definition.anInt67;
+                        npc.turn180Animation = npc.definition.anInt58;
+                        npc.turn90CWAnimation = npc.definition.anInt83;
+                        npc.turn90CCWAnimation = npc.definition.anInt55;
+                        npc.standAnimation = npc.definition.anInt77;
 			npc.setPos(myPlayer.smallX[0] + i1, myPlayer.smallY[0] + l, j1 == 1);
 		}
 		stream.finishBitAccess();
@@ -2305,7 +2305,7 @@ public class Game extends RSApplet {
 			if (player == null || !player.isVisible()) {
 				continue;
 			}
-			player.aBoolean1699 = (lowMem && playerCount > 50 || playerCount > 200) && !flag && player.anInt1517 == player.anInt1511;
+			player.aBoolean1699 = (lowMem && playerCount > 50 || playerCount > 200) && !flag && player.currentAnimation == player.standAnimation;
 			int j1 = player.x >> 7;
 			int k1 = player.y >> 7;
 			if (j1 < 0 || j1 >= 104 || k1 < 0 || k1 >= 104) {
@@ -5178,8 +5178,8 @@ public class Game extends RSApplet {
 						inputString = TextInput.processText(inputString);
 						inputString = Censor.doCensor(inputString);
 						myPlayer.textSpoken = inputString;
-						myPlayer.anInt1513 = j2;
-						myPlayer.anInt1531 = i3;
+						myPlayer.chatColor = j2;
+						myPlayer.chatEffect = i3;
 						myPlayer.textCycle = 150;
 						if (myPrivilege >= 1) {
 							pushMessage(myPlayer.textSpoken, 2, "@cr" + Math.min(2, myPrivilege) + "@" + myPlayer.name);
@@ -5421,7 +5421,7 @@ public class Game extends RSApplet {
 				}
 
 				model.buildVertexGroups();
-				model.applyFrame(Animation.anims[myPlayer.anInt1511].anIntArray353[0]);
+				model.applyFrame(Animation.anims[myPlayer.standAnimation].anIntArray353[0]);
 				model.applyLighting(64, 850, -30, -50, -30, true);
                                 class9.mediaType = 5;
                                 class9.mediaId = 0;
@@ -6571,21 +6571,21 @@ public class Game extends RSApplet {
 				if (i1 == npc.anim && i1 != -1) {
 					int l2 = Animation.anims[i1].anInt365;
 					if (l2 == 1) {
-						npc.anInt1527 = 0;
-						npc.anInt1528 = 0;
-						npc.anInt1529 = i2;
-						npc.anInt1530 = 0;
+						npc.graphicFrame = 0;
+						npc.graphicFrameCycle = 0;
+						npc.graphicDelay = i2;
+						npc.graphicCycle = 0;
 					}
 					if (l2 == 2) {
-						npc.anInt1530 = 0;
+						npc.graphicCycle = 0;
 					}
 				} else if (i1 == -1 || npc.anim == -1 || Animation.anims[i1].anInt359 >= Animation.anims[npc.anim].anInt359) {
 					npc.anim = i1;
-					npc.anInt1527 = 0;
-					npc.anInt1528 = 0;
-					npc.anInt1529 = i2;
-					npc.anInt1530 = 0;
-					npc.anInt1542 = npc.smallXYIndex;
+					npc.graphicFrame = 0;
+					npc.graphicFrameCycle = 0;
+					npc.graphicDelay = i2;
+					npc.graphicCycle = 0;
+					npc.animationDelay = npc.smallXYIndex;
 				}
 			}
 			if ((l & 8) != 0) {
@@ -6630,17 +6630,17 @@ public class Game extends RSApplet {
 			}
 			if ((l & 2) != 0) {
                                 npc.definition = EntityDef.forID(stream.readShortLEAdd());
-                                npc.anInt1540 = npc.definition.aByte68;
+                                npc.size = npc.definition.aByte68;
                                npc.turnSpeed = npc.definition.anInt79;
-                                npc.anInt1554 = npc.definition.anInt67;
-                                npc.anInt1555 = npc.definition.anInt58;
-                                npc.anInt1556 = npc.definition.anInt83;
-                                npc.anInt1557 = npc.definition.anInt55;
-                                npc.anInt1511 = npc.definition.anInt77;
+                                npc.walkAnimation = npc.definition.anInt67;
+                                npc.turn180Animation = npc.definition.anInt58;
+                                npc.turn90CWAnimation = npc.definition.anInt83;
+                                npc.turn90CCWAnimation = npc.definition.anInt55;
+                                npc.standAnimation = npc.definition.anInt77;
 			}
 			if ((l & 4) != 0) {
-				npc.anInt1538 = stream.readShortLE();
-				npc.anInt1539 = stream.readShortLE();
+				npc.focusX = stream.readShortLE();
+				npc.focusY = stream.readShortLE();
 			}
 		}
 	}
@@ -7388,7 +7388,7 @@ public class Game extends RSApplet {
 			}
 			playerIndices[playerCount++] = j;
 			Player player = playerArray[j];
-			player.anInt1537 = loopCycle;
+			player.lastUpdateCycle = loopCycle;
 			int k = stream.readBits(1);
 			if (k == 1) {
 				playerUpdateIndices[playerUpdateCount++] = j;
@@ -7557,24 +7557,24 @@ public class Game extends RSApplet {
 		if (entity.x < 128 || entity.y < 128 || entity.x >= 13184 || entity.y >= 13184) {
 			entity.anim = -1;
                        entity.spotAnimId = -1;
-			entity.anInt1547 = 0;
-			entity.anInt1548 = 0;
-			entity.x = entity.smallX[0] * 128 + entity.anInt1540 * 64;
-			entity.y = entity.smallY[0] * 128 + entity.anInt1540 * 64;
+			entity.forceMoveStartCycle = 0;
+			entity.forceMoveEndCycle = 0;
+			entity.x = entity.smallX[0] * 128 + entity.size * 64;
+			entity.y = entity.smallY[0] * 128 + entity.size * 64;
                        entity.clearMovement();
 		}
 		if (entity == myPlayer && (entity.x < 1536 || entity.y < 1536 || entity.x >= 11776 || entity.y >= 11776)) {
 			entity.anim = -1;
                        entity.spotAnimId = -1;
-			entity.anInt1547 = 0;
-			entity.anInt1548 = 0;
-			entity.x = entity.smallX[0] * 128 + entity.anInt1540 * 64;
-			entity.y = entity.smallY[0] * 128 + entity.anInt1540 * 64;
+			entity.forceMoveStartCycle = 0;
+			entity.forceMoveEndCycle = 0;
+			entity.x = entity.smallX[0] * 128 + entity.size * 64;
+			entity.y = entity.smallY[0] * 128 + entity.size * 64;
                        entity.clearMovement();
 		}
-               if (entity.anInt1547 > loopCycle) {
+               if (entity.forceMoveStartCycle > loopCycle) {
                         updateForcedMovement(entity);
-               } else if (entity.anInt1548 >= loopCycle) {
+               } else if (entity.forceMoveEndCycle >= loopCycle) {
                        updateInterpolatedMovement(entity);
                } else {
                        updateWalkingStep(entity);
@@ -7584,74 +7584,74 @@ public class Game extends RSApplet {
 	}
 
        public void updateForcedMovement(Entity entity) {
-		int i = entity.anInt1547 - loopCycle;
-		int j = entity.anInt1543 * 128 + entity.anInt1540 * 64;
-		int k = entity.anInt1545 * 128 + entity.anInt1540 * 64;
+		int i = entity.forceMoveStartCycle - loopCycle;
+		int j = entity.forceMoveStartX * 128 + entity.size * 64;
+		int k = entity.forceMoveStartY * 128 + entity.size * 64;
 		entity.x += (j - entity.x) / i;
 		entity.y += (k - entity.y) / i;
-		entity.anInt1503 = 0;
-		if (entity.anInt1549 == 0) {
+		entity.movementDelay = 0;
+		if (entity.forceMoveDirection == 0) {
 			entity.turnDirection = 1024;
 		}
-		if (entity.anInt1549 == 1) {
+		if (entity.forceMoveDirection == 1) {
 			entity.turnDirection = 1536;
 		}
-		if (entity.anInt1549 == 2) {
+		if (entity.forceMoveDirection == 2) {
 			entity.turnDirection = 0;
 		}
-		if (entity.anInt1549 == 3) {
+		if (entity.forceMoveDirection == 3) {
 			entity.turnDirection = 512;
 		}
 	}
 
         public void updateInterpolatedMovement(Entity entity) {
-        if (entity.anInt1548 == loopCycle || entity.anim == -1 || entity.anInt1529 != 0 || entity.anInt1528 + 1 > Animation.anims[entity.anim].getFrameDelay(entity.anInt1527)) {
-			int i = entity.anInt1548 - entity.anInt1547;
-			int j = loopCycle - entity.anInt1547;
-			int k = entity.anInt1543 * 128 + entity.anInt1540 * 64;
-			int l = entity.anInt1545 * 128 + entity.anInt1540 * 64;
-			int i1 = entity.anInt1544 * 128 + entity.anInt1540 * 64;
-			int j1 = entity.anInt1546 * 128 + entity.anInt1540 * 64;
+        if (entity.forceMoveEndCycle == loopCycle || entity.anim == -1 || entity.graphicDelay != 0 || entity.graphicFrameCycle + 1 > Animation.anims[entity.anim].getFrameDelay(entity.graphicFrame)) {
+			int i = entity.forceMoveEndCycle - entity.forceMoveStartCycle;
+			int j = loopCycle - entity.forceMoveStartCycle;
+			int k = entity.forceMoveStartX * 128 + entity.size * 64;
+			int l = entity.forceMoveStartY * 128 + entity.size * 64;
+			int i1 = entity.forceMoveEndX * 128 + entity.size * 64;
+			int j1 = entity.forceMoveEndY * 128 + entity.size * 64;
 			entity.x = (k * (i - j) + i1 * j) / i;
 			entity.y = (l * (i - j) + j1 * j) / i;
 		}
-		entity.anInt1503 = 0;
-		if (entity.anInt1549 == 0) {
+		entity.movementDelay = 0;
+		if (entity.forceMoveDirection == 0) {
 			entity.turnDirection = 1024;
 		}
-		if (entity.anInt1549 == 1) {
+		if (entity.forceMoveDirection == 1) {
 			entity.turnDirection = 1536;
 		}
-		if (entity.anInt1549 == 2) {
+		if (entity.forceMoveDirection == 2) {
 			entity.turnDirection = 0;
 		}
-		if (entity.anInt1549 == 3) {
+		if (entity.forceMoveDirection == 3) {
 			entity.turnDirection = 512;
 		}
                entity.currentHeading = entity.turnDirection;
 	}
 
         public void updateWalkingStep(Entity entity) {
-		entity.anInt1517 = entity.anInt1511;
+		entity.currentAnimation = entity.standAnimation;
 		if (entity.smallXYIndex == 0) {
-			entity.anInt1503 = 0;
+			entity.movementDelay = 0;
 			return;
 		}
-		if (entity.anim != -1 && entity.anInt1529 == 0) {
+		if (entity.anim != -1 && entity.graphicDelay == 0) {
 			Animation animation = Animation.anims[entity.anim];
-			if (entity.anInt1542 > 0 && animation.anInt363 == 0) {
-				entity.anInt1503++;
+			if (entity.animationDelay > 0 && animation.anInt363 == 0) {
+				entity.movementDelay++;
 				return;
 			}
-			if (entity.anInt1542 <= 0 && animation.anInt364 == 0) {
-				entity.anInt1503++;
+			if (entity.animationDelay <= 0 && animation.anInt364 == 0) {
+				entity.movementDelay++;
 				return;
 			}
 		}
 		int i = entity.x;
 		int j = entity.y;
-		int k = entity.smallX[entity.smallXYIndex - 1] * 128 + entity.anInt1540 * 64;
-		int l = entity.smallY[entity.smallXYIndex - 1] * 128 + entity.anInt1540 * 64;
+		int k = entity.smallX[entity.smallXYIndex - 1] * 128 + entity.size * 64;
+		int l = entity.smallY[entity.smallXYIndex - 1] * 128 + entity.size * 64;
 		if (k - i > 256 || k - i < -256 || l - j > 256 || l - j < -256) {
 			entity.x = k;
 			entity.y = l;
@@ -7682,18 +7682,18 @@ public class Game extends RSApplet {
 		if (i1 > 1024) {
 			i1 -= 2048;
 		}
-		int j1 = entity.anInt1555;
+		int j1 = entity.turn180Animation;
 		if (i1 >= -256 && i1 <= 256) {
-			j1 = entity.anInt1554;
+			j1 = entity.walkAnimation;
 		} else if (i1 >= 256 && i1 < 768) {
-			j1 = entity.anInt1557;
+			j1 = entity.turn90CCWAnimation;
 		} else if (i1 >= -768 && i1 <= -256) {
-			j1 = entity.anInt1556;
+			j1 = entity.turn90CWAnimation;
 		}
 		if (j1 == -1) {
-			j1 = entity.anInt1554;
+			j1 = entity.walkAnimation;
 		}
-		entity.anInt1517 = j1;
+		entity.currentAnimation = j1;
 		int k1 = 4;
                if (entity.currentHeading != entity.turnDirection && entity.interactingEntity == -1 && entity.turnSpeed != 0) {
                        k1 = 2;
@@ -7704,15 +7704,15 @@ public class Game extends RSApplet {
 		if (entity.smallXYIndex > 3) {
 			k1 = 8;
 		}
-		if (entity.anInt1503 > 0 && entity.smallXYIndex > 1) {
+		if (entity.movementDelay > 0 && entity.smallXYIndex > 1) {
 			k1 = 8;
-			entity.anInt1503--;
+			entity.movementDelay--;
 		}
 		if (entity.aBooleanArray1553[entity.smallXYIndex - 1]) {
 			k1 <<= 1;
 		}
-		if (k1 >= 8 && entity.anInt1517 == entity.anInt1554 && entity.anInt1505 != -1) {
-			entity.anInt1517 = entity.anInt1505;
+		if (k1 >= 8 && entity.currentAnimation == entity.walkAnimation && entity.runAnimation != -1) {
+			entity.currentAnimation = entity.runAnimation;
 		}
 		if (i < k) {
 			entity.x += k1;
@@ -7738,8 +7738,8 @@ public class Game extends RSApplet {
 		}
 		if (entity.x == k && entity.y == l) {
 			entity.smallXYIndex--;
-			if (entity.anInt1542 > 0) {
-				entity.anInt1542--;
+			if (entity.animationDelay > 0) {
+				entity.animationDelay--;
 			}
 		}
 	}
@@ -7772,14 +7772,14 @@ public class Game extends RSApplet {
 				}
 			}
 		}
-		if ((entity.anInt1538 != 0 || entity.anInt1539 != 0) && (entity.smallXYIndex == 0 || entity.anInt1503 > 0)) {
-			int k = entity.x - (entity.anInt1538 - baseX - baseX) * 64;
-			int j1 = entity.y - (entity.anInt1539 - baseY - baseY) * 64;
+		if ((entity.focusX != 0 || entity.focusY != 0) && (entity.smallXYIndex == 0 || entity.movementDelay > 0)) {
+			int k = entity.x - (entity.focusX - baseX - baseX) * 64;
+			int j1 = entity.y - (entity.focusY - baseY - baseY) * 64;
 			if (k != 0 || j1 != 0) {
 				entity.turnDirection = (int) (Math.atan2(k, j1) * 325.94900000000001D) & 0x7ff;
 			}
-			entity.anInt1538 = 0;
-			entity.anInt1539 = 0;
+			entity.focusX = 0;
+			entity.focusY = 0;
 		}
                int l = entity.turnDirection - entity.currentHeading & 0x7ff;
                if (l != 0) {
@@ -7791,28 +7791,28 @@ public class Game extends RSApplet {
                                entity.currentHeading += entity.turnSpeed;
                        }
                        entity.currentHeading &= 0x7ff;
-                       if (entity.anInt1517 == entity.anInt1511 && entity.currentHeading != entity.turnDirection) {
-                               if (entity.anInt1512 != -1) {
-                                       entity.anInt1517 = entity.anInt1512;
+                       if (entity.currentAnimation == entity.standAnimation && entity.currentHeading != entity.turnDirection) {
+                               if (entity.turnAnimation != -1) {
+                                       entity.currentAnimation = entity.turnAnimation;
                                        return;
                                }
-                               entity.anInt1517 = entity.anInt1554;
+                               entity.currentAnimation = entity.walkAnimation;
 			}
 		}
 	}
 
        public void updateEntityAnimation(Entity entity) {
 		entity.aBoolean1541 = false;
-		if (entity.anInt1517 != -1) {
-			Animation animation = Animation.anims[entity.anInt1517];
-			entity.anInt1519++;
-                        if (entity.anInt1518 < animation.anInt352 && entity.anInt1519 > animation.getFrameDelay(entity.anInt1518)) {
-				entity.anInt1519 = 0;
-				entity.anInt1518++;
+		if (entity.currentAnimation != -1) {
+			Animation animation = Animation.anims[entity.currentAnimation];
+			entity.animationFrameCycle++;
+                        if (entity.animationFrame < animation.anInt352 && entity.animationFrameCycle > animation.getFrameDelay(entity.animationFrame)) {
+				entity.animationFrameCycle = 0;
+				entity.animationFrame++;
 			}
-			if (entity.anInt1518 >= animation.anInt352) {
-				entity.anInt1519 = 0;
-				entity.anInt1518 = 0;
+			if (entity.animationFrame >= animation.anInt352) {
+				entity.animationFrameCycle = 0;
+				entity.animationFrame = 0;
 			}
 		}
                if (entity.spotAnimId != -1 && loopCycle >= entity.spotAnimStartTick) {
@@ -7828,33 +7828,33 @@ public class Game extends RSApplet {
                                entity.spotAnimId = -1;
                        }
 		}
-		if (entity.anim != -1 && entity.anInt1529 <= 1) {
+		if (entity.anim != -1 && entity.graphicDelay <= 1) {
 			Animation animation_2 = Animation.anims[entity.anim];
-			if (animation_2.anInt363 == 1 && entity.anInt1542 > 0 && entity.anInt1547 <= loopCycle && entity.anInt1548 < loopCycle) {
-				entity.anInt1529 = 1;
+			if (animation_2.anInt363 == 1 && entity.animationDelay > 0 && entity.forceMoveStartCycle <= loopCycle && entity.forceMoveEndCycle < loopCycle) {
+				entity.graphicDelay = 1;
 				return;
 			}
 		}
-		if (entity.anim != -1 && entity.anInt1529 == 0) {
+		if (entity.anim != -1 && entity.graphicDelay == 0) {
 			Animation animation_3 = Animation.anims[entity.anim];
-                        for (entity.anInt1528++; entity.anInt1527 < animation_3.anInt352 && entity.anInt1528 > animation_3.getFrameDelay(entity.anInt1527); entity.anInt1527++) {
-                                entity.anInt1528 -= animation_3.getFrameDelay(entity.anInt1527);
+                        for (entity.graphicFrameCycle++; entity.graphicFrame < animation_3.anInt352 && entity.graphicFrameCycle > animation_3.getFrameDelay(entity.graphicFrame); entity.graphicFrame++) {
+                                entity.graphicFrameCycle -= animation_3.getFrameDelay(entity.graphicFrame);
 			}
 
-			if (entity.anInt1527 >= animation_3.anInt352) {
-				entity.anInt1527 -= animation_3.anInt356;
-				entity.anInt1530++;
-				if (entity.anInt1530 >= animation_3.anInt362) {
+			if (entity.graphicFrame >= animation_3.anInt352) {
+				entity.graphicFrame -= animation_3.anInt356;
+				entity.graphicCycle++;
+				if (entity.graphicCycle >= animation_3.anInt362) {
 					entity.anim = -1;
 				}
-				if (entity.anInt1527 < 0 || entity.anInt1527 >= animation_3.anInt352) {
+				if (entity.graphicFrame < 0 || entity.graphicFrame >= animation_3.anInt352) {
 					entity.anim = -1;
 				}
 			}
 			entity.aBoolean1541 = animation_3.aBoolean358;
 		}
-		if (entity.anInt1529 > 0) {
-			entity.anInt1529--;
+		if (entity.graphicDelay > 0) {
+			entity.graphicDelay--;
 		}
 	}
 
@@ -8536,13 +8536,13 @@ public class Game extends RSApplet {
 
         public void decodePlayerUpdateMask(int i, int j, Stream stream, Player player) {
 		if ((i & 0x400) != 0) {
-			player.anInt1543 = stream.readUnsignedByteSub();
-			player.anInt1545 = stream.readUnsignedByteSub();
-			player.anInt1544 = stream.readUnsignedByteSub();
-			player.anInt1546 = stream.readUnsignedByteSub();
-			player.anInt1547 = stream.readShortLEAdd() + loopCycle;
-			player.anInt1548 = stream.readShortAdd() + loopCycle;
-			player.anInt1549 = stream.readUnsignedByteSub();
+			player.forceMoveStartX = stream.readUnsignedByteSub();
+			player.forceMoveStartY = stream.readUnsignedByteSub();
+			player.forceMoveEndX = stream.readUnsignedByteSub();
+			player.forceMoveEndY = stream.readUnsignedByteSub();
+			player.forceMoveStartCycle = stream.readShortLEAdd() + loopCycle;
+			player.forceMoveEndCycle = stream.readShortAdd() + loopCycle;
+			player.forceMoveDirection = stream.readUnsignedByteSub();
                        player.clearMovement();
 		}
 		if ((i & 0x100) != 0) {
@@ -8570,21 +8570,21 @@ public class Game extends RSApplet {
 			if (l == player.anim && l != -1) {
 				int i3 = Animation.anims[l].anInt365;
 				if (i3 == 1) {
-					player.anInt1527 = 0;
-					player.anInt1528 = 0;
-					player.anInt1529 = i2;
-					player.anInt1530 = 0;
+					player.graphicFrame = 0;
+					player.graphicFrameCycle = 0;
+					player.graphicDelay = i2;
+					player.graphicCycle = 0;
 				}
 				if (i3 == 2) {
-					player.anInt1530 = 0;
+					player.graphicCycle = 0;
 				}
 			} else if (l == -1 || player.anim == -1 || Animation.anims[l].anInt359 >= Animation.anims[player.anim].anInt359) {
 				player.anim = l;
-				player.anInt1527 = 0;
-				player.anInt1528 = 0;
-				player.anInt1529 = i2;
-				player.anInt1530 = 0;
-				player.anInt1542 = player.smallXYIndex;
+				player.graphicFrame = 0;
+				player.graphicFrameCycle = 0;
+				player.graphicDelay = i2;
+				player.graphicCycle = 0;
+				player.animationDelay = player.smallXYIndex;
 			}
 		}
 		if ((i & 4) != 0) {
@@ -8595,8 +8595,8 @@ public class Game extends RSApplet {
 			} else if (player == myPlayer) {
 				pushMessage(player.textSpoken, 2, player.name);
 			}
-			player.anInt1513 = 0;
-			player.anInt1531 = 0;
+			player.chatColor = 0;
+			player.chatEffect = 0;
 			player.textCycle = 150;
 		}
 		if ((i & 0x80) != 0) {
@@ -8625,12 +8625,12 @@ public class Game extends RSApplet {
                                                 String s = TextInput.decodeChatMessage(j3, aStream_834);
 						s = Censor.doCensor(s);
 						player.textSpoken = s;
-						player.anInt1513 = i1 >> 8;
+						player.chatColor = i1 >> 8;
 						player.privelage = j2;
 
 						// entityMessage(player);
 
-						player.anInt1531 = i1 & 0xff;
+						player.chatEffect = i1 & 0xff;
 						player.textCycle = 150;
 						if (j2 == 2 || j2 == 3) {
 							pushMessage(s, 1, "@cr2@" + player.name);
@@ -8661,8 +8661,8 @@ public class Game extends RSApplet {
 			player.updatePlayer(stream_1);
 		}
 		if ((i & 2) != 0) {
-			player.anInt1538 = stream.readShortLEAdd();
-			player.anInt1539 = stream.readShortLE();
+			player.focusX = stream.readShortLEAdd();
+			player.focusY = stream.readShortLE();
 		}
 		if ((i & 0x20) != 0) {
 			int k1 = stream.readUnsignedByte();
@@ -9865,16 +9865,16 @@ public class Game extends RSApplet {
 			int j1 = stream.readBits(1);
 			if (j1 == 0) {
 				playerIndices[playerCount++] = i1;
-				player.anInt1537 = loopCycle;
+				player.lastUpdateCycle = loopCycle;
 			} else {
 				int k1 = stream.readBits(2);
 				if (k1 == 0) {
 					playerIndices[playerCount++] = i1;
-					player.anInt1537 = loopCycle;
+					player.lastUpdateCycle = loopCycle;
 					playerUpdateIndices[playerUpdateCount++] = i1;
 				} else if (k1 == 1) {
 					playerIndices[playerCount++] = i1;
-					player.anInt1537 = loopCycle;
+					player.lastUpdateCycle = loopCycle;
 					int l1 = stream.readBits(3);
 					player.moveInDir(false, l1);
 					int j2 = stream.readBits(1);
@@ -9883,7 +9883,7 @@ public class Game extends RSApplet {
 					}
 				} else if (k1 == 2) {
 					playerIndices[playerCount++] = i1;
-					player.anInt1537 = loopCycle;
+					player.lastUpdateCycle = loopCycle;
 					int i2 = stream.readBits(3);
 					player.moveInDir(true, i2);
 					int k2 = stream.readBits(3);
@@ -10314,16 +10314,16 @@ public class Game extends RSApplet {
 			int k1 = stream.readBits(1);
 			if (k1 == 0) {
 				npcIndices[npcCount++] = j1;
-				npc.anInt1537 = loopCycle;
+				npc.lastUpdateCycle = loopCycle;
 			} else {
 				int l1 = stream.readBits(2);
 				if (l1 == 0) {
 					npcIndices[npcCount++] = j1;
-					npc.anInt1537 = loopCycle;
+					npc.lastUpdateCycle = loopCycle;
 					playerUpdateIndices[playerUpdateCount++] = j1;
 				} else if (l1 == 1) {
 					npcIndices[npcCount++] = j1;
-					npc.anInt1537 = loopCycle;
+					npc.lastUpdateCycle = loopCycle;
 					int i2 = stream.readBits(3);
 					npc.moveInDir(false, i2);
 					int k2 = stream.readBits(1);
@@ -10332,7 +10332,7 @@ public class Game extends RSApplet {
 					}
 				} else if (l1 == 2) {
 					npcIndices[npcCount++] = j1;
-					npc.anInt1537 = loopCycle;
+					npc.lastUpdateCycle = loopCycle;
 					int j2 = stream.readBits(3);
 					npc.moveInDir(true, j2);
 					int l2 = stream.readBits(3);
@@ -10539,7 +10539,7 @@ public class Game extends RSApplet {
                processPlayerUpdateMasks(stream);
 		for (int k = 0; k < entityRemovalCount; k++) {
 			int l = removedEntityIndices[k];
-			if (playerArray[l].anInt1537 != loopCycle) {
+			if (playerArray[l].lastUpdateCycle != loopCycle) {
 				playerArray[l] = null;
 			}
 		}

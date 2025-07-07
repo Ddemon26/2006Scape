@@ -5,17 +5,17 @@
 public final class NPC extends Entity {
 
        private Model getBaseModel() {
-		if (super.anim >= 0 && super.anInt1529 == 0) {
-			int k = Animation.anims[super.anim].anIntArray353[super.anInt1527];
+		if (super.anim >= 0 && super.graphicDelay == 0) {
+			int k = Animation.anims[super.anim].anIntArray353[super.graphicFrame];
 			int i1 = -1;
-			if (super.anInt1517 >= 0 && super.anInt1517 != super.anInt1511) {
-				i1 = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
+			if (super.currentAnimation >= 0 && super.currentAnimation != super.standAnimation) {
+				i1 = Animation.anims[super.currentAnimation].anIntArray353[super.animationFrame];
 			}
                        return definition.getAnimatedModel(i1, k, Animation.anims[super.anim].anIntArray357);
 		}
 		int l = -1;
-		if (super.anInt1517 >= 0) {
-			l = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
+		if (super.currentAnimation >= 0) {
+			l = Animation.anims[super.currentAnimation].anIntArray353[super.animationFrame];
 		}
                return definition.getAnimatedModel(-1, l, null);
 	}
