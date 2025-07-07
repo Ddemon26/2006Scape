@@ -107,33 +107,33 @@ public final class Player extends Entity {
                         bodyColors[l] = j1;
 		}
 
-		super.anInt1511 = stream.readUnsignedWord();
-		if (super.anInt1511 == 65535) {
-			super.anInt1511 = -1;
+		super.standAnimation = stream.readUnsignedWord();
+		if (super.standAnimation == 65535) {
+			super.standAnimation = -1;
 		}
-		super.anInt1512 = stream.readUnsignedWord();
-		if (super.anInt1512 == 65535) {
-			super.anInt1512 = -1;
+		super.turnAnimation = stream.readUnsignedWord();
+		if (super.turnAnimation == 65535) {
+			super.turnAnimation = -1;
 		}
-		super.anInt1554 = stream.readUnsignedWord();
-		if (super.anInt1554 == 65535) {
-			super.anInt1554 = -1;
+		super.walkAnimation = stream.readUnsignedWord();
+		if (super.walkAnimation == 65535) {
+			super.walkAnimation = -1;
 		}
-		super.anInt1555 = stream.readUnsignedWord();
-		if (super.anInt1555 == 65535) {
-			super.anInt1555 = -1;
+		super.turn180Animation = stream.readUnsignedWord();
+		if (super.turn180Animation == 65535) {
+			super.turn180Animation = -1;
 		}
-		super.anInt1556 = stream.readUnsignedWord();
-		if (super.anInt1556 == 65535) {
-			super.anInt1556 = -1;
+		super.turn90CWAnimation = stream.readUnsignedWord();
+		if (super.turn90CWAnimation == 65535) {
+			super.turn90CWAnimation = -1;
 		}
-		super.anInt1557 = stream.readUnsignedWord();
-		if (super.anInt1557 == 65535) {
-			super.anInt1557 = -1;
+		super.turn90CCWAnimation = stream.readUnsignedWord();
+		if (super.turn90CCWAnimation == 65535) {
+			super.turn90CCWAnimation = -1;
 		}
-		super.anInt1505 = stream.readUnsignedWord();
-		if (super.anInt1505 == 65535) {
-			super.anInt1505 = -1;
+		super.runAnimation = stream.readUnsignedWord();
+		if (super.runAnimation == 65535) {
+			super.runAnimation = -1;
 		}
 		name = TextClass.fixName(TextClass.nameForLong(stream.readQWord()));
 		combatLevel = stream.readUnsignedByte();
@@ -165,10 +165,10 @@ public final class Player extends Entity {
         private Model getBaseModel() {
 		if (desc != null) {
 			int j = -1;
-			if (super.anim >= 0 && super.anInt1529 == 0) {
-				j = Animation.anims[super.anim].anIntArray353[super.anInt1527];
-			} else if (super.anInt1517 >= 0) {
-				j = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
+			if (super.anim >= 0 && super.graphicDelay == 0) {
+				j = Animation.anims[super.anim].anIntArray353[super.graphicFrame];
+			} else if (super.currentAnimation >= 0) {
+				j = Animation.anims[super.currentAnimation].anIntArray353[super.animationFrame];
 			}
                        Model model = desc.getAnimatedModel(-1, j, null);
 			return model;
@@ -178,11 +178,11 @@ public final class Player extends Entity {
 		int i1 = -1;
 		int j1 = -1;
 		int k1 = -1;
-		if (super.anim >= 0 && super.anInt1529 == 0) {
+		if (super.anim >= 0 && super.graphicDelay == 0) {
 			Animation animation = Animation.anims[super.anim];
-			k = animation.anIntArray353[super.anInt1527];
-			if (super.anInt1517 >= 0 && super.anInt1517 != super.anInt1511) {
-				i1 = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
+			k = animation.anIntArray353[super.graphicFrame];
+			if (super.currentAnimation >= 0 && super.currentAnimation != super.standAnimation) {
+				i1 = Animation.anims[super.currentAnimation].anIntArray353[super.animationFrame];
 			}
 			if (animation.anInt360 >= 0) {
 				j1 = animation.anInt360;
@@ -192,8 +192,8 @@ public final class Player extends Entity {
 				k1 = animation.anInt361;
 				l += k1 - equipment[3] << 48;
 			}
-		} else if (super.anInt1517 >= 0) {
-			k = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
+		} else if (super.currentAnimation >= 0) {
+			k = Animation.anims[super.currentAnimation].anIntArray353[super.animationFrame];
 		}
             Model model_1 = (Model) mruNodes.get(l);
 		if (model_1 == null) {

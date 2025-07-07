@@ -28,18 +28,18 @@ public class Entity extends Animable {
 			}
 		}
 		smallXYIndex = 0;
-		anInt1542 = 0;
-		anInt1503 = 0;
+		animationDelay = 0;
+		movementDelay = 0;
 		smallX[0] = i;
 		smallY[0] = j;
-		x = smallX[0] * 128 + anInt1540 * 64;
-		y = smallY[0] * 128 + anInt1540 * 64;
+		x = smallX[0] * 128 + size * 64;
+		y = smallY[0] * 128 + size * 64;
 	}
 
        /** Clears the entity's movement queue. */
        public final void clearMovement() {
                smallXYIndex = 0;
-               anInt1542 = 0;
+               animationDelay = 0;
        }
 
 	public final void updateHitData(int j, int k, int l) {
@@ -112,45 +112,45 @@ public class Entity extends Animable {
 		smallY = new int[10];
 		interactingEntity = -1;
                turnSpeed = 32;
-		anInt1505 = -1;
+		runAnimation = -1;
 		height = 200;
-		anInt1511 = -1;
-		anInt1512 = -1;
+		standAnimation = -1;
+		turnAnimation = -1;
 		hitArray = new int[4];
 		hitMarkTypes = new int[4];
 		hitsLoopCycle = new int[4];
-		anInt1517 = -1;
+		currentAnimation = -1;
                spotAnimId = -1;
 		anim = -1;
 		loopCycleStatus = -1000;
 		textCycle = 100;
-		anInt1540 = 1;
+		size = 1;
 		aBoolean1541 = false;
 		aBooleanArray1553 = new boolean[10];
-		anInt1554 = -1;
-		anInt1555 = -1;
-		anInt1556 = -1;
-		anInt1557 = -1;
+		walkAnimation = -1;
+		turn180Animation = -1;
+		turn90CWAnimation = -1;
+		turn90CCWAnimation = -1;
 	}
 
 	public final int[] smallX;
 	public final int[] smallY;
 	public int interactingEntity;
-	int anInt1503;
+	int movementDelay;
        int turnSpeed;
-	int anInt1505;
+	int runAnimation;
 	public String textSpoken;
 	public int height;
 	public int turnDirection;
-	int anInt1511;
-	int anInt1512;
-	int anInt1513;
+	int standAnimation;
+	int turnAnimation;
+	int chatColor;
 	final int[] hitArray;
 	final int[] hitMarkTypes;
 	final int[] hitsLoopCycle;
-	int anInt1517;
-	int anInt1518;
-	int anInt1519;
+	int currentAnimation;
+	int animationFrame;
+	int animationFrameCycle;
        int spotAnimId;
        int spotAnimFrame;
        int spotAnimFrameCycle;
@@ -158,34 +158,34 @@ public class Entity extends Animable {
        int spotAnimHeight;
 	int smallXYIndex;
 	public int anim;
-	int anInt1527;
-	int anInt1528;
-	int anInt1529;
-	int anInt1530;
-	int anInt1531;
+	int graphicFrame;
+	int graphicFrameCycle;
+	int graphicDelay;
+	int graphicCycle;
+	int chatEffect;
 	public int loopCycleStatus;
 	public int currentHealth;
 	public int maxHealth;
 	int textCycle;
-	int anInt1537;
-	int anInt1538;
-	int anInt1539;
-	int anInt1540;
+	int lastUpdateCycle;
+	int focusX;
+	int focusY;
+	int size;
 	boolean aBoolean1541;
-	int anInt1542;
-	int anInt1543;
-	int anInt1544;
-	int anInt1545;
-	int anInt1546;
-	int anInt1547;
-	int anInt1548;
-	int anInt1549;
+	int animationDelay;
+	int forceMoveStartX;
+	int forceMoveEndX;
+	int forceMoveStartY;
+	int forceMoveEndY;
+	int forceMoveStartCycle;
+	int forceMoveEndCycle;
+	int forceMoveDirection;
 	public int x;
 	public int y;
        int currentHeading;
 	final boolean[] aBooleanArray1553;
-	int anInt1554;
-	int anInt1555;
-	int anInt1556;
-	int anInt1557;
+	int walkAnimation;
+	int turn180Animation;
+	int turn90CWAnimation;
+	int turn90CCWAnimation;
 }
