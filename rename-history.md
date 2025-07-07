@@ -773,8 +773,37 @@ This document lists variable or identifier renames found in the commit history.
  - anInt1522 -> spotAnimFrameCycle
  - anInt1523 -> spotAnimStartTick
  - anInt1524 -> spotAnimHeight
- - anInt1552 -> currentHeading
- - method446 -> clearMovement
+- anInt1552 -> currentHeading
+- method446 -> clearMovement
+- anInt1503 -> movementDelay
+- anInt1505 -> runAnimation
+- anInt1511 -> standAnimation
+- anInt1512 -> turnAnimation
+- anInt1513 -> chatColor
+- anInt1517 -> currentAnimation
+- anInt1518 -> animationFrame
+- anInt1519 -> animationFrameCycle
+- anInt1527 -> graphicFrame
+- anInt1528 -> graphicFrameCycle
+- anInt1529 -> graphicDelay
+- anInt1530 -> graphicCycle
+- anInt1531 -> chatEffect
+- anInt1537 -> lastUpdateCycle
+- anInt1538 -> focusX
+- anInt1539 -> focusY
+- anInt1540 -> size
+- anInt1542 -> animationDelay
+- anInt1543 -> forceMoveStartX
+- anInt1544 -> forceMoveEndX
+- anInt1545 -> forceMoveStartY
+- anInt1546 -> forceMoveEndY
+- anInt1547 -> forceMoveStartCycle
+- anInt1548 -> forceMoveEndCycle
+- anInt1549 -> forceMoveDirection
+- anInt1554 -> walkAnimation
+- anInt1555 -> turn180Animation
+- anInt1556 -> turn90CWAnimation
+- anInt1557 -> turn90CCWAnimation
 
 ## ShapedTile
  - aBoolean683 -> flatShading
