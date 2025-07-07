@@ -585,7 +585,38 @@ This document lists variable or identifier renames found in the commit history.
  - method483 -> processVisibility
  - method484 -> drawFace
  - method485 -> drawClippedFace
- - method486 -> isTriangleVisible
+- method486 -> isTriangleVisible
+- aModel_1621 -> placeholderModel
+- anIntArray1622 -> tempVertexX
+- anIntArray1623 -> tempVertexY
+- anIntArray1624 -> tempVertexZ
+- anIntArray1625 -> tempFaceTextures
+- anInt1626 -> vertexCount
+- anInt1630 -> faceCount
+- anIntArray1634 -> shadeA
+- anIntArray1635 -> shadeB
+- anIntArray1636 -> shadeC
+- anIntArray1637 -> faceRenderTypes
+- anIntArray1638 -> facePriorities
+- anIntArray1639 -> faceAlphas
+- anInt1641 -> defaultPriority
+- anInt1642 -> texturedTriangleCount
+- anIntArray1643 -> texTriangleX
+- anIntArray1644 -> texTriangleY
+- anIntArray1645 -> texTriangleZ
+- anInt1654 -> overrideHeight
+- aBoolean1659 -> pickable
+- aVertexNormalArray1660 -> vertexNormalTemp
+- modelHeaders -> modelHeaderCache
+- modelFetcher -> modelFetcherParent
+- anInt1685 -> viewportCenterX
+- anInt1686 -> viewportCenterY
+- anInt1687 -> queueLength
+- anIntArray1688 -> faceQueue
+- modelIntArray1 -> sineTable
+- modelIntArray2 -> cosineTable
+- modelIntArray3 -> brightnessTable
+- modelIntArray4 -> reciprocalTable
 
 ## Sounds
  - aClass3_Sub12_211 -> stream

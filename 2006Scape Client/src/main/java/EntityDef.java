@@ -160,7 +160,7 @@ public final class EntityDef {
 			model.applyLighting(64 + anInt85, 850 + anInt92, -30, -50, -30, true);
                         mruNodes.put(model, type);
 		}
-               Model model_1 = Model.aModel_1621;
+               Model model_1 = Model.placeholderModel;
                model_1.copyFromModel(model, AnimFrame.isNullFrame(secondaryFrame) & AnimFrame.isNullFrame(primaryFrame));
                if (secondaryFrame != -1 && primaryFrame != -1) {
                        model_1.applyFrames(frameData, primaryFrame, secondaryFrame);
@@ -174,7 +174,7 @@ public final class EntityDef {
 		model_1.faceGroups = null;
 		model_1.vertexGroups = null;
 		if (aByte68 == 1) {
-			model_1.aBoolean1659 = true;
+			model_1.pickable = true;
 		}
 		return model_1;
 	}

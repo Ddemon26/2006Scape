@@ -137,7 +137,7 @@ public final class ObjectDef {
 		}
 		if (aBoolean762) {
 			int l1 = (k + l + i1 + j1) / 4;
-			for (int i2 = 0; i2 < model.anInt1626; i2++) {
+			for (int i2 = 0; i2 < model.vertexCount; i2++) {
 				int j2 = model.vertexX[i2];
 				int k2 = model.vertexZ[i2];
 				int l2 = k + (l - k) * (j2 + 64) / 128;
@@ -285,7 +285,7 @@ public final class ObjectDef {
 		}
 		model_3.applyLighting(64 + aByte737, 768 + aByte742 * 5, -50, -10, -50, !aBoolean769);
 		if (anInt760 == 1) {
-			model_3.anInt1654 = model_3.modelHeight;
+			model_3.overrideHeight = model_3.modelHeight;
 		}
             mruNodes2.put(model_3, l1);
 		return model_3;

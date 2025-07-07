@@ -4491,8 +4491,8 @@ public class Game extends RSApplet {
 			menuActionRow++;
 		}
 		int j = -1;
-		for (int k = 0; k < Model.anInt1687; k++) {
-			int l = Model.anIntArray1688[k];
+		for (int k = 0; k < Model.queueLength; k++) {
+			int l = Model.faceQueue[k];
 			int i1 = l & 0x7f;
 			int j1 = l >> 7 & 0x7f;
 			int k1 = l >> 29 & 3;
@@ -5905,8 +5905,8 @@ public class Game extends RSApplet {
 		int l = x * x + y * y;
 		if (l > 4225 && l < 90000) {
 			int i1 = cameraYaw + minimapInt2 & 0x7ff;
-			int j1 = Model.modelIntArray1[i1];
-			int k1 = Model.modelIntArray2[i1];
+			int j1 = Model.sineTable[i1];
+			int k1 = Model.cosineTable[i1];
 			j1 = (j1 * 256) / (minimapInt3 + 256);
 			k1 = (k1 * 256) / (minimapInt3 + 256);
 			int l1 = y * j1 + x * k1 >> 16;
@@ -9615,10 +9615,10 @@ public class Game extends RSApplet {
 		i -= xCameraPos;
 		i1 -= zCameraPos;
 		l -= yCameraPos;
-		int j1 = Model.modelIntArray1[yCameraCurve];
-		int k1 = Model.modelIntArray2[yCameraCurve];
-		int l1 = Model.modelIntArray1[xCameraCurve];
-		int i2 = Model.modelIntArray2[xCameraCurve];
+		int j1 = Model.sineTable[yCameraCurve];
+		int k1 = Model.cosineTable[yCameraCurve];
+		int l1 = Model.sineTable[xCameraCurve];
+		int i2 = Model.cosineTable[xCameraCurve];
 		int j2 = l * l1 + i * i2 >> 16;
 		l = l * i2 - i * l1 >> 16;
 		i = j2;
@@ -10456,8 +10456,8 @@ public class Game extends RSApplet {
 		if (l > 6400) {
 			return;
 		}
-		int i1 = Model.modelIntArray1[k];
-		int j1 = Model.modelIntArray2[k];
+		int i1 = Model.sineTable[k];
+		int j1 = Model.cosineTable[k];
 		i1 = i1 * 256 / (minimapInt3 + 256);
 		j1 = j1 * 256 / (minimapInt3 + 256);
 		int k1 = j * i1 + i * j1 >> 16;
@@ -10564,8 +10564,8 @@ public class Game extends RSApplet {
 		int k2 = 0;
 		int l2 = j;
 		if (l1 != 0) {
-			int i3 = Model.modelIntArray1[l1];
-			int k3 = Model.modelIntArray2[l1];
+			int i3 = Model.sineTable[l1];
+			int k3 = Model.cosineTable[l1];
 			int i4 = k2 * k3 - l2 * i3 >> 16;
 			l2 = k2 * i3 + l2 * k3 >> 16;
 			k2 = i4;
@@ -10576,8 +10576,8 @@ public class Game extends RSApplet {
 			 * lftrit = j2; if(fwdbwd == 0) fwdbwd = l2; k2 = zoom; j2 = lftrit;
 			 * l2 = fwdbwd; }
 			 */
-			int j3 = Model.modelIntArray1[i2];
-			int l3 = Model.modelIntArray2[i2];
+			int j3 = Model.sineTable[i2];
+			int l3 = Model.cosineTable[i2];
 			int j4 = l2 * j3 + j2 * l3 >> 16;
 			l2 = l2 * l3 - j2 * j3 >> 16;
 			j2 = j4;
@@ -11892,9 +11892,9 @@ public class Game extends RSApplet {
 
 		int k2 = Texture.cycle;
 		Model.withinViewport = true;
-		Model.anInt1687 = 0;
-		Model.anInt1685 = super.mouseX - 4;
-		Model.anInt1686 = super.mouseY - 4;
+		Model.queueLength = 0;
+		Model.viewportCenterX = super.mouseX - 4;
+		Model.viewportCenterY = super.mouseY - 4;
 		DrawingArea.setAllPixelsToZero();
 		if(graphicsEnabled){
                         worldController.renderScene(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);

@@ -182,7 +182,7 @@ final class WorldController {
                 if (class30_sub3 != null) {
                         for (int k1 = 0; k1 < class30_sub3.sceneObjectCount; k1++) {
                                 if (class30_sub3.obj5Array[k1].renderable instanceof Model) {
-                                        int l1 = ((Model) class30_sub3.obj5Array[k1].renderable).anInt1654;
+                                        int l1 = ((Model) class30_sub3.obj5Array[k1].renderable).overrideHeight;
 					if (l1 > j1) {
 						j1 = l1;
 					}
@@ -674,10 +674,10 @@ final class WorldController {
 		mergeCycleId++;
 		int l = 0;
 		int ai[] = model_1.vertexX;
-		int i1 = model_1.anInt1626;
-		for (int j1 = 0; j1 < model.anInt1626; j1++) {
+            int i1 = model_1.vertexCount;
+            for (int j1 = 0; j1 < model.vertexCount; j1++) {
 			VertexNormal class33 = model.vertexNormals[j1];
-			VertexNormal class33_1 = model.aVertexNormalArray1660[j1];
+			VertexNormal class33_1 = model.vertexNormalTemp[j1];
 			if (class33_1.magnitude != 0) {
 				int i2 = model.vertexY[j1] - j;
 				if (i2 <= model_1.maxY) {
@@ -687,7 +687,7 @@ final class WorldController {
 						if (k2 >= model_1.minZ && k2 <= model_1.maxZ) {
 							for (int l2 = 0; l2 < i1; l2++) {
 								VertexNormal class33_2 = model_1.vertexNormals[l2];
-								VertexNormal class33_3 = model_1.aVertexNormalArray1660[l2];
+								VertexNormal class33_3 = model_1.vertexNormalTemp[l2];
 								if (j2 == ai[l2] && k2 == model_1.vertexZ[l2] && i2 == model_1.vertexY[l2] && class33_3.magnitude != 0) {
 									class33.x += class33_3.x;
 									class33.y += class33_3.y;
@@ -712,17 +712,17 @@ final class WorldController {
 		if (l < 3 || !flag) {
 			return;
 		}
-		for (int k1 = 0; k1 < model.anInt1630; k1++) {
-			if (vertexVisitA[model.faceA[k1]] == mergeCycleId && vertexVisitA[model.faceB[k1]] == mergeCycleId && vertexVisitA[model.faceC[k1]] == mergeCycleId) {
-				model.anIntArray1637[k1] = -1;
-			}
-		}
+            for (int k1 = 0; k1 < model.faceCount; k1++) {
+                    if (vertexVisitA[model.faceA[k1]] == mergeCycleId && vertexVisitA[model.faceB[k1]] == mergeCycleId && vertexVisitA[model.faceC[k1]] == mergeCycleId) {
+                            model.faceRenderTypes[k1] = -1;
+                    }
+            }
 
-		for (int l1 = 0; l1 < model_1.anInt1630; l1++) {
-			if (vertexVisitB[model_1.faceA[l1]] == mergeCycleId && vertexVisitB[model_1.faceB[l1]] == mergeCycleId && vertexVisitB[model_1.faceC[l1]] == mergeCycleId) {
-				model_1.anIntArray1637[l1] = -1;
-			}
-		}
+            for (int l1 = 0; l1 < model_1.faceCount; l1++) {
+                    if (vertexVisitB[model_1.faceA[l1]] == mergeCycleId && vertexVisitB[model_1.faceB[l1]] == mergeCycleId && vertexVisitB[model_1.faceC[l1]] == mergeCycleId) {
+                            model_1.faceRenderTypes[l1] = -1;
+                    }
+            }
 
 	}
 
@@ -798,10 +798,10 @@ final class WorldController {
 		boolean aflag[][][][] = new boolean[9][32][256][256];
 		for (int i1 = 128; i1 <= 384; i1 += 32) {
 			for (int j1 = 0; j1 < 2048; j1 += 64) {
-				pitchSin = Model.modelIntArray1[i1];
-				pitchCos = Model.modelIntArray2[i1];
-				yawSin = Model.modelIntArray1[j1];
-				yawCos = Model.modelIntArray2[j1];
+				pitchSin = Model.sineTable[i1];
+				pitchCos = Model.cosineTable[i1];
+				yawSin = Model.sineTable[j1];
+				yawCos = Model.cosineTable[j1];
 				int l1 = (i1 - 128) / 32;
 				int j2 = j1 / 64;
 				for (int l2 = -(drawDistance + 1); l2 <= (drawDistance + 1); l2++) {
@@ -894,10 +894,10 @@ final class WorldController {
 			j = worldHeight * 128 - 1;
 		}
                renderCycle++;
-		pitchSin = Model.modelIntArray1[j1];
-		pitchCos = Model.modelIntArray2[j1];
-		yawSin = Model.modelIntArray1[k];
-		yawCos = Model.modelIntArray2[k];
+		pitchSin = Model.sineTable[j1];
+		pitchCos = Model.cosineTable[j1];
+		yawSin = Model.sineTable[k];
+		yawCos = Model.cosineTable[k];
 		aBooleanArrayArray492 = aBooleanArrayArrayArrayArray491[(j1 - 128) / 32][k / 64];
 		cameraX = i;
 		cameraZ = l;
