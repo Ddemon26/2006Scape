@@ -14,7 +14,7 @@ public final class Player extends Entity {
 			return null;
 		}
 		super.height = model.modelHeight;
-		model.aBoolean1659 = true;
+		model.pickable = true;
 		if (aBoolean1699) {
 			return model;
 		}
@@ -68,7 +68,7 @@ public final class Player extends Entity {
 				model_1.translate(super.x - animationBaseX, animationBaseY - animationBaseHeight, super.y - animationBaseZ);
 			}
 		}
-		model.aBoolean1659 = true;
+		model.pickable = true;
 		return model;
 	}
 
@@ -266,7 +266,7 @@ public final class Player extends Entity {
 		if (aBoolean1699) {
 			return model_1;
 		}
-                Model model_2 = Model.aModel_1621;
+                Model model_2 = Model.placeholderModel;
                 model_2.copyFromModel(model_1, AnimFrame.isNullFrame(k) & AnimFrame.isNullFrame(i1));
 		if (k != -1 && i1 != -1) {
 			model_2.applyFrames(Animation.anims[super.anim].anIntArray357, i1, k);

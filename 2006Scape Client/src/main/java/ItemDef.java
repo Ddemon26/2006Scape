@@ -2242,7 +2242,7 @@ public final class ItemDef {
 
 		}
 		model.applyLighting(64 + ambient, 768 + contrast, -50, -10, -50, true);
-		model.aBoolean1659 = true;
+		model.pickable = true;
         modelCache.put(model, id);
 		return model;
 	}
