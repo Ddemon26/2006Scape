@@ -858,3 +858,44 @@ This document lists variable or identifier renames found in the commit history.
  - anIntArray703 -> varpIndices
  - anInt709 -> actionType
  - aBoolean713 -> isActive
+## Game
+ - aBoolean831 -> flameThreadActive
+ - aBoolean872 -> useJaggrab
+ - aBoolean954 -> hasFocus
+ - aBoolean972 -> scrollBarDragging
+ - aBoolean993 -> initialLoadComplete
+ - aBoolean1017 -> cameraUpdatePending
+ - aBoolean1031 -> characterDesignChanged
+ - aBoolean1047 -> isMaleCharacter
+ - aBoolean1080 -> regionLoading
+ - aBoolean1141 -> forceMapReload
+ - aBoolean1242 -> itemBeingDragged
+ - aClass19_1013 -> projectileList
+ - aClass19_1056 -> graphicsObjectList
+ - aClass9_1059 -> chatScrollComponent
+ - aBackground_966 -> loginBoxBackground
+ - aBackground_967 -> loginButtonBackground
+ - aClass30_Sub2_Sub1_Sub1_931 -> maleIconSprite
+ - aClass30_Sub2_Sub1_Sub1_932 -> femaleIconSprite
+ - aClass30_Sub2_Sub1_Sub1_1201 -> titleBackgroundLeft
+ - aClass30_Sub2_Sub1_Sub1_1202 -> titleBackgroundRight
+ - aByteArray912 -> soundPayload
+ - anIntArrayArray1003 -> appearanceColorOptions
+ - anIntArray1204 -> additionalColorCodes
+ - aCRC32_930 -> fileCRC
+ - aRSImageProducer_1107 -> titleImageProducer
+ - aRSImageProducer_1108 -> loginLeftProducer
+ - aRSImageProducer_1109 -> loginRightProducer
+ - aRSImageProducer_1110 -> titleLeftProducer
+ - aRSImageProducer_1111 -> titleRightProducer
+ - aRSImageProducer_1112 -> titleTopLeftProducer
+ - aRSImageProducer_1113 -> titleTopRightProducer
+ - aRSImageProducer_1114 -> titleBottomLeftProducer
+ - aRSImageProducer_1115 -> titleBottomRightProducer
+ - aRSImageProducer_1123 -> tabAreaIconBuffer
+ - aRSImageProducer_1124 -> tabAreaBackgroundBuffer
+ - aRSImageProducer_1125 -> mapEdgeBuffer
+ - aRSImageProducer_1163 -> textBackground
+ - aRSImageProducer_1164 -> chatBackground
+ - aRSImageProducer_1165 -> tabAreaBuffer
+ - aRSImageProducer_1166 -> fullScreenBackground
