@@ -26,7 +26,17 @@ This document lists variable or identifier renames found in the commit history.
  - forID -> lookup
  - aMRUCache_415 -> modelCache
  - anInt413 -> ambient
- - anInt414 -> contrast
+- anInt414 -> contrast
+- anInt208 -> animationCycle
+- anInt214 -> contentType
+- anInt216 -> hoverTextColor
+- anInt219 -> activeTextColor
+- anInt230 -> hoverTarget
+- anInt239 -> activeHoverTextColor
+- anInt246 -> animationFrame
+- anInt265 -> offsetY
+- anIntArray212 -> requiredValues
+- anIntArray245 -> valueCompareType
 
 ## EntityDef
  - method464 -> copyFromModel
