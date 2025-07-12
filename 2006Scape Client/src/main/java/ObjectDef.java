@@ -48,21 +48,21 @@ public final class ObjectDef {
 		aByte742 = 0;
 		actions = null;
 		anInt746 = -1;
-		anInt758 = -1;
+                mapSceneId = -1;
 		aBoolean751 = false;
 		aBoolean779 = true;
 		scaleX = 128;
 		scaleY = 128;
 		scaleZ = 128;
-		anInt768 = 0;
-		anInt738 = 0;
-		anInt745 = 0;
-		anInt783 = 0;
+                anInt768 = 0;
+                offsetX = 0;
+                offsetY = 0;
+                offsetZ = 0;
 		aBoolean736 = false;
 		aBoolean766 = false;
-		anInt760 = -1;
-		anInt774 = -1;
-		anInt749 = -1;
+                supportsItems = -1;
+                varbitId = -1;
+                varpId = -1;
 		childrenIDs = null;
 	}
 
@@ -164,15 +164,15 @@ public final class ObjectDef {
 
 	public ObjectDef getChildDefinition() {
 		int i = -1;
-		if (anInt774 != -1) {
-			VarBit varBit = VarBit.cache[anInt774];
+            if (varbitId != -1) {
+                    VarBit varBit = VarBit.cache[varbitId];
                         int j = varBit.configId;
                         int k = varBit.leastSignificantBit;
                         int l = varBit.mostSignificantBit;
 			int i1 = Game.bitMasks[l - k];
 			i = clientInstance.variousSettings[j] >> k & i1;
-		} else if (anInt749 != -1) {
-			i = clientInstance.variousSettings[anInt749];
+            } else if (varpId != -1) {
+                    i = clientInstance.variousSettings[varpId];
 		}
 		if (i < 0 || i >= childrenIDs.length || childrenIDs[i] == -1) {
 			return null;
@@ -260,7 +260,7 @@ public final class ObjectDef {
 		boolean flag;
 		flag = scaleX != 128 || scaleY != 128 || scaleZ != 128;
 		boolean flag2;
-		flag2 = anInt738 != 0 || anInt745 != 0 || anInt783 != 0;
+            flag2 = offsetX != 0 || offsetY != 0 || offsetZ != 0;
                 Model model_3 = new Model(modifiedModelColors == null, AnimFrame.isNullFrame(k), l == 0 && k == -1 && !flag && !flag2, model);
 		if (k != -1) {
 			model_3.buildVertexGroups();
@@ -281,10 +281,10 @@ public final class ObjectDef {
 			model_3.scaleModel(scaleX, scaleZ, scaleY);
 		}
 		if (flag2) {
-			model_3.translate(anInt738, anInt745, anInt783);
+                    model_3.translate(offsetX, offsetY, offsetZ);
 		}
 		model_3.applyLighting(64 + aByte737, 768 + aByte742 * 5, -50, -10, -50, !aBoolean769);
-		if (anInt760 == 1) {
+            if (supportsItems == 1) {
 			model_3.overrideHeight = model_3.modelHeight;
 		}
             mruNodes2.put(model_3, l1);
@@ -393,15 +393,15 @@ public final class ObjectDef {
 				} else if (j == 67) {
 					scaleZ = stream.readUnsignedWord();
 				} else if (j == 68) {
-					anInt758 = stream.readUnsignedWord();
+                                    mapSceneId = stream.readUnsignedWord();
 				} else if (j == 69) {
 					anInt768 = stream.readUnsignedByte();
 				} else if (j == 70) {
-					anInt738 = stream.readSignedWord();
+                                    offsetX = stream.readSignedWord();
 				} else if (j == 71) {
-					anInt745 = stream.readSignedWord();
+                                    offsetY = stream.readSignedWord();
 				} else if (j == 72) {
-					anInt783 = stream.readSignedWord();
+                                    offsetZ = stream.readSignedWord();
 				} else if (j == 73) {
 					aBoolean736 = true;
 				} else if (j == 74) {
@@ -410,17 +410,17 @@ public final class ObjectDef {
 					if (j != 75) {
 						continue;
 					}
-					anInt760 = stream.readUnsignedByte();
+                                    supportsItems = stream.readUnsignedByte();
 				}
 				continue label0;
 			} while (j != 77);
-			anInt774 = stream.readUnsignedWord();
-			if (anInt774 == 65535) {
-				anInt774 = -1;
+                    varbitId = stream.readUnsignedWord();
+                    if (varbitId == 65535) {
+                            varbitId = -1;
 			}
-			anInt749 = stream.readUnsignedWord();
-			if (anInt749 == 65535) {
-				anInt749 = -1;
+                    varpId = stream.readUnsignedWord();
+                    if (varpId == 65535) {
+                            varpId = -1;
 			}
 			int j1 = stream.readUnsignedByte();
 			childrenIDs = new int[j1 + 1];
@@ -442,8 +442,8 @@ public final class ObjectDef {
 			isSolid = false;
 			impenetrable = false;
 		}
-		if (anInt760 == -1) {
-			anInt760 = isSolid ? 1 : 0;
+            if (supportsItems == -1) {
+                    supportsItems = isSolid ? 1 : 0;
 		}
 	}
 
@@ -453,26 +453,26 @@ public final class ObjectDef {
 
 	public boolean aBoolean736;
 	private byte aByte737;
-	private int anInt738;
+        private int offsetX;
 	public String name;
 	private int scaleZ;
 	private static final Model[] aModelArray741s = new Model[4];
 	private byte aByte742;
 	public int sizeX;
-	private int anInt745;
+        private int offsetY;
 	public int anInt746;
 	private int[] originalModelColors;
 	private int scaleX;
-	public int anInt749;
+        public int varpId;
 	private boolean aBoolean751;
 	public static boolean lowMem;
 	private static Stream stream;
 	public int type;
 	private static int[] streamIndices;
 	public boolean impenetrable;
-	public int anInt758;
+        public int mapSceneId;
 	public int childrenIDs[];
-	private int anInt760;
+        private int supportsItems;
 	public int sizeY;
 	public boolean aBoolean762;
 	public boolean aBoolean764;
@@ -484,7 +484,7 @@ public final class ObjectDef {
 	private static int cacheIndex;
 	private int scaleY;
 	private int[] modelIds;
-	public int anInt774;
+        public int varbitId;
 	public int anInt775;
 	private int[] modelTypes;
 	public byte description[];
@@ -493,7 +493,7 @@ public final class ObjectDef {
         public static MRUCache mruNodes2 = new MRUCache(30);
 	public int animationId;
 	private static ObjectDef[] cache;
-	private int anInt783;
+        private int offsetZ;
 	private int[] modifiedModelColors;
         public static MRUCache mruNodes1 = new MRUCache(500);
 	public String actions[];

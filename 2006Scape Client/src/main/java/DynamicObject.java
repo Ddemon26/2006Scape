@@ -80,8 +80,8 @@ final class DynamicObject extends Animable {
 			}
 		}
 		ObjectDef class46 = ObjectDef.forID(id);
-		varbitId = class46.anInt774;
-		varpId = class46.anInt749;
+                varbitId = class46.varbitId;
+                varpId = class46.varpId;
 		childIDs = class46.childrenIDs;
 	}
 

@@ -748,8 +748,15 @@ This document lists variable or identifier renames found in the commit history.
  - method578 -> getModel
  - method579 -> areModelsReady
  - method580 -> getChildDefinition
- - method581 -> buildModel
- - readValues -> decode
+- method581 -> buildModel
+- readValues -> decode
+- anInt758 -> mapSceneId
+- anInt738 -> offsetX
+- anInt745 -> offsetY
+- anInt783 -> offsetZ
+- anInt760 -> supportsItems
+- anInt774 -> varbitId
+- anInt749 -> varpId
 
 ## VarBit
  - anInt648 -> configId
