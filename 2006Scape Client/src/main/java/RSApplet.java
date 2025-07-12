@@ -759,5 +759,5 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 	private final int[] charQueue;
 	private int readIndex;
 	private int writeIndex;
-	public static int anInt34;
+	public static int idleTicks;
 }

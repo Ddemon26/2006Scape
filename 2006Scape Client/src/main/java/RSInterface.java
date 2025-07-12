@@ -29,7 +29,7 @@ public final class RSInterface {
                         rsInterface.contentType = stream.readUnsignedWord();
 			rsInterface.width = stream.readUnsignedWord();
 			rsInterface.height = stream.readUnsignedWord();
-			rsInterface.aByte254 = (byte) stream.readUnsignedByte();
+			rsInterface.opacity = (byte) stream.readUnsignedByte();
                         rsInterface.hoverTarget = stream.readUnsignedByte();
                         if (rsInterface.hoverTarget != 0) {
                                 rsInterface.hoverTarget = (rsInterface.hoverTarget - 1 << 8) + stream.readUnsignedByte();
@@ -61,7 +61,7 @@ public final class RSInterface {
 			}
 			if (rsInterface.type == 0) {
 				rsInterface.scrollMax = stream.readUnsignedWord();
-				rsInterface.aBoolean266 = stream.readUnsignedByte() == 1;
+				rsInterface.hideUntilHovered = stream.readUnsignedByte() == 1;
 				int i2 = stream.readUnsignedWord();
 				rsInterface.children = new int[i2];
 				rsInterface.childX = new int[i2];
@@ -80,10 +80,10 @@ public final class RSInterface {
 			if (rsInterface.type == 2) {
 				rsInterface.inv = new int[rsInterface.width * rsInterface.height];
 				rsInterface.invStackSizes = new int[rsInterface.width * rsInterface.height];
-				rsInterface.aBoolean259 = stream.readUnsignedByte() == 1;
+				rsInterface.allowItemDragging = stream.readUnsignedByte() == 1;
 				rsInterface.isInventoryInterface = stream.readUnsignedByte() == 1;
 				rsInterface.usableItemInterface = stream.readUnsignedByte() == 1;
-				rsInterface.aBoolean235 = stream.readUnsignedByte() == 1;
+				rsInterface.insertItems = stream.readUnsignedByte() == 1;
 				rsInterface.invSpritePadX = stream.readUnsignedByte();
 				rsInterface.invSpritePadY = stream.readUnsignedByte();
 				rsInterface.spritesX = new int[20];
@@ -119,15 +119,15 @@ public final class RSInterface {
 				}
 			}
 			if (rsInterface.type == 3) {
-				rsInterface.aBoolean227 = stream.readUnsignedByte() == 1;
+				rsInterface.filled = stream.readUnsignedByte() == 1;
 			}
 			if (rsInterface.type == 4 || rsInterface.type == 1) {
-				rsInterface.aBoolean223 = stream.readUnsignedByte() == 1;
+				rsInterface.centerText = stream.readUnsignedByte() == 1;
 				int k2 = stream.readUnsignedByte();
 				if (textDrawingAreas != null) {
 					rsInterface.textDrawingAreas = textDrawingAreas[k2];
 				}
-				rsInterface.aBoolean268 = stream.readUnsignedByte() == 1;
+				rsInterface.textShadow = stream.readUnsignedByte() == 1;
 			}
 			if (rsInterface.type == 4) {
 				rsInterface.disabledText = stream.readString().replaceAll("RuneScape", ClientSettings.SERVER_NAME);
@@ -183,12 +183,12 @@ public final class RSInterface {
 			if (rsInterface.type == 7) {
 				rsInterface.inv = new int[rsInterface.width * rsInterface.height];
 				rsInterface.invStackSizes = new int[rsInterface.width * rsInterface.height];
-				rsInterface.aBoolean223 = stream.readUnsignedByte() == 1;
+				rsInterface.centerText = stream.readUnsignedByte() == 1;
 				int l2 = stream.readUnsignedByte();
 				if (textDrawingAreas != null) {
 					rsInterface.textDrawingAreas = textDrawingAreas[l2];
 				}
-				rsInterface.aBoolean268 = stream.readUnsignedByte() == 1;
+				rsInterface.textShadow = stream.readUnsignedByte() == 1;
 				rsInterface.textColor = stream.readDWord();
 				rsInterface.invSpritePadX = stream.readSignedWord();
 				rsInterface.invSpritePadY = stream.readSignedWord();
@@ -340,11 +340,11 @@ public final class RSInterface {
 	public int width;
 	public String tooltip;
 	public String selectedActionName;
-	public boolean aBoolean223;
+	public boolean centerText;
 	public int scrollPosition;
 	public String actions[];
 	public int valueIndexArray[][];
-	public boolean aBoolean227;
+	public boolean filled;
 	public String enabledText;
         /** ID of the widget to display when this widget is hovered. */
         public int hoverTarget;
@@ -352,7 +352,7 @@ public final class RSInterface {
 	public int textColor;
         public int mediaType;
         public int mediaId;
-	public boolean aBoolean235;
+	public boolean insertItems;
 	public int parentID;
 	public int spellUsableOn;
         private static MRUCache spriteCache;
@@ -373,12 +373,12 @@ public final class RSInterface {
 	public int id;
 	public int invStackSizes[];
 	public int inv[];
-	public byte aByte254;
+	public byte opacity;
         private int enabledMediaType;
         private int enabledMediaId;
         public int disabledAnimation;
         public int enabledAnimation;
-	public boolean aBoolean259;
+	public boolean allowItemDragging;
 	public Sprite sprite2;
 	public int scrollMax;
 	public int type;
@@ -386,11 +386,11 @@ public final class RSInterface {
         private static final MRUCache modelCache = new MRUCache(30);
         /** Vertical offset applied when rendering. */
         public int offsetY;
-	public boolean aBoolean266;
+	public boolean hideUntilHovered;
 	public int height;
 	public static int shading;
 	public static int lightness;
-	public boolean aBoolean268;
+	public boolean textShadow;
         public int modelZoom;
         public int modelRotation1;
         public int modelRotation2;

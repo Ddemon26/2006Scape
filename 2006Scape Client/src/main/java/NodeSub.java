@@ -19,5 +19,6 @@ public class NodeSub extends Node {
 
 	public NodeSub prevNodeSub;
 	NodeSub nextNodeSub;
-	public static int anInt1305;
+    /** Tracks the total number of NodeSub instances created. */
+    public static int subNodeCounter;
 }

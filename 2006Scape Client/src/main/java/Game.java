@@ -612,7 +612,7 @@ public class Game extends RSApplet {
 					int l1 = menuActionCmd2[menuActionRow - 1];
 					int j2 = menuActionCmd3[menuActionRow - 1];
 					RSInterface class9 = RSInterface.interfaceCache[j2];
-					if (class9.aBoolean259 || class9.aBoolean235) {
+					if (class9.allowItemDragging || class9.insertItems) {
 						itemBeingDragged = false;
 						dragCounter = 0;
 						dragInterfaceId = j2;
@@ -908,7 +908,7 @@ public class Game extends RSApplet {
 				int i3 = worldController.getTileDecorationUid(plane, k2, l2);
 				if (i3 != 0) {
 					i3 = i3 >> 14 & 0x7fff;
-					int j3 = ObjectDef.forID(i3).anInt746;
+					int j3 = ObjectDef.forID(i3).mapIconId;
 					if (j3 >= 0) {
 						int k3 = k2;
 						int l3 = l2;
@@ -1047,7 +1047,7 @@ public class Game extends RSApplet {
 	}
 
 	public void buildInterfaceMenu(int i, RSInterface class9, int k, int l, int i1, int j1) {
-		if (class9.type != 0 || class9.children == null || class9.aBoolean266) {
+		if (class9.type != 0 || class9.children == null || class9.hideUntilHovered) {
 			return;
 		}
 		if (k < i || i1 < l || k > i + class9.width || i1 > l + class9.height) {
@@ -2305,16 +2305,16 @@ public class Game extends RSApplet {
 			if (player == null || !player.isVisible()) {
 				continue;
 			}
-			player.aBoolean1699 = (lowMem && playerCount > 50 || playerCount > 200) && !flag && player.currentAnimation == player.standAnimation;
+			player.skipAnimations = (lowMem && playerCount > 50 || playerCount > 200) && !flag && player.currentAnimation == player.standAnimation;
 			int j1 = player.x >> 7;
 			int k1 = player.y >> 7;
 			if (j1 < 0 || j1 >= 104 || k1 < 0 || k1 >= 104) {
 				continue;
 			}
                         if (player.aModel_1714 != null && loopCycle >= player.animationStartCycle && loopCycle < player.animationEndCycle) {
-				player.aBoolean1699 = false;
+				player.skipAnimations = false;
                                 player.animationBaseY = getTileHeight(plane, player.y, player.x);
-                               worldController.addAnimatingObject(plane, player.y, player, player.currentHeading, player.anInt1722, player.x, player.animationBaseY, player.anInt1719, player.anInt1721, i1, player.anInt1720);
+                               worldController.addAnimatingObject(plane, player.y, player, player.currentHeading, player.boundingBoxMaxY, player.x, player.animationBaseY, player.boundingBoxMinX, player.boundingBoxMaxX, i1, player.boundingBoxMinY);
 				continue;
 			}
 			if ((player.x & 0x7f) == 64 && (player.y & 0x7f) == 64) {
@@ -3165,7 +3165,7 @@ public class Game extends RSApplet {
 						if (class9.inv[mouseInvInterfaceIndex] <= 0) {
 							j1 = 0;
 						}
-						if (class9.aBoolean235) {
+						if (class9.insertItems) {
 							int l2 = draggedSlot;
 							int l3 = mouseInvInterfaceIndex;
 							class9.inv[l3] = class9.inv[l2];
@@ -3417,7 +3417,7 @@ public class Game extends RSApplet {
 				i2 = class46.sizeY;
 				j2 = class46.sizeX;
 			}
-			int k2 = class46.anInt768;
+			int k2 = class46.defaultOrientation;
 			if (l1 != 0) {
 				k2 = (k2 << l1 & 0xf) + (k2 >> 4 - l1);
 			}
@@ -8192,7 +8192,7 @@ public class Game extends RSApplet {
 		if (class9.type != 0 || class9.children == null) {
 			return;
 		}
-		if (class9.aBoolean266 && lastHoveredWidgetId != class9.id && hoveredTabId != class9.id && lastInteractionId != class9.id) {
+		if (class9.hideUntilHovered && lastHoveredWidgetId != class9.id && hoveredTabId != class9.id && lastInteractionId != class9.id) {
 			return;
 		}
 		int i1 = DrawingArea.topX;
@@ -8324,16 +8324,16 @@ public class Game extends RSApplet {
 							color = component.hoverTextColor;
 						}
 					}
-					if (component.aByte254 == 0) {
-						if (component.aBoolean227) {
+					if (component.opacity == 0) {
+						if (component.filled) {
 							DrawingArea.fillArea(component.height, l2, 0x2a251e, component.width, k2);
 						} else {
 							DrawingArea.fillPixels(l2, component.height, color, k2, component.width);
 						}
-					} else if (component.aBoolean227) {
-						DrawingArea.fillArea(color, l2, component.width, component.height, 256 - (component.aByte254 & 0xff), k2);
+					} else if (component.filled) {
+						DrawingArea.fillArea(color, l2, component.width, component.height, 256 - (component.opacity & 0xff), k2);
 					} else {
-						DrawingArea.drawFrameRounded(l2, component.height, 256 - (component.aByte254 & 0xff), color, component.width, k2);
+						DrawingArea.drawFrameRounded(l2, component.height, 256 - (component.opacity & 0xff), color, component.width, k2);
 					}
 				} else if (component.type == 4) {
 					TextDrawingArea textDrawingArea = component.textDrawingAreas;
@@ -8416,10 +8416,10 @@ public class Game extends RSApplet {
 							s1 = s;
 							s = "";
 						}
-						if (component.aBoolean223) {
-							textDrawingArea.textCenterShadow(i4, k2 + component.width / 2, s1, l6, component.aBoolean268);
+						if (component.centerText) {
+							textDrawingArea.textCenterShadow(i4, k2 + component.width / 2, s1, l6, component.textShadow);
 						} else {
-							textDrawingArea.textLeftShadow(component.aBoolean268, k2, i4, s1, l6);
+							textDrawingArea.textLeftShadow(component.textShadow, k2, i4, s1, l6);
 						}
 					}
 
@@ -8472,10 +8472,10 @@ public class Game extends RSApplet {
 								}
 								int i9 = k2 + i6 * (115 + component.invSpritePadX);
 								int k9 = l2 + j5 * (12 + component.invSpritePadY);
-								if (component.aBoolean223) {
-									textDrawingArea_1.textCenterShadow(component.textColor, i9 + component.width / 2, s2, k9, component.aBoolean268);
+								if (component.centerText) {
+									textDrawingArea_1.textCenterShadow(component.textColor, i9 + component.width / 2, s2, k9, component.textShadow);
 								} else {
-									textDrawingArea_1.textLeftShadow(component.aBoolean268, i9, component.textColor, s2, k9);
+									textDrawingArea_1.textLeftShadow(component.textShadow, i9, component.textColor, s2, k9);
 								}
 							}
 							k4++;
@@ -10191,10 +10191,10 @@ public class Game extends RSApplet {
 						byte3 = byte1;
 						byte1 = byte5;
 					}
-					player.anInt1719 = k4 + byte2;
-					player.anInt1721 = k4 + byte0;
-					player.anInt1720 = j7 + byte3;
-					player.anInt1722 = j7 + byte1;
+					player.boundingBoxMinX = k4 + byte2;
+					player.boundingBoxMaxX = k4 + byte0;
+					player.boundingBoxMinY = j7 + byte3;
+					player.boundingBoxMaxY = j7 + byte1;
 				}
 			}
 		}
@@ -11445,7 +11445,7 @@ public class Game extends RSApplet {
 			if (pktType == 171) {
 				boolean flag1 = inStream.readUnsignedByte() == 1;
 				int j13 = inStream.readUnsignedWord();
-				RSInterface.interfaceCache[j13].aBoolean266 = flag1;
+				RSInterface.interfaceCache[j13].hideUntilHovered = flag1;
 				pktType = -1;
 				return true;
 			}

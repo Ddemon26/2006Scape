@@ -2075,7 +2075,7 @@ final class Texture extends DrawingArea {
 
 	}
 
-	public static final int anInt1459 = -477;
+	public static final int UNUSED_TEXTURE_CONSTANT = -477;
 	public static boolean lowMem = true;
 	static boolean clip;
 	private static boolean textureIsOpaque;
