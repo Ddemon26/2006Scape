@@ -11,8 +11,8 @@ public final class EntityDef {
 			}
 		}
 
-		anInt56 = (anInt56 + 1) % 20;
-		EntityDef entityDef = cache[anInt56] = new EntityDef();
+                cacheIndex = (cacheIndex + 1) % 20;
+                EntityDef entityDef = cache[cacheIndex] = new EntityDef();
 		stream.currentOffset = streamIndices[i];
 		entityDef.type = i;
 		entityDef.readValues(stream);
@@ -40,23 +40,23 @@ public final class EntityDef {
                                return entityDef.getModel();
 			}
 		}
-		if (anIntArray73 == null) {
-			return null;
-		}
-		boolean flag1 = false;
-		for (int i = 0; i < anIntArray73.length; i++) {
-			if (!Model.isLoaded(anIntArray73[i])) {
-				flag1 = true;
-			}
-		}
+                if (headModelIds == null) {
+                        return null;
+                }
+                boolean flag1 = false;
+                for (int i = 0; i < headModelIds.length; i++) {
+                        if (!Model.isLoaded(headModelIds[i])) {
+                                flag1 = true;
+                        }
+                }
 
 		if (flag1) {
 			return null;
 		}
-		Model aclass30_sub2_sub4_sub6s[] = new Model[anIntArray73.length];
-		for (int j = 0; j < anIntArray73.length; j++) {
-			aclass30_sub2_sub4_sub6s[j] = Model.create(anIntArray73[j]);
-		}
+                Model aclass30_sub2_sub4_sub6s[] = new Model[headModelIds.length];
+                for (int j = 0; j < headModelIds.length; j++) {
+                        aclass30_sub2_sub4_sub6s[j] = Model.create(headModelIds[j]);
+                }
 
 		Model model;
 		if (aclass30_sub2_sub4_sub6s.length == 1) {
@@ -64,26 +64,26 @@ public final class EntityDef {
 		} else {
 			model = new Model(aclass30_sub2_sub4_sub6s.length, aclass30_sub2_sub4_sub6s);
 		}
-		if (anIntArray76 != null) {
-			for (int k = 0; k < anIntArray76.length; k++) {
-				model.recolor(anIntArray76[k], anIntArray70[k]);
-			}
+                if (originalModelColors != null) {
+                        for (int k = 0; k < originalModelColors.length; k++) {
+                                model.recolor(originalModelColors[k], modifiedModelColors[k]);
+                        }
 
-		}
+                }
 		return model;
 	}
 
        public EntityDef transform() {
 		int j = -1;
-		if (anInt57 != -1) {
-			VarBit varBit = VarBit.cache[anInt57];
+                if (transformVarbit != -1) {
+                        VarBit varBit = VarBit.cache[transformVarbit];
                         int k = varBit.configId;
                         int l = varBit.leastSignificantBit;
                         int i1 = varBit.mostSignificantBit;
 			int j1 = Game.bitMasks[i1 - l];
 			j = clientInstance.variousSettings[k] >> l & j1;
-		} else if (anInt59 != -1) {
-			j = clientInstance.variousSettings[anInt59];
+                } else if (transformVarp != -1) {
+                        j = clientInstance.variousSettings[transformVarp];
 		}
 		if (j < 0 || j >= childrenIDs.length || childrenIDs[j] == -1) {
 			return null;
@@ -130,19 +130,19 @@ public final class EntityDef {
                }
                Model model = (Model) mruNodes.get(type);
                if (model == null) {
-			boolean flag = false;
-			for (int i1 = 0; i1 < anIntArray94.length; i1++) {
-				if (!Model.isLoaded(anIntArray94[i1])) {
-					flag = true;
-				}
-			}
+                        boolean flag = false;
+                        for (int i1 = 0; i1 < modelIds.length; i1++) {
+                                if (!Model.isLoaded(modelIds[i1])) {
+                                        flag = true;
+                                }
+                        }
 
 			if (flag) {
 				return null;
 			}
-			Model aclass30_sub2_sub4_sub6s[] = new Model[anIntArray94.length];
-			for (int j1 = 0; j1 < anIntArray94.length; j1++) {
-				aclass30_sub2_sub4_sub6s[j1] = Model.create(anIntArray94[j1]);
+                        Model aclass30_sub2_sub4_sub6s[] = new Model[modelIds.length];
+                        for (int j1 = 0; j1 < modelIds.length; j1++) {
+                                aclass30_sub2_sub4_sub6s[j1] = Model.create(modelIds[j1]);
 			}
 
 			if (aclass30_sub2_sub4_sub6s.length == 1) {
@@ -150,14 +150,14 @@ public final class EntityDef {
 			} else {
 				model = new Model(aclass30_sub2_sub4_sub6s.length, aclass30_sub2_sub4_sub6s);
 			}
-			if (anIntArray76 != null) {
-				for (int k1 = 0; k1 < anIntArray76.length; k1++) {
-					model.recolor(anIntArray76[k1], anIntArray70[k1]);
-				}
+                        if (originalModelColors != null) {
+                                for (int k1 = 0; k1 < originalModelColors.length; k1++) {
+                                        model.recolor(originalModelColors[k1], modifiedModelColors[k1]);
+                                }
 
 			}
 			model.buildVertexGroups();
-			model.applyLighting(64 + anInt85, 850 + anInt92, -30, -50, -30, true);
+                        model.applyLighting(64 + ambient, 850 + contrast, -30, -50, -30, true);
                         mruNodes.put(model, type);
 		}
                Model model_1 = Model.placeholderModel;
@@ -173,9 +173,9 @@ public final class EntityDef {
 		model_1.calculateBounds();
 		model_1.faceGroups = null;
 		model_1.vertexGroups = null;
-		if (aByte68 == 1) {
-			model_1.pickable = true;
-		}
+                if (size == 1) {
+                        model_1.pickable = true;
+                }
 		return model_1;
 	}
 
@@ -187,26 +187,26 @@ public final class EntityDef {
 			}
 			if (i == 1) {
 				int j = stream.readUnsignedByte();
-				anIntArray94 = new int[j];
-				for (int j1 = 0; j1 < j; j1++) {
-					anIntArray94[j1] = stream.readUnsignedWord();
-				}
+                                modelIds = new int[j];
+                                for (int j1 = 0; j1 < j; j1++) {
+                                        modelIds[j1] = stream.readUnsignedWord();
+                                }
 
 			} else if (i == 2) {
 				name = stream.readString();
 			} else if (i == 3) {
 				description = stream.readBytes();
 			} else if (i == 12) {
-				aByte68 = stream.readSignedByte();
+                                size = stream.readSignedByte();
 			} else if (i == 13) {
-				anInt77 = stream.readUnsignedWord();
+                                standAnimation = stream.readUnsignedWord();
 			} else if (i == 14) {
-				anInt67 = stream.readUnsignedWord();
+                                walkAnimation = stream.readUnsignedWord();
 			} else if (i == 17) {
-				anInt67 = stream.readUnsignedWord();
-				anInt58 = stream.readUnsignedWord();
-				anInt83 = stream.readUnsignedWord();
-				anInt55 = stream.readUnsignedWord();
+                                walkAnimation = stream.readUnsignedWord();
+                                turn180Animation = stream.readUnsignedWord();
+                                turn90CWAnimation = stream.readUnsignedWord();
+                                turn90CCWAnimation = stream.readUnsignedWord();
 			} else if (i >= 30 && i < 40) {
 				if (actions == null) {
 					actions = new String[5];
@@ -217,19 +217,19 @@ public final class EntityDef {
 				}
 			} else if (i == 40) {
 				int k = stream.readUnsignedByte();
-				anIntArray76 = new int[k];
-				anIntArray70 = new int[k];
-				for (int k1 = 0; k1 < k; k1++) {
-					anIntArray76[k1] = stream.readUnsignedWord();
-					anIntArray70[k1] = stream.readUnsignedWord();
-				}
+                                originalModelColors = new int[k];
+                                modifiedModelColors = new int[k];
+                                for (int k1 = 0; k1 < k; k1++) {
+                                        originalModelColors[k1] = stream.readUnsignedWord();
+                                        modifiedModelColors[k1] = stream.readUnsignedWord();
+                                }
 
 			} else if (i == 60) {
 				int l = stream.readUnsignedByte();
-				anIntArray73 = new int[l];
-				for (int l1 = 0; l1 < l; l1++) {
-					anIntArray73[l1] = stream.readUnsignedWord();
-				}
+                                headModelIds = new int[l];
+                                for (int l1 = 0; l1 < l; l1++) {
+                                        headModelIds[l1] = stream.readUnsignedWord();
+                                }
 
 			} else if (i == 90) {
 				stream.readUnsignedWord();
@@ -238,7 +238,7 @@ public final class EntityDef {
 			} else if (i == 92) {
 				stream.readUnsignedWord();
 			} else if (i == 93) {
-				aBoolean87 = false;
+                                minimapVisible = false;
 			} else if (i == 95) {
 				combatLevel = stream.readUnsignedWord();
                        } else if (i == 97) {
@@ -246,23 +246,23 @@ public final class EntityDef {
                        } else if (i == 98) {
                                modelScaleZ = stream.readUnsignedWord();
 			} else if (i == 99) {
-				aBoolean93 = true;
+                                priorityRender = true;
 			} else if (i == 100) {
-				anInt85 = stream.readSignedByte();
+                                ambient = stream.readSignedByte();
 			} else if (i == 101) {
-				anInt92 = stream.readSignedByte() * 5;
+                                contrast = stream.readSignedByte() * 5;
 			} else if (i == 102) {
-				anInt75 = stream.readUnsignedWord();
+                                headIcon = stream.readUnsignedWord();
 			} else if (i == 103) {
-				anInt79 = stream.readUnsignedWord();
+                                turnSpeed = stream.readUnsignedWord();
 			} else if (i == 106) {
-				anInt57 = stream.readUnsignedWord();
-				if (anInt57 == 65535) {
-					anInt57 = -1;
-				}
-				anInt59 = stream.readUnsignedWord();
-				if (anInt59 == 65535) {
-					anInt59 = -1;
+                                transformVarbit = stream.readUnsignedWord();
+                                if (transformVarbit == 65535) {
+                                        transformVarbit = -1;
+                                }
+                                transformVarp = stream.readUnsignedWord();
+                                if (transformVarp == 65535) {
+                                        transformVarp = -1;
 				}
 				int i1 = stream.readUnsignedByte();
 				childrenIDs = new int[i1 + 1];
@@ -274,63 +274,63 @@ public final class EntityDef {
 				}
 
 			} else if (i == 107) {
-				aBoolean84 = false;
+                                clickable = false;
 			}
 		} while (true);
 	}
 
 	private EntityDef() {
-		anInt55 = -1;
-		anInt57 = -1;
-		anInt58 = -1;
-		anInt59 = -1;
-		combatLevel = -1;
-		anInt67 = -1;
-		aByte68 = 1;
-		anInt75 = -1;
-		anInt77 = -1;
-		type = -1L;
-		anInt79 = 32;
-		anInt83 = -1;
-		aBoolean84 = true;
+                turn90CCWAnimation = -1;
+                transformVarbit = -1;
+                turn180Animation = -1;
+                transformVarp = -1;
+                combatLevel = -1;
+                walkAnimation = -1;
+                size = 1;
+                headIcon = -1;
+                standAnimation = -1;
+                type = -1L;
+                turnSpeed = 32;
+                turn90CWAnimation = -1;
+                clickable = true;
                modelScaleZ = 128;
-		aBoolean87 = true;
+                minimapVisible = true;
                modelScaleXy = 128;
-		aBoolean93 = false;
-	}
+                priorityRender = false;
+        }
 
-	public int anInt55;
-	private static int anInt56;
-	private int anInt57;
-	public int anInt58;
-	private int anInt59;
+        public int turn90CCWAnimation;
+        private static int cacheIndex;
+        private int transformVarbit;
+        public int turn180Animation;
+        private int transformVarp;
 	private static Stream stream;
 	public int combatLevel;
 	public String name;
 	public String actions[];
-	public int anInt67;
-	public byte aByte68;
-	private int[] anIntArray70;
+        public int walkAnimation;
+        public byte size;
+        private int[] modifiedModelColors;
 	private static int[] streamIndices;
-	private int[] anIntArray73;
-	public int anInt75;
-	private int[] anIntArray76;
-	public int anInt77;
+        private int[] headModelIds;
+        public int headIcon;
+        private int[] originalModelColors;
+        public int standAnimation;
 	public long type;
-	public int anInt79;
+        public int turnSpeed;
 	private static EntityDef[] cache;
 	public static Game clientInstance;
-	public int anInt83;
-	public boolean aBoolean84;
-	private int anInt85;
+        public int turn90CWAnimation;
+        public boolean clickable;
+        private int ambient;
        private int modelScaleZ;
-	public boolean aBoolean87;
-	public int childrenIDs[];
+        public boolean minimapVisible;
+        public int childrenIDs[];
 	public byte description[];
        private int modelScaleXy;
-	private int anInt92;
-	public boolean aBoolean93;
-	private int[] anIntArray94;
+        private int contrast;
+        public boolean priorityRender;
+        private int[] modelIds;
     public static MRUCache mruNodes = new MRUCache(30);
 
 }
