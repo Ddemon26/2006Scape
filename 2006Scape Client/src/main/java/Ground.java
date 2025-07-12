@@ -27,12 +27,12 @@ public final class Ground extends Node {
         final int[] sceneObjectFlags;
         int combinedFlags;
         int groundFlag;
-	boolean aBoolean1322;
-	boolean aBoolean1323;
-	boolean aBoolean1324;
-	int anInt1325;
-	int anInt1326;
-	int anInt1327;
-	int anInt1328;
+	boolean tileActive;
+	boolean inQueue;
+	boolean needsProcessing;
+	int cullFlags;
+	int cullOrientation;
+	int cullOpposite;
+	int boundaryFlags;
         public Ground linkedTile;
 }

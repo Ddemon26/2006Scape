@@ -9,7 +9,7 @@ final class WorldController {
                 int regionHeight = 104; // was parameter
                 int regionWidth = 104; // was parameter
                 int planeLevels = 4; // was parameter
-                aBoolean434 = true;
+                boundaryToggle = true;
         sceneObjectCache = new SceneObject[5000];
                 vertexVisitA = new int[10000];
                 vertexVisitB = new int[10000];
@@ -23,12 +23,12 @@ final class WorldController {
         }
 
 	public static void nullLoader() {
-                aClass28Array462 = null;
+                sceneObjectBuffer = null;
                 cullingClusterCounts = null;
 		aCullingClusters = null;
-		aClass19_477 = null;
-		aBooleanArrayArrayArrayArray491 = null;
-		aBooleanArrayArray492 = null;
+		tileQueue = null;
+		visibilityMap = null;
+		tileVisibilityMap = null;
 	}
 
 	public void initToNull() {
@@ -54,8 +54,8 @@ final class WorldController {
                 }
 
                 sceneObjectCachePos = 0;
-		for (int l1 = 0; l1 < aClass28Array462.length; l1++) {
-			aClass28Array462[l1] = null;
+		for (int l1 = 0; l1 < sceneObjectBuffer.length; l1++) {
+			sceneObjectBuffer[l1] = null;
 		}
 
 	}
@@ -406,7 +406,7 @@ final class WorldController {
         public void clearBoundaryObject(int i, int j, int k, byte byte0) {
 		Ground class30_sub3 = groundArray[j][i][k];
 		if (byte0 != -119) {
-			aBoolean434 = !aBoolean434;
+			boundaryToggle = !boundaryToggle;
 		}
 		if (class30_sub3 != null) {
 			class30_sub3.obj1 = null;
@@ -756,31 +756,31 @@ final class WorldController {
                 int i2 = shapedTile.rotation;
                 int j2 = shapedTile.baseColor;
                 int k2 = shapedTile.shadeColor;
-		int ai1[] = anIntArrayArray489[l1];
-		int ai2[] = anIntArrayArray490[i2];
+		int shapeMask[] = blendMap1[l1];
+		int rotationMask[] = blendMap2[i2];
 		int l2 = 0;
 		if (j2 != 0) {
 			for (int i3 = 0; i3 < 4; i3++) {
-				ai[i] = ai1[ai2[l2++]] != 0 ? k2 : j2;
-				ai[i + 1] = ai1[ai2[l2++]] != 0 ? k2 : j2;
-				ai[i + 2] = ai1[ai2[l2++]] != 0 ? k2 : j2;
-				ai[i + 3] = ai1[ai2[l2++]] != 0 ? k2 : j2;
+				ai[i] = shapeMask[rotationMask[l2++]] != 0 ? k2 : j2;
+				ai[i + 1] = shapeMask[rotationMask[l2++]] != 0 ? k2 : j2;
+				ai[i + 2] = shapeMask[rotationMask[l2++]] != 0 ? k2 : j2;
+				ai[i + 3] = shapeMask[rotationMask[l2++]] != 0 ? k2 : j2;
 				i += j;
 			}
 
 			return;
 		}
 		for (int j3 = 0; j3 < 4; j3++) {
-			if (ai1[ai2[l2++]] != 0) {
+			if (shapeMask[rotationMask[l2++]] != 0) {
 				ai[i] = k2;
 			}
-			if (ai1[ai2[l2++]] != 0) {
+			if (shapeMask[rotationMask[l2++]] != 0) {
 				ai[i + 1] = k2;
 			}
-			if (ai1[ai2[l2++]] != 0) {
+			if (shapeMask[rotationMask[l2++]] != 0) {
 				ai[i + 2] = k2;
 			}
-			if (ai1[ai2[l2++]] != 0) {
+			if (shapeMask[rotationMask[l2++]] != 0) {
 				ai[i + 3] = k2;
 			}
 			i += j;
@@ -808,16 +808,16 @@ final class WorldController {
 					for (int j3 = -(drawDistance + 1); j3 <= (drawDistance + 1); j3++) {
 						int k3 = l2 * 128;
 						int i4 = j3 * 128;
-						boolean flag2 = false;
+						boolean foundVisible = false;
 						for (int k4 = -i; k4 <= j; k4 += 128) {
                                                         if (!isPointInView(ai[l1] + k4, i4, k3)) {
 								continue;
 							}
-							flag2 = true;
+							foundVisible = true;
 							break;
 						}
 
-						aflag[l1][j2][l2 + drawDistance + 1][j3 + drawDistance + 1] = flag2;
+						aflag[l1][j2][l2 + drawDistance + 1][j3 + drawDistance + 1] = foundVisible;
 					}
 
 				}
@@ -830,27 +830,27 @@ final class WorldController {
 			for (int i2 = 0; i2 < 32; i2++) {
 				for (int k2 = -drawDistance; k2 < drawDistance; k2++) {
 					for (int i3 = -drawDistance; i3 < drawDistance; i3++) {
-						boolean flag1 = false;
+						boolean tileVisible = false;
 						label0 : for (int l3 = -1; l3 <= 1; l3++) {
 							for (int j4 = -1; j4 <= 1; j4++) {
 								if (aflag[k1][i2][k2 + l3 + drawDistance + 1][i3 + j4 + drawDistance + 1]) {
-									flag1 = true;
+									tileVisible = true;
 								} else if (aflag[k1][(i2 + 1) % 31][k2 + l3 + drawDistance + 1][i3 + j4 + drawDistance + 1]) {
-									flag1 = true;
+									tileVisible = true;
 								} else if (aflag[k1 + 1][i2][k2 + l3 + drawDistance + 1][i3 + j4 + drawDistance + 1]) {
-									flag1 = true;
+									tileVisible = true;
 								} else {
 									if (!aflag[k1 + 1][(i2 + 1) % 31][k2 + l3 + drawDistance + 1][i3 + j4 + drawDistance + 1]) {
 										continue;
 									}
-									flag1 = true;
+									tileVisible = true;
 								}
 								break label0;
 							}
 
 						}
 
-						aBooleanArrayArrayArrayArray491[k1][i2][k2 + drawDistance][i3 + drawDistance] = flag1;
+						visibilityMap[k1][i2][k2 + drawDistance][i3 + drawDistance] = tileVisible;
 					}
 
 				}
@@ -898,7 +898,7 @@ final class WorldController {
 		pitchCos = Model.cosineTable[j1];
 		yawSin = Model.sineTable[k];
 		yawCos = Model.cosineTable[k];
-		aBooleanArrayArray492 = aBooleanArrayArrayArrayArray491[(j1 - 128) / 32][k / 64];
+		tileVisibilityMap = visibilityMap[(j1 - 128) / 32][k / 64];
 		cameraX = i;
 		cameraZ = l;
 		cameraY = j;
@@ -929,14 +929,14 @@ final class WorldController {
 				for (int k2 = minVisibleY; k2 < maxVisibleY; k2++) {
 					Ground class30_sub3 = aclass30_sub3[i2][k2];
                                         if (class30_sub3 != null) {
-                                                if (class30_sub3.groundFlag > i1 || !aBooleanArrayArray492[i2 - cameraTileX + drawDistance][k2 - cameraTileY + drawDistance] && tileHeights[k1][i2][k2] - l < 50) {
-							class30_sub3.aBoolean1322 = false;
-							class30_sub3.aBoolean1323 = false;
-							class30_sub3.anInt1325 = 0;
+                                                if (class30_sub3.groundFlag > i1 || !tileVisibilityMap[i2 - cameraTileX + drawDistance][k2 - cameraTileY + drawDistance] && tileHeights[k1][i2][k2] - l < 50) {
+							class30_sub3.tileActive = false;
+							class30_sub3.inQueue = false;
+							class30_sub3.cullFlags = 0;
 						} else {
-                                                        class30_sub3.aBoolean1322 = true;
-                                                        class30_sub3.aBoolean1323 = true;
-                                                        class30_sub3.aBoolean1324 = class30_sub3.sceneObjectCount > 0;
+                                                        class30_sub3.tileActive = true;
+                                                        class30_sub3.inQueue = true;
+                                                        class30_sub3.needsProcessing = class30_sub3.sceneObjectCount > 0;
 							visibleTileCount++;
 						}
 					}
@@ -958,13 +958,13 @@ final class WorldController {
 						if (i3 >= minVisibleX) {
 							if (k4 >= minVisibleY) {
 								Ground class30_sub3_1 = aclass30_sub3_1[i3][k4];
-								if (class30_sub3_1 != null && class30_sub3_1.aBoolean1322) {
+								if (class30_sub3_1 != null && class30_sub3_1.tileActive) {
 									processTile(class30_sub3_1, true);
 								}
 							}
 							if (i5 < maxVisibleY) {
 								Ground class30_sub3_2 = aclass30_sub3_1[i3][i5];
-								if (class30_sub3_2 != null && class30_sub3_2.aBoolean1322) {
+								if (class30_sub3_2 != null && class30_sub3_2.tileActive) {
 									processTile(class30_sub3_2, true);
 								}
 							}
@@ -972,13 +972,13 @@ final class WorldController {
 						if (k3 < maxVisibleX) {
 							if (k4 >= minVisibleY) {
 								Ground class30_sub3_3 = aclass30_sub3_1[k3][k4];
-								if (class30_sub3_3 != null && class30_sub3_3.aBoolean1322) {
+								if (class30_sub3_3 != null && class30_sub3_3.tileActive) {
 									processTile(class30_sub3_3, true);
 								}
 							}
 							if (i5 < maxVisibleY) {
 								Ground class30_sub3_4 = aclass30_sub3_1[k3][i5];
-								if (class30_sub3_4 != null && class30_sub3_4.aBoolean1322) {
+								if (class30_sub3_4 != null && class30_sub3_4.tileActive) {
 									processTile(class30_sub3_4, true);
 								}
 							}
@@ -1006,13 +1006,13 @@ final class WorldController {
 						if (l3 >= minVisibleX) {
 							if (j5 >= minVisibleY) {
 								Ground class30_sub3_5 = aclass30_sub3_2[l3][j5];
-								if (class30_sub3_5 != null && class30_sub3_5.aBoolean1322) {
+								if (class30_sub3_5 != null && class30_sub3_5.tileActive) {
 									processTile(class30_sub3_5, false);
 								}
 							}
 							if (k5 < maxVisibleY) {
 								Ground class30_sub3_6 = aclass30_sub3_2[l3][k5];
-								if (class30_sub3_6 != null && class30_sub3_6.aBoolean1322) {
+								if (class30_sub3_6 != null && class30_sub3_6.tileActive) {
 									processTile(class30_sub3_6, false);
 								}
 							}
@@ -1020,13 +1020,13 @@ final class WorldController {
 						if (j4 < maxVisibleX) {
 							if (j5 >= minVisibleY) {
 								Ground class30_sub3_7 = aclass30_sub3_2[j4][j5];
-								if (class30_sub3_7 != null && class30_sub3_7.aBoolean1322) {
+								if (class30_sub3_7 != null && class30_sub3_7.tileActive) {
 									processTile(class30_sub3_7, false);
 								}
 							}
 							if (k5 < maxVisibleY) {
 								Ground class30_sub3_8 = aclass30_sub3_2[j4][k5];
-								if (class30_sub3_8 != null && class30_sub3_8.aBoolean1322) {
+								if (class30_sub3_8 != null && class30_sub3_8.tileActive) {
 									processTile(class30_sub3_8, false);
 								}
 							}
@@ -1046,56 +1046,56 @@ final class WorldController {
 	}
 
 	private void processTile(Ground class30_sub3, boolean flag) {
-		aClass19_477.insertHead(class30_sub3);
+		tileQueue.insertHead(class30_sub3);
 		do {
 			Ground class30_sub3_1;
 			do {
-				class30_sub3_1 = (Ground) aClass19_477.popHead();
+				class30_sub3_1 = (Ground) tileQueue.popHead();
 				if (class30_sub3_1 == null) {
 					return;
 				}
-			} while (!class30_sub3_1.aBoolean1323);
+			} while (!class30_sub3_1.inQueue);
                         int i = class30_sub3_1.x;
                         int j = class30_sub3_1.y;
                         int k = class30_sub3_1.plane;
                         int l = class30_sub3_1.basePlane;
 			Ground aclass30_sub3[][] = groundArray[k];
-			if (class30_sub3_1.aBoolean1322) {
+			if (class30_sub3_1.tileActive) {
 				if (flag) {
 					if (k > 0) {
 						Ground class30_sub3_2 = groundArray[k - 1][i][j];
-						if (class30_sub3_2 != null && class30_sub3_2.aBoolean1323) {
+						if (class30_sub3_2 != null && class30_sub3_2.inQueue) {
 							continue;
 						}
 					}
 					if (i <= cameraTileX && i > minVisibleX) {
 						Ground class30_sub3_3 = aclass30_sub3[i - 1][j];
-                                                if (class30_sub3_3 != null && class30_sub3_3.aBoolean1323 && (class30_sub3_3.aBoolean1322 || (class30_sub3_1.combinedFlags & 1) == 0)) {
+                                                if (class30_sub3_3 != null && class30_sub3_3.inQueue && (class30_sub3_3.tileActive || (class30_sub3_1.combinedFlags & 1) == 0)) {
 							continue;
 						}
 					}
 					if (i >= cameraTileX && i < maxVisibleX - 1) {
 						Ground class30_sub3_4 = aclass30_sub3[i + 1][j];
-                                                if (class30_sub3_4 != null && class30_sub3_4.aBoolean1323 && (class30_sub3_4.aBoolean1322 || (class30_sub3_1.combinedFlags & 4) == 0)) {
+                                                if (class30_sub3_4 != null && class30_sub3_4.inQueue && (class30_sub3_4.tileActive || (class30_sub3_1.combinedFlags & 4) == 0)) {
 							continue;
 						}
 					}
 					if (j <= cameraTileY && j > minVisibleY) {
 						Ground class30_sub3_5 = aclass30_sub3[i][j - 1];
-                                                if (class30_sub3_5 != null && class30_sub3_5.aBoolean1323 && (class30_sub3_5.aBoolean1322 || (class30_sub3_1.combinedFlags & 8) == 0)) {
+                                                if (class30_sub3_5 != null && class30_sub3_5.inQueue && (class30_sub3_5.tileActive || (class30_sub3_1.combinedFlags & 8) == 0)) {
 							continue;
 						}
 					}
 					if (j >= cameraTileY && j < maxVisibleY - 1) {
 						Ground class30_sub3_6 = aclass30_sub3[i][j + 1];
-                                                if (class30_sub3_6 != null && class30_sub3_6.aBoolean1323 && (class30_sub3_6.aBoolean1322 || (class30_sub3_1.combinedFlags & 2) == 0)) {
+                                                if (class30_sub3_6 != null && class30_sub3_6.inQueue && (class30_sub3_6.tileActive || (class30_sub3_1.combinedFlags & 2) == 0)) {
 							continue;
 						}
 					}
 				} else {
 					flag = true;
 				}
-				class30_sub3_1.aBoolean1322 = false;
+				class30_sub3_1.tileActive = false;
                                 if (class30_sub3_1.linkedTile != null) {
                                         Ground class30_sub3_7 = class30_sub3_1.linkedTile;
                                         if (class30_sub3_7.plainTile != null) {
@@ -1117,14 +1117,14 @@ final class WorldController {
                                         }
 
 				}
-				boolean flag1 = false;
+				boolean tileVisible = false;
                                 if (class30_sub3_1.plainTile != null) {
 					if (!isTileVisible(l, i, j)) {
-						flag1 = true;
+						tileVisible = true;
                                                 drawPlainTile(class30_sub3_1.plainTile, l, pitchSin, pitchCos, yawSin, yawCos, i, j);
 					}
                                 } else if (class30_sub3_1.shapedTile != null && !isTileVisible(l, i, j)) {
-                                        flag1 = true;
+                                        tileVisible = true;
                                         drawShapedTile(i, pitchSin, yawSin, class30_sub3_1.shapedTile, pitchCos, j, yawCos);
 				}
 				int j1 = 0;
@@ -1142,30 +1142,30 @@ final class WorldController {
 					} else if (cameraTileY > j) {
 						j1 += 6;
 					}
-					j2 = anIntArray478[j1];
-					class30_sub3_1.anInt1328 = anIntArray480[j1];
+					j2 = orientationLookup[j1];
+					class30_sub3_1.boundaryFlags = orientationAdjacency[j1];
 				}
 				if (class10_3 != null) {
-					if ((class10_3.orientation & anIntArray479[j1]) != 0) {
+					if ((class10_3.orientation & orientationMasks[j1]) != 0) {
 						if (class10_3.orientation == 16) {
-							class30_sub3_1.anInt1325 = 3;
-							class30_sub3_1.anInt1326 = anIntArray481[j1];
-							class30_sub3_1.anInt1327 = 3 - class30_sub3_1.anInt1326;
+							class30_sub3_1.cullFlags = 3;
+							class30_sub3_1.cullOrientation = cullMask1[j1];
+							class30_sub3_1.cullOpposite = 3 - class30_sub3_1.cullOrientation;
 						} else if (class10_3.orientation == 32) {
-							class30_sub3_1.anInt1325 = 6;
-							class30_sub3_1.anInt1326 = anIntArray482[j1];
-							class30_sub3_1.anInt1327 = 6 - class30_sub3_1.anInt1326;
+							class30_sub3_1.cullFlags = 6;
+							class30_sub3_1.cullOrientation = cullMask2[j1];
+							class30_sub3_1.cullOpposite = 6 - class30_sub3_1.cullOrientation;
 						} else if (class10_3.orientation == 64) {
-							class30_sub3_1.anInt1325 = 12;
-							class30_sub3_1.anInt1326 = anIntArray483[j1];
-							class30_sub3_1.anInt1327 = 12 - class30_sub3_1.anInt1326;
+							class30_sub3_1.cullFlags = 12;
+							class30_sub3_1.cullOrientation = cullMask3[j1];
+							class30_sub3_1.cullOpposite = 12 - class30_sub3_1.cullOrientation;
 						} else {
-							class30_sub3_1.anInt1325 = 9;
-							class30_sub3_1.anInt1326 = anIntArray484[j1];
-							class30_sub3_1.anInt1327 = 9 - class30_sub3_1.anInt1326;
+							class30_sub3_1.cullFlags = 9;
+							class30_sub3_1.cullOrientation = cullMask4[j1];
+							class30_sub3_1.cullOpposite = 9 - class30_sub3_1.cullOrientation;
 						}
 					} else {
-						class30_sub3_1.anInt1325 = 0;
+						class30_sub3_1.cullFlags = 0;
 					}
 					if ((class10_3.orientation & j2) != 0 && !isWallVisible(l, i, j, class10_3.orientation)) {
 						class10_3.primary.render(0, pitchSin, pitchCos, yawSin, yawCos, class10_3.x - cameraX, class10_3.plane - cameraZ, class10_3.y - cameraY, class10_3.uid);
@@ -1195,18 +1195,18 @@ final class WorldController {
 							k10 = k6;
 						}
                                                 if ((class26_1.orientationFlags & 0x100) != 0 && k10 < k9) {
-                                                        int i11 = j4 + anIntArray463[i8];
-                                                        int k11 = k6 + anIntArray464[i8];
+                                                        int i11 = j4 + xOffset1[i8];
+                                                        int k11 = k6 + yOffset1[i8];
                                                         class26_1.renderable.render(i8 * 512 + 256, pitchSin, pitchCos, yawSin, yawCos, i11, l5, k11, class26_1.uid);
                                                 }
                                                 if ((class26_1.orientationFlags & 0x200) != 0 && k10 > k9) {
-                                                        int j11 = j4 + anIntArray465[i8];
-                                                        int l11 = k6 + anIntArray466[i8];
+                                                        int j11 = j4 + xOffset2[i8];
+                                                        int l11 = k6 + yOffset2[i8];
                                                         class26_1.renderable.render(i8 * 512 + 1280 & 0x7ff, pitchSin, pitchCos, yawSin, yawCos, j11, l5, l11, class26_1.uid);
                                                 }
                                         }
                                 }
-				if (flag1) {
+				if (tileVisible) {
                                    TileDecoration class49 = class30_sub3_1.obj3;
                                         if (class49 != null) {
                                                 class49.renderable.render(0, pitchSin, pitchCos, yawSin, yawCos, class49.x - cameraX, class49.tileHeight - cameraZ, class49.y - cameraY, class49.uid);
@@ -1228,52 +1228,52 @@ final class WorldController {
 				if (k4 != 0) {
 					if (i < cameraTileX && (k4 & 4) != 0) {
 						Ground class30_sub3_17 = aclass30_sub3[i + 1][j];
-						if (class30_sub3_17 != null && class30_sub3_17.aBoolean1323) {
-							aClass19_477.insertHead(class30_sub3_17);
+						if (class30_sub3_17 != null && class30_sub3_17.inQueue) {
+							tileQueue.insertHead(class30_sub3_17);
 						}
 					}
 					if (j < cameraTileY && (k4 & 2) != 0) {
 						Ground class30_sub3_18 = aclass30_sub3[i][j + 1];
-						if (class30_sub3_18 != null && class30_sub3_18.aBoolean1323) {
-							aClass19_477.insertHead(class30_sub3_18);
+						if (class30_sub3_18 != null && class30_sub3_18.inQueue) {
+							tileQueue.insertHead(class30_sub3_18);
 						}
 					}
 					if (i > cameraTileX && (k4 & 1) != 0) {
 						Ground class30_sub3_19 = aclass30_sub3[i - 1][j];
-						if (class30_sub3_19 != null && class30_sub3_19.aBoolean1323) {
-							aClass19_477.insertHead(class30_sub3_19);
+						if (class30_sub3_19 != null && class30_sub3_19.inQueue) {
+							tileQueue.insertHead(class30_sub3_19);
 						}
 					}
 					if (j > cameraTileY && (k4 & 8) != 0) {
 						Ground class30_sub3_20 = aclass30_sub3[i][j - 1];
-						if (class30_sub3_20 != null && class30_sub3_20.aBoolean1323) {
-							aClass19_477.insertHead(class30_sub3_20);
+						if (class30_sub3_20 != null && class30_sub3_20.inQueue) {
+							tileQueue.insertHead(class30_sub3_20);
 						}
 					}
 				}
 			}
-                        if (class30_sub3_1.anInt1325 != 0) {
-                                boolean flag2 = true;
+                        if (class30_sub3_1.cullFlags != 0) {
+                                boolean foundVisible = true;
                                 for (int k1 = 0; k1 < class30_sub3_1.sceneObjectCount; k1++) {
-                                        if (class30_sub3_1.obj5Array[k1].lastDrawn == renderCycle || (class30_sub3_1.sceneObjectFlags[k1] & class30_sub3_1.anInt1325) != class30_sub3_1.anInt1326) {
+                                        if (class30_sub3_1.obj5Array[k1].lastDrawn == renderCycle || (class30_sub3_1.sceneObjectFlags[k1] & class30_sub3_1.cullFlags) != class30_sub3_1.cullOrientation) {
                                                 continue;
                                         }
-					flag2 = false;
+					foundVisible = false;
 					break;
 				}
 
-				if (flag2) {
+				if (foundVisible) {
 					BoundaryObject class10_1 = class30_sub3_1.obj1;
 					if (!isWallVisible(l, i, j, class10_1.orientation)) {
 						class10_1.primary.render(0, pitchSin, pitchCos, yawSin, yawCos, class10_1.x - cameraX, class10_1.plane - cameraZ, class10_1.y - cameraY, class10_1.uid);
 					}
-					class30_sub3_1.anInt1325 = 0;
+					class30_sub3_1.cullFlags = 0;
 				}
 			}
-			if (class30_sub3_1.aBoolean1324) {
+			if (class30_sub3_1.needsProcessing) {
 				try {
                                         int i1 = class30_sub3_1.sceneObjectCount;
-					class30_sub3_1.aBoolean1324 = false;
+					class30_sub3_1.needsProcessing = false;
 					int l1 = 0;
 					label0 : for (int k2 = 0; k2 < i1; k2++) {
                                                 SceneObject class28_1 = class30_sub3_1.obj5Array[k2];
@@ -1283,10 +1283,10 @@ final class WorldController {
                                                 for (int k3 = class28_1.startX; k3 <= class28_1.endX; k3++) {
                                                         for (int l4 = class28_1.startY; l4 <= class28_1.endY; l4++) {
                                                                 Ground class30_sub3_21 = aclass30_sub3[k3][l4];
-                                                                if (class30_sub3_21.aBoolean1322) {
-                                                                        class30_sub3_1.aBoolean1324 = true;
+                                                                if (class30_sub3_21.tileActive) {
+                                                                        class30_sub3_1.needsProcessing = true;
                                                                 } else {
-                                                                        if (class30_sub3_21.anInt1325 == 0) {
+                                                                        if (class30_sub3_21.cullFlags == 0) {
 										continue;
 									}
                                                                         int l6 = 0;
@@ -1302,17 +1302,17 @@ final class WorldController {
                                                                         if (l4 < class28_1.endY) {
                                                                                 l6 += 2;
                                                                         }
-                                                                        if ((l6 & class30_sub3_21.anInt1325) != class30_sub3_1.anInt1327) {
+                                                                        if ((l6 & class30_sub3_21.cullFlags) != class30_sub3_1.cullOpposite) {
 										continue;
 									}
-									class30_sub3_1.aBoolean1324 = true;
+									class30_sub3_1.needsProcessing = true;
 								}
 								continue label0;
 							}
 
 						}
 
-                                                aClass28Array462[l1++] = class28_1;
+                                                sceneObjectBuffer[l1++] = class28_1;
                                                 int i5 = cameraTileX - class28_1.startX;
                                                 int i6 = class28_1.endX - cameraTileX;
 						if (i6 > i5) {
@@ -1331,7 +1331,7 @@ final class WorldController {
 						int i3 = -50;
 						int l3 = -1;
 						for (int j5 = 0; j5 < l1; j5++) {
-                                                        SceneObject class28_2 = aClass28Array462[j5];
+                                                        SceneObject class28_2 = sceneObjectBuffer[j5];
                                                         if (class28_2.lastDrawn != renderCycle) {
                                                                 if (class28_2.distanceFromCamera > i3) {
                                                                         i3 = class28_2.distanceFromCamera;
@@ -1339,8 +1339,8 @@ final class WorldController {
                                                                 } else if (class28_2.distanceFromCamera == i3) {
                                                                         int j7 = class28_2.x - cameraX;
                                                                         int k8 = class28_2.y - cameraY;
-                                                                        int l9 = aClass28Array462[l3].x - cameraX;
-                                                                        int l10 = aClass28Array462[l3].y - cameraY;
+                                                                        int l9 = sceneObjectBuffer[l3].x - cameraX;
+                                                                        int l10 = sceneObjectBuffer[l3].y - cameraY;
                                                                         if (j7 * j7 + k8 * k8 > l9 * l9 + l10 * l10) {
                                                                                 l3 = j5;
                                                                         }
@@ -1351,7 +1351,7 @@ final class WorldController {
 						if (l3 == -1) {
 							break;
 						}
-                                                SceneObject class28_3 = aClass28Array462[l3];
+                                                SceneObject class28_3 = sceneObjectBuffer[l3];
                                                 class28_3.lastDrawn = renderCycle;
                                                 if (!isAreaVisible(l, class28_3.startX, class28_3.endX, class28_3.startY, class28_3.endY, class28_3.renderable.modelHeight)) {
                                                         class28_3.renderable.render(class28_3.orientation, pitchSin, pitchCos, yawSin, yawCos, class28_3.x - cameraX, class28_3.height - cameraZ, class28_3.y - cameraY, class28_3.uid);
@@ -1359,51 +1359,51 @@ final class WorldController {
                                                 for (int k7 = class28_3.startX; k7 <= class28_3.endX; k7++) {
                                                         for (int l8 = class28_3.startY; l8 <= class28_3.endY; l8++) {
                                                                 Ground class30_sub3_22 = aclass30_sub3[k7][l8];
-                                                                if (class30_sub3_22.anInt1325 != 0) {
-                                                                        aClass19_477.insertHead(class30_sub3_22);
-								} else if ((k7 != i || l8 != j) && class30_sub3_22.aBoolean1323) {
-									aClass19_477.insertHead(class30_sub3_22);
+                                                                if (class30_sub3_22.cullFlags != 0) {
+                                                                        tileQueue.insertHead(class30_sub3_22);
+								} else if ((k7 != i || l8 != j) && class30_sub3_22.inQueue) {
+									tileQueue.insertHead(class30_sub3_22);
 								}
 							}
 
 						}
 
 					}
-					if (class30_sub3_1.aBoolean1324) {
+					if (class30_sub3_1.needsProcessing) {
 						continue;
 					}
 				} catch (Exception _ex) {
-					class30_sub3_1.aBoolean1324 = false;
+					class30_sub3_1.needsProcessing = false;
 				}
 			}
-			if (!class30_sub3_1.aBoolean1323 || class30_sub3_1.anInt1325 != 0) {
+			if (!class30_sub3_1.inQueue || class30_sub3_1.cullFlags != 0) {
 				continue;
 			}
 			if (i <= cameraTileX && i > minVisibleX) {
 				Ground class30_sub3_8 = aclass30_sub3[i - 1][j];
-				if (class30_sub3_8 != null && class30_sub3_8.aBoolean1323) {
+				if (class30_sub3_8 != null && class30_sub3_8.inQueue) {
 					continue;
 				}
 			}
 			if (i >= cameraTileX && i < maxVisibleX - 1) {
 				Ground class30_sub3_9 = aclass30_sub3[i + 1][j];
-				if (class30_sub3_9 != null && class30_sub3_9.aBoolean1323) {
+				if (class30_sub3_9 != null && class30_sub3_9.inQueue) {
 					continue;
 				}
 			}
 			if (j <= cameraTileY && j > minVisibleY) {
 				Ground class30_sub3_10 = aclass30_sub3[i][j - 1];
-				if (class30_sub3_10 != null && class30_sub3_10.aBoolean1323) {
+				if (class30_sub3_10 != null && class30_sub3_10.inQueue) {
 					continue;
 				}
 			}
 			if (j >= cameraTileY && j < maxVisibleY - 1) {
 				Ground class30_sub3_11 = aclass30_sub3[i][j + 1];
-				if (class30_sub3_11 != null && class30_sub3_11.aBoolean1323) {
+				if (class30_sub3_11 != null && class30_sub3_11.inQueue) {
 					continue;
 				}
 			}
-			class30_sub3_1.aBoolean1323 = false;
+			class30_sub3_1.inQueue = false;
 			visibleTileCount--;
                         ItemPile pile = class30_sub3_1.itemPile;
                         if (pile != null && pile.offsetY != 0) {
@@ -1417,10 +1417,10 @@ final class WorldController {
                                         pile.topItem.render(0, pitchSin, pitchCos, yawSin, yawCos, pile.x - cameraX, pile.height - cameraZ - pile.offsetY, pile.y - cameraY, pile.uid);
                                 }
                         }
-			if (class30_sub3_1.anInt1328 != 0) {
+			if (class30_sub3_1.boundaryFlags != 0) {
                                 WallDecoration class26 = class30_sub3_1.obj2;
                                 if (class26 != null && !isWallDecorationVisible(l, i, j, class26.renderable.modelHeight)) {
-                                        if ((class26.orientationFlags & class30_sub3_1.anInt1328) != 0) {
+                                        if ((class26.orientationFlags & class30_sub3_1.boundaryFlags) != 0) {
                                                 class26.renderable.render(class26.orientation, pitchSin, pitchCos, yawSin, yawCos, class26.x - cameraX, class26.plane - cameraZ, class26.y - cameraY, class26.uid);
                                         } else if ((class26.orientationFlags & 0x300) != 0) {
                                                 int l2 = class26.x - cameraX;
@@ -1440,55 +1440,55 @@ final class WorldController {
 							l7 = i4;
 						}
                                                 if ((class26.orientationFlags & 0x100) != 0 && l7 >= j6) {
-                                                        int i9 = l2 + anIntArray463[k5];
-                                                        int i10 = i4 + anIntArray464[k5];
+                                                        int i9 = l2 + xOffset1[k5];
+                                                        int i10 = i4 + yOffset1[k5];
                                                         class26.renderable.render(k5 * 512 + 256, pitchSin, pitchCos, yawSin, yawCos, i9, j3, i10, class26.uid);
                                                 }
                                                 if ((class26.orientationFlags & 0x200) != 0 && l7 <= j6) {
-                                                        int j9 = l2 + anIntArray465[k5];
-                                                        int j10 = i4 + anIntArray466[k5];
+                                                        int j9 = l2 + xOffset2[k5];
+                                                        int j10 = i4 + yOffset2[k5];
                                                         class26.renderable.render(k5 * 512 + 1280 & 0x7ff, pitchSin, pitchCos, yawSin, yawCos, j9, j3, j10, class26.uid);
                                                 }
                                         }
                                 }
 				BoundaryObject class10_2 = class30_sub3_1.obj1;
 				if (class10_2 != null) {
-					if ((class10_2.orientation2 & class30_sub3_1.anInt1328) != 0 && !isWallVisible(l, i, j, class10_2.orientation2)) {
+					if ((class10_2.orientation2 & class30_sub3_1.boundaryFlags) != 0 && !isWallVisible(l, i, j, class10_2.orientation2)) {
 						class10_2.secondary.render(0, pitchSin, pitchCos, yawSin, yawCos, class10_2.x - cameraX, class10_2.plane - cameraZ, class10_2.y - cameraY, class10_2.uid);
 					}
-					if ((class10_2.orientation & class30_sub3_1.anInt1328) != 0 && !isWallVisible(l, i, j, class10_2.orientation)) {
+					if ((class10_2.orientation & class30_sub3_1.boundaryFlags) != 0 && !isWallVisible(l, i, j, class10_2.orientation)) {
 						class10_2.primary.render(0, pitchSin, pitchCos, yawSin, yawCos, class10_2.x - cameraX, class10_2.plane - cameraZ, class10_2.y - cameraY, class10_2.uid);
 					}
 				}
 			}
 			if (k < planeCount - 1) {
 				Ground class30_sub3_12 = groundArray[k + 1][i][j];
-				if (class30_sub3_12 != null && class30_sub3_12.aBoolean1323) {
-					aClass19_477.insertHead(class30_sub3_12);
+				if (class30_sub3_12 != null && class30_sub3_12.inQueue) {
+					tileQueue.insertHead(class30_sub3_12);
 				}
 			}
 			if (i < cameraTileX) {
 				Ground class30_sub3_13 = aclass30_sub3[i + 1][j];
-				if (class30_sub3_13 != null && class30_sub3_13.aBoolean1323) {
-					aClass19_477.insertHead(class30_sub3_13);
+				if (class30_sub3_13 != null && class30_sub3_13.inQueue) {
+					tileQueue.insertHead(class30_sub3_13);
 				}
 			}
 			if (j < cameraTileY) {
 				Ground class30_sub3_14 = aclass30_sub3[i][j + 1];
-				if (class30_sub3_14 != null && class30_sub3_14.aBoolean1323) {
-					aClass19_477.insertHead(class30_sub3_14);
+				if (class30_sub3_14 != null && class30_sub3_14.inQueue) {
+					tileQueue.insertHead(class30_sub3_14);
 				}
 			}
 			if (i > cameraTileX) {
 				Ground class30_sub3_15 = aclass30_sub3[i - 1][j];
-				if (class30_sub3_15 != null && class30_sub3_15.aBoolean1323) {
-					aClass19_477.insertHead(class30_sub3_15);
+				if (class30_sub3_15 != null && class30_sub3_15.inQueue) {
+					tileQueue.insertHead(class30_sub3_15);
 				}
 			}
 			if (j > cameraTileY) {
 				Ground class30_sub3_16 = aclass30_sub3[i][j - 1];
-				if (class30_sub3_16 != null && class30_sub3_16.aBoolean1323) {
-					aClass19_477.insertHead(class30_sub3_16);
+				if (class30_sub3_16 != null && class30_sub3_16.inQueue) {
+					tileQueue.insertHead(class30_sub3_16);
 				}
 			}
 		} while (true);
@@ -1569,7 +1569,7 @@ final class WorldController {
                                         Texture.drawTexturedTriangle(j6, l6, l5, i6, k6, k5, class43.northEastColor, class43.northWestColor, class43.southEastColor, l2, l1, i3, j4, k4, i4, k3, j3, j2, class43.textureId);
                                 }
                         } else {
-                                int i7 = anIntArray485[class43.textureId];
+                                int i7 = textureLookup[class43.textureId];
                                 Texture.drawGouraudTriangle(j6, l6, l5, i6, k6, k5, applyBrightness(i7, class43.northEastColor), applyBrightness(i7, class43.northWestColor), applyBrightness(i7, class43.southEastColor));
                         }
 		}
@@ -1588,7 +1588,7 @@ final class WorldController {
                                         Texture.drawTexturedTriangle(j5, l5, l6, i5, k5, k6, class43.southWestColor, class43.southEastColor, class43.northWestColor, i2, i3, l1, l3, i4, k4, k2, j2, j3, class43.textureId);
                                         return;
                                 }
-                                int j7 = anIntArray485[class43.textureId];
+                                int j7 = textureLookup[class43.textureId];
                                 Texture.drawGouraudTriangle(j5, l5, l6, i5, k5, k6, applyBrightness(j7, class43.southWestColor), applyBrightness(j7, class43.southEastColor), applyBrightness(j7, class43.northWestColor));
                         }
 		}
@@ -1647,7 +1647,7 @@ final class WorldController {
                                                 Texture.drawTexturedTriangle(l4, i5, j5, i4, j4, k4, shapedTile.faceColorA[j2], shapedTile.faceColorB[j2], shapedTile.faceColorC[j2], ShapedTile.cameraVertexX[l2], ShapedTile.cameraVertexX[j3], ShapedTile.cameraVertexX[l3], ShapedTile.cameraVertexY[l2], ShapedTile.cameraVertexY[j3], ShapedTile.cameraVertexY[l3], ShapedTile.cameraVertexZ[l2], ShapedTile.cameraVertexZ[j3], ShapedTile.cameraVertexZ[l3], shapedTile.faceTexture[j2]);
                                         }
                                 } else {
-                                        int k5 = anIntArray485[shapedTile.faceTexture[j2]];
+                                        int k5 = textureLookup[shapedTile.faceTexture[j2]];
                                         Texture.drawGouraudTriangle(l4, i5, j5, i4, j4, k4, applyBrightness(k5, shapedTile.faceColorA[j2]), applyBrightness(k5, shapedTile.faceColorB[j2]), applyBrightness(k5, shapedTile.faceColorC[j2]));
                                 }
                         }
@@ -1706,7 +1706,7 @@ final class WorldController {
 				}
 				boolean flag = false;
 				while (k1 <= j2) {
-					if (aBooleanArrayArray492[l][k1++]) {
+					if (tileVisibilityMap[l][k1++]) {
 						flag = true;
 						break;
 					}
@@ -1744,14 +1744,14 @@ final class WorldController {
 				if (k2 > 50) {
 					k2 = 50;
 				}
-				boolean flag1 = false;
+				boolean tileVisible = false;
 				while (l1 <= k2) {
-					if (aBooleanArrayArray492[l1++][i1]) {
-						flag1 = true;
+					if (tileVisibilityMap[l1++][i1]) {
+						tileVisible = true;
 						break;
 					}
 				}
-				if (!flag1) {
+				if (!tileVisible) {
 					continue;
 				}
 				int k3 = cameraY - class47.minZ;
@@ -1789,19 +1789,19 @@ final class WorldController {
 						if (l3 > 50) {
 							l3 = 50;
 						}
-						boolean flag2 = false;
+						boolean foundVisible = false;
 						label0 : for (int i4 = i3; i4 <= l3; i4++) {
 							for (int j4 = i2; j4 <= l2; j4++) {
-								if (!aBooleanArrayArray492[i4][j4]) {
+								if (!tileVisibilityMap[i4][j4]) {
 									continue;
 								}
-								flag2 = true;
+								foundVisible = true;
 								break label0;
 							}
 
 						}
 
-						if (flag2) {
+						if (foundVisible) {
 							class47.searchMask = 5;
 							class47.startXFactor = (class47.minX - cameraX << 8) / j1;
 							class47.endXFactor = (class47.maxX - cameraX << 8) / j1;
@@ -2048,7 +2048,7 @@ final class WorldController {
 		return false;
 	}
 
-	private boolean aBoolean434;
+	private boolean boundaryToggle;
 	public static boolean lowMem = true;
 	private final int planeCount;
 	private final int worldWidth;
@@ -2075,11 +2075,11 @@ final class WorldController {
         private static int pitchCos;
         private static int yawSin;
         private static int yawCos;
-        private static SceneObject[] aClass28Array462 = new SceneObject[100];
-	private static final int[] anIntArray463 = {53, -53, -53, 53};
-	private static final int[] anIntArray464 = {-53, -53, 53, 53};
-	private static final int[] anIntArray465 = {-45, 45, 45, -45};
-	private static final int[] anIntArray466 = {45, 45, -45, -45};
+        private static SceneObject[] sceneObjectBuffer = new SceneObject[100];
+	private static final int[] xOffset1 = {53, -53, -53, 53};
+	private static final int[] yOffset1 = {-53, -53, 53, 53};
+	private static final int[] xOffset2 = {-45, 45, 45, -45};
+	private static final int[] yOffset2 = {45, 45, -45, -45};
         private static boolean pendingClick;
         private static int pendingClickX;
         private static int pendingClickY;
@@ -2090,22 +2090,22 @@ final class WorldController {
 	private static CullingCluster[][] aCullingClusters;
        private static int cullingClusterBufferCount;
 	private static final CullingCluster[] cullingClusterBuffer = new CullingCluster[500];
-	private static NodeList aClass19_477 = new NodeList();
-	private static final int[] anIntArray478 = {19, 55, 38, 155, 255, 110, 137, 205, 76};
-	private static final int[] anIntArray479 = {160, 192, 80, 96, 0, 144, 80, 48, 160};
-	private static final int[] anIntArray480 = {76, 8, 137, 4, 0, 1, 38, 2, 19};
-	private static final int[] anIntArray481 = {0, 0, 2, 0, 0, 2, 1, 1, 0};
-	private static final int[] anIntArray482 = {2, 0, 0, 2, 0, 0, 0, 4, 4};
-	private static final int[] anIntArray483 = {0, 4, 4, 8, 0, 0, 8, 0, 0};
-	private static final int[] anIntArray484 = {1, 1, 0, 0, 0, 8, 0, 0, 8};
-	private static final int[] anIntArray485 = {41, 39248, 41, 4643, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 43086, 41, 41, 41, 41, 41, 41, 41, 8602, 41, 28992, 41, 41, 41, 41, 41, 5056, 41, 41, 41, 7079, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 3131, 41, 41, 41};
+	private static NodeList tileQueue = new NodeList();
+	private static final int[] orientationLookup = {19, 55, 38, 155, 255, 110, 137, 205, 76};
+	private static final int[] orientationMasks = {160, 192, 80, 96, 0, 144, 80, 48, 160};
+	private static final int[] orientationAdjacency = {76, 8, 137, 4, 0, 1, 38, 2, 19};
+	private static final int[] cullMask1 = {0, 0, 2, 0, 0, 2, 1, 1, 0};
+	private static final int[] cullMask2 = {2, 0, 0, 2, 0, 0, 0, 4, 4};
+	private static final int[] cullMask3 = {0, 4, 4, 8, 0, 0, 8, 0, 0};
+	private static final int[] cullMask4 = {1, 1, 0, 0, 0, 8, 0, 0, 8};
+	private static final int[] textureLookup = {41, 39248, 41, 4643, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 43086, 41, 41, 41, 41, 41, 41, 41, 8602, 41, 28992, 41, 41, 41, 41, 41, 5056, 41, 41, 41, 7079, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 3131, 41, 41, 41};
 	private final int[] vertexVisitA;
 	private final int[] vertexVisitB;
 	private int mergeCycleId;
-	private final int[][] anIntArrayArray489 = {new int[16], {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1}, {1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1}, {0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1}, {1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1}};
-	private final int[][] anIntArrayArray490 = {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}, {12, 8, 4, 0, 13, 9, 5, 1, 14, 10, 6, 2, 15, 11, 7, 3}, {15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0}, {3, 7, 11, 15, 2, 6, 10, 14, 1, 5, 9, 13, 0, 4, 8, 12}};
-	private static boolean[][][][] aBooleanArrayArrayArrayArray491 = new boolean[8][32][256][256];
-	private static boolean[][] aBooleanArrayArray492;
+	private final int[][] blendMap1 = {new int[16], {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1}, {1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1}, {0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1}, {1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0}, {1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1}, {1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1}};
+	private final int[][] blendMap2 = {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}, {12, 8, 4, 0, 13, 9, 5, 1, 14, 10, 6, 2, 15, 11, 7, 3}, {15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0}, {3, 7, 11, 15, 2, 6, 10, 14, 1, 5, 9, 13, 0, 4, 8, 12}};
+	private static boolean[][][][] visibilityMap = new boolean[8][32][256][256];
+	private static boolean[][] tileVisibilityMap;
 	private static int halfViewportWidth;
 	private static int halfViewportHeight;
 	private static int viewportMinX;

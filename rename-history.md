@@ -16,7 +16,42 @@ This document lists variable or identifier renames found in the commit history.
  - anInt496 -> viewportMinY
  - anInt497 -> viewportMaxX
  - anInt498 -> viewportMaxY
- - method290 -> updateWallDecorationPosition
+- method290 -> updateWallDecorationPosition
+- aClass28Array462 -> sceneObjectBuffer
+- aClass19_477 -> tileQueue
+- aBoolean434 -> boundaryToggle
+- aBooleanArrayArrayArrayArray491 -> visibilityMap
+- aBooleanArrayArray492 -> tileVisibilityMap
+- anIntArray463 -> xOffset1
+- anIntArray464 -> yOffset1
+- anIntArray465 -> xOffset2
+- anIntArray466 -> yOffset2
+- anIntArray478 -> orientationLookup
+- anIntArray479 -> orientationMasks
+- anIntArray480 -> orientationAdjacency
+- anIntArray481 -> cullMask1
+- anIntArray482 -> cullMask2
+- anIntArray483 -> cullMask3
+- anIntArray484 -> cullMask4
+- anIntArray485 -> textureLookup
+- anIntArrayArray489 -> blendMap1
+- anIntArrayArray490 -> blendMap2
+- aBoolean1322 -> tileActive
+- aBoolean1323 -> inQueue
+- aBoolean1324 -> needsProcessing
+- anInt1325 -> cullFlags
+- anInt1326 -> cullOrientation
+- anInt1327 -> cullOpposite
+- anInt1328 -> boundaryFlags
+
+## Ground
+- aBoolean1322 -> tileActive
+- aBoolean1323 -> inQueue
+- aBoolean1324 -> needsProcessing
+- anInt1325 -> cullFlags
+- anInt1326 -> cullOrientation
+- anInt1327 -> cullOpposite
+- anInt1328 -> boundaryFlags
 
 ## MRUNodes -> MRUCache
 
