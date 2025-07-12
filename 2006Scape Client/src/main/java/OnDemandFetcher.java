@@ -26,6 +26,11 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 
     }*/
 
+	/** Minimum capacity for model-related arrays to support
+	 *  IDs beyond the cache's version list. */
+	private static final int MIN_MODEL_CACHE_SIZE = 80000;
+
+
 	// XXX: Fixed and refactored the crcMatches method. - Ryley
 	private boolean crcMatches(int type, int id, byte[] data) {
 		if (data == null || data.length < 2) {
@@ -136,12 +141,12 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			byte abyte0[] = streamLoader.getFileData(as[i]);
 			int j = abyte0.length / 2;
 			Stream stream = new Stream(abyte0);
-			versions[i] = new int[j];
-			fileStatus[i] = new byte[j];
+			int size = i == 0 ? Math.max(j, MIN_MODEL_CACHE_SIZE) : j;
+			versions[i] = new int[size];
+			fileStatus[i] = new byte[size];
 			for (int l = 0; l < j; l++) {
 				versions[i][l] = stream.readUnsignedWord();
 			}
-
 		}
 
 		String as1[] = {"model_crc", "anim_crc", "midi_crc", "map_crc"};
@@ -149,11 +154,11 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			byte abyte1[] = streamLoader.getFileData(as1[k]);
 			int i1 = abyte1.length / 4;
 			Stream stream_1 = new Stream(abyte1);
-			crcs[k] = new int[i1];
+			int size = k == 0 ? Math.max(i1, MIN_MODEL_CACHE_SIZE) : i1;
+			crcs[k] = new int[size];
 			for (int l1 = 0; l1 < i1; l1++) {
 				crcs[k][l1] = stream_1.readDWord();
 			}
-
 		}
 
 		byte abyte2[] = streamLoader.getFileData("model_index");
@@ -277,12 +282,12 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	}
 
         public void queueRequest(int i, int j) {
-		if (i < 0 || i > versions.length || j < 0 || j > versions[i].length) {
-			return;
-		}
-		if (versions[i][j] == 0) {
-			return;
-		}
+			if (i < 0 || i >= versions.length || j < 0 || j >= versions[i].length) {
+				return;
+			}
+			if (i != 0 && versions[i][j] == 0) {
+				return;
+			}
 		synchronized (nodeSubList) {
                        for (OnDemandData onDemandData = (OnDemandData) nodeSubList.reverseGetFirst(); onDemandData != null; onDemandData = (OnDemandData) nodeSubList.reverseGetNext()) {
                                if (onDemandData.type == i && onDemandData.id == j) {
@@ -396,18 +401,21 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	}
 
         public void requestFileNow(int i, int j) {
-		if (clientInstance.decompressors[0] == null) {
-			return;
-		}
-		if (versions[j][i] == 0) {
-			return;
-		}
-		if (fileStatus[j][i] == 0) {
-			return;
-		}
+			if (clientInstance.decompressors[0] == null) {
+				return;
+			}
+			if (j < 0 || j >= versions.length || i < 0 || i >= versions[j].length) {
+				return;
+			}
+			if (j != 0 && versions[j][i] == 0) {
+				return;
+			}
+			if (fileStatus[j][i] == 0) {
+				return;
+			}
                 if (currentPriority == 0) {
-			return;
-		}
+					return;
+				}
                OnDemandData onDemandData = new OnDemandData();
                onDemandData.type = j;
                onDemandData.id = i;
@@ -473,12 +481,15 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
         }
 
         public void validateOrQueue(byte byte0, int i, int j) {
-		if (clientInstance.decompressors[0] == null) {
-			return;
-		}
-		if (versions[i][j] == 0) {
-			return;
-		}
+			if (clientInstance.decompressors[0] == null) {
+				return;
+			}
+			if (i < 0 || i >= versions.length || j < 0 || j >= versions[i].length) {
+				return;
+			}
+			if (i != 0 && versions[i][j] == 0) {
+				return;
+			}
 		byte abyte0[] = clientInstance.decompressors[i + 1].decompress(j);
 		if (crcMatches(versions[i][j], crcs[i][j], abyte0)) {
 			return;

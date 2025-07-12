@@ -284,7 +284,7 @@ public class MeleeData {
                 c.playerRunIndex = 1661;
                 break;
             case 6528:
-                c.playerStandIndex = 0x811;
+                c.playerStandIndex = 2065;
                 c.playerWalkIndex = 2064;
                 c.playerRunIndex = 1664;
                 break;
@@ -294,6 +294,10 @@ public class MeleeData {
                 c.playerRunIndex = 1664;
                 break;
             case 11694:
+                c.playerStandIndex = 2065;
+                c.playerWalkIndex = 2064;
+                c.playerRunIndex = 1664;
+                break;
             case 11696:
             case 11730:
             case 11698:
@@ -396,7 +400,7 @@ public class MeleeData {
             case 4726: // guthan
                 return 2080;
             case 4747: // torag
-                return 0x814;
+                return 2068;
             case 4718: // dharok
                 return 2067;
             case 4710: // ahrim
@@ -436,8 +440,6 @@ public class MeleeData {
             case -1:
             case 0:
                 return 424;
-            case 4755:
-                return 2063;
 
             case 4153:
                 return 1666;
@@ -446,6 +448,8 @@ public class MeleeData {
             case StaticItemList.LIME_WHIP:
                 return 1659;
 
+            case 4755:
+                return 2063;
             case 11694:
             case 11698:
             case 11700:

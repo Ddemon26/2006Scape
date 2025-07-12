@@ -1087,6 +1087,9 @@ public class ItemAssistant {
 		if (itemName.contains("2h") || itemName.contains("spear")) {
 			return true;
 		}
+		if (itemName.contains("godsword")) {
+			return true;
+		}
 		switch (itemId) {
 			case 6724: // seercull
 			case 11730:

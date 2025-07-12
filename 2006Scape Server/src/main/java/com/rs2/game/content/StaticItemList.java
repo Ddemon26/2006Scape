@@ -7966,5 +7966,5 @@ public class StaticItemList {
 	public static final int AXE_HANDLE_7953 = 7953;
 	public static final int BURNT_SHRIMP = 7954;
 	public static final int BURNT_SHRIMP_7955 = 7955;
-
+	public static final int ARMADYL_GODSWORD = 11694;
 }

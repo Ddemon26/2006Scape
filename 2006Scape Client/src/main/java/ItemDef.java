@@ -2046,6 +2046,27 @@ public final class ItemDef {
                         itemDef.modifiedModelColors[0] = 528;
                         itemDef.originalModelColors[0] = 17350;
                         break;
+
+			/*case 11694:
+				itemDef.actions = new String[5];
+				itemDef.actions[1] = "Wield";
+				itemDef.modelID = 28162;
+				itemDef.maleModel1 = 27731;
+				itemDef.femaleModel1 = 27731;
+				itemDef.modelZoom = 1957;
+				itemDef.modelRotation1 = 498;
+				itemDef.modelRotation2 = 484;
+				itemDef.offsetX = 0;
+				itemDef.offsetY = 0;
+				itemDef.resizeX = 128;
+				itemDef.resizeY = 128;
+				itemDef.resizeZ = 128;
+				itemDef.contrast = 25;
+				itemDef.ambient = 10;
+				itemDef.stackable = false;
+				itemDef.name = "Armadyl godsword";
+				itemDef.description = "A beautiful, heavy sword.".getBytes();
+				break;*/
                         }
                 return itemDef;
         }

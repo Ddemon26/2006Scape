@@ -21030,5 +21030,15 @@
          "strengthBonus":90,
          "prayerBonus":1
       }
+   },
+   {
+      "id":11694,
+      "weight":45.0,
+      "bonuses":{
+         "attackSlash":132,
+         "attackCrush":80,
+         "strengthBonus":132,
+         "prayerBonus":8
+      }
    }
 ]

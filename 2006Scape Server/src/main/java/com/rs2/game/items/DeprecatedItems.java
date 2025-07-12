@@ -1,5 +1,7 @@
 package com.rs2.game.items;
 
+import com.rs2.game.content.StaticItemList;
+
 /**
  * Methods which are set to be phased out but exist to maintain compatibility with the existing source code.
  * 
@@ -45,6 +47,9 @@ public class DeprecatedItems {
                if (id == com.rs2.game.content.StaticItemList.LIME_WHIP) {
                        return "Lime whip";
                }
+			   if (id == StaticItemList.ARMADYL_GODSWORD) {
+				   return "Armadyl godsword";
+			   }
                org.apollo.cache.def.ItemDefinition def = org.apollo.cache.def.ItemDefinition.lookup(id);
                if (def == null || def.getName() == null) {
                        return "Unarmed";
