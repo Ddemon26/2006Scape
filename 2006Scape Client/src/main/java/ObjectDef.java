@@ -39,27 +39,27 @@ public final class ObjectDef {
 		isSolid = true;
 		impenetrable = true;
 		interactive = false;
-		aBoolean762 = false;
-		aBoolean769 = false;
-		aBoolean764 = false;
+		contouredGround = false;
+		delayedShading = false;
+		adjustToTerrain = false;
 		animationId = -1;
-		anInt775 = 16;
-		aByte737 = 0;
-		aByte742 = 0;
+		wallDecoOffset = 16;
+		ambient = 0;
+		contrast = 0;
 		actions = null;
-		anInt746 = -1;
+		mapIconId = -1;
                 mapSceneId = -1;
-		aBoolean751 = false;
-		aBoolean779 = true;
+		mirrorOnRotate = false;
+		clipped = true;
 		scaleX = 128;
 		scaleY = 128;
 		scaleZ = 128;
-                anInt768 = 0;
+                defaultOrientation = 0;
                 offsetX = 0;
                 offsetY = 0;
                 offsetZ = 0;
-		aBoolean736 = false;
-		aBoolean766 = false;
+		occludes = false;
+		hollow = false;
                 supportsItems = -1;
                 varbitId = -1;
                 varpId = -1;
@@ -132,10 +132,10 @@ public final class ObjectDef {
 		if (model == null) {
 			return null;
 		}
-		if (aBoolean762 || aBoolean769) {
-			model = new Model(aBoolean762, aBoolean769, model);
+		if (contouredGround || delayedShading) {
+			model = new Model(contouredGround, delayedShading, model);
 		}
-		if (aBoolean762) {
+		if (contouredGround) {
 			int l1 = (k + l + i1 + j1) / 4;
 			for (int i2 = 0; i2 < model.vertexCount; i2++) {
 				int j2 = model.vertexX[i2];
@@ -196,7 +196,7 @@ public final class ObjectDef {
 			if (modelIds == null) {
 				return null;
 			}
-			boolean flag1 = aBoolean751 ^ l > 3;
+			boolean flag1 = mirrorOnRotate ^ l > 3;
 			int k1 = modelIds.length;
 			for (int i2 = 0; i2 < k1; i2++) {
 				int l2 = modelIds[i2];
@@ -241,7 +241,7 @@ public final class ObjectDef {
 				return model_2;
 			}
 			int j2 = modelIds[i1];
-			boolean flag3 = aBoolean751 ^ l > 3;
+			boolean flag3 = mirrorOnRotate ^ l > 3;
 			if (flag3) {
 				j2 += 0x10000;
 			}
@@ -283,7 +283,7 @@ public final class ObjectDef {
 		if (flag2) {
                     model_3.translate(offsetX, offsetY, offsetZ);
 		}
-		model_3.applyLighting(64 + aByte737, 768 + aByte742 * 5, -50, -10, -50, !aBoolean769);
+		model_3.applyLighting(64 + ambient, 768 + contrast * 5, -50, -10, -50, !delayedShading);
             if (supportsItems == 1) {
 			model_3.overrideHeight = model_3.modelHeight;
 		}
@@ -347,22 +347,22 @@ public final class ObjectDef {
 						interactive = true;
 					}
 				} else if (j == 21) {
-					aBoolean762 = true;
+					contouredGround = true;
 				} else if (j == 22) {
-					aBoolean769 = true;
+					delayedShading = true;
 				} else if (j == 23) {
-					aBoolean764 = true;
+					adjustToTerrain = true;
 				} else if (j == 24) {
 					animationId = stream.readUnsignedWord();
 					if (animationId == 65535) {
 						animationId = -1;
 					}
 				} else if (j == 28) {
-					anInt775 = stream.readUnsignedByte();
+					wallDecoOffset = stream.readUnsignedByte();
 				} else if (j == 29) {
-					aByte737 = stream.readSignedByte();
+					ambient = stream.readSignedByte();
 				} else if (j == 39) {
-					aByte742 = stream.readSignedByte();
+					contrast = stream.readSignedByte();
 				} else if (j >= 30 && j < 39) {
 					if (actions == null) {
 						actions = new String[5];
@@ -381,11 +381,11 @@ public final class ObjectDef {
 					}
 
 				} else if (j == 60) {
-					anInt746 = stream.readUnsignedWord();
+					mapIconId = stream.readUnsignedWord();
 				} else if (j == 62) {
-					aBoolean751 = true;
+					mirrorOnRotate = true;
 				} else if (j == 64) {
-					aBoolean779 = false;
+					clipped = false;
 				} else if (j == 65) {
 					scaleX = stream.readUnsignedWord();
 				} else if (j == 66) {
@@ -395,7 +395,7 @@ public final class ObjectDef {
 				} else if (j == 68) {
                                     mapSceneId = stream.readUnsignedWord();
 				} else if (j == 69) {
-					anInt768 = stream.readUnsignedByte();
+					defaultOrientation = stream.readUnsignedByte();
 				} else if (j == 70) {
                                     offsetX = stream.readSignedWord();
 				} else if (j == 71) {
@@ -403,9 +403,9 @@ public final class ObjectDef {
 				} else if (j == 72) {
                                     offsetZ = stream.readSignedWord();
 				} else if (j == 73) {
-					aBoolean736 = true;
+					occludes = true;
 				} else if (j == 74) {
-					aBoolean766 = true;
+					hollow = true;
 				} else {
 					if (j != 75) {
 						continue;
@@ -438,7 +438,7 @@ public final class ObjectDef {
 				interactive = true;
 			}
 		}
-		if (aBoolean766) {
+		if (hollow) {
 			isSolid = false;
 			impenetrable = false;
 		}
@@ -451,20 +451,20 @@ public final class ObjectDef {
 		type = -1;
 	}
 
-	public boolean aBoolean736;
-	private byte aByte737;
+        public boolean occludes;
+        private byte ambient;
         private int offsetX;
 	public String name;
 	private int scaleZ;
 	private static final Model[] aModelArray741s = new Model[4];
-	private byte aByte742;
+        private byte contrast;
 	public int sizeX;
         private int offsetY;
-	public int anInt746;
+        public int mapIconId;
 	private int[] originalModelColors;
 	private int scaleX;
         public int varpId;
-	private boolean aBoolean751;
+        private boolean mirrorOnRotate;
 	public static boolean lowMem;
 	private static Stream stream;
 	public int type;
@@ -474,22 +474,22 @@ public final class ObjectDef {
 	public int childrenIDs[];
         private int supportsItems;
 	public int sizeY;
-	public boolean aBoolean762;
-	public boolean aBoolean764;
+        public boolean contouredGround;
+        public boolean adjustToTerrain;
 	public static Game clientInstance;
-	private boolean aBoolean766;
-	public boolean isSolid;
-	public int anInt768;
-	private boolean aBoolean769;
+        private boolean hollow;
+        public boolean isSolid;
+        public int defaultOrientation;
+        private boolean delayedShading;
 	private static int cacheIndex;
 	private int scaleY;
 	private int[] modelIds;
         public int varbitId;
-	public int anInt775;
+        public int wallDecoOffset;
 	private int[] modelTypes;
 	public byte description[];
 	public boolean interactive;
-	public boolean aBoolean779;
+        public boolean clipped;
         public static MRUCache mruNodes2 = new MRUCache(30);
 	public int animationId;
 	private static ObjectDef[] cache;

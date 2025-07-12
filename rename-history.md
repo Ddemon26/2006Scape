@@ -72,6 +72,13 @@ This document lists variable or identifier renames found in the commit history.
 - anInt265 -> offsetY
 - anIntArray212 -> requiredValues
 - anIntArray245 -> valueCompareType
+- aBoolean223 -> centerText
+- aBoolean227 -> filled
+- aBoolean235 -> insertItems
+- aBoolean259 -> allowItemDragging
+- aBoolean266 -> hideUntilHovered
+- aBoolean268 -> textShadow
+- aByte254 -> opacity
 
 ## EntityDef
  - method464 -> copyFromModel
@@ -336,8 +343,9 @@ This document lists variable or identifier renames found in the commit history.
  - anInt1273 -> unusedField1273
 
 ## RSApplet
- - TextDrawingArea -> clean
- - aLong215 -> currentTime
+- TextDrawingArea -> clean
+- aLong215 -> currentTime
+- anInt34 -> idleTicks
 
 ## OnDemandFetcher
  - method548 -> requestModel
@@ -755,7 +763,8 @@ This document lists variable or identifier renames found in the commit history.
  - method370 -> unloadTexture
  - method371 -> getTexturePixels
  - method372 -> setBrightness
- - method373 -> adjustBrightness
+- method373 -> adjustBrightness
+- anInt1459 -> UNUSED_TEXTURE_CONSTANT
  - method374 -> drawGouraudTriangle
  - method375 -> drawGouraudScanline
  - method378 -> drawTexturedTriangle
@@ -809,6 +818,18 @@ This document lists variable or identifier renames found in the commit history.
 - anInt760 -> supportsItems
 - anInt774 -> varbitId
 - anInt749 -> varpId
+- aBoolean736 -> occludes
+- aByte737 -> ambient
+- aByte742 -> contrast
+- anInt746 -> mapIconId
+- aBoolean751 -> mirrorOnRotate
+- aBoolean762 -> contouredGround
+- aBoolean764 -> adjustToTerrain
+- aBoolean766 -> hollow
+- anInt768 -> defaultOrientation
+- aBoolean769 -> delayedShading
+- anInt775 -> wallDecoOffset
+- aBoolean779 -> clipped
 
 ## VarBit
  - anInt648 -> configId
@@ -854,7 +875,12 @@ This document lists variable or identifier renames found in the commit history.
  - anInt1709 -> animationBaseY
  - anInt1711 -> animationBaseX
  - anInt1712 -> animationBaseHeight
- - anInt1713 -> animationBaseZ
+- anInt1713 -> animationBaseZ
+- aBoolean1699 -> skipAnimations
+- anInt1719 -> boundingBoxMinX
+- anInt1720 -> boundingBoxMinY
+- anInt1721 -> boundingBoxMaxX
+- anInt1722 -> boundingBoxMaxY
 
 ## Entity
  - anInt1504 -> turnSpeed
@@ -1023,5 +1049,8 @@ This document lists variable or identifier renames found in the commit history.
  - anInt361 -> rightHandItem
  - anInt362 -> maxLoops
  - anInt363 -> precedenceAnimating
- - anInt364 -> precedenceWalking
- - anInt365 -> replayMode
+- anInt364 -> precedenceWalking
+- anInt365 -> replayMode
+
+## NodeSub
+ - anInt1305 -> subNodeCounter

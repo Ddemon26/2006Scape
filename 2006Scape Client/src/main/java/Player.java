@@ -15,7 +15,7 @@ public final class Player extends Entity {
 		}
 		super.height = model.modelHeight;
 		model.pickable = true;
-		if (aBoolean1699) {
+		if (skipAnimations) {
 			return model;
 		}
                if (super.spotAnimId != -1 && super.spotAnimFrame != -1) {
@@ -263,7 +263,7 @@ public final class Player extends Entity {
                     mruNodes.put(model_1, l);
 			cachedModelHash = l;
 		}
-		if (aBoolean1699) {
+		if (skipAnimations) {
 			return model_1;
 		}
                 Model model_2 = Model.placeholderModel;
@@ -339,7 +339,7 @@ public final class Player extends Entity {
 
 	Player() {
 		cachedModelHash = -1L;
-		aBoolean1699 = false;
+                skipAnimations = false;
                 bodyColors = new int[5];
 		visible = false;
 		equipment = new int[12];
@@ -347,7 +347,7 @@ public final class Player extends Entity {
 
         private long cachedModelHash;
 	public EntityDef desc;
-	boolean aBoolean1699;
+        boolean skipAnimations;
         final int[] bodyColors;
 	public int team;
         private int gender;
@@ -367,10 +367,10 @@ public final class Player extends Entity {
 	Model aModel_1714;
 	public final int[] equipment;
         private long appearanceHash;
-	int anInt1719;
-	int anInt1720;
-	int anInt1721;
-	int anInt1722;
+        int boundingBoxMinX;
+        int boundingBoxMinY;
+        int boundingBoxMaxX;
+        int boundingBoxMaxY;
 	int skill;
 
 }

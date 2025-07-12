@@ -479,7 +479,7 @@ final class ObjectManager {
 		}
 		byte byte0 = (byte) ((j1 << 6) + j);
 		if (j == 22) {
-			if (lowMem && !class46.interactive && !class46.aBoolean736) {
+			if (lowMem && !class46.interactive && !class46.occludes) {
 				return;
 			}
 			Object obj;
@@ -515,7 +515,7 @@ final class ObjectManager {
 					j4 = class46.sizeX;
 					l4 = class46.sizeY;
 				}
-                        if (worldController.addGameObject(l2, byte0, k2, l4, ((Animable) obj1), j4, k, i5, i, l) && class46.aBoolean779) {
+                        if (worldController.addGameObject(l2, byte0, k2, l4, ((Animable) obj1), j4, k, i5, i, l) && class46.clipped) {
 					Model model;
 					if (obj1 instanceof Model) {
 						model = (Model) obj1;
@@ -569,43 +569,43 @@ final class ObjectManager {
 			}
                     worldController.addBoundaryObject(wallFlags[j1], ((Animable) obj3), l2, i, byte0, l, null, k2, 0, k);
 			if (j1 == 0) {
-				if (class46.aBoolean779) {
+				if (class46.clipped) {
 					tileShadowing[k][l][i] = 50;
 					tileShadowing[k][l][i + 1] = 50;
 				}
-				if (class46.aBoolean764) {
+				if (class46.adjustToTerrain) {
 					renderFlags[k][l][i] |= 0x249;
 				}
 			} else if (j1 == 1) {
-				if (class46.aBoolean779) {
+				if (class46.clipped) {
 					tileShadowing[k][l][i + 1] = 50;
 					tileShadowing[k][l + 1][i + 1] = 50;
 				}
-				if (class46.aBoolean764) {
+				if (class46.adjustToTerrain) {
 					renderFlags[k][l][i + 1] |= 0x492;
 				}
 			} else if (j1 == 2) {
-				if (class46.aBoolean779) {
+				if (class46.clipped) {
 					tileShadowing[k][l + 1][i] = 50;
 					tileShadowing[k][l + 1][i + 1] = 50;
 				}
-				if (class46.aBoolean764) {
+				if (class46.adjustToTerrain) {
 					renderFlags[k][l + 1][i] |= 0x249;
 				}
 			} else if (j1 == 3) {
-				if (class46.aBoolean779) {
+				if (class46.clipped) {
 					tileShadowing[k][l][i] = 50;
 					tileShadowing[k][l + 1][i] = 50;
 				}
-				if (class46.aBoolean764) {
+				if (class46.adjustToTerrain) {
 					renderFlags[k][l][i] |= 0x492;
 				}
 			}
 			if (class46.isSolid && class11 != null) {
 				class11.addWall(i, j1, l, j, class46.impenetrable);
 			}
-                        if (class46.anInt775 != 16) {
-                                worldController.updateWallDecorationPosition(i, class46.anInt775, l, k);
+                        if (class46.wallDecoOffset != 16) {
+                                worldController.updateWallDecorationPosition(i, class46.wallDecoOffset, l, k);
 			}
 			return;
 		}
@@ -617,7 +617,7 @@ final class ObjectManager {
 				obj4 = new DynamicObject(i1, j1, 1, l1, i2, k1, j2, class46.animationId, true);
 			}
                     worldController.addBoundaryObject(boundaryRotationMasks[j1], ((Animable) obj4), l2, i, byte0, l, null, k2, 0, k);
-			if (class46.aBoolean779) {
+			if (class46.clipped) {
 				if (j1 == 0) {
 					tileShadowing[k][l][i + 1] = 50;
 				} else if (j1 == 1) {
@@ -645,7 +645,7 @@ final class ObjectManager {
 				obj12 = new DynamicObject(i1, i3, 2, l1, i2, k1, j2, class46.animationId, true);
 			}
                     worldController.addBoundaryObject(wallFlags[j1], ((Animable) obj11), l2, i, byte0, l, ((Animable) obj12), k2, wallFlags[i3], k);
-			if (class46.aBoolean764) {
+			if (class46.adjustToTerrain) {
 				if (j1 == 0) {
 					renderFlags[k][l][i] |= 0x249;
 					renderFlags[k][l][i + 1] |= 0x492;
@@ -663,8 +663,8 @@ final class ObjectManager {
 			if (class46.isSolid && class11 != null) {
 				class11.addWall(i, j1, l, j, class46.impenetrable);
 			}
-                        if (class46.anInt775 != 16) {
-                                worldController.updateWallDecorationPosition(i, class46.anInt775, l, k);
+                        if (class46.wallDecoOffset != 16) {
+                                worldController.updateWallDecorationPosition(i, class46.wallDecoOffset, l, k);
 			}
 			return;
 		}
@@ -676,7 +676,7 @@ final class ObjectManager {
 				obj5 = new DynamicObject(i1, j1, 3, l1, i2, k1, j2, class46.animationId, true);
 			}
                     worldController.addBoundaryObject(boundaryRotationMasks[j1], ((Animable) obj5), l2, i, byte0, l, null, k2, 0, k);
-			if (class46.aBoolean779) {
+			if (class46.clipped) {
 				if (j1 == 0) {
 					tileShadowing[k][l][i + 1] = 50;
 				} else if (j1 == 1) {
@@ -705,7 +705,7 @@ final class ObjectManager {
 			}
 			return;
 		}
-		if (class46.aBoolean762) {
+		if (class46.contouredGround) {
 			if (j1 == 1) {
 				int j3 = j2;
 				j2 = i2;
@@ -741,7 +741,7 @@ final class ObjectManager {
 			int i4 = 16;
 			int k4 = worldController.getBoundaryObjectUid(k, l, i);
 			if (k4 > 0) {
-				i4 = ObjectDef.forID(k4 >> 14 & 0x7fff).anInt775;
+				i4 = ObjectDef.forID(k4 >> 14 & 0x7fff).wallDecoOffset;
 			}
 			Object obj13;
 			if (class46.animationId == -1 && class46.childrenIDs == null) {
@@ -1165,7 +1165,7 @@ final class ObjectManager {
 			}
 			return;
 		}
-		if (class46.aBoolean762) {
+		if (class46.contouredGround) {
 			if (i == 1) {
 				int k3 = k2;
 				k2 = j2;
@@ -1201,7 +1201,7 @@ final class ObjectManager {
 			int j4 = 16;
 			int l4 = worldController.getBoundaryObjectUid(k1, i1, j);
 			if (l4 > 0) {
-				j4 = ObjectDef.forID(l4 >> 14 & 0x7fff).anInt775;
+				j4 = ObjectDef.forID(l4 >> 14 & 0x7fff).wallDecoOffset;
 			}
 			Object obj13;
 			if (class46.animationId == -1 && class46.childrenIDs == null) {
@@ -1279,7 +1279,7 @@ final class ObjectManager {
 					int i_262_ = i_258_ + i_250_;
 					if (i_261_ > 0 && i_262_ > 0 && i_261_ < 103 && i_262_ < 103) {
 						ObjectDef class46 = ObjectDef.forID(i_252_);
-						if (i_260_ != 22 || !lowMem || class46.interactive || class46.aBoolean736) {
+						if (i_260_ != 22 || !lowMem || class46.interactive || class46.occludes) {
 							bool &= class46.areModelsReady();
 							bool_255_ = true;
 						}
