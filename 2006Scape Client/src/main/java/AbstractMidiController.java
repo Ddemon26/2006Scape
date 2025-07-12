@@ -23,7 +23,7 @@ abstract class AbstractMidiController extends MidiPlayer
             if (controller == 121) {
                 sendShortMessage(status, controller, value, timestamp);
                 int channel = status & 0xf;
-                Game.anIntArray385[channel] = 12800;
+                Game.midiChannels[channel] = 12800;
                 int scaled = calculateChannelVolume(channel);
                 sendShortMessage(status, 7, scaled >> 7, timestamp);
                 sendShortMessage(status, 39, scaled & 0x7f, timestamp);
@@ -32,9 +32,9 @@ abstract class AbstractMidiController extends MidiPlayer
             if (controller == 7 || controller == 39) {
                 int channel = status & 0xf;
                 if (controller == 7)
-                    Game.anIntArray385[channel] = (Game.anIntArray385[channel] & 0x7f) + (value << 7);
+                    Game.midiChannels[channel] = (Game.midiChannels[channel] & 0x7f) + (value << 7);
                 else
-                    Game.anIntArray385[channel] = (Game.anIntArray385[channel] & 0x3f80) + value;
+                    Game.midiChannels[channel] = (Game.midiChannels[channel] & 0x3f80) + value;
                 int scaled = calculateChannelVolume(channel);
                 sendShortMessage(status, 7, scaled >> 7, timestamp);
                 sendShortMessage(status, 39, scaled & 0x7f, timestamp);
@@ -62,7 +62,7 @@ abstract class AbstractMidiController extends MidiPlayer
     final void setMasterVolume(int volume, long timestamp) {
         Game.midiVolume = volume;
         for (int channel = 0; channel < 16; channel++)
-            Game.anIntArray385[channel] = 12800;
+            Game.midiChannels[channel] = 12800;
         for (int channel = 0; channel < 16; channel++) {
             int scaled = calculateChannelVolume(channel);
             sendShortMessage(channel + 176, 7, scaled >> 7, timestamp);
@@ -71,7 +71,7 @@ abstract class AbstractMidiController extends MidiPlayer
     }
     
     private static final int calculateChannelVolume(int channel) {
-        int value = Game.anIntArray385[channel];
+        int value = Game.midiChannels[channel];
         value = (value * Game.midiVolume >> 8) * value;
         return (int) (Math.sqrt((double) value) + 0.5);
     }
