@@ -25,7 +25,7 @@ public final class Player extends Entity {
                                Model model_3 = new Model(true, AnimFrame.isNullFrame(super.spotAnimFrame), false, model_2);
                                model_3.translate(0, -super.spotAnimHeight, 0);
 				model_3.buildVertexGroups();
-                               model_3.applyFrame(spotAnim.animation.anIntArray353[super.spotAnimFrame]);
+                               model_3.applyFrame(spotAnim.animation.frameIds[super.spotAnimFrame]);
 				model_3.faceGroups = null;
 				model_3.vertexGroups = null;
                                 if (spotAnim.scaleX != 128 || spotAnim.scaleY != 128) {
@@ -166,9 +166,9 @@ public final class Player extends Entity {
 		if (desc != null) {
 			int j = -1;
 			if (super.anim >= 0 && super.graphicDelay == 0) {
-				j = Animation.anims[super.anim].anIntArray353[super.graphicFrame];
+				j = Animation.anims[super.anim].frameIds[super.graphicFrame];
 			} else if (super.currentAnimation >= 0) {
-				j = Animation.anims[super.currentAnimation].anIntArray353[super.animationFrame];
+				j = Animation.anims[super.currentAnimation].frameIds[super.animationFrame];
 			}
                        Model model = desc.getAnimatedModel(-1, j, null);
 			return model;
@@ -180,20 +180,20 @@ public final class Player extends Entity {
 		int k1 = -1;
 		if (super.anim >= 0 && super.graphicDelay == 0) {
 			Animation animation = Animation.anims[super.anim];
-			k = animation.anIntArray353[super.graphicFrame];
+			k = animation.frameIds[super.graphicFrame];
 			if (super.currentAnimation >= 0 && super.currentAnimation != super.standAnimation) {
-				i1 = Animation.anims[super.currentAnimation].anIntArray353[super.animationFrame];
+				i1 = Animation.anims[super.currentAnimation].frameIds[super.animationFrame];
 			}
-			if (animation.anInt360 >= 0) {
-				j1 = animation.anInt360;
+			if (animation.leftHandItem >= 0) {
+				j1 = animation.leftHandItem;
 				l += j1 - equipment[5] << 40;
 			}
-			if (animation.anInt361 >= 0) {
-				k1 = animation.anInt361;
+			if (animation.rightHandItem >= 0) {
+				k1 = animation.rightHandItem;
 				l += k1 - equipment[3] << 48;
 			}
 		} else if (super.currentAnimation >= 0) {
-			k = Animation.anims[super.currentAnimation].anIntArray353[super.animationFrame];
+			k = Animation.anims[super.currentAnimation].frameIds[super.animationFrame];
 		}
             Model model_1 = (Model) mruNodes.get(l);
 		if (model_1 == null) {
@@ -269,7 +269,7 @@ public final class Player extends Entity {
                 Model model_2 = Model.placeholderModel;
                 model_2.copyFromModel(model_1, AnimFrame.isNullFrame(k) & AnimFrame.isNullFrame(i1));
 		if (k != -1 && i1 != -1) {
-			model_2.applyFrames(Animation.anims[super.anim].anIntArray357, i1, k);
+			model_2.applyFrames(Animation.anims[super.anim].interleaveOrder, i1, k);
 		} else if (k != -1) {
 			model_2.applyFrame(k);
 		}

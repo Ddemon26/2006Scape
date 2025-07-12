@@ -6,16 +6,16 @@ public final class NPC extends Entity {
 
        private Model getBaseModel() {
 		if (super.anim >= 0 && super.graphicDelay == 0) {
-			int k = Animation.anims[super.anim].anIntArray353[super.graphicFrame];
+			int k = Animation.anims[super.anim].frameIds[super.graphicFrame];
 			int i1 = -1;
 			if (super.currentAnimation >= 0 && super.currentAnimation != super.standAnimation) {
-				i1 = Animation.anims[super.currentAnimation].anIntArray353[super.animationFrame];
+				i1 = Animation.anims[super.currentAnimation].frameIds[super.animationFrame];
 			}
-                       return definition.getAnimatedModel(i1, k, Animation.anims[super.anim].anIntArray357);
+                       return definition.getAnimatedModel(i1, k, Animation.anims[super.anim].interleaveOrder);
 		}
 		int l = -1;
 		if (super.currentAnimation >= 0) {
-			l = Animation.anims[super.currentAnimation].anIntArray353[super.animationFrame];
+			l = Animation.anims[super.currentAnimation].frameIds[super.animationFrame];
 		}
                return definition.getAnimatedModel(-1, l, null);
 	}
@@ -34,7 +34,7 @@ public final class NPC extends Entity {
                        SpotAnim spotAnim = SpotAnim.cache[super.spotAnimId];
 			Model model_1 = spotAnim.getModel();
 			if (model_1 != null) {
-                       int j = spotAnim.animation.anIntArray353[super.spotAnimFrame];
+                       int j = spotAnim.animation.frameIds[super.spotAnimFrame];
                                Model model_2 = new Model(true, AnimFrame.isNullFrame(j), false, model_1);
                                model_2.translate(0, -super.spotAnimHeight, 0);
 				model_2.buildVertexGroups();

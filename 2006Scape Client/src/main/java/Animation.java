@@ -19,11 +19,11 @@ public final class Animation {
 	}
 
        public int getFrameDelay(int frameIndex) {
-               int j = anIntArray355[frameIndex];
+               int j = frameLengths[frameIndex];
                if (j == 0) {
-                       AnimFrame frame = AnimFrame.forId(anIntArray353[frameIndex]);
+                       AnimFrame frame = AnimFrame.forId(frameIds[frameIndex]);
                        if (frame != null) {
-                               j = anIntArray355[frameIndex] = frame.delay;
+                               j = frameLengths[frameIndex] = frame.delay;
                        }
                }
                if (j == 0) {
@@ -39,102 +39,102 @@ public final class Animation {
 				break;
 			}
 			if (i == 1) {
-				anInt352 = stream.readUnsignedByte();
-				anIntArray353 = new int[anInt352];
-				anIntArray354 = new int[anInt352];
-				anIntArray355 = new int[anInt352];
-				for (int j = 0; j < anInt352; j++) {
-					anIntArray353[j] = stream.readUnsignedWord();
-					anIntArray354[j] = stream.readUnsignedWord();
-					if (anIntArray354[j] == 65535) {
-						anIntArray354[j] = -1;
+				frameCount = stream.readUnsignedByte();
+				frameIds = new int[frameCount];
+				secondaryFrameIds = new int[frameCount];
+				frameLengths = new int[frameCount];
+				for (int j = 0; j < frameCount; j++) {
+					frameIds[j] = stream.readUnsignedWord();
+					secondaryFrameIds[j] = stream.readUnsignedWord();
+					if (secondaryFrameIds[j] == 65535) {
+						secondaryFrameIds[j] = -1;
 					}
-					anIntArray355[j] = stream.readUnsignedWord();
+					frameLengths[j] = stream.readUnsignedWord();
 				}
 
 			} else if (i == 2) {
-				anInt356 = stream.readUnsignedWord();
+				frameStep = stream.readUnsignedWord();
 			} else if (i == 3) {
 				int k = stream.readUnsignedByte();
-				anIntArray357 = new int[k + 1];
+				interleaveOrder = new int[k + 1];
 				for (int l = 0; l < k; l++) {
-					anIntArray357[l] = stream.readUnsignedByte();
+					interleaveOrder[l] = stream.readUnsignedByte();
 				}
 
-				anIntArray357[k] = 0x98967f;
+				interleaveOrder[k] = 0x98967f;
 			} else if (i == 4) {
-				aBoolean358 = true;
+				stretches = true;
 			} else if (i == 5) {
-				anInt359 = stream.readUnsignedByte();
+				priority = stream.readUnsignedByte();
 			} else if (i == 6) {
-				anInt360 = stream.readUnsignedWord();
+				leftHandItem = stream.readUnsignedWord();
 			} else if (i == 7) {
-				anInt361 = stream.readUnsignedWord();
+				rightHandItem = stream.readUnsignedWord();
 			} else if (i == 8) {
-				anInt362 = stream.readUnsignedByte();
+				maxLoops = stream.readUnsignedByte();
 			} else if (i == 9) {
-				anInt363 = stream.readUnsignedByte();
+				precedenceAnimating = stream.readUnsignedByte();
 			} else if (i == 10) {
-				anInt364 = stream.readUnsignedByte();
+				precedenceWalking = stream.readUnsignedByte();
 			} else if (i == 11) {
-				anInt365 = stream.readUnsignedByte();
+				replayMode = stream.readUnsignedByte();
 			} else if (i == 12) {
 				stream.readDWord();
 			} else {
 				System.out.println("Error unrecognised seq config code: " + i);
 			}
 		} while (true);
-		if (anInt352 == 0) {
-			anInt352 = 1;
-			anIntArray353 = new int[1];
-			anIntArray353[0] = -1;
-			anIntArray354 = new int[1];
-			anIntArray354[0] = -1;
-			anIntArray355 = new int[1];
-			anIntArray355[0] = -1;
+		if (frameCount == 0) {
+			frameCount = 1;
+			frameIds = new int[1];
+			frameIds[0] = -1;
+			secondaryFrameIds = new int[1];
+			secondaryFrameIds[0] = -1;
+			frameLengths = new int[1];
+			frameLengths[0] = -1;
 		}
-		if (anInt363 == -1) {
-			if (anIntArray357 != null) {
-				anInt363 = 2;
+		if (precedenceAnimating == -1) {
+			if (interleaveOrder != null) {
+				precedenceAnimating = 2;
 			} else {
-				anInt363 = 0;
+				precedenceAnimating = 0;
 			}
 		}
-		if (anInt364 == -1) {
-			if (anIntArray357 != null) {
-				anInt364 = 2;
+		if (precedenceWalking == -1) {
+			if (interleaveOrder != null) {
+				precedenceWalking = 2;
 				return;
 			}
-			anInt364 = 0;
+			precedenceWalking = 0;
 		}
 	}
 
 	private Animation() {
-		anInt356 = -1;
-		aBoolean358 = false;
-		anInt359 = 5;
-		anInt360 = -1;
-		anInt361 = -1;
-		anInt362 = 99;
-		anInt363 = -1;
-		anInt364 = -1;
-		anInt365 = 2;
+		frameStep = -1;
+		stretches = false;
+		priority = 5;
+		leftHandItem = -1;
+		rightHandItem = -1;
+		maxLoops = 99;
+		precedenceAnimating = -1;
+		precedenceWalking = -1;
+		replayMode = 2;
 	}
 
 	public static Animation anims[];
-	public int anInt352;
-	public int anIntArray353[];
-	public int anIntArray354[];
-	private int[] anIntArray355;
-	public int anInt356;
-	public int anIntArray357[];
-	public boolean aBoolean358;
-	public int anInt359;
-	public int anInt360;
-	public int anInt361;
-	public int anInt362;
-	public int anInt363;
-	public int anInt364;
-	public int anInt365;
+	public int frameCount;
+	public int frameIds[];
+	public int secondaryFrameIds[];
+	private int[] frameLengths;
+	public int frameStep;
+	public int interleaveOrder[];
+	public boolean stretches;
+	public int priority;
+	public int leftHandItem;
+	public int rightHandItem;
+	public int maxLoops;
+	public int precedenceAnimating;
+	public int precedenceWalking;
+	public int replayMode;
 	public static int anInt367;
 }
