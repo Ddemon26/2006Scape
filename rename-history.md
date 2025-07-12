@@ -928,3 +928,18 @@ This document lists variable or identifier renames found in the commit history.
  - aBoolean84 -> clickable
  - aBoolean87 -> minimapVisible
  - aBoolean93 -> priorityRender
+## Animation
+ - anInt352 -> frameCount
+ - anIntArray353 -> frameIds
+ - anIntArray354 -> secondaryFrameIds
+ - anIntArray355 -> frameLengths
+ - anInt356 -> frameStep
+ - anIntArray357 -> interleaveOrder
+ - aBoolean358 -> stretches
+ - anInt359 -> priority
+ - anInt360 -> leftHandItem
+ - anInt361 -> rightHandItem
+ - anInt362 -> maxLoops
+ - anInt363 -> precedenceAnimating
+ - anInt364 -> precedenceWalking
+ - anInt365 -> replayMode

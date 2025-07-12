@@ -9,17 +9,17 @@ final class DynamicObject extends Animable {
 		int j = -1;
 		if (animation != null) {
 			int k = Game.loopCycle - cycleStart;
-			if (k > 100 && animation.anInt356 > 0) {
+			if (k > 100 && animation.frameStep > 0) {
 				k = 100;
 			}
                        while (k > animation.getFrameDelay(currentFrame)) {
                                k -= animation.getFrameDelay(currentFrame);
 				currentFrame++;
-				if (currentFrame < animation.anInt352) {
+				if (currentFrame < animation.frameCount) {
 					continue;
 				}
-				currentFrame -= animation.anInt356;
-				if (currentFrame >= 0 && currentFrame < animation.anInt352) {
+				currentFrame -= animation.frameStep;
+				if (currentFrame >= 0 && currentFrame < animation.frameCount) {
 					continue;
 				}
 				animation = null;
@@ -27,7 +27,7 @@ final class DynamicObject extends Animable {
 			}
 			cycleStart = Game.loopCycle - k;
 			if (animation != null) {
-				j = animation.anIntArray353[currentFrame];
+				j = animation.frameIds[currentFrame];
 			}
 		}
 		ObjectDef class46;
@@ -74,8 +74,8 @@ final class DynamicObject extends Animable {
 			animation = Animation.anims[l1];
 			currentFrame = 0;
 			cycleStart = Game.loopCycle;
-			if (flag && animation.anInt356 != -1) {
-				currentFrame = (int) (Math.random() * animation.anInt352);
+			if (flag && animation.frameStep != -1) {
+				currentFrame = (int) (Math.random() * animation.frameCount);
                                 cycleStart -= (int) (Math.random() * animation.getFrameDelay(currentFrame));
 			}
 		}

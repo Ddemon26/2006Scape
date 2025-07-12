@@ -21,7 +21,7 @@ final class GraphicsObject extends Animable {
         if (model == null) {
             return null;
         }
-        int   j       = spotAnimation.animation.anIntArray353[frame];
+        int   j       = spotAnimation.animation.frameIds[frame];
         Model model_1 = new Model(true, AnimFrame.isNullFrame(j), false, model);
         if (!finished) {
             model_1.buildVertexGroups();
@@ -54,7 +54,7 @@ final class GraphicsObject extends Animable {
         for (frameCycle += elapsed; frameCycle > spotAnimation.animation.getFrameDelay(frame); ) {
             frameCycle -= spotAnimation.animation.getFrameDelay(frame) + 1;
             frame++;
-            if (frame >= spotAnimation.animation.anInt352 && (frame < 0 || frame >= spotAnimation.animation.anInt352)) {
+            if (frame >= spotAnimation.animation.frameCount && (frame < 0 || frame >= spotAnimation.animation.frameCount)) {
                 frame = 0;
                 finished = true;
             }

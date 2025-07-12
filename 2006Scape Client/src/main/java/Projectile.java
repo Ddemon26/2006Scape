@@ -31,7 +31,7 @@ final class Projectile extends Animable {
 		}
 		int j = -1;
                 if (spotAnim.animation != null) {
-                        j = spotAnim.animation.anIntArray353[frame];
+                        j = spotAnim.animation.frameIds[frame];
                 }
                 Model model_1 = new Model(true, AnimFrame.isNullFrame(j), false, model);
 		if (j != -1) {
@@ -76,7 +76,7 @@ final class Projectile extends Animable {
                         for (frameCycle += elapsed; frameCycle > spotAnim.animation.getFrameDelay(frame);) {
                                 frameCycle -= spotAnim.animation.getFrameDelay(frame) + 1;
                                 frame++;
-                                if (frame >= spotAnim.animation.anInt352) {
+                                if (frame >= spotAnim.animation.frameCount) {
                                         frame = 0;
                                 }
                         }
