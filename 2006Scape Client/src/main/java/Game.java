@@ -2462,8 +2462,8 @@ public class Game extends RSApplet {
 			int k4 = 24624 + l * 4 + (103 - i) * 512 * 4;
 			int i5 = k1 >> 14 & 0x7fff;
 			ObjectDef class46_2 = ObjectDef.forID(i5);
-			if (class46_2.anInt758 != -1) {
-				Background background_2 = mapScenes[class46_2.anInt758];
+                        if (class46_2.mapSceneId != -1) {
+                                Background background_2 = mapScenes[class46_2.mapSceneId];
 				if (background_2 != null) {
 					int i6 = (class46_2.sizeX * 4 - background_2.width) / 2;
 					int j6 = (class46_2.sizeY * 4 - background_2.height) / 2;
@@ -2536,8 +2536,8 @@ public class Game extends RSApplet {
 			int j3 = i2 & 0x1f;
 			int l3 = k1 >> 14 & 0x7fff;
 			ObjectDef class46_1 = ObjectDef.forID(l3);
-			if (class46_1.anInt758 != -1) {
-				Background background_1 = mapScenes[class46_1.anInt758];
+                        if (class46_1.mapSceneId != -1) {
+                                Background background_1 = mapScenes[class46_1.mapSceneId];
 				if (background_1 != null) {
 					int j5 = (class46_1.sizeX * 4 - background_1.width) / 2;
 					int k5 = (class46_1.sizeY * 4 - background_1.height) / 2;
@@ -2567,8 +2567,8 @@ public class Game extends RSApplet {
 		if (k1 != 0) {
 			int j2 = k1 >> 14 & 0x7fff;
 			ObjectDef class46 = ObjectDef.forID(j2);
-			if (class46.anInt758 != -1) {
-				Background background = mapScenes[class46.anInt758];
+                        if (class46.mapSceneId != -1) {
+                                Background background = mapScenes[class46.mapSceneId];
 				if (background != null) {
 					int i4 = (class46.sizeX * 4 - background.width) / 2;
 					int j4 = (class46.sizeY * 4 - background.height) / 2;
