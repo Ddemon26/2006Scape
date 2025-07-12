@@ -515,7 +515,14 @@ This document lists variable or identifier renames found in the commit history.
  - anIntArrayArray139 -> tileShading
  - method172 -> getTerrainNoise
  - method182 -> getCorrectPlane
- - anInt406 -> animationId
+- anInt406 -> animationId
+- aByteArrayArrayArray149 -> tileFlags
+- aByteArrayArrayArray142 -> tileUnderlayIds
+- aByteArrayArrayArray130 -> tileOverlayIds
+- aByteArrayArrayArray136 -> tileOverlayShapes
+- aByteArrayArrayArray148 -> tileOverlayOrientations
+- aByteArrayArrayArray134 -> tileShadowing
+- anIntArray140 -> boundaryRotationMasks
 
 ## Censor
  - method509 -> applyWordFilter

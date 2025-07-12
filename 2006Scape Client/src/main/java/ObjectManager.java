@@ -9,13 +9,13 @@ final class ObjectManager {
 		mapWidth = 104;
 		mapHeight = 104;
 		tileHeights = ai;
-		aByteArrayArrayArray149 = abyte0;
-		aByteArrayArrayArray142 = new byte[4][mapWidth][mapHeight];
-		aByteArrayArrayArray130 = new byte[4][mapWidth][mapHeight];
-		aByteArrayArrayArray136 = new byte[4][mapWidth][mapHeight];
-		aByteArrayArrayArray148 = new byte[4][mapWidth][mapHeight];
+                tileFlags = abyte0;
+                tileUnderlayIds = new byte[4][mapWidth][mapHeight];
+                tileOverlayIds = new byte[4][mapWidth][mapHeight];
+                tileOverlayShapes = new byte[4][mapWidth][mapHeight];
+                tileOverlayOrientations = new byte[4][mapWidth][mapHeight];
                 renderFlags = new int[4][mapWidth + 1][mapHeight + 1];
-		aByteArrayArrayArray134 = new byte[4][mapWidth + 1][mapHeight + 1];
+                tileShadowing = new byte[4][mapWidth + 1][mapHeight + 1];
                 tileShading = new int[mapWidth + 1][mapHeight + 1];
 		tileHues = new int[mapHeight];
 		tileSaturations = new int[mapHeight];
@@ -35,9 +35,9 @@ final class ObjectManager {
 		for (int j = 0; j < 4; j++) {
 			for (int k = 0; k < 104; k++) {
 				for (int i1 = 0; i1 < 104; i1++) {
-					if ((aByteArrayArrayArray149[j][k][i1] & 1) == 1) {
+					if ((tileFlags[j][k][i1] & 1) == 1) {
 						int k1 = j;
-						if ((aByteArrayArrayArray149[1][k][i1] & 2) == 2) {
+						if ((tileFlags[1][k][i1] & 2) == 2) {
 							k1--;
 						}
 						if (k1 >= 0) {
@@ -64,7 +64,7 @@ final class ObjectManager {
 			noiseOffsetY = 16;
 		}
 		for (int l = 0; l < 4; l++) {
-			byte abyte0[][] = aByteArrayArrayArray134[l];
+			byte abyte0[][] = tileShadowing[l];
 			byte byte0 = 96;
 			char c = '\u0300';
 			byte byte1 = -50;
@@ -99,7 +99,7 @@ final class ObjectManager {
 				for (int i8 = 0; i8 < mapHeight; i8++) {
 					int k9 = l6 + 5;
 					if (k9 >= 0 && k9 < mapWidth) {
-						int l12 = aByteArrayArrayArray142[l][k9][i8] & 0xff;
+						int l12 = tileUnderlayIds[l][k9][i8] & 0xff;
 						if (l12 > 0) {
 							FloorOverlay flo = FloorOverlay.cache[l12 - 1];
 							tileHues[i8] += flo.hslValue;
@@ -111,7 +111,7 @@ final class ObjectManager {
 					}
 					int i13 = l6 - 5;
 					if (i13 >= 0 && i13 < mapWidth) {
-						int i14 = aByteArrayArrayArray142[l][i13][i8] & 0xff;
+						int i14 = tileUnderlayIds[l][i13][i8] & 0xff;
 						if (i14 > 0) {
 							FloorOverlay flo_1 = FloorOverlay.cache[i14 - 1];
 							tileHues[i8] -= flo_1.hslValue;
@@ -146,12 +146,12 @@ final class ObjectManager {
 							k15 -= tileHueMultiplier[k18];
 							k16 -= tileCount[k18];
 						}
-						if (k17 >= 1 && k17 < mapHeight - 1 && ((!hideBuggyVarrockSwordShopSnow && !hideRoofs && !lowMem) || (aByteArrayArrayArray149[0][l6][k17] & 2) != 0 || (aByteArrayArrayArray149[l][l6][k17] & 0x10) == 0 && getCorrectPlane(k17, l, l6) == currentPlane)) {
+						if (k17 >= 1 && k17 < mapHeight - 1 && ((!hideBuggyVarrockSwordShopSnow && !hideRoofs && !lowMem) || (tileFlags[0][l6][k17] & 2) != 0 || (tileFlags[l][l6][k17] & 0x10) == 0 && getCorrectPlane(k17, l, l6) == currentPlane)) {
 							if (l < lowestPlane) {
 								lowestPlane = l;
 							}
-							int l18 = aByteArrayArrayArray142[l][l6][k17] & 0xff;
-							int i19 = aByteArrayArrayArray130[l][l6][k17] & 0xff;
+							int l18 = tileUnderlayIds[l][l6][k17] & 0xff;
+							int i19 = tileOverlayIds[l][l6][k17] & 0xff;
 							if (l18 > 0 || i19 > 0) {
 								int j19 = tileHeights[l][l6][k17];
 								int k19 = tileHeights[l][l6 + 1][k17];
@@ -179,7 +179,7 @@ final class ObjectManager {
 								}
 								if (l > 0) {
 									boolean flag = true;
-									if (l18 == 0 && aByteArrayArrayArray136[l][l6][k17] != 0) {
+									if (l18 == 0 && tileOverlayShapes[l][l6][k17] != 0) {
 										flag = false;
 									}
 									if (i19 > 0 && !FloorOverlay.cache[i19 - 1].isWalkable) {
@@ -196,8 +196,8 @@ final class ObjectManager {
 								if (i19 == 0) {
                                                                         worldController.addTile(l, l6, k17, 0, 0, -1, j19, k19, l19, i20, applyBrightness(j21, j20), applyBrightness(j21, k20), applyBrightness(j21, l20), applyBrightness(j21, i21), 0, 0, 0, 0, i22, 0);
 								} else {
-									int k22 = aByteArrayArrayArray136[l][l6][k17] + 1;
-									byte byte4 = aByteArrayArrayArray148[l][l6][k17];
+									int k22 = tileOverlayShapes[l][l6][k17] + 1;
+									byte byte4 = tileOverlayOrientations[l][l6][k17];
 									FloorOverlay flo_2 = FloorOverlay.cache[i19 - 1];
 									int i23 = flo_2.textureId;
 									int j23;
@@ -241,7 +241,7 @@ final class ObjectManager {
                 worldController.applySceneLighting(-10, -50, -50);
 		for (int j1 = 0; j1 < mapWidth; j1++) {
 			for (int l1 = 0; l1 < mapHeight; l1++) {
-				if ((aByteArrayArrayArray149[1][j1][l1] & 2) == 2) {
+				if ((tileFlags[1][j1][l1] & 2) == 2) {
                                         worldController.shiftDownPlanes(l1, j1);
 				}
 			}
@@ -436,7 +436,7 @@ final class ObjectManager {
 		for (int j1 = i; j1 <= i + j; j1++) {
 			for (int k1 = i1; k1 <= i1 + l; k1++) {
 				if (k1 >= 0 && k1 < mapWidth && j1 >= 0 && j1 < mapHeight) {
-					aByteArrayArrayArray134[0][k1][j1] = 127;
+					tileShadowing[0][k1][j1] = 127;
 					if (k1 == i1 && k1 > 0) {
 						tileHeights[0][k1][j1] = tileHeights[0][k1 - 1][j1];
 					}
@@ -456,8 +456,8 @@ final class ObjectManager {
 	}
 
 	private void placeObject(int i, WorldController worldController, CollisionMap class11, int j, int k, int l, int i1, int j1) {
-		if ((hideRoofs || lowMem) && (aByteArrayArrayArray149[0][l][i] & 2) == 0) {
-			if ((aByteArrayArrayArray149[k][l][i] & 0x10) != 0) {
+		if ((hideRoofs || lowMem) && (tileFlags[0][l][i] & 2) == 0) {
+			if ((tileFlags[k][l][i] & 0x10) != 0) {
 				return;
 			}
 			if (getCorrectPlane(i, k, l) != currentPlane) {
@@ -529,8 +529,8 @@ final class ObjectManager {
 								if (l5 > 30) {
 									l5 = 30;
 								}
-								if (l5 > aByteArrayArrayArray134[k][l + j5][i + k5]) {
-									aByteArrayArrayArray134[k][l + j5][i + k5] = (byte) l5;
+								if (l5 > tileShadowing[k][l + j5][i + k5]) {
+									tileShadowing[k][l + j5][i + k5] = (byte) l5;
 								}
 							}
 
@@ -570,32 +570,32 @@ final class ObjectManager {
                     worldController.addBoundaryObject(wallFlags[j1], ((Animable) obj3), l2, i, byte0, l, null, k2, 0, k);
 			if (j1 == 0) {
 				if (class46.aBoolean779) {
-					aByteArrayArrayArray134[k][l][i] = 50;
-					aByteArrayArrayArray134[k][l][i + 1] = 50;
+					tileShadowing[k][l][i] = 50;
+					tileShadowing[k][l][i + 1] = 50;
 				}
 				if (class46.aBoolean764) {
 					renderFlags[k][l][i] |= 0x249;
 				}
 			} else if (j1 == 1) {
 				if (class46.aBoolean779) {
-					aByteArrayArrayArray134[k][l][i + 1] = 50;
-					aByteArrayArrayArray134[k][l + 1][i + 1] = 50;
+					tileShadowing[k][l][i + 1] = 50;
+					tileShadowing[k][l + 1][i + 1] = 50;
 				}
 				if (class46.aBoolean764) {
 					renderFlags[k][l][i + 1] |= 0x492;
 				}
 			} else if (j1 == 2) {
 				if (class46.aBoolean779) {
-					aByteArrayArrayArray134[k][l + 1][i] = 50;
-					aByteArrayArrayArray134[k][l + 1][i + 1] = 50;
+					tileShadowing[k][l + 1][i] = 50;
+					tileShadowing[k][l + 1][i + 1] = 50;
 				}
 				if (class46.aBoolean764) {
 					renderFlags[k][l + 1][i] |= 0x249;
 				}
 			} else if (j1 == 3) {
 				if (class46.aBoolean779) {
-					aByteArrayArrayArray134[k][l][i] = 50;
-					aByteArrayArrayArray134[k][l + 1][i] = 50;
+					tileShadowing[k][l][i] = 50;
+					tileShadowing[k][l + 1][i] = 50;
 				}
 				if (class46.aBoolean764) {
 					renderFlags[k][l][i] |= 0x492;
@@ -616,16 +616,16 @@ final class ObjectManager {
 			} else {
 				obj4 = new DynamicObject(i1, j1, 1, l1, i2, k1, j2, class46.animationId, true);
 			}
-                    worldController.addBoundaryObject(anIntArray140[j1], ((Animable) obj4), l2, i, byte0, l, null, k2, 0, k);
+                    worldController.addBoundaryObject(boundaryRotationMasks[j1], ((Animable) obj4), l2, i, byte0, l, null, k2, 0, k);
 			if (class46.aBoolean779) {
 				if (j1 == 0) {
-					aByteArrayArrayArray134[k][l][i + 1] = 50;
+					tileShadowing[k][l][i + 1] = 50;
 				} else if (j1 == 1) {
-					aByteArrayArrayArray134[k][l + 1][i + 1] = 50;
+					tileShadowing[k][l + 1][i + 1] = 50;
 				} else if (j1 == 2) {
-					aByteArrayArrayArray134[k][l + 1][i] = 50;
+					tileShadowing[k][l + 1][i] = 50;
 				} else if (j1 == 3) {
-					aByteArrayArrayArray134[k][l][i] = 50;
+					tileShadowing[k][l][i] = 50;
 				}
 			}
 			if (class46.isSolid && class11 != null) {
@@ -675,16 +675,16 @@ final class ObjectManager {
 			} else {
 				obj5 = new DynamicObject(i1, j1, 3, l1, i2, k1, j2, class46.animationId, true);
 			}
-                    worldController.addBoundaryObject(anIntArray140[j1], ((Animable) obj5), l2, i, byte0, l, null, k2, 0, k);
+                    worldController.addBoundaryObject(boundaryRotationMasks[j1], ((Animable) obj5), l2, i, byte0, l, null, k2, 0, k);
 			if (class46.aBoolean779) {
 				if (j1 == 0) {
-					aByteArrayArrayArray134[k][l][i + 1] = 50;
+					tileShadowing[k][l][i + 1] = 50;
 				} else if (j1 == 1) {
-					aByteArrayArrayArray134[k][l + 1][i + 1] = 50;
+					tileShadowing[k][l + 1][i + 1] = 50;
 				} else if (j1 == 2) {
-					aByteArrayArrayArray134[k][l + 1][i] = 50;
+					tileShadowing[k][l + 1][i] = 50;
 				} else if (j1 == 3) {
-					aByteArrayArrayArray134[k][l][i] = 50;
+					tileShadowing[k][l][i] = 50;
 				}
 			}
 			if (class46.isSolid && class11 != null) {
@@ -877,7 +877,7 @@ final class ObjectManager {
 
 	private void readTile(int i, int j, Stream stream, int k, int l, int i1, int k1) {
 		if (k >= 0 && k < 104 && i >= 0 && i < 104) {
-			aByteArrayArrayArray149[l][k][i] = 0;
+			tileFlags[l][k][i] = 0;
 			do {
 				int l1 = stream.readUnsignedByte();
 				if (l1 == 0) {
@@ -903,13 +903,13 @@ final class ObjectManager {
 					}
 				}
 				if (l1 <= 49) {
-					aByteArrayArrayArray130[l][k][i] = stream.readSignedByte();
-					aByteArrayArrayArray136[l][k][i] = (byte) ((l1 - 2) / 4);
-					aByteArrayArrayArray148[l][k][i] = (byte) (l1 - 2 + i1 & 3);
+					tileOverlayIds[l][k][i] = stream.readSignedByte();
+					tileOverlayShapes[l][k][i] = (byte) ((l1 - 2) / 4);
+					tileOverlayOrientations[l][k][i] = (byte) (l1 - 2 + i1 & 3);
 				} else if (l1 <= 81) {
-					aByteArrayArrayArray149[l][k][i] = (byte) (l1 - 49);
+					tileFlags[l][k][i] = (byte) (l1 - 49);
 				} else {
-					aByteArrayArrayArray142[l][k][i] = (byte) (l1 - 81);
+					tileUnderlayIds[l][k][i] = (byte) (l1 - 81);
 				}
 			} while (true);
 		}
@@ -929,10 +929,10 @@ final class ObjectManager {
 	}
 
 	private int getCorrectPlane(int i, int j, int k) {
-		if ((aByteArrayArrayArray149[j][k][i] & 8) != 0) {
+		if ((tileFlags[j][k][i] & 8) != 0) {
 			return 0;
 		}
-		if (j > 0 && (aByteArrayArrayArray149[1][k][i] & 2) != 0) {
+		if (j > 0 && (tileFlags[1][k][i] & 2) != 0) {
 			return j - 1;
 		} else {
 			return j;
@@ -968,7 +968,7 @@ final class ObjectManager {
 						int k4 = k1 + TileRotation.rotateHeight(l2 & 7, class46.sizeY, j1, class46.sizeX, i3 & 7);
 						if (j4 > 0 && k4 > 0 && j4 < 103 && k4 < 103) {
 							int l4 = j3;
-							if ((aByteArrayArrayArray149[1][j4][k4] & 2) == 2) {
+							if ((tileFlags[1][j4][k4] & 2) == 2) {
 								l4--;
 							}
 							CollisionMap class11 = null;
@@ -1116,7 +1116,7 @@ final class ObjectManager {
 			} else {
 				obj4 = new DynamicObject(j1, i, 1, i2, j2, l1, k2, class46.animationId, true);
 			}
-                        worldController.addBoundaryObject(anIntArray140[i], ((Animable) obj4), i3, j, byte1, i1, null, l2, 0, k1);
+                        worldController.addBoundaryObject(boundaryRotationMasks[i], ((Animable) obj4), i3, j, byte1, i1, null, l2, 0, k1);
 			if (class46.isSolid) {
 				class11.addWall(j, i, i1, k, class46.impenetrable);
 			}
@@ -1146,7 +1146,7 @@ final class ObjectManager {
 			} else {
 				obj5 = new DynamicObject(j1, i, 3, i2, j2, l1, k2, class46.animationId, true);
 			}
-                        worldController.addBoundaryObject(anIntArray140[i], ((Animable) obj5), i3, j, byte1, i1, null, l2, 0, k1);
+                        worldController.addBoundaryObject(boundaryRotationMasks[i], ((Animable) obj5), i3, j, byte1, i1, null, l2, 0, k1);
 			if (class46.isSolid) {
 				class11.addWall(j, i, i1, k, class46.impenetrable);
 			}
@@ -1317,7 +1317,7 @@ final class ObjectManager {
 					int k3 = l1 + j;
 					if (j3 > 0 && k3 > 0 && j3 < 103 && k3 < 103) {
 						int l3 = j2;
-						if ((aByteArrayArrayArray149[1][j3][k3] & 2) == 2) {
+						if ((tileFlags[1][j3][k3] & 2) == 2) {
 							l3--;
 						}
 						CollisionMap class11 = null;
@@ -1338,22 +1338,22 @@ final class ObjectManager {
 	private final int[] tileHueMultiplier;
 	private final int[] tileCount;
 	private final int[][][] tileHeights;
-	private final byte[][][] aByteArrayArrayArray130;
+	private final byte[][][] tileOverlayIds;
 	static int currentPlane;
 	private static int noiseOffsetY = (int) (Math.random() * 33D) - 16;
-	private final byte[][][] aByteArrayArrayArray134;
+	private final byte[][][] tileShadowing;
 	private final int[][][] renderFlags;
-	private final byte[][][] aByteArrayArrayArray136;
+	private final byte[][][] tileOverlayShapes;
 	private static final int deltaX[] = {1, 0, -1, 0};
 	private final int[][] tileShading;
-	private static final int anIntArray140[] = {16, 32, 64, 128};
-	private final byte[][][] aByteArrayArrayArray142;
+	private static final int boundaryRotationMasks[] = {16, 32, 64, 128};
+	private final byte[][][] tileUnderlayIds;
 	private static final int deltaY[] = {0, -1, 0, 1};
 	static int lowestPlane = 99;
 	private final int mapWidth;
 	private final int mapHeight;
-	private final byte[][][] aByteArrayArrayArray148;
-	private final byte[][][] aByteArrayArrayArray149;
+	private final byte[][][] tileOverlayOrientations;
+	private final byte[][][] tileFlags;
 	static boolean lowMem = true;
 	
 	static boolean hideRoofs = ClientSettings.HIDE_ROOFS;
