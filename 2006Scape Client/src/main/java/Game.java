@@ -164,7 +164,7 @@ public class Game extends RSApplet {
 					currentMidiVolume = i;
                                     midiPlayer.adjustVolume(i, 0);
 				}
-			} else if (aByteArray347 != null)
+			} else if (queuedMidiData != null)
 				queuedMidiVolume = i;
 		}
 	}
@@ -248,7 +248,7 @@ public class Game extends RSApplet {
 			if (currentMidiVolume >= 0) {
                     midiPlayer.stopMidi();
 				currentMidiVolume = -1;
-				aByteArray347 = null;
+				queuedMidiData = null;
 				midiFadeCycles = 20;
 				fadeVolume = 0;
 			}
@@ -278,11 +278,11 @@ public class Game extends RSApplet {
 					fadeStep = ((fadeStep - 1 + (i_31_ + 3600)) / fadeStep);
 				}
 				midiLooping = bool;
-				aByteArray347 = is;
+				queuedMidiData = is;
 				queuedMidiVolume = i_30_;
 			} else if (midiFadeCycles != 0) {
 				midiLooping = bool;
-				aByteArray347 = is;
+				queuedMidiData = is;
 				queuedMidiVolume = i_30_;
                        } else
                                playMidiTrack(i_30_, is, bool);
@@ -301,7 +301,7 @@ public class Game extends RSApplet {
 						midiFadeCycles = 1;
 				} else
 					midiFadeCycles = 1;
-				aByteArray347 = is;
+				queuedMidiData = is;
 				queuedMidiVolume = i_2_;
 				midiLooping = bool;
                        } else if (midiFadeCycles == 0)
@@ -309,7 +309,7 @@ public class Game extends RSApplet {
 			else {
 				queuedMidiVolume = i_2_;
 				midiLooping = bool;
-				aByteArray347 = is;
+				queuedMidiData = is;
 			}
 		}
 	}
@@ -320,13 +320,13 @@ public class Game extends RSApplet {
 				if (midiFadeCycles > 0) {
 					midiFadeCycles--;
 					if (midiFadeCycles == 0) {
-                                                if (aByteArray347 == null)
+                                                if (queuedMidiData == null)
                                                         midiPlayer.setVolume(256);
                                                 else {
                                                         midiPlayer.setVolume(queuedMidiVolume);
                                                         currentMidiVolume = queuedMidiVolume;
-                                                        midiPlayer.playMidi(queuedMidiVolume, aByteArray347, 0, midiLooping);
-							aByteArray347 = null;
+                                                        midiPlayer.playMidi(queuedMidiVolume, queuedMidiData, 0, midiLooping);
+							queuedMidiData = null;
 						}
 						fadeVolume = 0;
 					}
@@ -387,7 +387,7 @@ public class Game extends RSApplet {
 		} else if (dialogID != -1) {
 			drawInterface(0, 0, RSInterface.interfaceCache[dialogID], 0);//CHANGED THIS - andrew was 0, 0
 		} else {
-			TextDrawingArea textDrawingArea = aTextDrawingArea_1271;
+			TextDrawingArea textDrawingArea = boldFont;
 			int j = 0;
 			DrawingArea.setDrawingArea(77, 0, 463, 0);
 			for (int k = 0; k < 100; k++) {
@@ -658,7 +658,7 @@ public class Game extends RSApplet {
 			worldController.initToNull();
 			System.gc();
 			for (int i = 0; i < 4; i++) {
-				aClass11Array1230[i].reset();
+				collisionMaps[i].reset();
 			}
 
 			for (int l = 0; l < 4; l++) {
@@ -672,22 +672,22 @@ public class Game extends RSApplet {
 			}
 
 			ObjectManager objectManager = new ObjectManager(tileFlags, tileHeights);
-			int k2 = aByteArrayArray1183.length;
+			int k2 = terrainData.length;
 			stream.createFrame(0);
 			if (!isDynamicRegion) {
 				for (int i3 = 0; i3 < k2; i3++) {
 					int i4 = (regionBaseIds[i3] >> 8) * 64 - baseX;
 					int k5 = (regionBaseIds[i3] & 0xff) * 64 - baseY;
-					byte abyte0[] = aByteArrayArray1183[i3];
+					byte abyte0[] = terrainData[i3];
 					if (abyte0 != null) {
-						objectManager.loadRegion(abyte0, k5, i4, (currentRegionX - 6) * 8, (currentRegionY - 6) * 8, aClass11Array1230);
+						objectManager.loadRegion(abyte0, k5, i4, (currentRegionX - 6) * 8, (currentRegionY - 6) * 8, collisionMaps);
 					}
 				}
 
 				for (int j4 = 0; j4 < k2; j4++) {
 					int l5 = (regionBaseIds[j4] >> 8) * 64 - baseX;
 					int k7 = (regionBaseIds[j4] & 0xff) * 64 - baseY;
-					byte abyte2[] = aByteArrayArray1183[j4];
+					byte abyte2[] = terrainData[j4];
 					if (abyte2 == null && currentRegionY < 800) {
 						objectManager.clearRegion(k7, 64, 64, l5);
 					}
@@ -701,11 +701,11 @@ public class Game extends RSApplet {
 				}
 				stream.createFrame(0);
 				for (int i6 = 0; i6 < k2; i6++) {
-					byte abyte1[] = aByteArrayArray1247[i6];
+					byte abyte1[] = objectMapData[i6];
 					if (abyte1 != null) {
 						int l8 = (regionBaseIds[i6] >> 8) * 64 - baseX;
 						int k9 = (regionBaseIds[i6] & 0xff) * 64 - baseY;
-						objectManager.loadObjects(l8, aClass11Array1230, k9, worldController, abyte1);
+						objectManager.loadObjects(l8, collisionMaps, k9, worldController, abyte1);
 					}
 				}
 
@@ -722,10 +722,10 @@ public class Game extends RSApplet {
 								int l10 = l7 >> 3 & 0x7ff;
 								int j11 = (j10 / 8 << 8) + l10 / 8;
 								for (int l11 = 0; l11 < regionBaseIds.length; l11++) {
-									if (regionBaseIds[l11] != j11 || aByteArrayArray1183[l11] == null) {
+									if (regionBaseIds[l11] != j11 || terrainData[l11] == null) {
 										continue;
 									}
-									objectManager.loadChunk(i9, l9, aClass11Array1230, k4 * 8, (j10 & 7) * 8, aByteArrayArray1183[l11], (l10 & 7) * 8, j3, j6 * 8);
+									objectManager.loadChunk(i9, l9, collisionMaps, k4 * 8, (j10 & 7) * 8, terrainData[l11], (l10 & 7) * 8, j3, j6 * 8);
 									break;
 								}
 
@@ -758,10 +758,10 @@ public class Game extends RSApplet {
 								int i12 = i10 >> 3 & 0x7ff;
 								int j12 = (k11 / 8 << 8) + i12 / 8;
 								for (int k12 = 0; k12 < regionBaseIds.length; k12++) {
-									if (regionBaseIds[k12] != j12 || aByteArrayArray1247[k12] == null) {
+									if (regionBaseIds[k12] != j12 || objectMapData[k12] == null) {
 										continue;
 									}
-									objectManager.loadObjectChunk(aClass11Array1230, worldController, k10, j8 * 8, (i12 & 7) * 8, l6, aByteArrayArray1247[k12], (k11 & 7) * 8, i11, j9 * 8);
+									objectManager.loadObjectChunk(collisionMaps, worldController, k10, j8 * 8, (i12 & 7) * 8, l6, objectMapData[k12], (k11 & 7) * 8, i11, j9 * 8);
 									break;
 								}
 
@@ -774,7 +774,7 @@ public class Game extends RSApplet {
 
 			}
 			stream.createFrame(0);
-                        objectManager.buildLandscape(aClass11Array1230, worldController);
+                        objectManager.buildLandscape(collisionMaps, worldController);
 			if(tabAreaBuffer != null) {
 				tabAreaBuffer.initDrawingArea();
 				Texture.lineOffsets = chatBoxAreaOffsets;
@@ -915,7 +915,7 @@ public class Game extends RSApplet {
 						if (j3 != 22 && j3 != 29 && j3 != 34 && j3 != 36 && j3 != 46 && j3 != 47 && j3 != 48) {
 							byte byte0 = 104;
 							byte byte1 = 104;
-							int ai1[][] = aClass11Array1230[plane].clippingFlags;
+							int ai1[][] = collisionMaps[plane].clippingFlags;
 							for (int i4 = 0; i4 < 10; i4++) {
 								int j4 = (int) (Math.random() * 4D);
 								if (j4 == 0 && k3 > 0 && k3 > k2 - 3 && (ai1[k3 - 1][l3] & 0x1280108) == 0) {
@@ -1502,7 +1502,7 @@ public class Game extends RSApplet {
 									text += formatter.format(item.amount) + " x ";
 								}
 								text += itemDef.name + " (" +  intToShortLetter(totalValue) + " gp)";
-								aTextDrawingArea_1270.textLeft(color, text, spriteDrawY - offset, spriteDrawX - (aTextDrawingArea_1270.getTextWidth(text) / 2));
+								plainFont.textLeft(color, text, spriteDrawY - offset, spriteDrawX - (plainFont.getTextWidth(text) / 2));
 								offset += 10;
 							}
 						}
@@ -1540,12 +1540,12 @@ public class Game extends RSApplet {
 							// Show shops
 							npcScreenPos(((Entity) obj), ((Entity) obj).height + 15);
 							// ItemDef.getSprite(995, 1000, 0xffff00).drawTransparentSprite(spriteDrawX - 16, spriteDrawY - l);
-							aTextDrawingArea_1270.textCenter(0x00ffff, "[SHOP]", spriteDrawY - 5, spriteDrawX);
+							plainFont.textCenter(0x00ffff, "[SHOP]", spriteDrawY - 5, spriteDrawX);
 						}
 					} else if (customSettingVisiblePlayerNames) {
 						// Show player names
 						npcScreenPos(((Entity) obj), ((Entity) obj).height + 15);
-						aTextDrawingArea_1270.textCenter(0xffffff, player.name, spriteDrawY - 5, spriteDrawX);
+						plainFont.textCenter(0xffffff, player.name, spriteDrawY - 5, spriteDrawX);
 						if (player.privelage >= 1) {
 							npcScreenPos(((Entity) obj), ((Entity) obj).height + 15);
 							int icon = Math.max(0, Math.min(1, player.privelage - 1));
@@ -1597,7 +1597,7 @@ public class Game extends RSApplet {
 						textColors[anInt974] = ((Entity) obj).chatColor;
 						textEffects[anInt974] = ((Entity) obj).chatEffect;
 						textCycles[anInt974] = ((Entity) obj).textCycle;
-						aStringArray983[anInt974++] = ((Entity) obj).textSpoken;
+						overheadTexts[anInt974++] = ((Entity) obj).textSpoken;
 						if (chatEffectsState == 0 && ((Entity) obj).chatEffect >= 1 && ((Entity) obj).chatEffect <= 3) {
 							textHeight[anInt974] += 10;
 							textY[anInt974] += 5;
@@ -1642,8 +1642,8 @@ public class Game extends RSApplet {
 								spriteDrawY -= 10;
 							}
 							hitMarks[((Entity) obj).hitMarkTypes[j1]].drawTransparentSprite(spriteDrawX - 12, spriteDrawY - 12);
-							aTextDrawingArea_1270.textCenter(0, String.valueOf(((Entity) obj).hitArray[j1]), spriteDrawY + 4, spriteDrawX);
-							aTextDrawingArea_1270.textCenter(0xffffff, String.valueOf(((Entity) obj).hitArray[j1]), spriteDrawY + 3, spriteDrawX - 1);
+							plainFont.textCenter(0, String.valueOf(((Entity) obj).hitArray[j1]), spriteDrawY + 4, spriteDrawX);
+							plainFont.textCenter(0xffffff, String.valueOf(((Entity) obj).hitArray[j1]), spriteDrawY + 3, spriteDrawX - 1);
 						}
 					}
 				}
@@ -1667,7 +1667,7 @@ public class Game extends RSApplet {
 				}
 				spriteDrawX = textX[k];
 				spriteDrawY = textY[k] = l1;
-				String s = aStringArray983[k];
+				String s = overheadTexts[k];
 				if (chatEffectsState == 0) {
 					int i3 = 0xffff00;
 					if (textColors[k] < 6) {
@@ -1821,25 +1821,25 @@ public class Game extends RSApplet {
 
 						drawButton(customSettingVisiblePlayerNames, centerX - 73, currentY, 146);
 						// buttonLeftDisabled.drawTransparentSprite(centerX - 73, currentY);
-						aTextDrawingArea_1271.textCenterShadow(Color.YELLOW.hashCode(), centerX, "always visible", currentY + textTop, true);
-						aTextDrawingArea_1271.textCenterShadow(Color.YELLOW.hashCode(), centerX, "player names", currentY + textBottom, true);
+						boldFont.textCenterShadow(Color.YELLOW.hashCode(), centerX, "always visible", currentY + textTop, true);
+						boldFont.textCenterShadow(Color.YELLOW.hashCode(), centerX, "player names", currentY + textBottom, true);
 						
 						drawButton(true, centerX - 73, currentY += 40, 146);
-						aTextDrawingArea_1271.textCenterShadow(Color.YELLOW.hashCode(), centerX, "item drops visible", currentY + textTop, true);
-						aTextDrawingArea_1271.textCenterShadow(Color.WHITE.hashCode(), centerX, intToKOrMil(customSettingMinItemValue) + " gp", currentY + textBottom, true);
+						boldFont.textCenterShadow(Color.YELLOW.hashCode(), centerX, "item drops visible", currentY + textTop, true);
+						boldFont.textCenterShadow(Color.WHITE.hashCode(), centerX, intToKOrMil(customSettingMinItemValue) + " gp", currentY + textBottom, true);
 						
 						drawButton(true, centerX - 73, currentY += 40, 146);
-						aTextDrawingArea_1271.textCenterShadow(Color.YELLOW.hashCode(), centerX, "draw distance", currentY + textTop, true);
-						aTextDrawingArea_1271.textCenterShadow(Color.WHITE.hashCode(), centerX, WorldController.drawDistance + " tiles", currentY + textBottom, true);
+						boldFont.textCenterShadow(Color.YELLOW.hashCode(), centerX, "draw distance", currentY + textTop, true);
+						boldFont.textCenterShadow(Color.WHITE.hashCode(), centerX, WorldController.drawDistance + " tiles", currentY + textBottom, true);
 
 						drawButton(customSettingShowExperiencePerHour, centerX - 73, currentY += 40, 146);
-						aTextDrawingArea_1271.textCenterShadow(Color.YELLOW.hashCode(), centerX, "show exp info", currentY + textMiddle, true);
+						boldFont.textCenterShadow(Color.YELLOW.hashCode(), centerX, "show exp info", currentY + textMiddle, true);
 						
 						drawButton(showInfo, centerX - 73, currentY += 40, 146);
-						aTextDrawingArea_1271.textCenterShadow(Color.YELLOW.hashCode(), centerX, "show debug info", currentY + textMiddle, true);
+						boldFont.textCenterShadow(Color.YELLOW.hashCode(), centerX, "show debug info", currentY + textMiddle, true);
 
 						drawButton(customSettingVisualFixes, centerX - 73, currentY += 40, 146);
-						aTextDrawingArea_1271.textCenterShadow(Color.YELLOW.hashCode(), centerX, "visual fixes", currentY + textMiddle, true);
+						boldFont.textCenterShadow(Color.YELLOW.hashCode(), centerX, "visual fixes", currentY + textMiddle, true);
 					} catch (Exception e) { }
 				}
 			}
@@ -2205,7 +2205,7 @@ public class Game extends RSApplet {
 		unlinkMRUNodes();
 		worldController.initToNull();
 		for (int i = 0; i < 4; i++) {
-			aClass11Array1230[i].reset();
+			collisionMaps[i].reset();
 		}
 
 		System.gc();
@@ -2581,7 +2581,7 @@ public class Game extends RSApplet {
 	public void loadTitleScreen() {
 		loginBoxBackground = new Background(titleStreamLoader, "titlebox", 0);
 		loginButtonBackground = new Background(titleStreamLoader, "titlebutton", 0);
-		aBackgroundArray1152s = new Background[12];
+		runeBackgrounds = new Background[12];
 		int j = 0;
 		try {
 			j = Integer.parseInt(getParameter("fl_icon"));
@@ -2589,12 +2589,12 @@ public class Game extends RSApplet {
 		}
 		if (j == 0) {
 			for (int k = 0; k < 12; k++) {
-				aBackgroundArray1152s[k] = new Background(titleStreamLoader, "runes", k);
+				runeBackgrounds[k] = new Background(titleStreamLoader, "runes", k);
 			}
 
 		} else {
 			for (int l = 0; l < 12; l++) {
-				aBackgroundArray1152s[l] = new Background(titleStreamLoader, "runes", 12 + (l & 3));
+				runeBackgrounds[l] = new Background(titleStreamLoader, "runes", 12 + (l & 3));
 			}
 
 		}
@@ -2681,13 +2681,13 @@ public class Game extends RSApplet {
 		if (lowMem && loadingStage == 2 && ObjectManager.currentPlane != plane) {
 			drawTextOnScreen(null, "Loading - please wait.");
 			loadingStage = 1;
-			aLong824 = System.currentTimeMillis();
+			loadingStartTime = System.currentTimeMillis();
 		}
 		if (loadingStage == 1) {
 			int j = checkMapLoadStatus();
-			if (j != 0 && System.currentTimeMillis() - aLong824 > 0x57e40L) {
-				Signlink.reporterror(myUsername + " glcfb " + aLong1215 + "," + j + "," + lowMem + "," + decompressors[0] + "," + onDemandFetcher.getNodeCount() + "," + plane + "," + currentRegionX + "," + currentRegionY);
-				aLong824 = System.currentTimeMillis();
+			if (j != 0 && System.currentTimeMillis() - loadingStartTime > 0x57e40L) {
+				Signlink.reporterror(myUsername + " glcfb " + serverSessionKey + "," + j + "," + lowMem + "," + decompressors[0] + "," + onDemandFetcher.getNodeCount() + "," + plane + "," + currentRegionX + "," + currentRegionY);
+				loadingStartTime = System.currentTimeMillis();
 			}
 		}
 		if (loadingStage == 2 && plane != lastPlane) {
@@ -2697,18 +2697,18 @@ public class Game extends RSApplet {
 	}
 
 	public int checkMapLoadStatus() {
-		for (int i = 0; i < aByteArrayArray1183.length; i++) {
-			if (aByteArrayArray1183[i] == null && terrainArchiveIds[i] != -1) {
+		for (int i = 0; i < terrainData.length; i++) {
+			if (terrainData[i] == null && terrainArchiveIds[i] != -1) {
 				return -1;
 			}
-			if (aByteArrayArray1247[i] == null && objectArchiveIds[i] != -1) {
+			if (objectMapData[i] == null && objectArchiveIds[i] != -1) {
 				return -2;
 			}
 		}
 
 		boolean flag = true;
-		for (int j = 0; j < aByteArrayArray1183.length; j++) {
-			byte abyte0[] = aByteArrayArray1247[j];
+		for (int j = 0; j < terrainData.length; j++) {
+			byte abyte0[] = objectMapData[j];
 			if (abyte0 != null) {
 				int k = (regionBaseIds[j] >> 8) * 64 - baseX;
 				int l = (regionBaseIds[j] & 0xff) * 64 - baseY;
@@ -2748,7 +2748,7 @@ public class Game extends RSApplet {
                                 if (class30_sub2_sub4_sub4.targetIndex < 0) {
                                         int j = -class30_sub2_sub4_sub4.targetIndex - 1;
                                         Player player;
-                                        if (j == unknownInt10) {
+                                        if (j == localPlayerIndex) {
                                                 player = myPlayer;
                                         } else {
                                                 player = playerArray[j];
@@ -2855,9 +2855,9 @@ public class Game extends RSApplet {
                                        fetchMusic = true;
                                }
                                if (onDemandData.type == 3 && loadingStage == 1) {
-                                       for (int i = 0; i < aByteArrayArray1183.length; i++) {
+                                       for (int i = 0; i < terrainData.length; i++) {
                                                if (terrainArchiveIds[i] == onDemandData.id) {
-                                                       aByteArrayArray1183[i] = onDemandData.data;
+                                                       terrainData[i] = onDemandData.data;
                                                        if (onDemandData.data == null) {
                                                                terrainArchiveIds[i] = -1;
                                                        }
@@ -2866,7 +2866,7 @@ public class Game extends RSApplet {
                                                if (objectArchiveIds[i] != onDemandData.id) {
                                                        continue;
                                                }
-                                               aByteArrayArray1247[i] = onDemandData.data;
+                                               objectMapData[i] = onDemandData.data;
                                                if (onDemandData.data == null) {
                                                        objectArchiveIds[i] = -1;
                                                }
@@ -2906,7 +2906,7 @@ public class Game extends RSApplet {
 		if (flameOffset > flameGradient1.length) {
 			flameOffset -= flameGradient1.length;
 			int i2 = (int) (Math.random() * 12D);
-			randomizeBackground(aBackgroundArray1152s[i2]);
+			randomizeBackground(runeBackgrounds[i2]);
 		}
 		for (int j2 = 1; j2 < c - 1; j2++) {
 			for (int i3 = 1; i3 < 127; i3++) {
@@ -3062,11 +3062,11 @@ public class Game extends RSApplet {
 			}
 		}
 		if (super.clickMode3 != 0) {
-                        long l = (super.lastClickTime - aLong1220) / 50L;
+                        long l = (super.lastClickTime - lastMouseClickTime) / 50L;
 			if (l > 4095L) {
 				l = 4095L;
 			}
-                        aLong1220 = super.lastClickTime;
+                        lastMouseClickTime = super.lastClickTime;
 			int k2 = super.saveClickY;
 			if (k2 < 0) {
 				k2 = 0;
@@ -3282,22 +3282,22 @@ public class Game extends RSApplet {
 			minimapRandomTimer = 0;
 			int i2 = (int) (Math.random() * 8D);
 			if ((i2 & 1) == 1) {
-				minimapInt2 += minimapHorizontalSpeed;
+				minimapRotationOffset += minimapHorizontalSpeed;
 			}
 			if ((i2 & 2) == 2) {
-				minimapInt3 += minimapVerticalSpeed;
+				minimapZoom += minimapVerticalSpeed;
 			}
 		}
-		if (minimapInt2 < -60) {
+		if (minimapRotationOffset < -60) {
 			minimapHorizontalSpeed = 2;
 		}
-		if (minimapInt2 > 60) {
+		if (minimapRotationOffset > 60) {
 			minimapHorizontalSpeed = -2;
 		}
-		if (minimapInt3 < -20) {
+		if (minimapZoom < -20) {
 			minimapVerticalSpeed = 1;
 		}
-		if (minimapInt3 > 10) {
+		if (minimapZoom > 10) {
 			minimapVerticalSpeed = -1;
 		}
 		keepAliveCounter++;
@@ -3318,8 +3318,8 @@ public class Game extends RSApplet {
 	}
 
        public void locatePendingSpawns() {
-               PendingSpawn class30_sub1 = (PendingSpawn) aClass19_1179.reverseGetFirst();
-               for (; class30_sub1 != null; class30_sub1 = (PendingSpawn) aClass19_1179.reverseGetNext()) {
+               PendingSpawn class30_sub1 = (PendingSpawn) pendingSpawns.reverseGetFirst();
+               for (; class30_sub1 != null; class30_sub1 = (PendingSpawn) pendingSpawns.reverseGetNext()) {
                        if (class30_sub1.delay == -1) {
                                class30_sub1.spawnDelay = 0;
                                locateSceneObject(class30_sub1);
@@ -3586,12 +3586,12 @@ public class Game extends RSApplet {
 			int j = 151;
 			if (s != null)
 				j -= 7;
-			aTextDrawingArea_1271.textCenter(0, s1, j, 257);
-			aTextDrawingArea_1271.textCenter(0xffffff, s1, j - 1, 256);
+			boldFont.textCenter(0, s1, j, 257);
+			boldFont.textCenter(0xffffff, s1, j - 1, 256);
 			j += 15;
 			if (s != null) {
-				aTextDrawingArea_1271.textCenter(0, s, j, 257);
-				aTextDrawingArea_1271.textCenter(0xffffff, s, j - 1, 256);
+				boldFont.textCenter(0, s, j, 257);
+				boldFont.textCenter(0xffffff, s, j - 1, 256);
 			}
 			tabAreaBuffer.drawGraphics(4, super.graphics, 4);
 			return;
@@ -3606,12 +3606,12 @@ public class Game extends RSApplet {
 			DrawingArea.fillPixels(k - 5 - byte0 / 2, byte0, 0xffffff, 383 - c / 2, c);
 			if (s != null)
 				k -= 7;
-			aTextDrawingArea_1271.textCenter(0, s1, k, 383);
-			aTextDrawingArea_1271.textCenter(0xffffff, s1, k - 1, 382);
+			boldFont.textCenter(0, s1, k, 383);
+			boldFont.textCenter(0xffffff, s1, k - 1, 382);
 			k += 15;
 			if (s != null) {
-				aTextDrawingArea_1271.textCenter(0, s, k, 383);
-				aTextDrawingArea_1271.textCenter(0xffffff, s, k - 1, 382);
+				boldFont.textCenter(0, s, k, 383);
+				boldFont.textCenter(0xffffff, s, k - 1, 382);
 			}
 			super.fullGameScreen.drawGraphics(0, super.graphics, 0);
 		}
@@ -4311,7 +4311,7 @@ public class Game extends RSApplet {
 					messagePromptRaised = true;
 					promptInput = "";
 					friendsListAction = 3;
-					aLong953 = friendsListAsLongs[k3];
+					privateMessageRecipient = friendsListAsLongs[k3];
 					inputPrompt = "Enter message to send to " + friendsList[k3];
 				} else {
 					pushMessage("That player is currently offline.", 0, "");
@@ -4688,23 +4688,23 @@ public class Game extends RSApplet {
 			onDemandFetcher.disable();
 		}
 		onDemandFetcher = null;
-		aStream_834 = null;
+		chatBuffer = null;
 		stream = null;
-		aStream_847 = null;
+		updateBuffer = null;
 		inStream = null;
 		regionBaseIds = null;
-		aByteArrayArray1183 = null;
-		aByteArrayArray1247 = null;
+		terrainData = null;
+		objectMapData = null;
 		terrainArchiveIds = null;
 		objectArchiveIds = null;
 		tileHeights = null;
 		tileFlags = null;
 		worldController = null;
-		aClass11Array1230 = null;
+		collisionMaps = null;
 		pathDirections = null;
 		pathDistances = null;
-		bigX = null;
-		bigY = null;
+		pathTileX = null;
+		pathTileY = null;
 		soundPayload = null;
 		textBackground = null;
 		chatBackground = null;
@@ -4721,7 +4721,7 @@ public class Game extends RSApplet {
 		backVmidIP1 = null;
 		backVmidIP2 = null;
 		backVmidIP3 = null;
-		backVmidIP2_2 = null;
+		midSubscreenBuffer = null;
 		invBack = null;
 		mapBack = null;
 		chatBack = null;
@@ -4756,12 +4756,12 @@ public class Game extends RSApplet {
 		playerArray = null;
 		playerIndices = null;
 		playerUpdateIndices = null;
-		aStreamArray895s = null;
+		playerBuffers = null;
 		removedEntityIndices = null;
 		npcArray = null;
 		npcIndices = null;
 		groundArray = null;
-		aClass19_1179 = null;
+		pendingSpawns = null;
 		projectileList = null;
 		graphicsObjectList = null;
 		menuActionCmd2 = null;
@@ -4911,12 +4911,12 @@ public class Game extends RSApplet {
 						stream.createFrame(126);
 						stream.writeWordBigEndian(0);
 						int k = stream.currentOffset;
-						stream.writeQWord(aLong953);
+						stream.writeQWord(privateMessageRecipient);
                                                 TextInput.encodeChatMessage(promptInput, stream);
 						stream.writeBytes(stream.currentOffset - k);
 						promptInput = TextInput.processText(promptInput);
 						promptInput = Censor.doCensor(promptInput);
-						pushMessage(promptInput, 6, TextClass.fixName(TextClass.nameForLong(aLong953)));
+						pushMessage(promptInput, 6, TextClass.fixName(TextClass.nameForLong(privateMessageRecipient)));
 						if (privateChatMode == 2) {
 							privateChatMode = 1;
 							chatSettingsUpdateNeeded = true;
@@ -5051,7 +5051,7 @@ public class Game extends RSApplet {
 							for (int k1 = 0; k1 < 4; k1++)
 								for (int i2 = 1; i2 < 103; i2++)
 									for (int k2 = 1; k2 < 103; k2++)
-										aClass11Array1230[k1].clippingFlags[i2][k2] = 0;
+										collisionMaps[k1].clippingFlags[i2][k2] = 0;
 						if (inputString.equals("::clientdrop")) {
 							dropClient();
 						}
@@ -5171,9 +5171,9 @@ public class Game extends RSApplet {
 						int j3 = stream.currentOffset;
                                                 stream.writeByteSub(i3);
                                                 stream.writeByteSub(j2);
-						aStream_834.currentOffset = 0;
-                                                TextInput.encodeChatMessage(inputString, aStream_834);
-						stream.writeBytesReverseAdd(0, aStream_834.buffer, aStream_834.currentOffset);
+						chatBuffer.currentOffset = 0;
+                                                TextInput.encodeChatMessage(inputString, chatBuffer);
+						stream.writeBytesReverseAdd(0, chatBuffer.buffer, chatBuffer.currentOffset);
 						stream.writeBytes(stream.currentOffset - j3);
 						inputString = TextInput.processText(inputString);
 						inputString = Censor.doCensor(inputString);
@@ -5533,7 +5533,7 @@ public class Game extends RSApplet {
 		if (splitpublicChat == 0) {
 			return;
 		}
-		TextDrawingArea textDrawingArea = aTextDrawingArea_1271;
+		TextDrawingArea textDrawingArea = boldFont;
 		int i = 0;
 		if (systemUpdateTimer != 0) {
 			i = 1;
@@ -5904,11 +5904,11 @@ public class Game extends RSApplet {
        public void drawMinimapHint(Sprite sprite, int y, int x) {
 		int l = x * x + y * y;
 		if (l > 4225 && l < 90000) {
-			int i1 = cameraYaw + minimapInt2 & 0x7ff;
+			int i1 = cameraYaw + minimapRotationOffset & 0x7ff;
 			int j1 = Model.sineTable[i1];
 			int k1 = Model.cosineTable[i1];
-			j1 = (j1 * 256) / (minimapInt3 + 256);
-			k1 = (k1 * 256) / (minimapInt3 + 256);
+			j1 = (j1 * 256) / (minimapZoom + 256);
+			k1 = (k1 * 256) / (minimapZoom + 256);
 			int l1 = y * j1 + x * k1 >> 16;
 			int i2 = y * k1 - x * j1 >> 16;
 			double d = Math.atan2((double) l1, (double) i2);
@@ -6030,12 +6030,12 @@ public class Game extends RSApplet {
 			if (k == 0) {
 				socketStream.flushInputStream(inStream.buffer, 8);
 				inStream.currentOffset = 0;
-				aLong1215 = inStream.readQWord();
+				serverSessionKey = inStream.readQWord();
 				int ai[] = new int[4];
 				ai[0] = (int) (Math.random() * 99999999D);
 				ai[1] = (int) (Math.random() * 99999999D);
-				ai[2] = (int) (aLong1215 >> 32);
-				ai[3] = (int) aLong1215;
+				ai[2] = (int) (serverSessionKey >> 32);
+				ai[3] = (int) serverSessionKey;
 				stream.currentOffset = 0;
 				stream.writeWordBigEndian(10);
 				stream.writeDWord(ai[0]);
@@ -6046,28 +6046,28 @@ public class Game extends RSApplet {
 				stream.writeString(s);
 				stream.writeString(s1);
 				stream.rsaEncrypt();
-				aStream_847.currentOffset = 0;
+				updateBuffer.currentOffset = 0;
 				if (flag) {
-					aStream_847.writeWordBigEndian(18);
+					updateBuffer.writeWordBigEndian(18);
 				} else {
-					aStream_847.writeWordBigEndian(16);
+					updateBuffer.writeWordBigEndian(16);
 				}
-				aStream_847.writeWordBigEndian(stream.currentOffset + 36 + 1 + 1 + 2);
-				aStream_847.writeWordBigEndian(255);
-				aStream_847.writeWord(1);
-				aStream_847.writeWordBigEndian(lowMem ? 1 : 0);
+				updateBuffer.writeWordBigEndian(stream.currentOffset + 36 + 1 + 1 + 2);
+				updateBuffer.writeWordBigEndian(255);
+				updateBuffer.writeWord(1);
+				updateBuffer.writeWordBigEndian(lowMem ? 1 : 0);
 				for (int l1 = 0; l1 < 9; l1++) {
-					aStream_847.writeDWord(expectedCRCs[l1]);
+					updateBuffer.writeDWord(expectedCRCs[l1]);
 				}
 
-				aStream_847.writeBytes(stream.buffer, stream.currentOffset, 0);
+				updateBuffer.writeBytes(stream.buffer, stream.currentOffset, 0);
 				stream.encryption = new ISAACRandomGen(ai);
 				for (int j2 = 0; j2 < 4; j2++) {
 					ai[j2] += 50;
 				}
 
 				encryption = new ISAACRandomGen(ai);
-				socketStream.queueBytes(aStream_847.currentOffset, aStream_847.buffer);
+				socketStream.queueBytes(updateBuffer.currentOffset, updateBuffer.buffer);
 				k = socketStream.read();
 			}
 			if (k == 1) {
@@ -6081,7 +6081,7 @@ public class Game extends RSApplet {
 			if (k == 2) {
 				myPrivilege = socketStream.read();
 				flagged = socketStream.read() == 1;
-				aLong1220 = 0L;
+				lastMouseClickTime = 0L;
 				mouseIdleTicks = 0;
 				mouseDetection.coordsIndex = 0;
 				super.awtFocus = true;
@@ -6112,8 +6112,8 @@ public class Game extends RSApplet {
 				cameraXOffset = (int) (Math.random() * 100D) - 50;
 				cameraYOffset = (int) (Math.random() * 110D) - 55;
 				cameraYawOffset = (int) (Math.random() * 80D) - 40;
-				minimapInt2 = (int) (Math.random() * 120D) - 60;
-				minimapInt3 = (int) (Math.random() * 30D) - 20;
+				minimapRotationOffset = (int) (Math.random() * 120D) - 60;
+				minimapZoom = (int) (Math.random() * 30D) - 20;
 				cameraYaw = (int) (Math.random() * 20D) - 10 & 0x7ff;
 				minimapState = 0;
 				lastPlane = -1;
@@ -6123,7 +6123,7 @@ public class Game extends RSApplet {
 				npcCount = 0;
 				for (int i2 = 0; i2 < maxPlayers; i2++) {
 					playerArray[i2] = null;
-					aStreamArray895s[i2] = null;
+					playerBuffers[i2] = null;
 				}
 
 				for (int k2 = 0; k2 < 16384; k2++) {
@@ -6141,7 +6141,7 @@ public class Game extends RSApplet {
 					}
 				}
 
-				aClass19_1179 = new NodeList();
+				pendingSpawns = new NodeList();
 				interfaceMode = 0;
 				friendsCount = 0;
 				dialogID = -1;
@@ -6255,7 +6255,7 @@ public class Game extends RSApplet {
 				systemUpdateTimer = 0;
 				menuActionRow = 0;
 				menuOpen = false;
-				aLong824 = System.currentTimeMillis();
+				loadingStartTime = System.currentTimeMillis();
 				return;
 			}
 			if (k == 16) {
@@ -6360,86 +6360,86 @@ public class Game extends RSApplet {
 		pathDistances[j2][j1] = 0;
 		int l3 = 0;
 		int i4 = 0;
-		bigX[l3] = j2;
-		bigY[l3++] = j1;
+		pathTileX[l3] = j2;
+		pathTileY[l3++] = j1;
 		boolean flag1 = false;
-		int j4 = bigX.length;
-		int ai[][] = aClass11Array1230[plane].clippingFlags;
+		int j4 = pathTileX.length;
+		int ai[][] = collisionMaps[plane].clippingFlags;
 		while (i4 != l3) {
-			j3 = bigX[i4];
-			k3 = bigY[i4];
+			j3 = pathTileX[i4];
+			k3 = pathTileY[i4];
 			i4 = (i4 + 1) % j4;
 			if (j3 == k2 && k3 == i2) {
 				flag1 = true;
 				break;
 			}
 			if (i1 != 0) {
-				if ((i1 < 5 || i1 == 10) && aClass11Array1230[plane].canReachWall(k2, j3, k3, j, i1 - 1, i2)) {
+				if ((i1 < 5 || i1 == 10) && collisionMaps[plane].canReachWall(k2, j3, k3, j, i1 - 1, i2)) {
 					flag1 = true;
 					break;
 				}
-				if (i1 < 10 && aClass11Array1230[plane].canReachObject(k2, i2, k3, i1 - 1, j, j3)) {
+				if (i1 < 10 && collisionMaps[plane].canReachObject(k2, i2, k3, i1 - 1, j, j3)) {
 					flag1 = true;
 					break;
 				}
 			}
-			if (k1 != 0 && k != 0 && aClass11Array1230[plane].canReachArea(i2, k2, j3, k, l1, k1, k3)) {
+			if (k1 != 0 && k != 0 && collisionMaps[plane].canReachArea(i2, k2, j3, k, l1, k1, k3)) {
 				flag1 = true;
 				break;
 			}
 			int l4 = pathDistances[j3][k3] + 1;
 			if (j3 > 0 && pathDirections[j3 - 1][k3] == 0 && (ai[j3 - 1][k3] & 0x1280108) == 0) {
-				bigX[l3] = j3 - 1;
-				bigY[l3] = k3;
+				pathTileX[l3] = j3 - 1;
+				pathTileY[l3] = k3;
 				l3 = (l3 + 1) % j4;
 				pathDirections[j3 - 1][k3] = 2;
 				pathDistances[j3 - 1][k3] = l4;
 			}
 			if (j3 < byte0 - 1 && pathDirections[j3 + 1][k3] == 0 && (ai[j3 + 1][k3] & 0x1280180) == 0) {
-				bigX[l3] = j3 + 1;
-				bigY[l3] = k3;
+				pathTileX[l3] = j3 + 1;
+				pathTileY[l3] = k3;
 				l3 = (l3 + 1) % j4;
 				pathDirections[j3 + 1][k3] = 8;
 				pathDistances[j3 + 1][k3] = l4;
 			}
 			if (k3 > 0 && pathDirections[j3][k3 - 1] == 0 && (ai[j3][k3 - 1] & 0x1280102) == 0) {
-				bigX[l3] = j3;
-				bigY[l3] = k3 - 1;
+				pathTileX[l3] = j3;
+				pathTileY[l3] = k3 - 1;
 				l3 = (l3 + 1) % j4;
 				pathDirections[j3][k3 - 1] = 1;
 				pathDistances[j3][k3 - 1] = l4;
 			}
 			if (k3 < byte1 - 1 && pathDirections[j3][k3 + 1] == 0 && (ai[j3][k3 + 1] & 0x1280120) == 0) {
-				bigX[l3] = j3;
-				bigY[l3] = k3 + 1;
+				pathTileX[l3] = j3;
+				pathTileY[l3] = k3 + 1;
 				l3 = (l3 + 1) % j4;
 				pathDirections[j3][k3 + 1] = 4;
 				pathDistances[j3][k3 + 1] = l4;
 			}
 			if (j3 > 0 && k3 > 0 && pathDirections[j3 - 1][k3 - 1] == 0 && (ai[j3 - 1][k3 - 1] & 0x128010e) == 0 && (ai[j3 - 1][k3] & 0x1280108) == 0 && (ai[j3][k3 - 1] & 0x1280102) == 0) {
-				bigX[l3] = j3 - 1;
-				bigY[l3] = k3 - 1;
+				pathTileX[l3] = j3 - 1;
+				pathTileY[l3] = k3 - 1;
 				l3 = (l3 + 1) % j4;
 				pathDirections[j3 - 1][k3 - 1] = 3;
 				pathDistances[j3 - 1][k3 - 1] = l4;
 			}
 			if (j3 < byte0 - 1 && k3 > 0 && pathDirections[j3 + 1][k3 - 1] == 0 && (ai[j3 + 1][k3 - 1] & 0x1280183) == 0 && (ai[j3 + 1][k3] & 0x1280180) == 0 && (ai[j3][k3 - 1] & 0x1280102) == 0) {
-				bigX[l3] = j3 + 1;
-				bigY[l3] = k3 - 1;
+				pathTileX[l3] = j3 + 1;
+				pathTileY[l3] = k3 - 1;
 				l3 = (l3 + 1) % j4;
 				pathDirections[j3 + 1][k3 - 1] = 9;
 				pathDistances[j3 + 1][k3 - 1] = l4;
 			}
 			if (j3 > 0 && k3 < byte1 - 1 && pathDirections[j3 - 1][k3 + 1] == 0 && (ai[j3 - 1][k3 + 1] & 0x1280138) == 0 && (ai[j3 - 1][k3] & 0x1280108) == 0 && (ai[j3][k3 + 1] & 0x1280120) == 0) {
-				bigX[l3] = j3 - 1;
-				bigY[l3] = k3 + 1;
+				pathTileX[l3] = j3 - 1;
+				pathTileY[l3] = k3 + 1;
 				l3 = (l3 + 1) % j4;
 				pathDirections[j3 - 1][k3 + 1] = 6;
 				pathDistances[j3 - 1][k3 + 1] = l4;
 			}
 			if (j3 < byte0 - 1 && k3 < byte1 - 1 && pathDirections[j3 + 1][k3 + 1] == 0 && (ai[j3 + 1][k3 + 1] & 0x12801e0) == 0 && (ai[j3 + 1][k3] & 0x1280180) == 0 && (ai[j3][k3 + 1] & 0x1280120) == 0) {
-				bigX[l3] = j3 + 1;
-				bigY[l3] = k3 + 1;
+				pathTileX[l3] = j3 + 1;
+				pathTileY[l3] = k3 + 1;
 				l3 = (l3 + 1) % j4;
 				pathDirections[j3 + 1][k3 + 1] = 12;
 				pathDistances[j3 + 1][k3 + 1] = l4;
@@ -6474,14 +6474,14 @@ public class Game extends RSApplet {
 			}
 		}
 		i4 = 0;
-		bigX[i4] = j3;
-		bigY[i4++] = k3;
+		pathTileX[i4] = j3;
+		pathTileY[i4++] = k3;
 		int l5;
 		for (int j5 = l5 = pathDirections[j3][k3]; j3 != j2 || k3 != j1; j5 = pathDirections[j3][k3]) {
 			if (j5 != l5) {
 				l5 = j5;
-				bigX[i4] = j3;
-				bigY[i4++] = k3;
+				pathTileX[i4] = j3;
+				pathTileY[i4++] = k3;
 			}
 			if ((j5 & 2) != 0) {
 				j3++;
@@ -6502,8 +6502,8 @@ public class Game extends RSApplet {
 				k4 = 25;
 			}
 			i4--;
-			int k6 = bigX[i4];
-			int i7 = bigY[i4];
+			int k6 = pathTileX[i4];
+			int i7 = pathTileY[i4];
                    walkPacketCounter += k4;
                    if (walkPacketCounter >= 92) {
 				stream.createFrame(36);
@@ -6523,12 +6523,12 @@ public class Game extends RSApplet {
 				stream.writeWordBigEndian(k4 + k4 + 3);
 			}
 			stream.writeShortLEA(k6 + baseX);
-			destX = bigX[0];
-			destY = bigY[0];
+			destX = pathTileX[0];
+			destY = pathTileY[0];
 			for (int j7 = 1; j7 < k4; j7++) {
 				i4--;
-				stream.writeWordBigEndian(bigX[i4] - k6);
-				stream.writeWordBigEndian(bigY[i4] - i7);
+				stream.writeWordBigEndian(pathTileX[i4] - k6);
+				stream.writeWordBigEndian(pathTileY[i4] - i7);
 			}
 
 			stream.writeShortLEDup(i7 + baseY);
@@ -6867,9 +6867,9 @@ public class Game extends RSApplet {
 				try {
                                 Stream stream = Sounds.createSoundStream(soundType[index], sound[index]);
 					new SoundPlayer((InputStream) new ByteArrayInputStream(stream.buffer, 0, stream.currentOffset), soundVolume[index], soundDelay[index]);
-					if (System.currentTimeMillis() + (long) (stream.currentOffset / 22) > aLong1172 + (long) (soundBufferOffset / 22)) {
+					if (System.currentTimeMillis() + (long) (stream.currentOffset / 22) > lastSoundUpdate + (long) (soundBufferOffset / 22)) {
 						soundBufferOffset = stream.currentOffset;
-						aLong1172 = System.currentTimeMillis();
+						lastSoundUpdate = System.currentTimeMillis();
 					}
 				} catch (Exception exception) {
 					exception.printStackTrace();
@@ -7001,8 +7001,8 @@ public class Game extends RSApplet {
 		try {
 			connectServer();
 			titleStreamLoader = streamLoaderForName(1, "title screen", "title", expectedCRCs[1], 25);
-			aTextDrawingArea_1270 = new TextDrawingArea(false, "p11_full", titleStreamLoader);
-			aTextDrawingArea_1271 = new TextDrawingArea(false, "p12_full", titleStreamLoader);
+			plainFont = new TextDrawingArea(false, "p11_full", titleStreamLoader);
+			boldFont = new TextDrawingArea(false, "p12_full", titleStreamLoader);
 			chatTextDrawingArea = new TextDrawingArea(false, "b12_full", titleStreamLoader);
 			TextDrawingArea aTextDrawingArea_1273 = new TextDrawingArea(true, "q8_full", titleStreamLoader);
 			drawLogo();
@@ -7019,7 +7019,7 @@ public class Game extends RSApplet {
 			tileHeights = new int[4][105][105];
 			worldController = new WorldController(tileHeights);
 			for (int j = 0; j < 4; j++) {
-				aClass11Array1230[j] = new CollisionMap();
+				collisionMaps[j] = new CollisionMap();
 			}
 
                    minimapImage = new Sprite(512, 512);
@@ -7260,7 +7260,7 @@ public class Game extends RSApplet {
 			backVmidIP3 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
 			sprite.drawSprite(0, 0);
 			sprite = new Sprite(streamLoader_2, "backhmid2", 0);
-			backVmidIP2_2 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
+			midSubscreenBuffer = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
 			sprite.drawSprite(0, 0);
 			int i5 = (int) (Math.random() * 21D) - 10;
 			int j5 = (int) (Math.random() * 21D) - 10;
@@ -7297,7 +7297,7 @@ public class Game extends RSApplet {
 			Sounds.unpack(stream);
 			// }
 			drawLoadingText(95, "Unpacking interfaces");
-			TextDrawingArea aclass30_sub2_sub1_sub4s[] = {aTextDrawingArea_1270, aTextDrawingArea_1271, chatTextDrawingArea, aTextDrawingArea_1273};
+			TextDrawingArea aclass30_sub2_sub1_sub4s[] = {plainFont, boldFont, chatTextDrawingArea, aTextDrawingArea_1273};
 			RSInterface.unpack(streamLoader_1, aclass30_sub2_sub1_sub4s, streamLoader_2);
 			drawLoadingText(100, "Preparing game engine");
 			for (int j6 = 0; j6 < 33; j6++) {
@@ -7382,8 +7382,8 @@ public class Game extends RSApplet {
 			}
 			if (playerArray[j] == null) {
 				playerArray[j] = new Player();
-				if (aStreamArray895s[j] != null) {
-					playerArray[j].updatePlayer(aStreamArray895s[j]);
+				if (playerBuffers[j] != null) {
+					playerArray[j].updatePlayer(playerBuffers[j]);
 				}
 			}
 			playerIndices[playerCount++] = j;
@@ -7417,11 +7417,11 @@ public class Game extends RSApplet {
 			if (i >= 0 && j >= 0 && i < 146 && j < 151) {
 				i -= 73;
 				j -= 75;
-				int k = cameraYaw + minimapInt2 & 0x7ff;
+				int k = cameraYaw + minimapRotationOffset & 0x7ff;
 				int i1 = Texture.sineTable[k];
 				int j1 = Texture.cosineTable[k];
-				i1 = i1 * (minimapInt3 + 256) >> 8;
-				j1 = j1 * (minimapInt3 + 256) >> 8;
+				i1 = i1 * (minimapZoom + 256) >> 8;
+				j1 = j1 * (minimapZoom + 256) >> 8;
 				int k1 = j * i1 + i * j1 >> 11;
 				int l1 = j * j1 - i * i1 >> 11;
 				int i2 = myPlayer.x + k1 >> 7;
@@ -7432,8 +7432,8 @@ public class Game extends RSApplet {
 					stream.writeWordBigEndian(j);
 					stream.writeWord(cameraYaw);
 					stream.writeWordBigEndian(57);
-					stream.writeWordBigEndian(minimapInt2);
-					stream.writeWordBigEndian(minimapInt3);
+					stream.writeWordBigEndian(minimapRotationOffset);
+					stream.writeWordBigEndian(minimapZoom);
 					stream.writeWordBigEndian(89);
 					stream.writeWord(myPlayer.x);
 					stream.writeWord(myPlayer.y);
@@ -7760,7 +7760,7 @@ public class Game extends RSApplet {
 		}
 		if (entity.interactingEntity >= 32768) {
 			int j = entity.interactingEntity - 32768;
-			if (j == unknownInt10) {
+			if (j == localPlayerIndex) {
 				j = myPlayerIndex;
 			}
 			Player player = playerArray[j];
@@ -7907,7 +7907,7 @@ public class Game extends RSApplet {
 			backVmidIP1.drawGraphics(4, super.graphics, 516);
 			backVmidIP2.drawGraphics(205, super.graphics, 516);
 			backVmidIP3.drawGraphics(357, super.graphics, 496);
-			backVmidIP2_2.drawGraphics(338, super.graphics, 0);
+			midSubscreenBuffer.drawGraphics(338, super.graphics, 0);
 			needDrawTabArea = true;
 			inputTaken = true;
 			tabAreaAltered = true;
@@ -8100,40 +8100,40 @@ public class Game extends RSApplet {
 			chatSettingsUpdateNeeded = false;
 			tabAreaIconBuffer.initDrawingArea();
 			backBase1.draw(0, 0);
-			aTextDrawingArea_1271.textCenterShadow(0xffffff, 55, "Public chat", 28, true);
+			boldFont.textCenterShadow(0xffffff, 55, "Public chat", 28, true);
 			if (publicChatMode == 0) {
-				aTextDrawingArea_1271.textCenterShadow(0x00ff00, 55, "On", 41, true);
+				boldFont.textCenterShadow(0x00ff00, 55, "On", 41, true);
 			}
 			if (publicChatMode == 1) {
-				aTextDrawingArea_1271.textCenterShadow(0xffff00, 55, "Friends", 41, true);
+				boldFont.textCenterShadow(0xffff00, 55, "Friends", 41, true);
 			}
 			if (publicChatMode == 2) {
-				aTextDrawingArea_1271.textCenterShadow(0xff0000, 55, "Off", 41, true);
+				boldFont.textCenterShadow(0xff0000, 55, "Off", 41, true);
 			}
 			if (publicChatMode == 3) {
-				aTextDrawingArea_1271.textCenterShadow(0x00ffff, 55, "Hide", 41, true);
+				boldFont.textCenterShadow(0x00ffff, 55, "Hide", 41, true);
 			}
-			aTextDrawingArea_1271.textCenterShadow(0xffffff, 184, "Private chat", 28, true);
+			boldFont.textCenterShadow(0xffffff, 184, "Private chat", 28, true);
 			if (privateChatMode == 0) {
-				aTextDrawingArea_1271.textCenterShadow(0x00ff00, 184, "On", 41, true);
+				boldFont.textCenterShadow(0x00ff00, 184, "On", 41, true);
 			}
 			if (privateChatMode == 1) {
-				aTextDrawingArea_1271.textCenterShadow(0xffff00, 184, "Friends", 41, true);
+				boldFont.textCenterShadow(0xffff00, 184, "Friends", 41, true);
 			}
 			if (privateChatMode == 2) {
-				aTextDrawingArea_1271.textCenterShadow(0xff0000, 184, "Off", 41, true);
+				boldFont.textCenterShadow(0xff0000, 184, "Off", 41, true);
 			}
-			aTextDrawingArea_1271.textCenterShadow(0xffffff, 324, "Trade/compete", 28, true);
+			boldFont.textCenterShadow(0xffffff, 324, "Trade/compete", 28, true);
 			if (tradeMode == 0) {
-				aTextDrawingArea_1271.textCenterShadow(0x00ff00, 324, "On", 41, true);
+				boldFont.textCenterShadow(0x00ff00, 324, "On", 41, true);
 			}
 			if (tradeMode == 1) {
-				aTextDrawingArea_1271.textCenterShadow(0xffff00, 324, "Friends", 41, true);
+				boldFont.textCenterShadow(0xffff00, 324, "Friends", 41, true);
 			}
 			if (tradeMode == 2) {
-				aTextDrawingArea_1271.textCenterShadow(0xff0000, 324, "Off", 41, true);
+				boldFont.textCenterShadow(0xff0000, 324, "Off", 41, true);
 			}
-			aTextDrawingArea_1271.textCenterShadow(0xffffff, 458, "Report abuse", 33, true);
+			boldFont.textCenterShadow(0xffffff, 458, "Report abuse", 33, true);
 			tabAreaIconBuffer.drawGraphics(453, super.graphics, 0);
 			tabAreaBuffer.initDrawingArea();
 			Texture.lineOffsets = chatBoxAreaOffsets;
@@ -8290,8 +8290,8 @@ public class Game extends RSApplet {
 										if (class30_sub2_sub1_sub1_2.trimWidth == 33 || component.invStackSizes[i3] != 1) {
 											// Draw item amounts
 											int k10 = component.invStackSizes[i3];
-											aTextDrawingArea_1270.textLeft(0, intToKOrMil(k10), j6 + 10 + j7, k5 + 1 + k6); // shadow
-											aTextDrawingArea_1270.textLeft(0xffff00, intToKOrMil(k10), j6 + 9 + j7, k5 + k6); // top layer
+											plainFont.textLeft(0, intToKOrMil(k10), j6 + 10 + j7, k5 + 1 + k6); // shadow
+											plainFont.textLeft(0xffff00, intToKOrMil(k10), j6 + 9 + j7, k5 + k6); // top layer
 										}
 									}
 								}
@@ -8619,10 +8619,10 @@ public class Game extends RSApplet {
 				}
 				if (!flag && restrictedArea == 0) {
 					try {
-						aStream_834.currentOffset = 0;
-						stream.readBytesReverse(j3, 0, aStream_834.buffer);
-						aStream_834.currentOffset = 0;
-                                                String s = TextInput.decodeChatMessage(j3, aStream_834);
+						chatBuffer.currentOffset = 0;
+						stream.readBytesReverse(j3, 0, chatBuffer.buffer);
+						chatBuffer.currentOffset = 0;
+                                                String s = TextInput.decodeChatMessage(j3, chatBuffer);
 						s = Censor.doCensor(s);
 						player.textSpoken = s;
 						player.chatColor = i1 >> 8;
@@ -8657,7 +8657,7 @@ public class Game extends RSApplet {
 			byte abyte0[] = new byte[j1];
 			Stream stream_1 = new Stream(abyte0);
 			stream.readBytes(j1, 0, abyte0);
-			aStreamArray895s[j] = stream_1;
+			playerBuffers[j] = stream_1;
 			player.updatePlayer(stream_1);
 		}
 		if ((i & 2) != 0) {
@@ -8973,7 +8973,7 @@ public class Game extends RSApplet {
 
 	public void processPendingSpawns() {
 		if (loadingStage == 2) {
-			for (PendingSpawn class30_sub1 = (PendingSpawn) aClass19_1179.reverseGetFirst(); class30_sub1 != null; class30_sub1 = (PendingSpawn) aClass19_1179.reverseGetNext()) {
+			for (PendingSpawn class30_sub1 = (PendingSpawn) pendingSpawns.reverseGetFirst(); class30_sub1 != null; class30_sub1 = (PendingSpawn) pendingSpawns.reverseGetNext()) {
 				if (class30_sub1.delay > 0) {
 					class30_sub1.delay--;
 				}
@@ -9149,7 +9149,7 @@ public class Game extends RSApplet {
 		}
 		loginBoxBackground = null;
 		loginButtonBackground = null;
-		aBackgroundArray1152s = null;
+		runeBackgrounds = null;
 		flameBuffer = null;
 		flamePaletteRed = null;
 		flamePaletteGreen = null;
@@ -9495,10 +9495,10 @@ public class Game extends RSApplet {
 			Texture.lineOffsets = chatBoxAreaOffsets;
 			return;
 		}
-		int i = cameraYaw + minimapInt2 & 0x7ff;
+		int i = cameraYaw + minimapRotationOffset & 0x7ff;
 		int j = 48 + myPlayer.x / 32;
 		int l2 = 464 - myPlayer.y / 32;
-           minimapImage.drawTransformed(151, i, minimapLineLengths, 256 + minimapInt3, minimapLineOffset, l2, 5, 25, 146, j);
+           minimapImage.drawTransformed(151, i, minimapLineLengths, 256 + minimapZoom, minimapLineOffset, l2, 5, 25, 146, j);
 		compass.drawTransformed(33, cameraYaw, mapBackWidths, 256, mapBackLeft, 25, 0, 0, 33, 25);
 		// Minimap icons (shops, quest etc)
 		for (int j5 = 0; j5 < minimapIconCount; j5++) {
@@ -9655,7 +9655,7 @@ public class Game extends RSApplet {
 				if ((k == 3 || k == 7) && (k == 7 || privateChatMode == 0 || privateChatMode == 1 && isFriendOrSelf(s))) {
 					int l = 329 - i * 13;
 					if (super.mouseX > 4 && super.mouseY - 4 > l - 10 && super.mouseY - 4 <= l + 3) {
-						int i1 = aTextDrawingArea_1271.getTextWidth("From:  " + s + chatMessages[j]) + 25;
+						int i1 = boldFont.getTextWidth("From:  " + s + chatMessages[j]) + 25;
 						if (i1 > 450) {
 							i1 = 450;
 						}
@@ -9690,7 +9690,7 @@ public class Game extends RSApplet {
 
        public void queuePendingSpawn(int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2) {
 		PendingSpawn class30_sub1 = null;
-		for (PendingSpawn class30_sub1_1 = (PendingSpawn) aClass19_1179.reverseGetFirst(); class30_sub1_1 != null; class30_sub1_1 = (PendingSpawn) aClass19_1179.reverseGetNext()) {
+		for (PendingSpawn class30_sub1_1 = (PendingSpawn) pendingSpawns.reverseGetFirst(); class30_sub1_1 != null; class30_sub1_1 = (PendingSpawn) pendingSpawns.reverseGetNext()) {
 			if (class30_sub1_1.plane != l1 || class30_sub1_1.x != i2 || class30_sub1_1.y != j1 || class30_sub1_1.category != i1) {
 				continue;
 			}
@@ -9705,7 +9705,7 @@ public class Game extends RSApplet {
 			class30_sub1.x = i2;
 			class30_sub1.y = j1;
 			locateSceneObject(class30_sub1);
-			aClass19_1179.insertHead(class30_sub1);
+			pendingSpawns.insertHead(class30_sub1);
 		}
 		class30_sub1.id = k;
 		class30_sub1.type = k1;
@@ -9747,17 +9747,17 @@ public class Game extends RSApplet {
 		// return signlink.openurl(s);
 		// else
 		// return new DataInputStream((new URL(getCodeBase(), s)).openStream());
-		if (aSocket832 != null) {
+		if (jaggrabSocket != null) {
 			try {
-				aSocket832.close();
+				jaggrabSocket.close();
 			} catch (Exception _ex) {
 			}
-			aSocket832 = null;
+			jaggrabSocket = null;
 		}
-		aSocket832 = openSocket(43595);
-		aSocket832.setSoTimeout(10000);
-		java.io.InputStream inputstream = aSocket832.getInputStream();
-		OutputStream outputstream = aSocket832.getOutputStream();
+		jaggrabSocket = openSocket(43595);
+		jaggrabSocket.setSoTimeout(10000);
+		java.io.InputStream inputstream = jaggrabSocket.getInputStream();
+		OutputStream outputstream = jaggrabSocket.getOutputStream();
 		outputstream.write(("JAGGRAB /" + s + "\n\n").getBytes());
 		return new DataInputStream(inputstream);
 	}
@@ -9907,7 +9907,7 @@ public class Game extends RSApplet {
 		char c1 = '\310';
 		if (loginScreenState == 0) {
 			int i = c1 / 2 + 80;
-			aTextDrawingArea_1270.textCenterShadow(0x75a9a9, c / 2, onDemandFetcher.statusString, i, true);
+			plainFont.textCenterShadow(0x75a9a9, c / 2, onDemandFetcher.statusString, i, true);
 			i = c1 / 2 - 20;
 			chatTextDrawingArea.textCenterShadow(0xffff00, c / 2, "Welcome to " + ClientSettings.SERVER_NAME + "", i, true);
 			i += 30;
@@ -10052,7 +10052,7 @@ public class Game extends RSApplet {
 			int j9 = mapEventY + (l3 & 7);
 			int i12 = stream.readShortAdd();
 			int j14 = stream.readUnsignedWord();
-			if (k6 >= 0 && j9 >= 0 && k6 < 104 && j9 < 104 && i12 != unknownInt10) {
+			if (k6 >= 0 && j9 >= 0 && k6 < 104 && j9 < 104 && i12 != localPlayerIndex) {
 				Item class30_sub2_sub4_sub2_2 = new Item();
 				class30_sub2_sub4_sub2_2.ID = i1;
 				class30_sub2_sub4_sub2_2.amount = j14;
@@ -10155,7 +10155,7 @@ public class Game extends RSApplet {
 			int l21 = stream.readUnsignedWord();
 			byte byte3 = stream.readByteNeg();
 			Player player;
-			if (i10 == unknownInt10) {
+			if (i10 == localPlayerIndex) {
 				player = myPlayer;
 			} else {
 				player = playerArray[i10];
@@ -10451,15 +10451,15 @@ public class Game extends RSApplet {
 	}
 
 	public void markMinimap(Sprite sprite, int i, int j) {
-		int k = cameraYaw + minimapInt2 & 0x7ff;
+		int k = cameraYaw + minimapRotationOffset & 0x7ff;
 		int l = i * i + j * j;
 		if (l > 6400) {
 			return;
 		}
 		int i1 = Model.sineTable[k];
 		int j1 = Model.cosineTable[k];
-		i1 = i1 * 256 / (minimapInt3 + 256);
-		j1 = j1 * 256 / (minimapInt3 + 256);
+		i1 = i1 * 256 / (minimapZoom + 256);
+		j1 = j1 * 256 / (minimapZoom + 256);
 		int k1 = j * i1 + i * j1 >> 16;
 		int l1 = j * j1 - i * i1 >> 16;
 		if (l > 2500) {
@@ -10496,7 +10496,7 @@ public class Game extends RSApplet {
                                         worldController.clearBoundaryObject(i1, j, i, (byte) -119);
 					ObjectDef class46 = ObjectDef.forID(j2);
 					if (class46.isSolid) {
-						aClass11Array1230[j].removeWall(l2, k2, class46.impenetrable, i1, i);
+						collisionMaps[j].removeWall(l2, k2, class46.impenetrable, i1, i);
 					}
 				}
 				if (j1 == 1) {
@@ -10509,14 +10509,14 @@ public class Game extends RSApplet {
 						return;
 					}
 					if (class46_1.isSolid) {
-						aClass11Array1230[j].removeObject(l2, class46_1.sizeX, i1, i, class46_1.sizeY, class46_1.impenetrable);
+						collisionMaps[j].removeObject(l2, class46_1.sizeX, i1, i, class46_1.sizeY, class46_1.impenetrable);
 					}
 				}
 				if (j1 == 3) {
                                         worldController.clearTileDecoration(j, i, i1);
 					ObjectDef class46_2 = ObjectDef.forID(j2);
 					if (class46_2.isSolid && class46_2.interactive) {
-						aClass11Array1230[j].unblockTile(i, i1);
+						collisionMaps[j].unblockTile(i, i1);
 					}
 				}
 			}
@@ -10525,7 +10525,7 @@ public class Game extends RSApplet {
 				if (j3 < 3 && (tileFlags[1][i1][i] & 2) == 2) {
 					j3++;
 				}
-				ObjectManager.addObject(worldController, k, i, l, j3, aClass11Array1230[j], tileHeights, i1, k1, j);
+				ObjectManager.addObject(worldController, k, i, l, j3, collisionMaps[j], tileHeights, i1, k1, j);
 			}
 		}
 	}
@@ -10681,7 +10681,7 @@ public class Game extends RSApplet {
 
 				}
 
-				for (PendingSpawn class30_sub1 = (PendingSpawn) aClass19_1179.reverseGetFirst(); class30_sub1 != null; class30_sub1 = (PendingSpawn) aClass19_1179.reverseGetNext()) {
+				for (PendingSpawn class30_sub1 = (PendingSpawn) pendingSpawns.reverseGetFirst(); class30_sub1 != null; class30_sub1 = (PendingSpawn) pendingSpawns.reverseGetNext()) {
 					if (class30_sub1.x >= mapEventX && class30_sub1.x < mapEventX + 8 && class30_sub1.y >= mapEventY && class30_sub1.y < mapEventY + 8 && class30_sub1.plane == plane) {
 						class30_sub1.delay = 0;
 					}
@@ -10864,7 +10864,7 @@ public class Game extends RSApplet {
 					forceMapReload = true;
 				}
 				loadingStage = 1;
-				aLong824 = System.currentTimeMillis();
+				loadingStartTime = System.currentTimeMillis();
 				drawTextOnScreen(null, "Loading - please wait.");
 				if (pktType == 73) {
 					int k16 = 0;
@@ -10875,8 +10875,8 @@ public class Game extends RSApplet {
 
 					}
 
-					aByteArrayArray1183 = new byte[k16][];
-					aByteArrayArray1247 = new byte[k16][];
+					terrainData = new byte[k16][];
+					objectMapData = new byte[k16][];
 					regionBaseIds = new int[k16];
 					terrainArchiveIds = new int[k16];
 					objectArchiveIds = new int[k16];
@@ -10933,8 +10933,8 @@ public class Game extends RSApplet {
 
 					}
 
-					aByteArrayArray1183 = new byte[l16][];
-					aByteArrayArray1247 = new byte[l16][];
+					terrainData = new byte[l16][];
+					objectMapData = new byte[l16][];
 					regionBaseIds = new int[l16];
 					terrainArchiveIds = new int[l16];
 					objectArchiveIds = new int[l16];
@@ -11016,7 +11016,7 @@ public class Game extends RSApplet {
 
 				}
 
-				for (PendingSpawn class30_sub1_1 = (PendingSpawn) aClass19_1179.reverseGetFirst(); class30_sub1_1 != null; class30_sub1_1 = (PendingSpawn) aClass19_1179.reverseGetNext()) {
+				for (PendingSpawn class30_sub1_1 = (PendingSpawn) pendingSpawns.reverseGetFirst(); class30_sub1_1 != null; class30_sub1_1 = (PendingSpawn) pendingSpawns.reverseGetNext()) {
 					class30_sub1_1.x -= i17;
 					class30_sub1_1.y -= j21;
 					if (class30_sub1_1.x < 0 || class30_sub1_1.y < 0 || class30_sub1_1.x >= 104 || class30_sub1_1.y >= 104) {
@@ -11616,7 +11616,7 @@ public class Game extends RSApplet {
 			}
 			if (pktType == 249) {
 				friendsListStatus = inStream.readUnsignedByteA();
-				unknownInt10 = inStream.readShortLEAdd();
+				localPlayerIndex = inStream.readShortLEAdd();
 				pktType = -1;
 				return true;
 			}
@@ -12018,11 +12018,11 @@ public class Game extends RSApplet {
 		friendsNodeIDs = new int[200];
 		groundArray = new NodeList[4][104][104];
 		flameThreadActive = false;
-		aStream_834 = new Stream(new byte[5000]);
+		chatBuffer = new Stream(new byte[5000]);
 		npcArray = new NPC[16384];
 		npcIndices = new int[16384];
 		removedEntityIndices = new int[1000];
-		aStream_847 = Stream.create();
+		updateBuffer = Stream.create();
 		soundEffectEnabled = true;
 		openInterfaceID = -1;
 		currentExp = new int[Skills.skillsCount];
@@ -12032,7 +12032,7 @@ public class Game extends RSApplet {
 		tabFlashing = new boolean[5];
 		drawFlames = false;
 		reportAbuseInput = "";
-		unknownInt10 = -1;
+		localPlayerIndex = -1;
 		menuOpen = false;
 		inputString = "";
 		maxPlayers = 2048;
@@ -12040,7 +12040,7 @@ public class Game extends RSApplet {
 		playerArray = new Player[maxPlayers];
 		playerIndices = new int[maxPlayers];
 		playerUpdateIndices = new int[maxPlayers];
-		aStreamArray895s = new Stream[maxPlayers];
+		playerBuffers = new Stream[maxPlayers];
 		cameraYawOffsetSpeed = 1;
 		pathDirections = new int[104][104];
 		scrollBarLightColor = 0x766654;
@@ -12074,7 +12074,7 @@ public class Game extends RSApplet {
 		textColors = new int[maxDisplayedText];
 		textEffects = new int[maxDisplayedText];
 		textCycles = new int[maxDisplayedText];
-		aStringArray983 = new String[maxDisplayedText];
+		overheadTexts = new String[maxDisplayedText];
 		lastPlane = -1;
 		hitMarks = new Sprite[20];
 		characterColorIndices = new int[5];
@@ -12132,7 +12132,7 @@ public class Game extends RSApplet {
 		myPassword = "";
 		genericLoadingError = false;
 		reportAbuseInterfaceID = -1;
-		aClass19_1179 = new NodeList();
+		pendingSpawns = new NodeList();
 		cameraPitch = 128;
 		invOverlayInterfaceID = -1;
 		stream = Stream.create();
@@ -12147,7 +12147,7 @@ public class Game extends RSApplet {
 		inputTaken = false;
 		songChanging = true;
 		minimapLineLengths = new int[151];
-		aClass11Array1230 = new CollisionMap[4];
+		collisionMaps = new CollisionMap[4];
 		chatSettingsUpdateNeeded = false;
 		soundType = new int[50];
 		itemBeingDragged = false;
@@ -12160,24 +12160,24 @@ public class Game extends RSApplet {
 		loginMessage2 = "";
 		backDialogID = -1;
 		cameraXOffsetSpeed = 2;
-		bigX = new int[4000];
-		bigY = new int[4000];
-		unknownInt1289 = -1;
+		pathTileX = new int[4000];
+		pathTileY = new int[4000];
+		unusedSlotIndex = -1;
 		fileCRC = new CRC32();
 	}
 	public CRC32 fileCRC;
 	public static String server;
 	public int ignoreCount;
-	public long aLong824;
+	public long loadingStartTime;
         public int[][] pathDistances;
 	public int[] friendsNodeIDs;
 	public NodeList[][][] groundArray;
         public int[] flameBuffer1;
         public int[] flameBuffer2;
 	public volatile boolean flameThreadActive;
-	public Socket aSocket832;
+	public Socket jaggrabSocket;
 	public int loginScreenState;
-	public Stream aStream_834;
+	public Stream chatBuffer;
 	public NPC[] npcArray;
 	public int npcCount;
 	public int[] npcIndices;
@@ -12189,7 +12189,7 @@ public class Game extends RSApplet {
 	public String messagePrompt;
 	public int publicChatMode;
 	public int privateChatMode;
-	public Stream aStream_847;
+	public Stream updateBuffer;
 	public boolean soundEffectEnabled;
 	public static int systemUpdateCounter;
 	public int[] flameBuffer;
@@ -12225,7 +12225,7 @@ public class Game extends RSApplet {
 	public MouseDetection mouseDetection;
 	public volatile boolean drawFlames;
 	public String reportAbuseInput;
-	public int unknownInt10;
+	public int localPlayerIndex;
 	public boolean menuOpen;
 	public int hoveredWidgetId;
 	public String inputString;
@@ -12236,7 +12236,7 @@ public class Game extends RSApplet {
 	public int[] playerIndices;
 	public int playerUpdateCount;
 	public int[] playerUpdateIndices;
-	public Stream[] aStreamArray895s;
+	public Stream[] playerBuffers;
 	public int cameraYawOffset;
 	public int cameraYawOffsetSpeed;
 	public int friendsCount;
@@ -12251,7 +12251,7 @@ public class Game extends RSApplet {
 	public RSImageProducer backVmidIP1;
 	public RSImageProducer backVmidIP2;
 	public RSImageProducer backVmidIP3;
-	public RSImageProducer backVmidIP2_2;
+	public RSImageProducer midSubscreenBuffer;
 	public byte[] soundPayload;
 	public int configActionId;
 	public int crossX;
@@ -12286,7 +12286,7 @@ public class Game extends RSApplet {
 	public int menuOffsetY;
 	public int menuWidth;
 	public int menuHeight;
-	public long aLong953;
+	public long privateMessageRecipient;
 	public boolean hasFocus;
 	public long[] friendsListAsLongs;
 	public int currentSong;
@@ -12313,7 +12313,7 @@ public class Game extends RSApplet {
         public final int[] textColors;
         public final int[] textEffects;
         public final int[] textCycles;
-        public final String[] aStringArray983;
+        public final String[] overheadTexts;
         public int cameraZoom;
         public int lastPlane;
         public static int playerOptionCounter;
@@ -12467,7 +12467,7 @@ public class Game extends RSApplet {
 	public boolean actionPending;
 	public Sprite[] crosses;
 	public boolean musicEnabled;
-	public Background[] aBackgroundArray1152s;
+	public Background[] runeBackgrounds;
 	public boolean needDrawTabArea;
 	public int unreadMessages;
 	public static int npcInteractionCounter;
@@ -12483,20 +12483,20 @@ public class Game extends RSApplet {
 	public RSImageProducer fullScreenBackground;
 	public int daysSinceRecovChange;
 	public RSSocket socketStream;
-	public int minimapInt3;
+	public int minimapZoom;
 	public int minimapVerticalSpeed;
-	public static long aLong1172;
+	public static long lastSoundUpdate;
 	public String myUsername;
 	public String myPassword;
 	public static int itemUseCounter;
 	public boolean genericLoadingError;
 	public final int[] objectData = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3};
 	public int reportAbuseInterfaceID;
-	public NodeList aClass19_1179;
+	public NodeList pendingSpawns;
 	public int[] chatAreaOffsets;
 	public int[] tabAreaOffsets;
 	public int[] chatBoxAreaOffsets;
-	public byte[][] aByteArrayArray1183;
+	public byte[][] terrainData;
 	public int cameraPitch;
 	public int cameraYaw;
        public int cameraYawAccel;
@@ -12519,16 +12519,16 @@ public class Game extends RSApplet {
 	public static boolean flagged;
 	public final int[] sound;
 	public int flameDrawingCounter;
-	public int minimapInt2;
+	public int minimapRotationOffset;
         public int minimapHorizontalSpeed;
         public int chatScrollHeight;
 	public String promptInput;
 	public int clickCycle;
         public int[][][] tileHeights;
-	public long aLong1215;
+	public long serverSessionKey;
 	public int loginScreenCursorPos;
 	public final Background[] modIcons;
-	public long aLong1220;
+	public long lastMouseClickTime;
 	public int tabID;
 	public int hintNpcIndex;
 	public boolean inputTaken;
@@ -12537,7 +12537,7 @@ public class Game extends RSApplet {
 	public int nextSong;
 	public boolean songChanging;
         public final int[] minimapLineLengths;
-	public CollisionMap[] aClass11Array1230;
+	public CollisionMap[] collisionMaps;
         public static int bitMasks[];
 	public boolean chatSettingsUpdateNeeded;
         public int[] regionBaseIds;
@@ -12545,14 +12545,14 @@ public class Game extends RSApplet {
         public int[] objectArchiveIds;
 	public int lastMousePacketX;
 	public int lastMousePacketY;
-        public final int anInt1239 = 100;
+        public final int pathSearchMax = 100;
 	public final int[] soundType;
 	public boolean itemBeingDragged;
 	public int atInventoryLoopCycle;
 	public int atInventoryInterface;
 	public int atInventoryIndex;
 	public int atInventoryInterfaceType;
-	public byte[][] aByteArrayArray1247;
+	public byte[][] objectMapData;
 	public int tradeMode;
 	public int chatEffectsState;
 	public final int[] soundDelay;
@@ -12575,27 +12575,27 @@ public class Game extends RSApplet {
 	public String loginMessage2;
 	public int mapEventX;
 	public int mapEventY;
-	public TextDrawingArea aTextDrawingArea_1270;
-	public TextDrawingArea aTextDrawingArea_1271;
+	public TextDrawingArea plainFont;
+	public TextDrawingArea boldFont;
 	public TextDrawingArea chatTextDrawingArea;
 	public int flameOffset;
 	public int backDialogID;
 	public int cameraXOffset;
 	public int cameraXOffsetSpeed;
-	public int[] bigX;
-	public int[] bigY;
+	public int[] pathTileX;
+	public int[] pathTileY;
 	public int itemSelected;
         public int selectedItemSlot;
         public int selectedItemInterfaceId;
         public int selectedItemId;
 	public String selectedItemName;
         public static int walkPacketCounter;
-	public int unknownInt1289;
+	public int unusedSlotIndex;
 	public static int tiara;
-	public static int unknownInt1290;
+	public static int unusedSettingValue;
 	public boolean showInfo = false;
         public static int midiVolume = 256;
-	public static int[] anIntArray385 = new int[] { 12800, 12800, 12800, 12800, 12800, 12800,
+	public static int[] midiChannels = new int[] { 12800, 12800, 12800, 12800, 12800, 12800,
 	12800, 12800, 12800, 12800, 12800, 12800,
 	12800, 12800, 12800, 12800 };
 	public static int midiFadeCycles = 0;
@@ -12603,7 +12603,7 @@ public class Game extends RSApplet {
 	public static boolean fetchMusic = false;
 	public static int musicVolume2;
 	public static int currentMidiVolume = -1;
-	public static byte[] aByteArray347;
+	public static byte[] queuedMidiData;
 	public static int fadeVolume = 0;
 	public static int fadeStep = 0;
 	public static int queuedMidiVolume;
@@ -12614,10 +12614,10 @@ public class Game extends RSApplet {
 	public static int musicVolume = 0;
 	public int[] gameScreenOffsets;
 	public int currentDateOffset;
-	public int unusedInt1215;
+	public int loginScreenDelay;
 	public int lastPasswordChange;
         public int scrollPadding;
-        public int unusedField1273;
+        public int unusedRecoveryDate;
 	public int recoveryQuestionChangeDate;
 
 	static {

@@ -916,6 +916,36 @@ This document lists variable or identifier renames found in the commit history.
  - aRSImageProducer_1164 -> chatBackground
 - aRSImageProducer_1165 -> tabAreaBuffer
 - aRSImageProducer_1166 -> fullScreenBackground
+- aLong824 -> loadingStartTime
+- aSocket832 -> jaggrabSocket
+- aStream_834 -> chatBuffer
+- aStream_847 -> updateBuffer
+- aStreamArray895s -> playerBuffers
+- aLong953 -> privateMessageRecipient
+- aStringArray983 -> overheadTexts
+- aBackgroundArray1152s -> runeBackgrounds
+- aLong1172 -> lastSoundUpdate
+- aByteArrayArray1183 -> terrainData
+- aLong1215 -> serverSessionKey
+- aLong1220 -> lastMouseClickTime
+- anInt1239 -> pathSearchMax
+- aByteArrayArray1247 -> objectMapData
+- aTextDrawingArea_1270 -> plainFont
+- aTextDrawingArea_1271 -> boldFont
+- unknownInt1289 -> unusedSlotIndex
+- unknownInt1290 -> unusedSettingValue
+- aByteArray347 -> queuedMidiData
+- anIntArray385 -> midiChannels
+- unusedInt1215 -> loginScreenDelay
+- unusedField1273 -> unusedRecoveryDate
+- unknownInt10 -> localPlayerIndex
+- aClass19_1179 -> pendingSpawns
+- aClass11Array1230 -> collisionMaps
+- bigX -> pathTileX
+- bigY -> pathTileY
+- minimapInt2 -> minimapRotationOffset
+- minimapInt3 -> minimapZoom
+- backVmidIP2_2 -> midSubscreenBuffer
 
 ## EntityDef
  - anInt55 -> turn90CCWAnimation
