@@ -49,9 +49,9 @@ public final class NPC extends Entity {
 				model = new Model(aModel);
 			}
 		}
-               if (definition.aByte68 == 1) {
-			model.pickable = true;
-		}
+               if (definition.size == 1) {
+                        model.pickable = true;
+                }
 		return model;
 	}
 

@@ -897,5 +897,27 @@ This document lists variable or identifier renames found in the commit history.
  - aRSImageProducer_1125 -> mapEdgeBuffer
  - aRSImageProducer_1163 -> textBackground
  - aRSImageProducer_1164 -> chatBackground
- - aRSImageProducer_1165 -> tabAreaBuffer
- - aRSImageProducer_1166 -> fullScreenBackground
+- aRSImageProducer_1165 -> tabAreaBuffer
+- aRSImageProducer_1166 -> fullScreenBackground
+
+## EntityDef
+ - anInt55 -> turn90CCWAnimation
+ - anInt56 -> cacheIndex
+ - anInt57 -> transformVarbit
+ - anInt58 -> turn180Animation
+ - anInt59 -> transformVarp
+ - anInt67 -> walkAnimation
+ - aByte68 -> size
+ - anIntArray70 -> modifiedModelColors
+ - anIntArray73 -> headModelIds
+ - anInt75 -> headIcon
+ - anIntArray76 -> originalModelColors
+ - anInt77 -> standAnimation
+ - anInt79 -> turnSpeed
+ - anInt83 -> turn90CWAnimation
+ - anInt85 -> ambient
+ - anInt92 -> contrast
+ - anIntArray94 -> modelIds
+ - aBoolean84 -> clickable
+ - aBoolean87 -> minimapVisible
+ - aBoolean93 -> priorityRender
