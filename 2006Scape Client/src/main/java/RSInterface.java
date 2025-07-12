@@ -26,24 +26,24 @@ public final class RSInterface {
 			rsInterface.parentID = i;
 			rsInterface.type = stream.readUnsignedByte();
 			rsInterface.atActionType = stream.readUnsignedByte();
-			rsInterface.anInt214 = stream.readUnsignedWord();
+                        rsInterface.contentType = stream.readUnsignedWord();
 			rsInterface.width = stream.readUnsignedWord();
 			rsInterface.height = stream.readUnsignedWord();
 			rsInterface.aByte254 = (byte) stream.readUnsignedByte();
-			rsInterface.anInt230 = stream.readUnsignedByte();
-			if (rsInterface.anInt230 != 0) {
-				rsInterface.anInt230 = (rsInterface.anInt230 - 1 << 8) + stream.readUnsignedByte();
-			} else {
-				rsInterface.anInt230 = -1;
-			}
+                        rsInterface.hoverTarget = stream.readUnsignedByte();
+                        if (rsInterface.hoverTarget != 0) {
+                                rsInterface.hoverTarget = (rsInterface.hoverTarget - 1 << 8) + stream.readUnsignedByte();
+                        } else {
+                                rsInterface.hoverTarget = -1;
+                        }
 			int i1 = stream.readUnsignedByte();
-			if (i1 > 0) {
-				rsInterface.anIntArray245 = new int[i1];
-				rsInterface.anIntArray212 = new int[i1];
-				for (int j1 = 0; j1 < i1; j1++) {
-					rsInterface.anIntArray245[j1] = stream.readUnsignedByte();
-					rsInterface.anIntArray212[j1] = stream.readUnsignedWord();
-				}
+                        if (i1 > 0) {
+                                rsInterface.valueCompareType = new int[i1];
+                                rsInterface.requiredValues = new int[i1];
+                                for (int j1 = 0; j1 < i1; j1++) {
+                                        rsInterface.valueCompareType[j1] = stream.readUnsignedByte();
+                                        rsInterface.requiredValues[j1] = stream.readUnsignedWord();
+                                }
 
 			}
 			int k1 = stream.readUnsignedByte();
@@ -137,9 +137,9 @@ public final class RSInterface {
 				rsInterface.textColor = stream.readDWord();
 			}
 			if (rsInterface.type == 3 || rsInterface.type == 4) {
-				rsInterface.anInt219 = stream.readDWord();
-				rsInterface.anInt216 = stream.readDWord();
-				rsInterface.anInt239 = stream.readDWord();
+                                rsInterface.activeTextColor = stream.readDWord();
+                                rsInterface.hoverTextColor = stream.readDWord();
+                                rsInterface.activeHoverTextColor = stream.readDWord();
 			}
 			if (rsInterface.type == 5) {
 				String s = stream.readString();
@@ -322,16 +322,21 @@ public final class RSInterface {
 	}
 
 	public Sprite sprite1;
-	public int anInt208;
+        /** Animation cycle counter. */
+        public int animationCycle;
 	public Sprite sprites[];
 	public static RSInterface interfaceCache[];
-	public int anIntArray212[];
-	public int anInt214;
+        /** Values that must be matched for this widget to be considered selected. */
+        public int requiredValues[];
+        /** Content type used for client scripts. */
+        public int contentType;
 	public int spritesX[];
-	public int anInt216;
+        /** Text colour when hovered but not selected. */
+        public int hoverTextColor;
 	public int atActionType;
 	public String spellName;
-	public int anInt219;
+        /** Text colour when the widget is selected. */
+        public int activeTextColor;
 	public int width;
 	public String tooltip;
 	public String selectedActionName;
@@ -341,7 +346,8 @@ public final class RSInterface {
 	public int valueIndexArray[][];
 	public boolean aBoolean227;
 	public String enabledText;
-	public int anInt230;
+        /** ID of the widget to display when this widget is hovered. */
+        public int hoverTarget;
 	public int invSpritePadX;
 	public int textColor;
         public int mediaType;
@@ -350,14 +356,17 @@ public final class RSInterface {
 	public int parentID;
 	public int spellUsableOn;
         private static MRUCache spriteCache;
-	public int anInt239;
+        /** Text colour when selected and hovered. */
+        public int activeHoverTextColor;
 	public int children[];
 	public int childX[];
 	public boolean usableItemInterface;
 	public TextDrawingArea textDrawingAreas;
 	public int invSpritePadY;
-	public int anIntArray245[];
-	public int anInt246;
+        /** Comparator types used for the value comparison script. */
+        public int valueCompareType[];
+        /** Current animation frame. */
+        public int animationFrame;
 	public int spritesY[];
 	public String disabledText;
 	public boolean isInventoryInterface;
@@ -375,7 +384,8 @@ public final class RSInterface {
 	public int type;
         public int offsetX;
         private static final MRUCache modelCache = new MRUCache(30);
-	public int anInt265;
+        /** Vertical offset applied when rendering. */
+        public int offsetY;
 	public boolean aBoolean266;
 	public int height;
 	public static int shading;
