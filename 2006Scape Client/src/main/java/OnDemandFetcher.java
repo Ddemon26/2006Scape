@@ -67,8 +67,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 						Signlink.reporterror("Rej: " + l + "," + j1);
                                                current.data = null;
 						if (current.incomplete) {
-                                                        synchronized (completedRequests) {
-                                                                completedRequests.insertHead(current);
+                                                        synchronized (completedRequestQueue) {
+                                                                completedRequestQueue.insertHead(current);
 							}
 						} else {
 							current.unlink();
@@ -109,8 +109,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
                                                current.type = 93;
                                        }
 					if (current.incomplete) {
-                                            synchronized (completedRequests) {
-                                                    completedRequests.insertHead(current);
+                                            synchronized (completedRequestQueue) {
+                                                    completedRequestQueue.insertHead(current);
 						}
 					} else {
 						current.unlink();
@@ -184,18 +184,18 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		abyte2 = streamLoader.getFileData("anim_index");
 		stream2 = new Stream(abyte2);
                 j1 = abyte2.length / 2;
-                animationIndices = new int[j1];
+                animationFileIds = new int[j1];
                 for (int j2 = 0; j2 < j1; j2++) {
-                        animationIndices[j2] = stream2.readUnsignedWord();
+                        animationFileIds[j2] = stream2.readUnsignedWord();
                 }
 
 		abyte2 = streamLoader.getFileData("midi_index");
 		stream2 = new Stream(abyte2);
                 j1 = abyte2.length;
-                midiRequired = new int[j1];
+                midiFileFlags = new int[j1];
                 for (int k2 = 0; k2 < j1; k2++) {
-                        midiRequired[k2] = stream2.readUnsignedByte();
-		}
+                        midiFileFlags[k2] = stream2.readUnsignedByte();
+                }
 
 		clientInstance = client1;
 		running = true;
@@ -273,7 +273,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	}
 
         public int getAnimCount() {
-                return animationIndices.length;
+                return animationFileIds.length;
         }
 
         public void queueRequest(int i, int j) {
@@ -294,8 +294,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
                        onDemandData_1.type = i;
                        onDemandData_1.id = j;
 			onDemandData_1.incomplete = true;
-                        synchronized (pendingRequests) {
-                                pendingRequests.insertHead(onDemandData_1);
+                        synchronized (pendingRequestQueue) {
+                                pendingRequestQueue.insertHead(onDemandData_1);
                         }
 			nodeSubList.insertHead(onDemandData_1);
 		}
@@ -419,8 +419,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 
 	public OnDemandData getNextNode() {
 		OnDemandData onDemandData;
-                synchronized (completedRequests) {
-                        onDemandData = (OnDemandData) completedRequests.popHead();
+                synchronized (completedRequestQueue) {
+                        onDemandData = (OnDemandData) completedRequestQueue.popHead();
 		}
 		if (onDemandData == null) {
 			return null;
@@ -511,7 +511,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		}
 
 		while (uncompletedCount < 10) {
-                        OnDemandData onDemandData_1 = (OnDemandData) incompleteRequests.popHead();
+                        OnDemandData onDemandData_1 = (OnDemandData) incompleteRequestQueue.popHead();
 			if (onDemandData_1 == null) {
 				break;
 			}
@@ -534,8 +534,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 
 	private void checkReceived() {
                 OnDemandData onDemandData;
-                synchronized (pendingRequests) {
-                        onDemandData = (OnDemandData) pendingRequests.popHead();
+                synchronized (pendingRequestQueue) {
+                        onDemandData = (OnDemandData) pendingRequestQueue.popHead();
 		}
 		while (onDemandData != null) {
 			waiting = true;
@@ -546,16 +546,16 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
                        if (!crcMatches(versions[onDemandData.type][onDemandData.id], crcs[onDemandData.type][onDemandData.id], abyte0)) {
                                abyte0 = null;
                        }
-                        synchronized (pendingRequests) {
+                        synchronized (pendingRequestQueue) {
 				if (abyte0 == null) {
-                                        incompleteRequests.insertHead(onDemandData);
+                                        incompleteRequestQueue.insertHead(onDemandData);
 				} else {
                                        onDemandData.data = abyte0;
-                                        synchronized (completedRequests) {
-                                                completedRequests.insertHead(onDemandData);
+                                        synchronized (completedRequestQueue) {
+                                                completedRequestQueue.insertHead(onDemandData);
 					}
 				}
-                                onDemandData = (OnDemandData) pendingRequests.popHead();
+                                onDemandData = (OnDemandData) pendingRequestQueue.popHead();
 			}
 		}
 	}
@@ -619,7 +619,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	}
 
         public boolean isMidiRequired(int i) {
-                return midiRequired[i] == 1;
+                return midiFileFlags[i] == 1;
         }
 
 	public OnDemandFetcher() {
@@ -631,13 +631,13 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
                 requestedQueue = new NodeList();
 		running = true;
 		waiting = false;
-                completedRequests = new NodeList();
+                completedRequestQueue = new NodeList();
 		gzipInputBuffer = new byte[65000];
 		nodeSubList = new NodeSubList();
 		versions = new int[4][];
 		crcs = new int[4][];
-                incompleteRequests = new NodeList();
-                pendingRequests = new NodeList();
+                incompleteRequestQueue = new NodeList();
+                pendingRequestQueue = new NodeList();
 	}
 
 	private int totalFiles;
@@ -655,7 +655,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
         private final NodeList requestedQueue;
 	private int completedSize;
 	private int expectedSize;
-        int[] midiRequired;
+        int[] midiFileFlags;
         public int socketErrorCount;
         private int[] mapArchiveIds;
 	private int filesLoaded;
@@ -663,9 +663,9 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	private OutputStream outputStream;
         private int[] mapMembershipFlags;
 	private boolean waiting;
-        private final NodeList completedRequests;
+        private final NodeList completedRequestQueue;
 	private final byte[] gzipInputBuffer;
-        private int[] animationIndices;
+        private int[] animationFileIds;
 	private final NodeSubList nodeSubList;
 	private InputStream inputStream;
 	private Socket socket;
@@ -673,9 +673,9 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	public final int[][] crcs;
 	private int uncompletedCount;
 	private int completedCount;
-        private final NodeList incompleteRequests;
+        private final NodeList incompleteRequestQueue;
 	private OnDemandData current;
-        private final NodeList pendingRequests;
+        private final NodeList pendingRequestQueue;
         private int[] regionIds;
 	private byte[] modelIndices;
 	private int loopCycle;

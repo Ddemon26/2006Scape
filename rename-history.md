@@ -363,11 +363,11 @@ This document lists variable or identifier renames found in the commit history.
  - mapIndices2 -> mapArchiveIds
  - mapIndices3 -> landArchiveIds
 - mapIndices4 -> mapMembershipFlags
-- anIntArray1348 -> midiRequired
-- anIntArray1360 -> animationIndices
-- aClass19_1358 -> completedRequests
-- aClass19_1368 -> incompleteRequests
-- aClass19_1370 -> pendingRequests
+- anIntArray1348 -> midiFileFlags
+- anIntArray1360 -> animationFileIds
+- aClass19_1358 -> completedRequestQueue
+- aClass19_1368 -> incompleteRequestQueue
+- aClass19_1370 -> pendingRequestQueue
 
 ## Runnable_Impl1 -> MidiHandler
 
