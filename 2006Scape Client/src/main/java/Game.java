@@ -1004,7 +1004,7 @@ public class Game extends RSApplet {
                        if (!npc.definition.clickable) {
 				k += 0x80000000;
 			}
-                   worldController.addAnimableObject(plane, npc.currentHeading, getTileHeight(plane, npc.y, npc.x), k, npc.y, (npc.size - 1) * 64 + 60, npc.x, npc, npc.aBoolean1541);
+                   worldController.addAnimableObject(plane, npc.currentHeading, getTileHeight(plane, npc.y, npc.x), k, npc.y, (npc.size - 1) * 64 + 60, npc.x, npc, npc.forcedAnimation);
 		}
 	}
 
@@ -2324,7 +2324,7 @@ public class Game extends RSApplet {
 				occupiedTiles[j1][k1] = waveCycle;
 			}
                         player.animationBaseY = getTileHeight(plane, player.y, player.x);
-                      worldController.addAnimableObject(plane, player.currentHeading, player.animationBaseY, i1, player.y, 60, player.x, player, player.aBoolean1541);
+                      worldController.addAnimableObject(plane, player.currentHeading, player.animationBaseY, i1, player.y, 60, player.x, player, player.forcedAnimation);
 		}
 
 	}
@@ -7708,7 +7708,7 @@ public class Game extends RSApplet {
 			k1 = 8;
 			entity.movementDelay--;
 		}
-		if (entity.aBooleanArray1553[entity.smallXYIndex - 1]) {
+                if (entity.movementQueueFlags[entity.smallXYIndex - 1]) {
 			k1 <<= 1;
 		}
 		if (k1 >= 8 && entity.currentAnimation == entity.walkAnimation && entity.runAnimation != -1) {
@@ -7802,7 +7802,7 @@ public class Game extends RSApplet {
 	}
 
        public void updateEntityAnimation(Entity entity) {
-		entity.aBoolean1541 = false;
+                entity.forcedAnimation = false;
 		if (entity.currentAnimation != -1) {
 			Animation animation = Animation.anims[entity.currentAnimation];
 			entity.animationFrameCycle++;
@@ -7851,7 +7851,7 @@ public class Game extends RSApplet {
 					entity.anim = -1;
 				}
 			}
-			entity.aBoolean1541 = animation_3.stretches;
+                        entity.forcedAnimation = animation_3.stretches;
 		}
 		if (entity.graphicDelay > 0) {
 			entity.graphicDelay--;

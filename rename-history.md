@@ -1059,3 +1059,7 @@ This document lists variable or identifier renames found in the commit history.
 
 ## NodeSub
  - anInt1305 -> subNodeCounter
+
+## Entity
+ - aBoolean1541 -> forcedAnimation
+ - aBooleanArray1553 -> movementQueueFlags

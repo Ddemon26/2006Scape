@@ -18,12 +18,12 @@ public class Entity extends Animable {
 				for (int i1 = smallXYIndex; i1 > 0; i1--) {
 					smallX[i1] = smallX[i1 - 1];
 					smallY[i1] = smallY[i1 - 1];
-					aBooleanArray1553[i1] = aBooleanArray1553[i1 - 1];
+                                        movementQueueFlags[i1] = movementQueueFlags[i1 - 1];
 				}
 
 				smallX[0] = i;
 				smallY[0] = j;
-				aBooleanArray1553[0] = false;
+                                movementQueueFlags[0] = false;
 				return;
 			}
 		}
@@ -93,11 +93,11 @@ public class Entity extends Animable {
 		for (int l = smallXYIndex; l > 0; l--) {
 			smallX[l] = smallX[l - 1];
 			smallY[l] = smallY[l - 1];
-			aBooleanArray1553[l] = aBooleanArray1553[l - 1];
+                        movementQueueFlags[l] = movementQueueFlags[l - 1];
 		}
 		smallX[0] = j;
 		smallY[0] = k;
-		aBooleanArray1553[0] = flag;
+                movementQueueFlags[0] = flag;
 	}
 
 	public int entScreenX;
@@ -125,8 +125,8 @@ public class Entity extends Animable {
 		loopCycleStatus = -1000;
 		textCycle = 100;
 		size = 1;
-		aBoolean1541 = false;
-		aBooleanArray1553 = new boolean[10];
+                forcedAnimation = false;
+                movementQueueFlags = new boolean[10];
 		walkAnimation = -1;
 		turn180Animation = -1;
 		turn90CWAnimation = -1;
@@ -171,7 +171,7 @@ public class Entity extends Animable {
 	int focusX;
 	int focusY;
 	int size;
-	boolean aBoolean1541;
+        boolean forcedAnimation;
 	int animationDelay;
 	int forceMoveStartX;
 	int forceMoveEndX;
@@ -183,7 +183,7 @@ public class Entity extends Animable {
 	public int x;
 	public int y;
        int currentHeading;
-	final boolean[] aBooleanArray1553;
+        final boolean[] movementQueueFlags;
 	int walkAnimation;
 	int turn180Animation;
 	int turn90CWAnimation;
