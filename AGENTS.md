@@ -210,6 +210,7 @@ intent.                                                          |
 rename *B* itself in a future PR.                            |
 | **7 Review artefacts** | PR body **MUST** include an Old→New mapping table and the full `git diff --stat` output. |
 | **8 Record mapping**    | Append each rename entry to `rename-history.md` for project tracking. |
+|                         | If an identifier was renamed previously, replace the prior entry with the latest name instead of adding a new line. |
 
 Rename sections in that file should use the following layout:
 
