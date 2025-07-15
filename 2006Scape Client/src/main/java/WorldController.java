@@ -155,17 +155,17 @@ final class WorldController {
                 if (renderable == null) {
                         return;
                 }
-            TileDecoration class49 = new TileDecoration();
-                class49.renderable = renderable;
-                class49.x = tileX * 128 + 64;
-                class49.y = tileY * 128 + 64;
-                class49.tileHeight = height;
-                class49.uid = uid;
-                class49.config = config;
+            TileDecoration tileDecoration = new TileDecoration();
+                tileDecoration.renderable = renderable;
+                tileDecoration.x = tileX * 128 + 64;
+                tileDecoration.y = tileY * 128 + 64;
+                tileDecoration.tileHeight = height;
+                tileDecoration.uid = uid;
+                tileDecoration.config = config;
                 if (groundArray[plane][tileX][tileY] == null) {
                         groundArray[plane][tileX][tileY] = new Ground(plane, tileX, tileY);
                 }
-                groundArray[plane][tileX][tileY].obj3 = class49;
+                groundArray[plane][tileX][tileY].obj3 = tileDecoration;
         }
 
        public void addItemPile(int i, int j, Animable renderable, int k, Animable secondaryRenderable, Animable topRenderable, int l, int i1) {
@@ -566,16 +566,16 @@ final class WorldController {
 				for (int j2 = 0; j2 < worldHeight; j2++) {
 					Ground groundTile = groundArray[l1][i2][j2];
 					if (groundTile != null) {
-						BoundaryObject class10 = groundTile.obj1;
-						if (class10 != null && class10.primary != null && class10.primary.vertexNormals != null) {
-                                                       blendModels(l1, 1, 1, i2, j2, (Model) class10.primary);
-							if (class10.secondary != null && class10.secondary.vertexNormals != null) {
-                                                               blendModels(l1, 1, 1, i2, j2, (Model) class10.secondary);
-                                                               mergeNormals((Model) class10.primary, (Model) class10.secondary, 0, 0, 0, false);
-								((Model) class10.secondary).applyShading(j, k1, k, i, i1);
-							}
-							((Model) class10.primary).applyShading(j, k1, k, i, i1);
-						}
+                                                BoundaryObject boundaryObject = groundTile.obj1;
+                                                if (boundaryObject != null && boundaryObject.primary != null && boundaryObject.primary.vertexNormals != null) {
+                                                       blendModels(l1, 1, 1, i2, j2, (Model) boundaryObject.primary);
+                                                        if (boundaryObject.secondary != null && boundaryObject.secondary.vertexNormals != null) {
+                                                               blendModels(l1, 1, 1, i2, j2, (Model) boundaryObject.secondary);
+                                                               mergeNormals((Model) boundaryObject.primary, (Model) boundaryObject.secondary, 0, 0, 0, false);
+                                                                ((Model) boundaryObject.secondary).applyShading(j, k1, k, i, i1);
+                                                        }
+                                                        ((Model) boundaryObject.primary).applyShading(j, k1, k, i, i1);
+                                                }
                                                 for (int k2 = 0; k2 < groundTile.sceneObjectCount; k2++) {
                                                         SceneObject sceneObject = groundTile.obj5Array[k2];
                                                         if (sceneObject != null && sceneObject.renderable != null && sceneObject.renderable.vertexNormals != null) {
@@ -584,10 +584,10 @@ final class WorldController {
                                                         }
                                                 }
 
-                                            TileDecoration class49 = groundTile.obj3;
-                                                if (class49 != null && class49.renderable.vertexNormals != null) {
-                                                       blendDecorationLighting(i2, l1, (Model) class49.renderable, j2);
-                                                        ((Model) class49.renderable).applyShading(j, k1, k, i, i1);
+                                            TileDecoration tileDecoration = groundTile.obj3;
+                                                if (tileDecoration != null && tileDecoration.renderable.vertexNormals != null) {
+                                                       blendDecorationLighting(i2, l1, (Model) tileDecoration.renderable, j2);
+                                                        ((Model) tileDecoration.renderable).applyShading(j, k1, k, i, i1);
                                                 }
 					}
 				}
@@ -640,12 +640,12 @@ final class WorldController {
 								Ground groundTile = groundArray[j2][k2][l2];
 								if (groundTile != null) {
 									int i3 = (tileHeights[j2][k2][l2] + tileHeights[j2][k2 + 1][l2] + tileHeights[j2][k2][l2 + 1] + tileHeights[j2][k2 + 1][l2 + 1]) / 4 - (tileHeights[i][l][i1] + tileHeights[i][l + 1][i1] + tileHeights[i][l][i1 + 1] + tileHeights[i][l + 1][i1 + 1]) / 4;
-									BoundaryObject class10 = groundTile.obj1;
-									if (class10 != null && class10.primary != null && class10.primary.vertexNormals != null) {
-                                                mergeNormals(model, (Model) class10.primary, (k2 - l) * 128 + (1 - j) * 64, i3, (l2 - i1) * 128 + (1 - k) * 64, flag);
-									}
-									if (class10 != null && class10.secondary != null && class10.secondary.vertexNormals != null) {
-                                                mergeNormals(model, (Model) class10.secondary, (k2 - l) * 128 + (1 - j) * 64, i3, (l2 - i1) * 128 + (1 - k) * 64, flag);
+                                                                        BoundaryObject boundaryObject = groundTile.obj1;
+                                                                        if (boundaryObject != null && boundaryObject.primary != null && boundaryObject.primary.vertexNormals != null) {
+                                                mergeNormals(model, (Model) boundaryObject.primary, (k2 - l) * 128 + (1 - j) * 64, i3, (l2 - i1) * 128 + (1 - k) * 64, flag);
+                                                                        }
+                                                                        if (boundaryObject != null && boundaryObject.secondary != null && boundaryObject.secondary.vertexNormals != null) {
+                                                mergeNormals(model, (Model) boundaryObject.secondary, (k2 - l) * 128 + (1 - j) * 64, i3, (l2 - i1) * 128 + (1 - k) * 64, flag);
 									}
                                                                         for (int j3 = 0; j3 < groundTile.sceneObjectCount; j3++) {
                                                                                SceneObject sceneObject = groundTile.obj5Array[j3];
@@ -1105,10 +1105,10 @@ final class WorldController {
                                 } else if (linkedTile.shapedTile != null && !isTileVisible(0, i, j)) {
                                                 drawShapedTile(i, pitchSin, yawSin, linkedTile.shapedTile, pitchCos, j, yawCos);
 					}
-					BoundaryObject class10 = linkedTile.obj1;
-					if (class10 != null) {
-						class10.primary.render(0, pitchSin, pitchCos, yawSin, yawCos, class10.x - cameraX, class10.plane - cameraZ, class10.y - cameraY, class10.uid);
-					}
+                                        BoundaryObject boundaryObject = linkedTile.obj1;
+                                        if (boundaryObject != null) {
+                                                boundaryObject.primary.render(0, pitchSin, pitchCos, yawSin, yawCos, boundaryObject.x - cameraX, boundaryObject.plane - cameraZ, boundaryObject.y - cameraY, boundaryObject.uid);
+                                        }
                                         for (int i2 = 0; i2 < linkedTile.sceneObjectCount; i2++) {
                                                 SceneObject sceneObject = linkedTile.obj5Array[i2];
                                                 if (sceneObject != null) {
@@ -1206,10 +1206,10 @@ final class WorldController {
                                                 }
                                         }
                                 }
-				if (tileVisible) {
-                                   TileDecoration class49 = currentTile.obj3;
-                                        if (class49 != null) {
-                                                class49.renderable.render(0, pitchSin, pitchCos, yawSin, yawCos, class49.x - cameraX, class49.tileHeight - cameraZ, class49.y - cameraY, class49.uid);
+                                if (tileVisible) {
+                                   TileDecoration tileDecoration = currentTile.obj3;
+                                        if (tileDecoration != null) {
+                                                tileDecoration.renderable.render(0, pitchSin, pitchCos, yawSin, yawCos, tileDecoration.x - cameraX, tileDecoration.tileHeight - cameraZ, tileDecoration.y - cameraY, tileDecoration.uid);
                                         }
                                         ItemPile pile1 = currentTile.itemPile;
                                         if (pile1 != null && pile1.offsetY == 0) {
