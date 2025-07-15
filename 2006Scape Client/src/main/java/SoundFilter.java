@@ -66,7 +66,7 @@ final class SoundFilter {
                 return filterPairs[channel] * 2;
         }
 
-	public void decode(Stream stream, SoundEnvelope class29) {
+	public void decode(Stream stream, SoundEnvelope envelope) {
 		int i = stream.readUnsignedByte();
 		filterPairs[0] = i >> 4;
 		filterPairs[1] = i & 0xf;
@@ -96,7 +96,7 @@ final class SoundFilter {
 			}
 
 			if (j != 0 || range[1] != range[0]) {
-				class29.decodeSegments(stream);
+				envelope.decodeSegments(stream);
 			}
 		} else {
 			range[0] = range[1] = 0;

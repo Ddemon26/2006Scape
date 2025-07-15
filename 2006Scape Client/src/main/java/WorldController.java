@@ -120,25 +120,25 @@ final class WorldController {
 
         public void addTile(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2, int k2, int l2, int i3, int j3, int k3, int l3, int i4, int j4, int k4, int l4) {
 		if (l == 0) {
-                    PlainTile class43 = new PlainTile(k2, l2, i3, j3, -1, k4, false);
+                    PlainTile tile = new PlainTile(k2, l2, i3, j3, -1, k4, false);
 			for (int i5 = i; i5 >= 0; i5--) {
 				if (groundArray[i5][j][k] == null) {
 					groundArray[i5][j][k] = new Ground(i5, j, k);
 				}
 			}
 
-                        groundArray[i][j][k].plainTile = class43;
+                        groundArray[i][j][k].plainTile = tile;
 			return;
 		}
 		if (l == 1) {
-                    PlainTile class43_1 = new PlainTile(k3, l3, i4, j4, j1, l4, k1 == l1 && k1 == i2 && k1 == j2);
+                    PlainTile alternateTile = new PlainTile(k3, l3, i4, j4, j1, l4, k1 == l1 && k1 == i2 && k1 == j2);
 			for (int j5 = i; j5 >= 0; j5--) {
 				if (groundArray[j5][j][k] == null) {
 					groundArray[j5][j][k] = new Ground(j5, j, k);
 				}
 			}
 
-                        groundArray[i][j][k].plainTile = class43_1;
+                        groundArray[i][j][k].plainTile = alternateTile;
 			return;
 		}
                 ShapedTile shapedTile = new ShapedTile(k, k3, j3, i2, j1, i4, i1, k2, k4, i3, j2, l1, k1, l, j4, l3, l2, j, l4);
@@ -676,9 +676,9 @@ final class WorldController {
 		int ai[] = model_1.vertexX;
             int i1 = model_1.vertexCount;
             for (int j1 = 0; j1 < model.vertexCount; j1++) {
-			VertexNormal class33 = model.vertexNormals[j1];
-			VertexNormal class33_1 = model.vertexNormalTemp[j1];
-			if (class33_1.magnitude != 0) {
+			VertexNormal normal = model.vertexNormals[j1];
+			VertexNormal tempNormal = model.vertexNormalTemp[j1];
+			if (tempNormal.magnitude != 0) {
 				int i2 = model.vertexY[j1] - j;
 				if (i2 <= model_1.maxY) {
 					int j2 = model.vertexX[j1] - i;
@@ -686,17 +686,17 @@ final class WorldController {
 						int k2 = model.vertexZ[j1] - k;
 						if (k2 >= model_1.minZ && k2 <= model_1.maxZ) {
 							for (int l2 = 0; l2 < i1; l2++) {
-								VertexNormal class33_2 = model_1.vertexNormals[l2];
-								VertexNormal class33_3 = model_1.vertexNormalTemp[l2];
-								if (j2 == ai[l2] && k2 == model_1.vertexZ[l2] && i2 == model_1.vertexY[l2] && class33_3.magnitude != 0) {
-									class33.x += class33_3.x;
-									class33.y += class33_3.y;
-									class33.z += class33_3.z;
-									class33.magnitude += class33_3.magnitude;
-									class33_2.x += class33_1.x;
-									class33_2.y += class33_1.y;
-									class33_2.z += class33_1.z;
-									class33_2.magnitude += class33_1.magnitude;
+								VertexNormal otherNormal = model_1.vertexNormals[l2];
+								VertexNormal otherTempNormal = model_1.vertexNormalTemp[l2];
+								if (j2 == ai[l2] && k2 == model_1.vertexZ[l2] && i2 == model_1.vertexY[l2] && otherTempNormal.magnitude != 0) {
+									normal.x += otherTempNormal.x;
+									normal.y += otherTempNormal.y;
+									normal.z += otherTempNormal.z;
+									normal.magnitude += otherTempNormal.magnitude;
+									otherNormal.x += tempNormal.x;
+									otherNormal.y += tempNormal.y;
+									otherNormal.z += tempNormal.z;
+									otherNormal.magnitude += tempNormal.magnitude;
 									l++;
 									vertexVisitA[j1] = mergeCycleId;
 									vertexVisitB[l2] = mergeCycleId;
@@ -732,9 +732,9 @@ final class WorldController {
 		if (groundTile == null) {
 			return;
 		}
-                PlainTile class43 = groundTile.plainTile;
-                if (class43 != null) {
-                        int j1 = class43.orientation;
+                PlainTile tile = groundTile.plainTile;
+                if (tile != null) {
+                        int j1 = tile.orientation;
 			if (j1 == 0) {
 				return;
 			}
@@ -1276,12 +1276,12 @@ final class WorldController {
 					currentTile.needsProcessing = false;
 					int l1 = 0;
 					label0 : for (int k2 = 0; k2 < i1; k2++) {
-                                                SceneObject class28_1 = currentTile.obj5Array[k2];
-                                                if (class28_1.lastDrawn == renderCycle) {
+                                                SceneObject objTile = currentTile.obj5Array[k2];
+                                                if (objTile.lastDrawn == renderCycle) {
                                                         continue;
                                                 }
-                                                for (int k3 = class28_1.startX; k3 <= class28_1.endX; k3++) {
-                                                        for (int l4 = class28_1.startY; l4 <= class28_1.endY; l4++) {
+                                                for (int k3 = objTile.startX; k3 <= objTile.endX; k3++) {
+                                                        for (int l4 = objTile.startY; l4 <= objTile.endY; l4++) {
                                                                 Ground cullCheckTile = planeTiles[k3][l4];
                                                                 if (cullCheckTile.tileActive) {
                                                                         currentTile.needsProcessing = true;
@@ -1290,16 +1290,16 @@ final class WorldController {
 										continue;
 									}
                                                                         int l6 = 0;
-                                                                        if (k3 > class28_1.startX) {
+                                                                        if (k3 > objTile.startX) {
                                                                                 l6++;
                                                                         }
-                                                                        if (k3 < class28_1.endX) {
+                                                                        if (k3 < objTile.endX) {
                                                                                 l6 += 4;
                                                                         }
-                                                                        if (l4 > class28_1.startY) {
+                                                                        if (l4 > objTile.startY) {
                                                                                 l6 += 8;
                                                                         }
-                                                                        if (l4 < class28_1.endY) {
+                                                                        if (l4 < objTile.endY) {
                                                                                 l6 += 2;
                                                                         }
                                                                         if ((l6 & cullCheckTile.cullFlags) != currentTile.cullOpposite) {
@@ -1312,18 +1312,18 @@ final class WorldController {
 
 						}
 
-                                                sceneObjectBuffer[l1++] = class28_1;
-                                                int i5 = cameraTileX - class28_1.startX;
-                                                int i6 = class28_1.endX - cameraTileX;
+                                                sceneObjectBuffer[l1++] = objTile;
+                                                int i5 = cameraTileX - objTile.startX;
+                                                int i6 = objTile.endX - cameraTileX;
 						if (i6 > i5) {
 							i5 = i6;
 						}
-                                                int i7 = cameraTileY - class28_1.startY;
-                                                int j8 = class28_1.endY - cameraTileY;
+                                                int i7 = cameraTileY - objTile.startY;
+                                                int j8 = objTile.endY - cameraTileY;
                                                 if (j8 > i7) {
-                                                        class28_1.distanceFromCamera = i5 + j8;
+                                                        objTile.distanceFromCamera = i5 + j8;
                                                 } else {
-                                                        class28_1.distanceFromCamera = i5 + i7;
+                                                        objTile.distanceFromCamera = i5 + i7;
                                                 }
                                         }
 
@@ -1331,14 +1331,14 @@ final class WorldController {
 						int i3 = -50;
 						int l3 = -1;
 						for (int j5 = 0; j5 < l1; j5++) {
-                                                        SceneObject class28_2 = sceneObjectBuffer[j5];
-                                                        if (class28_2.lastDrawn != renderCycle) {
-                                                                if (class28_2.distanceFromCamera > i3) {
-                                                                        i3 = class28_2.distanceFromCamera;
+                                                        SceneObject queuedObj = sceneObjectBuffer[j5];
+                                                        if (queuedObj.lastDrawn != renderCycle) {
+                                                                if (queuedObj.distanceFromCamera > i3) {
+                                                                        i3 = queuedObj.distanceFromCamera;
                                                                         l3 = j5;
-                                                                } else if (class28_2.distanceFromCamera == i3) {
-                                                                        int j7 = class28_2.x - cameraX;
-                                                                        int k8 = class28_2.y - cameraY;
+                                                                } else if (queuedObj.distanceFromCamera == i3) {
+                                                                        int j7 = queuedObj.x - cameraX;
+                                                                        int k8 = queuedObj.y - cameraY;
                                                                         int l9 = sceneObjectBuffer[l3].x - cameraX;
                                                                         int l10 = sceneObjectBuffer[l3].y - cameraY;
                                                                         if (j7 * j7 + k8 * k8 > l9 * l9 + l10 * l10) {
@@ -1351,13 +1351,13 @@ final class WorldController {
 						if (l3 == -1) {
 							break;
 						}
-                                                SceneObject class28_3 = sceneObjectBuffer[l3];
-                                                class28_3.lastDrawn = renderCycle;
-                                                if (!isAreaVisible(l, class28_3.startX, class28_3.endX, class28_3.startY, class28_3.endY, class28_3.renderable.modelHeight)) {
-                                                        class28_3.renderable.render(class28_3.orientation, pitchSin, pitchCos, yawSin, yawCos, class28_3.x - cameraX, class28_3.height - cameraZ, class28_3.y - cameraY, class28_3.uid);
+                                                SceneObject sceneObj = sceneObjectBuffer[l3];
+                                                sceneObj.lastDrawn = renderCycle;
+                                                if (!isAreaVisible(l, sceneObj.startX, sceneObj.endX, sceneObj.startY, sceneObj.endY, sceneObj.renderable.modelHeight)) {
+                                                        sceneObj.renderable.render(sceneObj.orientation, pitchSin, pitchCos, yawSin, yawCos, sceneObj.x - cameraX, sceneObj.height - cameraZ, sceneObj.y - cameraY, sceneObj.uid);
                                                 }
-                                                for (int k7 = class28_3.startX; k7 <= class28_3.endX; k7++) {
-                                                        for (int l8 = class28_3.startY; l8 <= class28_3.endY; l8++) {
+                                                for (int k7 = sceneObj.startX; k7 <= sceneObj.endX; k7++) {
+                                                        for (int l8 = sceneObj.startY; l8 <= sceneObj.endY; l8++) {
                                                                 Ground queuedNeighborTile = planeTiles[k7][l8];
                                                                 if (queuedNeighborTile.cullFlags != 0) {
                                                                         tileQueue.insertHead(queuedNeighborTile);
@@ -1494,7 +1494,7 @@ final class WorldController {
 		} while (true);
 	}
 
-       private void drawPlainTile(PlainTile class43, int i, int j, int k, int l, int i1, int j1, int k1) {
+       private void drawPlainTile(PlainTile tile, int i, int j, int k, int l, int i1, int j1, int k1) {
 		int l1;
 		int i2 = l1 = (j1 << 7) - cameraX;
 		int j2;
@@ -1558,19 +1558,19 @@ final class WorldController {
                                 clickedTileX = j1;
                                 clickedTileY = k1;
                         }
-                        if (class43.textureId == -1) {
-                                if (class43.northEastColor != 0xbc614e) {
-                                        Texture.drawGouraudTriangle(j6, l6, l5, i6, k6, k5, class43.northEastColor, class43.northWestColor, class43.southEastColor);
+                        if (tile.textureId == -1) {
+                                if (tile.northEastColor != 0xbc614e) {
+                                        Texture.drawGouraudTriangle(j6, l6, l5, i6, k6, k5, tile.northEastColor, tile.northWestColor, tile.southEastColor);
                                 }
                         } else if (!lowMem) {
-                                if (class43.flatShade) {
-                                        Texture.drawTexturedTriangle(j6, l6, l5, i6, k6, k5, class43.northEastColor, class43.northWestColor, class43.southEastColor, i2, i3, l1, l3, i4, k4, k2, j2, j3, class43.textureId);
+                                if (tile.flatShade) {
+                                        Texture.drawTexturedTriangle(j6, l6, l5, i6, k6, k5, tile.northEastColor, tile.northWestColor, tile.southEastColor, i2, i3, l1, l3, i4, k4, k2, j2, j3, tile.textureId);
                                 } else {
-                                        Texture.drawTexturedTriangle(j6, l6, l5, i6, k6, k5, class43.northEastColor, class43.northWestColor, class43.southEastColor, l2, l1, i3, j4, k4, i4, k3, j3, j2, class43.textureId);
+                                        Texture.drawTexturedTriangle(j6, l6, l5, i6, k6, k5, tile.northEastColor, tile.northWestColor, tile.southEastColor, l2, l1, i3, j4, k4, i4, k3, j3, j2, tile.textureId);
                                 }
                         } else {
-                                int i7 = textureLookup[class43.textureId];
-                                Texture.drawGouraudTriangle(j6, l6, l5, i6, k6, k5, applyBrightness(i7, class43.northEastColor), applyBrightness(i7, class43.northWestColor), applyBrightness(i7, class43.southEastColor));
+                                int i7 = textureLookup[tile.textureId];
+                                Texture.drawGouraudTriangle(j6, l6, l5, i6, k6, k5, applyBrightness(i7, tile.northEastColor), applyBrightness(i7, tile.northWestColor), applyBrightness(i7, tile.southEastColor));
                         }
 		}
 		if ((i5 - k5) * (l6 - l5) - (j5 - l5) * (k6 - k5) > 0) {
@@ -1579,17 +1579,17 @@ final class WorldController {
                                 clickedTileX = j1;
                                 clickedTileY = k1;
                         }
-                        if (class43.textureId == -1) {
-                                if (class43.southWestColor != 0xbc614e) {
-                                        Texture.drawGouraudTriangle(j5, l5, l6, i5, k5, k6, class43.southWestColor, class43.southEastColor, class43.northWestColor);
+                        if (tile.textureId == -1) {
+                                if (tile.southWestColor != 0xbc614e) {
+                                        Texture.drawGouraudTriangle(j5, l5, l6, i5, k5, k6, tile.southWestColor, tile.southEastColor, tile.northWestColor);
                                 }
                         } else {
                                 if (!lowMem) {
-                                        Texture.drawTexturedTriangle(j5, l5, l6, i5, k5, k6, class43.southWestColor, class43.southEastColor, class43.northWestColor, i2, i3, l1, l3, i4, k4, k2, j2, j3, class43.textureId);
+                                        Texture.drawTexturedTriangle(j5, l5, l6, i5, k5, k6, tile.southWestColor, tile.southEastColor, tile.northWestColor, i2, i3, l1, l3, i4, k4, k2, j2, j3, tile.textureId);
                                         return;
                                 }
-                                int j7 = textureLookup[class43.textureId];
-                                Texture.drawGouraudTriangle(j5, l5, l6, i5, k5, k6, applyBrightness(j7, class43.southWestColor), applyBrightness(j7, class43.southEastColor), applyBrightness(j7, class43.northWestColor));
+                                int j7 = textureLookup[tile.textureId];
+                                Texture.drawGouraudTriangle(j5, l5, l6, i5, k5, k6, applyBrightness(j7, tile.southWestColor), applyBrightness(j7, tile.southEastColor), applyBrightness(j7, tile.northWestColor));
                         }
 		}
 	}
@@ -1687,20 +1687,20 @@ final class WorldController {
 
         private void updateCullingClusters() {
                int j = cullingClusterCounts[cameraPlane];
-               CullingCluster aclass47[] = aCullingClusters[cameraPlane];
+               CullingCluster planeClusters[] = aCullingClusters[cameraPlane];
                cullingClusterBufferCount = 0;
 		for (int k = 0; k < j; k++) {
-			CullingCluster class47 = aclass47[k];
-			if (class47.type == 1) {
-				int l = class47.minTileX - cameraTileX + drawDistance;
+			CullingCluster cluster = planeClusters[k];
+			if (cluster.type == 1) {
+				int l = cluster.minTileX - cameraTileX + drawDistance;
 				if (l < 0 || l > 50) {
 					continue;
 				}
-				int k1 = class47.minTileZ - cameraTileY + drawDistance;
+				int k1 = cluster.minTileZ - cameraTileY + drawDistance;
 				if (k1 < 0) {
 					k1 = 0;
 				}
-				int j2 = class47.maxTileZ - cameraTileY + drawDistance;
+				int j2 = cluster.maxTileZ - cameraTileY + drawDistance;
 				if (j2 > 50) {
 					j2 = 50;
 				}
@@ -1714,33 +1714,33 @@ final class WorldController {
 				if (!flag) {
 					continue;
 				}
-				int j3 = cameraX - class47.minX;
+				int j3 = cameraX - cluster.minX;
 				if (j3 > 32) {
-					class47.searchMask = 1;
+					cluster.searchMask = 1;
 				} else {
 					if (j3 >= -32) {
 						continue;
 					}
-					class47.searchMask = 2;
+					cluster.searchMask = 2;
 					j3 = -j3;
 				}
-				class47.startZFactor = (class47.minZ - cameraY << 8) / j3;
-				class47.endZFactor = (class47.maxZ - cameraY << 8) / j3;
-				class47.startYFactor = (class47.minY - cameraZ << 8) / j3;
-				class47.endYFactor = (class47.maxY - cameraZ << 8) / j3;
-                               cullingClusterBuffer[cullingClusterBufferCount++] = class47;
+				cluster.startZFactor = (cluster.minZ - cameraY << 8) / j3;
+				cluster.endZFactor = (cluster.maxZ - cameraY << 8) / j3;
+				cluster.startYFactor = (cluster.minY - cameraZ << 8) / j3;
+				cluster.endYFactor = (cluster.maxY - cameraZ << 8) / j3;
+                               cullingClusterBuffer[cullingClusterBufferCount++] = cluster;
 				continue;
 			}
-			if (class47.type == 2) {
-				int i1 = class47.minTileZ - cameraTileY + drawDistance;
+			if (cluster.type == 2) {
+				int i1 = cluster.minTileZ - cameraTileY + drawDistance;
 				if (i1 < 0 || i1 > 50) {
 					continue;
 				}
-				int l1 = class47.minTileX - cameraTileX + drawDistance;
+				int l1 = cluster.minTileX - cameraTileX + drawDistance;
 				if (l1 < 0) {
 					l1 = 0;
 				}
-				int k2 = class47.maxTileX - cameraTileX + drawDistance;
+				int k2 = cluster.maxTileX - cameraTileX + drawDistance;
 				if (k2 > 50) {
 					k2 = 50;
 				}
@@ -1754,38 +1754,38 @@ final class WorldController {
 				if (!tileVisible) {
 					continue;
 				}
-				int k3 = cameraY - class47.minZ;
+				int k3 = cameraY - cluster.minZ;
 				if (k3 > 32) {
-					class47.searchMask = 3;
+					cluster.searchMask = 3;
 				} else {
 					if (k3 >= -32) {
 						continue;
 					}
-					class47.searchMask = 4;
+					cluster.searchMask = 4;
 					k3 = -k3;
 				}
-				class47.startXFactor = (class47.minX - cameraX << 8) / k3;
-				class47.endXFactor = (class47.maxX - cameraX << 8) / k3;
-				class47.startYFactor = (class47.minY - cameraZ << 8) / k3;
-				class47.endYFactor = (class47.maxY - cameraZ << 8) / k3;
-                               cullingClusterBuffer[cullingClusterBufferCount++] = class47;
-			} else if (class47.type == 4) {
-				int j1 = class47.minY - cameraZ;
+				cluster.startXFactor = (cluster.minX - cameraX << 8) / k3;
+				cluster.endXFactor = (cluster.maxX - cameraX << 8) / k3;
+				cluster.startYFactor = (cluster.minY - cameraZ << 8) / k3;
+				cluster.endYFactor = (cluster.maxY - cameraZ << 8) / k3;
+                               cullingClusterBuffer[cullingClusterBufferCount++] = cluster;
+			} else if (cluster.type == 4) {
+				int j1 = cluster.minY - cameraZ;
 				if (j1 > 128) {
-					int i2 = class47.minTileZ - cameraTileY + drawDistance;
+					int i2 = cluster.minTileZ - cameraTileY + drawDistance;
 					if (i2 < 0) {
 						i2 = 0;
 					}
-					int l2 = class47.maxTileZ - cameraTileY + drawDistance;
+					int l2 = cluster.maxTileZ - cameraTileY + drawDistance;
 					if (l2 > 50) {
 						l2 = 50;
 					}
 					if (i2 <= l2) {
-						int i3 = class47.minTileX - cameraTileX + drawDistance;
+						int i3 = cluster.minTileX - cameraTileX + drawDistance;
 						if (i3 < 0) {
 							i3 = 0;
 						}
-						int l3 = class47.maxTileX - cameraTileX + drawDistance;
+						int l3 = cluster.maxTileX - cameraTileX + drawDistance;
 						if (l3 > 50) {
 							l3 = 50;
 						}
@@ -1802,12 +1802,12 @@ final class WorldController {
 						}
 
 						if (foundVisible) {
-							class47.searchMask = 5;
-							class47.startXFactor = (class47.minX - cameraX << 8) / j1;
-							class47.endXFactor = (class47.maxX - cameraX << 8) / j1;
-							class47.startZFactor = (class47.minZ - cameraY << 8) / j1;
-							class47.endZFactor = (class47.maxZ - cameraY << 8) / j1;
-                                                   cullingClusterBuffer[cullingClusterBufferCount++] = class47;
+							cluster.searchMask = 5;
+							cluster.startXFactor = (cluster.minX - cameraX << 8) / j1;
+							cluster.endXFactor = (cluster.maxX - cameraX << 8) / j1;
+							cluster.startZFactor = (cluster.minZ - cameraY << 8) / j1;
+							cluster.endZFactor = (cluster.maxZ - cameraY << 8) / j1;
+                                                   cullingClusterBuffer[cullingClusterBufferCount++] = cluster;
 						}
 					}
 				}
@@ -1986,58 +1986,58 @@ final class WorldController {
 
 	private boolean isPointVisible(int i, int j, int k) {
            for (int l = 0; l < cullingClusterBufferCount; l++) {
-			CullingCluster class47 = cullingClusterBuffer[l];
-			if (class47.searchMask == 1) {
-				int i1 = class47.minX - i;
+			CullingCluster cluster = cullingClusterBuffer[l];
+			if (cluster.searchMask == 1) {
+				int i1 = cluster.minX - i;
 				if (i1 > 0) {
-					int j2 = class47.minZ + (class47.startZFactor * i1 >> 8);
-					int k3 = class47.maxZ + (class47.endZFactor * i1 >> 8);
-					int l4 = class47.minY + (class47.startYFactor * i1 >> 8);
-					int i6 = class47.maxY + (class47.endYFactor * i1 >> 8);
+					int j2 = cluster.minZ + (cluster.startZFactor * i1 >> 8);
+					int k3 = cluster.maxZ + (cluster.endZFactor * i1 >> 8);
+					int l4 = cluster.minY + (cluster.startYFactor * i1 >> 8);
+					int i6 = cluster.maxY + (cluster.endYFactor * i1 >> 8);
 					if (k >= j2 && k <= k3 && j >= l4 && j <= i6) {
 						return true;
 					}
 				}
-			} else if (class47.searchMask == 2) {
-				int j1 = i - class47.minX;
+			} else if (cluster.searchMask == 2) {
+				int j1 = i - cluster.minX;
 				if (j1 > 0) {
-					int k2 = class47.minZ + (class47.startZFactor * j1 >> 8);
-					int l3 = class47.maxZ + (class47.endZFactor * j1 >> 8);
-					int i5 = class47.minY + (class47.startYFactor * j1 >> 8);
-					int j6 = class47.maxY + (class47.endYFactor * j1 >> 8);
+					int k2 = cluster.minZ + (cluster.startZFactor * j1 >> 8);
+					int l3 = cluster.maxZ + (cluster.endZFactor * j1 >> 8);
+					int i5 = cluster.minY + (cluster.startYFactor * j1 >> 8);
+					int j6 = cluster.maxY + (cluster.endYFactor * j1 >> 8);
 					if (k >= k2 && k <= l3 && j >= i5 && j <= j6) {
 						return true;
 					}
 				}
-			} else if (class47.searchMask == 3) {
-				int k1 = class47.minZ - k;
+			} else if (cluster.searchMask == 3) {
+				int k1 = cluster.minZ - k;
 				if (k1 > 0) {
-					int l2 = class47.minX + (class47.startXFactor * k1 >> 8);
-					int i4 = class47.maxX + (class47.endXFactor * k1 >> 8);
-					int j5 = class47.minY + (class47.startYFactor * k1 >> 8);
-					int k6 = class47.maxY + (class47.endYFactor * k1 >> 8);
+					int l2 = cluster.minX + (cluster.startXFactor * k1 >> 8);
+					int i4 = cluster.maxX + (cluster.endXFactor * k1 >> 8);
+					int j5 = cluster.minY + (cluster.startYFactor * k1 >> 8);
+					int k6 = cluster.maxY + (cluster.endYFactor * k1 >> 8);
 					if (i >= l2 && i <= i4 && j >= j5 && j <= k6) {
 						return true;
 					}
 				}
-			} else if (class47.searchMask == 4) {
-				int l1 = k - class47.minZ;
+			} else if (cluster.searchMask == 4) {
+				int l1 = k - cluster.minZ;
 				if (l1 > 0) {
-					int i3 = class47.minX + (class47.startXFactor * l1 >> 8);
-					int j4 = class47.maxX + (class47.endXFactor * l1 >> 8);
-					int k5 = class47.minY + (class47.startYFactor * l1 >> 8);
-					int l6 = class47.maxY + (class47.endYFactor * l1 >> 8);
+					int i3 = cluster.minX + (cluster.startXFactor * l1 >> 8);
+					int j4 = cluster.maxX + (cluster.endXFactor * l1 >> 8);
+					int k5 = cluster.minY + (cluster.startYFactor * l1 >> 8);
+					int l6 = cluster.maxY + (cluster.endYFactor * l1 >> 8);
 					if (i >= i3 && i <= j4 && j >= k5 && j <= l6) {
 						return true;
 					}
 				}
-			} else if (class47.searchMask == 5) {
-				int i2 = j - class47.minY;
+			} else if (cluster.searchMask == 5) {
+				int i2 = j - cluster.minY;
 				if (i2 > 0) {
-					int j3 = class47.minX + (class47.startXFactor * i2 >> 8);
-					int k4 = class47.maxX + (class47.endXFactor * i2 >> 8);
-					int l5 = class47.minZ + (class47.startZFactor * i2 >> 8);
-					int i7 = class47.maxZ + (class47.endZFactor * i2 >> 8);
+					int j3 = cluster.minX + (cluster.startXFactor * i2 >> 8);
+					int k4 = cluster.maxX + (cluster.endXFactor * i2 >> 8);
+					int l5 = cluster.minZ + (cluster.startZFactor * i2 >> 8);
+					int i7 = cluster.maxZ + (cluster.endZFactor * i2 >> 8);
 					if (i >= j3 && i <= k4 && k >= l5 && k <= i7) {
 						return true;
 					}

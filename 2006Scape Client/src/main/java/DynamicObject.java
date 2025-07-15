@@ -30,17 +30,17 @@ final class DynamicObject extends Animable {
 				j = animation.frameIds[currentFrame];
 			}
 		}
-		ObjectDef class46;
-		if (childIDs != null) {
-			class46 = getChildDefinition();
-		} else {
-			class46 = ObjectDef.forID(id);
-		}
-		if (class46 == null) {
-			return null;
-		} else {
-			return class46.getModel(type, orientation, tileHeight, tileHeight1, tileHeight2, tileHeight3, j);
-		}
+                ObjectDef objectDef;
+                if (childIDs != null) {
+                        objectDef = getChildDefinition();
+                } else {
+                        objectDef = ObjectDef.forID(id);
+                }
+                if (objectDef == null) {
+                        return null;
+                } else {
+                        return objectDef.getModel(type, orientation, tileHeight, tileHeight1, tileHeight2, tileHeight3, j);
+                }
 	}
 
 	private ObjectDef getChildDefinition() {
@@ -79,10 +79,10 @@ final class DynamicObject extends Animable {
                                 cycleStart -= (int) (Math.random() * animation.getFrameDelay(currentFrame));
 			}
 		}
-		ObjectDef class46 = ObjectDef.forID(id);
-                varbitId = class46.varbitId;
-                varpId = class46.varpId;
-		childIDs = class46.childrenIDs;
+                ObjectDef objectDef = ObjectDef.forID(id);
+                varbitId = objectDef.varbitId;
+                varpId = objectDef.varpId;
+                childIDs = objectDef.childrenIDs;
 	}
 
 	private int currentFrame;
