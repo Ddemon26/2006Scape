@@ -36,12 +36,12 @@ public final class Player extends Entity {
 				model = new Model(aclass30_sub2_sub4_sub6_1s);
 			}
 		}
-		if (aModel_1714 != null) {
-			if (Game.loopCycle >= animationEndCycle) {
-				aModel_1714 = null;
-			}
-			if (Game.loopCycle >= animationStartCycle && Game.loopCycle < animationEndCycle) {
-				Model model_1 = aModel_1714;
+                if (overlayModel != null) {
+                        if (Game.loopCycle >= animationEndCycle) {
+                                overlayModel = null;
+                        }
+                        if (Game.loopCycle >= animationStartCycle && Game.loopCycle < animationEndCycle) {
+                                Model model_1 = overlayModel;
 				model_1.translate(animationBaseX - super.x, animationBaseHeight - animationBaseY, animationBaseZ - super.y);
 				if (super.turnDirection == 512) {
 					model_1.calculateNormals();
@@ -53,8 +53,8 @@ public final class Player extends Entity {
 				} else if (super.turnDirection == 1536) {
 					model_1.calculateNormals();
 				}
-				Model aclass30_sub2_sub4_sub6s[] = {model, model_1};
-				model = new Model(aclass30_sub2_sub4_sub6s);
+                                Model aclass30_sub2_sub4_sub6s[] = {model, model_1};
+                                model = new Model(aclass30_sub2_sub4_sub6s);
 				if (super.turnDirection == 512) {
 					model_1.calculateNormals();
 				} else if (super.turnDirection == 1024) {
@@ -364,7 +364,7 @@ public final class Player extends Entity {
         int animationBaseX;
         int animationBaseHeight;
         int animationBaseZ;
-	Model aModel_1714;
+        Model overlayModel;
 	public final int[] equipment;
         private long appearanceHash;
         int boundingBoxMinX;

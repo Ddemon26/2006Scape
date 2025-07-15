@@ -136,5 +136,5 @@ public final class Animation {
 	public int precedenceAnimating;
 	public int precedenceWalking;
 	public int replayMode;
-	public static int anInt367;
+        public static int animationCount;
 }

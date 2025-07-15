@@ -1510,7 +1510,7 @@ public class Game extends RSApplet {
 				}
 			}
 			// Entity stuff
-			int anInt974 = 0;
+                        int overheadTextCount = 0;
 			for (int j = -1; j < playerCount + npcCount; j++) {
 				Object obj;
 				if (j == -1) {
@@ -1589,24 +1589,24 @@ public class Game extends RSApplet {
 				// Chat messages sent
 				if (((Entity) obj).textSpoken != null && (j >= playerCount || publicChatMode == 0 || publicChatMode == 3 || publicChatMode == 1 && isFriendOrSelf(((Player) obj).name))) {
 					npcScreenPos(((Entity) obj), ((Entity) obj).height);
-					if (spriteDrawX > -1 && anInt974 < maxDisplayedText) {
-                                                textWidth[anInt974] = chatTextDrawingArea.measurePlainTextWidth(((Entity) obj).textSpoken) / 2;
-                                                textHeight[anInt974] = chatTextDrawingArea.fontHeight;
-						textX[anInt974] = spriteDrawX;
-						textY[anInt974] = spriteDrawY;
-						textColors[anInt974] = ((Entity) obj).chatColor;
-						textEffects[anInt974] = ((Entity) obj).chatEffect;
-						textCycles[anInt974] = ((Entity) obj).textCycle;
-						overheadTexts[anInt974++] = ((Entity) obj).textSpoken;
+                                        if (spriteDrawX > -1 && overheadTextCount < maxDisplayedText) {
+                                                textWidth[overheadTextCount] = chatTextDrawingArea.measurePlainTextWidth(((Entity) obj).textSpoken) / 2;
+                                                textHeight[overheadTextCount] = chatTextDrawingArea.fontHeight;
+                                                textX[overheadTextCount] = spriteDrawX;
+                                                textY[overheadTextCount] = spriteDrawY;
+                                                textColors[overheadTextCount] = ((Entity) obj).chatColor;
+                                                textEffects[overheadTextCount] = ((Entity) obj).chatEffect;
+                                                textCycles[overheadTextCount] = ((Entity) obj).textCycle;
+                                                overheadTexts[overheadTextCount++] = ((Entity) obj).textSpoken;
 						if (chatEffectsState == 0 && ((Entity) obj).chatEffect >= 1 && ((Entity) obj).chatEffect <= 3) {
-							textHeight[anInt974] += 10;
-							textY[anInt974] += 5;
+                                                        textHeight[overheadTextCount] += 10;
+                                                        textY[overheadTextCount] += 5;
 						}
 						if (chatEffectsState == 0 && ((Entity) obj).chatEffect == 4) {
-							textWidth[anInt974] = 60;
+                                                        textWidth[overheadTextCount] = 60;
 						}
 						if (chatEffectsState == 0 && ((Entity) obj).chatEffect == 5) {
-							textHeight[anInt974] += 5;
+                                                        textHeight[overheadTextCount] += 5;
 						}
 					}
 				}
@@ -1649,7 +1649,7 @@ public class Game extends RSApplet {
 				}
 			}
 			// Hit markers
-			for (int k = 0; k < anInt974; k++) {
+                        for (int k = 0; k < overheadTextCount; k++) {
 				int k1 = textX[k];
 				int l1 = textY[k];
 				int j2 = textWidth[k];
@@ -2311,7 +2311,7 @@ public class Game extends RSApplet {
 			if (j1 < 0 || j1 >= 104 || k1 < 0 || k1 >= 104) {
 				continue;
 			}
-                        if (player.aModel_1714 != null && loopCycle >= player.animationStartCycle && loopCycle < player.animationEndCycle) {
+                        if (player.overlayModel != null && loopCycle >= player.animationStartCycle && loopCycle < player.animationEndCycle) {
 				player.skipAnimations = false;
                                 player.animationBaseY = getTileHeight(plane, player.y, player.x);
                                worldController.addAnimatingObject(plane, player.y, player, player.currentHeading, player.boundingBoxMaxY, player.x, player.animationBaseY, player.boundingBoxMinX, player.boundingBoxMaxX, i1, player.boundingBoxMinY);
@@ -7004,7 +7004,7 @@ public class Game extends RSApplet {
 			plainFont = new TextDrawingArea(false, "p11_full", titleStreamLoader);
 			boldFont = new TextDrawingArea(false, "p12_full", titleStreamLoader);
 			chatTextDrawingArea = new TextDrawingArea(false, "b12_full", titleStreamLoader);
-			TextDrawingArea aTextDrawingArea_1273 = new TextDrawingArea(true, "q8_full", titleStreamLoader);
+                        TextDrawingArea smallFont = new TextDrawingArea(true, "q8_full", titleStreamLoader);
 			drawLogo();
 			loadTitleScreen();
 			//repackCacheIndex(1);
@@ -7297,7 +7297,7 @@ public class Game extends RSApplet {
 			Sounds.unpack(stream);
 			// }
 			drawLoadingText(95, "Unpacking interfaces");
-			TextDrawingArea aclass30_sub2_sub1_sub4s[] = {plainFont, boldFont, chatTextDrawingArea, aTextDrawingArea_1273};
+                        TextDrawingArea aclass30_sub2_sub1_sub4s[] = {plainFont, boldFont, chatTextDrawingArea, smallFont};
 			RSInterface.unpack(streamLoader_1, aclass30_sub2_sub1_sub4s, streamLoader_2);
 			drawLoadingText(100, "Preparing game engine");
 			for (int j6 = 0; j6 < 33; j6++) {
@@ -10171,7 +10171,7 @@ public class Game extends RSApplet {
 					queuePendingSpawn(k17 + 1, -1, 0, l20, j7, 0, plane, k4, l14 + 1);
                                 player.animationStartCycle = l14 + loopCycle;
                                 player.animationEndCycle = k17 + loopCycle;
-					player.aModel_1714 = model;
+                                        player.overlayModel = model;
 					int i23 = class46.sizeX;
 					int j23 = class46.sizeY;
 					if (i20 == 1 || i20 == 3) {

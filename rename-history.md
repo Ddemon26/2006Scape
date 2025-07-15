@@ -496,7 +496,9 @@ This document lists variable or identifier renames found in the commit history.
 ## Class40 -> ShapedTile
 
 ## Class56_Sub1_Sub1 -> SystemMidiPlayer
- - method790 -> closeMidiSystem
+- method790 -> closeMidiSystem
+- aReceiver1850 -> midiReceiver
+- aSequencer1851 -> midiSequencer
 
 ## Class47 -> CullingCluster
 
@@ -879,8 +881,9 @@ This document lists variable or identifier renames found in the commit history.
  - anInt1708 -> animationEndCycle
  - anInt1709 -> animationBaseY
  - anInt1711 -> animationBaseX
- - anInt1712 -> animationBaseHeight
+- anInt1712 -> animationBaseHeight
 - anInt1713 -> animationBaseZ
+- aModel_1714 -> overlayModel
 - aBoolean1699 -> skipAnimations
 - anInt1719 -> boundingBoxMinX
 - anInt1720 -> boundingBoxMinY
@@ -941,7 +944,12 @@ This document lists variable or identifier renames found in the commit history.
  - anIntArray676 -> faceColorA
  - anIntArray677 -> faceColorB
  - anIntArray678 -> faceColorC
- - anIntArray682 -> faceTexture
+- anIntArray682 -> faceTexture
+- anIntArray693 -> faceOrderA
+- anIntArray694 -> faceOrderB
+- anIntArray695 -> faceOrderC
+- anIntArrayArray696 -> shapeVertexIndices
+- anIntArrayArray697 -> shapeFaceTemplates
 
 ## Varp
  - anInt702 -> varpCount
@@ -1005,6 +1013,7 @@ This document lists variable or identifier renames found in the commit history.
 - aByteArrayArray1247 -> objectMapData
 - aTextDrawingArea_1270 -> plainFont
 - aTextDrawingArea_1271 -> boldFont
+- aTextDrawingArea_1273 -> smallFont
 - unknownInt1289 -> unusedSlotIndex
 - unknownInt1290 -> unusedSettingValue
 - aByteArray347 -> queuedMidiData
@@ -1019,6 +1028,10 @@ This document lists variable or identifier renames found in the commit history.
 - minimapInt2 -> minimapRotationOffset
 - minimapInt3 -> minimapZoom
 - backVmidIP2_2 -> midSubscreenBuffer
+- anInt974 -> overheadTextCount
+
+## DrawingArea
+ - anInt1387 -> viewportHalfHeight
 
 ## EntityDef
  - anInt55 -> turn90CCWAnimation
@@ -1056,6 +1069,7 @@ This document lists variable or identifier renames found in the commit history.
  - anInt363 -> precedenceAnimating
 - anInt364 -> precedenceWalking
 - anInt365 -> replayMode
+- anInt367 -> animationCount
 
 ## NodeSub
  - anInt1305 -> subNodeCounter
@@ -1063,3 +1077,6 @@ This document lists variable or identifier renames found in the commit history.
 ## Entity
  - aBoolean1541 -> forcedAnimation
  - aBooleanArray1553 -> movementQueueFlags
+
+## SizeConstants
+ - anIntArray552 -> permutationTable
