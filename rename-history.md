@@ -572,6 +572,24 @@ This document lists variable or identifier renames found in the commit history.
 - aByteArrayArrayArray148 -> tileOverlayOrientations
 - aByteArrayArrayArray134 -> tileShadowing
 - anIntArray140 -> boundaryRotationMasks
+- aclass11 -> collisionMaps
+- class11 -> collisionMap
+- class42_sub1 -> onDemandFetcher
+- class46 -> objectDefinition
+- obj -> tileDecoration
+- obj1 -> dynamicObject
+- obj2 -> genericObject
+- obj3 -> straightBoundary
+- obj4 -> cornerBoundary
+- obj5 -> diagonalBoundary
+- obj6 -> interactiveObject
+- obj7 -> wallDecoration
+- obj8 -> wallDecoration2
+- obj9 -> wallDecoration3
+- obj10 -> wallDecoration4
+- obj11 -> boundaryPrimary
+- obj12 -> boundarySecondary
+- obj13 -> wallDecorationOffset
 
 ## Censor
  - method509 -> applyWordFilter
