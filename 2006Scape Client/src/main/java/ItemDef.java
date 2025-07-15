@@ -63,8 +63,8 @@ public final class ItemDef {
                Model model = Model.create(head);
                if (head2 != -1) {
                        Model model_1 = Model.create(head2);
-                       Model aclass30_sub2_sub4_sub6s[] = {model, model_1};
-                       model = new Model(2, aclass30_sub2_sub4_sub6s);
+                       Model combinedModels[] = {model, model_1};
+                       model = new Model(2, combinedModels);
                }
 		if (modifiedModelColors != null) {
 			for (int i1 = 0; i1 < modifiedModelColors.length; i1++) {
@@ -117,12 +117,12 @@ public final class ItemDef {
                        if (leg != -1) {
                                Model model_1 = Model.create(arm);
                                Model model_3 = Model.create(leg);
-                               Model aclass30_sub2_sub4_sub6_1s[] = {model, model_1, model_3};
-                               model = new Model(3, aclass30_sub2_sub4_sub6_1s);
+                               Model combinedModels[] = {model, model_1, model_3};
+                               model = new Model(3, combinedModels);
                        } else {
                                Model model_2 = Model.create(arm);
-                               Model aclass30_sub2_sub4_sub6s[] = {model, model_2};
-                               model = new Model(2, aclass30_sub2_sub4_sub6s);
+                               Model combinedModels[] = {model, model_2};
+                               model = new Model(2, combinedModels);
                        }
                }
                if (gender == 0 && maleOffsetY != 0) {

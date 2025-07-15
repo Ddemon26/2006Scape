@@ -658,6 +658,8 @@ This document lists variable or identifier renames found in the commit history.
 ## ItemDef
  - anIntArray408 -> originalModelColors
  - anIntArray409 -> modifiedModelColors
+ - aclass30_sub2_sub4_sub6_1s -> combinedModels
+ - aclass30_sub2_sub4_sub6s -> combinedModels
 
 ## Model
 - nullLoader -> clearCache
@@ -750,6 +752,13 @@ This document lists variable or identifier renames found in the commit history.
 - modelIntArray2 -> cosineTable
 - modelIntArray3 -> brightnessTable
 - modelIntArray4 -> reciprocalTable
+- aclass30_sub2_sub4_sub6s -> models
+- class33 -> vertexNormalDest
+- class33_1 -> vertexNormalSrc
+- class33_2 -> vertexNormal
+- class36 -> animFrame
+- class36_1 -> secondaryFrame
+- class18 -> frameBase
 
 ## Sounds
  - aClass3_Sub12_211 -> stream
@@ -956,6 +965,8 @@ This document lists variable or identifier renames found in the commit history.
 - anInt1720 -> boundingBoxMinY
 - anInt1721 -> boundingBoxMaxX
 - anInt1722 -> boundingBoxMaxY
+- aclass30_sub2_sub4_sub6_1s -> combinedModels
+- aclass30_sub2_sub4_sub6s -> modelParts
 
 ## Entity
  - anInt1504 -> turnSpeed
@@ -1116,6 +1127,13 @@ This document lists variable or identifier renames found in the commit history.
 - class30_sub2_sub1_sub1_2 -> itemSprite
 - class30_sub2_sub1_sub1_1 -> slotSprite
 - class30_sub2_sub2 -> crcStream
+- class46_2 -> objectDef2
+- class46_1 -> objectDef1
+- class46 -> objectDef
+- class19 -> itemList
+- class19_1 -> itemList1
+- class10 -> boundaryObject
+- class49 -> tileDecoration
 
 - class9 -> targetInterface
 - class9 -> parentInterface

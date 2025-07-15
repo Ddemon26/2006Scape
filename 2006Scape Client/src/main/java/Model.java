@@ -287,7 +287,7 @@ public final class Model extends Animable {
 
 	}
 
-	public Model(int i, Model aclass30_sub2_sub4_sub6s[]) {
+    public Model(int i, Model models[]) {
 		pickable = false;
 		boolean flag = false;
 		boolean flag1 = false;
@@ -298,7 +298,7 @@ public final class Model extends Animable {
 		texturedTriangleCount = 0;
 		defaultPriority = -1;
 		for (int k = 0; k < i; k++) {
-			Model model = aclass30_sub2_sub4_sub6s[k];
+                    Model model = models[k];
 			if (model != null) {
 				vertexCount += model.vertexCount;
 				faceCount += model.faceCount;
@@ -347,7 +347,7 @@ public final class Model extends Animable {
 		texturedTriangleCount = 0;
 		int l = 0;
 		for (int i1 = 0; i1 < i; i1++) {
-			Model model_1 = aclass30_sub2_sub4_sub6s[i1];
+                    Model model_1 = models[i1];
 			if (model_1 != null) {
 				for (int j1 = 0; j1 < model_1.faceCount; j1++) {
 					if (flag) {
@@ -398,7 +398,7 @@ public final class Model extends Animable {
 
 	}
 
-	public Model(Model aclass30_sub2_sub4_sub6s[]) {
+    public Model(Model models[]) {
 		int i = 2;// was parameter
 		pickable = false;
 		boolean flag1 = false;
@@ -410,7 +410,7 @@ public final class Model extends Animable {
 		texturedTriangleCount = 0;
 		defaultPriority = -1;
 		for (int k = 0; k < i; k++) {
-			Model model = aclass30_sub2_sub4_sub6s[k];
+                    Model model = models[k];
 			if (model != null) {
 				vertexCount += model.vertexCount;
 				faceCount += model.faceCount;
@@ -460,7 +460,7 @@ public final class Model extends Animable {
 		texturedTriangleCount = 0;
 		int i1 = 0;
 		for (int j1 = 0; j1 < i; j1++) {
-			Model model_1 = aclass30_sub2_sub4_sub6s[j1];
+                    Model model_1 = models[j1];
 			if (model_1 != null) {
 				int k1 = vertexCount;
 				for (int l1 = 0; l1 < model_1.vertexCount; l1++) {
@@ -609,14 +609,14 @@ public final class Model extends Animable {
 
 			}
                        super.vertexNormals = new VertexNormal[vertexCount];
-			for (int j1 = 0; j1 < vertexCount; j1++) {
-                               VertexNormal class33 = super.vertexNormals[j1] = new VertexNormal();
-                               VertexNormal class33_1 = model.vertexNormals[j1];
-				class33.x = class33_1.x;
-				class33.y = class33_1.y;
-				class33.z = class33_1.z;
-				class33.magnitude = class33_1.magnitude;
-			}
+                for (int j1 = 0; j1 < vertexCount; j1++) {
+                               VertexNormal vertexNormalDest = super.vertexNormals[j1] = new VertexNormal();
+                               VertexNormal vertexNormalSrc = model.vertexNormals[j1];
+                                vertexNormalDest.x = vertexNormalSrc.x;
+                                vertexNormalDest.y = vertexNormalSrc.y;
+                                vertexNormalDest.z = vertexNormalSrc.z;
+                                vertexNormalDest.magnitude = vertexNormalSrc.magnitude;
+                        }
 
 			vertexNormalTemp = model.vertexNormalTemp;
 		} else {
@@ -865,17 +865,17 @@ public final class Model extends Animable {
 		if (i == -1) {
 			return;
 		}
-                AnimFrame class36 = AnimFrame.forId(i);
-		if (class36 == null) {
-			return;
-		}
-                FrameBase class18 = class36.frameBase;
+                AnimFrame animFrame = AnimFrame.forId(i);
+                if (animFrame == null) {
+                        return;
+                }
+                FrameBase frameBase = animFrame.frameBase;
 		transformX = 0;
 		transformY = 0;
 		transformZ = 0;
-                for (int k = 0; k < class36.transformationCount; k++) {
-                        int l = class36.transformationIndices[k];
-                        transformVertices(class18.transformationType[l], class18.transformationList[l], class36.transformX[k], class36.transformY[k], class36.transformZ[k]);
+                for (int k = 0; k < animFrame.transformationCount; k++) {
+                        int l = animFrame.transformationIndices[k];
+                        transformVertices(frameBase.transformationType[l], frameBase.transformationList[l], animFrame.transformX[k], animFrame.transformY[k], animFrame.transformZ[k]);
 		}
 
 	}
@@ -888,43 +888,43 @@ public final class Model extends Animable {
 			applyFrame(k);
 			return;
 		}
-                AnimFrame class36 = AnimFrame.forId(k);
-		if (class36 == null) {
-			return;
-		}
-                AnimFrame class36_1 = AnimFrame.forId(j);
-		if (class36_1 == null) {
-			applyFrame(k);
-			return;
-		}
-                FrameBase class18 = class36.frameBase;
+                AnimFrame animFrame = AnimFrame.forId(k);
+                if (animFrame == null) {
+                        return;
+                }
+                AnimFrame secondaryFrame = AnimFrame.forId(j);
+                if (secondaryFrame == null) {
+                        applyFrame(k);
+                        return;
+                }
+                FrameBase frameBase = animFrame.frameBase;
 		transformX = 0;
 		transformY = 0;
 		transformZ = 0;
 		int l = 0;
 		int i1 = ai[l++];
-                for (int j1 = 0; j1 < class36.transformationCount; j1++) {
+                for (int j1 = 0; j1 < animFrame.transformationCount; j1++) {
                         int k1;
-                        for (k1 = class36.transformationIndices[j1]; k1 > i1; i1 = ai[l++]) {
-				;
-			}
-                        if (k1 != i1 || class18.transformationType[k1] == 0) {
-                                transformVertices(class18.transformationType[k1], class18.transformationList[k1], class36.transformX[j1], class36.transformY[j1], class36.transformZ[j1]);
-			}
-		}
+                        for (k1 = animFrame.transformationIndices[j1]; k1 > i1; i1 = ai[l++]) {
+                                ;
+                        }
+                        if (k1 != i1 || frameBase.transformationType[k1] == 0) {
+                                transformVertices(frameBase.transformationType[k1], frameBase.transformationList[k1], animFrame.transformX[j1], animFrame.transformY[j1], animFrame.transformZ[j1]);
+                        }
+                }
 
 		transformX = 0;
 		transformY = 0;
 		transformZ = 0;
 		l = 0;
 		i1 = ai[l++];
-                for (int l1 = 0; l1 < class36_1.transformationCount; l1++) {
+                for (int l1 = 0; l1 < secondaryFrame.transformationCount; l1++) {
                         int i2;
-                        for (i2 = class36_1.transformationIndices[l1]; i2 > i1; i1 = ai[l++]) {
+                        for (i2 = secondaryFrame.transformationIndices[l1]; i2 > i1; i1 = ai[l++]) {
                                 ;
                         }
-                        if (i2 == i1 || class18.transformationType[i2] == 0) {
-                                transformVertices(class18.transformationType[i2], class18.transformationList[i2], class36_1.transformX[l1], class36_1.transformY[l1], class36_1.transformZ[l1]);
+                        if (i2 == i1 || frameBase.transformationType[i2] == 0) {
+                                transformVertices(frameBase.transformationType[i2], frameBase.transformationList[i2], secondaryFrame.transformX[l1], secondaryFrame.transformY[l1], secondaryFrame.transformZ[l1]);
                         }
                 }
 
@@ -1167,22 +1167,22 @@ public final class Model extends Animable {
 			l4 = l4 * 256 / k5;
 			i5 = i5 * 256 / k5;
 			j5 = j5 * 256 / k5;
-			if (faceRenderTypes == null || (faceRenderTypes[i2] & 1) == 0) {
-                               VertexNormal class33_2 = super.vertexNormals[j2];
-				class33_2.x += l4;
-				class33_2.y += i5;
-				class33_2.z += j5;
-				class33_2.magnitude++;
-                               class33_2 = super.vertexNormals[l2];
-				class33_2.x += l4;
-				class33_2.y += i5;
-				class33_2.z += j5;
-				class33_2.magnitude++;
-                               class33_2 = super.vertexNormals[i3];
-				class33_2.x += l4;
-				class33_2.y += i5;
-				class33_2.z += j5;
-				class33_2.magnitude++;
+                        if (faceRenderTypes == null || (faceRenderTypes[i2] & 1) == 0) {
+                               VertexNormal vertexNormal = super.vertexNormals[j2];
+                                vertexNormal.x += l4;
+                                vertexNormal.y += i5;
+                                vertexNormal.z += j5;
+                                vertexNormal.magnitude++;
+                               vertexNormal = super.vertexNormals[l2];
+                                vertexNormal.x += l4;
+                                vertexNormal.y += i5;
+                                vertexNormal.z += j5;
+                                vertexNormal.magnitude++;
+                               vertexNormal = super.vertexNormals[i3];
+                                vertexNormal.x += l4;
+                                vertexNormal.y += i5;
+                                vertexNormal.z += j5;
+                                vertexNormal.magnitude++;
 			} else {
 				int l5 = i + (k * l4 + l * i5 + i1 * j5) / (k1 + k1 / 2);
                                 shadeA[i2] = calculateShadedColor(faceColor[i2], l5, faceRenderTypes[i2]);
@@ -1193,14 +1193,14 @@ public final class Model extends Animable {
 			applyShading(i, k1, k, l, i1);
 		} else {
 			vertexNormalTemp = new VertexNormal[vertexCount];
-			for (int k2 = 0; k2 < vertexCount; k2++) {
-                                VertexNormal class33 = super.vertexNormals[k2];
-				VertexNormal class33_1 = vertexNormalTemp[k2] = new VertexNormal();
-				class33_1.x = class33.x;
-				class33_1.y = class33.y;
-				class33_1.z = class33.z;
-				class33_1.magnitude = class33.magnitude;
-			}
+                        for (int k2 = 0; k2 < vertexCount; k2++) {
+                                VertexNormal srcNormal = super.vertexNormals[k2];
+                                VertexNormal destNormal = vertexNormalTemp[k2] = new VertexNormal();
+                                destNormal.x = srcNormal.x;
+                                destNormal.y = srcNormal.y;
+                                destNormal.z = srcNormal.z;
+                                destNormal.magnitude = srcNormal.magnitude;
+                        }
 
 		}
 		if (flag) {
@@ -1217,26 +1217,26 @@ public final class Model extends Animable {
 			int j2 = faceC[j1];
 			if (faceRenderTypes == null) {
 				int i3 = faceColor[j1];
-                                VertexNormal class33 = super.vertexNormals[k1];
-				int k2 = i + (k * class33.x + l * class33.y + i1 * class33.z) / (j * class33.magnitude);
+                                VertexNormal vertexNormal = super.vertexNormals[k1];
+                                int k2 = i + (k * vertexNormal.x + l * vertexNormal.y + i1 * vertexNormal.z) / (j * vertexNormal.magnitude);
                                 shadeA[j1] = calculateShadedColor(i3, k2, 0);
-                                class33 = super.vertexNormals[i2];
-                                k2 = i + (k * class33.x + l * class33.y + i1 * class33.z) / (j * class33.magnitude);
+                                vertexNormal = super.vertexNormals[i2];
+                                k2 = i + (k * vertexNormal.x + l * vertexNormal.y + i1 * vertexNormal.z) / (j * vertexNormal.magnitude);
                                 shadeB[j1] = calculateShadedColor(i3, k2, 0);
-                                class33 = super.vertexNormals[j2];
-                                k2 = i + (k * class33.x + l * class33.y + i1 * class33.z) / (j * class33.magnitude);
+                                vertexNormal = super.vertexNormals[j2];
+                                k2 = i + (k * vertexNormal.x + l * vertexNormal.y + i1 * vertexNormal.z) / (j * vertexNormal.magnitude);
                                 shadeC[j1] = calculateShadedColor(i3, k2, 0);
 			} else if ((faceRenderTypes[j1] & 1) == 0) {
 				int j3 = faceColor[j1];
 				int k3 = faceRenderTypes[j1];
-                                VertexNormal class33_1 = super.vertexNormals[k1];
-				int l2 = i + (k * class33_1.x + l * class33_1.y + i1 * class33_1.z) / (j * class33_1.magnitude);
+                                VertexNormal vertexNormal1 = super.vertexNormals[k1];
+                                int l2 = i + (k * vertexNormal1.x + l * vertexNormal1.y + i1 * vertexNormal1.z) / (j * vertexNormal1.magnitude);
                                 shadeA[j1] = calculateShadedColor(j3, l2, k3);
-                                class33_1 = super.vertexNormals[i2];
-				l2 = i + (k * class33_1.x + l * class33_1.y + i1 * class33_1.z) / (j * class33_1.magnitude);
+                                vertexNormal1 = super.vertexNormals[i2];
+                                l2 = i + (k * vertexNormal1.x + l * vertexNormal1.y + i1 * vertexNormal1.z) / (j * vertexNormal1.magnitude);
                                 shadeB[j1] = calculateShadedColor(j3, l2, k3);
-                                class33_1 = super.vertexNormals[j2];
-				l2 = i + (k * class33_1.x + l * class33_1.y + i1 * class33_1.z) / (j * class33_1.magnitude);
+                                vertexNormal1 = super.vertexNormals[j2];
+                                l2 = i + (k * vertexNormal1.x + l * vertexNormal1.y + i1 * vertexNormal1.z) / (j * vertexNormal1.magnitude);
                                 shadeC[j1] = calculateShadedColor(j3, l2, k3);
 			}
 		}
