@@ -215,12 +215,12 @@ public final class ObjectDef {
                                     mruNodes1.put(model, l2);
 				}
 				if (k1 > 1) {
-					aModelArray741s[i2] = model;
+                                tempModelArray[i2] = model;
 				}
 			}
 
 			if (k1 > 1) {
-				model = new Model(k1, aModelArray741s);
+                            model = new Model(k1, tempModelArray);
 			}
 		} else {
 			int i1 = -1;
@@ -456,7 +456,7 @@ public final class ObjectDef {
         private int offsetX;
 	public String name;
 	private int scaleZ;
-	private static final Model[] aModelArray741s = new Model[4];
+    private static final Model[] tempModelArray = new Model[4];
         private byte contrast;
 	public int sizeX;
         private int offsetY;
