@@ -32,8 +32,8 @@ public final class Player extends Entity {
                                         model_3.scaleModel(spotAnim.scaleX, spotAnim.scaleX, spotAnim.scaleY);
                                 }
                                 model_3.applyLighting(64 + spotAnim.ambient, 850 + spotAnim.contrast, -30, -50, -30, true);
-				Model aclass30_sub2_sub4_sub6_1s[] = {model, model_3};
-				model = new Model(aclass30_sub2_sub4_sub6_1s);
+                                Model combinedModels[] = {model, model_3};
+                                model = new Model(combinedModels);
 			}
 		}
                 if (overlayModel != null) {
@@ -53,8 +53,8 @@ public final class Player extends Entity {
 				} else if (super.turnDirection == 1536) {
 					model_1.calculateNormals();
 				}
-                                Model aclass30_sub2_sub4_sub6s[] = {model, model_1};
-                                model = new Model(aclass30_sub2_sub4_sub6s);
+                                Model combinedModels[] = {model, model_1};
+                                model = new Model(combinedModels);
 				if (super.turnDirection == 512) {
 					model_1.calculateNormals();
 				} else if (super.turnDirection == 1024) {
@@ -224,7 +224,7 @@ public final class Player extends Entity {
 			}
 		}
 		if (model_1 == null) {
-			Model aclass30_sub2_sub4_sub6s[] = new Model[12];
+                        Model modelParts[] = new Model[12];
 			int j2 = 0;
 			for (int l2 = 0; l2 < 12; l2++) {
 				int i3 = equipment[l2];
@@ -237,18 +237,18 @@ public final class Player extends Entity {
 				if (i3 >= 256 && i3 < 512) {
                                         Model model_3 = IDK.cache[i3 - 256].getBodyModel();
 					if (model_3 != null) {
-						aclass30_sub2_sub4_sub6s[j2++] = model_3;
+                                                modelParts[j2++] = model_3;
 					}
 				}
 				if (i3 >= 512) {
                                Model model_4 = ItemDef.lookup(i3 - 512).getWearModel(gender);
 					if (model_4 != null) {
-						aclass30_sub2_sub4_sub6s[j2++] = model_4;
+                                                modelParts[j2++] = model_4;
 					}
 				}
 			}
 
-			model_1 = new Model(j2, aclass30_sub2_sub4_sub6s);
+                        model_1 = new Model(j2, modelParts);
                         for (int j3 = 0; j3 < 5; j3++) {
                                 if (bodyColors[j3] != 0) {
                                         model_1.recolor(Game.appearanceColorOptions[j3][0], Game.appearanceColorOptions[j3][bodyColors[j3]]);
@@ -306,25 +306,25 @@ public final class Player extends Entity {
 		if (flag) {
 			return null;
 		}
-		Model aclass30_sub2_sub4_sub6s[] = new Model[12];
+                Model modelParts[] = new Model[12];
 		int k = 0;
 		for (int l = 0; l < 12; l++) {
 			int i1 = equipment[l];
 			if (i1 >= 256 && i1 < 512) {
                                 Model model_1 = IDK.cache[i1 - 256].getHeadModel();
 				if (model_1 != null) {
-					aclass30_sub2_sub4_sub6s[k++] = model_1;
+                                        modelParts[k++] = model_1;
 				}
 			}
 			if (i1 >= 512) {
                                Model model_2 = ItemDef.lookup(i1 - 512).getDialogueModel(gender);
 				if (model_2 != null) {
-					aclass30_sub2_sub4_sub6s[k++] = model_2;
+                                        modelParts[k++] = model_2;
 				}
 			}
 		}
 
-		Model model = new Model(k, aclass30_sub2_sub4_sub6s);
+                Model model = new Model(k, modelParts);
                 for (int j1 = 0; j1 < 5; j1++) {
                         if (bodyColors[j1] != 0) {
                                 model.recolor(Game.appearanceColorOptions[j1][0], Game.appearanceColorOptions[j1][bodyColors[j1]]);

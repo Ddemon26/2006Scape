@@ -946,14 +946,14 @@ public class Game extends RSApplet {
 	}
 
 	public void spawnGroundItem(int i, int j) {
-		NodeList class19 = groundArray[plane][i][j];
-		if (class19 == null) {
+            NodeList itemList = groundArray[plane][i][j];
+            if (itemList == null) {
                         worldController.clearItemPile(plane, i, j);
 			return;
 		}
                 long k = Long.MIN_VALUE;
                 Item bestItem = null;
-                for (Item itemCandidate = (Item) class19.reverseGetFirst(); itemCandidate != null; itemCandidate = (Item) class19.reverseGetNext()) {
+                for (Item itemCandidate = (Item) itemList.reverseGetFirst(); itemCandidate != null; itemCandidate = (Item) itemList.reverseGetNext()) {
                         ItemDef itemDef = ItemDef.lookup(itemCandidate.ID);
 			long l = itemDef.value;
 			if (itemDef.stackable) {
@@ -967,10 +967,10 @@ public class Game extends RSApplet {
 			}
 		}
 
-                class19.insertTail(((Node) bestItem));
+                itemList.insertTail(((Node) bestItem));
                 Item secondItem = null;
                 Item thirdItem = null;
-                for (Item item = (Item) class19.reverseGetFirst(); item != null; item = (Item) class19.reverseGetNext()) {
+                for (Item item = (Item) itemList.reverseGetFirst(); item != null; item = (Item) itemList.reverseGetNext()) {
                         if (item.ID != bestItem.ID && secondItem == null) {
                                 secondItem = item;
                         }
@@ -1476,10 +1476,10 @@ public class Game extends RSApplet {
 			// Draw item info
 			for (int k5 = 0; k5 < 104; k5++) {
 				for (int l5 = 0; l5 < 104; l5++) {
-					NodeList class19 = groundArray[plane][k5][l5];
-					if (class19 != null) {
+                                        NodeList itemList = groundArray[plane][k5][l5];
+                                        if (itemList != null) {
 						int offset = 5;
-						for (Item item = (Item) class19.reverseGetFirst(); item != null; item = (Item) class19.reverseGetNext()) {
+                                                for (Item item = (Item) itemList.reverseGetFirst(); item != null; item = (Item) itemList.reverseGetNext()) {
 							ItemDef itemDef = ItemDef.lookup(item.ID);
 							long totalValue = Math.max(1, item.amount) * Math.max(1, itemDef.value);
 							totalValue = totalValue > 0 ? totalValue : Integer.MAX_VALUE;
@@ -2461,13 +2461,13 @@ public class Game extends RSApplet {
                        int ai[] = minimapImage.pixels;
 			int k4 = 24624 + l * 4 + (103 - i) * 512 * 4;
 			int i5 = k1 >> 14 & 0x7fff;
-			ObjectDef class46_2 = ObjectDef.forID(i5);
-                        if (class46_2.mapSceneId != -1) {
-                                Background background_2 = mapScenes[class46_2.mapSceneId];
+			ObjectDef objectDef2 = ObjectDef.forID(i5);
+                        if (objectDef2.mapSceneId != -1) {
+                                Background background_2 = mapScenes[objectDef2.mapSceneId];
 				if (background_2 != null) {
-					int i6 = (class46_2.sizeX * 4 - background_2.width) / 2;
-					int j6 = (class46_2.sizeY * 4 - background_2.height) / 2;
-					background_2.draw(48 + l * 4 + i6, 48 + (104 - i - class46_2.sizeY) * 4 + j6);
+					int i6 = (objectDef2.sizeX * 4 - background_2.width) / 2;
+					int j6 = (objectDef2.sizeY * 4 - background_2.height) / 2;
+					background_2.draw(48 + l * 4 + i6, 48 + (104 - i - objectDef2.sizeY) * 4 + j6);
 				}
 			} else {
 				if (i3 == 0 || i3 == 2) {
@@ -2535,13 +2535,13 @@ public class Game extends RSApplet {
 			int l2 = i2 >> 6 & 3;
 			int j3 = i2 & 0x1f;
 			int l3 = k1 >> 14 & 0x7fff;
-			ObjectDef class46_1 = ObjectDef.forID(l3);
-                        if (class46_1.mapSceneId != -1) {
-                                Background background_1 = mapScenes[class46_1.mapSceneId];
+			ObjectDef objectDef1 = ObjectDef.forID(l3);
+                        if (objectDef1.mapSceneId != -1) {
+                                Background background_1 = mapScenes[objectDef1.mapSceneId];
 				if (background_1 != null) {
-					int j5 = (class46_1.sizeX * 4 - background_1.width) / 2;
-					int k5 = (class46_1.sizeY * 4 - background_1.height) / 2;
-					background_1.draw(48 + l * 4 + j5, 48 + (104 - i - class46_1.sizeY) * 4 + k5);
+					int j5 = (objectDef1.sizeX * 4 - background_1.width) / 2;
+					int k5 = (objectDef1.sizeY * 4 - background_1.height) / 2;
+					background_1.draw(48 + l * 4 + j5, 48 + (104 - i - objectDef1.sizeY) * 4 + k5);
 				}
 			} else if (j3 == 9) {
 				int l4 = 0xeeeeee;
@@ -2566,13 +2566,13 @@ public class Game extends RSApplet {
 		k1 = worldController.getTileDecorationUid(j1, l, i);
 		if (k1 != 0) {
 			int j2 = k1 >> 14 & 0x7fff;
-			ObjectDef class46 = ObjectDef.forID(j2);
-                        if (class46.mapSceneId != -1) {
-                                Background background = mapScenes[class46.mapSceneId];
+			ObjectDef objectDef = ObjectDef.forID(j2);
+                        if (objectDef.mapSceneId != -1) {
+                                Background background = mapScenes[objectDef.mapSceneId];
 				if (background != null) {
-					int i4 = (class46.sizeX * 4 - background.width) / 2;
-					int j4 = (class46.sizeY * 4 - background.height) / 2;
-					background.draw(48 + l * 4 + i4, 48 + (104 - i - class46.sizeY) * 4 + j4);
+					int i4 = (objectDef.sizeX * 4 - background.width) / 2;
+					int j4 = (objectDef.sizeY * 4 - background.height) / 2;
+					background.draw(48 + l * 4 + i4, 48 + (104 - i - objectDef.sizeY) * 4 + j4);
 				}
 			}
 		}
@@ -3407,17 +3407,17 @@ public class Game extends RSApplet {
 		int k1 = j1 & 0x1f;
 		int l1 = j1 >> 6 & 3;
 		if (k1 == 10 || k1 == 11 || k1 == 22) {
-			ObjectDef class46 = ObjectDef.forID(i1);
+			ObjectDef objectDef = ObjectDef.forID(i1);
 			int i2;
 			int j2;
 			if (l1 == 0 || l1 == 2) {
-				i2 = class46.sizeX;
-				j2 = class46.sizeY;
+				i2 = objectDef.sizeX;
+				j2 = objectDef.sizeY;
 			} else {
-				i2 = class46.sizeY;
-				j2 = class46.sizeX;
+				i2 = objectDef.sizeY;
+				j2 = objectDef.sizeX;
 			}
-			int k2 = class46.defaultOrientation;
+			int k2 = objectDef.defaultOrientation;
 			if (l1 != 0) {
 				k2 = (k2 << l1 & 0xf) + (k2 >> 4 - l1);
 			}
@@ -4420,12 +4420,12 @@ public class Game extends RSApplet {
 
 		if (l == 1226) {
 			int j1 = i1 >> 14 & 0x7fff;
-			ObjectDef class46 = ObjectDef.forID(j1);
+			ObjectDef objectDef = ObjectDef.forID(j1);
 			String s10;
-			if (class46.description != null) {
-				s10 = new String(class46.description);
+			if (objectDef.description != null) {
+				s10 = new String(objectDef.description);
 			} else {
-				s10 = "It's a " + class46.name + ".";
+				s10 = "It's a " + objectDef.name + ".";
 			}
 			pushMessage(s10, 0, "");
 		}
@@ -4502,15 +4502,15 @@ public class Game extends RSApplet {
 			}
 			j = l;
 			if (k1 == 2 && worldController.getObjectConfig(plane, i1, j1, l) >= 0) {
-				ObjectDef class46 = ObjectDef.forID(l1);
-				if (class46.childrenIDs != null) {
-					class46 = class46.getChildDefinition();
+				ObjectDef objectDef = ObjectDef.forID(l1);
+				if (objectDef.childrenIDs != null) {
+					objectDef = objectDef.getChildDefinition();
 				}
-				if (class46 == null) {
+				if (objectDef == null) {
 					continue;
 				}
 				if (itemSelected == 1) {
-					menuActionName[menuActionRow] = "Use " + selectedItemName + " with @cya@" + class46.name;
+					menuActionName[menuActionRow] = "Use " + selectedItemName + " with @cya@" + objectDef.name;
 					menuActionID[menuActionRow] = 62;
 					menuActionCmd1[menuActionRow] = l;
 					menuActionCmd2[menuActionRow] = i1;
@@ -4518,7 +4518,7 @@ public class Game extends RSApplet {
 					menuActionRow++;
 				} else if (spellSelected == 1) {
 					if ((spellUsableOn & 4) == 4) {
-						menuActionName[menuActionRow] = spellTooltip + " @cya@" + class46.name;
+						menuActionName[menuActionRow] = spellTooltip + " @cya@" + objectDef.name;
 						menuActionID[menuActionRow] = 956;
 						menuActionCmd1[menuActionRow] = l;
 						menuActionCmd2[menuActionRow] = i1;
@@ -4526,10 +4526,10 @@ public class Game extends RSApplet {
 						menuActionRow++;
 					}
 				} else {
-					if (class46.actions != null) {
+					if (objectDef.actions != null) {
 						for (int i2 = 4; i2 >= 0; i2--) {
-							if (class46.actions[i2] != null) {
-								menuActionName[menuActionRow] = class46.actions[i2] + " @cya@" + class46.name;
+							if (objectDef.actions[i2] != null) {
+								menuActionName[menuActionRow] = objectDef.actions[i2] + " @cya@" + objectDef.name;
 								if (i2 == 0) {
 									menuActionID[menuActionRow] = 502;
 								}
@@ -4553,9 +4553,9 @@ public class Game extends RSApplet {
 						}
 
 					}
-					menuActionName[menuActionRow] = "Examine @cya@" + class46.name + (showInfo ? " @gre@(@whi@" + l1 + "@gre@) (@whi@" + (i1 + baseX) + "," + (j1 + baseY) + "@gre@)" : "");
+					menuActionName[menuActionRow] = "Examine @cya@" + objectDef.name + (showInfo ? " @gre@(@whi@" + l1 + "@gre@) (@whi@" + (i1 + baseX) + "," + (j1 + baseY) + "@gre@)" : "");
 					menuActionID[menuActionRow] = 1226;
-					menuActionCmd1[menuActionRow] = class46.type << 14;
+					menuActionCmd1[menuActionRow] = objectDef.type << 14;
 					menuActionCmd2[menuActionRow] = i1;
 					menuActionCmd3[menuActionRow] = j1;
 					menuActionRow++;
@@ -4602,9 +4602,9 @@ public class Game extends RSApplet {
 				buildAtPlayerMenu(i1, l1, player, j1);
 			}
 			if (k1 == 3) {
-				NodeList class19 = groundArray[plane][i1][j1];
-				if (class19 != null) {
-					for (Item item = (Item) class19.getFirst(); item != null; item = (Item) class19.getNext()) {
+                                NodeList itemList = groundArray[plane][i1][j1];
+                                if (itemList != null) {
+                                        for (Item item = (Item) itemList.getFirst(); item != null; item = (Item) itemList.getNext()) {
 						ItemDef itemDef = ItemDef.lookup(item.ID);
 						if (itemSelected == 1) {
 							menuActionName[menuActionRow] = "Use " + selectedItemName + " with @lre@" + itemDef.name;
@@ -9509,8 +9509,8 @@ public class Game extends RSApplet {
 
 		for (int k5 = 0; k5 < 104; k5++) {
 			for (int l5 = 0; l5 < 104; l5++) {
-				NodeList class19 = groundArray[plane][k5][l5];
-				if (class19 != null) {
+                                NodeList itemList = groundArray[plane][k5][l5];
+                                if (itemList != null) {
 					int l = k5 * 4 + 2 - myPlayer.x / 32;
 					int j3 = l5 * 4 + 2 - myPlayer.y / 32;
 					markMinimap(mapDotItem, l, j3);
@@ -10015,9 +10015,9 @@ public class Game extends RSApplet {
 			int k11 = stream.readUnsignedWord();
 			int l13 = stream.readUnsignedWord();
 			if (j3 >= 0 && i6 >= 0 && j3 < 104 && i6 < 104) {
-				NodeList class19_1 = groundArray[plane][j3][i6];
-				if (class19_1 != null) {
-					for (Item itemToUpdate = (Item) class19_1.reverseGetFirst(); itemToUpdate != null; itemToUpdate = (Item) class19_1.reverseGetNext()) {
+                                NodeList itemList1 = groundArray[plane][j3][i6];
+                                if (itemList1 != null) {
+                                        for (Item itemToUpdate = (Item) itemList1.reverseGetFirst(); itemToUpdate != null; itemToUpdate = (Item) itemList1.reverseGetNext()) {
 						if (itemToUpdate.ID != (l8 & 0x7fff) || itemToUpdate.amount != k11) {
 							continue;
 						}
@@ -10025,8 +10025,8 @@ public class Game extends RSApplet {
 						break;
 					}
 
-					spawnGroundItem(j3, i6);
-				}
+                                        spawnGroundItem(j3, i6);
+                                }
 			}
 			return;
 		}
@@ -10070,9 +10070,9 @@ public class Game extends RSApplet {
 			int l6 = mapEventY + (j1 & 7);
 			int k9 = stream.readUnsignedWord();
 			if (i4 >= 0 && l6 >= 0 && i4 < 104 && l6 < 104) {
-				NodeList class19 = groundArray[plane][i4][l6];
-				if (class19 != null) {
-					for (Item item = (Item) class19.reverseGetFirst(); item != null; item = (Item) class19.reverseGetNext()) {
+                                NodeList itemList = groundArray[plane][i4][l6];
+                                if (itemList != null) {
+                                        for (Item item = (Item) itemList.reverseGetFirst(); item != null; item = (Item) itemList.reverseGetNext()) {
 						if (item.ID != (k9 & 0x7fff)) {
 							continue;
 						}
@@ -10080,9 +10080,9 @@ public class Game extends RSApplet {
 						break;
 					}
 
-					if (class19.reverseGetFirst() == null) {
-						groundArray[plane][i4][l6] = null;
-					}
+                                        if (itemList.reverseGetFirst() == null) {
+                                                groundArray[plane][i4][l6] = null;
+                                        }
 					spawnGroundItem(i4, l6);
 				}
 			}
@@ -10103,16 +10103,16 @@ public class Game extends RSApplet {
 				int l19 = tileHeights[plane][j4 + 1][i7 + 1];
 				int k20 = tileHeights[plane][j4][i7 + 1];
 				if (j16 == 0) {
-                                       BoundaryObject class10 = worldController.getBoundaryObject(plane, j4, i7);
-					if (class10 != null) {
-						int k21 = class10.uid >> 14 & 0x7fff;
-						if (j12 == 2) {
-							class10.primary = new DynamicObject(k21, 4 + k14, 2, i19, l19, j18, k20, j17, false);
-							class10.secondary = new DynamicObject(k21, k14 + 1 & 3, 2, i19, l19, j18, k20, j17, false);
-						} else {
-							class10.primary = new DynamicObject(k21, k14, j12, i19, l19, j18, k20, j17, false);
-						}
-					}
+                                       BoundaryObject boundaryObject = worldController.getBoundaryObject(plane, j4, i7);
+                                        if (boundaryObject != null) {
+                                                int k21 = boundaryObject.uid >> 14 & 0x7fff;
+                                                if (j12 == 2) {
+                                                        boundaryObject.primary = new DynamicObject(k21, 4 + k14, 2, i19, l19, j18, k20, j17, false);
+                                                        boundaryObject.secondary = new DynamicObject(k21, k14 + 1 & 3, 2, i19, l19, j18, k20, j17, false);
+                                                } else {
+                                                        boundaryObject.primary = new DynamicObject(k21, k14, j12, i19, l19, j18, k20, j17, false);
+                                                }
+                                        }
 				}
                                 if (j16 == 1) {
                                        WallDecoration decoration = worldController.getWallDecoration(j4, i7, plane);
@@ -10130,9 +10130,9 @@ public class Game extends RSApplet {
                                         }
 				}
 				if (j16 == 3) {
-                                       TileDecoration class49 = worldController.getTileDecoration(i7, j4, plane);
-                                        if (class49 != null) {
-                                                class49.renderable = new DynamicObject(class49.uid >> 14 & 0x7fff, k14, 22, i19, l19, j18, k20, j17, false);
+                                       TileDecoration tileDecoration = worldController.getTileDecoration(i7, j4, plane);
+                                        if (tileDecoration != null) {
+                                                tileDecoration.renderable = new DynamicObject(tileDecoration.uid >> 14 & 0x7fff, k14, 22, i19, l19, j18, k20, j17, false);
                                         }
 				}
 			}
@@ -10161,22 +10161,22 @@ public class Game extends RSApplet {
 				player = playerArray[i10];
 			}
 			if (player != null) {
-				ObjectDef class46 = ObjectDef.forID(l21);
+				ObjectDef objectDef = ObjectDef.forID(l21);
 				int i22 = tileHeights[plane][k4][j7];
 				int j22 = tileHeights[plane][k4 + 1][j7];
 				int k22 = tileHeights[plane][k4 + 1][j7 + 1];
 				int l22 = tileHeights[plane][k4][j7 + 1];
-				Model model = class46.getModel(j19, i20, i22, j22, k22, l22, -1);
+				Model model = objectDef.getModel(j19, i20, i22, j22, k22, l22, -1);
 				if (model != null) {
 					queuePendingSpawn(k17 + 1, -1, 0, l20, j7, 0, plane, k4, l14 + 1);
                                 player.animationStartCycle = l14 + loopCycle;
                                 player.animationEndCycle = k17 + loopCycle;
                                         player.overlayModel = model;
-					int i23 = class46.sizeX;
-					int j23 = class46.sizeY;
+					int i23 = objectDef.sizeX;
+					int j23 = objectDef.sizeY;
 					if (i20 == 1 || i20 == 3) {
-						i23 = class46.sizeY;
-						j23 = class46.sizeX;
+						i23 = objectDef.sizeY;
+						j23 = objectDef.sizeX;
 					}
                                 player.animationBaseX = k4 * 128 + i23 * 64;
                                 player.animationBaseZ = j7 * 128 + j23 * 64;
@@ -10494,9 +10494,9 @@ public class Game extends RSApplet {
 				int l2 = i3 >> 6;
 				if (j1 == 0) {
                                         worldController.clearBoundaryObject(i1, j, i, (byte) -119);
-					ObjectDef class46 = ObjectDef.forID(j2);
-					if (class46.isSolid) {
-						collisionMaps[j].removeWall(l2, k2, class46.impenetrable, i1, i);
+					ObjectDef objectDef = ObjectDef.forID(j2);
+					if (objectDef.isSolid) {
+						collisionMaps[j].removeWall(l2, k2, objectDef.impenetrable, i1, i);
 					}
 				}
 				if (j1 == 1) {
@@ -10504,18 +10504,18 @@ public class Game extends RSApplet {
 				}
 				if (j1 == 2) {
                                         worldController.removeSceneObject(j, i1, i);
-					ObjectDef class46_1 = ObjectDef.forID(j2);
-					if (i1 + class46_1.sizeX > 103 || i + class46_1.sizeX > 103 || i1 + class46_1.sizeY > 103 || i + class46_1.sizeY > 103) {
+					ObjectDef objectDef1 = ObjectDef.forID(j2);
+					if (i1 + objectDef1.sizeX > 103 || i + objectDef1.sizeX > 103 || i1 + objectDef1.sizeY > 103 || i + objectDef1.sizeY > 103) {
 						return;
 					}
-					if (class46_1.isSolid) {
-						collisionMaps[j].removeObject(l2, class46_1.sizeX, i1, i, class46_1.sizeY, class46_1.impenetrable);
+					if (objectDef1.isSolid) {
+						collisionMaps[j].removeObject(l2, objectDef1.sizeX, i1, i, objectDef1.sizeY, objectDef1.impenetrable);
 					}
 				}
 				if (j1 == 3) {
                                         worldController.clearTileDecoration(j, i, i1);
-					ObjectDef class46_2 = ObjectDef.forID(j2);
-					if (class46_2.isSolid && class46_2.interactive) {
+					ObjectDef objectDef2 = ObjectDef.forID(j2);
+					if (objectDef2.isSolid && objectDef2.interactive) {
 						collisionMaps[j].unblockTile(i, i1);
 					}
 				}
