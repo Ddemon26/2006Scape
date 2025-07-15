@@ -75,6 +75,8 @@ This document lists variable or identifier renames found in the commit history.
 - class10_1 -> boundaryObjPrimary
 - class10_2 -> boundaryObjSecondary
 - class10_3 -> boundaryObj
+- class10 -> boundaryObject
+- class49 -> tileDecoration
 
 ## Ground
 - aBoolean1322 -> tileActive
