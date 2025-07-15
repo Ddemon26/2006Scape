@@ -611,8 +611,8 @@ public class Game extends RSApplet {
 				if (i1 == 632 || i1 == 78 || i1 == 867 || i1 == 431 || i1 == 53 || i1 == 74 || i1 == 454 || i1 == 539 || i1 == 493 || i1 == 847 || i1 == 447 || i1 == 1125) {
 					int l1 = menuActionCmd2[menuActionRow - 1];
 					int j2 = menuActionCmd3[menuActionRow - 1];
-					RSInterface class9 = RSInterface.interfaceCache[j2];
-					if (class9.allowItemDragging || class9.insertItems) {
+                                        RSInterface targetInterface = RSInterface.interfaceCache[j2];
+                                        if (targetInterface.allowItemDragging || targetInterface.insertItems) {
 						itemBeingDragged = false;
 						dragCounter = 0;
 						dragInterfaceId = j2;
@@ -1046,18 +1046,18 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void buildInterfaceMenu(int i, RSInterface class9, int k, int l, int i1, int j1) {
-		if (class9.type != 0 || class9.children == null || class9.hideUntilHovered) {
-			return;
-		}
-		if (k < i || i1 < l || k > i + class9.width || i1 > l + class9.height) {
-			return;
-		}
-		int k1 = class9.children.length;
-		for (int l1 = 0; l1 < k1; l1++) {
-			int i2 = class9.childX[l1] + i;
-			int j2 = class9.childY[l1] + l - j1;
-			RSInterface childWidget = RSInterface.interfaceCache[class9.children[l1]];
+       public void buildInterfaceMenu(int i, RSInterface parentInterface, int k, int l, int i1, int j1) {
+               if (parentInterface.type != 0 || parentInterface.children == null || parentInterface.hideUntilHovered) {
+                       return;
+               }
+               if (k < i || i1 < l || k > i + parentInterface.width || i1 > l + parentInterface.height) {
+                       return;
+               }
+               int k1 = parentInterface.children.length;
+               for (int l1 = 0; l1 < k1; l1++) {
+                       int i2 = parentInterface.childX[l1] + i;
+                       int j2 = parentInterface.childY[l1] + l - j1;
+                       RSInterface childWidget = RSInterface.interfaceCache[parentInterface.children[l1]];
                         i2 += childWidget.offsetX;
 			j2 += childWidget.offsetY;
 			if ((childWidget.hoverTarget >= 0 || childWidget.hoverTextColor != 0) && k >= i2 && i1 >= j2 && k < i2 + childWidget.width && i1 < j2 + childWidget.height) {
@@ -2329,8 +2329,8 @@ public class Game extends RSApplet {
 
 	}
 
-	public boolean promptUserForInput(RSInterface class9) {
-		int j = class9.contentType;
+       public boolean promptUserForInput(RSInterface widget) {
+               int j = widget.contentType;
 		if (interfaceMode == 2) {
 			if (j == 201) {
 				inputTaken = true;
@@ -2945,14 +2945,14 @@ public class Game extends RSApplet {
 	}
 
        public void resetInterfaceAnimation(int i) {
-		RSInterface class9 = RSInterface.interfaceCache[i];
-		if (class9 == null || class9.children == null)
-			return;
-		for (int element : class9.children) {
-			if (element == -1) {
-				break;
-			}
-			RSInterface childWidget = RSInterface.interfaceCache[element];
+               RSInterface parentInterface = RSInterface.interfaceCache[i];
+               if (parentInterface == null || parentInterface.children == null)
+                       return;
+               for (int element : parentInterface.children) {
+                       if (element == -1) {
+                               break;
+                       }
+                       RSInterface childWidget = RSInterface.interfaceCache[element];
 			if (childWidget.type == 1) {
                                resetInterfaceAnimation(childWidget.id);
 			}
@@ -3157,36 +3157,36 @@ public class Game extends RSApplet {
 					lastActiveInvInterface = -1;
 					processRightClick();
 					if (lastActiveInvInterface == dragInterfaceId && mouseInvInterfaceIndex != draggedSlot) {
-						RSInterface class9 = RSInterface.interfaceCache[dragInterfaceId];
-						int j1 = 0;
-						if (configActionId == 1 && class9.contentType == 206) {
-							j1 = 1;
-						}
-						if (class9.inv[mouseInvInterfaceIndex] <= 0) {
-							j1 = 0;
-						}
-						if (class9.insertItems) {
-							int l2 = draggedSlot;
-							int l3 = mouseInvInterfaceIndex;
-							class9.inv[l3] = class9.inv[l2];
-							class9.invStackSizes[l3] = class9.invStackSizes[l2];
-							class9.inv[l2] = -1;
-							class9.invStackSizes[l2] = 0;
-						} else if (j1 == 1) {
-							int i3 = draggedSlot;
-							for (int i4 = mouseInvInterfaceIndex; i3 != i4;) {
-								if (i3 > i4) {
-									class9.swapInventoryItems(i3, i3 - 1);
-									i3--;
-								} else if (i3 < i4) {
-									class9.swapInventoryItems(i3, i3 + 1);
-									i3++;
-								}
-							}
+                                                RSInterface dragInterface = RSInterface.interfaceCache[dragInterfaceId];
+                                                int j1 = 0;
+                                                if (configActionId == 1 && dragInterface.contentType == 206) {
+                                                        j1 = 1;
+                                                }
+                                                if (dragInterface.inv[mouseInvInterfaceIndex] <= 0) {
+                                                        j1 = 0;
+                                                }
+                                                if (dragInterface.insertItems) {
+                                                        int l2 = draggedSlot;
+                                                        int l3 = mouseInvInterfaceIndex;
+                                                        dragInterface.inv[l3] = dragInterface.inv[l2];
+                                                        dragInterface.invStackSizes[l3] = dragInterface.invStackSizes[l2];
+                                                        dragInterface.inv[l2] = -1;
+                                                        dragInterface.invStackSizes[l2] = 0;
+                                                } else if (j1 == 1) {
+                                                        int i3 = draggedSlot;
+                                                        for (int i4 = mouseInvInterfaceIndex; i3 != i4;) {
+                                                                if (i3 > i4) {
+                                                                        dragInterface.swapInventoryItems(i3, i3 - 1);
+                                                                        i3--;
+                                                                } else if (i3 < i4) {
+                                                                        dragInterface.swapInventoryItems(i3, i3 + 1);
+                                                                        i3++;
+                                                                }
+                                                        }
 
-						} else {
-							class9.swapInventoryItems(draggedSlot, mouseInvInterfaceIndex);
-						}
+                                                } else {
+                                                        dragInterface.swapInventoryItems(draggedSlot, mouseInvInterfaceIndex);
+                                                }
 						stream.createFrame(214);
 						stream.writeShortLEA(dragInterfaceId);
                                                 stream.writeByteNeg(j1);
@@ -3365,7 +3365,7 @@ public class Game extends RSApplet {
 		}
 	}
 
-       public void handleScrollbarInput(int i, int j, int k, int l, RSInterface class9, int i1, boolean flag, int j1) {
+       public void handleScrollbarInput(int i, int j, int k, int l, RSInterface scrollInterface, int i1, boolean flag, int j1) {
 		int scrollPadding;
 		if (scrollBarDragging) {
 			scrollPadding = 32;
@@ -3373,16 +3373,16 @@ public class Game extends RSApplet {
 			scrollPadding = 0;
 		}
 		scrollBarDragging = false;
-		if (k >= i && k < i + 16 && l >= i1 && l < i1 + 16) {
-			class9.scrollPosition -= clickCycle * 4;
-			if (flag) {
-				needDrawTabArea = true;
-			}
-		} else if (k >= i && k < i + 16 && l >= i1 + j - 16 && l < i1 + j) {
-			class9.scrollPosition += clickCycle * 4;
-			if (flag) {
-				needDrawTabArea = true;
-			}
+               if (k >= i && k < i + 16 && l >= i1 && l < i1 + 16) {
+                       scrollInterface.scrollPosition -= clickCycle * 4;
+                       if (flag) {
+                               needDrawTabArea = true;
+                       }
+               } else if (k >= i && k < i + 16 && l >= i1 + j - 16 && l < i1 + j) {
+                       scrollInterface.scrollPosition += clickCycle * 4;
+                       if (flag) {
+                               needDrawTabArea = true;
+                       }
 		} else if (k >= i - scrollPadding && k < i + 16 + scrollPadding && l >= i1 + 16 && l < i1 + j - 16 && clickCycle > 0) {
 			int l1 = (j - 32) * j / j1;
 			if (l1 < 8) {
@@ -3390,7 +3390,7 @@ public class Game extends RSApplet {
 			}
 			int i2 = l - i1 - 16 - l1 / 2;
 			int j2 = j - 32 - l1;
-			class9.scrollPosition = (j1 - j) * i2 / j2;
+                       scrollInterface.scrollPosition = (j1 - j) * i2 / j2;
 			if (flag) {
 				needDrawTabArea = true;
 			}
@@ -3707,16 +3707,16 @@ public class Game extends RSApplet {
 				atInventoryInterfaceType = 3;
 			}
 		}
-		if (l == 315) {
-			RSInterface class9 = RSInterface.interfaceCache[k];
-			boolean flag8 = true;
-			if (class9.contentType > 0) {
-				flag8 = promptUserForInput(class9);
-			}
-			if (flag8) {
-				stream.createFrame(185);
-				stream.writeWord(k);
-			}
+                if (l == 315) {
+                        RSInterface targetInterface = RSInterface.interfaceCache[k];
+                        boolean flag8 = true;
+                        if (targetInterface.contentType > 0) {
+                                flag8 = promptUserForInput(targetInterface);
+                        }
+                        if (flag8) {
+                                stream.createFrame(185);
+                                stream.writeWord(k);
+                        }
 		}
 		if (l == 561) {
 			Player player = playerArray[i1];
@@ -5284,22 +5284,22 @@ public class Game extends RSApplet {
 
 	}
 
-	public void drawFriendsListOrWelcomeScreen(RSInterface class9) {
-		int j = class9.contentType;
+       public void drawFriendsListOrWelcomeScreen(RSInterface interfaceComponent) {
+               int j = interfaceComponent.contentType;
 		if (j >= 1 && j <= 100 || j >= 701 && j <= 800) {
 			if (j == 1 && interfaceMode == 0) {
-				class9.disabledText = "Loading friend list";
-				class9.atActionType = 0;
+                                interfaceComponent.disabledText = "Loading friend list";
+                                interfaceComponent.atActionType = 0;
 				return;
 			}
 			if (j == 1 && interfaceMode == 1) {
-				class9.disabledText = "Connecting to friendserver";
-				class9.atActionType = 0;
+                                interfaceComponent.disabledText = "Connecting to friendserver";
+                                interfaceComponent.atActionType = 0;
 				return;
 			}
 			if (j == 2 && interfaceMode != 2) {
-				class9.disabledText = "Please wait...";
-				class9.atActionType = 0;
+                                interfaceComponent.disabledText = "Please wait...";
+                                interfaceComponent.atActionType = 0;
 				return;
 			}
 			int k = friendsCount;
@@ -5312,12 +5312,12 @@ public class Game extends RSApplet {
 				j--;
 			}
 			if (j >= k) {
-				class9.disabledText = "";
-				class9.atActionType = 0;
+                                interfaceComponent.disabledText = "";
+                                interfaceComponent.atActionType = 0;
 				return;
 			} else {
-				class9.disabledText = friendsList[j];
-				class9.atActionType = 1;
+                                interfaceComponent.disabledText = friendsList[j];
+                                interfaceComponent.atActionType = 1;
 				return;
 			}
 		}
@@ -5332,18 +5332,18 @@ public class Game extends RSApplet {
 				j -= 101;
 			}
 			if (j >= l) {
-				class9.disabledText = "";
-				class9.atActionType = 0;
+                                interfaceComponent.disabledText = "";
+                                interfaceComponent.atActionType = 0;
 				return;
 			}
 			if (friendsNodeIDs[j] - 9 <= 0) {
-				class9.disabledText = "@red@Offline";
+                                interfaceComponent.disabledText = "@red@Offline";
 			} else if (friendsNodeIDs[j] == nodeID) {
-				class9.disabledText = "@gre@World-" + (friendsNodeIDs[j] - 9);
+                                interfaceComponent.disabledText = "@gre@World-" + (friendsNodeIDs[j] - 9);
 			} else {
-				class9.disabledText = "@yel@World-" + (friendsNodeIDs[j] - 9);
+                                interfaceComponent.disabledText = "@yel@World-" + (friendsNodeIDs[j] - 9);
 			}
-			class9.atActionType = 1;
+                        interfaceComponent.atActionType = 1;
 			return;
 		}
 		if (j == 203) {
@@ -5351,47 +5351,47 @@ public class Game extends RSApplet {
 			if (interfaceMode != 2) {
 				i1 = 0;
 			}
-			class9.scrollMax = i1 * 15 + 20;
-			if (class9.scrollMax <= class9.height) {
-				class9.scrollMax = class9.height + 1;
+                        interfaceComponent.scrollMax = i1 * 15 + 20;
+                        if (interfaceComponent.scrollMax <= interfaceComponent.height) {
+                                interfaceComponent.scrollMax = interfaceComponent.height + 1;
 			}
 			return;
 		}
-		if (j >= 401 && j <= 500) {
-			if ((j -= 401) == 0 && interfaceMode == 0) {
-				class9.disabledText = "Loading ignore list";
-				class9.atActionType = 0;
-				return;
-			}
-			if (j == 1 && interfaceMode == 0) {
-				class9.disabledText = "Please wait...";
-				class9.atActionType = 0;
-				return;
-			}
+                if (j >= 401 && j <= 500) {
+                        if ((j -= 401) == 0 && interfaceMode == 0) {
+                                interfaceComponent.disabledText = "Loading ignore list";
+                                interfaceComponent.atActionType = 0;
+                                return;
+                        }
+                        if (j == 1 && interfaceMode == 0) {
+                                interfaceComponent.disabledText = "Please wait...";
+                                interfaceComponent.atActionType = 0;
+                                return;
+                        }
 			int j1 = ignoreCount;
 			if (interfaceMode == 0) {
 				j1 = 0;
 			}
-			if (j >= j1) {
-				class9.disabledText = "";
-				class9.atActionType = 0;
-				return;
-			} else {
-				class9.disabledText = TextClass.fixName(TextClass.nameForLong(ignoreListAsLongs[j]));
-				class9.atActionType = 1;
-				return;
-			}
-		}
-		if (j == 503) {
-			class9.scrollMax = ignoreCount * 15 + 20;
-			if (class9.scrollMax <= class9.height) {
-				class9.scrollMax = class9.height + 1;
-			}
-			return;
-		}
+                        if (j >= j1) {
+                                interfaceComponent.disabledText = "";
+                                interfaceComponent.atActionType = 0;
+                                return;
+                        } else {
+                                interfaceComponent.disabledText = TextClass.fixName(TextClass.nameForLong(ignoreListAsLongs[j]));
+                                interfaceComponent.atActionType = 1;
+                                return;
+                        }
+                }
+                if (j == 503) {
+                        interfaceComponent.scrollMax = ignoreCount * 15 + 20;
+                        if (interfaceComponent.scrollMax <= interfaceComponent.height) {
+                                interfaceComponent.scrollMax = interfaceComponent.height + 1;
+                        }
+                        return;
+                }
                 if (j == 327) {
-                        class9.modelRotation1 = 150;
-                        class9.modelRotation2 = (int) (Math.sin((double) loopCycle / 40D) * 256D) & 0x7ff;
+                        interfaceComponent.modelRotation1 = 150;
+                        interfaceComponent.modelRotation2 = (int) (Math.sin((double) loopCycle / 40D) * 256D) & 0x7ff;
 			if (characterDesignChanged) {
 				for (int k1 = 0; k1 < 7; k1++) {
 					int l1 = characterStyle[k1];
@@ -5423,66 +5423,66 @@ public class Game extends RSApplet {
 				model.buildVertexGroups();
 				model.applyFrame(Animation.anims[myPlayer.standAnimation].frameIds[0]);
 				model.applyLighting(64, 850, -30, -50, -30, true);
-                                class9.mediaType = 5;
-                                class9.mediaId = 0;
+                                interfaceComponent.mediaType = 5;
+                                interfaceComponent.mediaId = 0;
                                 RSInterface.clearModelCache(model, 0, 5);
 			}
 			return;
 		}
 		if (j == 324) {
 			if (maleIconSprite == null) {
-				maleIconSprite = class9.sprite1;
-				femaleIconSprite = class9.sprite2;
+				maleIconSprite = interfaceComponent.sprite1;
+				femaleIconSprite = interfaceComponent.sprite2;
 			}
 			if (isMaleCharacter) {
-				class9.sprite1 = femaleIconSprite;
+				interfaceComponent.sprite1 = femaleIconSprite;
 				return;
 			} else {
-				class9.sprite1 = maleIconSprite;
+				interfaceComponent.sprite1 = maleIconSprite;
 				return;
 			}
 		}
 		if (j == 325) {
 			if (maleIconSprite == null) {
-				maleIconSprite = class9.sprite1;
-				femaleIconSprite = class9.sprite2;
+				maleIconSprite = interfaceComponent.sprite1;
+				femaleIconSprite = interfaceComponent.sprite2;
 			}
 			if (isMaleCharacter) {
-				class9.sprite1 = maleIconSprite;
+				interfaceComponent.sprite1 = maleIconSprite;
 				return;
 			} else {
-				class9.sprite1 = femaleIconSprite;
+				interfaceComponent.sprite1 = femaleIconSprite;
 				return;
 			}
 		}
 		if (j == 600) {
-			class9.disabledText = reportAbuseInput;
+			interfaceComponent.disabledText = reportAbuseInput;
 			if (loopCycle % 20 < 10) {
-				class9.disabledText += "|";
+				interfaceComponent.disabledText += "|";
 				return;
 			} else {
-				class9.disabledText += " ";
+				interfaceComponent.disabledText += " ";
 				return;
 			}
 		}
 		if (j == 613) {
 			if (myPrivilege >= 1 && myPrivilege <= 3) {
 				if (canMute) {
-					class9.textColor = 0xff0000;
-					class9.disabledText = "Moderator option: Mute player for 48 hours: <ON>";
+					interfaceComponent.textColor = 0xff0000;
+					interfaceComponent.disabledText = "Moderator option: Mute player for 48 hours: <ON>";
 				} else {
-					class9.textColor = 0xffffff;
-					class9.disabledText = "Moderator option: Mute player for 48 hours: <OFF>";
+					interfaceComponent.textColor = 0xffffff;
+					interfaceComponent.disabledText = "Moderator option: Mute player for 48 hours: <OFF>";
 				}
 			} else {
-				class9.disabledText = "";
+				interfaceComponent.disabledText = "";
 			}
 		}
 		if (j == 661)
 			if (recoveryQuestionChangeDate == 0)
-				class9.disabledText = "\\nYou have not yet set any recovery questions.\\nIt is @lre@strongly@yel@ recommended that you do so.\\n\\nIf you don't you will be @lre@unable to recover your\\n@lre@password@yel@ if you forget it, or it is stolen.";
+				interfaceComponent.disabledText = "\\nYou have not yet set any recovery questions.\\nIt is @lre@strongly@yel@ recommended that you do so.\\n\\nIf you don't you will be @lre@unable to recover your\\n@lre@password@yel@ if you forget it, or it is stolen.";
 			else if (recoveryQuestionChangeDate <= currentDateOffset) {
-				class9.disabledText = "\\n\\nRecovery Questions Last Set:\\n@gre@"
+				interfaceComponent.disabledText = "\\n\\nRecovery Questions Last Set:\\n@gre@"
 						+ formatDate(recoveryQuestionChangeDate);
 			} else {
 				int l1 = (currentDateOffset + 14) - recoveryQuestionChangeDate;
@@ -5493,23 +5493,23 @@ public class Game extends RSApplet {
 					s2 = "Yesterday";
 				else
 					s2 = l1 + " days ago";
-				class9.disabledText = s2
+				interfaceComponent.disabledText = s2
 						+ " you requested@lre@ new recovery\\n@lre@questions.@yel@ The requested change will occur\\non: @lre@"
 						+ formatDate(recoveryQuestionChangeDate)
 						+ "\\n\\nIf you do not remember making this request\\ncancel it immediately, and change your password.";
 			}
 		if (j == 663)
 			if (lastPasswordChange <= 0 || lastPasswordChange > currentDateOffset + 10)
-				class9.disabledText = "Last password change:\\n@gre@Never changed";
+				interfaceComponent.disabledText = "Last password change:\\n@gre@Never changed";
 			else
-				class9.disabledText = "Last password change:\\n@gre@"
+				interfaceComponent.disabledText = "Last password change:\\n@gre@"
 						+ formatDate(lastPasswordChange);
 		if (j == 668) {
 			if (recoveryQuestionChangeDate > currentDateOffset) {
-				class9.disabledText = "To cancel this request:\\n1) Logout and return to the frontpage of this website.\\n2) Choose 'Cancel recovery questions'.";
+				interfaceComponent.disabledText = "To cancel this request:\\n1) Logout and return to the frontpage of this website.\\n2) Choose 'Cancel recovery questions'.";
 				return;
 			}
-			class9.disabledText = "To change your recovery questions:\\n1) Logout and return to the frontpage of this website.\\n2) Choose 'Set new recovery questions'.";
+			interfaceComponent.disabledText = "To change your recovery questions:\\n1) Logout and return to the frontpage of this website.\\n2) Choose 'Set new recovery questions'.";
 		}
 	}
 	
@@ -8141,8 +8141,8 @@ public class Game extends RSApplet {
 		animationCycle = 0;
 	}
 
-	public boolean buildFriendsListMenu(RSInterface class9) {
-		int i = class9.contentType;
+       public boolean buildFriendsListMenu(RSInterface listInterface) {
+               int i = listInterface.contentType;
 		if (i >= 1 && i <= 200 || i >= 701 && i <= 900) {
 			if (i >= 801) {
 				i -= 701;
@@ -8162,7 +8162,7 @@ public class Game extends RSApplet {
 			return true;
 		}
 		if (i >= 401 && i <= 500) {
-			menuActionName[menuActionRow] = "Remove @whi@" + class9.disabledText;
+                        menuActionName[menuActionRow] = "Remove @whi@" + listInterface.disabledText;
 			menuActionID[menuActionRow] = 322;
 			menuActionRow++;
 			return true;
@@ -8188,23 +8188,23 @@ public class Game extends RSApplet {
 
 	}
 
-	public void drawInterface(int scrollPos, int k, RSInterface class9, int l) {
-		if (class9.type != 0 || class9.children == null) {
-			return;
-		}
-		if (class9.hideUntilHovered && lastHoveredWidgetId != class9.id && hoveredTabId != class9.id && lastInteractionId != class9.id) {
-			return;
-		}
+       public void drawInterface(int scrollPos, int k, RSInterface widget, int l) {
+               if (widget.type != 0 || widget.children == null) {
+                       return;
+               }
+               if (widget.hideUntilHovered && lastHoveredWidgetId != widget.id && hoveredTabId != widget.id && lastInteractionId != widget.id) {
+                       return;
+               }
 		int i1 = DrawingArea.topX;
 		int j1 = DrawingArea.topY;
 		int k1 = DrawingArea.bottomX;
 		int l1 = DrawingArea.bottomY;
-		DrawingArea.setDrawingArea(l + class9.height, k, k + class9.width, l);
-		int i2 = class9.children.length;
+               DrawingArea.setDrawingArea(l + widget.height, k, k + widget.width, l);
+               int i2 = widget.children.length;
 		for (int j2 = 0; j2 < i2; j2++) {
-			int k2 = class9.childX[j2] + k;
-			int l2 = class9.childY[j2] + l - scrollPos;
-			RSInterface component = RSInterface.interfaceCache[class9.children[j2]];
+                       int k2 = widget.childX[j2] + k;
+                       int l2 = widget.childY[j2] + l - scrollPos;
+                       RSInterface component = RSInterface.interfaceCache[widget.children[j2]];
                         k2 += component.offsetX;
 			l2 += component.offsetY;
 			if (component.contentType > 0) {
@@ -8258,26 +8258,26 @@ public class Game extends RSApplet {
 											}
 											// Draw item being moved
 											itemSprite.drawSprite1(k5 + k6, j6 + j7);
-											if (j6 + j7 < DrawingArea.topY && class9.scrollPosition > 0) {
+											if (j6 + j7 < DrawingArea.topY && widget.scrollPosition > 0) {
 												int i10 = animationCycle * (DrawingArea.topY - j6 - j7) / 3;
 												if (i10 > animationCycle * 10) {
 													i10 = animationCycle * 10;
 												}
-												if (i10 > class9.scrollPosition) {
-													i10 = class9.scrollPosition;
+												if (i10 > widget.scrollPosition) {
+													i10 = widget.scrollPosition;
 												}
-												class9.scrollPosition -= i10;
+												widget.scrollPosition -= i10;
 												dragStartY += i10;
 											}
-											if (j6 + j7 + 32 > DrawingArea.bottomY && class9.scrollPosition < class9.scrollMax - class9.height) {
+											if (j6 + j7 + 32 > DrawingArea.bottomY && widget.scrollPosition < widget.scrollMax - widget.height) {
 												int j10 = animationCycle * (j6 + j7 + 32 - DrawingArea.bottomY) / 3;
 												if (j10 > animationCycle * 10) {
 													j10 = animationCycle * 10;
 												}
-												if (j10 > class9.scrollMax - class9.height - class9.scrollPosition) {
-													j10 = class9.scrollMax - class9.height - class9.scrollPosition;
+												if (j10 > widget.scrollMax - widget.height - widget.scrollPosition) {
+													j10 = widget.scrollMax - widget.height - widget.scrollPosition;
 												}
-												class9.scrollPosition += j10;
+												widget.scrollPosition += j10;
 												dragStartY -= j10;
 											}
 										} else if (atInventoryInterfaceType != 0 && atInventoryIndex == i3 && atInventoryInterface == component.id) {
@@ -9163,11 +9163,11 @@ public class Game extends RSApplet {
 	}
 
        public boolean updateInterfaceAnimations(int i, int j) {
-		boolean flag1 = false;
-		RSInterface class9 = RSInterface.interfaceCache[j];
-		if (class9 == null || class9.children == null)
-			return flag1;
-		for (int element : class9.children) {
+               boolean flag1 = false;
+               RSInterface parentInterface = RSInterface.interfaceCache[j];
+               if (parentInterface == null || parentInterface.children == null)
+                       return flag1;
+               for (int element : parentInterface.children) {
 			if (element == -1) {
 				break;
 			}
@@ -9327,12 +9327,12 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public int extractInterfaceValues(RSInterface class9, int j) {
-		if (class9.valueIndexArray == null || j >= class9.valueIndexArray.length) {
-			return -2;
-		}
-		try {
-			int ai[] = class9.valueIndexArray[j];
+       public int extractInterfaceValues(RSInterface component, int j) {
+               if (component.valueIndexArray == null || j >= component.valueIndexArray.length) {
+                       return -2;
+               }
+               try {
+                       int ai[] = component.valueIndexArray[j];
 			int k = 0;
 			int l = 0;
 			int i1 = 0;
@@ -9714,26 +9714,26 @@ public class Game extends RSApplet {
 		pendingSpawn.delay = j;
 	}
 
-	public boolean interfaceIsSelected(RSInterface class9) {
-		if (class9.valueCompareType == null) {
-			return false;
-		}
-		for (int i = 0; i < class9.valueCompareType.length; i++) {
-			int j = extractInterfaceValues(class9, i);
-			int k = class9.requiredValues[i];
-			if (class9.valueCompareType[i] == 2) {
-				if (j >= k) {
-					return false;
-				}
-			} else if (class9.valueCompareType[i] == 3) {
-				if (j <= k) {
-					return false;
-				}
-			} else if (class9.valueCompareType[i] == 4) {
-				if (j == k) {
-					return false;
-				}
-			} else if (j != k) {
+       public boolean interfaceIsSelected(RSInterface component) {
+               if (component.valueCompareType == null) {
+                       return false;
+               }
+               for (int i = 0; i < component.valueCompareType.length; i++) {
+                       int j = extractInterfaceValues(component, i);
+                       int k = component.requiredValues[i];
+                       if (component.valueCompareType[i] == 2) {
+                               if (j >= k) {
+                                       return false;
+                               }
+                       } else if (component.valueCompareType[i] == 3) {
+                               if (j <= k) {
+                                       return false;
+                               }
+                       } else if (component.valueCompareType[i] == 4) {
+                               if (j == k) {
+                                       return false;
+                               }
+                       } else if (j != k) {
 				return false;
 			}
 		}
@@ -10712,10 +10712,10 @@ public class Game extends RSApplet {
 			}
 			if (pktType == 72) {
 				int i1 = inStream.readShortLE();
-				RSInterface class9 = RSInterface.interfaceCache[i1];
-				for (int k15 = 0; k15 < class9.inv.length; k15++) {
-					class9.inv[k15] = -1;
-					class9.inv[k15] = 0;
+                                RSInterface rsInterface = RSInterface.interfaceCache[i1];
+                                for (int k15 = 0; k15 < rsInterface.inv.length; k15++) {
+                                        rsInterface.inv[k15] = -1;
+                                        rsInterface.inv[k15] = 0;
 				}
 
 				pktType = -1;

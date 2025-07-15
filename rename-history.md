@@ -903,6 +903,7 @@ This document lists variable or identifier renames found in the commit history.
 - aBoolean769 -> delayedShading
 - anInt775 -> wallDecoOffset
 - aBoolean779 -> clipped
+- aModelArray741s -> tempModelArray
 
 ## VarBit
  - anInt648 -> configId
@@ -1116,6 +1117,20 @@ This document lists variable or identifier renames found in the commit history.
 - class30_sub2_sub1_sub1_1 -> slotSprite
 - class30_sub2_sub2 -> crcStream
 
+- class9 -> targetInterface
+- class9 -> parentInterface
+- class9 -> widget
+- class9 -> parentInterface
+- class9 -> dragInterface
+- class9 -> scrollInterface
+- class9 -> targetInterface
+- class9 -> interfaceComponent
+- class9 -> listInterface
+- class9 -> widget
+- class9 -> parentInterface
+- class9 -> component
+- class9 -> component
+- class9 -> rsInterface
 ## DrawingArea
  - anInt1387 -> viewportHalfHeight
 
