@@ -77,6 +77,17 @@ This document lists variable or identifier renames found in the commit history.
 - class10_3 -> boundaryObj
 - class10 -> boundaryObject
 - class49 -> tileDecoration
+- aclass47 -> planeClusters
+- class47 -> cluster
+- class33 -> normal
+- class33_1 -> tempNormal
+- class33_2 -> otherNormal
+- class33_3 -> otherTempNormal
+- class43 -> tile
+- class43_1 -> alternateTile
+- class28_1 -> objTile
+- class28_2 -> queuedObj
+- class28_3 -> sceneObj
 
 ## Ground
 - aBoolean1322 -> tileActive
@@ -447,8 +458,9 @@ This document lists variable or identifier renames found in the commit history.
 ## Object5 -> SceneObject
 
 ## Animable_Sub5 -> DynamicObject
- - method258 -> getFrameDelay
- - anInt811 -> tileHeight
+- method258 -> getFrameDelay
+- anInt811 -> tileHeight
+- class46 -> objectDef
 
 ## Object2 -> WallDecoration
  - aClass30_Sub2_Sub4_814 -> renderable
@@ -541,6 +553,7 @@ This document lists variable or identifier renames found in the commit history.
 ## Object3 -> TileDecoration
 
 ## Class13 -> BZip2Decompressor
+ - class32 -> state
 
 ## Kotlin -> Java
 
@@ -575,7 +588,7 @@ This document lists variable or identifier renames found in the commit history.
 - aclass11 -> collisionMaps
 - class11 -> collisionMap
 - class42_sub1 -> onDemandFetcher
-- class46 -> objectDefinition
+ - class46 -> objectDef
 - obj -> tileDecoration
 - obj1 -> dynamicObject
 - obj2 -> genericObject
@@ -620,6 +633,7 @@ This document lists variable or identifier renames found in the commit history.
 ## Class43 -> ModelHeader
 
 ## Class6 -> SoundFilter
+ - class29 -> envelope
 
 ## Class39 -> Instrument
 

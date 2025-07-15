@@ -25,18 +25,18 @@ final class BZip2Decompressor {
                 }
         }
 
-       private static void decompressBlock(BZip2State class32) {
-                byte byte4 = class32.stateOutCh;
-                int i = class32.stateOutLen;
-                int j = class32.nblockUsed;
-                int k = class32.k0;
+       private static void decompressBlock(BZip2State state) {
+                byte byte4 = state.stateOutCh;
+                int i = state.stateOutLen;
+                int j = state.nblockUsed;
+                int k = state.k0;
                 int ai[] = BZip2State.tt;
-                int l = class32.tPos;
-                byte abyte0[] = class32.output;
-                int i1 = class32.nextOut;
-                int j1 = class32.outRemaining;
+                int l = state.tPos;
+                byte abyte0[] = state.output;
+                int i1 = state.nextOut;
+                int j1 = state.outRemaining;
                 int k1 = j1;
-                int l1 = class32.saveNblock + 1;
+                int l1 = state.saveNblock + 1;
 		label0 : do {
 			if (i > 0) {
 				do {
@@ -126,94 +126,94 @@ final class BZip2Decompressor {
 				}
 			}
 		} while (true);
-                int i2 = class32.totalOutLo32;
-                class32.totalOutLo32 += k1 - j1;
-                if (class32.totalOutLo32 < i2) {
-                        class32.totalOutHi32++;
+                int i2 = state.totalOutLo32;
+                state.totalOutLo32 += k1 - j1;
+                if (state.totalOutLo32 < i2) {
+                        state.totalOutHi32++;
                 }
-                class32.stateOutCh = byte4;
-                class32.stateOutLen = i;
-                class32.nblockUsed = j;
-                class32.k0 = k;
+                state.stateOutCh = byte4;
+                state.stateOutLen = i;
+                state.nblockUsed = j;
+                state.k0 = k;
                 BZip2State.tt = ai;
-                class32.tPos = l;
-                class32.output = abyte0;
-                class32.nextOut = i1;
-                class32.outRemaining = j1;
+                state.tPos = l;
+                state.output = abyte0;
+                state.nextOut = i1;
+                state.outRemaining = j1;
 	}
 
-       private static void decompressStream(BZip2State class32) {
+       private static void decompressStream(BZip2State state) {
 		int k8 = 0;
 		int ai[] = null;
 		int ai1[] = null;
 		int ai2[] = null;
-                class32.blockSize100k = 1;
+                state.blockSize100k = 1;
                 if (BZip2State.tt == null) {
-                        BZip2State.tt = new int[class32.blockSize100k * 0x186a0];
+                        BZip2State.tt = new int[state.blockSize100k * 0x186a0];
 		}
 		boolean flag19 = true;
 		while (flag19) {
-			byte byte0 = readByte(class32);
+			byte byte0 = readByte(state);
 			if (byte0 == 23) {
 				return;
 			}
-                        byte0 = readByte(class32);
-                        byte0 = readByte(class32);
-                        byte0 = readByte(class32);
-                        byte0 = readByte(class32);
-                        byte0 = readByte(class32);
-                        class32.blockNo++;
-			byte0 = readByte(class32);
-			byte0 = readByte(class32);
-			byte0 = readByte(class32);
-			byte0 = readByte(class32);
-                        byte0 = readBit(class32);
-                        class32.blockRandomised = byte0 != 0;
-                        if (class32.blockRandomised) {
+                        byte0 = readByte(state);
+                        byte0 = readByte(state);
+                        byte0 = readByte(state);
+                        byte0 = readByte(state);
+                        byte0 = readByte(state);
+                        state.blockNo++;
+			byte0 = readByte(state);
+			byte0 = readByte(state);
+			byte0 = readByte(state);
+			byte0 = readByte(state);
+                        byte0 = readBit(state);
+                        state.blockRandomised = byte0 != 0;
+                        if (state.blockRandomised) {
 				System.out.println("PANIC! RANDOMISED BLOCK!");
 			}
-                        class32.origPtr = 0;
-                        byte0 = readByte(class32);
-                        class32.origPtr = class32.origPtr << 8 | byte0 & 0xff;
-                        byte0 = readByte(class32);
-                        class32.origPtr = class32.origPtr << 8 | byte0 & 0xff;
-                        byte0 = readByte(class32);
-                        class32.origPtr = class32.origPtr << 8 | byte0 & 0xff;
+                        state.origPtr = 0;
+                        byte0 = readByte(state);
+                        state.origPtr = state.origPtr << 8 | byte0 & 0xff;
+                        byte0 = readByte(state);
+                        state.origPtr = state.origPtr << 8 | byte0 & 0xff;
+                        byte0 = readByte(state);
+                        state.origPtr = state.origPtr << 8 | byte0 & 0xff;
                         for (int j = 0; j < 16; j++) {
-                                byte byte1 = readBit(class32);
-                                class32.inUse16[j] = byte1 == 1;
+                                byte byte1 = readBit(state);
+                                state.inUse16[j] = byte1 == 1;
                         }
 
                         for (int k = 0; k < 256; k++) {
-                                class32.inUse[k] = false;
+                                state.inUse[k] = false;
                         }
 
 			for (int l = 0; l < 16; l++) {
-                                if (class32.inUse16[l]) {
+                                if (state.inUse16[l]) {
 					for (int i3 = 0; i3 < 16; i3++) {
-						byte byte2 = readBit(class32);
+						byte byte2 = readBit(state);
                                                 if (byte2 == 1) {
-                                                        class32.inUse[l * 16 + i3] = true;
+                                                        state.inUse[l * 16 + i3] = true;
                                                 }
 					}
 
 				}
 			}
 
-                        makeMaps(class32);
-                        int i4 = class32.nInUse + 2;
-			int j4 = readBits(3, class32);
-			int k4 = readBits(15, class32);
+                        makeMaps(state);
+                        int i4 = state.nInUse + 2;
+			int j4 = readBits(3, state);
+			int k4 = readBits(15, state);
 			for (int i1 = 0; i1 < k4; i1++) {
 				int j3 = 0;
 				do {
-					byte byte3 = readBit(class32);
+					byte byte3 = readBit(state);
 					if (byte3 == 0) {
 						break;
 					}
 					j3++;
 				} while (true);
-                                class32.selectorMtf[i1] = (byte) j3;
+                                state.selectorMtf[i1] = (byte) j3;
 			}
 
 			byte abyte0[] = new byte[6];
@@ -222,32 +222,32 @@ final class BZip2Decompressor {
 			}
 
 			for (int j1 = 0; j1 < k4; j1++) {
-                                byte byte17 = class32.selectorMtf[j1];
+                                byte byte17 = state.selectorMtf[j1];
 				byte byte15 = abyte0[byte17];
 				for (; byte17 > 0; byte17--) {
 					abyte0[byte17] = abyte0[byte17 - 1];
 				}
 
                                 abyte0[0] = byte15;
-                                class32.selector[j1] = byte15;
+                                state.selector[j1] = byte15;
 			}
 
 			for (int k3 = 0; k3 < j4; k3++) {
-				int l6 = readBits(5, class32);
+				int l6 = readBits(5, state);
 				for (int k1 = 0; k1 < i4; k1++) {
 					do {
-						byte byte4 = readBit(class32);
+						byte byte4 = readBit(state);
 						if (byte4 == 0) {
 							break;
 						}
-						byte4 = readBit(class32);
+						byte4 = readBit(state);
 						if (byte4 == 0) {
 							l6++;
 						} else {
 							l6--;
 						}
 					} while (true);
-                                        class32.tempLen[k3][k1] = (byte) l6;
+                                        state.tempLen[k3][k1] = (byte) l6;
 				}
 
 			}
@@ -256,52 +256,52 @@ final class BZip2Decompressor {
 				byte byte8 = 32;
 				int i = 0;
 				for (int l1 = 0; l1 < i4; l1++) {
-                                        if (class32.tempLen[l3][l1] > i) {
-                                                i = class32.tempLen[l3][l1];
+                                        if (state.tempLen[l3][l1] > i) {
+                                                i = state.tempLen[l3][l1];
 					}
-                                        if (class32.tempLen[l3][l1] < byte8) {
-                                                byte8 = class32.tempLen[l3][l1];
+                                        if (state.tempLen[l3][l1] < byte8) {
+                                                byte8 = state.tempLen[l3][l1];
 					}
 				}
 
-                                createHuffmanTables(class32.limit[l3], class32.base[l3], class32.perm[l3], class32.tempLen[l3], byte8, i, i4);
-                                class32.minLens[l3] = byte8;
+                                createHuffmanTables(state.limit[l3], state.base[l3], state.perm[l3], state.tempLen[l3], byte8, i, i4);
+                                state.minLens[l3] = byte8;
 			}
 
-                        int l4 = class32.nInUse + 1;
+                        int l4 = state.nInUse + 1;
 			int i5 = -1;
 			int j5 = 0;
 			for (int i2 = 0; i2 <= 255; i2++) {
-                            class32.unzftab[i2] = 0;
+                            state.unzftab[i2] = 0;
 			}
 
 			int j9 = 4095;
 			for (int l8 = 15; l8 >= 0; l8--) {
 				for (int i9 = 15; i9 >= 0; i9--) {
-                                        class32.mtfa[j9] = (byte) (l8 * 16 + i9);
+                                        state.mtfa[j9] = (byte) (l8 * 16 + i9);
 					j9--;
 				}
 
-                                class32.mtfbase[l8] = j9 + 1;
+                                state.mtfbase[l8] = j9 + 1;
 			}
 
 			int i6 = 0;
 			if (j5 == 0) {
 				i5++;
 				j5 = 50;
-                                byte byte12 = class32.selector[i5];
-                                k8 = class32.minLens[byte12];
-                                ai = class32.limit[byte12];
-                                ai2 = class32.perm[byte12];
-                                ai1 = class32.base[byte12];
+                                byte byte12 = state.selector[i5];
+                                k8 = state.minLens[byte12];
+                                ai = state.limit[byte12];
+                                ai2 = state.perm[byte12];
+                                ai1 = state.base[byte12];
 			}
 			j5--;
 			int i7 = k8;
 			int l7;
 			byte byte9;
-			for (l7 = readBits(i7, class32); l7 > ai[i7]; l7 = l7 << 1 | byte9) {
+			for (l7 = readBits(i7, state); l7 > ai[i7]; l7 = l7 << 1 | byte9) {
 				i7++;
-				byte9 = readBit(class32);
+				byte9 = readBit(state);
 			}
 
 			for (int k5 = ai2[l7 - ai1[i7]]; k5 != l4;) {
@@ -318,26 +318,26 @@ final class BZip2Decompressor {
 						if (j5 == 0) {
 							i5++;
 							j5 = 50;
-                                                        byte byte13 = class32.selector[i5];
-                                                        k8 = class32.minLens[byte13];
-                                                        ai = class32.limit[byte13];
-                                                        ai2 = class32.perm[byte13];
-                                                        ai1 = class32.base[byte13];
+                                                        byte byte13 = state.selector[i5];
+                                                        k8 = state.minLens[byte13];
+                                                        ai = state.limit[byte13];
+                                                        ai2 = state.perm[byte13];
+                                                        ai1 = state.base[byte13];
 						}
 						j5--;
 						int j7 = k8;
 						int i8;
 						byte byte10;
-						for (i8 = readBits(j7, class32); i8 > ai[j7]; i8 = i8 << 1 | byte10) {
+						for (i8 = readBits(j7, state); i8 > ai[j7]; i8 = i8 << 1 | byte10) {
 							j7++;
-							byte10 = readBit(class32);
+							byte10 = readBit(state);
 						}
 
 						k5 = ai2[i8 - ai1[j7]];
 					} while (k5 == 0 || k5 == 1);
 					j6++;
-                                        byte byte5 = class32.seqToUnseq[class32.mtfa[class32.mtfbase[0]] & 0xff];
-                                    class32.unzftab[byte5 & 0xff] += j6;
+                                        byte byte5 = state.seqToUnseq[state.mtfa[state.mtfbase[0]] & 0xff];
+                                    state.unzftab[byte5 & 0xff] += j6;
 					for (; j6 > 0; j6--) {
                                                 BZip2State.tt[i6] = byte5 & 0xff;
 						i6++;
@@ -347,140 +347,140 @@ final class BZip2Decompressor {
 					int j11 = k5 - 1;
 					byte byte6;
 					if (j11 < 16) {
-                                                int j10 = class32.mtfbase[0];
-                                                byte6 = class32.mtfa[j10 + j11];
+                                                int j10 = state.mtfbase[0];
+                                                byte6 = state.mtfa[j10 + j11];
 						for (; j11 > 3; j11 -= 4) {
 							int k11 = j10 + j11;
-                                                        class32.mtfa[k11] = class32.mtfa[k11 - 1];
-                                                        class32.mtfa[k11 - 1] = class32.mtfa[k11 - 2];
-                                                        class32.mtfa[k11 - 2] = class32.mtfa[k11 - 3];
-                                                        class32.mtfa[k11 - 3] = class32.mtfa[k11 - 4];
+                                                        state.mtfa[k11] = state.mtfa[k11 - 1];
+                                                        state.mtfa[k11 - 1] = state.mtfa[k11 - 2];
+                                                        state.mtfa[k11 - 2] = state.mtfa[k11 - 3];
+                                                        state.mtfa[k11 - 3] = state.mtfa[k11 - 4];
 						}
 
 						for (; j11 > 0; j11--) {
-                                                        class32.mtfa[j10 + j11] = class32.mtfa[j10 + j11 - 1];
+                                                        state.mtfa[j10 + j11] = state.mtfa[j10 + j11 - 1];
 						}
 
-                                                class32.mtfa[j10] = byte6;
+                                                state.mtfa[j10] = byte6;
 					} else {
 						int l10 = j11 / 16;
 						int i11 = j11 % 16;
-                                                int k10 = class32.mtfbase[l10] + i11;
-                                                byte6 = class32.mtfa[k10];
-                                                for (; k10 > class32.mtfbase[l10]; k10--) {
-                                                        class32.mtfa[k10] = class32.mtfa[k10 - 1];
+                                                int k10 = state.mtfbase[l10] + i11;
+                                                byte6 = state.mtfa[k10];
+                                                for (; k10 > state.mtfbase[l10]; k10--) {
+                                                        state.mtfa[k10] = state.mtfa[k10 - 1];
 						}
 
-                                                class32.mtfbase[l10]++;
+                                                state.mtfbase[l10]++;
                                                 for (; l10 > 0; l10--) {
-                                                        class32.mtfbase[l10]--;
-                                                        class32.mtfa[class32.mtfbase[l10]] = class32.mtfa[class32.mtfbase[l10 - 1] + 16 - 1];
+                                                        state.mtfbase[l10]--;
+                                                        state.mtfa[state.mtfbase[l10]] = state.mtfa[state.mtfbase[l10 - 1] + 16 - 1];
                                                 }
 
-                                                class32.mtfbase[0]--;
-                                                class32.mtfa[class32.mtfbase[0]] = byte6;
-                                                if (class32.mtfbase[0] == 0) {
+                                                state.mtfbase[0]--;
+                                                state.mtfa[state.mtfbase[0]] = byte6;
+                                                if (state.mtfbase[0] == 0) {
 							int i10 = 4095;
 							for (int k9 = 15; k9 >= 0; k9--) {
 								for (int l9 = 15; l9 >= 0; l9--) {
-                                                                        class32.mtfa[i10] = class32.mtfa[class32.mtfbase[k9] + l9];
+                                                                        state.mtfa[i10] = state.mtfa[state.mtfbase[k9] + l9];
 									i10--;
 								}
 
-                                                                class32.mtfbase[k9] = i10 + 1;
+                                                                state.mtfbase[k9] = i10 + 1;
 							}
 
 						}
 					}
-                                    class32.unzftab[class32.seqToUnseq[byte6 & 0xff] & 0xff]++;
-                                        BZip2State.tt[i6] = class32.seqToUnseq[byte6 & 0xff] & 0xff;
+                                    state.unzftab[state.seqToUnseq[byte6 & 0xff] & 0xff]++;
+                                        BZip2State.tt[i6] = state.seqToUnseq[byte6 & 0xff] & 0xff;
 					i6++;
 					if (j5 == 0) {
 						i5++;
 						j5 = 50;
-                                                byte byte14 = class32.selector[i5];
-                                                k8 = class32.minLens[byte14];
-                                                ai = class32.limit[byte14];
-                                                ai2 = class32.perm[byte14];
-                                                ai1 = class32.base[byte14];
+                                                byte byte14 = state.selector[i5];
+                                                k8 = state.minLens[byte14];
+                                                ai = state.limit[byte14];
+                                                ai2 = state.perm[byte14];
+                                                ai1 = state.base[byte14];
 					}
 					j5--;
 					int k7 = k8;
 					int j8;
 					byte byte11;
-					for (j8 = readBits(k7, class32); j8 > ai[k7]; j8 = j8 << 1 | byte11) {
+					for (j8 = readBits(k7, state); j8 > ai[k7]; j8 = j8 << 1 | byte11) {
 						k7++;
-						byte11 = readBit(class32);
+						byte11 = readBit(state);
 					}
 
 					k5 = ai2[j8 - ai1[k7]];
 				}
 			}
 
-                        class32.stateOutLen = 0;
-                        class32.stateOutCh = 0;
-                        class32.cftab[0] = 0;
+                        state.stateOutLen = 0;
+                        state.stateOutCh = 0;
+                        state.cftab[0] = 0;
 			for (int j2 = 1; j2 <= 256; j2++) {
-                            class32.cftab[j2] = class32.unzftab[j2 - 1];
+                            state.cftab[j2] = state.unzftab[j2 - 1];
 			}
 
                         for (int k2 = 1; k2 <= 256; k2++) {
-                                class32.cftab[k2] += class32.cftab[k2 - 1];
+                                state.cftab[k2] += state.cftab[k2 - 1];
                         }
 
 			for (int l2 = 0; l2 < i6; l2++) {
                                 byte byte7 = (byte) (BZip2State.tt[l2] & 0xff);
-                                BZip2State.tt[class32.cftab[byte7 & 0xff]] |= l2 << 8;
-                                class32.cftab[byte7 & 0xff]++;
+                                BZip2State.tt[state.cftab[byte7 & 0xff]] |= l2 << 8;
+                                state.cftab[byte7 & 0xff]++;
 			}
 
-                        class32.tPos = BZip2State.tt[class32.origPtr] >> 8;
-                        class32.nblockUsed = 0;
-                        class32.tPos = BZip2State.tt[class32.tPos];
-                        class32.k0 = (byte) (class32.tPos & 0xff);
-                        class32.tPos >>= 8;
-                        class32.nblockUsed++;
-                        class32.saveNblock = i6;
-                        decompressBlock(class32);
-                        flag19 = class32.nblockUsed == class32.saveNblock + 1 && class32.stateOutLen == 0;
+                        state.tPos = BZip2State.tt[state.origPtr] >> 8;
+                        state.nblockUsed = 0;
+                        state.tPos = BZip2State.tt[state.tPos];
+                        state.k0 = (byte) (state.tPos & 0xff);
+                        state.tPos >>= 8;
+                        state.nblockUsed++;
+                        state.saveNblock = i6;
+                        decompressBlock(state);
+                        flag19 = state.nblockUsed == state.saveNblock + 1 && state.stateOutLen == 0;
 		}
 	}
 
-	private static byte readByte(BZip2State class32) {
-		return (byte) readBits(8, class32);
+	private static byte readByte(BZip2State state) {
+		return (byte) readBits(8, state);
 	}
 
-	private static byte readBit(BZip2State class32) {
-		return (byte) readBits(1, class32);
+	private static byte readBit(BZip2State state) {
+		return (byte) readBits(1, state);
 	}
 
-	private static int readBits(int i, BZip2State class32) {
+	private static int readBits(int i, BZip2State state) {
 		int j;
 		do {
-                        if (class32.bsLive >= i) {
-                                int k = class32.bsBuff >> class32.bsLive - i & (1 << i) - 1;
-                                class32.bsLive -= i;
+                        if (state.bsLive >= i) {
+                                int k = state.bsBuff >> state.bsLive - i & (1 << i) - 1;
+                                state.bsLive -= i;
 				j = k;
 				break;
 			}
-                        class32.bsBuff = class32.bsBuff << 8 | class32.input[class32.nextIn] & 0xff;
-                        class32.bsLive += 8;
-                        class32.nextIn++;
-                        class32.availIn--;
-                        class32.totalInLo32++;
-                        if (class32.totalInLo32 == 0) {
-                                class32.totalInHi32++;
+                        state.bsBuff = state.bsBuff << 8 | state.input[state.nextIn] & 0xff;
+                        state.bsLive += 8;
+                        state.nextIn++;
+                        state.availIn--;
+                        state.totalInLo32++;
+                        if (state.totalInLo32 == 0) {
+                                state.totalInHi32++;
                         }
                 } while (true);
 		return j;
 	}
 
-        private static void makeMaps(BZip2State class32) {
-                class32.nInUse = 0;
+        private static void makeMaps(BZip2State state) {
+                state.nInUse = 0;
                 for (int i = 0; i < 256; i++) {
-                        if (class32.inUse[i]) {
-                                class32.seqToUnseq[class32.nInUse] = (byte) i;
-                                class32.nInUse++;
+                        if (state.inUse[i]) {
+                                state.seqToUnseq[state.nInUse] = (byte) i;
+                                state.nInUse++;
                         }
                 }
 
