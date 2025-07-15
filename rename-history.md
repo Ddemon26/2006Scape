@@ -1095,6 +1095,26 @@ This document lists variable or identifier renames found in the commit history.
 - minimapInt3 -> minimapZoom
 - backVmidIP2_2 -> midSubscreenBuffer
 - anInt974 -> overheadTextCount
+- obj -> bestItem
+- obj1 -> secondItem
+- obj2 -> thirdItem
+- class30_sub2_sub4_sub2_1 -> itemCandidate
+- obj -> entity
+- class9_1 -> childWidget
+- class9_2 -> targetWidget
+- class9_3 -> configWidget
+- class9_4 -> stackWidget
+- class9_5 -> offsetWidget
+- class30_sub2_sub4_sub4 -> projectile
+- class30_sub1 -> pendingSpawn
+- class30_sub1_1 -> pendingSpawnIter
+- class30_sub2_sub4_sub2_2 -> newItem
+- class30_sub2_sub4_sub2_3 -> itemToUpdate
+- aclass30_sub2_sub4_sub6s -> modelParts
+- aclass30_sub2_sub1_sub4s -> textFonts
+- class30_sub2_sub1_sub1_2 -> itemSprite
+- class30_sub2_sub1_sub1_1 -> slotSprite
+- class30_sub2_sub2 -> crcStream
 
 ## DrawingArea
  - anInt1387 -> viewportHalfHeight
