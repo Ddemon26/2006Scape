@@ -74,13 +74,13 @@ final class WorldController {
 	}
 
 	public void shiftDownPlanes(int i, int j) {
-		Ground class30_sub3 = groundArray[0][j][i];
+		Ground groundTile = groundArray[0][j][i];
 		for (int l = 0; l < 3; l++) {
-			Ground class30_sub3_1 = groundArray[l][j][i] = groundArray[l + 1][j][i];
-			if (class30_sub3_1 != null) {
-                                class30_sub3_1.plane--;
-                                for (int j1 = 0; j1 < class30_sub3_1.sceneObjectCount; j1++) {
-                                        SceneObject sceneObject = class30_sub3_1.obj5Array[j1];
+			Ground currentTile = groundArray[l][j][i] = groundArray[l + 1][j][i];
+			if (currentTile != null) {
+                                currentTile.plane--;
+                                for (int j1 = 0; j1 < currentTile.sceneObjectCount; j1++) {
+                                        SceneObject sceneObject = currentTile.obj5Array[j1];
                                         if ((sceneObject.uid >> 29 & 3) == 2 && sceneObject.startX == j && sceneObject.startY == i) {
                                                 sceneObject.plane--;
                                         }
@@ -91,7 +91,7 @@ final class WorldController {
 		if (groundArray[0][j][i] == null) {
 			groundArray[0][j][i] = new Ground(0, j, i);
 		}
-                groundArray[0][j][i].linkedTile = class30_sub3;
+                groundArray[0][j][i].linkedTile = groundTile;
 		groundArray[3][j][i] = null;
 	}
 
@@ -112,8 +112,8 @@ final class WorldController {
         }
 
         public void setGroundFlag(int i, int j, int k, int l) {
-		Ground class30_sub3 = groundArray[i][j][k];
-                if (class30_sub3 != null) {
+		Ground groundTile = groundArray[i][j][k];
+                if (groundTile != null) {
                         groundArray[i][j][k].groundFlag = l;
                 }
 	}
@@ -168,21 +168,21 @@ final class WorldController {
                 groundArray[plane][tileX][tileY].obj3 = class49;
         }
 
-       public void addItemPile(int i, int j, Animable class30_sub2_sub4, int k, Animable class30_sub2_sub4_1, Animable class30_sub2_sub4_2, int l, int i1) {
+       public void addItemPile(int i, int j, Animable renderable, int k, Animable secondaryRenderable, Animable topRenderable, int l, int i1) {
                 ItemPile itemPile = new ItemPile();
-                itemPile.topItem = class30_sub2_sub4_2;
+                itemPile.topItem = topRenderable;
                 itemPile.x = i * 128 + 64;
                 itemPile.y = i1 * 128 + 64;
                 itemPile.height = k;
                 itemPile.uid = j;
-                itemPile.secondItem = class30_sub2_sub4;
-                itemPile.thirdItem = class30_sub2_sub4_1;
+                itemPile.secondItem = renderable;
+                itemPile.thirdItem = secondaryRenderable;
 		int j1 = 0;
-                Ground class30_sub3 = groundArray[l][i][i1];
-                if (class30_sub3 != null) {
-                        for (int k1 = 0; k1 < class30_sub3.sceneObjectCount; k1++) {
-                                if (class30_sub3.obj5Array[k1].renderable instanceof Model) {
-                                        int l1 = ((Model) class30_sub3.obj5Array[k1].renderable).overrideHeight;
+                Ground groundTile = groundArray[l][i][i1];
+                if (groundTile != null) {
+                        for (int k1 = 0; k1 < groundTile.sceneObjectCount; k1++) {
+                                if (groundTile.obj5Array[k1].renderable instanceof Model) {
+                                        int l1 = ((Model) groundTile.obj5Array[k1].renderable).overrideHeight;
 					if (l1 > j1) {
 						j1 = l1;
 					}
@@ -197,8 +197,8 @@ final class WorldController {
                 groundArray[l][i][i1].itemPile = itemPile;
 	}
 
-       public void addBoundaryObject(int i, Animable class30_sub2_sub4, int j, int k, byte byte0, int l, Animable class30_sub2_sub4_1, int i1, int j1, int k1) {
-		if (class30_sub2_sub4 == null && class30_sub2_sub4_1 == null) {
+       public void addBoundaryObject(int i, Animable renderable, int j, int k, byte byte0, int l, Animable secondaryRenderable, int i1, int j1, int k1) {
+		if (renderable == null && secondaryRenderable == null) {
 			return;
 		}
                 BoundaryObject object1 = new BoundaryObject();
@@ -207,8 +207,8 @@ final class WorldController {
                 object1.x = l * 128 + 64;
                 object1.y = k * 128 + 64;
                 object1.plane = i1;
-                object1.primary = class30_sub2_sub4;
-                object1.secondary = class30_sub2_sub4_1;
+                object1.primary = renderable;
+                object1.secondary = secondaryRenderable;
                 object1.orientation = i;
                 object1.orientation2 = j1;
 		for (int l1 = k1; l1 >= 0; l1--) {
@@ -220,8 +220,8 @@ final class WorldController {
 		groundArray[k1][l][k].obj1 = object1;
 	}
 
-       public void addWallDecoration(int i, int j, int k, int i1, int j1, int k1, Animable class30_sub2_sub4, int l1, byte byte0, int i2, int j2) {
-		if (class30_sub2_sub4 == null) {
+       public void addWallDecoration(int i, int j, int k, int i1, int j1, int k1, Animable renderable, int l1, byte byte0, int i2, int j2) {
+		if (renderable == null) {
 			return;
 		}
                 WallDecoration decoration = new WallDecoration();
@@ -230,7 +230,7 @@ final class WorldController {
                 decoration.x = l1 * 128 + 64 + j1;
                 decoration.y = j * 128 + 64 + i2;
                 decoration.plane = k1;
-                decoration.renderable = class30_sub2_sub4;
+                decoration.renderable = renderable;
                 decoration.orientationFlags = j2;
                 decoration.orientation = k;
                 for (int k2 = i1; k2 >= 0; k2--) {
@@ -242,18 +242,18 @@ final class WorldController {
                 groundArray[i1][l1][j].obj2 = decoration;
         }
 
-       public boolean addGameObject(int i, byte byte0, int j, int k, Animable class30_sub2_sub4, int l, int i1, int j1, int k1, int l1) {
-		if (class30_sub2_sub4 == null) {
+       public boolean addGameObject(int i, byte byte0, int j, int k, Animable renderable, int l, int i1, int j1, int k1, int l1) {
+		if (renderable == null) {
 			return true;
 		} else {
 			int i2 = l1 * 128 + 64 * l;
 			int j2 = k1 * 128 + 64 * k;
-			return addSceneObject(i1, l1, k1, l, k, i2, j2, j, class30_sub2_sub4, j1, false, i, byte0);
+			return addSceneObject(i1, l1, k1, l, k, i2, j2, j, renderable, j1, false, i, byte0);
 		}
 	}
 
-       public boolean addAnimableObject(int i, int j, int k, int l, int i1, int j1, int k1, Animable class30_sub2_sub4, boolean flag) {
-		if (class30_sub2_sub4 == null) {
+       public boolean addAnimableObject(int i, int j, int k, int l, int i1, int j1, int k1, Animable renderable, boolean flag) {
+		if (renderable == null) {
 			return true;
 		}
 		int l1 = k1 - j1;
@@ -278,21 +278,21 @@ final class WorldController {
 		i2 /= 128;
 		j2 /= 128;
 		k2 /= 128;
-		return addSceneObject(i, l1, i2, j2 - l1 + 1, k2 - i2 + 1, k1, i1, k, class30_sub2_sub4, j, true, l, (byte) 0);
+		return addSceneObject(i, l1, i2, j2 - l1 + 1, k2 - i2 + 1, k1, i1, k, renderable, j, true, l, (byte) 0);
 	}
 
-       public boolean addAnimatingObject(int j, int k, Animable class30_sub2_sub4, int l, int i1, int j1, int k1, int l1, int i2, int j2, int k2) {
-		return class30_sub2_sub4 == null || addSceneObject(j, l1, k2, i2 - l1 + 1, i1 - k2 + 1, j1, k, k1, class30_sub2_sub4, l, true, j2, (byte) 0);
+       public boolean addAnimatingObject(int j, int k, Animable renderable, int l, int i1, int j1, int k1, int l1, int i2, int j2, int k2) {
+		return renderable == null || addSceneObject(j, l1, k2, i2 - l1 + 1, i1 - k2 + 1, j1, k, k1, renderable, l, true, j2, (byte) 0);
 	}
 
-	private boolean addSceneObject(int i, int j, int k, int l, int i1, int j1, int k1, int l1, Animable class30_sub2_sub4, int i2, boolean flag, int j2, byte byte0) {
+	private boolean addSceneObject(int i, int j, int k, int l, int i1, int j1, int k1, int l1, Animable renderable, int i2, boolean flag, int j2, byte byte0) {
 		for (int k2 = j; k2 < j + l; k2++) {
 			for (int l2 = k; l2 < k + i1; l2++) {
 				if (k2 < 0 || l2 < 0 || k2 >= worldWidth || l2 >= worldHeight) {
 					return false;
 				}
-				Ground class30_sub3 = groundArray[i][k2][l2];
-                                if (class30_sub3 != null && class30_sub3.sceneObjectCount >= 5) {
+				Ground groundTile = groundArray[i][k2][l2];
+                                if (groundTile != null && groundTile.sceneObjectCount >= 5) {
 					return false;
 				}
 			}
@@ -306,7 +306,7 @@ final class WorldController {
                 sceneObject.x = j1;
                 sceneObject.y = k1;
                 sceneObject.height = l1;
-                sceneObject.renderable = class30_sub2_sub4;
+                sceneObject.renderable = renderable;
                 sceneObject.orientation = i2;
                 sceneObject.startX = j;
                 sceneObject.startY = k;
@@ -333,11 +333,11 @@ final class WorldController {
 					}
 				}
 
-                                Ground class30_sub3_1 = groundArray[i][i3][j3];
-                                class30_sub3_1.obj5Array[class30_sub3_1.sceneObjectCount] = sceneObject;
-                                class30_sub3_1.sceneObjectFlags[class30_sub3_1.sceneObjectCount] = k3;
-                                class30_sub3_1.combinedFlags |= k3;
-                                class30_sub3_1.sceneObjectCount++;
+                                Ground currentTile = groundArray[i][i3][j3];
+                                currentTile.obj5Array[currentTile.sceneObjectCount] = sceneObject;
+                                currentTile.sceneObjectFlags[currentTile.sceneObjectCount] = k3;
+                                currentTile.combinedFlags |= k3;
+                                currentTile.sceneObjectCount++;
                         }
 
 		}
@@ -361,25 +361,25 @@ final class WorldController {
         private void removeSceneObject(SceneObject sceneObject) {
                 for (int j = sceneObject.startX; j <= sceneObject.endX; j++) {
                         for (int k = sceneObject.startY; k <= sceneObject.endY; k++) {
-                                Ground class30_sub3 = groundArray[sceneObject.plane][j][k];
-                                if (class30_sub3 != null) {
-                                        for (int l = 0; l < class30_sub3.sceneObjectCount; l++) {
-                                                if (class30_sub3.obj5Array[l] != sceneObject) {
+                                Ground groundTile = groundArray[sceneObject.plane][j][k];
+                                if (groundTile != null) {
+                                        for (int l = 0; l < groundTile.sceneObjectCount; l++) {
+                                                if (groundTile.obj5Array[l] != sceneObject) {
                                                         continue;
                                                 }
-                                                class30_sub3.sceneObjectCount--;
-                                                for (int i1 = l; i1 < class30_sub3.sceneObjectCount; i1++) {
-                                                        class30_sub3.obj5Array[i1] = class30_sub3.obj5Array[i1 + 1];
-                                                        class30_sub3.sceneObjectFlags[i1] = class30_sub3.sceneObjectFlags[i1 + 1];
+                                                groundTile.sceneObjectCount--;
+                                                for (int i1 = l; i1 < groundTile.sceneObjectCount; i1++) {
+                                                        groundTile.obj5Array[i1] = groundTile.obj5Array[i1 + 1];
+                                                        groundTile.sceneObjectFlags[i1] = groundTile.sceneObjectFlags[i1 + 1];
                                                 }
 
-                                                class30_sub3.obj5Array[class30_sub3.sceneObjectCount] = null;
+                                                groundTile.obj5Array[groundTile.sceneObjectCount] = null;
                                                 break;
                                         }
 
-                                        class30_sub3.combinedFlags = 0;
-                                        for (int j1 = 0; j1 < class30_sub3.sceneObjectCount; j1++) {
-                                                class30_sub3.combinedFlags |= class30_sub3.sceneObjectFlags[j1];
+                                        groundTile.combinedFlags = 0;
+                                        for (int j1 = 0; j1 < groundTile.sceneObjectCount; j1++) {
+                                                groundTile.combinedFlags |= groundTile.sceneObjectFlags[j1];
                                         }
 
 				}
@@ -390,11 +390,11 @@ final class WorldController {
 	}
 
        public void updateWallDecorationPosition(int i, int k, int l, int i1) {
-		Ground class30_sub3 = groundArray[i1][l][i];
-		if (class30_sub3 == null) {
+		Ground groundTile = groundArray[i1][l][i];
+		if (groundTile == null) {
 			return;
 		}
-                WallDecoration decoration = class30_sub3.obj2;
+                WallDecoration decoration = groundTile.obj2;
                 if (decoration != null) {
                         int j1 = l * 128 + 64;
                         int k1 = i * 128 + 64;
@@ -404,29 +404,29 @@ final class WorldController {
         }
 
         public void clearBoundaryObject(int i, int j, int k, byte byte0) {
-		Ground class30_sub3 = groundArray[j][i][k];
+		Ground groundTile = groundArray[j][i][k];
 		if (byte0 != -119) {
 			boundaryToggle = !boundaryToggle;
 		}
-		if (class30_sub3 != null) {
-			class30_sub3.obj1 = null;
+		if (groundTile != null) {
+			groundTile.obj1 = null;
 		}
 	}
 
         public void clearWallDecoration(int j, int k, int l) {
-		Ground class30_sub3 = groundArray[k][l][j];
-		if (class30_sub3 != null) {
-			class30_sub3.obj2 = null;
+		Ground groundTile = groundArray[k][l][j];
+		if (groundTile != null) {
+			groundTile.obj2 = null;
 		}
 	}
 
         public void removeSceneObject(int i, int k, int l) {
-		Ground class30_sub3 = groundArray[i][k][l];
-		if (class30_sub3 == null) {
+		Ground groundTile = groundArray[i][k][l];
+		if (groundTile == null) {
 			return;
 		}
-                for (int j1 = 0; j1 < class30_sub3.sceneObjectCount; j1++) {
-                        SceneObject sceneObject = class30_sub3.obj5Array[j1];
+                for (int j1 = 0; j1 < groundTile.sceneObjectCount; j1++) {
+                        SceneObject sceneObject = groundTile.obj5Array[j1];
                         if ((sceneObject.uid >> 29 & 3) == 2 && sceneObject.startX == k && sceneObject.startY == l) {
                                 removeSceneObject(sceneObject);
                                 return;
@@ -436,45 +436,45 @@ final class WorldController {
 	}
 
         public void clearTileDecoration(int i, int j, int k) {
-		Ground class30_sub3 = groundArray[i][k][j];
-		if (class30_sub3 == null) {
+		Ground groundTile = groundArray[i][k][j];
+		if (groundTile == null) {
 			return;
 		}
-		class30_sub3.obj3 = null;
+		groundTile.obj3 = null;
 	}
 
         public void clearItemPile(int i, int j, int k) {
-		Ground class30_sub3 = groundArray[i][j][k];
-		if (class30_sub3 != null) {
-                        class30_sub3.itemPile = null;
+		Ground groundTile = groundArray[i][j][k];
+		if (groundTile != null) {
+                        groundTile.itemPile = null;
 		}
 	}
 
        public BoundaryObject getBoundaryObject(int i, int j, int k) {
-		Ground class30_sub3 = groundArray[i][j][k];
-		if (class30_sub3 == null) {
+		Ground groundTile = groundArray[i][j][k];
+		if (groundTile == null) {
 			return null;
 		} else {
-                        return class30_sub3.obj1;
+                        return groundTile.obj1;
 		}
 	}
 
        public WallDecoration getWallDecoration(int i, int k, int l) {
-                Ground class30_sub3 = groundArray[l][i][k];
-                if (class30_sub3 == null) {
+                Ground groundTile = groundArray[l][i][k];
+                if (groundTile == null) {
                         return null;
                 } else {
-                        return class30_sub3.obj2;
+                        return groundTile.obj2;
                 }
 	}
 
        public SceneObject getSceneObject(int i, int j, int k) {
-                Ground class30_sub3 = groundArray[k][i][j];
-                if (class30_sub3 == null) {
+                Ground groundTile = groundArray[k][i][j];
+                if (groundTile == null) {
                         return null;
                 }
-                for (int l = 0; l < class30_sub3.sceneObjectCount; l++) {
-                        SceneObject sceneObject = class30_sub3.obj5Array[l];
+                for (int l = 0; l < groundTile.sceneObjectCount; l++) {
+                        SceneObject sceneObject = groundTile.obj5Array[l];
                         if ((sceneObject.uid >> 29 & 3) == 2 && sceneObject.startX == i && sceneObject.startY == j) {
                                 return sceneObject;
                         }
@@ -483,39 +483,39 @@ final class WorldController {
         }
 
    public TileDecoration getTileDecoration(int i, int j, int k) {
-		Ground class30_sub3 = groundArray[k][j][i];
-		if (class30_sub3 == null || class30_sub3.obj3 == null) {
+		Ground groundTile = groundArray[k][j][i];
+		if (groundTile == null || groundTile.obj3 == null) {
 			return null;
 		} else {
-			return class30_sub3.obj3;
+			return groundTile.obj3;
 		}
 	}
 
        public int getBoundaryObjectUid(int i, int j, int k) {
-		Ground class30_sub3 = groundArray[i][j][k];
-		if (class30_sub3 == null || class30_sub3.obj1 == null) {
+		Ground groundTile = groundArray[i][j][k];
+		if (groundTile == null || groundTile.obj1 == null) {
 			return 0;
 		} else {
-			return class30_sub3.obj1.uid;
+			return groundTile.obj1.uid;
 		}
 	}
 
        public int getWallDecorationUid(int i, int j, int l) {
-		Ground class30_sub3 = groundArray[i][j][l];
-		if (class30_sub3 == null || class30_sub3.obj2 == null) {
+		Ground groundTile = groundArray[i][j][l];
+		if (groundTile == null || groundTile.obj2 == null) {
 			return 0;
 		} else {
-			return class30_sub3.obj2.uid;
+			return groundTile.obj2.uid;
 		}
 	}
 
        public int getSceneObjectUid(int i, int j, int k) {
-		Ground class30_sub3 = groundArray[i][j][k];
-		if (class30_sub3 == null) {
+		Ground groundTile = groundArray[i][j][k];
+		if (groundTile == null) {
 			return 0;
 		}
-                for (int l = 0; l < class30_sub3.sceneObjectCount; l++) {
-                        SceneObject sceneObject = class30_sub3.obj5Array[l];
+                for (int l = 0; l < groundTile.sceneObjectCount; l++) {
+                        SceneObject sceneObject = groundTile.obj5Array[l];
                         if ((sceneObject.uid >> 29 & 3) == 2 && sceneObject.startX == j && sceneObject.startY == k) {
                                 return sceneObject.uid;
                         }
@@ -525,31 +525,31 @@ final class WorldController {
 	}
 
        public int getTileDecorationUid(int i, int j, int k) {
-		Ground class30_sub3 = groundArray[i][j][k];
-		if (class30_sub3 == null || class30_sub3.obj3 == null) {
+		Ground groundTile = groundArray[i][j][k];
+		if (groundTile == null || groundTile.obj3 == null) {
 			return 0;
 		} else {
-			return class30_sub3.obj3.uid;
+			return groundTile.obj3.uid;
 		}
 	}
 
        public int getObjectConfig(int i, int j, int k, int l) {
-		Ground class30_sub3 = groundArray[i][j][k];
-		if (class30_sub3 == null) {
+		Ground groundTile = groundArray[i][j][k];
+		if (groundTile == null) {
 			return -1;
 		}
-		if (class30_sub3.obj1 != null && class30_sub3.obj1.uid == l) {
-			return class30_sub3.obj1.config & 0xff;
+		if (groundTile.obj1 != null && groundTile.obj1.uid == l) {
+			return groundTile.obj1.config & 0xff;
 		}
-                if (class30_sub3.obj2 != null && class30_sub3.obj2.uid == l) {
-                        return class30_sub3.obj2.config & 0xff;
+                if (groundTile.obj2 != null && groundTile.obj2.uid == l) {
+                        return groundTile.obj2.config & 0xff;
                 }
-                if (class30_sub3.obj3 != null && class30_sub3.obj3.uid == l) {
-                        return class30_sub3.obj3.config & 0xff;
+                if (groundTile.obj3 != null && groundTile.obj3.uid == l) {
+                        return groundTile.obj3.config & 0xff;
                 }
-                for (int i1 = 0; i1 < class30_sub3.sceneObjectCount; i1++) {
-                        if (class30_sub3.obj5Array[i1].uid == l) {
-                                return class30_sub3.obj5Array[i1].config & 0xff;
+                for (int i1 = 0; i1 < groundTile.sceneObjectCount; i1++) {
+                        if (groundTile.obj5Array[i1].uid == l) {
+                                return groundTile.obj5Array[i1].config & 0xff;
                         }
                 }
 
@@ -564,9 +564,9 @@ final class WorldController {
 		for (int l1 = 0; l1 < planeCount; l1++) {
 			for (int i2 = 0; i2 < worldWidth; i2++) {
 				for (int j2 = 0; j2 < worldHeight; j2++) {
-					Ground class30_sub3 = groundArray[l1][i2][j2];
-					if (class30_sub3 != null) {
-						BoundaryObject class10 = class30_sub3.obj1;
+					Ground groundTile = groundArray[l1][i2][j2];
+					if (groundTile != null) {
+						BoundaryObject class10 = groundTile.obj1;
 						if (class10 != null && class10.primary != null && class10.primary.vertexNormals != null) {
                                                        blendModels(l1, 1, 1, i2, j2, (Model) class10.primary);
 							if (class10.secondary != null && class10.secondary.vertexNormals != null) {
@@ -576,15 +576,15 @@ final class WorldController {
 							}
 							((Model) class10.primary).applyShading(j, k1, k, i, i1);
 						}
-                                                for (int k2 = 0; k2 < class30_sub3.sceneObjectCount; k2++) {
-                                                        SceneObject sceneObject = class30_sub3.obj5Array[k2];
+                                                for (int k2 = 0; k2 < groundTile.sceneObjectCount; k2++) {
+                                                        SceneObject sceneObject = groundTile.obj5Array[k2];
                                                         if (sceneObject != null && sceneObject.renderable != null && sceneObject.renderable.vertexNormals != null) {
                                                                 blendModels(l1, sceneObject.endX - sceneObject.startX + 1, sceneObject.endY - sceneObject.startY + 1, i2, j2, (Model) sceneObject.renderable);
                                                                 ((Model) sceneObject.renderable).applyShading(j, k1, k, i, i1);
                                                         }
                                                 }
 
-                                            TileDecoration class49 = class30_sub3.obj3;
+                                            TileDecoration class49 = groundTile.obj3;
                                                 if (class49 != null && class49.renderable.vertexNormals != null) {
                                                        blendDecorationLighting(i2, l1, (Model) class49.renderable, j2);
                                                         ((Model) class49.renderable).applyShading(j, k1, k, i, i1);
@@ -600,27 +600,27 @@ final class WorldController {
 
        private void blendDecorationLighting(int i, int j, Model model, int k) {
 		if (i < worldWidth) {
-			Ground class30_sub3 = groundArray[j][i + 1][k];
-                        if (class30_sub3 != null && class30_sub3.obj3 != null && class30_sub3.obj3.renderable.vertexNormals != null) {
-                                mergeNormals(model, (Model) class30_sub3.obj3.renderable, 128, 0, 0, true);
+			Ground groundTile = groundArray[j][i + 1][k];
+                        if (groundTile != null && groundTile.obj3 != null && groundTile.obj3.renderable.vertexNormals != null) {
+                                mergeNormals(model, (Model) groundTile.obj3.renderable, 128, 0, 0, true);
                         }
                 }
                 if (k < worldWidth) {
-                        Ground class30_sub3_1 = groundArray[j][i][k + 1];
-                        if (class30_sub3_1 != null && class30_sub3_1.obj3 != null && class30_sub3_1.obj3.renderable.vertexNormals != null) {
-                                mergeNormals(model, (Model) class30_sub3_1.obj3.renderable, 0, 0, 128, true);
+                        Ground currentTile = groundArray[j][i][k + 1];
+                        if (currentTile != null && currentTile.obj3 != null && currentTile.obj3.renderable.vertexNormals != null) {
+                                mergeNormals(model, (Model) currentTile.obj3.renderable, 0, 0, 128, true);
                         }
                 }
                 if (i < worldWidth && k < worldHeight) {
-                        Ground class30_sub3_2 = groundArray[j][i + 1][k + 1];
-                        if (class30_sub3_2 != null && class30_sub3_2.obj3 != null && class30_sub3_2.obj3.renderable.vertexNormals != null) {
-                                mergeNormals(model, (Model) class30_sub3_2.obj3.renderable, 128, 0, 128, true);
+                        Ground diagonalTile = groundArray[j][i + 1][k + 1];
+                        if (diagonalTile != null && diagonalTile.obj3 != null && diagonalTile.obj3.renderable.vertexNormals != null) {
+                                mergeNormals(model, (Model) diagonalTile.obj3.renderable, 128, 0, 128, true);
                         }
                 }
                 if (i < worldWidth && k > 0) {
-                        Ground class30_sub3_3 = groundArray[j][i + 1][k - 1];
-                        if (class30_sub3_3 != null && class30_sub3_3.obj3 != null && class30_sub3_3.obj3.renderable.vertexNormals != null) {
-                                mergeNormals(model, (Model) class30_sub3_3.obj3.renderable, 128, 0, -128, true);
+                        Ground westTile = groundArray[j][i + 1][k - 1];
+                        if (westTile != null && westTile.obj3 != null && westTile.obj3.renderable.vertexNormals != null) {
+                                mergeNormals(model, (Model) westTile.obj3.renderable, 128, 0, -128, true);
                         }
                 }
 	}
@@ -637,18 +637,18 @@ final class WorldController {
 					if (k2 >= 0 && k2 < worldWidth) {
 						for (int l2 = l1; l2 <= i2; l2++) {
 							if (l2 >= 0 && l2 < worldHeight && (!flag || k2 >= k1 || l2 >= i2 || l2 < i1 && k2 != l)) {
-								Ground class30_sub3 = groundArray[j2][k2][l2];
-								if (class30_sub3 != null) {
+								Ground groundTile = groundArray[j2][k2][l2];
+								if (groundTile != null) {
 									int i3 = (tileHeights[j2][k2][l2] + tileHeights[j2][k2 + 1][l2] + tileHeights[j2][k2][l2 + 1] + tileHeights[j2][k2 + 1][l2 + 1]) / 4 - (tileHeights[i][l][i1] + tileHeights[i][l + 1][i1] + tileHeights[i][l][i1 + 1] + tileHeights[i][l + 1][i1 + 1]) / 4;
-									BoundaryObject class10 = class30_sub3.obj1;
+									BoundaryObject class10 = groundTile.obj1;
 									if (class10 != null && class10.primary != null && class10.primary.vertexNormals != null) {
                                                 mergeNormals(model, (Model) class10.primary, (k2 - l) * 128 + (1 - j) * 64, i3, (l2 - i1) * 128 + (1 - k) * 64, flag);
 									}
 									if (class10 != null && class10.secondary != null && class10.secondary.vertexNormals != null) {
                                                 mergeNormals(model, (Model) class10.secondary, (k2 - l) * 128 + (1 - j) * 64, i3, (l2 - i1) * 128 + (1 - k) * 64, flag);
 									}
-                                                                        for (int j3 = 0; j3 < class30_sub3.sceneObjectCount; j3++) {
-                                                                               SceneObject sceneObject = class30_sub3.obj5Array[j3];
+                                                                        for (int j3 = 0; j3 < groundTile.sceneObjectCount; j3++) {
+                                                                               SceneObject sceneObject = groundTile.obj5Array[j3];
                                                                                if (sceneObject != null && sceneObject.renderable != null && sceneObject.renderable.vertexNormals != null) {
                                                                                int k3 = sceneObject.endX - sceneObject.startX + 1;
                                                                                int l3 = sceneObject.endY - sceneObject.startY + 1;
@@ -728,11 +728,11 @@ final class WorldController {
 
         public void renderMinimapTile(int ai[], int i, int k, int l, int i1) {
 		int j = 512;// was parameter
-		Ground class30_sub3 = groundArray[k][l][i1];
-		if (class30_sub3 == null) {
+		Ground groundTile = groundArray[k][l][i1];
+		if (groundTile == null) {
 			return;
 		}
-                PlainTile class43 = class30_sub3.plainTile;
+                PlainTile class43 = groundTile.plainTile;
                 if (class43 != null) {
                         int j1 = class43.orientation;
 			if (j1 == 0) {
@@ -748,7 +748,7 @@ final class WorldController {
 
 			return;
 		}
-                ShapedTile shapedTile = class30_sub3.shapedTile;
+                ShapedTile shapedTile = groundTile.shapedTile;
                 if (shapedTile == null) {
                         return;
                 }
@@ -924,19 +924,19 @@ final class WorldController {
 		updateCullingClusters();
 		visibleTileCount = 0;
 		for (int k1 = activePlane; k1 < planeCount; k1++) {
-			Ground aclass30_sub3[][] = groundArray[k1];
+			Ground planeTiles[][] = groundArray[k1];
 			for (int i2 = minVisibleX; i2 < maxVisibleX; i2++) {
 				for (int k2 = minVisibleY; k2 < maxVisibleY; k2++) {
-					Ground class30_sub3 = aclass30_sub3[i2][k2];
-                                        if (class30_sub3 != null) {
-                                                if (class30_sub3.groundFlag > i1 || !tileVisibilityMap[i2 - cameraTileX + drawDistance][k2 - cameraTileY + drawDistance] && tileHeights[k1][i2][k2] - l < 50) {
-							class30_sub3.tileActive = false;
-							class30_sub3.inQueue = false;
-							class30_sub3.cullFlags = 0;
+					Ground groundTile = planeTiles[i2][k2];
+                                        if (groundTile != null) {
+                                                if (groundTile.groundFlag > i1 || !tileVisibilityMap[i2 - cameraTileX + drawDistance][k2 - cameraTileY + drawDistance] && tileHeights[k1][i2][k2] - l < 50) {
+							groundTile.tileActive = false;
+							groundTile.inQueue = false;
+							groundTile.cullFlags = 0;
 						} else {
-                                                        class30_sub3.tileActive = true;
-                                                        class30_sub3.inQueue = true;
-                                                        class30_sub3.needsProcessing = class30_sub3.sceneObjectCount > 0;
+                                                        groundTile.tileActive = true;
+                                                        groundTile.inQueue = true;
+                                                        groundTile.needsProcessing = groundTile.sceneObjectCount > 0;
 							visibleTileCount++;
 						}
 					}
@@ -947,7 +947,7 @@ final class WorldController {
 		}
 
 		for (int l1 = activePlane; l1 < planeCount; l1++) {
-			Ground aclass30_sub3_1[][] = groundArray[l1];
+			Ground planeTiles1[][] = groundArray[l1];
 			for (int l2 = -drawDistance; l2 <= 0; l2++) {
 				int i3 = cameraTileX + l2;
 				int k3 = cameraTileX - l2;
@@ -957,29 +957,29 @@ final class WorldController {
 						int i5 = cameraTileY - i4;
 						if (i3 >= minVisibleX) {
 							if (k4 >= minVisibleY) {
-								Ground class30_sub3_1 = aclass30_sub3_1[i3][k4];
-								if (class30_sub3_1 != null && class30_sub3_1.tileActive) {
-									processTile(class30_sub3_1, true);
+								Ground currentTile = planeTiles1[i3][k4];
+								if (currentTile != null && currentTile.tileActive) {
+									processTile(currentTile, true);
 								}
 							}
 							if (i5 < maxVisibleY) {
-								Ground class30_sub3_2 = aclass30_sub3_1[i3][i5];
-								if (class30_sub3_2 != null && class30_sub3_2.tileActive) {
-									processTile(class30_sub3_2, true);
+								Ground diagonalTile = planeTiles1[i3][i5];
+								if (diagonalTile != null && diagonalTile.tileActive) {
+									processTile(diagonalTile, true);
 								}
 							}
 						}
 						if (k3 < maxVisibleX) {
 							if (k4 >= minVisibleY) {
-								Ground class30_sub3_3 = aclass30_sub3_1[k3][k4];
-								if (class30_sub3_3 != null && class30_sub3_3.tileActive) {
-									processTile(class30_sub3_3, true);
+								Ground westTile = planeTiles1[k3][k4];
+								if (westTile != null && westTile.tileActive) {
+									processTile(westTile, true);
 								}
 							}
 							if (i5 < maxVisibleY) {
-								Ground class30_sub3_4 = aclass30_sub3_1[k3][i5];
-								if (class30_sub3_4 != null && class30_sub3_4.tileActive) {
-									processTile(class30_sub3_4, true);
+								Ground eastTile = planeTiles1[k3][i5];
+								if (eastTile != null && eastTile.tileActive) {
+									processTile(eastTile, true);
 								}
 							}
 						}
@@ -995,7 +995,7 @@ final class WorldController {
 		}
 
 		for (int j2 = activePlane; j2 < planeCount; j2++) {
-			Ground aclass30_sub3_2[][] = groundArray[j2];
+			Ground planeTiles2[][] = groundArray[j2];
 			for (int j3 = -drawDistance; j3 <= 0; j3++) {
 				int l3 = cameraTileX + j3;
 				int j4 = cameraTileX - j3;
@@ -1005,29 +1005,29 @@ final class WorldController {
 						int k5 = cameraTileY - l4;
 						if (l3 >= minVisibleX) {
 							if (j5 >= minVisibleY) {
-								Ground class30_sub3_5 = aclass30_sub3_2[l3][j5];
-								if (class30_sub3_5 != null && class30_sub3_5.tileActive) {
-									processTile(class30_sub3_5, false);
+								Ground southTile = planeTiles2[l3][j5];
+								if (southTile != null && southTile.tileActive) {
+									processTile(southTile, false);
 								}
 							}
 							if (k5 < maxVisibleY) {
-								Ground class30_sub3_6 = aclass30_sub3_2[l3][k5];
-								if (class30_sub3_6 != null && class30_sub3_6.tileActive) {
-									processTile(class30_sub3_6, false);
+								Ground northTile = planeTiles2[l3][k5];
+								if (northTile != null && northTile.tileActive) {
+									processTile(northTile, false);
 								}
 							}
 						}
 						if (j4 < maxVisibleX) {
 							if (j5 >= minVisibleY) {
-								Ground class30_sub3_7 = aclass30_sub3_2[j4][j5];
-								if (class30_sub3_7 != null && class30_sub3_7.tileActive) {
-									processTile(class30_sub3_7, false);
+								Ground linkedTile = planeTiles2[j4][j5];
+								if (linkedTile != null && linkedTile.tileActive) {
+									processTile(linkedTile, false);
 								}
 							}
 							if (k5 < maxVisibleY) {
-								Ground class30_sub3_8 = aclass30_sub3_2[j4][k5];
-								if (class30_sub3_8 != null && class30_sub3_8.tileActive) {
-									processTile(class30_sub3_8, false);
+								Ground westNeighbor = planeTiles2[j4][k5];
+								if (westNeighbor != null && westNeighbor.tileActive) {
+									processTile(westNeighbor, false);
 								}
 							}
 						}
@@ -1045,72 +1045,72 @@ final class WorldController {
            pendingClick = false;
 	}
 
-	private void processTile(Ground class30_sub3, boolean flag) {
-		tileQueue.insertHead(class30_sub3);
+	private void processTile(Ground groundTile, boolean flag) {
+		tileQueue.insertHead(groundTile);
 		do {
-			Ground class30_sub3_1;
+			Ground currentTile;
 			do {
-				class30_sub3_1 = (Ground) tileQueue.popHead();
-				if (class30_sub3_1 == null) {
+				currentTile = (Ground) tileQueue.popHead();
+				if (currentTile == null) {
 					return;
 				}
-			} while (!class30_sub3_1.inQueue);
-                        int i = class30_sub3_1.x;
-                        int j = class30_sub3_1.y;
-                        int k = class30_sub3_1.plane;
-                        int l = class30_sub3_1.basePlane;
-			Ground aclass30_sub3[][] = groundArray[k];
-			if (class30_sub3_1.tileActive) {
+			} while (!currentTile.inQueue);
+                        int i = currentTile.x;
+                        int j = currentTile.y;
+                        int k = currentTile.plane;
+                        int l = currentTile.basePlane;
+			Ground planeTiles[][] = groundArray[k];
+			if (currentTile.tileActive) {
 				if (flag) {
 					if (k > 0) {
-						Ground class30_sub3_2 = groundArray[k - 1][i][j];
-						if (class30_sub3_2 != null && class30_sub3_2.inQueue) {
+						Ground diagonalTile = groundArray[k - 1][i][j];
+						if (diagonalTile != null && diagonalTile.inQueue) {
 							continue;
 						}
 					}
 					if (i <= cameraTileX && i > minVisibleX) {
-						Ground class30_sub3_3 = aclass30_sub3[i - 1][j];
-                                                if (class30_sub3_3 != null && class30_sub3_3.inQueue && (class30_sub3_3.tileActive || (class30_sub3_1.combinedFlags & 1) == 0)) {
+						Ground westTile = planeTiles[i - 1][j];
+                                                if (westTile != null && westTile.inQueue && (westTile.tileActive || (currentTile.combinedFlags & 1) == 0)) {
 							continue;
 						}
 					}
 					if (i >= cameraTileX && i < maxVisibleX - 1) {
-						Ground class30_sub3_4 = aclass30_sub3[i + 1][j];
-                                                if (class30_sub3_4 != null && class30_sub3_4.inQueue && (class30_sub3_4.tileActive || (class30_sub3_1.combinedFlags & 4) == 0)) {
+						Ground eastTile = planeTiles[i + 1][j];
+                                                if (eastTile != null && eastTile.inQueue && (eastTile.tileActive || (currentTile.combinedFlags & 4) == 0)) {
 							continue;
 						}
 					}
 					if (j <= cameraTileY && j > minVisibleY) {
-						Ground class30_sub3_5 = aclass30_sub3[i][j - 1];
-                                                if (class30_sub3_5 != null && class30_sub3_5.inQueue && (class30_sub3_5.tileActive || (class30_sub3_1.combinedFlags & 8) == 0)) {
+						Ground southTile = planeTiles[i][j - 1];
+                                                if (southTile != null && southTile.inQueue && (southTile.tileActive || (currentTile.combinedFlags & 8) == 0)) {
 							continue;
 						}
 					}
 					if (j >= cameraTileY && j < maxVisibleY - 1) {
-						Ground class30_sub3_6 = aclass30_sub3[i][j + 1];
-                                                if (class30_sub3_6 != null && class30_sub3_6.inQueue && (class30_sub3_6.tileActive || (class30_sub3_1.combinedFlags & 2) == 0)) {
+						Ground northTile = planeTiles[i][j + 1];
+                                                if (northTile != null && northTile.inQueue && (northTile.tileActive || (currentTile.combinedFlags & 2) == 0)) {
 							continue;
 						}
 					}
 				} else {
 					flag = true;
 				}
-				class30_sub3_1.tileActive = false;
-                                if (class30_sub3_1.linkedTile != null) {
-                                        Ground class30_sub3_7 = class30_sub3_1.linkedTile;
-                                        if (class30_sub3_7.plainTile != null) {
+				currentTile.tileActive = false;
+                                if (currentTile.linkedTile != null) {
+                                        Ground linkedTile = currentTile.linkedTile;
+                                        if (linkedTile.plainTile != null) {
 						if (!isTileVisible(0, i, j)) {
-                                                        drawPlainTile(class30_sub3_7.plainTile, 0, pitchSin, pitchCos, yawSin, yawCos, i, j);
+                                                        drawPlainTile(linkedTile.plainTile, 0, pitchSin, pitchCos, yawSin, yawCos, i, j);
 						}
-                                } else if (class30_sub3_7.shapedTile != null && !isTileVisible(0, i, j)) {
-                                                drawShapedTile(i, pitchSin, yawSin, class30_sub3_7.shapedTile, pitchCos, j, yawCos);
+                                } else if (linkedTile.shapedTile != null && !isTileVisible(0, i, j)) {
+                                                drawShapedTile(i, pitchSin, yawSin, linkedTile.shapedTile, pitchCos, j, yawCos);
 					}
-					BoundaryObject class10 = class30_sub3_7.obj1;
+					BoundaryObject class10 = linkedTile.obj1;
 					if (class10 != null) {
 						class10.primary.render(0, pitchSin, pitchCos, yawSin, yawCos, class10.x - cameraX, class10.plane - cameraZ, class10.y - cameraY, class10.uid);
 					}
-                                        for (int i2 = 0; i2 < class30_sub3_7.sceneObjectCount; i2++) {
-                                                SceneObject sceneObject = class30_sub3_7.obj5Array[i2];
+                                        for (int i2 = 0; i2 < linkedTile.sceneObjectCount; i2++) {
+                                                SceneObject sceneObject = linkedTile.obj5Array[i2];
                                                 if (sceneObject != null) {
                                                         sceneObject.renderable.render(sceneObject.orientation, pitchSin, pitchCos, yawSin, yawCos, sceneObject.x - cameraX, sceneObject.height - cameraZ, sceneObject.y - cameraY, sceneObject.uid);
                                                 }
@@ -1118,20 +1118,20 @@ final class WorldController {
 
 				}
 				boolean tileVisible = false;
-                                if (class30_sub3_1.plainTile != null) {
+                                if (currentTile.plainTile != null) {
 					if (!isTileVisible(l, i, j)) {
 						tileVisible = true;
-                                                drawPlainTile(class30_sub3_1.plainTile, l, pitchSin, pitchCos, yawSin, yawCos, i, j);
+                                                drawPlainTile(currentTile.plainTile, l, pitchSin, pitchCos, yawSin, yawCos, i, j);
 					}
-                                } else if (class30_sub3_1.shapedTile != null && !isTileVisible(l, i, j)) {
+                                } else if (currentTile.shapedTile != null && !isTileVisible(l, i, j)) {
                                         tileVisible = true;
-                                        drawShapedTile(i, pitchSin, yawSin, class30_sub3_1.shapedTile, pitchCos, j, yawCos);
+                                        drawShapedTile(i, pitchSin, yawSin, currentTile.shapedTile, pitchCos, j, yawCos);
 				}
 				int j1 = 0;
 				int j2 = 0;
-				BoundaryObject class10_3 = class30_sub3_1.obj1;
-                                WallDecoration class26_1 = class30_sub3_1.obj2;
-				if (class10_3 != null || class26_1 != null) {
+				BoundaryObject boundaryObj = currentTile.obj1;
+                                WallDecoration class26_1 = currentTile.obj2;
+				if (boundaryObj != null || class26_1 != null) {
 					if (cameraTileX == i) {
 						j1++;
 					} else if (cameraTileX < i) {
@@ -1143,35 +1143,35 @@ final class WorldController {
 						j1 += 6;
 					}
 					j2 = orientationLookup[j1];
-					class30_sub3_1.boundaryFlags = orientationAdjacency[j1];
+					currentTile.boundaryFlags = orientationAdjacency[j1];
 				}
-				if (class10_3 != null) {
-					if ((class10_3.orientation & orientationMasks[j1]) != 0) {
-						if (class10_3.orientation == 16) {
-							class30_sub3_1.cullFlags = 3;
-							class30_sub3_1.cullOrientation = cullMask1[j1];
-							class30_sub3_1.cullOpposite = 3 - class30_sub3_1.cullOrientation;
-						} else if (class10_3.orientation == 32) {
-							class30_sub3_1.cullFlags = 6;
-							class30_sub3_1.cullOrientation = cullMask2[j1];
-							class30_sub3_1.cullOpposite = 6 - class30_sub3_1.cullOrientation;
-						} else if (class10_3.orientation == 64) {
-							class30_sub3_1.cullFlags = 12;
-							class30_sub3_1.cullOrientation = cullMask3[j1];
-							class30_sub3_1.cullOpposite = 12 - class30_sub3_1.cullOrientation;
+				if (boundaryObj != null) {
+					if ((boundaryObj.orientation & orientationMasks[j1]) != 0) {
+						if (boundaryObj.orientation == 16) {
+							currentTile.cullFlags = 3;
+							currentTile.cullOrientation = cullMask1[j1];
+							currentTile.cullOpposite = 3 - currentTile.cullOrientation;
+						} else if (boundaryObj.orientation == 32) {
+							currentTile.cullFlags = 6;
+							currentTile.cullOrientation = cullMask2[j1];
+							currentTile.cullOpposite = 6 - currentTile.cullOrientation;
+						} else if (boundaryObj.orientation == 64) {
+							currentTile.cullFlags = 12;
+							currentTile.cullOrientation = cullMask3[j1];
+							currentTile.cullOpposite = 12 - currentTile.cullOrientation;
 						} else {
-							class30_sub3_1.cullFlags = 9;
-							class30_sub3_1.cullOrientation = cullMask4[j1];
-							class30_sub3_1.cullOpposite = 9 - class30_sub3_1.cullOrientation;
+							currentTile.cullFlags = 9;
+							currentTile.cullOrientation = cullMask4[j1];
+							currentTile.cullOpposite = 9 - currentTile.cullOrientation;
 						}
 					} else {
-						class30_sub3_1.cullFlags = 0;
+						currentTile.cullFlags = 0;
 					}
-					if ((class10_3.orientation & j2) != 0 && !isWallVisible(l, i, j, class10_3.orientation)) {
-						class10_3.primary.render(0, pitchSin, pitchCos, yawSin, yawCos, class10_3.x - cameraX, class10_3.plane - cameraZ, class10_3.y - cameraY, class10_3.uid);
+					if ((boundaryObj.orientation & j2) != 0 && !isWallVisible(l, i, j, boundaryObj.orientation)) {
+						boundaryObj.primary.render(0, pitchSin, pitchCos, yawSin, yawCos, boundaryObj.x - cameraX, boundaryObj.plane - cameraZ, boundaryObj.y - cameraY, boundaryObj.uid);
 					}
-					if ((class10_3.orientation2 & j2) != 0 && !isWallVisible(l, i, j, class10_3.orientation2)) {
-						class10_3.secondary.render(0, pitchSin, pitchCos, yawSin, yawCos, class10_3.x - cameraX, class10_3.plane - cameraZ, class10_3.y - cameraY, class10_3.uid);
+					if ((boundaryObj.orientation2 & j2) != 0 && !isWallVisible(l, i, j, boundaryObj.orientation2)) {
+						boundaryObj.secondary.render(0, pitchSin, pitchCos, yawSin, yawCos, boundaryObj.x - cameraX, boundaryObj.plane - cameraZ, boundaryObj.y - cameraY, boundaryObj.uid);
 					}
 				}
                                 if (class26_1 != null && !isWallDecorationVisible(l, i, j, class26_1.renderable.modelHeight)) {
@@ -1207,11 +1207,11 @@ final class WorldController {
                                         }
                                 }
 				if (tileVisible) {
-                                   TileDecoration class49 = class30_sub3_1.obj3;
+                                   TileDecoration class49 = currentTile.obj3;
                                         if (class49 != null) {
                                                 class49.renderable.render(0, pitchSin, pitchCos, yawSin, yawCos, class49.x - cameraX, class49.tileHeight - cameraZ, class49.y - cameraY, class49.uid);
                                         }
-                                        ItemPile pile1 = class30_sub3_1.itemPile;
+                                        ItemPile pile1 = currentTile.itemPile;
                                         if (pile1 != null && pile1.offsetY == 0) {
                                                 if (pile1.secondItem != null) {
                                                         pile1.secondItem.render(0, pitchSin, pitchCos, yawSin, yawCos, pile1.x - cameraX, pile1.height - cameraZ, pile1.y - cameraY, pile1.uid);
@@ -1224,38 +1224,38 @@ final class WorldController {
                                                 }
                                         }
 				}
-                                int k4 = class30_sub3_1.combinedFlags;
+                                int k4 = currentTile.combinedFlags;
 				if (k4 != 0) {
 					if (i < cameraTileX && (k4 & 4) != 0) {
-						Ground class30_sub3_17 = aclass30_sub3[i + 1][j];
-						if (class30_sub3_17 != null && class30_sub3_17.inQueue) {
-							tileQueue.insertHead(class30_sub3_17);
+						Ground neighborTileEast = planeTiles[i + 1][j];
+						if (neighborTileEast != null && neighborTileEast.inQueue) {
+							tileQueue.insertHead(neighborTileEast);
 						}
 					}
 					if (j < cameraTileY && (k4 & 2) != 0) {
-						Ground class30_sub3_18 = aclass30_sub3[i][j + 1];
-						if (class30_sub3_18 != null && class30_sub3_18.inQueue) {
-							tileQueue.insertHead(class30_sub3_18);
+						Ground neighborTileNorth = planeTiles[i][j + 1];
+						if (neighborTileNorth != null && neighborTileNorth.inQueue) {
+							tileQueue.insertHead(neighborTileNorth);
 						}
 					}
 					if (i > cameraTileX && (k4 & 1) != 0) {
-						Ground class30_sub3_19 = aclass30_sub3[i - 1][j];
-						if (class30_sub3_19 != null && class30_sub3_19.inQueue) {
-							tileQueue.insertHead(class30_sub3_19);
+						Ground neighborTileWest = planeTiles[i - 1][j];
+						if (neighborTileWest != null && neighborTileWest.inQueue) {
+							tileQueue.insertHead(neighborTileWest);
 						}
 					}
 					if (j > cameraTileY && (k4 & 8) != 0) {
-						Ground class30_sub3_20 = aclass30_sub3[i][j - 1];
-						if (class30_sub3_20 != null && class30_sub3_20.inQueue) {
-							tileQueue.insertHead(class30_sub3_20);
+						Ground neighborTileSouth = planeTiles[i][j - 1];
+						if (neighborTileSouth != null && neighborTileSouth.inQueue) {
+							tileQueue.insertHead(neighborTileSouth);
 						}
 					}
 				}
 			}
-                        if (class30_sub3_1.cullFlags != 0) {
+                        if (currentTile.cullFlags != 0) {
                                 boolean foundVisible = true;
-                                for (int k1 = 0; k1 < class30_sub3_1.sceneObjectCount; k1++) {
-                                        if (class30_sub3_1.obj5Array[k1].lastDrawn == renderCycle || (class30_sub3_1.sceneObjectFlags[k1] & class30_sub3_1.cullFlags) != class30_sub3_1.cullOrientation) {
+                                for (int k1 = 0; k1 < currentTile.sceneObjectCount; k1++) {
+                                        if (currentTile.obj5Array[k1].lastDrawn == renderCycle || (currentTile.sceneObjectFlags[k1] & currentTile.cullFlags) != currentTile.cullOrientation) {
                                                 continue;
                                         }
 					foundVisible = false;
@@ -1263,30 +1263,30 @@ final class WorldController {
 				}
 
 				if (foundVisible) {
-					BoundaryObject class10_1 = class30_sub3_1.obj1;
-					if (!isWallVisible(l, i, j, class10_1.orientation)) {
-						class10_1.primary.render(0, pitchSin, pitchCos, yawSin, yawCos, class10_1.x - cameraX, class10_1.plane - cameraZ, class10_1.y - cameraY, class10_1.uid);
+					BoundaryObject boundaryObjPrimary = currentTile.obj1;
+					if (!isWallVisible(l, i, j, boundaryObjPrimary.orientation)) {
+						boundaryObjPrimary.primary.render(0, pitchSin, pitchCos, yawSin, yawCos, boundaryObjPrimary.x - cameraX, boundaryObjPrimary.plane - cameraZ, boundaryObjPrimary.y - cameraY, boundaryObjPrimary.uid);
 					}
-					class30_sub3_1.cullFlags = 0;
+					currentTile.cullFlags = 0;
 				}
 			}
-			if (class30_sub3_1.needsProcessing) {
+			if (currentTile.needsProcessing) {
 				try {
-                                        int i1 = class30_sub3_1.sceneObjectCount;
-					class30_sub3_1.needsProcessing = false;
+                                        int i1 = currentTile.sceneObjectCount;
+					currentTile.needsProcessing = false;
 					int l1 = 0;
 					label0 : for (int k2 = 0; k2 < i1; k2++) {
-                                                SceneObject class28_1 = class30_sub3_1.obj5Array[k2];
+                                                SceneObject class28_1 = currentTile.obj5Array[k2];
                                                 if (class28_1.lastDrawn == renderCycle) {
                                                         continue;
                                                 }
                                                 for (int k3 = class28_1.startX; k3 <= class28_1.endX; k3++) {
                                                         for (int l4 = class28_1.startY; l4 <= class28_1.endY; l4++) {
-                                                                Ground class30_sub3_21 = aclass30_sub3[k3][l4];
-                                                                if (class30_sub3_21.tileActive) {
-                                                                        class30_sub3_1.needsProcessing = true;
+                                                                Ground cullCheckTile = planeTiles[k3][l4];
+                                                                if (cullCheckTile.tileActive) {
+                                                                        currentTile.needsProcessing = true;
                                                                 } else {
-                                                                        if (class30_sub3_21.cullFlags == 0) {
+                                                                        if (cullCheckTile.cullFlags == 0) {
 										continue;
 									}
                                                                         int l6 = 0;
@@ -1302,10 +1302,10 @@ final class WorldController {
                                                                         if (l4 < class28_1.endY) {
                                                                                 l6 += 2;
                                                                         }
-                                                                        if ((l6 & class30_sub3_21.cullFlags) != class30_sub3_1.cullOpposite) {
+                                                                        if ((l6 & cullCheckTile.cullFlags) != currentTile.cullOpposite) {
 										continue;
 									}
-									class30_sub3_1.needsProcessing = true;
+									currentTile.needsProcessing = true;
 								}
 								continue label0;
 							}
@@ -1358,54 +1358,54 @@ final class WorldController {
                                                 }
                                                 for (int k7 = class28_3.startX; k7 <= class28_3.endX; k7++) {
                                                         for (int l8 = class28_3.startY; l8 <= class28_3.endY; l8++) {
-                                                                Ground class30_sub3_22 = aclass30_sub3[k7][l8];
-                                                                if (class30_sub3_22.cullFlags != 0) {
-                                                                        tileQueue.insertHead(class30_sub3_22);
-								} else if ((k7 != i || l8 != j) && class30_sub3_22.inQueue) {
-									tileQueue.insertHead(class30_sub3_22);
+                                                                Ground queuedNeighborTile = planeTiles[k7][l8];
+                                                                if (queuedNeighborTile.cullFlags != 0) {
+                                                                        tileQueue.insertHead(queuedNeighborTile);
+								} else if ((k7 != i || l8 != j) && queuedNeighborTile.inQueue) {
+									tileQueue.insertHead(queuedNeighborTile);
 								}
 							}
 
 						}
 
 					}
-					if (class30_sub3_1.needsProcessing) {
+					if (currentTile.needsProcessing) {
 						continue;
 					}
 				} catch (Exception _ex) {
-					class30_sub3_1.needsProcessing = false;
+					currentTile.needsProcessing = false;
 				}
 			}
-			if (!class30_sub3_1.inQueue || class30_sub3_1.cullFlags != 0) {
+			if (!currentTile.inQueue || currentTile.cullFlags != 0) {
 				continue;
 			}
 			if (i <= cameraTileX && i > minVisibleX) {
-				Ground class30_sub3_8 = aclass30_sub3[i - 1][j];
-				if (class30_sub3_8 != null && class30_sub3_8.inQueue) {
+				Ground westNeighbor = planeTiles[i - 1][j];
+				if (westNeighbor != null && westNeighbor.inQueue) {
 					continue;
 				}
 			}
 			if (i >= cameraTileX && i < maxVisibleX - 1) {
-				Ground class30_sub3_9 = aclass30_sub3[i + 1][j];
-				if (class30_sub3_9 != null && class30_sub3_9.inQueue) {
+				Ground eastNeighbor = planeTiles[i + 1][j];
+				if (eastNeighbor != null && eastNeighbor.inQueue) {
 					continue;
 				}
 			}
 			if (j <= cameraTileY && j > minVisibleY) {
-				Ground class30_sub3_10 = aclass30_sub3[i][j - 1];
-				if (class30_sub3_10 != null && class30_sub3_10.inQueue) {
+				Ground southNeighbor = planeTiles[i][j - 1];
+				if (southNeighbor != null && southNeighbor.inQueue) {
 					continue;
 				}
 			}
 			if (j >= cameraTileY && j < maxVisibleY - 1) {
-				Ground class30_sub3_11 = aclass30_sub3[i][j + 1];
-				if (class30_sub3_11 != null && class30_sub3_11.inQueue) {
+				Ground northNeighbor = planeTiles[i][j + 1];
+				if (northNeighbor != null && northNeighbor.inQueue) {
 					continue;
 				}
 			}
-			class30_sub3_1.inQueue = false;
+			currentTile.inQueue = false;
 			visibleTileCount--;
-                        ItemPile pile = class30_sub3_1.itemPile;
+                        ItemPile pile = currentTile.itemPile;
                         if (pile != null && pile.offsetY != 0) {
                                 if (pile.secondItem != null) {
                                         pile.secondItem.render(0, pitchSin, pitchCos, yawSin, yawCos, pile.x - cameraX, pile.height - cameraZ - pile.offsetY, pile.y - cameraY, pile.uid);
@@ -1417,10 +1417,10 @@ final class WorldController {
                                         pile.topItem.render(0, pitchSin, pitchCos, yawSin, yawCos, pile.x - cameraX, pile.height - cameraZ - pile.offsetY, pile.y - cameraY, pile.uid);
                                 }
                         }
-			if (class30_sub3_1.boundaryFlags != 0) {
-                                WallDecoration class26 = class30_sub3_1.obj2;
+			if (currentTile.boundaryFlags != 0) {
+                                WallDecoration class26 = currentTile.obj2;
                                 if (class26 != null && !isWallDecorationVisible(l, i, j, class26.renderable.modelHeight)) {
-                                        if ((class26.orientationFlags & class30_sub3_1.boundaryFlags) != 0) {
+                                        if ((class26.orientationFlags & currentTile.boundaryFlags) != 0) {
                                                 class26.renderable.render(class26.orientation, pitchSin, pitchCos, yawSin, yawCos, class26.x - cameraX, class26.plane - cameraZ, class26.y - cameraY, class26.uid);
                                         } else if ((class26.orientationFlags & 0x300) != 0) {
                                                 int l2 = class26.x - cameraX;
@@ -1451,44 +1451,44 @@ final class WorldController {
                                                 }
                                         }
                                 }
-				BoundaryObject class10_2 = class30_sub3_1.obj1;
-				if (class10_2 != null) {
-					if ((class10_2.orientation2 & class30_sub3_1.boundaryFlags) != 0 && !isWallVisible(l, i, j, class10_2.orientation2)) {
-						class10_2.secondary.render(0, pitchSin, pitchCos, yawSin, yawCos, class10_2.x - cameraX, class10_2.plane - cameraZ, class10_2.y - cameraY, class10_2.uid);
+				BoundaryObject boundaryObjSecondary = currentTile.obj1;
+				if (boundaryObjSecondary != null) {
+					if ((boundaryObjSecondary.orientation2 & currentTile.boundaryFlags) != 0 && !isWallVisible(l, i, j, boundaryObjSecondary.orientation2)) {
+						boundaryObjSecondary.secondary.render(0, pitchSin, pitchCos, yawSin, yawCos, boundaryObjSecondary.x - cameraX, boundaryObjSecondary.plane - cameraZ, boundaryObjSecondary.y - cameraY, boundaryObjSecondary.uid);
 					}
-					if ((class10_2.orientation & class30_sub3_1.boundaryFlags) != 0 && !isWallVisible(l, i, j, class10_2.orientation)) {
-						class10_2.primary.render(0, pitchSin, pitchCos, yawSin, yawCos, class10_2.x - cameraX, class10_2.plane - cameraZ, class10_2.y - cameraY, class10_2.uid);
+					if ((boundaryObjSecondary.orientation & currentTile.boundaryFlags) != 0 && !isWallVisible(l, i, j, boundaryObjSecondary.orientation)) {
+						boundaryObjSecondary.primary.render(0, pitchSin, pitchCos, yawSin, yawCos, boundaryObjSecondary.x - cameraX, boundaryObjSecondary.plane - cameraZ, boundaryObjSecondary.y - cameraY, boundaryObjSecondary.uid);
 					}
 				}
 			}
 			if (k < planeCount - 1) {
-				Ground class30_sub3_12 = groundArray[k + 1][i][j];
-				if (class30_sub3_12 != null && class30_sub3_12.inQueue) {
-					tileQueue.insertHead(class30_sub3_12);
+				Ground upperTile = groundArray[k + 1][i][j];
+				if (upperTile != null && upperTile.inQueue) {
+					tileQueue.insertHead(upperTile);
 				}
 			}
 			if (i < cameraTileX) {
-				Ground class30_sub3_13 = aclass30_sub3[i + 1][j];
-				if (class30_sub3_13 != null && class30_sub3_13.inQueue) {
-					tileQueue.insertHead(class30_sub3_13);
+				Ground queueEastTile = planeTiles[i + 1][j];
+				if (queueEastTile != null && queueEastTile.inQueue) {
+					tileQueue.insertHead(queueEastTile);
 				}
 			}
 			if (j < cameraTileY) {
-				Ground class30_sub3_14 = aclass30_sub3[i][j + 1];
-				if (class30_sub3_14 != null && class30_sub3_14.inQueue) {
-					tileQueue.insertHead(class30_sub3_14);
+				Ground queueNorthTile = planeTiles[i][j + 1];
+				if (queueNorthTile != null && queueNorthTile.inQueue) {
+					tileQueue.insertHead(queueNorthTile);
 				}
 			}
 			if (i > cameraTileX) {
-				Ground class30_sub3_15 = aclass30_sub3[i - 1][j];
-				if (class30_sub3_15 != null && class30_sub3_15.inQueue) {
-					tileQueue.insertHead(class30_sub3_15);
+				Ground queueWestTile = planeTiles[i - 1][j];
+				if (queueWestTile != null && queueWestTile.inQueue) {
+					tileQueue.insertHead(queueWestTile);
 				}
 			}
 			if (j > cameraTileY) {
-				Ground class30_sub3_16 = aclass30_sub3[i][j - 1];
-				if (class30_sub3_16 != null && class30_sub3_16.inQueue) {
-					tileQueue.insertHead(class30_sub3_16);
+				Ground queueSouthTile = planeTiles[i][j - 1];
+				if (queueSouthTile != null && queueSouthTile.inQueue) {
+					tileQueue.insertHead(queueSouthTile);
 				}
 			}
 		} while (true);
