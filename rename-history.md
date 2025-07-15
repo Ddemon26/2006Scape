@@ -1106,6 +1106,7 @@ This document lists variable or identifier renames found in the commit history.
  - aBoolean84 -> clickable
  - aBoolean87 -> minimapVisible
  - aBoolean93 -> priorityRender
+ - aclass30_sub2_sub4_sub6s -> tempModels
 ## Animation
  - anInt352 -> frameCount
  - anIntArray353 -> frameIds

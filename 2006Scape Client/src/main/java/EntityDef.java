@@ -53,17 +53,17 @@ public final class EntityDef {
 		if (flag1) {
 			return null;
 		}
-                Model aclass30_sub2_sub4_sub6s[] = new Model[headModelIds.length];
+                Model tempModels[] = new Model[headModelIds.length];
                 for (int j = 0; j < headModelIds.length; j++) {
-                        aclass30_sub2_sub4_sub6s[j] = Model.create(headModelIds[j]);
+                        tempModels[j] = Model.create(headModelIds[j]);
                 }
 
-		Model model;
-		if (aclass30_sub2_sub4_sub6s.length == 1) {
-			model = aclass30_sub2_sub4_sub6s[0];
-		} else {
-			model = new Model(aclass30_sub2_sub4_sub6s.length, aclass30_sub2_sub4_sub6s);
-		}
+                Model model;
+                if (tempModels.length == 1) {
+                        model = tempModels[0];
+                } else {
+                        model = new Model(tempModels.length, tempModels);
+                }
                 if (originalModelColors != null) {
                         for (int k = 0; k < originalModelColors.length; k++) {
                                 model.recolor(originalModelColors[k], modifiedModelColors[k]);
@@ -140,16 +140,16 @@ public final class EntityDef {
 			if (flag) {
 				return null;
 			}
-                        Model aclass30_sub2_sub4_sub6s[] = new Model[modelIds.length];
+                        Model tempModels[] = new Model[modelIds.length];
                         for (int j1 = 0; j1 < modelIds.length; j1++) {
-                                aclass30_sub2_sub4_sub6s[j1] = Model.create(modelIds[j1]);
-			}
+                                tempModels[j1] = Model.create(modelIds[j1]);
+                        }
 
-			if (aclass30_sub2_sub4_sub6s.length == 1) {
-				model = aclass30_sub2_sub4_sub6s[0];
-			} else {
-				model = new Model(aclass30_sub2_sub4_sub6s.length, aclass30_sub2_sub4_sub6s);
-			}
+                        if (tempModels.length == 1) {
+                                model = tempModels[0];
+                        } else {
+                                model = new Model(tempModels.length, tempModels);
+                        }
                         if (originalModelColors != null) {
                                 for (int k1 = 0; k1 < originalModelColors.length; k1++) {
                                         model.recolor(originalModelColors[k1], modifiedModelColors[k1]);
