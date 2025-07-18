@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,245 +8,579 @@
     <link rel="stylesheet" href="index.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
+
 <body>
-<button id="theme-toggle" class="theme-toggle">Dark Mode</button>
-<div class="layout">
-    <aside class="sidebar">
-        <nav class="nav">
-            <div class="nav-header">
-                <h2>2006Scape Docs</h2>
-                <div class="search-container">
-                    <input type="text" id="search-input" placeholder="Search docs..." />
-                    <div id="search-results" class="search-results"></div>
+    <button id="theme-toggle" class="theme-toggle">Dark Mode</button>
+    <div class="layout">
+        <aside class="sidebar">
+            <nav class="nav">
+                <div class="nav-header">
+                    <h2>2006Scape Docs</h2>
+                    <div class="search-container">
+                        <input type="text" id="search-input" placeholder="Search docs..." />
+                        <div id="search-results" class="search-results"></div>
+                    </div>
                 </div>
+
+                <div class="nav-section">
+                    <h3>Getting Started</h3>
+                    <ul>
+                        <li><a href="#" data-md="index.md" class="nav-overview">📖 Overview</a></li>
+                        <li><a href="#" data-md="intro.md">🚀 Quick Start</a></li>
+                        <li><a href="#" data-md="usage.md">⚙️ Setup & Usage</a></li>
+                        <li><a href="#" data-md="contributing.md">🤝 Contributing</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h3>Architecture</h3>
+                    <ul>
+                        <li class="category">
+                            <span>🖥️ Server</span>
+                            <ul>
+                                <li><a href="#" data-md="Server/Server-intro.md">Architecture Overview</a></li>
+
+                                <li class="subcategory">
+                                    <span>🎯 Core Engine</span>
+                                    <ul>
+                                        <li><a href="#" data-md="Server/classes/GameEngine.md">GameEngine</a></li>
+                                        <li><a href="#"
+                                                data-md="Server/classes/CycleEventHandler.md">CycleEventHandler</a></li>
+                                        <li><a href="#" data-md="Server/classes/Constants.md">Constants</a></li>
+                                        <li><a href="#" data-md="Server/classes/PacketSender.md">PacketSender</a></li>
+                                        <li><a href="#" data-md="Server/classes/Connection.md">Connection</a></li>
+                                        <li><a href="#" data-md="Server/classes/ConfigLoader.md">ConfigLoader</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="subcategory">
+                                    <span>👥 Player Management</span>
+                                    <ul>
+                                        <li><a href="#" data-md="Server/classes/Player.md">Player</a></li>
+                                        <li><a href="#" data-md="Server/classes/PlayerHandler.md">PlayerHandler</a></li>
+                                        <li><a href="#" data-md="Server/classes/PlayerAssistant.md">PlayerAssistant</a>
+                                        </li>
+                                        <li><a href="#" data-md="Server/classes/Client.md">Client</a></li>
+                                        <li><a href="#" data-md="Server/classes/PlayerSave.md">PlayerSave</a></li>
+                                        <li><a href="#" data-md="Server/classes/PlayerAction.md">PlayerAction</a></li>
+                                        <li><a href="#" data-md="Server/classes/PlayerKilling.md">PlayerKilling</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="subcategory">
+                                    <span>🤖 NPC System</span>
+                                    <ul>
+                                        <li><a href="#" data-md="Server/classes/Npc.md">Npc</a></li>
+                                        <li><a href="#" data-md="Server/classes/NpcHandler.md">NpcHandler</a></li>
+                                        <li><a href="#" data-md="Server/classes/NpcList.md">NpcList</a></li>
+                                        <li><a href="#" data-md="Server/classes/NpcActions.md">NpcActions</a></li>
+                                        <li><a href="#" data-md="Server/classes/NpcCombat.md">NpcCombat</a></li>
+                                        <li><a href="#" data-md="Server/classes/NpcAggressive.md">NpcAggressive</a></li>
+                                        <li><a href="#" data-md="Server/classes/NpcEmotes.md">NpcEmotes</a></li>
+                                        <li><a href="#" data-md="Server/classes/NPCDropsHandler.md">NPCDropsHandler</a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <li class="subcategory">
+                                    <span>⚔️ Combat System</span>
+                                    <ul>
+                                        <li><a href="#" data-md="Server/classes/CombatAssistant.md">CombatAssistant</a>
+                                        </li>
+                                        <li><a href="#" data-md="Server/classes/Dueling.md">Dueling</a></li>
+                                        <li><a href="#" data-md="Server/classes/CombatConstants.md">CombatConstants</a>
+                                        </li>
+                                        <li><a href="#" data-md="Server/classes/CombatSounds.md">CombatSounds</a></li>
+                                        <li><a href="#" data-md="Server/classes/AttackType.md">AttackType</a></li>
+                                        <li><a href="#" data-md="Server/classes/MeleeData.md">MeleeData</a></li>
+                                        <li><a href="#" data-md="Server/classes/RangeData.md">RangeData</a></li>
+                                        <li><a href="#" data-md="Server/classes/MagicData.md">MagicData</a></li>
+                                        <li><a href="#" data-md="Server/classes/Specials.md">Specials</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="subcategory">
+                                    <span>🎒 Items & Inventory</span>
+                                    <ul>
+                                        <li><a href="#" data-md="Server/classes/ItemAssistant.md">ItemAssistant</a></li>
+                                        <li><a href="#" data-md="Server/classes/ItemHandler.md">ItemHandler</a></li>
+                                        <li><a href="#" data-md="Server/classes/ItemConstants.md">ItemConstants</a></li>
+                                        <li><a href="#" data-md="Server/classes/GroundItem.md">GroundItem</a></li>
+                                        <li><a href="#" data-md="Server/classes/Item.md">Item</a></li>
+                                        <li><a href="#" data-md="Server/classes/GameItem.md">GameItem</a></li>
+                                        <li><a href="#" data-md="Server/classes/ItemDefinition.md">ItemDefinition</a>
+                                        </li>
+                                        <li><a href="#"
+                                                data-md="Server/classes/EquipmentDefinition.md">EquipmentDefinition</a>
+                                        </li>
+                                        <li><a href="#" data-md="Server/classes/Weight.md">Weight</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="subcategory">
+                                    <span>🏪 Trading & Commerce</span>
+                                    <ul>
+                                        <li><a href="#" data-md="Server/classes/Trading.md">Trading</a></li>
+                                        <li><a href="#" data-md="Server/classes/ShopAssistant.md">ShopAssistant</a></li>
+                                        <li><a href="#" data-md="Server/classes/ShopHandler.md">ShopHandler</a></li>
+                                        <li><a href="#" data-md="Server/classes/Shops.md">Shops</a></li>
+                                        <li><a href="#" data-md="Server/classes/BankPin.md">BankPin</a></li>
+                                        <li><a href="#" data-md="Server/classes/BankAll.md">BankAll</a></li>
+                                        <li><a href="#" data-md="Server/classes/Bank5.md">Bank5</a></li>
+                                        <li><a href="#" data-md="Server/classes/Bank10.md">Bank10</a></li>
+                                        <li><a href="#" data-md="Server/classes/BankX1.md">BankX1</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="subcategory">
+                                    <span>🌍 World Management</span>
+                                    <ul>
+                                        <li><a href="#" data-md="Server/classes/ObjectHandler.md">ObjectHandler</a></li>
+                                        <li><a href="#" data-md="Server/classes/ObjectManager.md">ObjectManager</a></li>
+                                        <li><a href="#" data-md="Server/classes/Objects.md">Objects</a></li>
+                                        <li><a href="#" data-md="Server/classes/Region.md">Region</a></li>
+                                        <li><a href="#" data-md="Server/classes/Boundary.md">Boundary</a></li>
+                                        <li><a href="#" data-md="Server/classes/PathFinder.md">PathFinder</a></li>
+                                        <li><a href="#" data-md="Server/classes/TileControl.md">TileControl</a></li>
+                                        <li><a href="#" data-md="Server/classes/Doors.md">Doors</a></li>
+                                        <li><a href="#" data-md="Server/classes/DoubleDoors.md">DoubleDoors</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="subcategory">
+                                    <span>🎮 Skills & Activities</span>
+                                    <ul>
+                                        <li><a href="#" data-md="Server/classes/SkillHandler.md">SkillHandler</a></li>
+                                        <li><a href="#" data-md="Server/classes/Prayer.md">Prayer</a></li>
+                                        <li><a href="#" data-md="Server/classes/PrayerDrain.md">PrayerDrain</a></li>
+                                        <li><a href="#" data-md="Server/classes/Woodcutting.md">Woodcutting</a></li>
+                                        <li><a href="#" data-md="Server/classes/Mining.md">Mining</a></li>
+                                        <li><a href="#" data-md="Server/classes/Fishing.md">Fishing</a></li>
+                                        <li><a href="#" data-md="Server/classes/Cooking.md">Cooking</a></li>
+                                        <li><a href="#" data-md="Server/classes/Firemaking.md">Firemaking</a></li>
+                                        <li><a href="#" data-md="Server/classes/Smithing.md">Smithing</a></li>
+                                        <li><a href="#" data-md="Server/classes/Crafting.md">Crafting</a></li>
+                                        <li><a href="#" data-md="Server/classes/Herblore.md">Herblore</a></li>
+                                        <li><a href="#" data-md="Server/classes/Farming.md">Farming</a></li>
+                                        <li><a href="#" data-md="Server/classes/Runecrafting.md">Runecrafting</a></li>
+                                        <li><a href="#" data-md="Server/classes/Agility.md">Agility</a></li>
+                                        <li><a href="#" data-md="Server/classes/Slayer.md">Slayer</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="subcategory">
+                                    <span>🎯 Minigames</span>
+                                    <ul>
+                                        <li><a href="#" data-md="Server/classes/CastleWars.md">CastleWars</a></li>
+                                        <li><a href="#" data-md="Server/classes/FightCaves.md">FightCaves</a></li>
+                                        <li><a href="#" data-md="Server/classes/PestControl.md">PestControl</a></li>
+                                        <li><a href="#" data-md="Server/classes/FightPits.md">FightPits</a></li>
+                                        <li><a href="#"
+                                                data-md="Server/classes/MageTrainingArena.md">MageTrainingArena</a></li>
+                                        <li><a href="#" data-md="Server/classes/Trawler.md">Trawler</a></li>
+                                        <li><a href="#" data-md="Server/classes/Barrows.md">Barrows</a></li>
+                                        <li><a href="#" data-md="Server/classes/PartyRoom.md">PartyRoom</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="subcategory">
+                                    <span>🎭 Quests</span>
+                                    <ul>
+                                        <li><a href="#" data-md="Server/classes/QuestAssistant.md">QuestAssistant</a>
+                                        </li>
+                                        <li><a href="#" data-md="Server/classes/CooksAssistant.md">CooksAssistant</a>
+                                        </li>
+                                        <li><a href="#" data-md="Server/classes/DoricsQuest.md">DoricsQuest</a></li>
+                                        <li><a href="#" data-md="Server/classes/RestlessGhost.md">RestlessGhost</a></li>
+                                        <li><a href="#" data-md="Server/classes/RomeoJuliet.md">RomeoJuliet</a></li>
+                                        <li><a href="#" data-md="Server/classes/SheepShearer.md">SheepShearer</a></li>
+                                        <li><a href="#" data-md="Server/classes/VampyreSlayer.md">VampyreSlayer</a></li>
+                                        <li><a href="#" data-md="Server/classes/WitchsPotion.md">WitchsPotion</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="subcategory">
+                                    <span>🔧 Utilities</span>
+                                    <ul>
+                                        <li><a href="#" data-md="Server/classes/Misc.md">Misc</a></li>
+                                        <li><a href="#" data-md="Server/classes/Stream.md">Stream</a></li>
+                                        <li><a href="#" data-md="Server/classes/GameLogger.md">GameLogger</a></li>
+                                        <li><a href="#" data-md="Server/classes/BufferUtil.md">BufferUtil</a></li>
+                                        <li><a href="#" data-md="Server/classes/NameUtil.md">NameUtil</a></li>
+                                        <li><a href="#" data-md="Server/classes/TextUtil.md">TextUtil</a></li>
+                                        <li><a href="#" data-md="Server/classes/ThreadUtil.md">ThreadUtil</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="category">
+                            <span>🎮 Client</span>
+                            <ul>
+                                <li><a href="#" data-md="Client/client-intro.md">Architecture Overview</a></li>
+
+                                <li class="subcategory">
+                                    <span>🎯 Core Engine</span>
+                                    <ul>
+                                        <li><a href="#" data-md="Client/classes/Client.md">Client</a></li>
+                                        <li><a href="#" data-md="Client/classes/Game.md">Game</a></li>
+                                        <li><a href="#" data-md="Client/classes/LocalGame.md">LocalGame</a></li>
+                                        <li><a href="#" data-md="Client/classes/Main.md">Main</a></li>
+                                        <li><a href="#" data-md="Client/classes/RSApplet.md">RSApplet</a></li>
+                                        <li><a href="#" data-md="Client/classes/RSFrame.md">RSFrame</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="subcategory">
+                                    <span>🎨 Rendering System</span>
+                                    <ul>
+                                        <li><a href="#" data-md="Client/classes/Model.md">Model</a></li>
+                                        <li><a href="#" data-md="Client/classes/ModelHeader.md">ModelHeader</a></li>
+                                        <li><a href="#" data-md="Client/classes/DrawingArea.md">DrawingArea</a></li>
+                                        <li><a href="#" data-md="Client/classes/RSImageProducer.md">RSImageProducer</a>
+                                        </li>
+                                        <li><a href="#" data-md="Client/classes/Texture.md">Texture</a></li>
+                                        <li><a href="#" data-md="Client/classes/VertexNormal.md">VertexNormal</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="subcategory">
+                                    <span>🖼️ User Interface</span>
+                                    <ul>
+                                        <li><a href="#" data-md="Client/classes/RSInterface.md">RSInterface</a></li>
+                                        <li><a href="#" data-md="Client/classes/TextClass.md">TextClass</a></li>
+                                        <li><a href="#" data-md="Client/classes/TextDrawingArea.md">TextDrawingArea</a>
+                                        </li>
+                                        <li><a href="#" data-md="Client/classes/TextInput.md">TextInput</a></li>
+                                        <li><a href="#" data-md="Client/classes/Sprite.md">Sprite</a></li>
+                                        <li><a href="#" data-md="Client/classes/MouseDetection.md">MouseDetection</a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <li class="subcategory">
+                                    <span>🌍 World Rendering</span>
+                                    <ul>
+                                        <li><a href="#" data-md="Client/classes/WorldController.md">WorldController</a>
+                                        </li>
+                                        <li><a href="#" data-md="Client/classes/ObjectManager.md">ObjectManager</a></li>
+                                        <li><a href="#" data-md="Client/classes/SceneObject.md">SceneObject</a></li>
+                                        <li><a href="#" data-md="Client/classes/Ground.md">Ground</a></li>
+                                        <li><a href="#" data-md="Client/classes/PlainTile.md">PlainTile</a></li>
+                                        <li><a href="#" data-md="Client/classes/ShapedTile.md">ShapedTile</a></li>
+                                        <li><a href="#" data-md="Client/classes/TileDecoration.md">TileDecoration</a>
+                                        </li>
+                                        <li><a href="#" data-md="Client/classes/WallDecoration.md">WallDecoration</a>
+                                        </li>
+                                        <li><a href="#" data-md="Client/classes/BoundaryObject.md">BoundaryObject</a>
+                                        </li>
+                                        <li><a href="#" data-md="Client/classes/CollisionMap.md">CollisionMap</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="subcategory">
+                                    <span>👥 Entities</span>
+                                    <ul>
+                                        <li><a href="#" data-md="Client/classes/Player.md">Player</a></li>
+                                        <li><a href="#" data-md="Client/classes/NPC.md">NPC</a></li>
+                                        <li><a href="#" data-md="Client/classes/Entity.md">Entity</a></li>
+                                        <li><a href="#" data-md="Client/classes/EntityDef.md">EntityDef</a></li>
+                                        <li><a href="#" data-md="Client/classes/Animable.md">Animable</a></li>
+                                        <li><a href="#" data-md="Client/classes/Animation.md">Animation</a></li>
+                                        <li><a href="#" data-md="Client/classes/AnimFrame.md">AnimFrame</a></li>
+                                        <li><a href="#" data-md="Client/classes/FrameBase.md">FrameBase</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="subcategory">
+                                    <span>🎮 Game Objects</span>
+                                    <ul>
+                                        <li><a href="#" data-md="Client/classes/Item.md">Item</a></li>
+                                        <li><a href="#" data-md="Client/classes/ItemDef.md">ItemDef</a></li>
+                                        <li><a href="#" data-md="Client/classes/ItemPile.md">ItemPile</a></li>
+                                        <li><a href="#" data-md="Client/classes/ObjectDef.md">ObjectDef</a></li>
+                                        <li><a href="#" data-md="Client/classes/SpotAnim.md">SpotAnim</a></li>
+                                        <li><a href="#" data-md="Client/classes/GraphicsObject.md">GraphicsObject</a>
+                                        </li>
+                                        <li><a href="#" data-md="Client/classes/Projectile.md">Projectile</a></li>
+                                        <li><a href="#" data-md="Client/classes/PendingSpawn.md">PendingSpawn</a></li>
+                                        <li><a href="#" data-md="Client/classes/DynamicObject.md">DynamicObject</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="subcategory">
+                                    <span>🔊 Audio & Media</span>
+                                    <ul>
+                                        <li><a href="#" data-md="Client/classes/SoundPlayer.md">SoundPlayer</a></li>
+                                        <li><a href="#" data-md="Client/classes/Sounds.md">Sounds</a></li>
+                                        <li><a href="#" data-md="Client/classes/SoundEnvelope.md">SoundEnvelope</a></li>
+                                        <li><a href="#" data-md="Client/classes/SoundFilter.md">SoundFilter</a></li>
+                                        <li><a href="#" data-md="Client/classes/MidiPlayer.md">MidiPlayer</a></li>
+                                        <li><a href="#"
+                                                data-md="Client/classes/QueuedMidiPlayer.md">QueuedMidiPlayer</a></li>
+                                        <li><a href="#"
+                                                data-md="Client/classes/SystemMidiPlayer.md">SystemMidiPlayer</a></li>
+                                        <li><a href="#" data-md="Client/classes/Midi.md">Midi</a></li>
+                                        <li><a href="#" data-md="Client/classes/MidiFile.md">MidiFile</a></li>
+                                        <li><a href="#" data-md="Client/classes/MidiHandler.md">MidiHandler</a></li>
+                                        <li><a href="#" data-md="Client/classes/Instrument.md">Instrument</a></li>
+                                        <li><a href="#"
+                                                data-md="Client/classes/AbstractMidiController.md">AbstractMidiController</a>
+                                        </li>
+                                        <li><a href="#"
+                                                data-md="Client/classes/MuLawInputStream.md">MuLawInputStream</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="subcategory">
+                                    <span>📦 Data Management</span>
+                                    <ul>
+                                        <li><a href="#" data-md="Client/classes/Stream.md">Stream</a></li>
+                                        <li><a href="#" data-md="Client/classes/StreamLoader.md">StreamLoader</a></li>
+                                        <li><a href="#" data-md="Client/classes/OnDemandData.md">OnDemandData</a></li>
+                                        <li><a href="#" data-md="Client/classes/OnDemandFetcher.md">OnDemandFetcher</a>
+                                        </li>
+                                        <li><a href="#"
+                                                data-md="Client/classes/OnDemandFetcherParent.md">OnDemandFetcherParent</a>
+                                        </li>
+                                        <li><a href="#"
+                                                data-md="Client/classes/CachePlaceholder.md">CachePlaceholder</a></li>
+                                        <li><a href="#" data-md="Client/classes/Decompressor.md">Decompressor</a></li>
+                                        <li><a href="#"
+                                                data-md="Client/classes/BZip2Decompressor.md">BZip2Decompressor</a></li>
+                                        <li><a href="#" data-md="Client/classes/BZip2State.md">BZip2State</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="subcategory">
+                                    <span>🎲 Game Data</span>
+                                    <ul>
+                                        <li><a href="#" data-md="Client/classes/Skills.md">Skills</a></li>
+                                        <li><a href="#" data-md="Client/classes/VarBit.md">VarBit</a></li>
+                                        <li><a href="#" data-md="Client/classes/Varp.md">Varp</a></li>
+                                        <li><a href="#" data-md="Client/classes/IDK.md">IDK</a></li>
+                                        <li><a href="#" data-md="Client/classes/FloorOverlay.md">FloorOverlay</a></li>
+                                        <li><a href="#" data-md="Client/classes/Background.md">Background</a></li>
+                                        <li><a href="#" data-md="Client/classes/TileRotation.md">TileRotation</a></li>
+                                        <li><a href="#" data-md="Client/classes/CullingCluster.md">CullingCluster</a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <li class="subcategory">
+                                    <span>🔧 Utilities</span>
+                                    <ul>
+                                        <li><a href="#" data-md="Client/classes/Signlink.md">Signlink</a></li>
+                                        <li><a href="#" data-md="Client/classes/SizeConstants.md">SizeConstants</a></li>
+                                        <li><a href="#" data-md="Client/classes/ClientSettings.md">ClientSettings</a>
+                                        </li>
+                                        <li><a href="#" data-md="Client/classes/RSSocket.md">RSSocket</a></li>
+                                        <li><a href="#" data-md="Client/classes/ISAACRandomGen.md">ISAACRandomGen</a>
+                                        </li>
+                                        <li><a href="#" data-md="Client/classes/Censor.md">Censor</a></li>
+                                        <li><a href="#" data-md="Client/classes/MRUCache.md">MRUCache</a></li>
+                                        <li><a href="#" data-md="Client/classes/Node.md">Node</a></li>
+                                        <li><a href="#" data-md="Client/classes/NodeHashTable.md">NodeHashTable</a></li>
+                                        <li><a href="#" data-md="Client/classes/NodeList.md">NodeList</a></li>
+                                        <li><a href="#" data-md="Client/classes/NodeSub.md">NodeSub</a></li>
+                                        <li><a href="#" data-md="Client/classes/NodeSubList.md">NodeSubList</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="category">
+                            <span>🤖 Parabot</span>
+                            <ul>
+                                <li><a href="#" data-md="Parabot/Parabot-intro.md">Setup & Usage</a></li>
+                                <li class="subcategory">
+                                    <span>🎯 Core API</span>
+                                    <ul>
+                                        <li><a href="#" data-md="Parabot/classes/Context.md">Context</a></li>
+                                        <li><a href="#" data-md="Parabot/classes/Script.md">Script</a></li>
+                                        <li><a href="#" data-md="Parabot/classes/BotEngine.md">BotEngine</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h3>Project Info</h3>
+                    <ul>
+                        <li><a href="#" data-md="../README.md">📄 Project README</a></li>
+                        <li><a href="#" data-md="disclaimer.md">⚖️ Legal Disclaimer</a></li>
+                        <li><a href="#" data-md="../LICENSE">📜 License</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h3>External Links</h3>
+                    <ul class="external-links">
+                        <li><a href="https://2006scape.org" target="_blank">🌐 Official Website</a></li>
+                        <li><a href="https://discord.gg/hZ6VfWG" target="_blank">💬 Discord Community</a></li>
+                        <li><a href="https://github.com/2006-Scape/2006rebotted" target="_blank">📦 GitHub
+                                Repository</a></li>
+                        <li><a href="https://www.rune-server.ee/forums/2006scape.318/" target="_blank">🗣️ Rune-Server
+                                Forum</a></li>
+                        <li><a href="https://wiki.2006scape.org" target="_blank">📚 Community Wiki</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <div id="content">
+                <header>
+                    <h1>2006Scape Documentation</h1>
+                    <p>Welcome to the official documentation for the 2006Scape emulation server. Use the sidebar to
+                        navigate through guides and resources.</p>
+                </header>
             </div>
-            
-            <div class="nav-section">
-                <h3>Getting Started</h3>
-                <ul>
-                    <li><a href="#" data-md="index.md" class="nav-overview">📖 Overview</a></li>
-                    <li><a href="#" data-md="intro.md">🚀 Quick Start</a></li>
-                    <li><a href="#" data-md="usage.md">⚙️ Setup & Usage</a></li>
-                    <li><a href="#" data-md="contributing.md">🤝 Contributing</a></li>
-                </ul>
-            </div>
+        </main>
+    </div>
 
-            <div class="nav-section">
-                <h3>Architecture</h3>
-                <ul>
-                    <li class="category">
-                        <span>🖥️ Server</span>
-                        <ul>
-                            <li><a href="#" data-md="Server/Server-intro.md">Architecture Overview</a></li>
-                            <li><a href="#" data-md="Server/index.md">API Reference (400+ classes)</a></li>
-                            <li class="subcategory">
-                                <span>Core Systems</span>
-                                <ul>
-                                    <li><a href="#" data-md="Server/classes/GameEngine.md">Game Engine</a></li>
-                                    <li><a href="#" data-md="Server/classes/Player.md">Player Management</a></li>
-                                    <li><a href="#" data-md="Server/classes/NpcHandler.md">NPC System</a></li>
-                                    <li><a href="#" data-md="Server/classes/CombatAssistant.md">Combat System</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="category">
-                        <span>🎮 Client</span>
-                        <ul>
-                            <li><a href="#" data-md="Client/client-intro.md">Architecture Overview</a></li>
-                            <li><a href="#" data-md="Client/index.md">API Reference (80+ classes)</a></li>
-                            <li class="subcategory">
-                                <span>Core Systems</span>
-                                <ul>
-                                    <li><a href="#" data-md="Client/classes/Client.md">Main Client</a></li>
-                                    <li><a href="#" data-md="Client/classes/Game.md">Game Logic</a></li>
-                                    <li><a href="#" data-md="Client/classes/Model.md">3D Rendering</a></li>
-                                    <li><a href="#" data-md="Client/classes/RSInterface.md">UI System</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="category">
-                        <span>🤖 Parabot</span>
-                        <ul>
-                            <li><a href="#" data-md="Parabot/Parabot-intro.md">Setup & Usage</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const contentDiv = document.getElementById('content');
+            const navLinks = document.querySelectorAll('.nav a[data-md]');
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeLink = document.querySelector('link[rel="stylesheet"]');
+            const categories = Array.from(document.querySelectorAll('.nav li.category, .nav li.subcategory'));
+            const searchInput = document.getElementById('search-input');
+            const searchResults = document.getElementById('search-results');
 
-            <div class="nav-section">
-                <h3>Project Info</h3>
-                <ul>
-                    <li><a href="#" data-md="../README.md">📄 Project README</a></li>
-                    <li><a href="#" data-md="disclaimer.md">⚖️ Legal Disclaimer</a></li>
-                    <li><a href="#" data-md="../LICENSE">📜 License</a></li>
-                </ul>
-            </div>
+            // Search functionality
+            const searchIndex = [];
+            navLinks.forEach(link => {
+                const text = link.textContent.toLowerCase();
+                const path = link.getAttribute('data-md');
+                searchIndex.push({ text, path, element: link });
+            });
 
-            <div class="nav-section">
-                <h3>External Links</h3>
-                <ul class="external-links">
-                    <li><a href="https://2006scape.org" target="_blank">🌐 Official Website</a></li>
-                    <li><a href="https://discord.gg/hZ6VfWG" target="_blank">💬 Discord Community</a></li>
-                    <li><a href="https://github.com/2006-Scape/2006rebotted" target="_blank">📦 GitHub Repository</a></li>
-                    <li><a href="https://www.rune-server.ee/forums/2006scape.318/" target="_blank">🗣️ Rune-Server Forum</a></li>
-                    <li><a href="https://wiki.2006scape.org" target="_blank">📚 Community Wiki</a></li>
-                </ul>
-            </div>
-        </nav>
-    </aside>
-    <main class="main-content">
-        <div id="content">
-            <header>
-                <h1>2006Scape Documentation</h1>
-                <p>Welcome to the official documentation for the 2006Scape emulation server. Use the sidebar to navigate through guides and resources.</p>
-            </header>
-        </div>
-    </main>
-</div>
+            function performSearch(query) {
+                if (!query.trim()) {
+                    searchResults.style.display = 'none';
+                    return;
+                }
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const contentDiv = document.getElementById('content');
-        const navLinks  = document.querySelectorAll('.nav a[data-md]');
-        const themeToggle = document.getElementById('theme-toggle');
-        const themeLink = document.querySelector('link[rel="stylesheet"]');
-        const categories = Array.from(document.querySelectorAll('.nav li.category, .nav li.subcategory'));
-        const searchInput = document.getElementById('search-input');
-        const searchResults = document.getElementById('search-results');
+                const results = searchIndex.filter(item =>
+                    item.text.includes(query.toLowerCase())
+                ).slice(0, 8);
 
-        // Search functionality
-        const searchIndex = [];
-        navLinks.forEach(link => {
-            const text = link.textContent.toLowerCase();
-            const path = link.getAttribute('data-md');
-            searchIndex.push({ text, path, element: link });
-        });
+                if (results.length > 0) {
+                    searchResults.innerHTML = results.map(result =>
+                        `<div class="search-result" data-md="${result.path}">${result.text}</div>`
+                    ).join('');
+                    searchResults.style.display = 'block';
 
-        function performSearch(query) {
-            if (!query.trim()) {
-                searchResults.style.display = 'none';
-                return;
-            }
-            
-            const results = searchIndex.filter(item => 
-                item.text.includes(query.toLowerCase())
-            ).slice(0, 8);
-            
-            if (results.length > 0) {
-                searchResults.innerHTML = results.map(result => 
-                    `<div class="search-result" data-md="${result.path}">${result.text}</div>`
-                ).join('');
-                searchResults.style.display = 'block';
-                
-                // Add click handlers to search results
-                searchResults.querySelectorAll('.search-result').forEach(result => {
-                    result.addEventListener('click', () => {
-                        const path = result.getAttribute('data-md');
-                        const link = document.querySelector(`[data-md="${path}"]`);
-                        if (link) {
-                            link.click();
-                            searchInput.value = '';
-                            searchResults.style.display = 'none';
-                        }
+                    // Add click handlers to search results
+                    searchResults.querySelectorAll('.search-result').forEach(result => {
+                        result.addEventListener('click', () => {
+                            const path = result.getAttribute('data-md');
+                            const link = document.querySelector(`[data-md="${path}"]`);
+                            if (link) {
+                                link.click();
+                                searchInput.value = '';
+                                searchResults.style.display = 'none';
+                            }
+                        });
                     });
-                });
-            } else {
-                searchResults.innerHTML = '<div class="no-results">No results found</div>';
-                searchResults.style.display = 'block';
+                } else {
+                    searchResults.innerHTML = '<div class="no-results">No results found</div>';
+                    searchResults.style.display = 'block';
+                }
             }
-        }
 
-        searchInput.addEventListener('input', (e) => {
-            performSearch(e.target.value);
-        });
+            searchInput.addEventListener('input', (e) => {
+                performSearch(e.target.value);
+            });
 
-        // Hide search results when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.search-container')) {
-                searchResults.style.display = 'none';
-            }
-        });
-
-        function saveOpenCategories() {
-            const open = categories
-                .map((c, i) => c.classList.contains('open') ? i : null)
-                .filter(i => i !== null);
-            localStorage.setItem('openCategories', JSON.stringify(open));
-        }
-
-        // Apply saved theme
-        if (localStorage.getItem('theme') === 'dark') {
-            themeLink.setAttribute('href', 'index-dark.css');
-            themeToggle.textContent = 'Light Mode';
-        }
-
-        // Enhanced markdown loading with better error handling and navigation
-        function addCopyButtons() {
-            document.querySelectorAll('pre > code').forEach(block => {
-                const pre = block.parentElement;
-                if (!pre.querySelector('.copy-btn')) {
-                    const button = document.createElement('button');
-                    button.className = 'copy-btn';
-                    button.textContent = 'Copy';
-                    button.addEventListener('click', () => {
-                        navigator.clipboard.writeText(block.textContent);
-                        button.textContent = 'Copied!';
-                        setTimeout(() => button.textContent = 'Copy', 2000);
-                    });
-                    pre.insertBefore(button, block);
+            // Hide search results when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.search-container')) {
+                    searchResults.style.display = 'none';
                 }
             });
-        }
 
-        function addBreadcrumbs(file) {
-            const parts = file.split('/');
-            if (parts.length > 1) {
-                const breadcrumbs = document.createElement('nav');
-                breadcrumbs.className = 'breadcrumbs';
-                breadcrumbs.innerHTML = parts.map((part, i) => {
-                    if (i === parts.length - 1) {
-                        return `<span class="current">${part.replace('.md', '')}</span>`;
-                    }
-                    return `<span>${part}</span>`;
-                }).join(' <span class="separator">›</span> ');
-                
-                const existingBreadcrumbs = contentDiv.querySelector('.breadcrumbs');
-                if (existingBreadcrumbs) {
-                    existingBreadcrumbs.remove();
-                }
-                contentDiv.insertBefore(breadcrumbs, contentDiv.firstChild);
+            function saveOpenCategories() {
+                const open = categories
+                    .map((c, i) => c.classList.contains('open') ? i : null)
+                    .filter(i => i !== null);
+                localStorage.setItem('openCategories', JSON.stringify(open));
             }
-        }
 
-        async function loadMarkdown(file) {
-            try {
-                // Show loading state
-                contentDiv.innerHTML = '<div class="loading">Loading...</div>';
-                
-                const res = await fetch(file);
-                if (!res.ok) throw new Error(`Failed to load ${file} (${res.status})`);
-                const md = await res.text();
-                
-                // Parse and render markdown
-                contentDiv.innerHTML = marked.parse(md);
-                
-                // Add enhancements
-                addCopyButtons();
-                addBreadcrumbs(file);
-                
-                // Scroll to top
-                contentDiv.scrollTop = 0;
-                
-                // Update page title
-                const h1 = contentDiv.querySelector('h1');
-                if (h1) {
-                    document.title = `${h1.textContent} - 2006Scape Documentation`;
+            // Apply saved theme
+            if (localStorage.getItem('theme') === 'dark') {
+                themeLink.setAttribute('href', 'index-dark.css');
+                themeToggle.textContent = 'Light Mode';
+            }
+
+            // Enhanced markdown loading with better error handling and navigation
+            function addCopyButtons() {
+                document.querySelectorAll('pre > code').forEach(block => {
+                    const pre = block.parentElement;
+                    if (!pre.querySelector('.copy-btn')) {
+                        const button = document.createElement('button');
+                        button.className = 'copy-btn';
+                        button.textContent = 'Copy';
+                        button.addEventListener('click', () => {
+                            navigator.clipboard.writeText(block.textContent);
+                            button.textContent = 'Copied!';
+                            setTimeout(() => button.textContent = 'Copy', 2000);
+                        });
+                        pre.insertBefore(button, block);
+                    }
+                });
+            }
+
+            function addBreadcrumbs(file) {
+                const parts = file.split('/');
+                if (parts.length > 1) {
+                    const breadcrumbs = document.createElement('nav');
+                    breadcrumbs.className = 'breadcrumbs';
+                    breadcrumbs.innerHTML = parts.map((part, i) => {
+                        if (i === parts.length - 1) {
+                            return `<span class="current">${part.replace('.md', '')}</span>`;
+                        }
+                        return `<span>${part}</span>`;
+                    }).join(' <span class="separator">›</span> ');
+
+                    const existingBreadcrumbs = contentDiv.querySelector('.breadcrumbs');
+                    if (existingBreadcrumbs) {
+                        existingBreadcrumbs.remove();
+                    }
+                    contentDiv.insertBefore(breadcrumbs, contentDiv.firstChild);
                 }
-                
-            } catch (err) {
-                contentDiv.innerHTML = `
+            }
+
+            async function loadMarkdown(file) {
+                try {
+                    // Show loading state
+                    contentDiv.innerHTML = '<div class="loading">Loading...</div>';
+
+                    const res = await fetch(file);
+                    if (!res.ok) throw new Error(`Failed to load ${file} (${res.status})`);
+                    const md = await res.text();
+
+                    // Parse and render markdown
+                    contentDiv.innerHTML = marked.parse(md);
+
+                    // Add enhancements
+                    addCopyButtons();
+                    addBreadcrumbs(file);
+
+                    // Scroll to top of main content
+                    document.querySelector('.main-content').scrollTop = 0;
+
+                    // Update page title
+                    const h1 = contentDiv.querySelector('h1');
+                    if (h1) {
+                        document.title = `${h1.textContent} - 2006Scape Documentation`;
+                    }
+
+                } catch (err) {
+                    contentDiv.innerHTML = `
                     <div class="error">
                         <h1>⚠️ Error Loading Documentation</h1>
                         <p>Could not load <code>${file}</code></p>
@@ -253,86 +588,92 @@
                         <button onclick="location.reload()" class="retry-btn">Retry</button>
                     </div>
                 `;
+                }
             }
-        }
 
-        // Enhanced nav link handlers
-        navLinks.forEach(link => {
-            link.addEventListener('click', e => {
-                e.preventDefault();
-                navLinks.forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-                
-                const file = link.getAttribute('data-md');
-                localStorage.setItem('activePage', file);
-                
-                // Auto-expand parent categories
-                const cat = link.closest('li.category, li.subcategory');
+            // Enhanced nav link handlers
+            navLinks.forEach(link => {
+                link.addEventListener('click', e => {
+                    e.preventDefault();
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+
+                    const file = link.getAttribute('data-md');
+                    localStorage.setItem('activePage', file);
+
+                    // Auto-expand parent categories
+                    const cat = link.closest('li.category, li.subcategory');
+                    if (cat) {
+                        cat.classList.add('open');
+                        // Also expand parent category if this is a subcategory
+                        const parentCat = cat.closest('li.category');
+                        if (parentCat && parentCat !== cat) {
+                            parentCat.classList.add('open');
+                        }
+                        saveOpenCategories();
+                    }
+
+                    loadMarkdown(file);
+                });
+            });
+
+            // Initialize all categories as closed first
+            categories.forEach(cat => {
+                cat.classList.remove('open');
+            });
+
+            // Category expand/collapse with better UX
+            categories.forEach((cat, i) => {
+                const span = cat.querySelector('span');
+                if (span) {
+                    span.style.cursor = 'pointer';
+                    span.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        cat.classList.toggle('open');
+                        saveOpenCategories();
+                    });
+                }
+            });
+
+            // Theme toggle
+            themeToggle.addEventListener('click', () => {
+                const current = themeLink.getAttribute('href');
+                if (current === 'index.css') {
+                    themeLink.setAttribute('href', 'index-dark.css');
+                    themeToggle.textContent = 'Light Mode';
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    themeLink.setAttribute('href', 'index.css');
+                    themeToggle.textContent = 'Dark Mode';
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+
+            // Restore state and initialize
+            const savedOpen = JSON.parse(localStorage.getItem('openCategories') || '[]');
+            savedOpen.forEach(i => {
+                if (categories[i]) categories[i].classList.add('open');
+            });
+
+            const initialPage = localStorage.getItem('activePage') || 'index.md';
+            const startLink = document.querySelector(`.nav a[data-md="${initialPage}"]`);
+            if (startLink) {
+                startLink.classList.add('active');
+                const cat = startLink.closest('li.category, li.subcategory');
                 if (cat) {
                     cat.classList.add('open');
-                    // Also expand parent category if this is a subcategory
                     const parentCat = cat.closest('li.category');
                     if (parentCat && parentCat !== cat) {
                         parentCat.classList.add('open');
                     }
-                    saveOpenCategories();
                 }
-                
-                loadMarkdown(file);
-            });
-        });
-
-        // Category expand/collapse with better UX
-        categories.forEach((cat, i) => {
-            const span = cat.querySelector('span');
-            if (span) {
-                span.style.cursor = 'pointer';
-                span.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    cat.classList.toggle('open');
-                    saveOpenCategories();
-                });
-            }
-        });
-
-        // Theme toggle
-        themeToggle.addEventListener('click', () => {
-            const current = themeLink.getAttribute('href');
-            if (current === 'index.css') {
-                themeLink.setAttribute('href', 'index-dark.css');
-                themeToggle.textContent = 'Light Mode';
-                localStorage.setItem('theme', 'dark');
+                loadMarkdown(initialPage);
             } else {
-                themeLink.setAttribute('href', 'index.css');
-                themeToggle.textContent = 'Dark Mode';
-                localStorage.setItem('theme', 'light');
+                // Fallback to overview if saved page doesn't exist
+                loadMarkdown('index.md');
             }
         });
-
-        // Restore state and initialize
-        const savedOpen = JSON.parse(localStorage.getItem('openCategories') || '[]');
-        savedOpen.forEach(i => {
-            if (categories[i]) categories[i].classList.add('open');
-        });
-
-        const initialPage = localStorage.getItem('activePage') || 'index.md';
-        const startLink = document.querySelector(`.nav a[data-md="${initialPage}"]`);
-        if (startLink) {
-            startLink.classList.add('active');
-            const cat = startLink.closest('li.category, li.subcategory');
-            if (cat) {
-                cat.classList.add('open');
-                const parentCat = cat.closest('li.category');
-                if (parentCat && parentCat !== cat) {
-                    parentCat.classList.add('open');
-                }
-            }
-            loadMarkdown(initialPage);
-        } else {
-            // Fallback to overview if saved page doesn't exist
-            loadMarkdown('index.md');
-        }
-    });
-</script>
+    </script>
 </body>
+
 </html>

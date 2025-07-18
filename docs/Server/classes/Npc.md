@@ -5,48 +5,51 @@
 
 ## Overview
 
-The `Npc` class represents an individual Non-Player Character in the 2006Scape server. Each NPC instance contains all the data and behavior for a single NPC, including position, combat stats, AI state, animations, and interactions. This class handles NPC movement, combat, transformations, and client synchronization. It serves as the foundation for all NPC behavior in the game world.
+The `Npc` class represents an individual Non-Player Character in the 2006Scape server. It contains all the data and behavior for a single NPC instance, including position, combat stats, AI state, animations, and interactions. This class works in conjunction with the [`NpcHandler`](NpcHandler.md) to provide a complete NPC system with movement, combat, and special behaviors.
 
 ## Key Responsibilities
 
-- **NPC State Management**: Position, health, combat stats, and status flags
-- **Movement and AI**: Walking patterns, pathfinding, and behavioral logic
-- **Combat System**: Attack patterns, damage handling, and combat timers
-- **Visual Updates**: Animations, graphics, transformations, and facing direction
-- **Player Interaction**: Dialogue, trading, and special NPC mechanics
-- **Client Synchronization**: Sending NPC updates to nearby players
+- **NPC State Management**: Tracking position, health, and status
+- **Movement and Pathfinding**: Handling NPC movement and walking patterns
+- **Combat Integration**: Managing combat stats, damage, and death states
+- **Animation and Graphics**: Controlling NPC animations and visual effects
+- **Player Interaction**: Handling NPC-player interactions and facing
+- **Special Behaviors**: Supporting unique NPC mechanics and transformations
+- **Update Management**: Coordinating visual updates sent to players
 
 ## Core Architecture
 
-### NPC Identity and Type
+### Basic Properties
 ```java
-public int npcId;    // Unique instance ID (slot in NpcHandler array)
-public int npcType;  // NPC definition ID (determines appearance, stats, etc.)
+public int npcId;           // Unique instance ID
+public int npcType;         // NPC type/definition ID
+public int absX, absY;      // World coordinates
+public int heightLevel;     // Height level (0-3)
+public int spawnX, spawnY;  // Original spawn location
 ```
 
-### Position and Movement
+### Combat Properties
 ```java
-public int absX, absY;           // Current world coordinates
-public int heightLevel;          // Height level (0-3)
-public int makeX, makeY;         // Spawn coordinates
-public int spawnX, spawnY;       // Original spawn point
-public int moveX, moveY;         // Movement deltas
-public int direction;            // Current facing direction
-public int walkingType;          // Movement behavior type
+public int HP, MaxHP;       // Current and maximum hit points
+public int maxHit;          // Maximum damage this NPC can deal
+public int defence, attack; // Combat stats
+public int combatLevel;     // Combat level
+public boolean isDead;      // Death state
+public boolean underAttack; // Currently in combat
 ```
 
-### Combat Statistics
+### Movement Properties
 ```java
-public int HP, MaxHP;            // Current and maximum hit points
-public int maxHit;               // Maximum damage this NPC can deal
-public int defence, attack;      // Combat stats
-public int combatLevel;          // Combat level
-public int attackType;           // 0=melee, 1=range, 2=mage
+public int moveX, moveY;    // Movement deltas
+public int direction;       // Current facing direction
+public int walkingType;     // Movement behavior type
+public boolean randomWalk;  // Whether NPC walks randomly
+public boolean walkingHome; // Returning to spawn point
 ```
 
 ## Core Methods
 
-### Initialization
+### Constructor and Initialization
 
 #### `Npc(int npcId, int npcType)`
 Creates a new NPC instance:
@@ -64,8 +67,8 @@ public Npc(int npcId, int npcType) {
 ```
 
 **Parameters:**
-- `npcId` - Unique slot ID in the NpcHandler array
-- `npcType` - NPC definition ID that determines appearance and behavior
+- `npcId`: Unique instance identifier
+- `npcType`: NPC definition type
 
 ### Movement and Positioning
 
@@ -74,7 +77,8 @@ Calculates the next movement direction:
 
 ```java
 public int getNextWalkingDirection2() {
-    int dir = Misc.direction(absX, absY, absX + moveX, absY + moveY);
+    int dir;
+    dir = Misc.direction(absX, absY, absX + moveX, absY + moveY);
     dir >>= 1;
     absX += moveX;
     absY += moveY;
@@ -82,48 +86,95 @@ public int getNextWalkingDirection2() {
 }
 ```
 
-#### `getRandomAndHomeNPCWalking(int npcIndex)`
-Handles random walking and pathfinding:
+**Returns:** Direction value for client update
+
+#### `getRandomAndHomeNPCWalking(int i)`
+Handles random walking and returning home:
 
 ```java
-public void getRandomAndHomeNPCWalking(int npcIndex) {
+public void getRandomAndHomeNPCWalking(int i) {
     direction = -1;
-    
-    // Only move if not frozen
-    if (NpcHandler.npcs[npcIndex].freezeTimer == 0) {
+    if (NpcHandler.npcs[i].freezeTimer == 0) {
         direction = getNextWalkingDirection2();
     }
 }
 ```
 
-#### Position Accessors
+This method is called by the NpcHandler to process NPC movement each tick.
+
+#### `turnNpc(int x, int y)`
+Makes the NPC face a specific coordinate:
+
 ```java
-public int getX() { return absX; }
-public int getY() { return absY; }
-public void setAbsX(int absX) { this.absX = absX; }
-public void setAbsY(int absY) { this.absY = absY; }
+public void turnNpc(int x, int y) {
+    FocusPointX = 2 * x + 1;
+    FocusPointY = 2 * y + 1;
+    updateRequired = true;
+    turnUpdateRequired = true;
+}
 ```
 
-### Visual Effects and Animations
+### Player Interaction
 
-#### `gfx0(int gfx)` / `gfx100(int gfx)`
-Displays graphics effects on the NPC:
+#### `facePlayer(Player player)`
+Makes the NPC face a specific player:
+
+```java
+public void facePlayer(Player player) {
+    // Check if NPC is immobile
+    for (int element : immobileNpcs) {
+        if (npcType == element) {
+            return;
+        }
+    }
+    
+    face = (player != null) ? player.playerId + 32768 : 32768;
+    dirUpdateRequired = true;
+    updateRequired = true;
+}
+```
+
+**Immobile NPCs:** Some NPCs (like certain quest NPCs) don't turn to face players:
+```java
+private static int[] immobileNpcs = {
+    OSPAK, STYRMIR, TORBRUND, FRIDGEIR
+};
+```
+
+### Visual Effects and Animation
+
+#### `startAnimation(int animId, int npcId)`
+Starts an animation for the NPC:
+
+```java
+public int startAnimation(int animId, int npcId) {
+    animNumber = animId;
+    animUpdateRequired = true;
+    updateRequired = true;
+    return animNumber;
+}
+```
+
+#### Graphics Effects
 
 ```java
 public void gfx0(int gfx) {
     mask80var1 = gfx;
-    mask80var2 = 65536;    // Ground level graphic
+    mask80var2 = 65536;
     mask80update = true;
     updateRequired = true;
 }
 
 public void gfx100(int gfx) {
     mask80var1 = gfx;
-    mask80var2 = 6553600;  // Height 100 graphic
+    mask80var2 = 6553600;
     mask80update = true;
     updateRequired = true;
 }
 ```
+
+- `gfx0()`: Ground-level graphics effect
+- `gfx100()`: Height-100 graphics effect
 
 #### `forceChat(String text)`
 Makes the NPC display chat text:
@@ -136,44 +187,7 @@ public void forceChat(String text) {
 }
 ```
 
-**Usage Example:**
-```java
-npc.forceChat("Help! I'm being attacked!");
-```
-
-### Facing and Interaction
-
-#### `facePlayer(Player player)`
-Makes the NPC face a specific player:
-
-```java
-public void facePlayer(Player player) {
-    // Check if NPC is immobile (some NPCs don't turn)
-    for (int immobileNpc : immobileNpcs) {
-        if (npcType == immobileNpc) {
-            return;
-        }
-    }
-    
-    face = (player != null) ? player.playerId + 32768 : 32768;
-    dirUpdateRequired = true;
-    updateRequired = true;
-}
-```
-
-#### `turnNpc(int x, int y)`
-Makes the NPC face specific coordinates:
-
-```java
-public void turnNpc(int x, int y) {
-    FocusPointX = 2 * x + 1;
-    FocusPointY = 2 * y + 1;
-    updateRequired = true;
-    turnUpdateRequired = true;
-}
-```
-
-### Transformations
+### Transformation System
 
 #### `requestTransform(int id)`
 Transforms the NPC into a different type:
@@ -186,13 +200,12 @@ public void requestTransform(int id) {
 }
 ```
 
-#### `shearSheep()` - Special Transformation Example
-Handles sheep shearing with temporary transformation:
+#### `shearSheep(Player player, int itemNeeded, int itemGiven, int animation, final int currentId, final int newId, int transformTime)`
+Specialized method for sheep shearing mechanics:
 
 ```java
-public void shearSheep(Player player, int itemNeeded, int itemGiven, 
-                      int animation, final int currentId, final int newId, 
-                      int transformTime) {
+public void shearSheep(Player player, int itemNeeded, int itemGiven, int animation, 
+                      final int currentId, final int newId, int transformTime) {
     // Check if player has required tool
     if (!player.getItemAssistant().playerHasItem(itemNeeded)) {
         player.getPacketSender().sendMessage("You need " + 
@@ -206,7 +219,7 @@ public void shearSheep(Player player, int itemNeeded, int itemGiven,
         return;
     }
     
-    // Prevent double-shearing
+    // Prevent multiple shearing
     if (NpcHandler.npcs[npcId].isTransformed) {
         return;
     }
@@ -216,16 +229,16 @@ public void shearSheep(Player player, int itemNeeded, int itemGiven,
         player.startAnimation(animation);
     }
     
-    requestTransform(newId);  // Transform to sheared sheep
-    player.getItemAssistant().addItem(itemGiven, 1);  // Give wool
+    requestTransform(newId);
+    player.getItemAssistant().addItem(itemGiven, 1);
     player.getPacketSender().sendMessage("You get some " + 
         DeprecatedItems.getItemName(itemGiven).toLowerCase() + ".");
     
-    // Schedule transformation back to normal
+    // Schedule transformation back to original form
     CycleEventHandler.getSingleton().addEvent(player, new CycleEvent() {
         @Override
         public void execute(CycleEventContainer container) {
-            requestTransform(currentId);  // Transform back
+            requestTransform(currentId);
             container.stop();
         }
         
@@ -237,32 +250,10 @@ public void shearSheep(Player player, int itemNeeded, int itemGiven,
 }
 ```
 
-### Combat and Health
-
-#### `handleHitMask(int damage)`
-Processes damage and updates hit display:
-
-```java
-public void handleHitMask(int damage) {
-    if (damage > 0) {
-        hitDiff = damage;
-        hitUpdateRequired = true;
-        updateRequired = true;
-        
-        // Update health
-        HP -= damage;
-        if (HP <= 0) {
-            HP = 0;
-            isDead = true;
-        }
-    }
-}
-```
-
-### Client Synchronization
+### Update System
 
 #### `updateNPCMovement(Stream str)`
-Sends movement updates to clients:
+Writes movement data to the update stream:
 
 ```java
 public void updateNPCMovement(Stream str) {
@@ -280,7 +271,6 @@ public void updateNPCMovement(Stream str) {
             str.writeBits(1, 1);
             str.writeBits(2, 1);
             str.writeBits(3, Misc.xlateDirectionToClient[direction]);
-            
             if (updateRequired) {
                 str.writeBits(1, 1);
             } else {
@@ -292,15 +282,17 @@ public void updateNPCMovement(Stream str) {
 ```
 
 #### `appendNPCUpdateBlock(Stream str)`
-Sends comprehensive NPC updates to clients:
+Writes all pending updates to the stream:
 
 ```java
 public void appendNPCUpdateBlock(Stream str) {
-    if (!updateRequired) return;
+    if (!updateRequired) {
+        return;
+    }
     
     int updateMask = 0;
     
-    // Build update mask based on what changed
+    // Build update mask
     if (animUpdateRequired) updateMask |= 0x10;
     if (hitUpdateRequired2) updateMask |= 8;
     if (mask80update) updateMask |= 0x80;
@@ -312,7 +304,7 @@ public void appendNPCUpdateBlock(Stream str) {
     
     str.writeByte(updateMask);
     
-    // Send specific updates based on mask
+    // Write update data in specific order
     if (animUpdateRequired) appendAnimUpdate(str);
     if (hitUpdateRequired2) appendHitUpdate2(str);
     if (mask80update) appendMask80Update(str);
@@ -320,165 +312,145 @@ public void appendNPCUpdateBlock(Stream str) {
     if (forcedChatRequired) str.writeString(forcedText);
     if (hitUpdateRequired) appendHitUpdate(str);
     if (transformUpdateRequired) appendTransformUpdate(str);
-    if (turnUpdateRequired) appendFaceToUpdate(str);
+    if (turnUpdateRequired) appendSetFocusDestination(str);
 }
 ```
 
-#### `clearUpdateFlags()`
-Resets all update flags after synchronization:
+### Utility Methods
+
+#### `name()`
+Gets the NPC's display name:
 
 ```java
-public void clearUpdateFlags() {
-    updateRequired = false;
-    animUpdateRequired = false;
-    hitUpdateRequired = false;
-    hitUpdateRequired2 = false;
-    dirUpdateRequired = false;
-    forcedChatRequired = false;
-    mask80update = false;
-    transformUpdateRequired = false;
-    turnUpdateRequired = false;
+public String name() {
+    return NpcHandler.getNpcListName(this.npcType);
 }
 ```
 
-## NPC State Management
-
-### Combat States
+#### Hit Update Methods
 ```java
-public boolean isDead;           // NPC is dead
-public boolean applyDead;        // Death processing required
-public boolean needRespawn;      // Respawn required
-public boolean underAttack;      // Currently in combat
-public int underAttackBy;        // Player ID attacking this NPC
-public int killerId;             // Player who killed this NPC
-public int attackTimer;          // Attack cooldown timer
-public int freezeTimer;          // Freeze/stun timer
+public void appendHitUpdate(Stream str) {
+    str.writeByte(hitDiff);
+    str.writeByteA(hitUpdateRequired ? 1 : 0);
+    str.writeByte(HP);
+    str.writeByte(MaxHP);
+}
+
+public void appendHitUpdate2(Stream str) {
+    str.writeByte(hitDiff2);
+    str.writeByteS(hitUpdateRequired2 ? 1 : 0);
+    str.writeByte(HP);
+    str.writeByte(MaxHP);
+}
 ```
 
-### Behavioral States
+## State Management
+
+### Combat State
 ```java
-public boolean randomWalk;       // Can walk randomly
-public boolean walkingHome;      // Returning to spawn point
-public boolean aggressive;       // Attacks players on sight
-public boolean summoner;         // Is a summoned creature
-public int summonedBy;          // Player who summoned this NPC
-public int chasingRat;          // For cats chasing rats
+public boolean underAttack;     // Currently being attacked
+public boolean aggressive;      // Attacks players on sight
+public int underAttackBy;       // Player ID attacking this NPC
+public int killerId;            // Player who will get loot rights
+public int attackTimer;         // Combat delay timer
+public int freezeTimer;         // Freeze spell duration
 ```
 
 ### Update Flags
 ```java
-public boolean updateRequired;           // Any update needed
-public boolean animUpdateRequired;       // Animation changed
-public boolean hitUpdateRequired;        // Hit splat needed
-public boolean dirUpdateRequired;        // Facing direction changed
-public boolean forcedChatRequired;       // Chat text to display
-public boolean transformUpdateRequired;  // Transformation occurred
-public boolean turnUpdateRequired;       // Turn to face coordinates
+public boolean updateRequired;          // Needs client update
+public boolean animUpdateRequired;      // Animation changed
+public boolean hitUpdateRequired;       // Took damage
+public boolean forcedChatRequired;      // Has chat message
+public boolean dirUpdateRequired;       // Direction changed
+public boolean transformUpdateRequired; // Appearance changed
+```
+
+### Special Properties
+```java
+public boolean summoner;        // Is a summoned creature
+public int summonedBy;          // Player who summoned this NPC
+public int spawnedBy;           // Player who spawned this NPC
+public boolean respawns;        // Should respawn after death
+public int chasingRat;          // For cat NPCs chasing rats
 ```
 
 ## Usage Examples
 
-### Basic NPC Operations
+### Creating and Configuring NPCs
 ```java
-// Create a new NPC
-Npc npc = new Npc(slotId, npcTypeId);
+// Create new NPC
+Npc npc = new Npc(slotId, NPC_TYPE_GUARD);
 npc.absX = 3200;
 npc.absY = 3200;
 npc.heightLevel = 0;
+npc.HP = 100;
+npc.MaxHP = 100;
 
 // Make NPC face a player
 npc.facePlayer(player);
 
-// Make NPC say something
-npc.forceChat("Welcome to my shop!");
-
-// Apply damage to NPC
-npc.handleHitMask(25);
-```
-
-### Movement and AI
-```java
-// Set NPC movement
-npc.moveX = 1;  // Move east
-npc.moveY = 0;
-npc.getRandomAndHomeNPCWalking(npcIndex);
-
-// Make NPC face specific coordinates
-npc.turnNpc(3200, 3200);
-
-// Check if NPC can move
-if (npc.freezeTimer == 0 && !npc.isDead) {
-    // Process movement
-}
+// Start animation
+npc.startAnimation(ATTACK_ANIMATION, npc.npcId);
 ```
 
 ### Visual Effects
 ```java
-// Play animation
-npc.animNumber = 123;
-npc.animUpdateRequired = true;
-npc.updateRequired = true;
+// Ground graphics
+npc.gfx0(EXPLOSION_GFX);
 
-// Show graphics
-npc.gfx0(456);  // Ground level graphic
+// Height graphics
+npc.gfx100(TELEPORT_GFX);
 
+// Force chat
+npc.forceChat("Help! I'm being attacked!");
+```
+
+### Transformations
+```java
 // Transform NPC
-npc.requestTransform(newNpcTypeId);
-```
+npc.requestTransform(NEW_NPC_TYPE);
 
-### Combat Integration
-```java
-// Set combat stats
-npc.HP = 100;
-npc.MaxHP = 100;
-npc.maxHit = 15;
-npc.attack = 60;
-npc.defence = 45;
-npc.combatLevel = 50;
-
-// Handle combat
-if (npc.underAttack && npc.attackTimer <= 0) {
-    // NPC can attack back
-    npc.attackTimer = 4; // 4 tick delay
-}
-```
-
-### Special Mechanics
-```java
 // Sheep shearing example
-if (npcType == SHEEP && !npc.isTransformed) {
-    npc.shearSheep(player, 1735, 1737, 893, SHEEP, SHEEP_SHEARED, 100);
-}
+npc.shearSheep(player, SHEARS, WOOL, SHEARING_ANIMATION, 
+               SHEEP_ID, SHEARED_SHEEP_ID, 100); // 100 ticks to regrow
+```
 
-// Pet following
-if (npc.summoner && npc.summonedBy == player.playerId) {
-    // Make pet follow player
-}
+### Movement Control
+```java
+// Make NPC face specific coordinates
+npc.turnNpc(targetX, targetY);
+
+// Set movement destination
+npc.moveX = deltaX;
+npc.moveY = deltaY;
+
+// Process movement
+int direction = npc.getNextWalkingDirection2();
 ```
 
 ## Performance Considerations
 
 ### Optimization Strategies
-- **Update Flags**: Only send updates when NPC state actually changes
-- **Distance Checking**: Only process NPCs near players
-- **Batch Processing**: Group similar operations together
-- **Memory Management**: Clean up dead NPCs promptly
+- **Update Batching**: Only send updates when necessary
+- **Efficient State Tracking**: Use boolean flags for state changes
+- **Memory Management**: Clean up references when NPCs are removed
+- **Distance Checking**: Only update NPCs near players
 
-### Common Pitfalls
-- **Update Flag Management**: Always clear flags after processing
-- **Null Pointer Exceptions**: Check for null NPCs before operations
-- **Infinite Loops**: Ensure movement calculations don't cause loops
-- **Memory Leaks**: Properly clean up event handlers and references
+### Resource Management
+- **Animation Caching**: Reuse animation data where possible
+- **Graphics Optimization**: Minimize graphics effect usage
+- **Update Frequency**: Balance update rate with performance
 
 ## Best Practices
 
 1. **Always validate NPC state** before performing operations
-2. **Use appropriate update flags** for different changes
-3. **Handle special NPC types** with custom logic
-4. **Implement proper cleanup** for dead or removed NPCs
-5. **Optimize distance calculations** for performance
-6. **Use event handlers** for timed transformations
-7. **Respect NPC behavioral patterns** for authentic gameplay
+2. **Use appropriate update flags** to minimize network traffic
+3. **Handle special cases** for unique NPC types
+4. **Clean up resources** when NPCs are removed
+5. **Coordinate with NpcHandler** for global operations
+6. **Use transformation system** for temporary appearance changes
+7. **Implement proper facing behavior** for immersive interactions
 
 ## Integration Points
 
@@ -487,37 +459,30 @@ if (npc.summoner && npc.summonedBy == player.playerId) {
 // NPCs are managed by NpcHandler
 NpcHandler.npcs[npcId] = new Npc(npcId, npcType);
 
-// Processing occurs in NpcHandler.process()
-for (Npc npc : NpcHandler.npcs) {
-    if (npc != null) {
-        npc.process();
-    }
-}
+// Processing is coordinated by NpcHandler
+npcHandler.process(); // Calls methods on individual NPCs
 ```
 
 ### Player Integration
 ```java
-// Players interact with NPCs
-player.npcIndex = npcId;  // Target for combat
-npc.facePlayer(player);   // NPC faces player
-npc.underAttackBy = player.playerId;  // Track attacker
+// NPCs interact with players
+npc.facePlayer(player);
+npc.underAttackBy = player.playerId;
 ```
 
 ### Combat Integration
 ```java
-// Combat system uses NPC data
-int damage = calculateDamage(npc.defence);
-npc.handleHitMask(damage);
-if (npc.isDead) {
-    handleNpcDeath(npc);
-}
+// Combat affects NPC state
+npc.HP -= damage;
+npc.hitDiff = damage;
+npc.hitUpdateRequired = true;
 ```
 
 ## Related Classes
 
 - [`NpcHandler`](NpcHandler.md) - Manages all NPC instances
 - [`Player`](Player.md) - Interacts with NPCs
-- [`CombatAssistant`](CombatAssistant.md) - Handles NPC combat
-- [`NpcActions`](NpcActions.md) - Processes NPC interactions
-- [`NpcData`](NpcData.md) - NPC definitions and statistics
-- [`Stream`](Stream.md) - Handles NPC update packets
+- [`Stream`](Stream.md) - Handles update packet data
+- [`CycleEventHandler`](CycleEventHandler.md) - Manages NPC events
+- [`NpcList`](NpcList.md) - NPC definition data
+- [`Misc`](Misc.md) - Utility methods for calculations

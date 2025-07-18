@@ -3,21 +3,20 @@
 **Package:** `com.rs2.game.content.combat`  
 **Source:** [`2006Scape Server/src/main/java/com/rs2/game/content/combat/CombatAssistant.java`](2006Scape Server/src/main/java/com/rs2/game/content/combat/CombatAssistant.java)
 
-**Authors:** Multiple contributors, Andrew (Mr Extremez)
-
 ## Overview
 
-The `CombatAssistant` class is the core combat engine for the 2006Scape server, handling all aspects of player combat including melee, ranged, and magic combat against both NPCs and other players. It manages damage calculations, hit timing, combat requirements, special attacks, and all combat-related mechanics. This class is essential for implementing authentic RuneScape combat mechanics and ensuring balanced gameplay.
+The `CombatAssistant` class is the core combat system for players in the 2006Scape server. It handles all aspects of player combat including melee, ranged, and magic attacks against NPCs and other players. This class manages damage calculations, hit accuracy, special attacks, combat experience, and various combat mechanics like prayer effects, equipment bonuses, and combat styles.
 
 ## Key Responsibilities
 
-- **Combat Processing**: Managing attack sequences, hit delays, and damage application
-- **Damage Calculations**: Computing damage for melee, ranged, and magic attacks
-- **Combat Validation**: Checking requirements, distances, and combat restrictions
+- **Combat Processing**: Managing all forms of player combat (melee, ranged, magic)
+- **Damage Calculations**: Computing damage values based on stats, equipment, and bonuses
+- **Hit Accuracy**: Determining whether attacks hit or miss based on combat formulas
 - **Experience Distribution**: Awarding appropriate experience for combat actions
-- **Special Effects**: Handling weapon special attacks and combat bonuses
-- **PvP and PvM**: Supporting both player vs player and player vs monster combat
-- **Combat States**: Managing combat timers, animations, and status effects
+- **Special Attacks**: Handling weapon special attacks and their effects
+- **Combat States**: Managing combat timers, delays, and player combat status
+- **Equipment Effects**: Processing set effects like Barrows armor bonuses
+- **Prayer Integration**: Applying prayer bonuses and effects to combat
 
 ## Core Architecture
 
@@ -30,20 +29,14 @@ public CombatAssistant(Player player) {
 }
 ```
 
-Each CombatAssistant instance is tied to a specific player, managing their combat interactions and calculations.
-
-### Combat Types
-The system supports three main combat types:
-- **Melee Combat**: Close-range weapon attacks
-- **Ranged Combat**: Bow, crossbow, and thrown weapon attacks  
-- **Magic Combat**: Spell casting and magical attacks
+Each CombatAssistant instance is tied to a specific player, managing their combat interactions.
 
 ## Core Methods
 
 ### Combat State Management
 
 #### `inCombat()`
-Determines if the player is currently in combat:
+Checks if the player is currently in combat:
 
 ```java
 public boolean inCombat() {
@@ -51,81 +44,12 @@ public boolean inCombat() {
 }
 ```
 
-This method checks if the player is being attacked by any other entity, which affects various game mechanics like teleportation restrictions and logout delays.
+**Returns:** `true` if player is under attack by NPCs or other players
 
-#### `checkReqs()`
-Validates combat requirements before allowing attacks:
+### NPC Combat Processing
 
-```java
-public boolean checkReqs() {
-    // Check if player can attack (not stunned, frozen, etc.)
-    if (player.freezeTimer > 0) {
-        return false;
-    }
-    
-    // Check if target is valid
-    if (player.playerIndex > 0) {
-        Player target = PlayerHandler.players[player.playerIndex];
-        if (target == null || target.isDead || target.disconnected) {
-            return false;
-        }
-        
-        // Check combat level restrictions
-        if (!validCombatLevel(target)) {
-            player.getPacketSender().sendMessage("Your combat level difference is too great!");
-            return false;
-        }
-    }
-    
-    return true;
-}
-```
-
-### NPC Combat
-
-#### `attackNpc(int npcIndex)`
-Initiates an attack against an NPC:
-
-```java
-public void attackNpc(int npcIndex) {
-    if (NpcHandler.npcs[npcIndex] == null) return;
-    
-    Npc npc = NpcHandler.npcs[npcIndex];
-    
-    // Check if NPC is dead or invalid
-    if (npc.isDead || npc.MaxHP <= 0) {
-        resetPlayerAttack();
-        return;
-    }
-    
-    // Check special requirements (slayer, quest items, etc.)
-    if (!SlayerRequirements.itemNeededSlayer(player, npcIndex) || 
-        !player.getSlayer().canAttackNpc(npcIndex)) {
-        return;
-    }
-    
-    // Handle special NPCs (Count Draynor, etc.)
-    if (npc.npcType == COUNT_DRAYNOR && player.vampSlayer > 2) {
-        if (!player.getItemAssistant().playerHasItem(1549, 1) || // Stake
-            !player.getItemAssistant().playerHasItem(2347, 1)) { // Hammer
-            player.getPacketSender().sendMessage("You need a stake and hammer to attack count draynor.");
-            resetPlayerAttack();
-            return;
-        }
-    }
-    
-    // Set combat target and begin attack sequence
-    player.npcIndex = npcIndex;
-    player.followNpcId = npcIndex;
-    player.faceNpc(npcIndex);
-    
-    // Calculate attack delay and start combat
-    player.attackTimer = getAttackDelay();
-}
-```
-
-#### `delayedHit(int npcIndex)`
-Processes delayed damage application to NPCs:
+#### `delayedHit(int i)`
+Processes delayed combat hits against NPCs:
 
 ```java
 public void delayedHit(int npcIndex) {
@@ -136,7 +60,7 @@ public void delayedHit(int npcIndex) {
     
     Npc npc = NpcHandler.npcs[npcIndex];
     
-    // Apply block animation if NPC is defending
+    // Handle NPC block animation
     if (npc.attackTimer <= 3 || (npc.attackTimer == 0 && npc.hitDelayTimer > 0 && !player.castingMagic)) {
         npc.animNumber = NpcEmotes.getBlockEmote(npcIndex);
         npc.animUpdateRequired = true;
@@ -145,143 +69,327 @@ public void delayedHit(int npcIndex) {
     
     // Play combat sounds
     if (CombatConstants.COMBAT_SOUNDS) {
-        player.getPacketSender().sendSound(
-            CombatSounds.getNpcBlockSound(npc.npcType), 100, 0);
+        if (!PestControl.npcIsPCMonster(npc.npcType) && !PestControl.isPCPortal(npc.npcType)) {
+            player.getPacketSender().sendSound(
+                CombatSounds.getNpcBlockSound(npc.npcType), 100, 0);
+        }
     }
     
     // Make NPC face the player
     npc.facePlayer(player);
     
-    // Set combat ownership
-    if (npc.underAttackBy > 0 && GameEngine.npcHandler.getsPulled(player, npcIndex)) {
+    // Set killer ID for loot rights
+    if ((npc.underAttackBy > 0 && GameEngine.npcHandler.getsPulled(player, npcIndex)) ||
+        (npc.underAttackBy < 0 && !GameEngine.npcHandler.getsPulled(player, npcIndex))) {
         npc.killerId = player.playerId;
     }
     
-    // Apply damage based on combat type
-    if (player.projectileStage == 0) { // Melee damage
+    player.lastNpcAttacked = npcIndex;
+    
+    // Process different combat types
+    if (player.projectileStage == 0) {
+        // Melee combat
         applyNpcMeleeDamage(npcIndex, 1);
         if (player.doubleHit) {
             applyNpcMeleeDamage(npcIndex, 2);
         }
-    } else if (!player.castingMagic && player.projectileStage > 0) { // Ranged damage
-        applyNpcRangedDamage(npcIndex);
+    } else if (!player.castingMagic && player.projectileStage > 0) {
+        // Ranged combat
+        processRangedAttack(npcIndex);
+    } else if (player.projectileStage > 0) {
+        // Magic combat
+        processMagicAttack(npcIndex);
     }
+    
+    // Reset combat state
+    resetCombatState();
 }
 ```
 
+### Melee Combat
+
 #### `applyNpcMeleeDamage(int npcIndex, int damageMask)`
-Calculates and applies melee damage to NPCs:
+Applies melee damage to an NPC:
 
 ```java
 public void applyNpcMeleeDamage(int npcIndex, int damageMask) {
-    if (NpcHandler.npcs[npcIndex] == null) return;
-    
     Npc npc = NpcHandler.npcs[npcIndex];
-    int damage = 0;
+    int damage = Misc.random(meleeMaxHit());
     
-    // Calculate base damage
-    int maxHit = meleeMaxHit();
-    damage = Misc.random(maxHit);
-    
-    // Check if attack hits (accuracy calculation)
-    int attackRoll = Misc.random(calcAtt());
-    int defenceRoll = Misc.random(npc.defence);
-    
-    if (defenceRoll > attackRoll) {
-        damage = 0; // Attack missed
-    }
-    
-    // Apply special weapon effects
-    boolean guthansEffect = player.getPlayerAssistant().fullGuthans() && Misc.random(4) == 0;
+    // Check for Verac's set effect (ignores defense)
+    boolean fullVeracsEffect = player.getPlayerAssistant().fullVeracs() && Misc.random(3) == 1;
     
     // Cap damage to remaining HP
     if (npc.HP - damage < 0) {
         damage = npc.HP;
     }
     
-    // Award experience
-    awardMeleeExperience(damage, npcIndex);
+    // Calculate hit accuracy
+    if (!fullVeracsEffect) {
+        if (Misc.random(npc.defence) > 10 + Misc.random(calcAtt())) {
+            damage = 0; // Attack missed
+        } else if (npc.npcType == DAGANNOTH_PRIME || npc.npcType == DAGANNOTH_REX) {
+            damage = 0; // Immune to melee
+        }
+    }
     
-    // Apply special effects
-    if (damage > 0 && guthansEffect) {
-        // Guthan's healing effect
-        player.playerLevel[Constants.HITPOINTS] += damage;
-        if (player.playerLevel[Constants.HITPOINTS] > 
+    player.globalDamageDealt += damage;
+    
+    // Handle special boss mechanics (TzTok-Jad healers)
+    if (npc.npcType == FightCaves.TZTOK_JAD && npc.spawnedBy == player.getId()) {
+        int halfHp = FightCaves.getHp(FightCaves.TZTOK_JAD) / 2;
+        if (npc.HP > halfHp && npc.HP - damage < halfHp && player.canHealersRespawn) {
+            FightCaves.spawnHealers(player, npcIndex, 4 - player.spawnedHealers);
+        }
+    }
+    
+    // Check for Guthan's set effect (healing)
+    boolean guthansEffect = false;
+    if (player.getPlayerAssistant().fullGuthans() && Misc.random(3) == 1) {
+        guthansEffect = true;
+        int healAmount = damage;
+        if (player.playerLevel[Constants.HITPOINTS] + healAmount >= 
             player.getPlayerAssistant().getLevelForXP(player.playerXP[Constants.HITPOINTS])) {
             player.playerLevel[Constants.HITPOINTS] = 
                 player.getPlayerAssistant().getLevelForXP(player.playerXP[Constants.HITPOINTS]);
+        } else {
+            player.playerLevel[Constants.HITPOINTS] += healAmount;
         }
         player.getPlayerAssistant().refreshSkill(Constants.HITPOINTS);
-        npc.gfx0(398); // Guthan's heal graphic
+        player.gfx0(398); // Guthan's heal effect
+    }
+    
+    // Award experience based on combat style
+    awardMeleeExperience(damage);
+    
+    // Apply damage to NPC
+    if (damageMask == 1) {
+        npc.hitDiff = damage;
+        npc.hitUpdateRequired = true;
+    } else {
+        npc.hitDiff2 = damage;
+        npc.hitUpdateRequired2 = true;
+    }
+    
+    npc.HP -= damage;
+    npc.underAttack = true;
+    npc.updateRequired = true;
+    
+    player.totalDamageDealt += damage;
+    player.killingNpcIndex = player.oldNpcIndex;
+}
+```
+
+### Ranged Combat
+
+#### `processRangedAttack(int npcIndex)`
+Processes ranged attacks against NPCs:
+
+```java
+private void processRangedAttack(int npcIndex) {
+    Npc npc = NpcHandler.npcs[npcIndex];
+    int damage = Misc.random(rangeMaxHit());
+    int damage2 = -1;
+    
+    // Handle multi-hit weapons (Dark bow, special attacks)
+    if (player.lastWeaponUsed == 11235 || player.bowSpecShot == 1) {
+        damage2 = Misc.random(rangeMaxHit());
+    }
+    
+    // Handle special arrow effects
+    boolean ignoreDef = false;
+    if (Misc.random(5) == 1 && player.lastArrowUsed == 9243) { // Dragon arrows
+        ignoreDef = true;
+        npc.gfx0(758);
+    }
+    
+    // Calculate hit accuracy
+    if (Misc.random(npc.defence) > Misc.random(10 + calculateRangeAttack()) && !ignoreDef ||
+        (npc.npcType == DAGANNOTH_SUPREME || npc.npcType == DAGANNOTH_REX && !ignoreDef)) {
+        damage = 0;
+    }
+    
+    // Handle special arrow effects
+    if (Misc.random(4) == 1 && player.lastArrowUsed == 9242 && damage > 0) { // Ruby bolts
+        npc.gfx0(754);
+        damage = npc.HP / 5; // 20% of target's HP
+        // Player takes damage too
+        player.handleHitMask(player.playerLevel[Constants.HITPOINTS] / 10);
+        player.dealDamage(player.playerLevel[Constants.HITPOINTS] / 10);
+        player.gfx0(754);
+    }
+    
+    // Second hit accuracy for multi-hit weapons
+    if (player.lastWeaponUsed == 11235 || player.bowSpecShot == 1) {
+        if (Misc.random(npc.defence) > Misc.random(10 + calculateRangeAttack())) {
+            damage2 = 0;
+        }
+    }
+    
+    // Diamond arrows effect
+    if (damage > 0 && Misc.random(5) == 1 && player.lastArrowUsed == 9244) {
+        damage *= 1.45;
+        npc.gfx0(756);
+    }
+    
+    // Cap damage and handle death
+    if (npc.HP - damage < 0) {
+        damage = npc.HP;
+    }
+    if (npc.HP - damage <= 0 && damage2 > 0) {
+        damage2 = 0;
+    }
+    
+    player.globalDamageDealt += damage;
+    if (damage2 > 0) {
+        player.globalDamageDealt += damage2;
+    }
+    
+    // Award ranged experience
+    awardRangedExperience(damage);
+    
+    // Handle Pest Control damage tracking
+    if (damage > 0 && (PestControl.npcIsPCMonster(npc.npcType) || PestControl.isPCPortal(npc.npcType))) {
+        player.pcDamage += damage;
+    }
+    
+    // Drop arrows (if applicable)
+    boolean dropArrows = true;
+    for (int noArrowId : RangeData.NO_ARROW_DROP) {
+        if (player.lastWeaponUsed == noArrowId) {
+            dropArrows = false;
+            break;
+        }
+    }
+    if (dropArrows) {
+        player.getItemAssistant().dropArrowNpc();
     }
     
     // Apply damage to NPC
-    switch (damageMask) {
-        case 1:
-            npc.hitDiff = damage;
-            npc.HP -= damage;
-            npc.hitUpdateRequired = true;
-            break;
-        case 2:
-            npc.hitDiff2 = damage;
-            npc.HP -= damage;
-            npc.hitUpdateRequired2 = true;
-            player.doubleHit = false;
-            break;
+    npc.underAttack = true;
+    npc.hitDiff = damage;
+    npc.HP -= damage;
+    npc.hitUpdateRequired = true;
+    
+    if (damage2 > -1) {
+        npc.hitDiff2 = damage2;
+        npc.HP -= damage2;
+        npc.hitUpdateRequired2 = true;
+        player.totalDamageDealt += damage2;
     }
     
-    npc.updateRequired = true;
     player.totalDamageDealt += damage;
+    player.killingNpcIndex = player.oldNpcIndex;
+    npc.updateRequired = true;
 }
 ```
 
-### Player vs Player Combat
+### Magic Combat
 
-#### `attackPlayer(int playerIndex)`
-Initiates combat against another player:
+#### `processMagicAttack(int npcIndex)`
+Processes magic attacks against NPCs:
 
 ```java
-public void attackPlayer(int playerIndex) {
-    if (PlayerHandler.players[playerIndex] == null) return;
+private void processMagicAttack(int npcIndex) {
+    Npc npc = NpcHandler.npcs[npcIndex];
+    int damage = Misc.random(MagicData.MAGIC_SPELLS[player.oldSpellId][6]);
     
-    Player target = PlayerHandler.players[playerIndex];
-    
-    // Check if target is valid
-    if (target.isDead || target.disconnected) {
-        resetPlayerAttack();
-        return;
+    // Handle god spell charge effect
+    if (MagicSpells.godSpells(player)) {
+        if (System.currentTimeMillis() - player.godSpellDelay < CombatConstants.GOD_SPELL_CHARGE) {
+            damage += Misc.random(10);
+        }
     }
     
-    // Check combat restrictions
-    if (!checkReqs()) {
-        return;
+    boolean magicFailed = false;
+    int bonusAttack = getBonusAttack(npcIndex);
+    
+    // Calculate hit accuracy
+    if (Misc.random(npc.defence) > 10 + Misc.random(mageAtk()) + bonusAttack) {
+        damage = 0;
+        magicFailed = true;
+    } else if (npc.npcType == DAGANNOTH_SUPREME || npc.npcType == DAGANNOTH_PRIME) {
+        damage = 0;
+        magicFailed = true;
     }
     
-    // Check wilderness level restrictions
-    if (!validCombatLevel(target)) {
-        player.getPacketSender().sendMessage("Your combat level difference is too great!");
-        resetPlayerAttack();
-        return;
+    // Cap damage
+    if (npc.HP - damage < 0) {
+        damage = npc.HP;
     }
     
-    // Check safe areas
-    if (target.inSafeArea() || player.inSafeArea()) {
-        player.getPacketSender().sendMessage("You cannot attack other players here!");
-        resetPlayerAttack();
-        return;
+    // Award magic experience
+    player.getPlayerAssistant().addSkillXP(
+        MagicData.MAGIC_SPELLS[player.oldSpellId][7] + damage * CombatConstants.MAGIC_EXP_RATE, 
+        Constants.MAGIC);
+    
+    // Award HP experience (except for certain spells)
+    if (!isNonDamageSpell(player.oldSpellId)) {
+        player.getPlayerAssistant().addSkillXP(
+            damage * CombatConstants.MAGIC_EXP_RATE / 3, Constants.HITPOINTS);
     }
     
-    // Set PvP target
-    player.playerIndex = playerIndex;
-    player.followPlayerId = playerIndex;
-    player.faceUpdate(playerIndex);
+    player.getPlayerAssistant().refreshSkill(Constants.HITPOINTS);
+    player.getPlayerAssistant().refreshSkill(Constants.MAGIC);
     
-    // Start combat sequence
-    player.attackTimer = getAttackDelay();
+    // Handle Pest Control damage tracking
+    if (damage > 0 && (PestControl.npcIsPCMonster(npc.npcType) || PestControl.isPCPortal(npc.npcType))) {
+        player.pcDamage += damage;
+    }
+    
+    // Apply spell effects
+    if (MagicSpells.getEndGfxHeight(player) == 100 && !magicFailed) {
+        npc.gfx100(MagicData.MAGIC_SPELLS[player.oldSpellId][5]);
+    } else if (!magicFailed) {
+        npc.gfx0(MagicData.MAGIC_SPELLS[player.oldSpellId][5]);
+    }
+    
+    if (magicFailed) {
+        npc.gfx100(85); // Magic splash effect
+    }
+    
+    if (!magicFailed) {
+        // Handle freeze spells
+        int freezeDelay = MagicSpells.getFreezeTime(player);
+        if (freezeDelay > 0 && npc.freezeTimer == 0) {
+            npc.freezeTimer = freezeDelay;
+        }
+        
+        // Handle blood spells (healing effect)
+        switch (MagicData.MAGIC_SPELLS[player.oldSpellId][0]) {
+            case 12901: case 12919: case 12911: case 12929: // Blood spells
+                int heal = Misc.random(damage / 2);
+                int maxHp = player.getPlayerAssistant().getLevelForXP(player.playerXP[Constants.HITPOINTS]);
+                if (player.playerLevel[Constants.HITPOINTS] + heal >= maxHp) {
+                    player.playerLevel[Constants.HITPOINTS] = maxHp;
+                } else {
+                    player.playerLevel[Constants.HITPOINTS] += heal;
+                }
+                player.getPlayerAssistant().refreshSkill(Constants.HITPOINTS);
+                break;
+        }
+    }
+    
+    // Apply damage to NPC
+    npc.underAttack = true;
+    if (MagicData.MAGIC_SPELLS[player.oldSpellId][6] != 0) {
+        npc.hitDiff = damage;
+        npc.HP -= damage;
+        npc.hitUpdateRequired = true;
+        player.totalDamageDealt += damage;
+    }
+    
+    player.killingNpcIndex = player.oldNpcIndex;
+    npc.updateRequired = true;
+    
+    // Reset magic state
+    player.usingMagic = false;
+    player.castingMagic = false;
+    player.oldSpellId = 0;
 }
 ```
 
-### Damage Calculations
+### Combat Calculations
 
 #### `meleeMaxHit()`
 Calculates maximum melee damage:
@@ -289,14 +397,21 @@ Calculates maximum melee damage:
 ```java
 public int meleeMaxHit() {
     int maxHit = 0;
+    int strength = player.playerLevel[Constants.STRENGTH];
+    int combatStyleBonus = 0;
     
-    // Base damage from strength level
-    int strengthLevel = player.playerLevel[Constants.STRENGTH];
-    maxHit = (int) (0.5 + strengthLevel * 0.325);
+    // Combat style bonuses
+    if (player.fightMode == 3) { // Aggressive
+        combatStyleBonus = 3;
+    } else if (player.fightMode == 1) { // Accurate
+        combatStyleBonus = 1;
+    }
     
-    // Add strength bonus from equipment
-    int strengthBonus = player.playerBonus[10]; // Strength bonus index
-    maxHit += (strengthBonus * 0.00175 * strengthLevel);
+    // Calculate base max hit
+    maxHit = (int) (0.5 + strength * (player.playerBonus[10] + 64) / 640.0);
+    
+    // Apply combat style bonus
+    maxHit += combatStyleBonus;
     
     // Apply prayer bonuses
     if (player.getPrayer().prayerActive[1]) { // Burst of Strength
@@ -307,16 +422,9 @@ public int meleeMaxHit() {
         maxHit *= 1.15;
     }
     
-    // Apply special attack multipliers
+    // Apply special attack bonuses
     if (player.usingSpecial) {
-        maxHit = (int) (maxHit * MeleeData.getSpecialMultiplier(player.playerEquipment[player.playerWeapon]));
-    }
-    
-    // Apply combat style bonuses
-    if (player.fightMode == 2) { // Aggressive mode
-        maxHit += 3;
-    } else if (player.fightMode == 3) { // Controlled mode
-        maxHit += 1;
+        maxHit = MeleeMaxHit.specialMaxHit(player, maxHit);
     }
     
     return maxHit;
@@ -328,15 +436,11 @@ Calculates maximum ranged damage:
 
 ```java
 public int rangeMaxHit() {
-    int maxHit = 0;
+    int rangeLevel = player.playerLevel[Constants.RANGED];
+    int rangeBonus = player.playerBonus[4]; // Ranged strength bonus
     
-    // Base damage from ranged level
-    int rangedLevel = player.playerLevel[Constants.RANGED];
-    maxHit = (int) (0.5 + rangedLevel * 0.325);
-    
-    // Add ranged strength bonus
-    int rangedStrength = RangeData.getRangedStrength(player);
-    maxHit += (rangedStrength * 0.00175 * rangedLevel);
+    // Base calculation
+    int maxHit = (int) (0.5 + rangeLevel * (rangeBonus + 64) / 640.0);
     
     // Apply prayer bonuses
     if (player.getPrayer().prayerActive[3]) { // Sharp Eye
@@ -347,230 +451,158 @@ public int rangeMaxHit() {
         maxHit *= 1.15;
     }
     
-    // Apply special attack effects
+    // Apply special attack bonuses
     if (player.usingSpecial) {
-        maxHit = (int) (maxHit * RangeData.getSpecialMultiplier(player.playerEquipment[player.playerWeapon]));
+        maxHit = RangeMaxHit.specialMaxHit(player, maxHit);
     }
     
     return maxHit;
 }
 ```
 
-### Combat Timing and Animation
+### Experience Distribution
 
-#### `getAttackDelay()`
-Calculates attack speed based on weapon:
-
-```java
-public int getAttackDelay() {
-    int weaponId = player.playerEquipment[player.playerWeapon];
-    
-    // Default attack speed (4 ticks = 2.4 seconds)
-    int delay = 4;
-    
-    // Get weapon-specific attack speed
-    delay = MeleeData.getAttackDelay(weaponId);
-    
-    // Apply special attack speed modifications
-    if (player.usingSpecial) {
-        delay = MeleeData.getSpecialAttackDelay(weaponId);
-    }
-    
-    return delay;
-}
-```
-
-#### `getPlayerAnimIndex()`
-Sets appropriate combat animations:
+#### `awardMeleeExperience(int damage)`
+Awards experience for melee combat:
 
 ```java
-public void getPlayerAnimIndex() {
-    int weaponId = player.playerEquipment[player.playerWeapon];
-    
-    if (player.usingBow) {
-        player.animNumber = RangeData.getBowAnimation(weaponId);
-    } else if (player.usingRangeWeapon) {
-        player.animNumber = RangeData.getRangeAnimation(weaponId);
-    } else if (player.usingMagic) {
-        player.animNumber = MagicData.getSpellAnimation(player.spellId);
-    } else {
-        // Melee animation
-        player.animNumber = MeleeData.getWeaponAnimation(weaponId);
-        
-        if (player.usingSpecial) {
-            player.animNumber = MeleeData.getSpecialAnimation(weaponId);
-        }
+private void awardMeleeExperience(int damage) {
+    switch (player.fightMode) {
+        case 0: // Accurate (Attack XP)
+            player.getPlayerAssistant().addSkillXP(damage * CombatConstants.MELEE_EXP_RATE, Constants.ATTACK);
+            break;
+        case 1: // Aggressive (Strength XP)
+            player.getPlayerAssistant().addSkillXP(damage * CombatConstants.MELEE_EXP_RATE, Constants.STRENGTH);
+            break;
+        case 2: // Defensive (Defence XP)
+            player.getPlayerAssistant().addSkillXP(damage * CombatConstants.MELEE_EXP_RATE, Constants.DEFENCE);
+            break;
+        case 3: // Controlled (Shared XP)
+            int sharedXP = damage * CombatConstants.MELEE_EXP_RATE / 3;
+            player.getPlayerAssistant().addSkillXP(sharedXP, Constants.ATTACK);
+            player.getPlayerAssistant().addSkillXP(sharedXP, Constants.STRENGTH);
+            player.getPlayerAssistant().addSkillXP(sharedXP, Constants.DEFENCE);
+            break;
     }
     
-    player.animUpdateRequired = true;
-    player.updateRequired = true;
-}
-```
-
-### Combat Distance and Positioning
-
-#### `attackingNpcTick()` / `attackingPlayerTick()`
-Manages combat positioning and distance requirements:
-
-```java
-public void attackingNpcTick() {
-    int npcIndex = player.npcIndex;
-    if (npcIndex <= 0 || NpcHandler.npcs[npcIndex] == null) return;
-    
-    Npc npc = NpcHandler.npcs[npcIndex];
-    
-    // Check if NPC is still alive
-    if (npc.isDead) {
-        player.npcIndex = 0;
-        player.followNpcId = 0;
-        player.faceNpc(0);
-        return;
-    }
-    
-    // Check line of sight for projectiles
-    if (!PathFinder.isProjectilePathClear(player.getX(), player.getY(), player.heightLevel, 
-                                         npc.absX, npc.absY)) {
-        return;
-    }
-    
-    // Check attack distance based on combat type
-    int requiredDistance = getRequiredDistance();
-    
-    if (!player.goodDistance(player.getX(), player.getY(), npc.getX(), npc.getY(), requiredDistance)) {
-        return; // Too far away
-    }
-    
-    // Stop movement when in range
-    if (player.usingMagic || player.usingBow || player.usingRangeWeapon) {
-        player.followNpcId = 0;
-    }
-    player.stopMovement();
-}
-```
-
-#### `getRequiredDistance()`
-Determines attack range based on combat type:
-
-```java
-public int getRequiredDistance() {
-    if (player.usingMagic || player.usingBow) {
-        return 10; // Long range
-    } else if (player.usingRangeWeapon) {
-        return 4; // Medium range
-    } else if (RangeData.usingHally(player)) {
-        return 2; // Halberd range
-    } else {
-        return 1; // Melee range
-    }
-}
-```
-
-### Experience and Rewards
-
-#### Experience Distribution
-The combat system awards experience based on damage dealt and combat type:
-
-```java
-private void awardMeleeExperience(int damage, int npcIndex) {
-    if (damage <= 0) return;
-    
-    // Skip experience for certain NPCs (pheasants, etc.)
-    if (isTrainingDummy(npcIndex)) return;
-    
-    double expRate = CombatConstants.MELEE_EXP_RATE;
-    
-    if (player.fightMode == 3) { // Controlled mode - shared XP
-        player.getPlayerAssistant().addSkillXP(damage * expRate / 3, Constants.ATTACK);
-        player.getPlayerAssistant().addSkillXP(damage * expRate / 3, Constants.STRENGTH);
-        player.getPlayerAssistant().addSkillXP(damage * expRate / 3, Constants.DEFENCE);
-        player.getPlayerAssistant().addSkillXP(damage * expRate / 3, Constants.HITPOINTS);
-    } else {
-        // Award XP to selected combat skill
-        player.getPlayerAssistant().addSkillXP(damage * expRate, player.fightMode);
-        player.getPlayerAssistant().addSkillXP(damage * expRate / 3, Constants.HITPOINTS);
-    }
+    // Always award HP experience
+    player.getPlayerAssistant().addSkillXP(damage * CombatConstants.MELEE_EXP_RATE / 3, Constants.HITPOINTS);
     
     // Refresh skill interfaces
-    player.getPlayerAssistant().refreshSkill(player.fightMode);
+    player.getPlayerAssistant().refreshSkill(Constants.ATTACK);
+    player.getPlayerAssistant().refreshSkill(Constants.STRENGTH);
+    player.getPlayerAssistant().refreshSkill(Constants.DEFENCE);
     player.getPlayerAssistant().refreshSkill(Constants.HITPOINTS);
+}
+```
+
+#### `awardRangedExperience(int damage)`
+Awards experience for ranged combat:
+
+```java
+private void awardRangedExperience(int damage) {
+    if (player.fightMode == 3) { // Long range (shared)
+        player.getPlayerAssistant().addSkillXP(damage * CombatConstants.RANGE_EXP_RATE / 2, Constants.RANGED);
+        player.getPlayerAssistant().addSkillXP(damage / 2, Constants.DEFENCE);
+        player.getPlayerAssistant().addSkillXP(damage / 3, Constants.HITPOINTS);
+        player.getPlayerAssistant().refreshSkill(Constants.DEFENCE);
+    } else {
+        player.getPlayerAssistant().addSkillXP(damage * CombatConstants.RANGE_EXP_RATE, Constants.RANGED);
+        player.getPlayerAssistant().addSkillXP(damage * CombatConstants.RANGE_EXP_RATE / 3, Constants.HITPOINTS);
+    }
+    
+    player.getPlayerAssistant().refreshSkill(Constants.HITPOINTS);
+    player.getPlayerAssistant().refreshSkill(Constants.RANGED);
 }
 ```
 
 ## Usage Examples
 
-### Basic Combat Operations
+### Basic Combat Checks
 ```java
 // Check if player is in combat
 if (player.getCombatAssistant().inCombat()) {
-    player.getPacketSender().sendMessage("You cannot do that while in combat!");
+    player.getPacketSender().sendMessage("You can't do that while in combat!");
     return;
 }
 
-// Attack an NPC
-player.getCombatAssistant().attackNpc(npcIndex);
-
-// Attack another player
-player.getCombatAssistant().attackPlayer(targetPlayerId);
+// Process delayed hit on NPC
+player.getCombatAssistant().delayedHit(npcIndex);
 ```
 
 ### Combat Calculations
 ```java
-// Get maximum hit potential
-int maxMeleeHit = player.getCombatAssistant().meleeMaxHit();
-int maxRangedHit = player.getCombatAssistant().rangeMaxHit();
+// Get maximum damage values
+int meleeMax = player.getCombatAssistant().meleeMaxHit();
+int rangedMax = player.getCombatAssistant().rangeMaxHit();
 
-// Check combat requirements
-if (!player.getCombatAssistant().checkReqs()) {
-    // Cannot attack right now
-    return;
-}
-
-// Calculate combat level difference
-int levelDiff = player.getCombatAssistant().getCombatDifference(
-    player.calculateCombatLevel(), 
-    target.calculateCombatLevel()
-);
+// Calculate attack accuracy
+int attackRoll = player.getCombatAssistant().calcAtt();
+int rangeAttack = player.getCombatAssistant().calculateRangeAttack();
 ```
 
-### Special Attacks
+### Special Attack Processing
 ```java
-// Check if player has enough special attack energy
-if (player.getCombatAssistant().checkSpecAmount(weaponId)) {
-    player.usingSpecial = true;
-    player.specAmount -= getSpecialCost(weaponId);
-    // Perform special attack
+// Check if player can use special attack
+if (player.usingSpecial && player.specAmount >= 25) {
+    // Process special attack
+    player.getCombatAssistant().delayedHit(targetNpc);
+    player.specAmount -= 25;
 }
 ```
 
 ## Performance Considerations
 
 ### Optimization Strategies
-- **Efficient Distance Calculations**: Use squared distances to avoid expensive square root operations
-- **Combat State Caching**: Cache frequently calculated values like max hit
-- **Batch Processing**: Group combat updates together
-- **Memory Management**: Properly clean up combat references
+- **Efficient Calculations**: Cache frequently used values
+- **Batch Processing**: Group similar combat operations
+- **Memory Management**: Clean up combat state properly
+- **Network Optimization**: Minimize unnecessary packet sends
 
-### Common Pitfalls
-- **Null Pointer Exceptions**: Always check for null NPCs and players
-- **Infinite Combat Loops**: Ensure proper combat reset conditions
-- **Memory Leaks**: Clean up combat timers and references
-- **Synchronization Issues**: Handle concurrent combat interactions carefully
+### Resource Management
+- **Combat Timers**: Properly manage combat delays and cooldowns
+- **Experience Calculation**: Optimize XP distribution algorithms
+- **Effect Processing**: Efficiently handle special effects and bonuses
 
 ## Best Practices
 
-1. **Always validate targets** before initiating combat
-2. **Check combat restrictions** (safe areas, combat levels, etc.)
-3. **Handle special cases** for unique NPCs and items
-4. **Implement proper cooldowns** to prevent combat spam
-5. **Award appropriate experience** based on damage and combat type
-6. **Use authentic formulas** for damage and accuracy calculations
-7. **Handle edge cases** gracefully to prevent crashes
+1. **Always validate combat state** before processing attacks
+2. **Check target validity** before applying damage
+3. **Handle special cases** for unique NPCs and equipment
+4. **Award appropriate experience** based on combat style
+5. **Apply prayer and equipment bonuses** correctly
+6. **Handle combat sounds and effects** appropriately
+7. **Integrate with minigame systems** when applicable
+
+## Integration Points
+
+### Player Integration
+```java
+// Combat assistant is part of every player
+Player player = new Player();
+CombatAssistant combat = player.getCombatAssistant();
+```
+
+### NPC Integration
+```java
+// Combat affects NPC state
+NpcHandler.npcs[i].underAttack = true;
+NpcHandler.npcs[i].HP -= damage;
+```
+
+### Equipment Integration
+```java
+// Equipment affects combat calculations
+int strengthBonus = player.playerBonus[10];
+boolean hasSpecialAttack = player.usingSpecial;
+```
 
 ## Related Classes
 
 - [`Player`](Player.md) - Contains CombatAssistant instance
-- [`MeleeData`](MeleeData.md) - Melee combat calculations and data
-- [`RangeData`](RangeData.md) - Ranged combat mechanics
-- [`MagicData`](MagicData.md) - Magic combat and spells
-- [`NpcHandler`](NpcHandler.md) - NPC combat interactions
-- [`CombatConstants`](CombatConstants.md) - Combat configuration values
+- [`NpcHandler`](NpcHandler.md) - Manages combat targets
+- [`MeleeData`](MeleeData.md) - Melee combat constants and data
+- [`RangeData`](RangeData.md) - Ranged combat constants and data
+- [`MagicData`](MagicData.md) - Magic combat constants and data
+- [`CombatConstants`](CombatConstants.md) - Combat system constants
+- [`PrayerDrain`](PrayerDrain.md) - Prayer effects on combat
