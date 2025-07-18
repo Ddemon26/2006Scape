@@ -1,1 +1,16 @@
 # ClimbOther
+
+Package `com.rs2.game.globalworldobjects`.
+
+Defined in [`2006Scape Server/src/main/java/com/rs2/game/globalworldobjects/ClimbOther.java`](2006Scape Server/src/main/java/com/rs2/game/globalworldobjects/ClimbOther.java).
+
+Climb Other helper class.
+
+```java
+public class ClimbOther {
+private ClimbData(int closedId, int openId)
+public int getClosed()
+public int getOpen()
+public static void handleOpenOther(Player player, int objectType)
+public static void useOther(Player player, int objectType)
+```

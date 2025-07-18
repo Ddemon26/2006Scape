@@ -1,1 +1,12 @@
 # SilentPacket
+
+Package `com.rs2.net.packets.impl`.
+
+Defined in [`2006Scape Server/src/main/java/com/rs2/net/packets/impl/SilentPacket.java`](2006Scape Server/src/main/java/com/rs2/net/packets/impl/SilentPacket.java).
+
+Slient Packet
+
+```java
+public class SilentPacket implements PacketType {
+public void processPacket(Player player, Packet packet)
+```

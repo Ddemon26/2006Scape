@@ -1,1 +1,16 @@
 # Smelting
+
+Package `com.rs2.game.content.skills.smithing`.
+
+Defined in [`2006Scape Server/src/main/java/com/rs2/game/content/skills/smithing/Smelting.java`](2006Scape Server/src/main/java/com/rs2/game/content/skills/smithing/Smelting.java).
+
+@author abysspartyy
+
+```java
+public class Smelting extends SkillHandler {
+public static void startSmelting(Player c, int object)
+public static void doAmount(Player c, int amount, int bartype)
+public static void smeltBar(final Player c, int bartype)
+public void execute(CycleEventContainer container)
+public void stop()
+```

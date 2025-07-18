@@ -1,12 +1,18 @@
 # NpcDefinition
 
-Data holder describing a non-player character. Definitions are loaded from
-`npcDefinitions.json` on startup and cached for quick lookup via
-`NPCDefinition.forId(int)`.
 
-Source: [NPCDefinition.java](../../2006Scape%20Server/src/main/java/com/rs2/game/npcs/NPCDefinition.java)
+Package `org.apollo.cache.def`.
+
+Defined in [`2006Scape Server/src/main/java/org/apollo/cache/def/NpcDefinition.java`](2006Scape Server/src/main/java/org/apollo/cache/def/NpcDefinition.java).
+
+Represents a type of Npc.  @author Chris Fletcher
 
 ```java
-NPCDefinition goblin = NPCDefinition.forId(1);
-System.out.println(goblin.getName());
+public final class NpcDefinition {
+public static int count()
+public static NpcDefinition[] getDefinitions()
+public static void init(NpcDefinition[] definitions)
+public static NpcDefinition lookup(int id)
+public NpcDefinition(int id)
+
 ```
