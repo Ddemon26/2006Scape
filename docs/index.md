@@ -11,6 +11,7 @@ Welcome to the 2006Scape documentation. These pages provide an overview of the p
 - [Client Classes](Client/classes/index.md) – API for each client class
 - [Server Classes](Server/classes/index.md) – API for each server class
 - [Parabot Docs](Parabot/Parabot-intro.md) – scripting client details
+
 - [Contributing](contributing.md) – how to help out
 - [Legal Disclaimer](disclaimer.md) – project affiliation notice
 
