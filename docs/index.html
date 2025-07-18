@@ -15,19 +15,37 @@
             <h2>2006Scape Docs</h2>
             <ul>
                 <li><a href="#" data-md="index.md">Overview</a></li>
-                <li><a href="#" data-md="intro.md">Intro</a></li>
+                <li class="category">
+                    <span>Client</span>
+                    <ul>
+                        <li><a href="#" data-md="Client/client-intro.md">Intro</a></li>
+                        <li><a href="#" data-md="Client/classes/index.md">Classes</a></li>
+                    </ul>
+                </li>
+                <li class="category">
+                    <span>Server</span>
+                    <ul>
+                        <li><a href="#" data-md="Server/Server-intro.md">Intro</a></li>
+                        <li><a href="#" data-md="Server/classes/index.md">Classes</a></li>
+                    </ul>
+                </li>
+                <li class="category">
+                    <span>Parabot</span>
+                    <ul>
+                        <li><a href="#" data-md="Parabot/Parabot-intro.md">Intro</a></li>
+                    </ul>
+                </li>
                 <li><a href="#" data-md="usage.md">Usage</a></li>
-                <li><a href="#" data-md="Client/client-intro.md">Client</a></li>
-                <li><a href="#" data-md="Client/classes/index.md">Client Classes</a></li>
-                <li><a href="#" data-md="Server/Server-intro.md">Server</a></li>
-                <li><a href="#" data-md="Server/classes/index.md">Server Classes</a></li>
-                <li><a href="#" data-md="Parabot/Parabot-intro.md">Parabot</a></li>
-
                 <li><a href="#" data-md="contributing.md">Contributing</a></li>
-
                 <li><a href="#" data-md="disclaimer.md">Disclaimer</a></li>
-                <li><a href="#" data-md="../README.md">Repo README</a></li>
-                <li><a href="#" data-md="../AGENTS.md">Agents</a></li>
+                <li class="category">
+                    <span>Repo</span>
+                    <ul>
+                        <li><a href="#" data-md="../README.md">README</a></li>
+                        <li><a href="#" data-md="../AGENTS.md">Agents</a></li>
+                        <li><a href="#" data-md="../LICENSE">License</a></li>
+                    </ul>
+                </li>
             </ul>
             <h3>External Resources</h3>
             <ul>
@@ -55,6 +73,14 @@
         const navLinks  = document.querySelectorAll('.nav a[data-md]');
         const themeToggle = document.getElementById('theme-toggle');
         const themeLink = document.querySelector('link[rel="stylesheet"]');
+        const categories = Array.from(document.querySelectorAll('.nav li.category'));
+
+        function saveOpenCategories() {
+            const open = categories
+                .map((c, i) => c.classList.contains('open') ? i : null)
+                .filter(i => i !== null);
+            localStorage.setItem('openCategories', JSON.stringify(open));
+        }
 
         // Apply saved theme
         if (localStorage.getItem('theme') === 'dark') {
@@ -96,7 +122,22 @@
                 e.preventDefault();
                 navLinks.forEach(l => l.classList.remove('active'));
                 link.classList.add('active');
+                localStorage.setItem('activePage', link.getAttribute('data-md'));
+                const cat = link.closest('li.category');
+                if (cat) {
+                    cat.classList.add('open');
+                    saveOpenCategories();
+                }
                 loadMarkdown(link.getAttribute('data-md'));
+            });
+        });
+
+        // Category expand/collapse
+        categories.forEach((cat, i) => {
+            const span = cat.querySelector('span');
+            span.addEventListener('click', () => {
+                cat.classList.toggle('open');
+                saveOpenCategories();
             });
         });
 
@@ -114,11 +155,19 @@
             }
         });
 
-        // Load Home by default
-        const homeLink = document.querySelector('.nav a[data-md="index.md"]');
-        if (homeLink) {
-            homeLink.classList.add('active');
-            loadMarkdown('index.md');
+        // Restore state
+        const savedOpen = JSON.parse(localStorage.getItem('openCategories') || '[]');
+        savedOpen.forEach(i => {
+            if (categories[i]) categories[i].classList.add('open');
+        });
+
+        const initialPage = localStorage.getItem('activePage') || 'index.md';
+        const startLink = document.querySelector(`.nav a[data-md="${initialPage}"]`);
+        if (startLink) {
+            startLink.classList.add('active');
+            const cat = startLink.closest('li.category');
+            if (cat) cat.classList.add('open');
+            loadMarkdown(initialPage);
         }
     });
 </script>
