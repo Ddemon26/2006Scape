@@ -1,268 +1,338 @@
 # Player
 
-Package `com.rs2.game.players`.
+**Package:** `com.rs2.game.players`  
+**Source:** [`2006Scape Server/src/main/java/com/rs2/game/players/Player.java`](2006Scape Server/src/main/java/com/rs2/game/players/Player.java)
 
-Defined in [`2006Scape Server/src/main/java/com/rs2/game/players/Player.java`](2006Scape Server/src/main/java/com/rs2/game/players/Player.java).
+## Overview
 
-Player helper class.
+The `Player` class is the core abstract base class that represents a player character in the 2006Scape server. It serves as the foundation for all player-related functionality, containing comprehensive systems for skills, combat, inventory management, social features, and game mechanics. This class is extended by the [`Client`](Client.md) class to create concrete player instances.
+
+## Key Responsibilities
+
+- **Player State Management**: Coordinates, health, skills, equipment, and inventory
+- **Game System Integration**: Provides access to all major game systems through assistant classes
+- **Event Processing**: Handles player actions, combat, movement, and interactions
+- **Network Communication**: Manages packet sending and receiving
+- **Persistence**: Handles player data saving and loading
+- **Social Features**: Trading, dueling, clan chat, and player interactions
+
+## Core Architecture
+
+### Assistant Pattern
+The Player class uses the Assistant pattern extensively, providing specialized helper classes for different aspects of gameplay:
 
 ```java
-public abstract class Player {
-public ArrayList<GameItem> fishingTrawlerReward = new ArrayList<GameItem>();
-public int getNpcKillCount(int npcId)
-public Map<Integer, Integer> getNpcKillCounts()
-public void incrementNpcKillCount(int npcId, int count)
-public int getXPRate() { return xpRate; }
-public void setXPRate(int xpRate) { this.xpRate = xpRate; }
-public long getLastHomeTeleport()
-public void setLastHomeTeleport(long lastHomeTeleport)
-public String getDiscordCode() { return discordCode; }
-public void setDiscordCode(String code) { this.discordCode = code; }
-public boolean isPreaching()
-public void setPreaching(boolean preaching)
-public Compost getCompost()
-public Allotments getAllotment()
-public Flowers getFlowers()
-public Herbs getHerbs()
-public Hops getHops()
-public Bushes getBushes()
-public Seedling getSeedling()
-public WoodTrees getTrees()
-public FruitTree getFruitTrees()
-public SpecialPlantOne getSpecialPlantOne()
-public SpecialPlantTwo getSpecialPlantTwo()
-public ToolLeprechaun getFarmingTools()
-public LogCuttingInterface getFletching()
-public SingleGates getSingleGates()
-public DoubleGates getDoubleGates()
-public GateHandler getGateHandler()
-public DwarfCannon getCannon()
-public ChallengePlayer getChallengePlayer()
-public Mining getMining()
-public Barrows getBarrows()
-public GlassBlowing getGlassBlowing()
-public RangersGuild getRangersGuild()
-public ObjectManager getObjectManager()
-public SmithingInterface getSmithingInt()
-public Smithing getSmithing()
-public ApeAtollAgility getApeAtollAgility()
-public WerewolfAgility getWerewolfAgility()
-public PyramidAgility getPyramidAgility()
-public BarbarianAgility getBarbarianAgility()
-public WildernessAgility getWildernessAgility()
-public GnomeAgility getGnomeStrongHold()
-public DialogueHandler getDialogueHandler()
-public PacketSender getPacketSender()
-public SoundList getSound()
-public Object getTemporary(String name)
-public void addTemporary(String name, Object value)
-public PlayList getPlayList()
-public Specials getSpecials()
-public Potatoes getPTS()
-public EmoteHandler getEmoteHandler()
-public SkillInterfaces getSkillInterfaces()
-public Enchanting getEnchanting()
-public PlayerAction getPlayerAction()
-public DesertCactus getDesert()
-public Agility getAgility()
-public Runecrafting getRC()
-public Slayer getSlayer()
-public Teles getTeles()
-public BankPin getBankPin()
-public synchronized Stream getOutStream()
-public ItemAssistant getItemAssistant()
-public PlayerAssistant getPlayerAssistant()
-public ShopAssistant getShopAssistant()
-public MageTrainingArena getMageTrainingArena()
-public Trading getTrading()
-public Dueling getDueling()
-public CombatAssistant getCombatAssistant()
-public PrayerData getPrayer()
-public ObjectsActions getObjects()
-public NpcActions getNpcs()
-public GameSession getSession()
-public Potions getPotions()
-public PotionMixing getPotMixing()
-public Inventory getInventory()
-public void setTempInteger(int tempInteger)
-public int getTempInteger()
-public boolean stopPlayer(boolean stop)
-public long getObjectDelay()
-public long setObjectDelay(long delay)
-public void startCurrentTask(int ticksBetweenExecution, CycleEvent event)
-public CycleEventContainer getCurrentTask()
-public void endCurrentTask()
-public TinterfaceText(String s, int id)
-public boolean checkPacket126Update(String text, int id)
-public void resetShaking()
-public final String disabled()
-public void puzzleBarrow()
-public void flushOutStream()
-public void sendClan(String name, String message, String clan, int rights)
-public void destruct()
-public void update()
-public void logout()
-public void logout(boolean forceLogout)
-public <E extends Event> void post(Player player, E event)
-public <E extends Event> void post(E event)
-public static <E extends Event> void provideSubscriber(EventSubscriber<E> subscriber)
-public <E extends Event> void depriveSubscriber(EventSubscriber<E> subscriber)
-public static PluginService getPluginService()
-public UniversalEventProvider getSubscribers()
-public void antiFirePotion()
-public void execute(CycleEventContainer container)
-public void stop()
-public boolean checkBusy()
-public void setBusy(boolean isBusy)
-public boolean isBusy()
-public int getLastLogin()
-public void updateWalkEntities()
-public Client getClient(String name)
-public Client getClient(int id)
-public boolean validClient(int id)
-public boolean validClient(String name)
-public boolean validClient(Client client)
-public void process()
-public void queueMessage(Packet arg1)
-public void processQueuedPackets()
-public void sendSound(int id, int volume, int delay)
-public void sendSound(int id, int volume)
-public void sendSound(int id)
-public void playSound(Client c, int SOUNDID, int delay)
-public void correctCoordinates()
-public void execute(CycleEventContainer container)
-public void stop()
-public void trawlerFade(final int x, final int y, final int height)
-public void execute(CycleEventContainer container)
-public void stop()
-public void fade(final int x, final int y, final int height)
-public void execute(CycleEventContainer container)
-public void stop()
-public int getOptionClicked()
-public void setOptionClicked(int i)
-public String getStatedInterface()
-public void setStatedInterface(String statedInterface)
-public ArrayList<String> killedPlayers = new ArrayList<String>();
-public ArrayList<Integer> attackedPlayers = new ArrayList<Integer>();
-public ArrayList<String> lastKilledPlayers = new ArrayList<String>();
-public void setSpecialTarget(Npc target)
-public Npc getSpecialTarget()
-public Pets getSummon()
-public boolean isRunning()
-public void faceNpc(int npc)
-public void faceNPC(int index)
-public void appendFaceNPCUpdate(Stream str)
-public int getLocalX()
-public int getLocalY()
-public int getKillCount()
-public void setRandomGrave(int randomGrave)
-public int getRandomGrave()
-public void setBarrowsNpcDead(int index, boolean dead)
-public boolean[] getBarrowsNpcDead()
-public boolean getBarrowsNpcDead(int id)
-public Npc getCloseRandomNpc(int distance)
-public boolean isAutoButton(int button)
-public void assignAutocast(int button)
-public boolean inCwGame()
-public void gameInterface(int id)
-public boolean hasThievedStall()
-public void setHasThievedStall(boolean hasThievedStall)
-public boolean hasSearchedForTraps()
-public void setHasSearchedForTraps(boolean hasSearchedForTraps)
-public Client asClient()
-public Player asPlayer()
-public boolean inTrawlerBoat()
-public boolean inTrawlerGame()
-public boolean inCw()
-public boolean inBarrows()
-public boolean inArea(int x, int y, int x1, int y1)
-public boolean inKqArea()
-public boolean inWild()
-public boolean inPlayerShopArea()
-public boolean duelingArena()
-public boolean playerIsBusy()
-public boolean inDuelArena()
-public boolean isInArea(final int x1, final int y1, final int x2, final int y2)
-public boolean isInAreaxxyy(final int x1, final int x2, final int y1, final int y2)
-public boolean altars()
-public boolean safeAreas(int x, int y, int x1, int y1)
-public boolean inFightCaves()
-public boolean inPirateHouse()
-public void updateShop(int i)
-public void println_debug(String str)
-public void println(String str)
-public Player(int _playerId)
-public boolean withinDistance(Player otherPlr)
-public boolean withinDistance(Npc npc)
-public boolean withinDistance(int absX, int getY, int getHeightLevel)
-public int distanceToPoint(int pointX, int pointY)
-public void resetWalkingQueue()
-public void addToWalkingQueue(int x, int y)
-public boolean checkRangeDistance()
-public int gatherRangeDistance(int distance)
-public boolean goodDistance(int objectX, int objectY, int playerX, int playerY, int distance)
-public boolean goodObjectDistance(int objectX, int objectY, int playerX, int playerY, int distance)
-public int getNextWalkingDirection()
-public synchronized void getNextPlayerMovement()
-public void updateThisPlayerMovement(Stream str)
-public void updatePlayerMovement(Stream str)
-public void addNewNPC(Npc npc, Stream str, Stream updateBlock)
-public void addNewPlayer(Player plr, Stream str, Stream updateBlock)
-public int calculateCombatLevel()
-public void forcedChat(String text)
-public void appendForcedChat(Stream str)
-public void appendMask100Update(Stream str)
-public void gfx100(int gfx)
-public void gfx0(int gfx)
-public boolean wearing2h()
-public void startAnimation(int animId)
-public void startAnimation(int animId, int time)
-public void appendAnimationRequest(Stream str)
-public void faceUpdate(int index)
-public void appendFaceUpdate(Stream str)
-public void turnPlayerTo(int pointX, int pointY)
-public void appendPlayerUpdateBlock(Stream str)
-public void clearUpdateFlags()
-public void stopMovement()
-public void preProcessing()
-public void postProcessing()
-public int getMapRegionX()
-public int getMapRegionY()
-public int getX()
-public int getY()
-public int getH()
-public int getId()
-public void setHitDiff(int hitDiff)
-public void setHitDiff2(int hitDiff2)
-public int getHitDiff()
-public void setHitUpdateRequired(boolean hitUpdateRequired)
-public void setHitUpdateRequired2(boolean hitUpdateRequired2)
-public boolean isHitUpdateRequired()
-public boolean getHitUpdateRequired()
-public boolean getHitUpdateRequired2()
-public void setAppearanceUpdateRequired(boolean appearanceUpdateRequired)
-public boolean isAppearanceUpdateRequired()
-public void setChatTextEffects(int chatTextEffects)
-public int getChatTextEffects()
-public void setChatTextSize(byte chatTextSize)
-public byte getChatTextSize()
-public void setChatTextUpdateRequired(boolean chatTextUpdateRequired)
-public boolean isChatTextUpdateRequired()
-public void setChatText(byte chatText[])
-public byte[] getChatText()
-public void setChatTextColor(int chatTextColor)
-public int getChatTextColor()
-public void setNewWalkCmdX(int newWalkCmdX[])
-public int[] getNewWalkCmdX()
-public void setNewWalkCmdY(int newWalkCmdY[])
-public int[] getNewWalkCmdY()
-public void setNewWalkCmdIsRunning(boolean newWalkCmdIsRunning)
-public boolean isNewWalkCmdIsRunning()
-public void setInStreamDecryption(IsaacRandom inStreamDecryption)
-public void setOutStreamDecryption(IsaacRandom outStreamDecryption)
-public boolean samePlayer()
-public void putInCombat(int attacker)
-public void dealDamage(int damage)
-public void appendRedemption()
-public void handleHitMask(int damage)
+private final ItemAssistant itemAssistant = new ItemAssistant(this);
+private final PlayerAssistant playerAssistant = new PlayerAssistant(this);
+private final CombatAssistant combatAssistant = new CombatAssistant(this);
+private final ShopAssistant shopAssistant = new ShopAssistant(this);
 ```
+
+### Skill System Integration
+Each skill has its own dedicated handler:
+
+```java
+private final Agility agility = new Agility(this);
+private final Mining mining = new Mining();
+private final Smithing smithing = new Smithing();
+private final Runecrafting runecrafting = new Runecrafting(this);
+private final Slayer slayer = new Slayer(this);
+```
+
+## Essential Methods
+
+### Player Management
+
+#### `process()`
+The main player processing method called every game tick:
+- Handles desert heat damage
+- Manages energy regeneration
+- Processes special attack restoration
+- Updates combat states and timers
+- Manages prayer drain
+- Handles stat restoration
+
+```java
+public void process() {
+    // Desert heat processing
+    if (Boundary.isIn(this, Boundary.DESERT) && heightLevel == 0) {
+        DesertHeat.callHeat(this);
+    }
+    
+    // Energy regeneration
+    if (playerEnergy < 100 && System.currentTimeMillis() - lastIncrease >= getPlayerAssistant().raiseTimer()) {
+        playerEnergy += 1;
+        lastIncrease = System.currentTimeMillis();
+    }
+    
+    // Special attack restoration
+    if (System.currentTimeMillis() - specDelay > CombatConstants.INCREASE_SPECIAL_AMOUNT) {
+        if (specAmount < 10) {
+            specAmount += .5;
+            getItemAssistant().addSpecialBar(playerEquipment[playerWeapon]);
+        }
+    }
+}
+```
+
+#### `logout()` and `logout(boolean forceLogout)`
+Handles player disconnection with proper cleanup:
+- Saves player data
+- Removes from minigames
+- Handles combat restrictions
+- Cleans up resources
+
+```java
+public void logout(boolean forceLogout) {
+    if (!forceLogout && (underAttackBy > 0 || underAttackBy2 > 0) || duelStatus == 5) {
+        getPacketSender().sendMessage("You can't logout during combat!");
+        return;
+    }
+    
+    // Cleanup minigames, pets, cannons
+    // Save player state
+    // Close session
+}
+```
+
+### Communication & Networking
+
+#### `flushOutStream()`
+Sends queued packets to the client:
+```java
+public void flushOutStream() {
+    if (disconnected || outStream == null || outStream.currentOffset == 0) {
+        return;
+    }
+    byte[] temp = new byte[outStream.currentOffset];
+    System.arraycopy(outStream.buffer, 0, temp, 0, temp.length);
+    session.write(Unpooled.buffer().writeBytes(temp));
+    outStream.currentOffset = 0;
+}
+```
+
+#### `queueMessage(Packet packet)`
+Queues incoming packets for processing:
+```java
+public void queueMessage(Packet packet) {
+    if (queuedPackets.size() < 25) {
+        queuedPackets.add(packet);
+    }
+}
+```
+
+### Event System
+
+#### `post(Event event)`
+Posts events to the plugin system:
+```java
+public <E extends Event> void post(E event) {
+    eventProvider.post(this, event);
+}
+```
+
+#### `startCurrentTask(int ticks, CycleEvent event)`
+Starts a scheduled task for the player:
+```java
+public void startCurrentTask(int ticksBetweenExecution, CycleEvent event) {
+    endCurrentTask();
+    currentTask = CycleEventHandler.getSingleton().addEvent(this, event, ticksBetweenExecution);
+}
+```
+
+## Assistant Classes
+
+### Core Assistants
+
+#### ItemAssistant
+Handles all item-related operations:
+- Inventory management
+- Equipment handling
+- Item creation and deletion
+- Special item effects
+
+```java
+public ItemAssistant getItemAssistant() {
+    return itemAssistant;
+}
+```
+
+#### PlayerAssistant
+Manages player state and utilities:
+- Movement and teleportation
+- Interface management
+- Skill level calculations
+- Area checking
+
+```java
+public PlayerAssistant getPlayerAssistant() {
+    return playerAssistant;
+}
+```
+
+#### CombatAssistant
+Handles all combat mechanics:
+- Melee, ranged, and magic combat
+- Damage calculations
+- Combat timers and delays
+- Special attacks
+
+```java
+public CombatAssistant getCombatAssistant() {
+    return combatAssistant;
+}
+```
+
+### Skill Assistants
+
+Each skill has dedicated methods for access:
+
+```java
+// Agility courses
+public GnomeAgility getGnomeStrongHold() { return gnomeStrongHold; }
+public BarbarianAgility getBarbarianAgility() { return barbarianAgility; }
+public WildernessAgility getWildernessAgility() { return wildernessAgility; }
+
+// Production skills
+public Smithing getSmithing() { return smithing; }
+public Mining getMining() { return mining; }
+public Runecrafting getRC() { return runecrafting; }
+
+// Farming system
+public Allotments getAllotment() { return allotment; }
+public Herbs getHerbs() { return herb; }
+public WoodTrees getTrees() { return trees; }
+```
+
+## Location & Area Methods
+
+### Area Detection
+The Player class provides numerous methods for detecting player location:
+
+```java
+public boolean inWild() // Wilderness check
+public boolean inCw() // Castle Wars check
+public boolean inBarrows() // Barrows check
+public boolean inDuelArena() // Duel Arena check
+public boolean inFightCaves() // Fight Caves check
+public boolean inArea(int x, int y, int x1, int y1) // Custom area check
+```
+
+### Distance Calculations
+
+```java
+public boolean withinDistance(Player otherPlayer) // Player distance
+public boolean withinDistance(Npc npc) // NPC distance
+public int distanceToPoint(int pointX, int pointY) // Point distance
+public boolean goodDistance(int objectX, int objectY, int playerX, int playerY, int distance)
+```
+
+## Kill Count System
+
+The Player class includes a comprehensive NPC kill count tracking system:
+
+```java
+public int getNpcKillCount(int npcId) {
+    return npcKillCounts.getOrDefault(npcId, 0);
+}
+
+public void incrementNpcKillCount(int npcId, int count) {
+    npcKillCounts.put(npcId, npcKillCounts.getOrDefault(npcId, 0) + count);
+}
+
+// Display options
+public boolean displayBossKcMessages = false;
+public boolean displaySlayerKcMessages = false;
+public boolean displayRegularKcMessages = false;
+```
+
+## Temporary Data Storage
+
+The Player class provides a flexible temporary data system:
+
+```java
+public Object getTemporary(String name) {
+    return temporary.get(name);
+}
+
+public void addTemporary(String name, Object value) {
+    temporary.put(name, value);
+}
+```
+
+## Usage Examples
+
+### Basic Player Operations
+```java
+// Get player's combat level
+int combatLevel = player.calculateCombatLevel();
+
+// Send a message to the player
+player.getPacketSender().sendMessage("Welcome to 2006Scape!");
+
+// Teleport player
+player.getPlayerAssistant().movePlayer(3200, 3200, 0);
+
+// Add experience
+player.getPlayerAssistant().addSkillXP(1000, 0); // 1000 Attack XP
+```
+
+### Combat Operations
+```java
+// Start combat with NPC
+player.getCombatAssistant().attackNpc(npcId);
+
+// Check if player can attack
+if (player.getCombatAssistant().checkReqs()) {
+    // Proceed with attack
+}
+
+// Apply damage
+player.dealDamage(damage);
+```
+
+### Item Management
+```java
+// Add item to inventory
+player.getItemAssistant().addItem(itemId, amount);
+
+// Check if player has item
+if (player.getItemAssistant().playerHasItem(itemId, amount)) {
+    // Player has the item
+}
+
+// Delete item
+player.getItemAssistant().deleteItem(itemId, amount);
+```
+
+### Skill Operations
+```java
+// Mining example
+if (player.getMining().canMine(rockId)) {
+    player.getMining().mineRock(rockId);
+}
+
+// Agility example
+player.getGnomeStrongHold().handleObstacle(obstacleId);
+
+// Farming example
+player.getAllotment().plantSeed(seedId, patchId);
+```
+
+## Best Practices
+
+1. **Always check player state** before performing operations
+2. **Use appropriate assistants** for different game systems
+3. **Handle null checks** when accessing other players or NPCs
+4. **Respect combat restrictions** when implementing PvP features
+5. **Use the event system** for plugin integration
+6. **Implement proper cleanup** in logout methods
+
+## Related Classes
+
+- [`Client`](Client.md) - Concrete implementation of Player
+- [`PlayerHandler`](PlayerHandler.md) - Manages all players
+- [`PlayerAssistant`](PlayerAssistant.md) - Core player utilities
+- [`ItemAssistant`](ItemAssistant.md) - Item management
+- [`CombatAssistant`](CombatAssistant.md) - Combat mechanics
+- [`PacketSender`](PacketSender.md) - Network communication
