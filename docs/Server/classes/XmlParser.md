@@ -2,7 +2,7 @@
 
 Package `org.apollo.util.xml`.
 
-Defined in [`2006Scape Server/src/main/java/org/apollo/util/xml/XmlParser.java`](2006Scape Server/src/main/java/org/apollo/util/xml/XmlParser.java).
+Defined in [`2006Scape Server/src/main/java/org/apollo/util/xml/XmlParser.java`](../../2006Scape%20Server/src/main/java/org/apollo/util/xml/XmlParser.java).
 
 A simple XML parser that uses the internal {@link org.xml.sax} API to create a tree of {@link XmlNode} objects.  @author Graham
 

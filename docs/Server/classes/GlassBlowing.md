@@ -2,7 +2,7 @@
 
 Package `com.rs2.game.content.skills.crafting`.
 
-Defined in [`2006Scape Server/src/main/java/com/rs2/game/content/skills/crafting/GlassBlowing.java`](2006Scape Server/src/main/java/com/rs2/game/content/skills/crafting/GlassBlowing.java).
+Defined in [`2006Scape Server/src/main/java/com/rs2/game/content/skills/crafting/GlassBlowing.java`](../../2006Scape%20Server/src/main/java/com/rs2/game/content/skills/crafting/GlassBlowing.java).
 
 @author Arrowz flame
 
