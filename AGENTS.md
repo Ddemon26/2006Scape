@@ -41,16 +41,25 @@ The agent **MAY** perform **only** the following categories:
    ```
 
    Otherwise, skip automatic formatting.
+
 2. **Refactor** – behaviour‑preserving changes (e.g. split 6 k‑line classes, extract methods).
+
 3. **Bug‑fix** – fix a reproducible defect referenced in the PR body.
+
 4. **Dependency update** – bump Maven or Docker images **within the same major version**.
+
 5. **CI / workflow** – patch .github/workflows/\*.yml for build health.
+
 6. **Convert/Update Cache** – update the runescape cache files to the latest format.
+
 7. **Change/Refactor Documentation** – update or add documentation files (e.g. README, wiki, AGENTS, Rename-History).
+
 8. **Update docs directory** – when modifying any source under `2006Scape Client` or
    `2006Scape Server`, ensure the relevant markdown files in `docs/Client/classes`
    or `docs/Server/classes` are updated to match. New or renamed classes **MUST**
    have corresponding pages and indexes kept in sync. **When populating docs**, the agent **MUST** include high‑level documentation for each class, incorporating code examples and reference links to the relevant source files.
+
+9. **Python Scripting** – The agent **MAY** use Python scripts for heavy tasks; store helper scripts and generated classes under the `python/` directory.
 
 Any other class of change **MUST** be expressly permitted by a maintainer comment containing `/allow‑bot <task>` on the **PR** itself.
 
