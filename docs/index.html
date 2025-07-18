@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2006Scape Documentation</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+<button id="theme-toggle" class="theme-toggle">Dark Mode</button>
+<div class="layout">
+    <aside class="sidebar">
+        <nav class="nav">
+            <h2>2006Scape Docs</h2>
+            <ul>
+                <li><a href="#" data-md="intro.md">Intro</a></li>
+                <li><a href="#" data-md="usage.md">Usage</a></li>
+                <li><a href="#" data-md="../README.md">Home</a></li>
+                <li><a href="#" data-md="../AGENTS.md">Agents</a></li>
+            </ul>
+            <h3>External Resources</h3>
+            <ul>
+                <li><a href="https://2006Scape.org" target="_blank">Official Website</a></li>
+                <li><a href="https://discord.gg/hZ6VfWG" target="_blank">Discord</a></li>
+                <li><a href="https://www.rune-server.ee/forums/2006scape.318/" target="_blank">Rune‑Server Thread</a></li>
+                <li><a href="https://wiki.2006scape.org" target="_blank">Community Wiki</a></li>
+                <li><a href="#" data-md="../LICENSE">License</a></li>
+            </ul>
+        </nav>
+    </aside>
+    <main class="main-content">
+        <div id="content">
+            <header>
+                <h1>2006Scape Documentation</h1>
+                <p>Welcome to the official documentation for the 2006Scape emulation server. Use the sidebar to navigate through guides and resources.</p>
+            </header>
+        </div>
+    </main>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const contentDiv = document.getElementById('content');
+        const navLinks  = document.querySelectorAll('.nav a[data-md]');
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeLink = document.querySelector('link[rel="stylesheet"]');
+
+        // Apply saved theme
+        if (localStorage.getItem('theme') === 'dark') {
+            themeLink.setAttribute('href', 'index-dark.css');
+            themeToggle.textContent = 'Light Mode';
+        }
+
+        // Load and render markdown
+        async function loadMarkdown(file) {
+            try {
+                const res = await fetch(file);
+                if (!res.ok) throw new Error('Failed to load ' + file);
+                const md = await res.text();
+                contentDiv.innerHTML = marked.parse(md);
+            } catch (err) {
+                contentDiv.innerHTML = '<h1>Error</h1><p>Could not load ' + file + '.</p>';
+            }
+        }
+
+        // Nav link handlers
+        navLinks.forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                loadMarkdown(link.getAttribute('data-md'));
+            });
+        });
+
+        // Theme toggle
+        themeToggle.addEventListener('click', () => {
+            const current = themeLink.getAttribute('href');
+            if (current === 'index.css') {
+                themeLink.setAttribute('href', 'index-dark.css');
+                themeToggle.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeLink.setAttribute('href', 'index.css');
+                themeToggle.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Load Home by default
+        const homeLink = document.querySelector('.nav a[data-md="README.md"]');
+        if (homeLink) {
+            homeLink.classList.add('active');
+            loadMarkdown('README.md');
+        }
+    });
+</script>
+</body>
+</html>
