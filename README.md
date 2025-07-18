@@ -1,3 +1,5 @@
+[![Java CI with Maven](https://github.com/Ddemon26/2006Scape/actions/workflows/maven.yml/badge.svg)](https://github.com/Ddemon26/2006Scape/actions/workflows/maven.yml)
+
 # 2006Scape - an open source, actively developed emulation server. Pull requests welcome! ![Gameplay Image](https://i.imgur.com/WHnQz2W.png)
 
 ## Discord Link: https://discord.gg/hZ6VfWG
