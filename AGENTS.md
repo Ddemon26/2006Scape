@@ -52,7 +52,7 @@ The agent **MAY** perform **only** the following categories:
 
 6. **Convert/Update Cache** – update the runescape cache files to the latest format.
 
-7. **Change/Refactor Documentation** – update or add documentation files (e.g. README, wiki, AGENTS, Rename-History).
+7. **Change/Refactor Documentation** – update or add documentation files (e.g. wiki, AGENTS, Rename-History).
 
 8. **Update docs directory** – when modifying any source under `2006Scape Client` or
    `2006Scape Server`, ensure the relevant markdown files in `docs/Client/classes`
@@ -66,6 +66,7 @@ Any other class of change **MUST** be expressly permitted by a maintainer commen
 The agent **MUST NOT**:
 
 * Re‑write git history.
+* Touch the README.md file.
 * Modify license headers.
 * Introduce new runtime dependencies without maintainer permission.
 
