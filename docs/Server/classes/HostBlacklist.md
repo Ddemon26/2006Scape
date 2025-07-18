@@ -8,7 +8,6 @@ Host Blacklist helper class.
 
 ```java
 public class HostBlacklist {
-private static List<String> blockedHostnames = new ArrayList<String>();
 public static List<String> getBlockedHostnames()
 public static boolean isBlocked(String host)
 public static void loadBlacklist()

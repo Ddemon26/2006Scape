@@ -9,6 +9,4 @@ A worker which services JAGGRAB requests.  @author Graham
 ```java
 public final class JagGrabRequestWorker extends RequestWorker<JagGrabRequest, ResourceProvider> {
 public JagGrabRequestWorker(UpdateDispatcher dispatcher, IndexedFileSystem fs)
-protected ChannelRequest<JagGrabRequest> nextRequest(UpdateDispatcher dispatcher) throws InterruptedException
-protected void service(ResourceProvider provider, Channel channel, JagGrabRequest request) throws IOException
 ```

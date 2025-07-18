@@ -9,5 +9,4 @@ A utility class containing helper methods for various {@link Collection} objects
 ```java
 * A utility class containing helper methods for various {@link Collection} objects.
 public static <T> void pollAll(Queue<T> queue, Consumer<T> consumer)
-private CollectionUtil()
 ```

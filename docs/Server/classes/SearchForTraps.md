@@ -8,9 +8,11 @@ Search For Traps helper class.
 
 ```java
 public class SearchForTraps {
-private chestsWithTraps(final int chestId, final int levelReq, final double xp, int[][] reward, boolean randomizeRewards)
 public int getChestId()
 public int getLevelReq()
 public double getXp()
 public int[][] getReward()
+public static void searchForTraps(final Player client, final int chestId)
+public void execute(CycleEventContainer container)
+public void stop()
 ```

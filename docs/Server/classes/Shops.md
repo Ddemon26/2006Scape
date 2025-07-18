@@ -10,7 +10,8 @@ Shops @author Andrew (I'm A Boss on Rune-Server, Mr Extremez on Moparscape & Run
 public class Shops {
 public static HashMap<Integer, Shop> npc = new HashMap<Integer, Shop>();
 public static Shop forId(int id)
-private Shop(int npcId, int shopId)
 public int getNpc()
 public int getShop()
+public static void dialogueShop(Player c, int npcClick)
+public static void openShop(Player c, int npcClickId)
 ```

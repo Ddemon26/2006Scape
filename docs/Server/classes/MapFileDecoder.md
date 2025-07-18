@@ -11,6 +11,4 @@ public class MapFileDecoder {
 public static MapFileDecoder create(IndexedFileSystem fs, MapIndex index) throws IOException
 public MapFileDecoder(ByteBuffer buffer)
 public MapFile decode()
-private MapPlane decodePlane(MapPlane[] planes, int level)
-private Tile decodeTile(MapPlane[] planes, int level, int x, int z)
 ```

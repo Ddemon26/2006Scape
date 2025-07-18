@@ -8,9 +8,12 @@ Trawler Waiting Room helper class.
 
 ```java
 public class TrawlerWaitingRoom extends WaitingRoom {
-private Boundary boat = new Boundary(2668,2674,3165,3185);
 public TrawlerWaitingRoom(Trawler trawler)
 public boolean startGame()
 public void onStart()
 public void onLeave(Player p)
+public void onJoin(Player p)
+public Boundary getLocation()
+public void onTimeChange()
+public boolean canStart()
 ```

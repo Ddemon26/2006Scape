@@ -9,5 +9,4 @@ A {@link ChannelInitializer} for the HTTP protocol.  @author Graham
 ```java
 public final class HttpChannelInitializer extends ChannelInitializer<SocketChannel> {
 public HttpChannelInitializer(ChannelInboundHandlerAdapter handler)
-protected void initChannel(SocketChannel ch) throws Exception
 ```

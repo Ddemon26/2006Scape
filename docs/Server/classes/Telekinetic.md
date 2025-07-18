@@ -8,9 +8,18 @@ Telekinetic helper class.
 
 ```java
 public class Telekinetic {
-private Maze(int minX, int minY, int height, int startX, int startY, int endX, int endY)
 public static Maze getMaze(int x, int y, int h)
 public Point calcDirection(Player player)
 public Point getNewPos(int curX, int curY, int dirX, int dirY)
-private Random random = new Random();
+public Telekinetic(Player c)
+public void moveStatue(int itemX, int itemY)
+public void execute(CycleEventContainer container)
+public void stop()
+public void goToMaze()
+public void execute(CycleEventContainer container)
+public void stop() {}
+public void observeStatue(int itemX, int itemY)
+public void resetStatue(int itemX, int itemY)
+public static void process()
+public static void updateInterface(Player player)
 ```

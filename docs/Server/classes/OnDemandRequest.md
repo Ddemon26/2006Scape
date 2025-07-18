@@ -9,8 +9,10 @@ Represents a single 'on-demand' request.  @author Graham
 ```java
 public final class OnDemandRequest implements Comparable<OnDemandRequest> {
 public static Priority valueOf(int value)
-private Priority(int value)
 public int compareWith(Priority other)
 public int toInteger()
 public OnDemandRequest(FileDescriptor descriptor, Priority priority)
+public int compareTo(OnDemandRequest other)
+public FileDescriptor getFileDescriptor()
+public Priority getPriority()
 ```

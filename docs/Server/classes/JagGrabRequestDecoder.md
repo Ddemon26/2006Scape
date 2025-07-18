@@ -8,5 +8,4 @@ A {@link MessageToMessageDecoder} for the JAGGRAB protocol.  @author Graham
 
 ```java
 public final class JagGrabRequestDecoder extends MessageToMessageDecoder<String> {
-protected void decode(ChannelHandlerContext ctx, String request, List<Object> out)
 ```

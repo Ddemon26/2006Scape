@@ -13,4 +13,6 @@ public static void brightness1(Player player)
 public static void brightness2(Player player)
 public static void brightness3(Player player)
 public static void brightness4(Player player)
+public static void setBrightness(Player c)
+public static boolean playerHasLightSource(Player client)
 ```

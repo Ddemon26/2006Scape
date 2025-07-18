@@ -13,4 +13,5 @@ public HighscoresHandler()
 public String getRank(Player player, int i, String sortBy)
 public int compare(Client client, Client t1)
 public int compare(Client client, Client t1)
+public int compare(Client client, Client t1)
 ```

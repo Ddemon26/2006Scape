@@ -9,7 +9,6 @@ Handles emote related functionality.
 ```java
 public class EmoteHandler {
 public EmoteHandler(Player player2)
-private Emotes(int buttonId, int animId, int gfxId)
 public static HashMap<Integer, Emotes> emotes = new HashMap<Integer, Emotes>();
 public static Emotes loadEmote(int buttonId)
 public void startEmote(int buttonId)

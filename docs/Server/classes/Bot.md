@@ -13,4 +13,5 @@ public Client getBotClient()
 public void run()
 public void sendTradeChat()
 public static String formatSellPrice(int price)
+public String generatePassword(int targetStringLength)
 ```

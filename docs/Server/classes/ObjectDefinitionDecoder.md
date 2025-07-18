@@ -10,5 +10,4 @@ Decodes object data from the {@code loc.dat} file into {@link ObjectDefinition}s
 public final class ObjectDefinitionDecoder implements Runnable {
 public ObjectDefinitionDecoder(IndexedFileSystem fs)
 public void run()
-private ObjectDefinition decode(int id, ByteBuffer data)
 ```

@@ -13,4 +13,5 @@ public static void finishEvent(Client client) {// breaks
 public static void spawnBasedOnGender(Client client) {// ternary
 public static void ignoreFrogs(Client client)
 public static void giveReward(Client client)
+public static void spawnFrogs(Client client)
 ```

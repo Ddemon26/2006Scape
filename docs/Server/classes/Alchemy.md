@@ -13,4 +13,6 @@ public void searchCupboard(int objectID)
 public void alchItem(int itemID, int spellID)
 public void collectCoins()
 public void clearItems()
+public static void process()
+public static void updateInterface(Player player)
 ```

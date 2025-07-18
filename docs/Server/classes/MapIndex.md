@@ -13,4 +13,8 @@ public static Map<Integer, MapIndex> getIndices()
 public MapIndex(int packedCoordinates, int terrain, int objects, boolean members)
 public int getObjectFile()
 public int getPackedCoordinates()
+public int getMapFile()
+public int getX()
+public int getY()
+public boolean isMembersOnly()
 ```

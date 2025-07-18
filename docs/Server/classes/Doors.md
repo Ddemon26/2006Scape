@@ -8,9 +8,7 @@ Doors helper class.
 
 ```java
 public class Doors {
-private final List<Doors> doors = new ArrayList<>();
 public static Doors getSingleton()
-private Doors(String file)
-private Doors(int door, int x, int y, int z, int face, int type, int open)
-private Doors getDoor(int id, int x, int y, int z)
+public boolean handleDoor(Player player, int id, int x, int y, int z)
+public void load()
 ```

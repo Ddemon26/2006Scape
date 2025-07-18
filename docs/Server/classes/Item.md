@@ -13,4 +13,7 @@ public void setCount(int count)
 public Item(int id, int count)
 public Item(int id, int count, int timer)
 public int getId()
+public int getCount()
+public String toString()
+public boolean equals(Item item)
 ```

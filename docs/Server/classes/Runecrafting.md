@@ -10,7 +10,10 @@ Defined in [`2006Scape Server/src/main/java/com/rs2/game/content/skills/runecraf
 public class Runecrafting {
 public Runecrafting(Player player)
 public static void locate(Player c, int xPos, int yPos)
-private Altars(int objId, int[] keys, int[] loc)
-private int getObj()
-private int[] getKeys()
+public void enterAltar(int objId, int itemUse)
+public Altar_Data forObj(int obj)
+public Altars forAltar(int id)
+public boolean craftRunes(int obj)
+public void getMultiSupport(int obj)
+public int getMultiplier(Altar_Data ad)
 ```

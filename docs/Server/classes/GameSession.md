@@ -13,4 +13,8 @@ public GameSession(Channel channel, Player player, boolean reconnecting)
 public void destroy()
 public boolean isReconnecting()
 public void messageReceived(Object message)
+public SocketAddress getRemoteAddress()
+public void close()
+public boolean isActive()
+public void write(ByteBuf buf)
 ```

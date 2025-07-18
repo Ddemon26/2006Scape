@@ -9,5 +9,4 @@ A {@link MessageToByteEncoder} which encodes login response messages.  @author G
 ```java
 public final class LoginEncoder extends MessageToByteEncoder<LoginResponse> {
 public LoginEncoder()
-protected void encode(ChannelHandlerContext ctx, LoginResponse response, ByteBuf out)
 ```

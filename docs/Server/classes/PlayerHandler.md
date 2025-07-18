@@ -1,12 +1,21 @@
 # PlayerHandler
 
-Maintains the global player list, assigning slots to new connections and
-processing each active player every tick. `PlayerHandler` updates player
-counters and saves data on logout.
+Package `com.rs2.game.players`.
 
-Source: [PlayerHandler.java](../../2006Scape%20Server/src/main/java/com/rs2/game/players/PlayerHandler.java)
+Defined in [`2006Scape Server/src/main/java/com/rs2/game/players/PlayerHandler.java`](2006Scape Server/src/main/java/com/rs2/game/players/PlayerHandler.java).
+
+Handles player related functionality.
 
 ```java
-// called from GameEngine each server tick
-playerHandler.process();
+public class PlayerHandler {
+public boolean newPlayerClient(Client client1)
+public static int getPlayerCount()
+public static int getNonPlayerCount()
+public static int getPlayerShopCount()
+public void updatePlayerNames()
+public static int getPlayerID(String playerName)
+public static boolean isPlayerOn(String playerName)
+public void process()
+public void updateNPC(Player plr, Stream str)
+public void updatePlayer(Player plr, Stream outStr)
 ```

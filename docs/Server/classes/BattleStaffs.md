@@ -8,9 +8,11 @@ Battle Staff making  @author Andrew (Mr Extremez)
 
 ```java
 public class BattleStaffs {
-private battleStaffs(final int orb, final int levelReq, final int xpRecieved, final int battlestaff)
 public int getOrb()
 public int getLevelReq()
 public int getXP()
 public int getBattlestaff()
+public static void makeBattleStaff(Player player, int itemUsed, int usedWith)
+public void execute(CycleEventContainer container)
+public void stop()
 ```

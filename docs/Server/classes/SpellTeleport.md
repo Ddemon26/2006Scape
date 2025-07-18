@@ -13,4 +13,8 @@ public int getButtonId()
 public int getDestX()
 public int getDestY()
 public int getDestZ()
+public int[][] getRequiredRunes()
+public double getExperienceGained()
+public String getType()
+public static SpellTeleport forButtonId(int id)
 ```

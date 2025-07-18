@@ -8,7 +8,6 @@ Climb Other helper class.
 
 ```java
 public class ClimbOther {
-private ClimbData(int closedId, int openId)
 public int getClosed()
 public int getOpen()
 public static void handleOpenOther(Player player, int objectType)

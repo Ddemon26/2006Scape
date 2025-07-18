@@ -13,4 +13,6 @@ public static boolean canOpen(Player c)
 public void execute(CycleEventContainer container)
 public void stop()
 public static int getLength()
+public static int toothHalf()
+public static int loopHalf()
 ```

@@ -8,8 +8,6 @@ Defined in [`2006Scape Server/src/main/java/com/rs2/console/CommandConsole.java`
 
 ```java
 public class CommandConsole implements Runnable {
-private ArrayList<CommandProcessor> cmds = new ArrayList<CommandProcessor>();
-private CommandConsole()
 public void run()
 public static CommandConsole getInstance()
 ```

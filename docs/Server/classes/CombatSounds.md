@@ -13,4 +13,7 @@ public static int getNpcBlockSound(int NPCID)
 public static int getNpcDeathSounds(int NPCID)
 public static String GetNpcName(int NpcID)
 public static int getMagicSound(Player c, int spellId)
+public static int getPlayerBlockSounds(Player c)
+public static int getWeaponSounds(Player c)
+public static int specialSounds(int id)
 ```

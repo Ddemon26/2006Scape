@@ -11,5 +11,4 @@ public abstract class Session {
 public Session(Channel channel)
 public abstract void destroy();
 public abstract void messageReceived(Object message) throws Exception;
-protected final Channel getChannel()
 ```

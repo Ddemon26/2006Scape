@@ -8,9 +8,8 @@ Loads the bonuses and weights from a json file.  @author Advocatus
 
 ```java
 public class ItemDefinitions {
-private static Map<Integer, Definition> defintions = new HashMap<>();
 public static int[] getBonus(int id)
 public static double getWeight(int id)
 public static void load()
-private Definition(ItemData item)
+public int[] getBonuses()
 ```

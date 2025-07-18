@@ -13,4 +13,8 @@ public static Balloons getBalloon(int x, int y, int height, int item, int amount
 public static Balloons getBalloon(int x, int y, int item, int amount)
 public static Balloons getEmpty(int x, int y, int height)
 public static Balloons getEmpty(int x, int y)
+public void popBalloon(Player player)
+public static int getRandomBalloon()
+public int getPoppedBalloon()
+public void remove()
 ```

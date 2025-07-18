@@ -8,6 +8,5 @@ Players Online Website helper class.
 
 ```java
 public class PlayersOnlineWebsite {
-private static void setWebsitePlayersOnline(int amount) throws IOException
 public static void addUpdatePlayersOnlineTask()
 ```

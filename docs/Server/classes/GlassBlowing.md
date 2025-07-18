@@ -13,4 +13,8 @@ public boolean getStarted()
 public void setStarted(boolean started)
 public void showInterface()
 public void ItemOnItem(int id, int id2)
+public void handleActionButtin(int buttonId)
+public void makeItem(final int id, final int amount, final int slot)
+public void execute(CycleEventContainer container)
+public void stop()
 ```

@@ -8,9 +8,14 @@ Stalls helper class.
 
 ```java
 public class Stalls {
-private stallData(final int objectId, final int levelReq, final double xp, final int face, final int[]... stalls)
 public int getObject()
 public int getLevel()
 public double getXp()
 public int getFace()
+public int[][] getStalls()
+public static int r(int random)
+public static boolean isObject(int object)
+public static void attemptStall(final Player p, final int objectId, final int x, final int y)
+public void execute(CycleEventContainer container)
+public void stop()
 ```

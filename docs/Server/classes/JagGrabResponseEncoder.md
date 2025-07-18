@@ -8,5 +8,4 @@ A {@link MessageToMessageEncoder} for the JAGGRAB protocol.  @author Graham
 
 ```java
 public final class JagGrabResponseEncoder extends MessageToMessageEncoder<JagGrabResponse> {
-protected void encode(ChannelHandlerContext ctx, JagGrabResponse response, List<Object> out)
 ```

@@ -8,5 +8,4 @@ ChatEmotes.java @author Andrew (Mr Extremez)
 
 ```java
 public enum ChatEmotes {
-private ChatEmotes(int animId)
 ```

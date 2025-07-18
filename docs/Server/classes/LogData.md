@@ -8,7 +8,6 @@ Log Data helper class.
 
 ```java
 public enum LogData {
-private LogData(int logId, int level, double xp)
 public int getLogId()
 public int getLevel()
 public double getXp()

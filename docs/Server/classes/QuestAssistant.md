@@ -9,8 +9,10 @@ Quest Assistant @author Andrew (Mr Extremez)
 ```java
 public class QuestAssistant {
 public static void sendStages(Player player)
-private Quests(final int button, final int string, final String name, final boolean questStatus)
 public int getStringId()
 public boolean questStatus()
 public int getButton()
+public String getName()
+public static Quests forButton(int button)
+public static void questButtons(Player player, int buttonId)
 ```

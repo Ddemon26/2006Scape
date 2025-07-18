@@ -8,5 +8,4 @@ Holds handshake-related constants.  @author Graham
 
 ```java
 public final class HandshakeConstants {
-private HandshakeConstants()
 ```

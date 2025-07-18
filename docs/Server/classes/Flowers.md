@@ -1,16 +1,58 @@
 # Flowers
 
-Package `com.rs2.game.items.impl`.
+Package `com.rs2.game.content.skills.farming`.
 
-Defined in [`2006Scape Server/src/main/java/com/rs2/game/items/impl/Flowers.java`](2006Scape Server/src/main/java/com/rs2/game/items/impl/Flowers.java).
+Defined in [`2006Scape Server/src/main/java/com/rs2/game/content/skills/farming/Flowers.java`](2006Scape Server/src/main/java/com/rs2/game/content/skills/farming/Flowers.java).
 
-@author Faris
+Created by IntelliJ IDEA. User: vayken Date: 24/02/12 Time: 20:34 To change this template use File | Settings | File Templates.
 
 ```java
-public class Flowers {
-private static int flowerDecoder(final int flower)
-public Flowers(final Player c)
+public class Flowers { // todo scarecrow 6059
+public Flowers(Player player)
+public static FlowerData forId(int seedId)
+public int getSeedId()
+public int getHarvestId()
+public int getLevelRequired()
+public int getGrowthTime()
+public double getDiseaseChance()
+public double getPlantingXp()
+public double getHarvestXp()
+public int getStartingState()
+public int getEndingState()
+public static FlowerFieldsData forIdPosition(Point point)
+public int getFlowerIndex()
+public Point[] getFlowerPosition()
+public static InspectData forId(int seedId)
+public int getSeedId()
+public String[][] getMessages()
+public void updateFlowerStates()
+public int getPlantState(int plantState)
+public void doCalculations()
+public void doStateCalculation(int index)
+public boolean waterPatch(int objectX, int objectY, int itemId)
 public void execute(CycleEventContainer container)
 public void stop()
-private void executeAction(final Player c)
+public boolean clearPatch(int objectX, int objectY, int itemId)
+public void execute(CycleEventContainer container)
+public void stop()
+public boolean plantSeed(int objectX, int objectY, final int seedId)
+public void execute(CycleEventContainer container)
+public void stop()
+public boolean harvest(int objectX, int objectY)
+public void execute(CycleEventContainer container)
+public void stop()
+public boolean putCompost(int objectX, int objectY, final int itemId)
+public void execute(CycleEventContainer container)
+public void stop()
+public boolean inspect(int objectX, int objectY)
+public void execute(CycleEventContainer container)
+public void stop()
+public boolean guide(int objectX, int objectY)
+public boolean curePlant(int objectX, int objectY, int itemId)
+public void execute(CycleEventContainer container)
+public void stop()
+public boolean plantScareCrow(int objectX, int objectY, int itemId)
+public void execute(CycleEventContainer container)
+public void stop()
+public boolean checkIfRaked(int objectX, int objectY)
 ```

@@ -8,9 +8,5 @@ A {@link StatefulFrameDecoder} which decodes the login request frames.  @author 
 
 ```java
 public final class LoginDecoder extends StatefulFrameDecoder<LoginDecoderState> {
-private static final Logger logger = Logger.getLogger(LoginDecoder.class.getName());
-private static final SecureRandom RANDOM = new SecureRandom();
 public LoginDecoder()
-protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out, LoginDecoderState state)
-private void decodeHandshake(ChannelHandlerContext ctx, ByteBuf buffer, List<Object> out)
 ```

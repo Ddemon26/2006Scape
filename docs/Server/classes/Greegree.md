@@ -8,9 +8,19 @@ Greegree helper class.
 
 ```java
 public class Greegree {
-private MonkeyData(int greegreeID, int npcID, int standAnim, int walkAnim, int runAnim, int attackAnim, int blockAnim)
 public int getGreegreeID()
 public int getNpcID()
 public int getStandAnim()
 public int getWalkAnim()
+public int getRunAnim()
+public int getBlockAnim()
+public int getAttackAnim()
+public static MonkeyData forId(int id)
+public static boolean isWearingGreegree(Player p)
+public static boolean isAnim(int animId)
+public static boolean canWear(Player player)
+public static boolean attemptGreegree(Player p, int weaponID)
+public static void setAnimations(Player p, MonkeyData data)
+public static void resetAnimations(Player p)
+public static boolean attemptRemove(Player p, int slot)
 ```

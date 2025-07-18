@@ -8,6 +8,5 @@ Agility Shortcuts @author Andrew (Mr Extremez)
 
 ```java
 public class AgilityShortcut {
-private static void handleAgility(Player player, int x, int y, int levelReq, int anim, int walk, String message)
 public static void processAgilityShortcut(Player player)
 ```

@@ -13,4 +13,5 @@ public int id()
 public int type()
 public int x()
 public int y()
+public int getFace()
 ```

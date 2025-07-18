@@ -9,8 +9,6 @@ The base class for request workers.  @author Graham @param <T> The type of reque
 ```java
 * The base class for request workers.
 public RequestWorker(UpdateDispatcher dispatcher, P provider)
-protected abstract ChannelRequest<T> nextRequest(UpdateDispatcher dispatcher) throws InterruptedException;
 public final void run()
-protected abstract void service(P provider, Channel channel, T request) throws IOException;
 public final void stop()
 ```

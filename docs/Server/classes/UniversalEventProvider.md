@@ -8,9 +8,8 @@ A universal event provider which posts, provides and deprives subscribers.  @aut
 
 ```java
 public final class UniversalEventProvider implements EventProvider {
-private final Multimap<Class<? extends Event>, EventSubscriber<? super Event>> events = ArrayListMultimap.create();
-private final EventContext context = new UniversalEventContext();
 public void provideSubscriber(EventSubscriber<?> subscriber)
 public void depriveSubscriber(EventSubscriber<?> subscriber)
-private void checkSubscriber(EventSubscriber<?> subscriber, Consumer<SubscribesTo> consumer)
+public <E extends Event> void post(Player player, E event)
+public Multimap<Class<? extends Event>, EventSubscriber<? super Event>> getEvents()
 ```

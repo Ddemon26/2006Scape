@@ -11,5 +11,4 @@ public final class LoginSession extends Session {
 public LoginSession(Channel channel)
 public void destroy()
 public void messageReceived(Object message) throws Exception
-private void handleLoginRequest(LoginRequest request) throws IOException
 ```

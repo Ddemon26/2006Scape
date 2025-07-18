@@ -8,8 +8,5 @@ Searching helper class.
 
 ```java
 public class Searching {
-private SearchData(int[] objectId, String searchText)
-private int[] getObjectId()
-private String getObjectText()
 public static void searchObject(final Player player, int objectType)
 ```

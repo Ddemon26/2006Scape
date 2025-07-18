@@ -13,4 +13,6 @@ public boolean setAction(boolean action)
 public boolean checkAction()
 public boolean canWalk(boolean walk)
 public boolean checkWalking()
+public boolean canEat(boolean eat)
+public boolean checkEating()
 ```

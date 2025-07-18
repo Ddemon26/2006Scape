@@ -8,9 +8,8 @@ A class which manages the pool of request workers. @author Graham @author Ryley 
 
 ```java
 * A class which manages the pool of request workers.
-private static final int THREADS_PER_REQUEST_TYPE = Runtime.getRuntime().availableProcessors();
-private final List<RequestWorker<?, ?>> workers = new ArrayList<RequestWorker<?, ?>>();
 public static UpdateDispatcher getDispatcher()
 public RequestWorkerPool()
-private static final UpdateDispatcher dispatcher = new UpdateDispatcher();
+public void start() throws Exception
+public void stop()
 ```

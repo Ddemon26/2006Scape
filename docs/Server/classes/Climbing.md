@@ -13,4 +13,7 @@ public void execute(CycleEventContainer container)
 public void stop()
 public static void processClimbing(Player client)
 public static void climbUp(Player player)
+public static void climbDown(Player player)
+public static void handleLadder(Player player)
+public static void handleLadderButtons(Player client, int actionButtonId)
 ```

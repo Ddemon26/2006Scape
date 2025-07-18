@@ -13,4 +13,8 @@ public static void doAmount(Player c, int amount, int bartype)
 public static void smeltBar(final Player c, int bartype)
 public void execute(CycleEventContainer container)
 public void stop()
+public void execute(CycleEventContainer container)
+public void stop()
+public static void getBar(Player c, int i)
+public static void resetSmelting(Player player)
 ```
