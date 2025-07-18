@@ -1,34 +1,43 @@
-# NPCDefinition
+# NpcDefinition
 
-Package `com.rs2.game.npcs`.
+Package `org.apollo.cache.def`.
 
-Defined in [`2006Scape Server/src/main/java/com/rs2/game/npcs/NPCDefinition.java`](2006Scape Server/src/main/java/com/rs2/game/npcs/NPCDefinition.java).
+Defined in [`2006Scape Server/src/main/java/org/apollo/cache/def/NpcDefinition.java`](2006Scape Server/src/main/java/org/apollo/cache/def/NpcDefinition.java).
 
-NPCDefinition helper class.
+Represents a type of Npc.  @author Chris Fletcher
 
 ```java
-public class NPCDefinition {
-public static void init() throws IOException
-public static NPCDefinition forId(int id)
+public final class NpcDefinition {
+public static int count()
+public static NpcDefinition[] getDefinitions()
+public static void init(NpcDefinition[] definitions)
+public static NpcDefinition lookup(int id)
+public NpcDefinition(int id)
+public int getCombatLevel()
+public String getDescription()
 public int getId()
+public String getInteraction(int slot)
+public String[] getInteractions()
 public String getName()
-public String getExamine()
-public int getRespawn()
-public int getCombat()
-public int getHitpoints()
-public int getMaxHit()
 public int getSize()
-public boolean isAggressive()
-public boolean retreats()
-public boolean isPoisonous()
-public static NPCDefinition produceDefinition(int id)
-public int getAttackSpeed()
-public int getAttackAnimation()
-public int getDefenceAnimation()
-public int getDeathAnimation()
-public boolean isAttackable()
-public int getAttackBonus()
-public int getDefenceRange()
-public int getDefenceMelee()
-public int getDefenceMage()
+public int getStandAnimation()
+public int getWalkAnimation()
+public int getWalkBackAnimation()
+public int getWalkLeftAnimation()
+public int getWalkRightAnimation()
+public boolean hasCombatLevel()
+public boolean hasInteraction(int slot)
+public boolean hasStandAnimation()
+public boolean hasWalkAnimation()
+public boolean hasWalkBackAnimation()
+public boolean hasWalkLeftAnimation()
+public boolean hasWalkRightAnimation()
+public void setCombatLevel(int combatLevel)
+public void setDescription(String description)
+public void setInteraction(int slot, String interaction)
+public void setName(String name)
+public void setSize(int size)
+public void setStandAnimation(int standAnim)
+public void setWalkAnimation(int walkAnim)
+public void setWalkAnimations(int walkAnim, int walkBackAnim, int walkLeftAnim, int walkRightAnim)
 ```
