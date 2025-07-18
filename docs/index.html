@@ -18,8 +18,13 @@
                 <li><a href="#" data-md="intro.md">Intro</a></li>
                 <li><a href="#" data-md="usage.md">Usage</a></li>
                 <li><a href="#" data-md="Client/client-intro.md">Client</a></li>
+                <li><a href="#" data-md="Client/classes/index.md">Client Classes</a></li>
                 <li><a href="#" data-md="Server/Server-intro.md">Server</a></li>
+                <li><a href="#" data-md="Server/classes/index.md">Server Classes</a></li>
                 <li><a href="#" data-md="Parabot/Parabot-intro.md">Parabot</a></li>
+
+                <li><a href="#" data-md="contributing.md">Contributing</a></li>
+
                 <li><a href="#" data-md="disclaimer.md">Disclaimer</a></li>
                 <li><a href="#" data-md="../README.md">Repo README</a></li>
                 <li><a href="#" data-md="../AGENTS.md">Agents</a></li>
@@ -58,12 +63,28 @@
         }
 
         // Load and render markdown
+        function addCopyButtons() {
+            document.querySelectorAll('pre > code').forEach(block => {
+                const pre = block.parentElement;
+                const button = document.createElement('button');
+                button.className = 'copy-btn';
+                button.textContent = 'Copy';
+                button.addEventListener('click', () => {
+                    navigator.clipboard.writeText(block.textContent);
+                    button.textContent = 'Copied!';
+                    setTimeout(() => button.textContent = 'Copy', 2000);
+                });
+                pre.insertBefore(button, block);
+            });
+        }
+
         async function loadMarkdown(file) {
             try {
                 const res = await fetch(file);
                 if (!res.ok) throw new Error('Failed to load ' + file);
                 const md = await res.text();
                 contentDiv.innerHTML = marked.parse(md);
+                addCopyButtons();
             } catch (err) {
                 contentDiv.innerHTML = '<h1>Error</h1><p>Could not load ' + file + '.</p>';
             }
