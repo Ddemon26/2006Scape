@@ -9,3 +9,4 @@ Welcome to the 2006Scape documentation. These pages provide an overview of the p
 - [Client Docs](Client/client-intro.md) – information about the game client
 - [Server Docs](Server/Server-intro.md) – server architecture
 - [Parabot Docs](Parabot/Parabot-intro.md) – scripting client details
+- [Legal Disclaimer](disclaimer.md) – project affiliation notice
