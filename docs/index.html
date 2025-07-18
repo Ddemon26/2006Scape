@@ -12,49 +12,87 @@
 <div class="layout">
     <aside class="sidebar">
         <nav class="nav">
-            <h2>2006Scape Docs</h2>
-            <ul>
-                <li><a href="#" data-md="index.md">Overview</a></li>
-                <li class="category">
-                    <span>Client</span>
-                    <ul>
-                        <li><a href="#" data-md="Client/client-intro.md">Intro</a></li>
-                        <li><a href="#" data-md="Client/classes/index.md">Classes</a></li>
-                    </ul>
-                </li>
-                <li class="category">
-                    <span>Server</span>
-                    <ul>
-                        <li><a href="#" data-md="Server/Server-intro.md">Intro</a></li>
-                        <li><a href="#" data-md="Server/classes/index.md">Classes</a></li>
-                    </ul>
-                </li>
-                <li class="category">
-                    <span>Parabot</span>
-                    <ul>
-                        <li><a href="#" data-md="Parabot/Parabot-intro.md">Intro</a></li>
-                    </ul>
-                </li>
-                <li><a href="#" data-md="usage.md">Usage</a></li>
-                <li><a href="#" data-md="contributing.md">Contributing</a></li>
-                <li><a href="#" data-md="disclaimer.md">Disclaimer</a></li>
-                <li class="category">
-                    <span>Repo</span>
-                    <ul>
-                        <li><a href="#" data-md="../README.md">README</a></li>
-                        <li><a href="#" data-md="../AGENTS.md">Agents</a></li>
-                        <li><a href="#" data-md="../LICENSE">License</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <h3>External Resources</h3>
-            <ul>
-                <li><a href="https://2006Scape.org" target="_blank">Official Website</a></li>
-                <li><a href="https://discord.gg/hZ6VfWG" target="_blank">Discord</a></li>
-                <li><a href="https://www.rune-server.ee/forums/2006scape.318/" target="_blank">Rune‑Server Thread</a></li>
-                <li><a href="https://wiki.2006scape.org" target="_blank">Community Wiki</a></li>
-                <li><a href="#" data-md="../LICENSE">License</a></li>
-            </ul>
+            <div class="nav-header">
+                <h2>2006Scape Docs</h2>
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Search docs..." />
+                    <div id="search-results" class="search-results"></div>
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="#" data-md="index.md" class="nav-overview">📖 Overview</a></li>
+                    <li><a href="#" data-md="intro.md">🚀 Quick Start</a></li>
+                    <li><a href="#" data-md="usage.md">⚙️ Setup & Usage</a></li>
+                    <li><a href="#" data-md="contributing.md">🤝 Contributing</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Architecture</h3>
+                <ul>
+                    <li class="category">
+                        <span>🖥️ Server</span>
+                        <ul>
+                            <li><a href="#" data-md="Server/Server-intro.md">Architecture Overview</a></li>
+                            <li><a href="#" data-md="Server/classes/index.md">API Reference (400+ classes)</a></li>
+                            <li class="subcategory">
+                                <span>Core Systems</span>
+                                <ul>
+                                    <li><a href="#" data-md="Server/classes/GameEngine.md">Game Engine</a></li>
+                                    <li><a href="#" data-md="Server/classes/Player.md">Player Management</a></li>
+                                    <li><a href="#" data-md="Server/classes/NpcHandler.md">NPC System</a></li>
+                                    <li><a href="#" data-md="Server/classes/CombatAssistant.md">Combat System</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="category">
+                        <span>🎮 Client</span>
+                        <ul>
+                            <li><a href="#" data-md="Client/client-intro.md">Architecture Overview</a></li>
+                            <li><a href="#" data-md="Client/classes/index.md">API Reference (80+ classes)</a></li>
+                            <li class="subcategory">
+                                <span>Core Systems</span>
+                                <ul>
+                                    <li><a href="#" data-md="Client/classes/Client.md">Main Client</a></li>
+                                    <li><a href="#" data-md="Client/classes/Game.md">Game Logic</a></li>
+                                    <li><a href="#" data-md="Client/classes/Model.md">3D Rendering</a></li>
+                                    <li><a href="#" data-md="Client/classes/RSInterface.md">UI System</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="category">
+                        <span>🤖 Parabot</span>
+                        <ul>
+                            <li><a href="#" data-md="Parabot/Parabot-intro.md">Setup & Usage</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Project Info</h3>
+                <ul>
+                    <li><a href="#" data-md="../README.md">📄 Project README</a></li>
+                    <li><a href="#" data-md="disclaimer.md">⚖️ Legal Disclaimer</a></li>
+                    <li><a href="#" data-md="../LICENSE">📜 License</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>External Links</h3>
+                <ul class="external-links">
+                    <li><a href="https://2006scape.org" target="_blank">🌐 Official Website</a></li>
+                    <li><a href="https://discord.gg/hZ6VfWG" target="_blank">💬 Discord Community</a></li>
+                    <li><a href="https://github.com/2006-Scape/2006rebotted" target="_blank">📦 GitHub Repository</a></li>
+                    <li><a href="https://www.rune-server.ee/forums/2006scape.318/" target="_blank">🗣️ Rune-Server Forum</a></li>
+                    <li><a href="https://wiki.2006scape.org" target="_blank">📚 Community Wiki</a></li>
+                </ul>
+            </div>
         </nav>
     </aside>
     <main class="main-content">
@@ -73,7 +111,62 @@
         const navLinks  = document.querySelectorAll('.nav a[data-md]');
         const themeToggle = document.getElementById('theme-toggle');
         const themeLink = document.querySelector('link[rel="stylesheet"]');
-        const categories = Array.from(document.querySelectorAll('.nav li.category'));
+        const categories = Array.from(document.querySelectorAll('.nav li.category, .nav li.subcategory'));
+        const searchInput = document.getElementById('search-input');
+        const searchResults = document.getElementById('search-results');
+
+        // Search functionality
+        const searchIndex = [];
+        navLinks.forEach(link => {
+            const text = link.textContent.toLowerCase();
+            const path = link.getAttribute('data-md');
+            searchIndex.push({ text, path, element: link });
+        });
+
+        function performSearch(query) {
+            if (!query.trim()) {
+                searchResults.style.display = 'none';
+                return;
+            }
+            
+            const results = searchIndex.filter(item => 
+                item.text.includes(query.toLowerCase())
+            ).slice(0, 8);
+            
+            if (results.length > 0) {
+                searchResults.innerHTML = results.map(result => 
+                    `<div class="search-result" data-md="${result.path}">${result.text}</div>`
+                ).join('');
+                searchResults.style.display = 'block';
+                
+                // Add click handlers to search results
+                searchResults.querySelectorAll('.search-result').forEach(result => {
+                    result.addEventListener('click', () => {
+                        const path = result.getAttribute('data-md');
+                        const link = document.querySelector(`[data-md="${path}"]`);
+                        if (link) {
+                            link.click();
+                            searchInput.value = '';
+                            searchResults.style.display = 'none';
+                        }
+                    });
+                });
+            } else {
+                searchResults.innerHTML = '<div class="no-results">No results found</div>';
+                searchResults.style.display = 'block';
+            }
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            performSearch(e.target.value);
+        });
+
+        // Hide search results when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-container')) {
+                searchResults.style.display = 'none';
+            }
+        });
 
         function saveOpenCategories() {
             const open = categories
@@ -88,57 +181,118 @@
             themeToggle.textContent = 'Light Mode';
         }
 
-        // Load and render markdown
+        // Enhanced markdown loading with better error handling and navigation
         function addCopyButtons() {
             document.querySelectorAll('pre > code').forEach(block => {
                 const pre = block.parentElement;
-                const button = document.createElement('button');
-                button.className = 'copy-btn';
-                button.textContent = 'Copy';
-                button.addEventListener('click', () => {
-                    navigator.clipboard.writeText(block.textContent);
-                    button.textContent = 'Copied!';
-                    setTimeout(() => button.textContent = 'Copy', 2000);
-                });
-                pre.insertBefore(button, block);
+                if (!pre.querySelector('.copy-btn')) {
+                    const button = document.createElement('button');
+                    button.className = 'copy-btn';
+                    button.textContent = 'Copy';
+                    button.addEventListener('click', () => {
+                        navigator.clipboard.writeText(block.textContent);
+                        button.textContent = 'Copied!';
+                        setTimeout(() => button.textContent = 'Copy', 2000);
+                    });
+                    pre.insertBefore(button, block);
+                }
             });
+        }
+
+        function addBreadcrumbs(file) {
+            const parts = file.split('/');
+            if (parts.length > 1) {
+                const breadcrumbs = document.createElement('nav');
+                breadcrumbs.className = 'breadcrumbs';
+                breadcrumbs.innerHTML = parts.map((part, i) => {
+                    if (i === parts.length - 1) {
+                        return `<span class="current">${part.replace('.md', '')}</span>`;
+                    }
+                    return `<span>${part}</span>`;
+                }).join(' <span class="separator">›</span> ');
+                
+                const existingBreadcrumbs = contentDiv.querySelector('.breadcrumbs');
+                if (existingBreadcrumbs) {
+                    existingBreadcrumbs.remove();
+                }
+                contentDiv.insertBefore(breadcrumbs, contentDiv.firstChild);
+            }
         }
 
         async function loadMarkdown(file) {
             try {
+                // Show loading state
+                contentDiv.innerHTML = '<div class="loading">Loading...</div>';
+                
                 const res = await fetch(file);
-                if (!res.ok) throw new Error('Failed to load ' + file);
+                if (!res.ok) throw new Error(`Failed to load ${file} (${res.status})`);
                 const md = await res.text();
+                
+                // Parse and render markdown
                 contentDiv.innerHTML = marked.parse(md);
+                
+                // Add enhancements
                 addCopyButtons();
+                addBreadcrumbs(file);
+                
+                // Scroll to top
+                contentDiv.scrollTop = 0;
+                
+                // Update page title
+                const h1 = contentDiv.querySelector('h1');
+                if (h1) {
+                    document.title = `${h1.textContent} - 2006Scape Documentation`;
+                }
+                
             } catch (err) {
-                contentDiv.innerHTML = '<h1>Error</h1><p>Could not load ' + file + '.</p>';
+                contentDiv.innerHTML = `
+                    <div class="error">
+                        <h1>⚠️ Error Loading Documentation</h1>
+                        <p>Could not load <code>${file}</code></p>
+                        <p class="error-details">${err.message}</p>
+                        <button onclick="location.reload()" class="retry-btn">Retry</button>
+                    </div>
+                `;
             }
         }
 
-        // Nav link handlers
+        // Enhanced nav link handlers
         navLinks.forEach(link => {
             link.addEventListener('click', e => {
                 e.preventDefault();
                 navLinks.forEach(l => l.classList.remove('active'));
                 link.classList.add('active');
-                localStorage.setItem('activePage', link.getAttribute('data-md'));
-                const cat = link.closest('li.category');
+                
+                const file = link.getAttribute('data-md');
+                localStorage.setItem('activePage', file);
+                
+                // Auto-expand parent categories
+                const cat = link.closest('li.category, li.subcategory');
                 if (cat) {
                     cat.classList.add('open');
+                    // Also expand parent category if this is a subcategory
+                    const parentCat = cat.closest('li.category');
+                    if (parentCat && parentCat !== cat) {
+                        parentCat.classList.add('open');
+                    }
                     saveOpenCategories();
                 }
-                loadMarkdown(link.getAttribute('data-md'));
+                
+                loadMarkdown(file);
             });
         });
 
-        // Category expand/collapse
+        // Category expand/collapse with better UX
         categories.forEach((cat, i) => {
             const span = cat.querySelector('span');
-            span.addEventListener('click', () => {
-                cat.classList.toggle('open');
-                saveOpenCategories();
-            });
+            if (span) {
+                span.style.cursor = 'pointer';
+                span.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    cat.classList.toggle('open');
+                    saveOpenCategories();
+                });
+            }
         });
 
         // Theme toggle
@@ -155,7 +309,7 @@
             }
         });
 
-        // Restore state
+        // Restore state and initialize
         const savedOpen = JSON.parse(localStorage.getItem('openCategories') || '[]');
         savedOpen.forEach(i => {
             if (categories[i]) categories[i].classList.add('open');
@@ -165,9 +319,18 @@
         const startLink = document.querySelector(`.nav a[data-md="${initialPage}"]`);
         if (startLink) {
             startLink.classList.add('active');
-            const cat = startLink.closest('li.category');
-            if (cat) cat.classList.add('open');
+            const cat = startLink.closest('li.category, li.subcategory');
+            if (cat) {
+                cat.classList.add('open');
+                const parentCat = cat.closest('li.category');
+                if (parentCat && parentCat !== cat) {
+                    parentCat.classList.add('open');
+                }
+            }
             loadMarkdown(initialPage);
+        } else {
+            // Fallback to overview if saved page doesn't exist
+            loadMarkdown('index.md');
         }
     });
 </script>

@@ -5,6 +5,7 @@
 **/.idea/*
 */*.jar
 *.iml
+.vscode
 .DS_Store
 2006Scape Server/data/logs
 *.class
