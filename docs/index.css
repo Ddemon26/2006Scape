@@ -180,6 +180,19 @@ body {
     margin: 1rem 0;
 }
 
+.copy-btn {
+    float: right;
+    margin-left: 0.5rem;
+    background: #eee;
+    border: none;
+    padding: 0.2rem 0.4rem;
+    cursor: pointer;
+}
+
+.copy-btn:hover {
+    background: #ddd;
+}
+
 .main-content pre code {
     border: none;
     padding: 0;

@@ -183,6 +183,20 @@ body {
     margin: 1rem 0;
 }
 
+.copy-btn {
+    float: right;
+    margin-left: 0.5rem;
+    background: #444;
+    color: #eee;
+    border: none;
+    padding: 0.2rem 0.4rem;
+    cursor: pointer;
+}
+
+.copy-btn:hover {
+    background: #555;
+}
+
 .main-content pre code {
     border: none;
     padding: 0;
