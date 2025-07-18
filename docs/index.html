@@ -14,9 +14,13 @@
         <nav class="nav">
             <h2>2006Scape Docs</h2>
             <ul>
+                <li><a href="#" data-md="index.md">Overview</a></li>
                 <li><a href="#" data-md="intro.md">Intro</a></li>
                 <li><a href="#" data-md="usage.md">Usage</a></li>
-                <li><a href="#" data-md="../README.md">Home</a></li>
+                <li><a href="#" data-md="Client/client-intro.md">Client</a></li>
+                <li><a href="#" data-md="Server/Server-intro.md">Server</a></li>
+                <li><a href="#" data-md="Parabot/Parabot-intro.md">Parabot</a></li>
+                <li><a href="#" data-md="../README.md">Repo README</a></li>
                 <li><a href="#" data-md="../AGENTS.md">Agents</a></li>
             </ul>
             <h3>External Resources</h3>
@@ -89,10 +93,10 @@
         });
 
         // Load Home by default
-        const homeLink = document.querySelector('.nav a[data-md="README.md"]');
+        const homeLink = document.querySelector('.nav a[data-md="index.md"]');
         if (homeLink) {
             homeLink.classList.add('active');
-            loadMarkdown('README.md');
+            loadMarkdown('index.md');
         }
     });
 </script>
