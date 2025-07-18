@@ -1,1 +1,15 @@
 # ApeAtollAgility
+
+Package `com.rs2.game.content.skills.agility`.
+
+Defined in [`2006Scape Server/src/main/java/com/rs2/game/content/skills/agility/ApeAtollAgility.java`](2006Scape Server/src/main/java/com/rs2/game/content/skills/agility/ApeAtollAgility.java).
+
+Gameplay logic related to the Agility skill.
+
+```java
+public class ApeAtollAgility {
+public ApeAtollAgility(Player player)
+public boolean apeAtollCourse(int objectId)
+public void execute(CycleEventContainer container)
+public void stop()
+```
