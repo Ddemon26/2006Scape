@@ -103,6 +103,10 @@ body {
     transform: rotate(90deg);
 }
 
+.nav li.category.open > span {
+    color: #8ab4f8;
+}
+
 .nav li.category ul {
     margin-left: 1rem;
     margin-top: 0.25rem;
