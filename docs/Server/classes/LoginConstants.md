@@ -8,5 +8,4 @@ Holds login-related constants.  @author Graham
 
 ```java
 public final class LoginConstants {
-private LoginConstants()
 ```

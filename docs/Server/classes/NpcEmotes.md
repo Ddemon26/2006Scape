@@ -8,9 +8,7 @@ Npc Emotes @author Andrew (Mr Extremez)
 
 ```java
 public enum NpcEmotes {
-private NpcEmotes(int[] npcId, int attackAnim, int blockAnim, int deadAnim)
-private int[] getNpcId()
-private int getAttack()
-private int getBlock()
-private int getDead()
+public static int getAttackEmote(int i)
+public static int getBlockEmote(int i)
+public static int getDeadEmote(Player player, int i)
 ```

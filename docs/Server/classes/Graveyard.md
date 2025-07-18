@@ -13,4 +13,7 @@ public void searchBonePile(int objectID)
 public void bonesToFood(int spellID)
 public void depositFood()
 public void clearItems()
+public static void process()
+public static void applyDamage(Player player)
+public static void updateInterface(Player player)
 ```

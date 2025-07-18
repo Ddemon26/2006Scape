@@ -8,9 +8,11 @@ Defined in [`2006Scape Server/src/main/java/com/rs2/game/globalworldobjects/Doub
 
 ```java
 public class DoubleDoors {
-private final List<DoubleDoors> doors = new ArrayList<>();
 public static DoubleDoors getSingleton()
-private DoubleDoors(String file)
-private DoubleDoors getDoor(int id, int x, int y, int z)
 public boolean handleDoor(Player player, int id, int x, int y, int z)
+public void changeLeftDoor(DoubleDoors d)
+public void changeRightDoor(DoubleDoors d)
+public DoubleDoors(int id, int x, int y, int z, int f, int open)
+public boolean isOpenDoor(int id)
+public void load()
 ```

@@ -11,6 +11,7 @@ public class EnchantStaff {
 public static boolean staffButtons(Player player, int button)
 public static HashMap<Integer, staffData> craftingStaff = new HashMap<Integer, staffData>();
 public static staffData forId(int id)
-private staffData(int button, int battlestaff, int mysticstaff)
 public int getButton()
+public int getBattlestaff()
+public int getMysticstaff()
 ```

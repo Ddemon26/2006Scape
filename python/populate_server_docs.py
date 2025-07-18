@@ -1,10 +1,18 @@
 import os
 import re
 import sys
-from doc_scanner import DocScanner
+import argparse
 
-DOCS_DIR = 'docs/Server/classes'
-SRC_ROOT = '2006Scape Server/src/main/java'
+parser = argparse.ArgumentParser(description='Populate class documentation')
+parser.add_argument('--docs-dir', default='docs/Server/classes',
+                    help='Directory of markdown class docs')
+parser.add_argument('--src-root', default='2006Scape Server/src/main/java',
+                    help='Root directory of Java sources')
+parser.add_argument('files', nargs='*', help='Optional list of markdown files')
+args = parser.parse_args()
+
+DOCS_DIR = args.docs_dir
+SRC_ROOT = args.src_root
 
 def find_java(class_name):
     target = class_name + '.java'
@@ -36,12 +44,10 @@ def parse_java(java_path):
             class_decl = stripped
             start = i + 1
             break
-    method_pattern = re.compile(r'^\s*(public|protected|private).*\(.*\).*')
+    method_pattern = re.compile(r'^\s*public\s+.*\(.*\)')
     for line in lines[start:]:
         if method_pattern.match(line):
             methods.append(re.sub(r'\s*\{\s*$', '', line.strip()))
-            if len(methods) >= 5:
-                break
     return package, javadoc, class_decl, methods
 
 def default_description(class_name):
@@ -59,19 +65,17 @@ def default_description(class_name):
     base = re.sub(r'([a-z])([A-Z])', r'\1 \2', class_name)
     return f'{base} helper class.'
 
-scanner = DocScanner(DOCS_DIR)
-
-files = sys.argv[1:]
+files = args.files
 if not files:
-    files = [os.path.join(DOCS_DIR, f'{name}.md') for name in scanner.unprocessed()]
+    files = [os.path.join(DOCS_DIR, name)
+             for name in os.listdir(DOCS_DIR)
+             if name.endswith('.md')]
 
 if not files:
     print('No documentation files to update.')
     sys.exit(0)
 
 for md in files:
-    if scanner.is_processed_file(md):
-        continue
     class_name = os.path.splitext(os.path.basename(md))[0]
     java_path = find_java(class_name)
     if not java_path:

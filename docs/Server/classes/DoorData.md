@@ -13,4 +13,7 @@ public int getId()
 public Location[] getLocations()
 public int getFace()
 public int getType()
+public int getX()
+public int getY()
+public int getHeight()
 ```

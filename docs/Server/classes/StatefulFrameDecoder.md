@@ -10,6 +10,4 @@ A stateful implementation of a {@link ByteToMessageDecoder} which may be extende
 * current state is tracked by this class and is a user-specified enumeration.
 public StatefulFrameDecoder(T state)
 public final void setState(T state)
-protected final void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception
-protected abstract void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out, T state) throws Exception;
 ```

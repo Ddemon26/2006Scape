@@ -13,4 +13,7 @@ public int getId()
 public String getName()
 public int getSellModifier()
 public int getBuyModifier()
+public ShopItems[] getItems()
+public int getItemId()
+public int getItemAmount()
 ```

@@ -13,4 +13,6 @@ public int getItemX()
 public int getItemY()
 public int getItemH()
 public int getItemAmount()
+public int getItemController()
+public String getName()
 ```

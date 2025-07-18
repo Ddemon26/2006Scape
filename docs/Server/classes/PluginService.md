@@ -8,9 +8,7 @@ The service that services plugins.  @author Vult-R
 
 ```java
 public final class PluginService {
-private static final Logger logger = LoggerUtils.getLogger(PluginService.class);
-private static final List<EventSubscriber<?>> subscribers = new ArrayList<>();
 public void load()
-private Collection<EventSubscriber<?>> findPlugins() throws IOException
-private Collection<EventSubscriber<?>> findPlugins(File dir)
+public void reload()
+public List<EventSubscriber<?>> getSubscribers()
 ```

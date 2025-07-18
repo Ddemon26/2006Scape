@@ -12,5 +12,4 @@ public static String capitalize(String string)
 public static int compress(String in, byte[] out)
 public static String filterInvalidCharacters(String str)
 public static String decompress(byte[] in, int len)
-private TextUtil()
 ```

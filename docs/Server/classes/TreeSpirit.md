@@ -8,6 +8,5 @@ Tree Spirit helper class.
 
 ```java
 public class TreeSpirit {
-private static int checkStats(Player p)
 public static void spawnTreeSpirit(Player p)
 ```

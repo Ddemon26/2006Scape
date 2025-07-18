@@ -13,4 +13,8 @@ public int getId()
 public int getX()
 public int getY()
 public int getHeight()
+public int isWalk()
+public int getMaxHit()
+public int getAttack()
+public int getStrength()
 ```

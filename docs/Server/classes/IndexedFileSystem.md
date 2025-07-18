@@ -8,9 +8,12 @@ A file system based on top of the operating system's file system. It consists of
 
 ```java
 public final class IndexedFileSystem implements Closeable {
-private final Map<FileDescriptor, Archive> cache = new HashMap<>(FileSystemConstants.ARCHIVE_COUNT);
 public IndexedFileSystem(Path base, boolean readOnly) throws FileNotFoundException
 public void close() throws IOException
 public Archive getArchive(int type, int file) throws IOException
 public ByteBuffer getCrcTable() throws IOException
+public int[] getCrcs() throws IOException
+public ByteBuffer getFile(FileDescriptor descriptor) throws IOException
+public ByteBuffer getFile(int type, int file) throws IOException
+public boolean isReadOnly()
 ```

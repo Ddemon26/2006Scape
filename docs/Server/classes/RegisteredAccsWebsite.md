@@ -8,6 +8,5 @@ Registered Accs Website helper class.
 
 ```java
 public class RegisteredAccsWebsite {
-private static void setAccountsRegistered(int amount) throws IOException
 public static void addUpdateRegisteredUsersTask()
 ```

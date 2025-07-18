@@ -1,22 +1,24 @@
 # GameEngine
 
-The main entry point for running the server. `GameEngine` bootstraps every
-subsystem and runs the core game loop once every few hundred milliseconds.
+Package `com.rs2`.
 
-Highlights:
+Defined in [`2006Scape Server/src/main/java/com/rs2/GameEngine.java`](2006Scape Server/src/main/java/com/rs2/GameEngine.java).
 
-- Loads configuration, caches and plugins on startup.
-- Accepts network connections and exposes the Netty based pipeline.
-- Schedules the primary tick which updates players, NPCs and objects.
-
-Source: [GameEngine.java](../../2006Scape%20Server/src/main/java/com/rs2/GameEngine.java)
+Server.java  @author Sanity @author Graham @author Blake @author Ryan Lmctruck30 @author Integration Julian.
 
 ```java
-public static void main(String[] args) throws IOException {
-    System.out.println("Starting game engine..");
-    FileServer fs = new FileServer();
-    fs.start();
-    scheduler.scheduleAtFixedRate(() -> playerHandler.process(),
-            0, Constants.CYCLE_TIME, TimeUnit.MILLISECONDS);
-}
+public class GameEngine {
+public static long getMinutesCounter()
+public static long lastMassSave = System.currentTimeMillis();
+public static ItemHandler itemHandler = new ItemHandler();
+public static PlayerHandler playerHandler = new PlayerHandler();
+public static NpcHandler npcHandler = new NpcHandler();
+public static ShopHandler shopHandler = new ShopHandler();
+public static ObjectHandler objectHandler = new ObjectHandler();
+public static ObjectManager objectManager = new ObjectManager();
+public static FightCaves fightCaves = new FightCaves();
+public static Trawler trawler = new Trawler();
+public static void main(java.lang.String[] args)
+public void run()
+public static long getServerStartTime()
 ```

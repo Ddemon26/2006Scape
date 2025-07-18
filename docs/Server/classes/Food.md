@@ -8,9 +8,10 @@ Food helper class.
 
 ```java
 public class Food {
-private boolean hasEffect()
-private int getId()
-private FoodType getType()
-private int getHeal()
 public int replaceWith()
+public static HashMap<Integer, FoodToEat> food = new HashMap<Integer, FoodToEat>();
+public int random(int r)
+public static void eat(Player player, int id, int slot)
+public static void foodEffect(Player player, int id)
+public static boolean isFood(int id)
 ```

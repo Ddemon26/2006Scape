@@ -13,4 +13,5 @@ public static void multiAttackGfx(int i, int gfx)
 public static void attackPlayer(Player c, int i)
 public static void loadSpell2(int i)
 public static void loadSpell(Player c, int i)
+public static void registerNpcHit(int i)
 ```

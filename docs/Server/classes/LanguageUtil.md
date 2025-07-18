@@ -9,6 +9,4 @@ Contains language-related utility methods.  @author Graham @author Major
 ```java
 public final class LanguageUtil {
 public static String getIndefiniteArticle(String string)
-private static boolean allUpperCase(String string)
-private LanguageUtil()
 ```

@@ -13,4 +13,8 @@ public CycleEventHandler()
 public CycleEventContainer addEvent(int id, Object owner, CycleEvent event, int cycles)
 public CycleEventContainer addEvent(Object owner, CycleEvent event, int cycles)
 public void process()
+public int getEventsCount()
+public void stopEvents(Object owner)
+public void stopEvents(Object owner, int id)
+public void stopEvents(int id)
 ```

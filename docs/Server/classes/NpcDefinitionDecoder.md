@@ -10,6 +10,4 @@ Decodes npc data from the {@code npc.dat} file into {@link NpcDefinition}s.  @au
 public final class NpcDefinitionDecoder implements Runnable {
 public NpcDefinitionDecoder(IndexedFileSystem fs)
 public void run()
-private NpcDefinition decode(int id, ByteBuffer buffer)
-private int wrap(int value)
 ```

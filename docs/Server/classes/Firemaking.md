@@ -13,4 +13,7 @@ public static void attemptFire(final Player c, final int itemUsed, final int use
 public void execute(CycleEventContainer container)
 public void execute(CycleEventContainer container)
 public void stop()
+public void stop()
+public void execute(CycleEventContainer container)
+public void stop()
 ```

@@ -8,9 +8,9 @@ A plane of a map, which is a distinct height level.  @author Major
 
 ```java
 public final class MapPlane {
-private static <T> T[][] clone(T[][] array)
 public MapPlane(int level, Tile[][] tiles)
 public int getLevel()
 public int getSize()
 public Tile getTile(int x, int z)
+public Stream<Tile> getTiles()
 ```

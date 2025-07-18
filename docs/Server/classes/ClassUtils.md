@@ -9,5 +9,4 @@ A static-utility class containing extension or helper methods for {@link Class}e
 ```java
 * A static-utility class containing extension or helper methods for
 public static <T extends Annotation> Optional<T> getAnnotation(Class<?> clazz, Class<T> annotation)
-private ClassUtils()
 ```

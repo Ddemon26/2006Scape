@@ -1,4 +1,5 @@
 import os
+import argparse
 
 class DocScanner:
     """Utility to check which documentation files have been populated."""
@@ -38,6 +39,11 @@ class DocScanner:
         return sorted(all_classes - self.processed())
 
 if __name__ == '__main__':
-    scanner = DocScanner()
+    parser = argparse.ArgumentParser(description='List docs missing metadata')
+    parser.add_argument('--docs-dir', default='docs/Server/classes',
+                        help='Directory containing markdown class docs')
+    args = parser.parse_args()
+
+    scanner = DocScanner(args.docs_dir)
     for class_name in scanner.unprocessed():
         print(class_name)

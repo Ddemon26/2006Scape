@@ -10,7 +10,4 @@ Smithing Interface helper class.
 public class SmithingInterface {
 public SmithingInterface(Player player)
 public void showSmithInterface(int itemId)
-private void makeRuneInterface(Player c)
-private void makeAddyInterface(Player c)
-private void makeMithInterface(Player c)
 ```

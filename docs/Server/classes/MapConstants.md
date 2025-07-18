@@ -8,5 +8,4 @@ Contains {@link MapFile}-related constants.  @author Major
 
 ```java
 public final class MapConstants {
-private MapConstants()
 ```

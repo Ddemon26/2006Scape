@@ -9,7 +9,5 @@ Defined in [`2006Scape Server/src/main/java/org/apollo/util/security/IsaacRandom
 ```java
 * This class has been changed to be more conformant to Java and javadoc conventions.
 public IsaacRandom(int[] seed)
-private void isaac()
-private void init()
 public int nextInt()
 ```

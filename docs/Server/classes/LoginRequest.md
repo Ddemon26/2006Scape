@@ -13,4 +13,7 @@ public int[] getArchiveCrcs()
 public int getClientVersion()
 public PlayerCredentials getCredentials()
 public IsaacRandomPair getRandomPair()
+public int getReleaseNumber()
+public boolean isLowMemory()
+public boolean isReconnecting()
 ```

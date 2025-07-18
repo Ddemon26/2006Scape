@@ -11,5 +11,4 @@ public class Pickable {
 public static void pickObject(final Player player, final int objectType, final int objectX, final int objectY)
 public void execute(CycleEventContainer container)
 public void stop()
-private static int random(int range)
 ```

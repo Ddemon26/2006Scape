@@ -13,4 +13,8 @@ public void execute()
 public void stop()
 public boolean needsExecution()
 public Object getOwner()
+public boolean isRunning()
+public int getID()
+public int getTick()
+public void setTick(int tick)
 ```

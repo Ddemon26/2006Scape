@@ -13,4 +13,8 @@ public int getObjectX()
 public int getObjectY()
 public Objects(int id, int x, int y, int height, int face, int type, int ticks)
 public int[] getObjectSize()
+public String toString()
+public int getObjectHeight()
+public int getObjectFace()
+public int getObjectType()
 ```

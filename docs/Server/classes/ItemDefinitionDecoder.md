@@ -10,5 +10,4 @@ Decodes item data from the {@code obj.dat} file into {@link ItemDefinition}s.  @
 public final class ItemDefinitionDecoder implements Runnable {
 public ItemDefinitionDecoder(IndexedFileSystem fs)
 public void run()
-private ItemDefinition decode(int id, ByteBuffer buffer)
 ```

@@ -11,6 +11,5 @@ public class GenieLamp {
 public static boolean spawnGenieNpc(Client c)
 public static void removeGenieNpc(Client c)
 public static void rubGenieLamp(Client c, int itemId)
-private static void whatSkillAreWeLookingFor(Client c, int actionButtonId)
 public static boolean genieInterfaceButtons(Client c, int actionButtonId)
 ```

@@ -9,7 +9,6 @@ Holiday Drops @author Andrew (Mr Extremez)
 ```java
 public enum HolidayDrops {
 public static int dropAmount()
-private HolidayDrops(int item, String name, boolean whichHoliday)
 public int getItem()
 public String getName()
 public boolean getHoliday()

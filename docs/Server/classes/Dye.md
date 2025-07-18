@@ -8,9 +8,6 @@ Dye.java  @author Andrew (Mr Extremez)
 
 ```java
 public enum Dye {
-private Dye(int itemUsed, int reward)
-private int getItemUsed()
-private int getReward()
 public static boolean blockDye(Player player, Dye dye, int itemUsed, int useWith)
 public static void dyeItem(Player player, int itemUsed, int useWith)
 ```

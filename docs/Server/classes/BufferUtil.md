@@ -12,5 +12,4 @@ public static int readSmart(ByteBuffer buffer)
 public static String readString(ByteBuffer buffer)
 public static String readString(ByteBuf buffer)
 public static int readUnsignedMedium(ByteBuffer buffer)
-private BufferUtil()
 ```

@@ -9,8 +9,9 @@ Specials helper class.
 ```java
 public class Specials {
 public Specials(Player player2)
-private int getWeapon()
-private double getSpecDamage()
-private double getSpecAccuracy()
-private double getSpecAmount()
+public static HashMap<Integer, specialAttack> specialAttack = new HashMap<Integer, specialAttack>();
+public void activateSpecial(int weapon, Client other, int i)
+public void handleGmaul()
+public double specAmount()
+public static void specialClicking(Player player2, int actionButtonId)
 ```

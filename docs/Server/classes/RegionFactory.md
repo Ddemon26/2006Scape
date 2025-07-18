@@ -10,5 +10,4 @@ Region Factory helper class.
 public class RegionFactory {
 public static Region[] getRegions()
 public static void load(IndexedFileSystem fs) throws IOException
-private static void loadMaps(int regionId, ByteStream str1, ByteStream str2)
 ```

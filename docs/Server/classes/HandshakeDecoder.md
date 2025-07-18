@@ -8,6 +8,4 @@ A {@link ByteToMessageDecoder} which decodes the handshake and makes changes to 
 
 ```java
 public final class HandshakeDecoder extends ByteToMessageDecoder {
-private static final Logger logger = Logger.getLogger(HandshakeDecoder.class.getName());
-protected void decode(ChannelHandlerContext ctx, ByteBuf buffer, List<Object> out)
 ```

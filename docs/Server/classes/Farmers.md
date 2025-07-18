@@ -8,9 +8,12 @@ Created by IntelliJ IDEA. User: vayken Date: 19/04/12 Time: 02:42 To change this
 
 ```java
 public class Farmers {
-private static Map<Integer, FarmersData> npcs = new HashMap<Integer, FarmersData>();
 public static FarmersData forId(int npcId)
 public int getNpcId()
 public String getFieldProtected()
 public String[] getDialogueHandlerOptions()
+public int getShopId()
+public static void chopDownTree(Player player, int npcId)
+public static void sendFarmingAdvice(Player player)
+public static String getFinalPaymentString(String word)
 ```

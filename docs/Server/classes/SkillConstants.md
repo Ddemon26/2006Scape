@@ -8,7 +8,6 @@ SkillConstants.java @author Andrew (Mr Extremez)
 
 ```java
 public enum SkillConstants {
-private SkillConstants(boolean skillEnabled)
 public static boolean getEnabled(int id)
 public static String getName(SkillConstants skillConstants)
 ```

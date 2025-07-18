@@ -13,4 +13,8 @@ public MapObject(int id, int x, int y, int height, int type, int orientation)
 public int getId()
 public int getHeight()
 public int getLocalX()
+public int getLocalY()
+public int getOrientation()
+public int getPackedCoordinates()
+public int getType()
 ```

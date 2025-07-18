@@ -9,6 +9,4 @@ A worker which services 'on-demand' requests.  @author Graham
 ```java
 public final class OnDemandRequestWorker extends RequestWorker<OnDemandRequest, IndexedFileSystem> {
 public OnDemandRequestWorker(UpdateDispatcher dispatcher, IndexedFileSystem fs)
-protected ChannelRequest<OnDemandRequest> nextRequest(UpdateDispatcher dispatcher) throws InterruptedException
-protected void service(IndexedFileSystem fs, Channel channel, OnDemandRequest request) throws IOException
 ```

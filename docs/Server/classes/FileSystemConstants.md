@@ -8,5 +8,4 @@ Holds file system related constants.  @author Graham
 
 ```java
 public final class FileSystemConstants {
-private FileSystemConstants()
 ```

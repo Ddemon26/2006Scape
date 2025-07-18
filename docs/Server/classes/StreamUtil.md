@@ -10,5 +10,4 @@ Contains utility methods for {@link InputStream}s and {@link OutputStream}s.  @a
 public final class StreamUtil {
 public static String readString(InputStream input) throws IOException
 public static void writeString(OutputStream output, String string) throws IOException
-private StreamUtil()
 ```

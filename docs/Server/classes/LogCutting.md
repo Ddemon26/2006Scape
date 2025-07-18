@@ -13,4 +13,8 @@ public static void cutLog(final Player player, final int product, final int leve
 public void execute(CycleEventContainer container)
 public void stop()
 public static void handleClick(Player player, int buttonId)
+public static void wolfBoneArrow(Player c)
+public static void flightedArrow(Player c) {// to do
+public static void ogreArrow(Player c)
+public static void makeShafts(Player c)
 ```

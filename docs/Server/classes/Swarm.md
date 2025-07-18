@@ -8,7 +8,6 @@ Swarm Event @author Andrew (I'm A Boss on Rune-Server, Mr Extremez on Moparscape
 
 ```java
 public class Swarm {
-private static int checkStats(Player c, boolean bot)
 public static void spawnSwarm(Player c)
 public static void checkBot(Client client)
 ```

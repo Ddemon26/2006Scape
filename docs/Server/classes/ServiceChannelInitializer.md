@@ -9,5 +9,4 @@ A {@link ChannelInitializer} for the service pipeline.  @author Graham
 ```java
 public final class ServiceChannelInitializer extends ChannelInitializer<SocketChannel> {
 public ServiceChannelInitializer(ChannelInboundHandlerAdapter handler)
-protected void initChannel(SocketChannel ch) throws Exception
 ```

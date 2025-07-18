@@ -11,6 +11,8 @@ public class CookingTutorialIsland extends SkillHandler {
 public static void cookThisFood(Player p, int i, int object)
 public static void getAmount(Player player, int amount)
 public static void resetCooking(Player c)
-private static void viewCookInterface(Player c, int item)
-private static void cookTutFish(final Player c)
+public void execute(CycleEventContainer container)
+public void stop()
+public void execute(CycleEventContainer container)
+public void stop()
 ```

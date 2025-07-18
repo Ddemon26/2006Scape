@@ -13,4 +13,7 @@ public int getNewPotatoID()
 public int getIngredient()
 public int getReq()
 public int getXP()
+public static PotatoMaking forId(int id)
+public void handlePotato(int id1, int id2)
+public boolean makePotato(int id)
 ```

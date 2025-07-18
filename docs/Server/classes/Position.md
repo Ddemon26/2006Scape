@@ -13,4 +13,6 @@ public static boolean checkPlayerX(Player client, int x, int h)
 public static boolean checkPlayerY(Player player, int y, int h)
 public static boolean checkPlayerH(Player client, int h)
 public static boolean checkObject(Player client, int x, int y, int h)
+public static boolean checkObjectX(Player client, int x, int h)
+public static boolean checkObjectY(Player client, int y, int h)
 ```

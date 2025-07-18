@@ -13,4 +13,5 @@ public static boolean isCat(int npcId)
 public static void dropPet(Player player, int itemId, int slot)
 public void quickPickup(Player player, int id)
 public void pickUpPet(Player player, int id)
+public static int summonItemId(int itemId)
 ```
