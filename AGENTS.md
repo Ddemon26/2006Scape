@@ -61,7 +61,8 @@ The agent **MAY** perform **only** the following categories:
 
 9. **Python Scripting** – The agent **MAY** use Python scripts for heavy tasks; store helper scripts and generated classes under the `python/` directory.
 
-Any other class of change **MUST** be expressly permitted by a maintainer comment containing `/allow‑bot <task>` on the **PR** itself.
+Any other class of change **MUST** be expressly permitted by a maintainer comment containing `/allow‑bot <task>` 
+from the users prompt.
 
 The agent **MUST NOT**:
 
