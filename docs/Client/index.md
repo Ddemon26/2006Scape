@@ -8,6 +8,7 @@
 - [Background](Client/classes/Background.md)
 - [BoundaryObject](Client/classes/BoundaryObject.md)
 - [CachePlaceholder](Client/classes/CachePlaceholder.md)
+- [CacheUtils](Client/classes/CacheUtils.md)
 - [Censor](Client/classes/Censor.md)
 - [Client](Client/classes/Client.md)
 - [ClientSettings](Client/classes/ClientSettings.md)

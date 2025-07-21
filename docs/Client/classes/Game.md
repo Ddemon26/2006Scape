@@ -8,10 +8,6 @@ NOTICE: IF YOU CHANGE ANYTHING IN GAME.JAVA, PLEASE COPY-PASTE THE WHOLE CLASS O
 public class Game extends RSApplet {
 public static int random(final float range)
 public static String intToKOrMilLongName(int i)
-public static String getFileNameWithoutExtension(String fileName)
-public String indexLocation(int cacheIndex, int index)
-public void repackCacheIndex(int cacheIndex)
-public byte[] fileToByteArray(int cacheIndex, int index)
 public void musics()
 public byte[] GetMusic(int Index)
 public void sendFrame126(String str,int i)
