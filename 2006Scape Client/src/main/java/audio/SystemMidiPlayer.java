@@ -46,7 +46,7 @@ public final class SystemMidiPlayer extends AbstractMidiController implements Re
                 midiReceiver.send(midimessage, l);
     }
     
-    SystemMidiPlayer() {
+    public SystemMidiPlayer() {
 		try {
                     midiReceiver = MidiSystem.getReceiver();
                     midiSequencer = MidiSystem.getSequencer(false);

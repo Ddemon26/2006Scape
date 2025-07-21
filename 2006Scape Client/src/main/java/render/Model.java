@@ -144,11 +144,11 @@ public final class Model extends Animable {
 		}
 	}
 
-	private Model() {
+	public Model() {
 		pickable = false;
 	}
 
-	private Model(int i) {
+	public Model(int i) {
 		pickable = false;
 		ModelHeader header = modelHeaderCache[i];
                 vertexCount = header.vertexCount;

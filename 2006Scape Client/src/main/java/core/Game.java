@@ -239,7 +239,7 @@ public class Game extends RSApplet {
 	static final boolean constructMusic() {
 		midiFadeCycles = 20;
 		try {
-                midiPlayer = (MidiPlayer) Class.forName("SystemMidiPlayer").newInstance();
+                midiPlayer = (MidiPlayer) Class.forName("audio.SystemMidiPlayer").newInstance();
 		} catch (Throwable throwable) {
 		    return false;
 		}
