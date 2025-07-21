@@ -1,6 +1,6 @@
 package audio;
 
-import core.Game;
+import core.MusicSystem;
 
 /* AbstractMidiController - Decompiled by JODE
  * Visit http://jode.sourceforge.net/
@@ -10,8 +10,8 @@ public abstract class AbstractMidiController extends MidiPlayer
 {
     final void applyVolumeFade(int step, int volume, long timestamp) {
         volume = (int) ((double) volume * Math.pow(0.1, (double) step * 5.0E-4) + 0.5);
-        if (volume != Game.midiVolume) {
-            Game.midiVolume = volume;
+        if (volume != MusicSystem.midiVolume) {
+            MusicSystem.midiVolume = volume;
             for (int channel = 0; channel < 16; channel++) {
                 int scaled = calculateChannelVolume(channel);
                 sendShortMessage(channel + 176, 7, scaled >> 7, timestamp);
@@ -27,7 +27,7 @@ public abstract class AbstractMidiController extends MidiPlayer
             if (controller == 121) {
                 sendShortMessage(status, controller, value, timestamp);
                 int channel = status & 0xf;
-                Game.midiChannels[channel] = 12800;
+                MusicSystem.midiChannels[channel] = 12800;
                 int scaled = calculateChannelVolume(channel);
                 sendShortMessage(status, 7, scaled >> 7, timestamp);
                 sendShortMessage(status, 39, scaled & 0x7f, timestamp);
@@ -36,9 +36,9 @@ public abstract class AbstractMidiController extends MidiPlayer
             if (controller == 7 || controller == 39) {
                 int channel = status & 0xf;
                 if (controller == 7)
-                    Game.midiChannels[channel] = (Game.midiChannels[channel] & 0x7f) + (value << 7);
+                    MusicSystem.midiChannels[channel] = (MusicSystem.midiChannels[channel] & 0x7f) + (value << 7);
                 else
-                    Game.midiChannels[channel] = (Game.midiChannels[channel] & 0x3f80) + value;
+                    MusicSystem.midiChannels[channel] = (MusicSystem.midiChannels[channel] & 0x3f80) + value;
                 int scaled = calculateChannelVolume(channel);
                 sendShortMessage(status, 7, scaled >> 7, timestamp);
                 sendShortMessage(status, 39, scaled & 0x7f, timestamp);
@@ -64,9 +64,9 @@ public abstract class AbstractMidiController extends MidiPlayer
     }
     
     final void setMasterVolume(int volume, long timestamp) {
-        Game.midiVolume = volume;
+        MusicSystem.midiVolume = volume;
         for (int channel = 0; channel < 16; channel++)
-            Game.midiChannels[channel] = 12800;
+            MusicSystem.midiChannels[channel] = 12800;
         for (int channel = 0; channel < 16; channel++) {
             int scaled = calculateChannelVolume(channel);
             sendShortMessage(channel + 176, 7, scaled >> 7, timestamp);
@@ -75,8 +75,8 @@ public abstract class AbstractMidiController extends MidiPlayer
     }
     
     private static final int calculateChannelVolume(int channel) {
-        int value = Game.midiChannels[channel];
-        value = (value * Game.midiVolume >> 8) * value;
+        int value = MusicSystem.midiChannels[channel];
+        value = (value * MusicSystem.midiVolume >> 8) * value;
         return (int) (Math.sqrt((double) value) + 0.5);
     }
 }
