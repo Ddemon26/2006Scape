@@ -131,56 +131,6 @@ public class Game extends RSApplet {
 		}
 	}
 	
-	public static String getFileNameWithoutExtension(String fileName) {
-		File tmpFile = new File(fileName);
-		tmpFile.getName();
-		int whereDot = tmpFile.getName().lastIndexOf('.');
-		if (0 < whereDot && whereDot <= tmpFile.getName().length() - 2) {
-			return tmpFile.getName().substring(0, whereDot);
-		}
-		return "";
-	}
-	
-	public String indexLocation(int cacheIndex, int index) {
-		return Signlink.findcachedir() + "index" + cacheIndex + "/" + (index != -1 ? index + ".gz" : "");
-	}
-
-	public void repackCacheIndex(int cacheIndex) {
-		System.out.println("Started repacking index " + cacheIndex + ".");
-		int indexLength = new File(indexLocation(cacheIndex, -1)).listFiles().length;
-		File[] file = new File(indexLocation(cacheIndex, -1)).listFiles();
-		try {
-			for (int index = 0; index < indexLength; index++) {
-				int fileIndex = Integer.parseInt(getFileNameWithoutExtension(file[index].toString()));
-				byte[] data = fileToByteArray(cacheIndex, fileIndex);
-				if(data != null && data.length > 0) {
-                                        decompressors[cacheIndex].writeEntry(data.length, data, fileIndex);
-					System.out.println("Repacked " + fileIndex + ".");
-				} else {
-					System.out.println("Unable to locate index " + fileIndex + ".");
-				}
-			}
-		} catch(Exception e) {
-			System.out.println("Error packing cache index " + cacheIndex + ".");
-		}
-		System.out.println("Finished repacking " + cacheIndex + ".");
-	}
-
-	public byte[] fileToByteArray(int cacheIndex, int index) {
-		try {
-			if (indexLocation(cacheIndex, index).length() <= 0 || indexLocation(cacheIndex, index) == null) {
-				return null;
-			}
-			File file = new File(indexLocation(cacheIndex, index));
-			byte[] fileData = new byte[(int)file.length()];
-			FileInputStream fis = new FileInputStream(file);
-			fis.read(fileData);
-			fis.close();
-			return fileData;
-		} catch(Exception e) {
-			return null;
-		}
-	}
 	
 	public void musics() {
 		for(int MusicIndex = 0; MusicIndex < 3536; MusicIndex++) {
@@ -7063,7 +7013,7 @@ public class Game extends RSApplet {
                         TextDrawingArea smallFont = new TextDrawingArea(true, "q8_full", titleStreamLoader);
 			drawLogo();
 			loadTitleScreen();
-			//repackCacheIndex(1);
+			//CacheUtils.repackCacheIndex(1, decompressors);
 			constructMusic();
 			StreamLoader streamLoader = streamLoaderForName(2, "config", "config", expectedCRCs[2], 30);
 			StreamLoader streamLoader_1 = streamLoaderForName(3, "interface", "interface", expectedCRCs[3], 35);
