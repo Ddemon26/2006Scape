@@ -143,7 +143,10 @@ The repository currently ships **no runnable test suite inside the sandbox**. Th
 
 ## 8 Security & Compliance
 
-* Do **not** download dependencies or reach external URLs; the sandbox blocks outbound traffic.
+* The agent **MAY** download JUnit-related jars required for testing (junit-4.13.2.jar,
+  hamcrest-core-1.3.jar, mockito-core-3.12.4.jar, byte-buddy-1.12.22.jar,
+  objenesis-3.2.jar) into `libs/`. All other outbound network access remains
+  disallowed.
 * The agent **MUST NOT** commit secrets or proprietary assets.
 
 ---
