@@ -31,56 +31,56 @@ final class WorldController {
 		tileVisibilityMap = null;
 	}
 
-	public void initToNull() {
-		for (int j = 0; j < planeCount; j++) {
-			for (int k = 0; k < worldWidth; k++) {
-				for (int i1 = 0; i1 < worldHeight; i1++) {
-					groundArray[j][k][i1] = null;
-				}
+        public void initToNull() {
+                for (int planeIndex = 0; planeIndex < planeCount; planeIndex++) {
+                        for (int tileX = 0; tileX < worldWidth; tileX++) {
+                                for (int tileY = 0; tileY < worldHeight; tileY++) {
+                                        groundArray[planeIndex][tileX][tileY] = null;
+                                }
 
-			}
-
-		}
-                for (int l = 0; l < CLUSTER_PLANES; l++) {
-                        for (int j1 = 0; j1 < cullingClusterCounts[l]; j1++) {
-                                aCullingClusters[l][j1] = null;
                         }
 
-                        cullingClusterCounts[l] = 0;
+                }
+                for (int plane = 0; plane < CLUSTER_PLANES; plane++) {
+                        for (int cluster = 0; cluster < cullingClusterCounts[plane]; cluster++) {
+                                aCullingClusters[plane][cluster] = null;
+                        }
+
+                        cullingClusterCounts[plane] = 0;
                 }
 
-                for (int k1 = 0; k1 < sceneObjectCachePos; k1++) {
-                        sceneObjectCache[k1] = null;
+                for (int cacheIndex = 0; cacheIndex < sceneObjectCachePos; cacheIndex++) {
+                        sceneObjectCache[cacheIndex] = null;
                 }
 
                 sceneObjectCachePos = 0;
-		for (int l1 = 0; l1 < sceneObjectBuffer.length; l1++) {
-			sceneObjectBuffer[l1] = null;
-		}
+                for (int bufferIndex = 0; bufferIndex < sceneObjectBuffer.length; bufferIndex++) {
+                        sceneObjectBuffer[bufferIndex] = null;
+                }
 
 	}
 
 	public void setActivePlane(int i) {
 		activePlane = i;
-		for (int k = 0; k < worldWidth; k++) {
-			for (int l = 0; l < worldHeight; l++) {
-				if (groundArray[i][k][l] == null) {
-					groundArray[i][k][l] = new Ground(i, k, l);
-				}
-			}
+                for (int x = 0; x < worldWidth; x++) {
+                        for (int y = 0; y < worldHeight; y++) {
+                                if (groundArray[i][x][y] == null) {
+                                        groundArray[i][x][y] = new Ground(i, x, y);
+                                }
+                        }
 
-		}
+                }
 
 	}
 
 	public void shiftDownPlanes(int i, int j) {
 		Ground groundTile = groundArray[0][j][i];
-		for (int l = 0; l < 3; l++) {
-			Ground currentTile = groundArray[l][j][i] = groundArray[l + 1][j][i];
-			if (currentTile != null) {
+                for (int plane = 0; plane < 3; plane++) {
+                        Ground currentTile = groundArray[plane][j][i] = groundArray[plane + 1][j][i];
+                        if (currentTile != null) {
                                 currentTile.plane--;
-                                for (int j1 = 0; j1 < currentTile.sceneObjectCount; j1++) {
-                                        SceneObject sceneObject = currentTile.obj5Array[j1];
+                                for (int objectIndex = 0; objectIndex < currentTile.sceneObjectCount; objectIndex++) {
+                                        SceneObject sceneObject = currentTile.sceneObjects[objectIndex];
                                         if ((sceneObject.uid >> 29 & 3) == 2 && sceneObject.startX == j && sceneObject.startY == i) {
                                                 sceneObject.plane--;
                                         }
@@ -121,30 +121,30 @@ final class WorldController {
         public void addTile(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2, int k2, int l2, int i3, int j3, int k3, int l3, int i4, int j4, int k4, int l4) {
 		if (l == 0) {
                     PlainTile tile = new PlainTile(k2, l2, i3, j3, -1, k4, false);
-			for (int i5 = i; i5 >= 0; i5--) {
-				if (groundArray[i5][j][k] == null) {
-					groundArray[i5][j][k] = new Ground(i5, j, k);
-				}
-			}
+                        for (int planeIndex = i; planeIndex >= 0; planeIndex--) {
+                                if (groundArray[planeIndex][j][k] == null) {
+                                        groundArray[planeIndex][j][k] = new Ground(planeIndex, j, k);
+                                }
+                        }
 
                         groundArray[i][j][k].plainTile = tile;
 			return;
 		}
 		if (l == 1) {
                     PlainTile alternateTile = new PlainTile(k3, l3, i4, j4, j1, l4, k1 == l1 && k1 == i2 && k1 == j2);
-			for (int j5 = i; j5 >= 0; j5--) {
-				if (groundArray[j5][j][k] == null) {
-					groundArray[j5][j][k] = new Ground(j5, j, k);
-				}
-			}
+                        for (int planeIndex = i; planeIndex >= 0; planeIndex--) {
+                                if (groundArray[planeIndex][j][k] == null) {
+                                        groundArray[planeIndex][j][k] = new Ground(planeIndex, j, k);
+                                }
+                        }
 
                         groundArray[i][j][k].plainTile = alternateTile;
 			return;
 		}
                 ShapedTile shapedTile = new ShapedTile(k, k3, j3, i2, j1, i4, i1, k2, k4, i3, j2, l1, k1, l, j4, l3, l2, j, l4);
-                for (int k5 = i; k5 >= 0; k5--) {
-                        if (groundArray[k5][j][k] == null) {
-                                groundArray[k5][j][k] = new Ground(k5, j, k);
+                for (int planeIndex = i; planeIndex >= 0; planeIndex--) {
+                        if (groundArray[planeIndex][j][k] == null) {
+                                groundArray[planeIndex][j][k] = new Ground(planeIndex, j, k);
                         }
                 }
 
@@ -165,7 +165,7 @@ final class WorldController {
                 if (groundArray[plane][tileX][tileY] == null) {
                         groundArray[plane][tileX][tileY] = new Ground(plane, tileX, tileY);
                 }
-                groundArray[plane][tileX][tileY].obj3 = tileDecoration;
+                groundArray[plane][tileX][tileY].tileDecoration = tileDecoration;
         }
 
        public void addItemPile(int i, int j, Animable renderable, int k, Animable secondaryRenderable, Animable topRenderable, int l, int i1) {
@@ -177,20 +177,20 @@ final class WorldController {
                 itemPile.uid = j;
                 itemPile.secondItem = renderable;
                 itemPile.thirdItem = secondaryRenderable;
-		int j1 = 0;
+                int heightOffset = 0;
                 Ground groundTile = groundArray[l][i][i1];
                 if (groundTile != null) {
-                        for (int k1 = 0; k1 < groundTile.sceneObjectCount; k1++) {
-                                if (groundTile.obj5Array[k1].renderable instanceof Model) {
-                                        int l1 = ((Model) groundTile.obj5Array[k1].renderable).overrideHeight;
-					if (l1 > j1) {
-						j1 = l1;
-					}
-				}
-			}
+                        for (int objIndex = 0; objIndex < groundTile.sceneObjectCount; objIndex++) {
+                                if (groundTile.sceneObjects[objIndex].renderable instanceof Model) {
+                                        int override = ((Model) groundTile.sceneObjects[objIndex].renderable).overrideHeight;
+                                        if (override > heightOffset) {
+                                                heightOffset = override;
+                                        }
+                                }
+                        }
 
-		}
-                itemPile.offsetY = j1;
+                }
+                itemPile.offsetY = heightOffset;
                 if (groundArray[l][i][i1] == null) {
                         groundArray[l][i][i1] = new Ground(l, i, i1);
                 }
@@ -201,23 +201,23 @@ final class WorldController {
 		if (renderable == null && secondaryRenderable == null) {
 			return;
 		}
-                BoundaryObject object1 = new BoundaryObject();
-                object1.uid = j;
-                object1.config = byte0;
-                object1.x = l * 128 + 64;
-                object1.y = k * 128 + 64;
-                object1.plane = i1;
-                object1.primary = renderable;
-                object1.secondary = secondaryRenderable;
-                object1.orientation = i;
-                object1.orientation2 = j1;
-		for (int l1 = k1; l1 >= 0; l1--) {
-			if (groundArray[l1][l][k] == null) {
-				groundArray[l1][l][k] = new Ground(l1, l, k);
-			}
-		}
+                BoundaryObject boundaryObjectLocal = new BoundaryObject();
+                boundaryObjectLocal.uid = j;
+                boundaryObjectLocal.config = byte0;
+                boundaryObjectLocal.x = l * 128 + 64;
+                boundaryObjectLocal.y = k * 128 + 64;
+                boundaryObjectLocal.plane = i1;
+                boundaryObjectLocal.primary = renderable;
+                boundaryObjectLocal.secondary = secondaryRenderable;
+                boundaryObjectLocal.orientation = i;
+                boundaryObjectLocal.orientation2 = j1;
+                for (int planeIndex = k1; planeIndex >= 0; planeIndex--) {
+                        if (groundArray[planeIndex][l][k] == null) {
+                                groundArray[planeIndex][l][k] = new Ground(planeIndex, l, k);
+                        }
+                }
 
-		groundArray[k1][l][k].obj1 = object1;
+                groundArray[k1][l][k].boundaryObject = boundaryObjectLocal;
 	}
 
        public void addWallDecoration(int i, int j, int k, int i1, int j1, int k1, Animable renderable, int l1, byte byte0, int i2, int j2) {
@@ -233,13 +233,13 @@ final class WorldController {
                 decoration.renderable = renderable;
                 decoration.orientationFlags = j2;
                 decoration.orientation = k;
-                for (int k2 = i1; k2 >= 0; k2--) {
-                        if (groundArray[k2][l1][j] == null) {
-                                groundArray[k2][l1][j] = new Ground(k2, l1, j);
+                for (int planeIndex = i1; planeIndex >= 0; planeIndex--) {
+                        if (groundArray[planeIndex][l1][j] == null) {
+                                groundArray[planeIndex][l1][j] = new Ground(planeIndex, l1, j);
                         }
                 }
 
-                groundArray[i1][l1][j].obj2 = decoration;
+                groundArray[i1][l1][j].wallDecoration = decoration;
         }
 
        public boolean addGameObject(int i, byte byte0, int j, int k, Animable renderable, int l, int i1, int j1, int k1, int l1) {
@@ -286,16 +286,16 @@ final class WorldController {
 	}
 
 	private boolean addSceneObject(int i, int j, int k, int l, int i1, int j1, int k1, int l1, Animable renderable, int i2, boolean flag, int j2, byte byte0) {
-		for (int k2 = j; k2 < j + l; k2++) {
-			for (int l2 = k; l2 < k + i1; l2++) {
-				if (k2 < 0 || l2 < 0 || k2 >= worldWidth || l2 >= worldHeight) {
-					return false;
-				}
-				Ground groundTile = groundArray[i][k2][l2];
+                for (int tileX = j; tileX < j + l; tileX++) {
+                        for (int tileY = k; tileY < k + i1; tileY++) {
+                                if (tileX < 0 || tileY < 0 || tileX >= worldWidth || tileY >= worldHeight) {
+                                        return false;
+                                }
+                                Ground groundTile = groundArray[i][tileX][tileY];
                                 if (groundTile != null && groundTile.sceneObjectCount >= 5) {
-					return false;
-				}
-			}
+                                        return false;
+                                }
+                        }
 
 		}
 
@@ -312,29 +312,29 @@ final class WorldController {
                 sceneObject.startY = k;
                 sceneObject.endX = j + l - 1;
                 sceneObject.endY = k + i1 - 1;
-		for (int i3 = j; i3 < j + l; i3++) {
-			for (int j3 = k; j3 < k + i1; j3++) {
-				int k3 = 0;
-				if (i3 > j) {
-					k3++;
-				}
-				if (i3 < j + l - 1) {
-					k3 += 4;
-				}
-				if (j3 > k) {
-					k3 += 8;
-				}
-				if (j3 < k + i1 - 1) {
-					k3 += 2;
-				}
-				for (int l3 = i; l3 >= 0; l3--) {
-					if (groundArray[l3][i3][j3] == null) {
-						groundArray[l3][i3][j3] = new Ground(l3, i3, j3);
-					}
-				}
+                for (int tileX2 = j; tileX2 < j + l; tileX2++) {
+                        for (int tileY2 = k; tileY2 < k + i1; tileY2++) {
+                                int k3 = 0;
+                                if (tileX2 > j) {
+                                        k3++;
+                                }
+                                if (tileX2 < j + l - 1) {
+                                        k3 += 4;
+                                }
+                                if (tileY2 > k) {
+                                        k3 += 8;
+                                }
+                                if (tileY2 < k + i1 - 1) {
+                                        k3 += 2;
+                                }
+                                for (int planeIndex = i; planeIndex >= 0; planeIndex--) {
+                                        if (groundArray[planeIndex][tileX2][tileY2] == null) {
+                                                groundArray[planeIndex][tileX2][tileY2] = new Ground(planeIndex, tileX2, tileY2);
+                                        }
+                                }
 
-                                Ground currentTile = groundArray[i][i3][j3];
-                                currentTile.obj5Array[currentTile.sceneObjectCount] = sceneObject;
+                                Ground currentTile = groundArray[i][tileX2][tileY2];
+                                currentTile.sceneObjects[currentTile.sceneObjectCount] = sceneObject;
                                 currentTile.sceneObjectFlags[currentTile.sceneObjectCount] = k3;
                                 currentTile.combinedFlags |= k3;
                                 currentTile.sceneObjectCount++;
@@ -359,21 +359,21 @@ final class WorldController {
 	}
 
         private void removeSceneObject(SceneObject sceneObject) {
-                for (int j = sceneObject.startX; j <= sceneObject.endX; j++) {
-                        for (int k = sceneObject.startY; k <= sceneObject.endY; k++) {
-                                Ground groundTile = groundArray[sceneObject.plane][j][k];
+                for (int tileX = sceneObject.startX; tileX <= sceneObject.endX; tileX++) {
+                        for (int tileY = sceneObject.startY; tileY <= sceneObject.endY; tileY++) {
+                                Ground groundTile = groundArray[sceneObject.plane][tileX][tileY];
                                 if (groundTile != null) {
-                                        for (int l = 0; l < groundTile.sceneObjectCount; l++) {
-                                                if (groundTile.obj5Array[l] != sceneObject) {
+                                        for (int index = 0; index < groundTile.sceneObjectCount; index++) {
+                                                if (groundTile.sceneObjects[index] != sceneObject) {
                                                         continue;
                                                 }
                                                 groundTile.sceneObjectCount--;
-                                                for (int i1 = l; i1 < groundTile.sceneObjectCount; i1++) {
-                                                        groundTile.obj5Array[i1] = groundTile.obj5Array[i1 + 1];
-                                                        groundTile.sceneObjectFlags[i1] = groundTile.sceneObjectFlags[i1 + 1];
+                                                for (int shift = index; shift < groundTile.sceneObjectCount; shift++) {
+                                                        groundTile.sceneObjects[shift] = groundTile.sceneObjects[shift + 1];
+                                                        groundTile.sceneObjectFlags[shift] = groundTile.sceneObjectFlags[shift + 1];
                                                 }
 
-                                                groundTile.obj5Array[groundTile.sceneObjectCount] = null;
+                                                groundTile.sceneObjects[groundTile.sceneObjectCount] = null;
                                                 break;
                                         }
 
@@ -394,7 +394,7 @@ final class WorldController {
 		if (groundTile == null) {
 			return;
 		}
-                WallDecoration decoration = groundTile.obj2;
+                WallDecoration decoration = groundTile.wallDecoration;
                 if (decoration != null) {
                         int j1 = l * 128 + 64;
                         int k1 = i * 128 + 64;
@@ -408,16 +408,16 @@ final class WorldController {
 		if (byte0 != -119) {
 			boundaryToggle = !boundaryToggle;
 		}
-		if (groundTile != null) {
-			groundTile.obj1 = null;
+                if (groundTile != null) {
+                        groundTile.boundaryObject = null;
 		}
 	}
 
         public void clearWallDecoration(int j, int k, int l) {
 		Ground groundTile = groundArray[k][l][j];
-		if (groundTile != null) {
-			groundTile.obj2 = null;
-		}
+                if (groundTile != null) {
+                        groundTile.wallDecoration = null;
+                }
 	}
 
         public void removeSceneObject(int i, int k, int l) {
@@ -426,7 +426,7 @@ final class WorldController {
 			return;
 		}
                 for (int j1 = 0; j1 < groundTile.sceneObjectCount; j1++) {
-                        SceneObject sceneObject = groundTile.obj5Array[j1];
+                        SceneObject sceneObject = groundTile.sceneObjects[j1];
                         if ((sceneObject.uid >> 29 & 3) == 2 && sceneObject.startX == k && sceneObject.startY == l) {
                                 removeSceneObject(sceneObject);
                                 return;
@@ -440,7 +440,7 @@ final class WorldController {
 		if (groundTile == null) {
 			return;
 		}
-		groundTile.obj3 = null;
+                groundTile.tileDecoration = null;
 	}
 
         public void clearItemPile(int i, int j, int k) {
@@ -455,7 +455,7 @@ final class WorldController {
 		if (groundTile == null) {
 			return null;
 		} else {
-                        return groundTile.obj1;
+                        return groundTile.boundaryObject;
 		}
 	}
 
@@ -464,7 +464,7 @@ final class WorldController {
                 if (groundTile == null) {
                         return null;
                 } else {
-                        return groundTile.obj2;
+                        return groundTile.wallDecoration;
                 }
 	}
 
@@ -473,8 +473,8 @@ final class WorldController {
                 if (groundTile == null) {
                         return null;
                 }
-                for (int l = 0; l < groundTile.sceneObjectCount; l++) {
-                        SceneObject sceneObject = groundTile.obj5Array[l];
+                for (int index = 0; index < groundTile.sceneObjectCount; index++) {
+                        SceneObject sceneObject = groundTile.sceneObjects[index];
                         if ((sceneObject.uid >> 29 & 3) == 2 && sceneObject.startX == i && sceneObject.startY == j) {
                                 return sceneObject;
                         }
@@ -484,28 +484,28 @@ final class WorldController {
 
    public TileDecoration getTileDecoration(int i, int j, int k) {
 		Ground groundTile = groundArray[k][j][i];
-		if (groundTile == null || groundTile.obj3 == null) {
+                if (groundTile == null || groundTile.tileDecoration == null) {
 			return null;
 		} else {
-			return groundTile.obj3;
+                        return groundTile.tileDecoration;
 		}
 	}
 
        public int getBoundaryObjectUid(int i, int j, int k) {
 		Ground groundTile = groundArray[i][j][k];
-		if (groundTile == null || groundTile.obj1 == null) {
+                if (groundTile == null || groundTile.boundaryObject == null) {
 			return 0;
 		} else {
-			return groundTile.obj1.uid;
+                        return groundTile.boundaryObject.uid;
 		}
 	}
 
        public int getWallDecorationUid(int i, int j, int l) {
 		Ground groundTile = groundArray[i][j][l];
-		if (groundTile == null || groundTile.obj2 == null) {
+                if (groundTile == null || groundTile.wallDecoration == null) {
 			return 0;
 		} else {
-			return groundTile.obj2.uid;
+                        return groundTile.wallDecoration.uid;
 		}
 	}
 
@@ -514,8 +514,8 @@ final class WorldController {
 		if (groundTile == null) {
 			return 0;
 		}
-                for (int l = 0; l < groundTile.sceneObjectCount; l++) {
-                        SceneObject sceneObject = groundTile.obj5Array[l];
+                for (int index = 0; index < groundTile.sceneObjectCount; index++) {
+                        SceneObject sceneObject = groundTile.sceneObjects[index];
                         if ((sceneObject.uid >> 29 & 3) == 2 && sceneObject.startX == j && sceneObject.startY == k) {
                                 return sceneObject.uid;
                         }
@@ -526,11 +526,11 @@ final class WorldController {
 
        public int getTileDecorationUid(int i, int j, int k) {
 		Ground groundTile = groundArray[i][j][k];
-		if (groundTile == null || groundTile.obj3 == null) {
-			return 0;
-		} else {
-			return groundTile.obj3.uid;
-		}
+                if (groundTile == null || groundTile.tileDecoration == null) {
+                        return 0;
+                } else {
+                        return groundTile.tileDecoration.uid;
+                }
 	}
 
        public int getObjectConfig(int i, int j, int k, int l) {
@@ -538,18 +538,18 @@ final class WorldController {
 		if (groundTile == null) {
 			return -1;
 		}
-		if (groundTile.obj1 != null && groundTile.obj1.uid == l) {
-			return groundTile.obj1.config & 0xff;
-		}
-                if (groundTile.obj2 != null && groundTile.obj2.uid == l) {
-                        return groundTile.obj2.config & 0xff;
+                if (groundTile.boundaryObject != null && groundTile.boundaryObject.uid == l) {
+                        return groundTile.boundaryObject.config & 0xff;
                 }
-                if (groundTile.obj3 != null && groundTile.obj3.uid == l) {
-                        return groundTile.obj3.config & 0xff;
+                if (groundTile.wallDecoration != null && groundTile.wallDecoration.uid == l) {
+                        return groundTile.wallDecoration.config & 0xff;
+                }
+                if (groundTile.tileDecoration != null && groundTile.tileDecoration.uid == l) {
+                        return groundTile.tileDecoration.config & 0xff;
                 }
                 for (int i1 = 0; i1 < groundTile.sceneObjectCount; i1++) {
-                        if (groundTile.obj5Array[i1].uid == l) {
-                                return groundTile.obj5Array[i1].config & 0xff;
+                        if (groundTile.sceneObjects[i1].uid == l) {
+                                return groundTile.sceneObjects[i1].config & 0xff;
                         }
                 }
 
@@ -561,32 +561,32 @@ final class WorldController {
 		int l = 768;// was parameter
 		int j1 = (int) Math.sqrt(k * k + i * i + i1 * i1);
 		int k1 = l * j1 >> 8;
-		for (int l1 = 0; l1 < planeCount; l1++) {
-			for (int i2 = 0; i2 < worldWidth; i2++) {
-				for (int j2 = 0; j2 < worldHeight; j2++) {
-					Ground groundTile = groundArray[l1][i2][j2];
+                for (int planeIndex = 0; planeIndex < planeCount; planeIndex++) {
+                        for (int tileX = 0; tileX < worldWidth; tileX++) {
+                                for (int tileY = 0; tileY < worldHeight; tileY++) {
+                                        Ground groundTile = groundArray[planeIndex][tileX][tileY];
 					if (groundTile != null) {
-                                                BoundaryObject boundaryObject = groundTile.obj1;
+                                                BoundaryObject boundaryObject = groundTile.boundaryObject;
                                                 if (boundaryObject != null && boundaryObject.primary != null && boundaryObject.primary.vertexNormals != null) {
-                                                       blendModels(l1, 1, 1, i2, j2, (Model) boundaryObject.primary);
+                                                       blendModels(planeIndex, 1, 1, tileX, tileY, (Model) boundaryObject.primary);
                                                         if (boundaryObject.secondary != null && boundaryObject.secondary.vertexNormals != null) {
-                                                               blendModels(l1, 1, 1, i2, j2, (Model) boundaryObject.secondary);
+                                                               blendModels(planeIndex, 1, 1, tileX, tileY, (Model) boundaryObject.secondary);
                                                                mergeNormals((Model) boundaryObject.primary, (Model) boundaryObject.secondary, 0, 0, 0, false);
                                                                 ((Model) boundaryObject.secondary).applyShading(j, k1, k, i, i1);
                                                         }
                                                         ((Model) boundaryObject.primary).applyShading(j, k1, k, i, i1);
                                                 }
-                                                for (int k2 = 0; k2 < groundTile.sceneObjectCount; k2++) {
-                                                        SceneObject sceneObject = groundTile.obj5Array[k2];
+                                                for (int objectIndex = 0; objectIndex < groundTile.sceneObjectCount; objectIndex++) {
+                                                        SceneObject sceneObject = groundTile.sceneObjects[objectIndex];
                                                         if (sceneObject != null && sceneObject.renderable != null && sceneObject.renderable.vertexNormals != null) {
-                                                                blendModels(l1, sceneObject.endX - sceneObject.startX + 1, sceneObject.endY - sceneObject.startY + 1, i2, j2, (Model) sceneObject.renderable);
+                                                                blendModels(planeIndex, sceneObject.endX - sceneObject.startX + 1, sceneObject.endY - sceneObject.startY + 1, tileX, tileY, (Model) sceneObject.renderable);
                                                                 ((Model) sceneObject.renderable).applyShading(j, k1, k, i, i1);
                                                         }
                                                 }
 
-                                            TileDecoration tileDecoration = groundTile.obj3;
+                                            TileDecoration tileDecoration = groundTile.tileDecoration;
                                                 if (tileDecoration != null && tileDecoration.renderable.vertexNormals != null) {
-                                                       blendDecorationLighting(i2, l1, (Model) tileDecoration.renderable, j2);
+                                                       blendDecorationLighting(tileX, planeIndex, (Model) tileDecoration.renderable, tileY);
                                                         ((Model) tileDecoration.renderable).applyShading(j, k1, k, i, i1);
                                                 }
 					}
@@ -601,26 +601,26 @@ final class WorldController {
        private void blendDecorationLighting(int i, int j, Model model, int k) {
 		if (i < worldWidth) {
 			Ground groundTile = groundArray[j][i + 1][k];
-                        if (groundTile != null && groundTile.obj3 != null && groundTile.obj3.renderable.vertexNormals != null) {
-                                mergeNormals(model, (Model) groundTile.obj3.renderable, 128, 0, 0, true);
+                        if (groundTile != null && groundTile.tileDecoration != null && groundTile.tileDecoration.renderable.vertexNormals != null) {
+                                mergeNormals(model, (Model) groundTile.tileDecoration.renderable, 128, 0, 0, true);
                         }
                 }
                 if (k < worldWidth) {
                         Ground currentTile = groundArray[j][i][k + 1];
-                        if (currentTile != null && currentTile.obj3 != null && currentTile.obj3.renderable.vertexNormals != null) {
-                                mergeNormals(model, (Model) currentTile.obj3.renderable, 0, 0, 128, true);
+                        if (currentTile != null && currentTile.tileDecoration != null && currentTile.tileDecoration.renderable.vertexNormals != null) {
+                                mergeNormals(model, (Model) currentTile.tileDecoration.renderable, 0, 0, 128, true);
                         }
                 }
                 if (i < worldWidth && k < worldHeight) {
                         Ground diagonalTile = groundArray[j][i + 1][k + 1];
-                        if (diagonalTile != null && diagonalTile.obj3 != null && diagonalTile.obj3.renderable.vertexNormals != null) {
-                                mergeNormals(model, (Model) diagonalTile.obj3.renderable, 128, 0, 128, true);
+                        if (diagonalTile != null && diagonalTile.tileDecoration != null && diagonalTile.tileDecoration.renderable.vertexNormals != null) {
+                                mergeNormals(model, (Model) diagonalTile.tileDecoration.renderable, 128, 0, 128, true);
                         }
                 }
                 if (i < worldWidth && k > 0) {
                         Ground westTile = groundArray[j][i + 1][k - 1];
-                        if (westTile != null && westTile.obj3 != null && westTile.obj3.renderable.vertexNormals != null) {
-                                mergeNormals(model, (Model) westTile.obj3.renderable, 128, 0, -128, true);
+                        if (westTile != null && westTile.tileDecoration != null && westTile.tileDecoration.renderable.vertexNormals != null) {
+                                mergeNormals(model, (Model) westTile.tileDecoration.renderable, 128, 0, -128, true);
                         }
                 }
 	}
@@ -631,24 +631,24 @@ final class WorldController {
 		int k1 = l + j;
 		int l1 = i1 - 1;
 		int i2 = i1 + k;
-		for (int j2 = i; j2 <= i + 1; j2++) {
-			if (j2 != planeCount) {
-				for (int k2 = j1; k2 <= k1; k2++) {
-					if (k2 >= 0 && k2 < worldWidth) {
-						for (int l2 = l1; l2 <= i2; l2++) {
-							if (l2 >= 0 && l2 < worldHeight && (!flag || k2 >= k1 || l2 >= i2 || l2 < i1 && k2 != l)) {
-								Ground groundTile = groundArray[j2][k2][l2];
+                for (int planeIdx = i; planeIdx <= i + 1; planeIdx++) {
+                        if (planeIdx != planeCount) {
+                                for (int tileX = j1; tileX <= k1; tileX++) {
+                                        if (tileX >= 0 && tileX < worldWidth) {
+                                                for (int tileY = l1; tileY <= i2; tileY++) {
+                                                        if (tileY >= 0 && tileY < worldHeight && (!flag || tileX >= k1 || tileY >= i2 || tileY < i1 && tileX != l)) {
+                                                                Ground groundTile = groundArray[planeIdx][tileX][tileY];
 								if (groundTile != null) {
-									int i3 = (tileHeights[j2][k2][l2] + tileHeights[j2][k2 + 1][l2] + tileHeights[j2][k2][l2 + 1] + tileHeights[j2][k2 + 1][l2 + 1]) / 4 - (tileHeights[i][l][i1] + tileHeights[i][l + 1][i1] + tileHeights[i][l][i1 + 1] + tileHeights[i][l + 1][i1 + 1]) / 4;
-                                                                        BoundaryObject boundaryObject = groundTile.obj1;
+                                                                        int i3 = (tileHeights[planeIdx][tileX][tileY] + tileHeights[planeIdx][tileX + 1][tileY] + tileHeights[planeIdx][tileX][tileY + 1] + tileHeights[planeIdx][tileX + 1][tileY + 1]) / 4 - (tileHeights[i][l][i1] + tileHeights[i][l + 1][i1] + tileHeights[i][l][i1 + 1] + tileHeights[i][l + 1][i1 + 1]) / 4;
+                                                                        BoundaryObject boundaryObject = groundTile.boundaryObject;
                                                                         if (boundaryObject != null && boundaryObject.primary != null && boundaryObject.primary.vertexNormals != null) {
-                                                mergeNormals(model, (Model) boundaryObject.primary, (k2 - l) * 128 + (1 - j) * 64, i3, (l2 - i1) * 128 + (1 - k) * 64, flag);
+                                                mergeNormals(model, (Model) boundaryObject.primary, (tileX - l) * 128 + (1 - j) * 64, i3, (tileY - i1) * 128 + (1 - k) * 64, flag);
                                                                         }
                                                                         if (boundaryObject != null && boundaryObject.secondary != null && boundaryObject.secondary.vertexNormals != null) {
-                                                mergeNormals(model, (Model) boundaryObject.secondary, (k2 - l) * 128 + (1 - j) * 64, i3, (l2 - i1) * 128 + (1 - k) * 64, flag);
+                                                mergeNormals(model, (Model) boundaryObject.secondary, (tileX - l) * 128 + (1 - j) * 64, i3, (tileY - i1) * 128 + (1 - k) * 64, flag);
 									}
-                                                                        for (int j3 = 0; j3 < groundTile.sceneObjectCount; j3++) {
-                                                                               SceneObject sceneObject = groundTile.obj5Array[j3];
+                                                                        for (int objIndex = 0; objIndex < groundTile.sceneObjectCount; objIndex++) {
+                                                                               SceneObject sceneObject = groundTile.sceneObjects[objIndex];
                                                                                if (sceneObject != null && sceneObject.renderable != null && sceneObject.renderable.vertexNormals != null) {
                                                                                int k3 = sceneObject.endX - sceneObject.startX + 1;
                                                                                int l3 = sceneObject.endY - sceneObject.startY + 1;
@@ -1105,12 +1105,12 @@ final class WorldController {
                                 } else if (linkedTile.shapedTile != null && !isTileVisible(0, i, j)) {
                                                 drawShapedTile(i, pitchSin, yawSin, linkedTile.shapedTile, pitchCos, j, yawCos);
 					}
-                                        BoundaryObject boundaryObject = linkedTile.obj1;
+                                        BoundaryObject boundaryObject = linkedTile.boundaryObject;
                                         if (boundaryObject != null) {
                                                 boundaryObject.primary.render(0, pitchSin, pitchCos, yawSin, yawCos, boundaryObject.x - cameraX, boundaryObject.plane - cameraZ, boundaryObject.y - cameraY, boundaryObject.uid);
                                         }
                                         for (int i2 = 0; i2 < linkedTile.sceneObjectCount; i2++) {
-                                                SceneObject sceneObject = linkedTile.obj5Array[i2];
+                                                SceneObject sceneObject = linkedTile.sceneObjects[i2];
                                                 if (sceneObject != null) {
                                                         sceneObject.renderable.render(sceneObject.orientation, pitchSin, pitchCos, yawSin, yawCos, sceneObject.x - cameraX, sceneObject.height - cameraZ, sceneObject.y - cameraY, sceneObject.uid);
                                                 }
@@ -1129,9 +1129,9 @@ final class WorldController {
 				}
 				int j1 = 0;
 				int j2 = 0;
-				BoundaryObject boundaryObj = currentTile.obj1;
-                                WallDecoration class26_1 = currentTile.obj2;
-				if (boundaryObj != null || class26_1 != null) {
+                                BoundaryObject boundaryObj = currentTile.boundaryObject;
+                                WallDecoration wallDecorationLocal = currentTile.wallDecoration;
+                                if (boundaryObj != null || wallDecorationLocal != null) {
 					if (cameraTileX == i) {
 						j1++;
 					} else if (cameraTileX < i) {
@@ -1174,14 +1174,14 @@ final class WorldController {
 						boundaryObj.secondary.render(0, pitchSin, pitchCos, yawSin, yawCos, boundaryObj.x - cameraX, boundaryObj.plane - cameraZ, boundaryObj.y - cameraY, boundaryObj.uid);
 					}
 				}
-                                if (class26_1 != null && !isWallDecorationVisible(l, i, j, class26_1.renderable.modelHeight)) {
-                                        if ((class26_1.orientationFlags & j2) != 0) {
-                                                class26_1.renderable.render(class26_1.orientation, pitchSin, pitchCos, yawSin, yawCos, class26_1.x - cameraX, class26_1.plane - cameraZ, class26_1.y - cameraY, class26_1.uid);
-                                        } else if ((class26_1.orientationFlags & 0x300) != 0) {
-                                                int j4 = class26_1.x - cameraX;
-                                                int l5 = class26_1.plane - cameraZ;
-                                                int k6 = class26_1.y - cameraY;
-                                                int i8 = class26_1.orientation;
+                                if (wallDecorationLocal != null && !isWallDecorationVisible(l, i, j, wallDecorationLocal.renderable.modelHeight)) {
+                                        if ((wallDecorationLocal.orientationFlags & j2) != 0) {
+                                                wallDecorationLocal.renderable.render(wallDecorationLocal.orientation, pitchSin, pitchCos, yawSin, yawCos, wallDecorationLocal.x - cameraX, wallDecorationLocal.plane - cameraZ, wallDecorationLocal.y - cameraY, wallDecorationLocal.uid);
+                                        } else if ((wallDecorationLocal.orientationFlags & 0x300) != 0) {
+                                                int j4 = wallDecorationLocal.x - cameraX;
+                                                int l5 = wallDecorationLocal.plane - cameraZ;
+                                                int k6 = wallDecorationLocal.y - cameraY;
+                                                int i8 = wallDecorationLocal.orientation;
 						int k9;
 						if (i8 == 1 || i8 == 2) {
 							k9 = -j4;
@@ -1194,20 +1194,20 @@ final class WorldController {
 						} else {
 							k10 = k6;
 						}
-                                                if ((class26_1.orientationFlags & 0x100) != 0 && k10 < k9) {
+                                                if ((wallDecorationLocal.orientationFlags & 0x100) != 0 && k10 < k9) {
                                                         int i11 = j4 + xOffset1[i8];
                                                         int k11 = k6 + yOffset1[i8];
-                                                        class26_1.renderable.render(i8 * 512 + 256, pitchSin, pitchCos, yawSin, yawCos, i11, l5, k11, class26_1.uid);
+                                                        wallDecorationLocal.renderable.render(i8 * 512 + 256, pitchSin, pitchCos, yawSin, yawCos, i11, l5, k11, wallDecorationLocal.uid);
                                                 }
-                                                if ((class26_1.orientationFlags & 0x200) != 0 && k10 > k9) {
+                                                if ((wallDecorationLocal.orientationFlags & 0x200) != 0 && k10 > k9) {
                                                         int j11 = j4 + xOffset2[i8];
                                                         int l11 = k6 + yOffset2[i8];
-                                                        class26_1.renderable.render(i8 * 512 + 1280 & 0x7ff, pitchSin, pitchCos, yawSin, yawCos, j11, l5, l11, class26_1.uid);
+                                                        wallDecorationLocal.renderable.render(i8 * 512 + 1280 & 0x7ff, pitchSin, pitchCos, yawSin, yawCos, j11, l5, l11, wallDecorationLocal.uid);
                                                 }
                                         }
                                 }
                                 if (tileVisible) {
-                                   TileDecoration tileDecoration = currentTile.obj3;
+                                   TileDecoration tileDecoration = currentTile.tileDecoration;
                                         if (tileDecoration != null) {
                                                 tileDecoration.renderable.render(0, pitchSin, pitchCos, yawSin, yawCos, tileDecoration.x - cameraX, tileDecoration.tileHeight - cameraZ, tileDecoration.y - cameraY, tileDecoration.uid);
                                         }
@@ -1255,7 +1255,7 @@ final class WorldController {
                         if (currentTile.cullFlags != 0) {
                                 boolean foundVisible = true;
                                 for (int k1 = 0; k1 < currentTile.sceneObjectCount; k1++) {
-                                        if (currentTile.obj5Array[k1].lastDrawn == renderCycle || (currentTile.sceneObjectFlags[k1] & currentTile.cullFlags) != currentTile.cullOrientation) {
+                                        if (currentTile.sceneObjects[k1].lastDrawn == renderCycle || (currentTile.sceneObjectFlags[k1] & currentTile.cullFlags) != currentTile.cullOrientation) {
                                                 continue;
                                         }
 					foundVisible = false;
@@ -1263,7 +1263,7 @@ final class WorldController {
 				}
 
 				if (foundVisible) {
-					BoundaryObject boundaryObjPrimary = currentTile.obj1;
+                                        BoundaryObject boundaryObjPrimary = currentTile.boundaryObject;
 					if (!isWallVisible(l, i, j, boundaryObjPrimary.orientation)) {
 						boundaryObjPrimary.primary.render(0, pitchSin, pitchCos, yawSin, yawCos, boundaryObjPrimary.x - cameraX, boundaryObjPrimary.plane - cameraZ, boundaryObjPrimary.y - cameraY, boundaryObjPrimary.uid);
 					}
@@ -1276,7 +1276,7 @@ final class WorldController {
 					currentTile.needsProcessing = false;
 					int l1 = 0;
 					label0 : for (int k2 = 0; k2 < i1; k2++) {
-                                                SceneObject objTile = currentTile.obj5Array[k2];
+                                                SceneObject objTile = currentTile.sceneObjects[k2];
                                                 if (objTile.lastDrawn == renderCycle) {
                                                         continue;
                                                 }
@@ -1418,7 +1418,7 @@ final class WorldController {
                                 }
                         }
 			if (currentTile.boundaryFlags != 0) {
-                                WallDecoration class26 = currentTile.obj2;
+                                WallDecoration class26 = currentTile.wallDecoration;
                                 if (class26 != null && !isWallDecorationVisible(l, i, j, class26.renderable.modelHeight)) {
                                         if ((class26.orientationFlags & currentTile.boundaryFlags) != 0) {
                                                 class26.renderable.render(class26.orientation, pitchSin, pitchCos, yawSin, yawCos, class26.x - cameraX, class26.plane - cameraZ, class26.y - cameraY, class26.uid);
@@ -1451,7 +1451,7 @@ final class WorldController {
                                                 }
                                         }
                                 }
-				BoundaryObject boundaryObjSecondary = currentTile.obj1;
+                                BoundaryObject boundaryObjSecondary = currentTile.boundaryObject;
 				if (boundaryObjSecondary != null) {
 					if ((boundaryObjSecondary.orientation2 & currentTile.boundaryFlags) != 0 && !isWallVisible(l, i, j, boundaryObjSecondary.orientation2)) {
 						boundaryObjSecondary.secondary.render(0, pitchSin, pitchCos, yawSin, yawCos, boundaryObjSecondary.x - cameraX, boundaryObjSecondary.plane - cameraZ, boundaryObjSecondary.y - cameraY, boundaryObjSecondary.uid);
