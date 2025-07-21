@@ -151,6 +151,14 @@ The repository currently ships **no runnable test suite inside the sandbox**. Th
 
 ---
 
+## 8.1 Binary Files Policy
+
+* The agent **MUST NOT** commit any binary files (e.g., `.jar`, `.exe`, `.dll`, `.bin`, `.class`, images, archives) to the repository.
+* If any binary files are created or downloaded (including libraries), the agent **MUST** remove them before committing.
+* Only source code and text-based files are permitted in commits.
+
+---
+
 ## 9 Rollback / Revert Protocol
 
 If a PR authored by the agent is merged and afterwards fails on main:
