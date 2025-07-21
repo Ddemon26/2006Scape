@@ -31,10 +31,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.zip.CRC32;
-import audio.MidiPlayer;
 import audio.SoundPlayer;
 import audio.Sounds;
-import audio.SystemMidiPlayer;
 import cache.CachePlaceholder;
 import cache.StreamLoader;
 import game.AnimFrame;
@@ -58,6 +56,7 @@ import net.OnDemandFetcher;
 import net.RSSocket;
 import net.Signlink;
 import net.Stream;
+import core.MusicSystem;
 import render.Background;
 import render.BoundaryObject;
 import render.CollisionMap;
@@ -113,23 +112,13 @@ public class Game extends RSApplet {
 		return " " + s;
 	}
 	
-	static final boolean musicIsntNull() {
-            if (midiPlayer == null)
-			return false;
-		return true;
-	}
+static final boolean musicIsntNull() {
+        return MusicSystem.musicIsntNull();
+}
 	
        public static final void closeMidiSystem() {
-            if (midiPlayer != null) {
-                       stopMidiPlayback(false);
-                        if (midiFadeCycles > 0) {
-                                midiPlayer.setVolume(256);
-                                midiFadeCycles = 0;
-			}
-                       midiPlayer.shutdown();
-                 midiPlayer = null;
-		}
-	}
+        MusicSystem.closeMidiSystem();
+       }
 	
 	
 	public void musics() {
@@ -154,70 +143,48 @@ public class Game extends RSApplet {
 		}
 	}
 	
-	static final void setVolume(int i) {
-		if (musicIsntNull()) {
-			if (fetchMusic)
-				musicVolume2 = i;
-			else
-                               setMidiVolume(i);
-		}
-	}
+static final void setVolume(int i) {
+        MusicSystem.setVolume(i);
+}
 	
-       static final void setMidiVolume(int i) {
-            if (midiPlayer != null) {
-			if (midiFadeCycles == 0) {
-				if (currentMidiVolume >= 0) {
-					currentMidiVolume = i;
-                                    midiPlayer.adjustVolume(i, 0);
-				}
-			} else if (queuedMidiData != null)
-				queuedMidiVolume = i;
-		}
-	}
+static final void setMidiVolume(int i) {
+        MusicSystem.setMidiVolume(i);
+}
 	
-       static final synchronized void stopMusic(boolean bool) {
-		if (musicIsntNull()) {
-               stopMidiPlayback(bool);
-			fetchMusic = false;
-		}
-	}
+static final synchronized void stopMusic(boolean bool) {
+        MusicSystem.stopMusic(bool);
+}
 	
-       static final void stopMidiPlayback(boolean bool) {
-               playMidiTrack(0, null, bool);
-	}
+static final void stopMidiPlayback(boolean bool) {
+        MusicSystem.stopMidiPlayback(bool);
+}
 	
-	static final boolean constructMusic() {
-		midiFadeCycles = 20;
-		try {
-                midiPlayer = (MidiPlayer) Class.forName("audio.SystemMidiPlayer").newInstance();
-		} catch (Throwable throwable) {
-		    return false;
-		}
-		return true;
-	}
+static final boolean constructMusic() {
+        return MusicSystem.constructMusic();
+}
 	
-       final synchronized void queueSong(int i_30_, int volume,
+       final synchronized void queueSong(int delay, int volume,
                     boolean bool, int music) {
-		if (musicIsntNull()) {
-			nextSong = music;
+                if (MusicSystem.musicIsntNull()) {
+                        nextSong = music;
                         onDemandFetcher.queueRequest(2, nextSong);
-			musicVolume2 = volume;
-			queuedSongId = -1;
-			autoPlaySong = true;
-			nextSongDelay = i_30_;
-		}
-	}
+                        MusicSystem.musicVolume2 = volume;
+                        MusicSystem.queuedSongId = -1;
+                        MusicSystem.autoPlaySong = true;
+                        MusicSystem.nextSongDelay = delay;
+                }
+        }
 	
-       final synchronized void playSong(int i, boolean bool, int music) {
-		if (musicIsntNull()) {
-			nextSong = music;
+       final synchronized void playSong(int volume, boolean bool, int music) {
+                if (MusicSystem.musicIsntNull()) {
+                        nextSong = music;
                         onDemandFetcher.queueRequest(2, nextSong);
-			musicVolume2 = i;
-			queuedSongId = -1;
-			autoPlaySong = true;
-		    nextSongDelay = -1;
-		}
-	}
+                        MusicSystem.musicVolume2 = volume;
+                        MusicSystem.queuedSongId = -1;
+                        MusicSystem.autoPlaySong = true;
+                        MusicSystem.nextSongDelay = -1;
+                }
+        }
 	
 	public void sendFrame126(String str,int i) {
 		RSInterface.interfaceCache[i].disabledText = str;
@@ -225,141 +192,35 @@ public class Game extends RSApplet {
 			needDrawTabArea = true;
 	}
 	
-	public static byte[] musicData;
+        /* see MusicSystem.musicData */
 	
        static final synchronized void processMusicQueue() {
-		if (musicIsntNull()) {
-			if (fetchMusic) {
-				byte[] is = musicData;
-				if (is != null) {
-                                       if (nextSongDelay >= 0)
-                                               initiateMidiFade(autoPlaySong, nextSongDelay, musicVolume2, is);
-                                       else if (queuedSongId >= 0)
-                                               queueMidiTrack(queuedSongId, -1, autoPlaySong, is, musicVolume2);
-					else
-                                               playMidiTrack(musicVolume2, is, autoPlaySong);
-					fetchMusic = false;
-				}
-			}
-                   updateMidiFade(0);
-		}
-	}
+        MusicSystem.processMusicQueue();
+       }
 	
        static final int calculateLogVolume(int i) {
-               return (int) (Math.log((double) i * 0.00390625) * 868.5889638065036 + 0.5);
-	}
+               return MusicSystem.calculateLogVolume(i);
+       }
 	
        static final void playMidiTrack(int i_2_, byte[] is, boolean bool) {
-            if (midiPlayer != null) {
-			if (currentMidiVolume >= 0) {
-                    midiPlayer.stopMidi();
-				currentMidiVolume = -1;
-				queuedMidiData = null;
-				midiFadeCycles = 20;
-				fadeVolume = 0;
-			}
-		    if (is != null) {
-		    	if (midiFadeCycles > 0) {
-                            midiPlayer.setVolume(i_2_);
-		    		midiFadeCycles = 0;
-		    	}
-		    	currentMidiVolume = i_2_;
-                    midiPlayer.playMidi(i_2_, is, 0, bool);
-		    }
-		}
-	}
+        MusicSystem.playMidiTrack(i_2_, is, bool);
+       }
 	
        static final void queueMidiTrack(int i, int i_29_, boolean bool, byte[] is, int i_30_) {
-            if (midiPlayer != null) {
-			if (i_29_ >= (currentMidiVolume ^ 0xffffffff)) {
-				i -= 20;
-				if (i < 1)
-					i = 1;
-				midiFadeCycles = i;
-				if (currentMidiVolume == 0)
-					fadeStep = 0;
-				else {
-                                       int i_31_ = calculateLogVolume(currentMidiVolume);
-					i_31_ -= fadeVolume;
-					fadeStep = ((fadeStep - 1 + (i_31_ + 3600)) / fadeStep);
-				}
-				midiLooping = bool;
-				queuedMidiData = is;
-				queuedMidiVolume = i_30_;
-			} else if (midiFadeCycles != 0) {
-				midiLooping = bool;
-				queuedMidiData = is;
-				queuedMidiVolume = i_30_;
-                       } else
-                               playMidiTrack(i_30_, is, bool);
-		}
-	}
+        MusicSystem.queueMidiTrack(i, i_29_, bool, is, i_30_);
+       }
 	
        static final void initiateMidiFade(boolean bool, int i, int i_2_, byte[] is) {
-            if (midiPlayer != null) {
-			if (currentMidiVolume >= 0) {
-				fadeStep = i;
-				if (currentMidiVolume != 0) {
-                                       int i_4_ = calculateLogVolume(currentMidiVolume);
-					i_4_ -= fadeVolume;
-					midiFadeCycles = (i_4_ + 3600) / i;
-					if (midiFadeCycles < 1)
-						midiFadeCycles = 1;
-				} else
-					midiFadeCycles = 1;
-				queuedMidiData = is;
-				queuedMidiVolume = i_2_;
-				midiLooping = bool;
-                       } else if (midiFadeCycles == 0)
-                               playMidiTrack(i_2_, is, bool);
-			else {
-				queuedMidiVolume = i_2_;
-				midiLooping = bool;
-				queuedMidiData = is;
-			}
-		}
-	}
+        MusicSystem.initiateMidiFade(bool, i, i_2_, is);
+       }
 	
        static final void updateMidiFade(int i) {
-            if (midiPlayer != null) {
-			if (currentMidiVolume < i) {
-				if (midiFadeCycles > 0) {
-					midiFadeCycles--;
-					if (midiFadeCycles == 0) {
-                                                if (queuedMidiData == null)
-                                                        midiPlayer.setVolume(256);
-                                                else {
-                                                        midiPlayer.setVolume(queuedMidiVolume);
-                                                        currentMidiVolume = queuedMidiVolume;
-                                                        midiPlayer.playMidi(queuedMidiVolume, queuedMidiData, 0, midiLooping);
-							queuedMidiData = null;
-						}
-						fadeVolume = 0;
-					}
-				}
-			} else if (midiFadeCycles > 0) {
-				fadeVolume += fadeStep;
-                                midiPlayer.adjustVolume(currentMidiVolume, fadeVolume);
-				midiFadeCycles--;
-				if (midiFadeCycles == 0) {
-                                        midiPlayer.stopMidi();
-					midiFadeCycles = 20;
-					currentMidiVolume = -1;
-				}
-			}
-                        midiPlayer.poll(i - 122);
-		}
-	}
+        MusicSystem.updateMidiFade(i);
+       }
 
-	private void stopMidi() {
-		if (Signlink.music != null) {
-			if (Signlink.music.isRunning()) {
-				Signlink.fadeOut();
-				Signlink.music.stop();
-				Signlink.midi = "stop";
-			}
-		}
-	}
+        private void stopMidi() {
+                MusicSystem.stopMidi();
+        }
 
 	public boolean menuHasAddFriend(int j) {
 		if (j < 0) {
@@ -2856,9 +2717,9 @@ public class Game extends RSApplet {
                                        AnimFrame.load(onDemandData.data);
                                }
                                if (onDemandData.type == 2 && onDemandData.id == nextSong && onDemandData.data != null) {
-                                       musicData = new byte[onDemandData.data.length];
-                                       System.arraycopy(onDemandData.data, 0, musicData, 0, musicData.length);
-                                       fetchMusic = true;
+                                       MusicSystem.musicData = new byte[onDemandData.data.length];
+                                       System.arraycopy(onDemandData.data, 0, MusicSystem.musicData, 0, MusicSystem.musicData.length);
+                                       MusicSystem.fetchMusic = true;
                                }
                                if (onDemandData.type == 3 && loadingStage == 1) {
                                        for (int i = 0; i < terrainData.length; i++) {
@@ -12600,24 +12461,8 @@ public class Game extends RSApplet {
 	public static int tiara;
 	public static int unusedSettingValue;
 	public boolean showInfo = false;
-        public static int midiVolume = 256;
-	public static int[] midiChannels = new int[] { 12800, 12800, 12800, 12800, 12800, 12800,
-	12800, 12800, 12800, 12800, 12800, 12800,
-	12800, 12800, 12800, 12800 };
-	public static int midiFadeCycles = 0;
-        public static MidiPlayer midiPlayer;
-	public static boolean fetchMusic = false;
-	public static int musicVolume2;
-	public static int currentMidiVolume = -1;
-	public static byte[] queuedMidiData;
-	public static int fadeVolume = 0;
-	public static int fadeStep = 0;
-	public static int queuedMidiVolume;
-	public static boolean midiLooping;
-	public static int nextSongDelay;
-	public static boolean autoPlaySong;
-	public static int queuedSongId;
-	public static int musicVolume = 0;
+        /* Music system state moved to MusicSystem */
+        public static int musicVolume = 0;
 	public int[] gameScreenOffsets;
 	public int currentDateOffset;
 	public int loginScreenDelay;
