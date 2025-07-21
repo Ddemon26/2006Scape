@@ -5,7 +5,7 @@
 public final class Ground extends Node {
 
         public Ground(int i, int j, int k) {
-                obj5Array = new SceneObject[5];
+                sceneObjects = new SceneObject[5];
                 sceneObjectFlags = new int[5];
                 basePlane = plane = i;
                 x = j;
@@ -18,12 +18,12 @@ public final class Ground extends Node {
         final int basePlane;
         public PlainTile plainTile;
         public ShapedTile shapedTile;
-        public BoundaryObject obj1;
-        public WallDecoration obj2;
-        public TileDecoration obj3;
+        public BoundaryObject boundaryObject;
+        public WallDecoration wallDecoration;
+        public TileDecoration tileDecoration;
         public ItemPile itemPile;
         int sceneObjectCount;
-        public final SceneObject[] obj5Array;
+        public final SceneObject[] sceneObjects;
         final int[] sceneObjectFlags;
         int combinedFlags;
         int groundFlag;

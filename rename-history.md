@@ -43,6 +43,10 @@ This document lists variable or identifier renames found in the commit history.
 - anInt1326 -> cullOrientation
 - anInt1327 -> cullOpposite
 - anInt1328 -> boundaryFlags
+- obj1 -> boundaryObject
+- obj2 -> wallDecoration
+- obj3 -> tileDecoration
+- obj5Array -> sceneObjects
 - aclass30_sub3 -> planeTiles
 - aclass30_sub3_1 -> planeTiles1
 - aclass30_sub3_2 -> planeTiles2
@@ -76,6 +80,8 @@ This document lists variable or identifier renames found in the commit history.
 - class10_2 -> boundaryObjSecondary
 - class10_3 -> boundaryObj
 - class10 -> boundaryObject
+- class26_1 -> wallDecorationLocal
+- object1 -> boundaryObjectLocal
 - class49 -> tileDecoration
 - aclass47 -> planeClusters
 - class47 -> cluster
