@@ -18,3 +18,5 @@
 2006Scape Server/*.json
 data/secrets.json
 /data/logs
+/.claude
+*.py
