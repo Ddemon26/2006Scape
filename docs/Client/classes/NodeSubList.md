@@ -1,6 +1,6 @@
 # NodeSubList
 
-Defined in [`2006Scape Client/src/main/java/NodeSubList.java`](2006Scape Client/src/main/java/NodeSubList.java).
+Defined in [`2006Scape Client/src/main/java/util/NodeSubList.java`](2006Scape Client/src/main/java/util/NodeSubList.java).
 
 Node Sub List helper class.
 

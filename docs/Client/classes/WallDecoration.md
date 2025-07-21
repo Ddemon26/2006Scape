@@ -1,6 +1,6 @@
 # WallDecoration
 
-Defined in [`2006Scape Client/src/main/java/WallDecoration.java`](2006Scape Client/src/main/java/WallDecoration.java).
+Defined in [`2006Scape Client/src/main/java/game/WallDecoration.java`](2006Scape Client/src/main/java/game/WallDecoration.java).
 
 Wall Decoration helper class.
 

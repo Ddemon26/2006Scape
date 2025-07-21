@@ -1,6 +1,6 @@
 # Main
 
-Defined in [`2006Scape Client/src/main/java/Main.java`](2006Scape Client/src/main/java/Main.java).
+Defined in [`2006Scape Client/src/main/java/game/Main.java`](2006Scape Client/src/main/java/game/Main.java).
 
 Main helper class.
 

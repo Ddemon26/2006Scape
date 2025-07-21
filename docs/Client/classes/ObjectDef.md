@@ -1,6 +1,6 @@
 # ObjectDef
 
-Defined in [`2006Scape Client/src/main/java/ObjectDef.java`](2006Scape Client/src/main/java/ObjectDef.java).
+Defined in [`2006Scape Client/src/main/java/game/ObjectDef.java`](2006Scape Client/src/main/java/game/ObjectDef.java).
 
 Object Def helper class.
 

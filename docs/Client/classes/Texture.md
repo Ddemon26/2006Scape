@@ -1,6 +1,6 @@
 # Texture
 
-Defined in [`2006Scape Client/src/main/java/Texture.java`](2006Scape Client/src/main/java/Texture.java).
+Defined in [`2006Scape Client/src/main/java/graphics/Texture.java`](2006Scape Client/src/main/java/graphics/Texture.java).
 
 Texture helper class.
 

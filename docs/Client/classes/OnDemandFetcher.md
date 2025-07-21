@@ -1,6 +1,6 @@
 # OnDemandFetcher
 
-Defined in [`2006Scape Client/src/main/java/OnDemandFetcher.java`](2006Scape Client/src/main/java/OnDemandFetcher.java).
+Defined in [`2006Scape Client/src/main/java/network/OnDemandFetcher.java`](2006Scape Client/src/main/java/network/OnDemandFetcher.java).
 
 On Demand Fetcher helper class.
 

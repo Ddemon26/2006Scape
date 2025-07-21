@@ -1,6 +1,6 @@
 # Item
 
-Defined in [`2006Scape Client/src/main/java/Item.java`](2006Scape Client/src/main/java/Item.java).
+Defined in [`2006Scape Client/src/main/java/game/Item.java`](2006Scape Client/src/main/java/game/Item.java).
 
 Item helper class.
 

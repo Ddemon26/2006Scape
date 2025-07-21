@@ -1,6 +1,6 @@
 # RSApplet
 
-Defined in [`2006Scape Client/src/main/java/RSApplet.java`](2006Scape Client/src/main/java/RSApplet.java).
+Defined in [`2006Scape Client/src/main/java/graphics/RSApplet.java`](2006Scape Client/src/main/java/graphics/RSApplet.java).
 
 RSApplet helper class.
 

@@ -1,6 +1,6 @@
 # AnimFrame
 
-Defined in [`2006Scape Client/src/main/java/AnimFrame.java`](2006Scape Client/src/main/java/AnimFrame.java).
+Defined in [`2006Scape Client/src/main/java/graphics/AnimFrame.java`](2006Scape Client/src/main/java/graphics/AnimFrame.java).
 
 Anim Frame helper class.
 

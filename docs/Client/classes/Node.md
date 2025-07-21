@@ -1,6 +1,6 @@
 # Node
 
-Defined in [`2006Scape Client/src/main/java/Node.java`](2006Scape Client/src/main/java/Node.java).
+Defined in [`2006Scape Client/src/main/java/util/Node.java`](2006Scape Client/src/main/java/util/Node.java).
 
 Node helper class.
 

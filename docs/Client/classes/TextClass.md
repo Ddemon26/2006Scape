@@ -1,6 +1,6 @@
 # TextClass
 
-Defined in [`2006Scape Client/src/main/java/TextClass.java`](2006Scape Client/src/main/java/TextClass.java).
+Defined in [`2006Scape Client/src/main/java/graphics/TextClass.java`](2006Scape Client/src/main/java/graphics/TextClass.java).
 
 Text Class helper class.
 

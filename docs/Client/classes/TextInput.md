@@ -1,6 +1,6 @@
 # TextInput
 
-Defined in [`2006Scape Client/src/main/java/TextInput.java`](2006Scape Client/src/main/java/TextInput.java).
+Defined in [`2006Scape Client/src/main/java/util/TextInput.java`](2006Scape Client/src/main/java/util/TextInput.java).
 
 Text Input helper class.
 

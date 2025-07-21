@@ -1,6 +1,6 @@
 # Signlink
 
-Defined in [`2006Scape Client/src/main/java/Signlink.java`](2006Scape Client/src/main/java/Signlink.java).
+Defined in [`2006Scape Client/src/main/java/network/Signlink.java`](2006Scape Client/src/main/java/network/Signlink.java).
 
 Signlink helper class.
 

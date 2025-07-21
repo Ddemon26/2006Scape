@@ -1,6 +1,6 @@
 # Game
 
-Defined in [`2006Scape Client/src/main/java/Game.java`](2006Scape Client/src/main/java/Game.java).
+Defined in [`2006Scape Client/src/main/java/game/Game.java`](2006Scape Client/src/main/java/game/Game.java).
 
 NOTICE: IF YOU CHANGE ANYTHING IN GAME.JAVA, PLEASE COPY-PASTE THE WHOLE CLASS OVER TO LOCALGAME.JAVA THIS IS TO ALLOW LOCAL PARABOT TO CONTINUE TO WORK
 

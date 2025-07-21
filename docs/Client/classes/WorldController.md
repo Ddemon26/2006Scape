@@ -1,6 +1,6 @@
 # WorldController
 
-Defined in [`2006Scape Client/src/main/java/WorldController.java`](2006Scape Client/src/main/java/WorldController.java).
+Defined in [`2006Scape Client/src/main/java/game/WorldController.java`](2006Scape Client/src/main/java/game/WorldController.java).
 
 World Controller helper class.
 

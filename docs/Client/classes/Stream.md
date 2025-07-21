@@ -1,6 +1,6 @@
 # Stream
 
-Defined in [`2006Scape Client/src/main/java/Stream.java`](2006Scape Client/src/main/java/Stream.java).
+Defined in [`2006Scape Client/src/main/java/network/Stream.java`](2006Scape Client/src/main/java/network/Stream.java).
 
 Stream helper class.
 

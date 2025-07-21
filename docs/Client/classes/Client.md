@@ -1,6 +1,6 @@
 # Client
 
-Defined in [`2006Scape Client/src/main/java/Client.java`](2006Scape Client/src/main/java/Client.java).
+Defined in [`2006Scape Client/src/main/java/game/Client.java`](2006Scape Client/src/main/java/game/Client.java).
 
 Client helper class.
 

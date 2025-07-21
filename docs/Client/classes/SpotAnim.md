@@ -1,6 +1,6 @@
 # SpotAnim
 
-Defined in [`2006Scape Client/src/main/java/SpotAnim.java`](2006Scape Client/src/main/java/SpotAnim.java).
+Defined in [`2006Scape Client/src/main/java/graphics/SpotAnim.java`](2006Scape Client/src/main/java/graphics/SpotAnim.java).
 
 Spot Anim helper class.
 

@@ -1,6 +1,6 @@
 # EntityDef
 
-Defined in [`2006Scape Client/src/main/java/EntityDef.java`](2006Scape Client/src/main/java/EntityDef.java).
+Defined in [`2006Scape Client/src/main/java/game/EntityDef.java`](2006Scape Client/src/main/java/game/EntityDef.java).
 
 Entity Def helper class.
 

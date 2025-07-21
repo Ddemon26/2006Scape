@@ -1,6 +1,6 @@
 # ShapedTile
 
-Defined in [`2006Scape Client/src/main/java/ShapedTile.java`](2006Scape Client/src/main/java/ShapedTile.java).
+Defined in [`2006Scape Client/src/main/java/graphics/ShapedTile.java`](2006Scape Client/src/main/java/graphics/ShapedTile.java).
 
 Shaped Tile helper class.
 

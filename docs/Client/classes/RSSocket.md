@@ -1,6 +1,6 @@
 # RSSocket
 
-Defined in [`2006Scape Client/src/main/java/RSSocket.java`](2006Scape Client/src/main/java/RSSocket.java).
+Defined in [`2006Scape Client/src/main/java/network/RSSocket.java`](2006Scape Client/src/main/java/network/RSSocket.java).
 
 RSSocket helper class.
 

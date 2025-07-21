@@ -1,6 +1,6 @@
 # GraphicsObject
 
-Defined in [`2006Scape Client/src/main/java/GraphicsObject.java`](2006Scape Client/src/main/java/GraphicsObject.java).
+Defined in [`2006Scape Client/src/main/java/graphics/GraphicsObject.java`](2006Scape Client/src/main/java/graphics/GraphicsObject.java).
 
 Graphics Object helper class.
 

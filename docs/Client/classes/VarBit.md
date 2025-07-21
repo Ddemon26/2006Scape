@@ -1,6 +1,6 @@
 # VarBit
 
-Defined in [`2006Scape Client/src/main/java/VarBit.java`](2006Scape Client/src/main/java/VarBit.java).
+Defined in [`2006Scape Client/src/main/java/game/VarBit.java`](2006Scape Client/src/main/java/game/VarBit.java).
 
 Var Bit helper class.
 

@@ -1,6 +1,6 @@
 # Background
 
-Defined in [`2006Scape Client/src/main/java/Background.java`](2006Scape Client/src/main/java/Background.java).
+Defined in [`2006Scape Client/src/main/java/graphics/Background.java`](2006Scape Client/src/main/java/graphics/Background.java).
 
 Background helper class.
 

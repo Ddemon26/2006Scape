@@ -1,6 +1,6 @@
 # RSInterface
 
-Defined in [`2006Scape Client/src/main/java/RSInterface.java`](2006Scape Client/src/main/java/RSInterface.java).
+Defined in [`2006Scape Client/src/main/java/graphics/RSInterface.java`](2006Scape Client/src/main/java/graphics/RSInterface.java).
 
 RSInterface helper class.
 

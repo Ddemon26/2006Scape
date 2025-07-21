@@ -1,6 +1,6 @@
 # TextDrawingArea
 
-Defined in [`2006Scape Client/src/main/java/TextDrawingArea.java`](2006Scape Client/src/main/java/TextDrawingArea.java).
+Defined in [`2006Scape Client/src/main/java/graphics/TextDrawingArea.java`](2006Scape Client/src/main/java/graphics/TextDrawingArea.java).
 
 Text Drawing Area helper class.
 

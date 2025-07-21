@@ -1,6 +1,6 @@
 # MidiFile
 
-Defined in [`2006Scape Client/src/main/java/MidiFile.java`](2006Scape Client/src/main/java/MidiFile.java).
+Defined in [`2006Scape Client/src/main/java/audio/MidiFile.java`](2006Scape Client/src/main/java/audio/MidiFile.java).
 
 Midi File helper class.
 

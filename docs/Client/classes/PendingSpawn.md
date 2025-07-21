@@ -1,6 +1,6 @@
 # PendingSpawn
 
-Defined in [`2006Scape Client/src/main/java/PendingSpawn.java`](2006Scape Client/src/main/java/PendingSpawn.java).
+Defined in [`2006Scape Client/src/main/java/game/PendingSpawn.java`](2006Scape Client/src/main/java/game/PendingSpawn.java).
 
 Pending Spawn helper class.
 

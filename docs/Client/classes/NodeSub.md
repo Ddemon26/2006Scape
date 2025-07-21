@@ -1,6 +1,6 @@
 # NodeSub
 
-Defined in [`2006Scape Client/src/main/java/NodeSub.java`](2006Scape Client/src/main/java/NodeSub.java).
+Defined in [`2006Scape Client/src/main/java/util/NodeSub.java`](2006Scape Client/src/main/java/util/NodeSub.java).
 
 Node Sub helper class.
 

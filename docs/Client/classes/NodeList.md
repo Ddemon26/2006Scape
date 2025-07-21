@@ -1,6 +1,6 @@
 # NodeList
 
-Defined in [`2006Scape Client/src/main/java/NodeList.java`](2006Scape Client/src/main/java/NodeList.java).
+Defined in [`2006Scape Client/src/main/java/util/NodeList.java`](2006Scape Client/src/main/java/util/NodeList.java).
 
 Node List helper class.
 

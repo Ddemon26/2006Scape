@@ -1,6 +1,6 @@
 # Sprite
 
-Defined in [`2006Scape Client/src/main/java/Sprite.java`](2006Scape Client/src/main/java/Sprite.java).
+Defined in [`2006Scape Client/src/main/java/graphics/Sprite.java`](2006Scape Client/src/main/java/graphics/Sprite.java).
 
 Sprite helper class.
 

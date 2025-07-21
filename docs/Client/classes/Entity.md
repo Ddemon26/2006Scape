@@ -1,6 +1,6 @@
 # Entity
 
-Defined in [`2006Scape Client/src/main/java/Entity.java`](2006Scape Client/src/main/java/Entity.java).
+Defined in [`2006Scape Client/src/main/java/game/Entity.java`](2006Scape Client/src/main/java/game/Entity.java).
 
 Entity helper class.
 

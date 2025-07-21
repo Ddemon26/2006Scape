@@ -1,6 +1,6 @@
 # TileRotation
 
-Defined in [`2006Scape Client/src/main/java/TileRotation.java`](2006Scape Client/src/main/java/TileRotation.java).
+Defined in [`2006Scape Client/src/main/java/graphics/TileRotation.java`](2006Scape Client/src/main/java/graphics/TileRotation.java).
 
 Tile Rotation helper class.
 

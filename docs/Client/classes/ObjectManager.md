@@ -1,6 +1,6 @@
 # ObjectManager
 
-Defined in [`2006Scape Client/src/main/java/ObjectManager.java`](2006Scape Client/src/main/java/ObjectManager.java).
+Defined in [`2006Scape Client/src/main/java/game/ObjectManager.java`](2006Scape Client/src/main/java/game/ObjectManager.java).
 
 Object Manager helper class.
 

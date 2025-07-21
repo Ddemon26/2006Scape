@@ -1,6 +1,6 @@
 # Decompressor
 
-Defined in [`2006Scape Client/src/main/java/Decompressor.java`](2006Scape Client/src/main/java/Decompressor.java).
+Defined in [`2006Scape Client/src/main/java/network/Decompressor.java`](2006Scape Client/src/main/java/network/Decompressor.java).
 
 Decompressor helper class.
 

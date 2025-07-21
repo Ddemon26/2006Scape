@@ -1,6 +1,6 @@
 # Player
 
-Defined in [`2006Scape Client/src/main/java/Player.java`](2006Scape Client/src/main/java/Player.java).
+Defined in [`2006Scape Client/src/main/java/game/Player.java`](2006Scape Client/src/main/java/game/Player.java).
 
 Player helper class.
 

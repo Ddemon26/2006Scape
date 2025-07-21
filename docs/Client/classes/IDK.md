@@ -1,6 +1,6 @@
 # IDK
 
-Defined in [`2006Scape Client/src/main/java/IDK.java`](2006Scape Client/src/main/java/IDK.java).
+Defined in [`2006Scape Client/src/main/java/util/IDK.java`](2006Scape Client/src/main/java/util/IDK.java).
 
 IDK helper class.
 

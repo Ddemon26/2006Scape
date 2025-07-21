@@ -1,6 +1,6 @@
 # RSImageProducer
 
-Defined in [`2006Scape Client/src/main/java/RSImageProducer.java`](2006Scape Client/src/main/java/RSImageProducer.java).
+Defined in [`2006Scape Client/src/main/java/graphics/RSImageProducer.java`](2006Scape Client/src/main/java/graphics/RSImageProducer.java).
 
 RSImage Producer helper class.
 

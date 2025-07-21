@@ -1,6 +1,6 @@
 # RSFrame
 
-Defined in [`2006Scape Client/src/main/java/RSFrame.java`](2006Scape Client/src/main/java/RSFrame.java).
+Defined in [`2006Scape Client/src/main/java/graphics/RSFrame.java`](2006Scape Client/src/main/java/graphics/RSFrame.java).
 
 RSFrame helper class.
 

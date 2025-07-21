@@ -1,6 +1,6 @@
 # CollisionMap
 
-Defined in [`2006Scape Client/src/main/java/CollisionMap.java`](2006Scape Client/src/main/java/CollisionMap.java).
+Defined in [`2006Scape Client/src/main/java/game/CollisionMap.java`](2006Scape Client/src/main/java/game/CollisionMap.java).
 
 Collision Map helper class.
 

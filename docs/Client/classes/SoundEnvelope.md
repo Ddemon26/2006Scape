@@ -1,6 +1,6 @@
 # SoundEnvelope
 
-Defined in [`2006Scape Client/src/main/java/SoundEnvelope.java`](2006Scape Client/src/main/java/SoundEnvelope.java).
+Defined in [`2006Scape Client/src/main/java/audio/SoundEnvelope.java`](2006Scape Client/src/main/java/audio/SoundEnvelope.java).
 
 Sound Envelope helper class.
 

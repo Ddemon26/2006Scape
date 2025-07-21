@@ -1,6 +1,6 @@
 # Sounds
 
-Defined in [`2006Scape Client/src/main/java/Sounds.java`](2006Scape Client/src/main/java/Sounds.java).
+Defined in [`2006Scape Client/src/main/java/audio/Sounds.java`](2006Scape Client/src/main/java/audio/Sounds.java).
 
 Sounds helper class.
 

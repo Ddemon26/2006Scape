@@ -1,6 +1,6 @@
 # Skills
 
-Defined in [`2006Scape Client/src/main/java/Skills.java`](2006Scape Client/src/main/java/Skills.java).
+Defined in [`2006Scape Client/src/main/java/game/Skills.java`](2006Scape Client/src/main/java/game/Skills.java).
 
 Skills helper class.
 

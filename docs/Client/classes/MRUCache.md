@@ -1,6 +1,6 @@
 # MRUCache
 
-Defined in [`2006Scape Client/src/main/java/MRUCache.java`](2006Scape Client/src/main/java/MRUCache.java).
+Defined in [`2006Scape Client/src/main/java/util/MRUCache.java`](2006Scape Client/src/main/java/util/MRUCache.java).
 
 MRUCache helper class.
 

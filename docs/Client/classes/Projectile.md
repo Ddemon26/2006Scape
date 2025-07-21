@@ -1,6 +1,6 @@
 # Projectile
 
-Defined in [`2006Scape Client/src/main/java/Projectile.java`](2006Scape Client/src/main/java/Projectile.java).
+Defined in [`2006Scape Client/src/main/java/game/Projectile.java`](2006Scape Client/src/main/java/game/Projectile.java).
 
 Projectile helper class.
 

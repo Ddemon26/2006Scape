@@ -1,6 +1,6 @@
 # MouseDetection
 
-Defined in [`2006Scape Client/src/main/java/MouseDetection.java`](2006Scape Client/src/main/java/MouseDetection.java).
+Defined in [`2006Scape Client/src/main/java/util/MouseDetection.java`](2006Scape Client/src/main/java/util/MouseDetection.java).
 
 Mouse Detection helper class.
 

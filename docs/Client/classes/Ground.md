@@ -1,6 +1,6 @@
 # Ground
 
-Defined in [`2006Scape Client/src/main/java/Ground.java`](2006Scape Client/src/main/java/Ground.java).
+Defined in [`2006Scape Client/src/main/java/game/Ground.java`](2006Scape Client/src/main/java/game/Ground.java).
 
 Ground helper class.
 

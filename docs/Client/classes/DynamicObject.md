@@ -1,6 +1,6 @@
 # DynamicObject
 
-Defined in [`2006Scape Client/src/main/java/DynamicObject.java`](2006Scape Client/src/main/java/DynamicObject.java).
+Defined in [`2006Scape Client/src/main/java/game/DynamicObject.java`](2006Scape Client/src/main/java/game/DynamicObject.java).
 
 Dynamic Object helper class.
 

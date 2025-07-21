@@ -1,6 +1,6 @@
 # Instrument
 
-Defined in [`2006Scape Client/src/main/java/Instrument.java`](2006Scape Client/src/main/java/Instrument.java).
+Defined in [`2006Scape Client/src/main/java/audio/Instrument.java`](2006Scape Client/src/main/java/audio/Instrument.java).
 
 Instrument helper class.
 

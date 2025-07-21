@@ -1,6 +1,6 @@
 # ModelHeader
 
-Defined in [`2006Scape Client/src/main/java/ModelHeader.java`](2006Scape Client/src/main/java/ModelHeader.java).
+Defined in [`2006Scape Client/src/main/java/graphics/ModelHeader.java`](2006Scape Client/src/main/java/graphics/ModelHeader.java).
 
 Model Header helper class.
 

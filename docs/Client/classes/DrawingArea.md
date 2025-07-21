@@ -1,6 +1,6 @@
 # DrawingArea
 
-Defined in [`2006Scape Client/src/main/java/DrawingArea.java`](2006Scape Client/src/main/java/DrawingArea.java).
+Defined in [`2006Scape Client/src/main/java/graphics/DrawingArea.java`](2006Scape Client/src/main/java/graphics/DrawingArea.java).
 
 Drawing Area helper class.
 

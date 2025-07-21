@@ -1,6 +1,6 @@
 # NPC
 
-Defined in [`2006Scape Client/src/main/java/NPC.java`](2006Scape Client/src/main/java/NPC.java).
+Defined in [`2006Scape Client/src/main/java/game/NPC.java`](2006Scape Client/src/main/java/game/NPC.java).
 
 NPC helper class.
 

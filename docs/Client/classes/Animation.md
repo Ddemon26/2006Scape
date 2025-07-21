@@ -1,6 +1,6 @@
 # Animation
 
-Defined in [`2006Scape Client/src/main/java/Animation.java`](2006Scape Client/src/main/java/Animation.java).
+Defined in [`2006Scape Client/src/main/java/graphics/Animation.java`](2006Scape Client/src/main/java/graphics/Animation.java).
 
 Animation helper class.
 

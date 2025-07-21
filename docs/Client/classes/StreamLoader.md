@@ -1,6 +1,6 @@
 # StreamLoader
 
-Defined in [`2006Scape Client/src/main/java/StreamLoader.java`](2006Scape Client/src/main/java/StreamLoader.java).
+Defined in [`2006Scape Client/src/main/java/network/StreamLoader.java`](2006Scape Client/src/main/java/network/StreamLoader.java).
 
 Stream Loader helper class.
 

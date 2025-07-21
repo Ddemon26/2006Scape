@@ -1,6 +1,6 @@
 # Censor
 
-Defined in [`2006Scape Client/src/main/java/Censor.java`](2006Scape Client/src/main/java/Censor.java).
+Defined in [`2006Scape Client/src/main/java/util/Censor.java`](2006Scape Client/src/main/java/util/Censor.java).
 
 Censor helper class.
 

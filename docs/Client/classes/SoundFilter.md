@@ -1,6 +1,6 @@
 # SoundFilter
 
-Defined in [`2006Scape Client/src/main/java/SoundFilter.java`](2006Scape Client/src/main/java/SoundFilter.java).
+Defined in [`2006Scape Client/src/main/java/audio/SoundFilter.java`](2006Scape Client/src/main/java/audio/SoundFilter.java).
 
 Sound Filter helper class.
 

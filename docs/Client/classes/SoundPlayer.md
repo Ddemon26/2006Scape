@@ -1,6 +1,6 @@
 # SoundPlayer
 
-Defined in [`2006Scape Client/src/main/java/SoundPlayer.java`](2006Scape Client/src/main/java/SoundPlayer.java).
+Defined in [`2006Scape Client/src/main/java/audio/SoundPlayer.java`](2006Scape Client/src/main/java/audio/SoundPlayer.java).
 
 Sound Player helper class.
 

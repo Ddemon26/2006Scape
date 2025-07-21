@@ -1,6 +1,6 @@
 # ClientSettings
 
-Defined in [`2006Scape Client/src/main/java/ClientSettings.java`](2006Scape Client/src/main/java/ClientSettings.java).
+Defined in [`2006Scape Client/src/main/java/util/ClientSettings.java`](2006Scape Client/src/main/java/util/ClientSettings.java).
 
 ClientSettings  @author Andrew (I'm A Boss on Rune-Server and Mr Extremez on Mopar & Runelocus)
 

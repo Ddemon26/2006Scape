@@ -1,6 +1,6 @@
 # Model
 
-Defined in [`2006Scape Client/src/main/java/Model.java`](2006Scape Client/src/main/java/Model.java).
+Defined in [`2006Scape Client/src/main/java/graphics/Model.java`](2006Scape Client/src/main/java/graphics/Model.java).
 
 Model helper class.
 

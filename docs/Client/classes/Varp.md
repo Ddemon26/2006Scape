@@ -1,6 +1,6 @@
 # Varp
 
-Defined in [`2006Scape Client/src/main/java/Varp.java`](2006Scape Client/src/main/java/Varp.java).
+Defined in [`2006Scape Client/src/main/java/game/Varp.java`](2006Scape Client/src/main/java/game/Varp.java).
 
 Varp helper class.
 
