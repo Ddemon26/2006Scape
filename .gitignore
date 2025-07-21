@@ -19,4 +19,3 @@
 data/secrets.json
 /data/logs
 /.claude
-*.py
