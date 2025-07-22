@@ -65,6 +65,7 @@ import core.ScreenshotUtil;
 import core.ClipboardUtil;
 import core.MinimapRenderer;
 import core.GroundItemSpawner;
+import core.MenuManager;
 import render.Background;
 import render.BoundaryObject;
 import render.CollisionMap;
@@ -106,25 +107,6 @@ public class Game extends RSApplet {
 	
 // Moved to GameUtils for readability
 
-        public void sendFrame126(String str,int i) {
-                RSInterface.interfaceCache[i].disabledText = str;
-                if(RSInterface.interfaceCache[i].parentID == tabInterfaceIDs[tabID])
-                        needDrawTabArea = true;
-        }
-
-        /* see MusicSystem.musicData */
-
-	public boolean menuHasAddFriend(int j) {
-		if (j < 0) {
-			return false;
-		}
-		int k = menuActionID[j];
-		if (k >= 2000) {
-			k -= 2000;
-		}
-		return k == 337;
-	}
-
 public void drawChatArea() {
         chatAreaRenderer.drawChatArea();
 }
@@ -161,114 +143,13 @@ public void drawChatArea() {
 		}
 	}
 
-	public boolean processMenuClick() {
-		if (activeInterfaceType != 0) {
-			return false;
-		}
-		int j = super.clickMode3;
-		if (spellSelected == 1 && super.saveClickX >= 516 && super.saveClickY >= 160 && super.saveClickX <= 765 && super.saveClickY <= 205) {
-			j = 0;
-		}
-		if (menuOpen) {
-			if (j != 1) {
-				int k = super.mouseX;
-				int j1 = super.mouseY;
-				if (menuScreenArea == 0) {
-					k -= 4;
-					j1 -= 4;
-				}
-				if (menuScreenArea == 1) {
-					k -= 553;
-					j1 -= 205;
-				}
-				if (menuScreenArea == 2) {
-					k -= 17;
-					j1 -= 357;
-				}
-				if (k < menuOffsetX - 10 || k > menuOffsetX + menuWidth + 10 || j1 < menuOffsetY - 10 || j1 > menuOffsetY + menuHeight + 10) {
-					menuOpen = false;
-					if (menuScreenArea == 1) {
-						needDrawTabArea = true;
-					}
-					if (menuScreenArea == 2) {
-						inputTaken = true;
-					}
-				}
-			}
-			if (j == 1) {
-				int l = menuOffsetX;
-				int k1 = menuOffsetY;
-				int i2 = menuWidth;
-				int k2 = super.saveClickX;
-				int l2 = super.saveClickY;
-				if (menuScreenArea == 0) {
-					k2 -= 4;
-					l2 -= 4;
-				}
-				if (menuScreenArea == 1) {
-					k2 -= 553;
-					l2 -= 205;
-				}
-				if (menuScreenArea == 2) {
-					k2 -= 17;
-					l2 -= 357;
-				}
-				int i3 = -1;
-				for (int j3 = 0; j3 < menuActionRow; j3++) {
-					int k3 = k1 + 31 + (menuActionRow - 1 - j3) * 15;
-					if (k2 > l && k2 < l + i2 && l2 > k3 - 13 && l2 < k3 + 3) {
-						i3 = j3;
-					}
-				}
+    public boolean processMenuClick() {
+        return menuManager.processMenuClick();
+    }
 
-				if (i3 != -1) {
-					doAction(i3);
-				}
-				menuOpen = false;
-				if (menuScreenArea == 1) {
-					needDrawTabArea = true;
-				}
-				if (menuScreenArea == 2) {
-					inputTaken = true;
-				}
-			}
-		} else {
-			if (j == 1 && menuActionRow > 0) {
-				int i1 = menuActionID[menuActionRow - 1];
-				if (i1 == 632 || i1 == 78 || i1 == 867 || i1 == 431 || i1 == 53 || i1 == 74 || i1 == 454 || i1 == 539 || i1 == 493 || i1 == 847 || i1 == 447 || i1 == 1125) {
-					int l1 = menuActionCmd2[menuActionRow - 1];
-					int j2 = menuActionCmd3[menuActionRow - 1];
-                                        RSInterface targetInterface = RSInterface.interfaceCache[j2];
-                                        if (targetInterface.allowItemDragging || targetInterface.insertItems) {
-						itemBeingDragged = false;
-						dragCounter = 0;
-						dragInterfaceId = j2;
-						draggedSlot = l1;
-						activeInterfaceType = 2;
-						dragStartX = super.saveClickX;
-						dragStartY = super.saveClickY;
-						if (RSInterface.interfaceCache[j2].parentID == openInterfaceID) {
-							activeInterfaceType = 1;
-						}
-						if (RSInterface.interfaceCache[j2].parentID == backDialogID) {
-							activeInterfaceType = 3;
-						}
-						return true;
-					}
-				}
-			}
-			if (j == 1 && (oneMouseButtonMode == 1 || menuHasAddFriend(menuActionRow - 1)) && menuActionRow > 2) {
-				j = 2;
-			}
-			if (j == 1 && menuActionRow > 0) {
-				doAction(menuActionRow - 1);
-			}
-			if (j == 2 && menuActionRow > 0) {
-				determineMenuSize();
-			}
-		}
-		return false;
-	}
+    public void determineMenuSize() {
+        menuManager.determineMenuSize();
+    }
 
 	public void saveMidi(boolean flag, byte abyte0[]) {
 		Signlink.midifade = flag ? 1 : 0;
@@ -1528,59 +1409,9 @@ public void drawChatArea() {
 		}
 	}
 
-	public void drawMenu() {
-		int xPos = menuOffsetX;
-		int yPos = menuOffsetY;
-		int menuW = menuWidth;
-		int menuH = menuHeight;
-		int fill = 0x5d5447;
-
-		DrawingArea.fillArea(menuH, yPos, fill, menuW, xPos);
-		DrawingArea.fillArea(16, yPos + 1, 0, menuW - 2, xPos + 1);
-		DrawingArea.fillPixels(yPos + 18, menuH - 19, 0, xPos + 1, menuW - 2);
-		chatTextDrawingArea.textLeft(fill, "Choose Option", yPos + 14, xPos + 3);
-
-		// //Border
-		// DrawingArea.drawFrameRounded(yPos + 2, menuH - 4, 250, 0x706a5e, menuW, xPos);
-		// DrawingArea.drawFrameRounded(yPos + 1, menuH - 2, 250, 0x706a5e, menuW - 2, xPos + 1);
-		// DrawingArea.drawFrameRounded(yPos, menuH, 250, 0x706a5e, menuW - 4, xPos + 2);
-		// //Border
-		// DrawingArea.drawFrameRounded(yPos + 1, menuH - 2, 250, 0x2d2822, menuW - 6, xPos + 3);
-		// DrawingArea.drawFrameRounded(yPos + 2, menuH - 4, 250, 0x2d2822, menuW - 4, xPos + 2);
-		// DrawingArea.drawFrameRounded(yPos + 3, menuH - 6, 250, 0x2d2822, menuW - 2, xPos + 1);
-		// //Border
-		// DrawingArea.drawFrameRounded(yPos + 19, menuH - 22, 250, 0x524a3d, menuW - 4, xPos + 2);
-		// DrawingArea.drawFrameRounded(yPos + 20, menuH - 22, 250, 0x524a3d, menuW - 6, xPos + 3);
-		// //Menu Fill
-		// DrawingArea.fillArea(fill, yPos + 20, menuW - 6, menuH - 23, 170, xPos + 3);
-		// //Menu Header
-		// DrawingArea.fillArea(0x2a251e, yPos + 2, menuW - 6, 17, 170, xPos + 3);
-		// chatTextDrawingArea.method385(0xc6b895, "Choose Option", yPos + 14, xPos + 3);
-
-		int mX = super.mouseX;
-		int mY = super.mouseY;
-		if (menuScreenArea == 0) {
-			mX -= 4;
-			mY -= 4;
-		}
-		if (menuScreenArea == 1) {
-			mX -= 553;
-			mY -= 205;
-		}
-		if (menuScreenArea == 2) {
-			mX -= 17;
-			mY -= 357;
-		}
-		for (int rowItem = 0; rowItem < menuActionRow; rowItem++) {
-			int yPosItem = yPos + 31 + (menuActionRow - 1 - rowItem) * 15;
-			int colorItem = 0xffffff;
-			if (mX > xPos && mX < xPos + menuW && mY > yPosItem - 13 && mY < yPosItem + 3) {
-				colorItem = 0xffff00;
-			}
-			chatTextDrawingArea.textLeftShadow(true, xPos + 3, colorItem, menuActionName[rowItem], yPosItem);
-		}
-
-	}
+        public void drawMenu() {
+                menuManager.drawMenu();
+        }
 
         public void addFriend(long l) {
                 friendManager.addFriend(l);
@@ -2582,8 +2413,8 @@ public void drawChatArea() {
 						stream.writeShortLEA(draggedSlot);
 						stream.writeShortLEDup(mouseInvInterfaceIndex);
 					}
-				} else if ((oneMouseButtonMode == 1 || menuHasAddFriend(menuActionRow - 1)) && menuActionRow > 2) {
-					determineMenuSize();
+                                } else if ((oneMouseButtonMode == 1 || menuManager.menuHasAddFriend(menuActionRow - 1)) && menuActionRow > 2) {
+                                        menuManager.determineMenuSize();
 				} else if (menuActionRow > 0) {
 					doAction(menuActionRow - 1);
 				}
@@ -2609,7 +2440,7 @@ public void drawChatArea() {
 			inputTaken = true;
 			super.clickMode3 = 0;
 		}
-		if (!processMenuClick()) {
+                if (!menuManager.processMenuClick()) {
 			processMainScreenClick();
 			processTabClick();
 			processChatModeClick();
@@ -8269,80 +8100,6 @@ public void drawChatArea() {
 		}
 	}
 
-	public void determineMenuSize() {
-		int i = chatTextDrawingArea.getTextWidth("Choose Option");
-		for (int j = 0; j < menuActionRow; j++) {
-			int k = chatTextDrawingArea.getTextWidth(menuActionName[j]);
-			if (k > i) {
-				i = k;
-			}
-		}
-
-		i += 8;
-		int l = 15 * menuActionRow + 21;
-		if (super.saveClickX > 4 && super.saveClickY > 4 && super.saveClickX < 516 && super.saveClickY < 338) {
-			int i1 = super.saveClickX - 4 - i / 2;
-			if (i1 + i > 512) {
-				i1 = 512 - i;
-			}
-			if (i1 < 0) {
-				i1 = 0;
-			}
-			int l1 = super.saveClickY - 4;
-			if (l1 + l > 334) {
-				l1 = 334 - l;
-			}
-			if (l1 < 0) {
-				l1 = 0;
-			}
-			menuOpen = true;
-			menuScreenArea = 0;
-			menuOffsetX = i1;
-			menuOffsetY = l1;
-			menuWidth = i;
-			menuHeight = 15 * menuActionRow + 22;
-		}
-		if (super.saveClickX > 553 && super.saveClickY > 205 && super.saveClickX < 743 && super.saveClickY < 466) {
-			int j1 = super.saveClickX - 553 - i / 2;
-			if (j1 < 0) {
-				j1 = 0;
-			} else if (j1 + i > 190) {
-				j1 = 190 - i;
-			}
-			int i2 = super.saveClickY - 205;
-			if (i2 < 0) {
-				i2 = 0;
-			} else if (i2 + l > 261) {
-				i2 = 261 - l;
-			}
-			menuOpen = true;
-			menuScreenArea = 1;
-			menuOffsetX = j1;
-			menuOffsetY = i2;
-			menuWidth = i;
-			menuHeight = 15 * menuActionRow + 22;
-		}
-		if (super.saveClickX > 17 && super.saveClickY > 357 && super.saveClickX < 496 && super.saveClickY < 453) {
-			int k1 = super.saveClickX - 17 - i / 2;
-			if (k1 < 0) {
-				k1 = 0;
-			} else if (k1 + i > 479) {
-				k1 = 479 - i;
-			}
-			int j2 = super.saveClickY - 357;
-			if (j2 < 0) {
-				j2 = 0;
-			} else if (j2 + l > 96) {
-				j2 = 96 - l;
-			}
-			menuOpen = true;
-			menuScreenArea = 2;
-			menuOffsetX = k1;
-			menuOffsetY = j2;
-			menuWidth = i;
-			menuHeight = 15 * menuActionRow + 22;
-		}
-	}
 
        public void updateSelfMovement(Stream stream) {
 		stream.initBitAccess();
@@ -11146,6 +10903,7 @@ public void drawChatArea() {
                 musicController = new GameMusicController(this);
                 minimapRenderer = new MinimapRenderer(this);
                 groundItemSpawner = new GroundItemSpawner(this);
+                menuManager = new MenuManager(this);
                 friendManager = new FriendManager(this);
                 ignoreManager = new IgnoreManager(this);
         }
@@ -11568,6 +11326,7 @@ public void drawChatArea() {
         public final GameMusicController musicController;
         public final MinimapRenderer minimapRenderer;
         public final GroundItemSpawner groundItemSpawner;
+        public final MenuManager menuManager;
         public int flameOffset;
 	public int backDialogID;
 	public int cameraXOffset;

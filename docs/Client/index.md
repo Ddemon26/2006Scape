@@ -47,6 +47,7 @@
 - [MidiHandler](Client/classes/MidiHandler.md)
 - [MidiPlayer](Client/classes/MidiPlayer.md)
 - [MinimapRenderer](Client/classes/MinimapRenderer.md)
+- [MenuManager](Client/classes/MenuManager.md)
 - [Model](Client/classes/Model.md)
 - [ModelHeader](Client/classes/ModelHeader.md)
 - [MouseDetection](Client/classes/MouseDetection.md)
