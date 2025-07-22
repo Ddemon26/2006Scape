@@ -19,3 +19,6 @@
 data/secrets.json
 /data/logs
 /.claude
+target/checkstyle-cachefile
+target/checkstyle-checker.xml
+target/checkstyle-result.xml
