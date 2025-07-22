@@ -99,8 +99,10 @@ import util.Varp;
  */
 @SuppressWarnings("serial")
 public class Game extends RSApplet {
-	
-	private boolean graphicsEnabled = true;
+
+        private boolean graphicsEnabled = true;
+        private final FriendManager friendManager;
+        private final IgnoreManager ignoreManager;
 	
 // Moved to GameUtils for readability
 
@@ -1265,32 +1267,9 @@ public void drawChatArea() {
 		}
 	}
 
-	public void delFriend(long l) {
-		try {
-			if (l == 0L) {
-				return;
-			}
-			for (int i = 0; i < friendsCount; i++) {
-				if (friendsListAsLongs[i] != l) {
-					continue;
-				}
-				friendsCount--;
-				needDrawTabArea = true;
-				for (int j = i; j < friendsCount; j++) {
-					friendsList[j] = friendsList[j + 1];
-					friendsNodeIDs[j] = friendsNodeIDs[j + 1];
-					friendsListAsLongs[j] = friendsListAsLongs[j + 1];
-				}
-
-				stream.createFrame(215);
-				stream.writeQWord(l);
-				break;
-			}
-		} catch (RuntimeException runtimeexception) {
-			Signlink.reporterror("18622, " + false + ", " + l + ", " + runtimeexception.toString());
-			throw new RuntimeException();
-		}
-	}
+        public void delFriend(long l) {
+                friendManager.delFriend(l);
+        }
 
 	public void drawButton(boolean enabled, int x, int y, int width) {
 		StreamLoader streamLoader_2 = streamLoaderForName(4, "2d graphics", "media", expectedCRCs[4], 40);
@@ -1603,50 +1582,9 @@ public void drawChatArea() {
 
 	}
 
-	public void addFriend(long l) {
-		try {
-			if (l == 0L) {
-				return;
-			}
-			if (friendsCount >= 100 && friendsListStatus != 1) {
-				pushMessage("Your friendlist is full. Max of 100 for free users, and 200 for members", 0, "");
-				return;
-			}
-			if (friendsCount >= 200) {
-				pushMessage("Your friendlist is full. Max of 100 for free users, and 200 for members", 0, "");
-				return;
-			}
-			String s = TextClass.fixName(TextClass.nameForLong(l));
-			for (int i = 0; i < friendsCount; i++) {
-				if (friendsListAsLongs[i] == l) {
-					pushMessage(s + " is already on your friend list", 0, "");
-					return;
-				}
-			}
-			for (int j = 0; j < ignoreCount; j++) {
-				if (ignoreListAsLongs[j] == l) {
-					pushMessage("Please remove " + s + " from your ignore list first", 0, "");
-					return;
-				}
-			}
-
-			if (s.equals(myPlayer.name)) {
-				return;
-			} else {
-				friendsList[friendsCount] = s;
-				friendsListAsLongs[friendsCount] = l;
-				friendsNodeIDs[friendsCount] = 0;
-				friendsCount++;
-				needDrawTabArea = true;
-				stream.createFrame(188);
-				stream.writeQWord(l);
-				return;
-			}
-		} catch (RuntimeException runtimeexception) {
-			Signlink.reporterror("15283, " + (byte) 68 + ", " + l + ", " + runtimeexception.toString());
-		}
-		throw new RuntimeException();
-	}
+        public void addFriend(long l) {
+                friendManager.addFriend(l);
+        }
 
         public int getTileHeight(int plane, int worldY, int worldX) {
                 int l = worldX >> 7;
@@ -8160,17 +8098,9 @@ public void drawChatArea() {
 		clickCycle = 0;
 	}
 
-	public boolean isFriendOrSelf(String s) {
-		if (s == null) {
-			return false;
-		}
-		for (int i = 0; i < friendsCount; i++) {
-			if (s.equalsIgnoreCase(friendsList[i])) {
-				return true;
-			}
-		}
-		return s.equalsIgnoreCase(myPlayer.name);
-	}
+        public boolean isFriendOrSelf(String s) {
+                return friendManager.isFriendOrSelf(s);
+        }
 
 	public static String combatDiffColor(int i, int j) {
 		int k = i - j;
@@ -8289,39 +8219,9 @@ public void drawChatArea() {
 		}
 	}
 
-	public void addIgnore(long l) {
-		try {
-			if (l == 0L) {
-				return;
-			}
-			if (ignoreCount >= 100) {
-				pushMessage("Your ignore list is full. Max of 100 hit", 0, "");
-				return;
-			}
-			String s = TextClass.fixName(TextClass.nameForLong(l));
-			for (int j = 0; j < ignoreCount; j++) {
-				if (ignoreListAsLongs[j] == l) {
-					pushMessage(s + " is already on your ignore list", 0, "");
-					return;
-				}
-			}
-			for (int k = 0; k < friendsCount; k++) {
-				if (friendsListAsLongs[k] == l) {
-					pushMessage("Please remove " + s + " from your friend list first", 0, "");
-					return;
-				}
-			}
-
-			ignoreListAsLongs[ignoreCount++] = l;
-			needDrawTabArea = true;
-			stream.createFrame(133);
-			stream.writeQWord(l);
-			return;
-		} catch (RuntimeException runtimeexception) {
-			Signlink.reporterror("45688, " + l + ", " + 4 + ", " + runtimeexception.toString());
-		}
-		throw new RuntimeException();
-	}
+        public void addIgnore(long l) {
+                ignoreManager.addIgnore(l);
+        }
 
        public void animatePlayers() {
 		for (int i = -1; i < playerCount; i++) {
@@ -8663,29 +8563,9 @@ public void drawChatArea() {
 		// }
 	}
 
-	public void delIgnore(long l) {
-		try {
-			if (l == 0L) {
-				return;
-			}
-			for (int j = 0; j < ignoreCount; j++) {
-				if (ignoreListAsLongs[j] == l) {
-					ignoreCount--;
-					needDrawTabArea = true;
-					System.arraycopy(ignoreListAsLongs, j + 1, ignoreListAsLongs, j, ignoreCount - j);
-
-					stream.createFrame(74);
-					stream.writeQWord(l);
-					return;
-				}
-			}
-
-			return;
-		} catch (RuntimeException runtimeexception) {
-			Signlink.reporterror("47229, " + 3 + ", " + l + ", " + runtimeexception.toString());
-		}
-		throw new RuntimeException();
-	}
+        public void delIgnore(long l) {
+                ignoreManager.delIgnore(l);
+        }
 
 	public String getParameter(String s) {
 		if (Signlink.mainapp != null) {
@@ -11266,6 +11146,8 @@ public void drawChatArea() {
                 musicController = new GameMusicController(this);
                 minimapRenderer = new MinimapRenderer(this);
                 groundItemSpawner = new GroundItemSpawner(this);
+                friendManager = new FriendManager(this);
+                ignoreManager = new IgnoreManager(this);
         }
 	public CRC32 fileCRC;
 	public static String server;
