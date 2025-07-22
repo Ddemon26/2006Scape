@@ -2,6 +2,11 @@ package core;
 
 import net.Signlink;
 import util.Decompressor;
+import game.EntityDef;
+import game.ItemDef;
+import game.ObjectDef;
+import game.Player;
+import game.SpotAnim;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -62,5 +67,16 @@ public final class CacheUtils {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /** Clears cached model nodes to free memory. */
+    public static void unlinkMRUNodes() {
+        ObjectDef.mruNodes1.unlinkAll();
+        ObjectDef.mruNodes2.unlinkAll();
+        EntityDef.mruNodes.unlinkAll();
+        ItemDef.modelCache.unlinkAll();
+        ItemDef.spriteCache.unlinkAll();
+        Player.mruNodes.unlinkAll();
+        SpotAnim.modelCache.unlinkAll();
     }
 }

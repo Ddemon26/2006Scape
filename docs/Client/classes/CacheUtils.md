@@ -10,5 +10,6 @@ public final class CacheUtils {
     public static String indexLocation(int cacheIndex, int index)
     public static void repackCacheIndex(int cacheIndex, Decompressor[] decompressors)
     public static byte[] fileToByteArray(int cacheIndex, int index)
+    public static void unlinkMRUNodes()
 }
 ```
