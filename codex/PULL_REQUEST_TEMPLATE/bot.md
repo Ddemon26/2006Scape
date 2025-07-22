@@ -8,12 +8,12 @@
 ## ✅ Pre‑flight Checklist
 
 | Item                                | Status |
-| ----------------------------------- | ------ |
+|-------------------------------------| ------ |
 | `mvn -B verify -o` passes (offline) |        |
 | `spotbugs:check` passes             |        |
-| ≥ 80 % coverage on touched lines    |        |
-| Net Δ lines < 5 000                 |        |
-| ≤ 10 files modified                 |        |
+| ≥ 80 % coverage on touched lines    |        |
+| Net Δ lines < 5 000                 |        |
+| ≤ 10 files modified                 |        |
 | Branch rebased onto latest `main`   |        |
 | PR labeled `bot`                    |        |
 | No new external dependencies        |        |
@@ -41,7 +41,7 @@
 
 ---
 
-## 📊 Diff Stat
+## 📊 Diff Stat
 
 ```text
 <!-- paste output of `git diff --stat` -->
@@ -57,5 +57,6 @@
 
 ## 📝 Rollback Plan
 
-If this PR causes a failure on `main`, Section 9 of **AGENTS.md** applies and the agent will open an automatic revert PR using the command above.
+If this PR causes a failure on `main`, Section 9 of **AGENTS.md** applies and the agent will open an automatic 
+revert PR using the command above.
 
