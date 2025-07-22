@@ -57,6 +57,7 @@ import net.RSSocket;
 import net.Signlink;
 import net.Stream;
 import core.MusicSystem;
+import core.ChatAreaRenderer;
 import render.Background;
 import render.BoundaryObject;
 import render.CollisionMap;
@@ -217,141 +218,9 @@ static final boolean constructMusic() {
 		return k == 337;
 	}
 
-	public void drawChatArea() {
-		fullScreenBackground.initDrawingArea();
-		Texture.lineOffsets = chatAreaOffsets;
-		chatBack.draw(0, 0);
-		if (messagePromptRaised) {
-			chatTextDrawingArea.textCenter(0, inputPrompt, 40, 239);
-			chatTextDrawingArea.textCenter(128, promptInput + "*", 60, 239);
-		} else if (inputDialogState == 1) {
-			chatTextDrawingArea.textCenter(0, "Enter amount:", 40, 239);
-			chatTextDrawingArea.textCenter(128, amountOrNameInput + "*", 60, 239);
-		} else if (inputDialogState == 2) {
-			chatTextDrawingArea.textCenter(0, "Enter name:", 40, 239);
-			chatTextDrawingArea.textCenter(128, amountOrNameInput + "*", 60, 239);
-		} else if (messagePrompt != null) {
-			chatTextDrawingArea.textCenter(0, messagePrompt, 40, 239);
-			chatTextDrawingArea.textCenter(128, "Click to continue", 60, 239);
-		} else if (backDialogID != -1) {
-			drawInterface(0, 0, RSInterface.interfaceCache[backDialogID], 0);//CHANGED THIS - andrew was 0, 0
-		} else if (dialogID != -1) {
-			drawInterface(0, 0, RSInterface.interfaceCache[dialogID], 0);//CHANGED THIS - andrew was 0, 0
-		} else {
-			TextDrawingArea textDrawingArea = boldFont;
-			int j = 0;
-			DrawingArea.setDrawingArea(77, 0, 463, 0);
-			for (int k = 0; k < 100; k++) {
-				if (chatMessages[k] != null) {
-					int l = chatTypes[k];
-					int i1 = 70 - j * 14 + chatScrollPosition;
-					String s1 = chatNames[k];
-					byte byte0 = 0;
-					if (s1 != null && s1.startsWith("@cr1@")) {
-						s1 = s1.substring(5);
-						byte0 = 1;
-					}
-					if (s1 != null && s1.startsWith("@cr2@")) {
-						s1 = s1.substring(5);
-						byte0 = 2;
-					}
-					if (l == 0) {
-						if (i1 > 0 && i1 < 110) {
-							try {
-							textDrawingArea.textLeftShadow(false, 4, 0, chatMessages[k], i1);
-							} catch (Exception e) {
-								
-							}
-						}
-						j++;
-					}
-					if ((l == 1 || l == 2) && (l == 1 || publicChatMode == 0 || publicChatMode == 1 && isFriendOrSelf(s1))) {
-						if (i1 > 0 && i1 < 110) {
-							int j1 = 4;
-							if (byte0 == 1) {
-								modIcons[0].draw(j1, i1 - 12);
-								j1 += 14;
-							}
-							if (byte0 == 2) {
-								modIcons[1].draw(j1, i1 - 12);
-								j1 += 14;
-							}
-							textDrawingArea.textLeft(0, s1 + ":", i1, j1);
-							j1 += textDrawingArea.getTextWidth(s1) + 8;
-							textDrawingArea.textLeft(255, chatMessages[k], i1, j1);
-						}
-						j++;
-					}
-					if ((l == 3 || l == 7) && splitpublicChat == 0 && (l == 7 || privateChatMode == 0 || privateChatMode == 1 && isFriendOrSelf(s1))) {
-						if (i1 > 0 && i1 < 110) {
-							int k1 = 4;
-							textDrawingArea.textLeft(0, "From", i1, k1);
-							k1 += textDrawingArea.getTextWidth("From ");
-							if (byte0 == 1) {
-								modIcons[0].draw(k1, i1 - 12);
-								k1 += 14;
-							}
-							if (byte0 == 2) {
-								modIcons[1].draw(k1, i1 - 12);
-								k1 += 14;
-							}
-							textDrawingArea.textLeft(0, s1 + ":", i1, k1);
-							k1 += textDrawingArea.getTextWidth(s1) + 8;
-							textDrawingArea.textLeft(0x800000, chatMessages[k], i1, k1);
-						}
-						j++;
-					}
-					if (l == 4 && (tradeMode == 0 || tradeMode == 1 && isFriendOrSelf(s1))) {
-						if (i1 > 0 && i1 < 110) {
-							textDrawingArea.textLeft(0x800080, s1 + " " + chatMessages[k], i1, 4);
-						}
-						j++;
-					}
-					if (l == 5 && splitpublicChat == 0 && privateChatMode < 2) {
-						if (i1 > 0 && i1 < 110) {
-							textDrawingArea.textLeft(0x800000, chatMessages[k], i1, 4);
-						}
-						j++;
-					}
-					if (l == 6 && splitpublicChat == 0 && privateChatMode < 2) {
-						if (i1 > 0 && i1 < 110) {
-							textDrawingArea.textLeft(0, "To " + s1 + ":", i1, 4);
-							textDrawingArea.textLeft(0x800000, chatMessages[k], i1, 12 + textDrawingArea.getTextWidth("To " + s1));
-						}
-						j++;
-					}
-					if (l == 8 && (tradeMode == 0 || tradeMode == 1 && isFriendOrSelf(s1))) {
-						if (i1 > 0 && i1 < 110) {
-							textDrawingArea.textLeft(0x7e3200, s1 + " " + chatMessages[k], i1, 4);
-						}
-						j++;
-					}
-				}
-			}
-
-			DrawingArea.defaultDrawingAreaSize();
-			chatScrollHeight = j * 14 + 7;
-			if (chatScrollHeight < 78) {
-				chatScrollHeight = 78;
-			}
-			drawScrollThumb(77, chatScrollHeight - chatScrollPosition - 77, 0, 463, chatScrollHeight);
-			String s;
-			if (myPlayer != null && myPlayer.name != null) {
-				s = myPlayer.name;
-			} else {
-				s = TextClass.fixName(myUsername);
-			}
-			textDrawingArea.textLeft(0, s + ":", 90, 4);
-			textDrawingArea.textLeft(255, inputString + "*", 90, 6 + textDrawingArea.getTextWidth(s + ": "));
-			DrawingArea.drawHorizontalLine(77, 0, 479, 0);
-		}
-		if (menuOpen && menuScreenArea == 2) {
-			drawMenu();
-		}
-		fullScreenBackground.drawGraphics(357, super.graphics, 17);
-		tabAreaBuffer.initDrawingArea();
-		Texture.lineOffsets = chatBoxAreaOffsets;
-	}
+public void drawChatArea() {
+        chatAreaRenderer.drawChatArea();
+}
 
 	public void init() {
 		try {
@@ -12013,9 +11882,10 @@ static final boolean constructMusic() {
 		cameraXOffsetSpeed = 2;
 		pathTileX = new int[4000];
 		pathTileY = new int[4000];
-		unusedSlotIndex = -1;
-		fileCRC = new CRC32();
-	}
+                unusedSlotIndex = -1;
+                fileCRC = new CRC32();
+                chatAreaRenderer = new ChatAreaRenderer(this);
+        }
 	public CRC32 fileCRC;
 	public static String server;
 	public int ignoreCount;
@@ -12426,10 +12296,11 @@ static final boolean constructMusic() {
 	public String loginMessage2;
 	public int mapEventX;
 	public int mapEventY;
-	public TextDrawingArea plainFont;
-	public TextDrawingArea boldFont;
-	public TextDrawingArea chatTextDrawingArea;
-	public int flameOffset;
+        public TextDrawingArea plainFont;
+        public TextDrawingArea boldFont;
+        public TextDrawingArea chatTextDrawingArea;
+        public final ChatAreaRenderer chatAreaRenderer;
+        public int flameOffset;
 	public int backDialogID;
 	public int cameraXOffset;
 	public int cameraXOffsetSpeed;
