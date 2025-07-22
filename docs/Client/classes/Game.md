@@ -7,13 +7,11 @@ NOTICE: IF YOU CHANGE ANYTHING IN GAME.JAVA, PLEASE COPY-PASTE THE WHOLE CLASS O
 ```java
 public class Game extends RSApplet {
 // music methods moved to [GameMusicController](GameMusicController.md)
-public void sendFrame126(String str,int i)
-public boolean menuHasAddFriend(int j)
 public void drawChatArea()
 public void init()
 public void startRunnable(Runnable runnable, int i)
 public Socket openSocket(int i) throws IOException
-public boolean processMenuClick()
+public boolean processMenuClick() -> MenuManager.processMenuClick
 public void saveMidi(boolean flag, byte abyte0[])
 public void constructMapRegion()
 // cache cleanup moved to [CacheUtils](CacheUtils.md)
@@ -35,7 +33,7 @@ public void drawTabArea()
 public void animateTextures(int j)
 public void updateEntityText()
 public void calcCameraPos()
-public void drawMenu()
+// menu rendering moved to [MenuManager](MenuManager.md)
 public void addFriend(long l) -> FriendManager.addFriend
 public int getTileHeight(int plane, int worldY, int worldX)
 public static String intToKOrMil(int j)
@@ -122,7 +120,7 @@ public void draw3dScreen()
 public void addIgnore(long l) -> IgnoreManager.addIgnore
 public void animatePlayers()
 public void processPendingSpawns()
-public void determineMenuSize()
+// menu sizing moved to [MenuManager](MenuManager.md)
 public void updateSelfMovement(Stream stream)
 public void nullLoader()
 public boolean updateInterfaceAnimations(int i, int j)
