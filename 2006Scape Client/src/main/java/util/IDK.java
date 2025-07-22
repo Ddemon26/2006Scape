@@ -123,7 +123,7 @@ public final class IDK {
                 return model;
         }
 
-        private IDK() {
+        public IDK() {
                 bodyPartId = -1;
                 recolorOriginal = new int[6];
                 recolorTarget = new int[6];

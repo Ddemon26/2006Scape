@@ -54,7 +54,7 @@ public final class VarBit {
 		} while (true);
 	}
 
-	private VarBit() {
+	public VarBit() {
                 isActive = false;
 	}
 
