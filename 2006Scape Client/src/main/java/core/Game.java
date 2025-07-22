@@ -58,6 +58,8 @@ import net.Signlink;
 import net.Stream;
 import core.MusicSystem;
 import core.ChatAreaRenderer;
+import core.LoginScreen;
+import core.FlamesEffect;
 import render.Background;
 import render.BoundaryObject;
 import render.CollisionMap;
@@ -1996,7 +1998,7 @@ public void drawChatArea() {
 		}
 		loopCycle++;
 		if (!loggedIn) {
-			processLoginScreenInput();
+                       loginScreen.processLoginScreenInput();
 		} else {
 			mainGameProcessor();
 		}
@@ -2599,70 +2601,14 @@ public void drawChatArea() {
 		} while (true);
 	}
 
-	public void calcFlamesPosition() {
-		char c = '\u0100';
-		for (int j = 10; j < 117; j++) {
-			int k = (int) (Math.random() * 100D);
-			if (k < 50) {
-				flameBuffer1[j + (c - 2 << 7)] = 255;
-			}
-		}
-		for (int l = 0; l < 100; l++) {
-			int i1 = (int) (Math.random() * 124D) + 2;
-			int k1 = (int) (Math.random() * 128D) + 128;
-			int k2 = i1 + (k1 << 7);
-			flameBuffer1[k2] = 192;
-		}
+        public void calcFlamesPosition() {
+                flamesEffect.calcFlamesPosition();
+        }
 
-		for (int j1 = 1; j1 < c - 1; j1++) {
-			for (int l1 = 1; l1 < 127; l1++) {
-				int l2 = l1 + (j1 << 7);
-				flameBuffer2[l2] = (flameBuffer1[l2 - 1] + flameBuffer1[l2 + 1] + flameBuffer1[l2 - 128] + flameBuffer1[l2 + 128]) / 4;
-			}
+        public boolean saveWave(byte[] data, int i) {
+                return flamesEffect.saveWave(data, i);
+        }
 
-		}
-
-		flameOffset += 128;
-		if (flameOffset > flameGradient1.length) {
-			flameOffset -= flameGradient1.length;
-			int i2 = (int) (Math.random() * 12D);
-			randomizeBackground(runeBackgrounds[i2]);
-		}
-		for (int j2 = 1; j2 < c - 1; j2++) {
-			for (int i3 = 1; i3 < 127; i3++) {
-				int k3 = i3 + (j2 << 7);
-				int i4 = flameBuffer2[k3 + 128] - flameGradient1[k3 + flameOffset & flameGradient1.length - 1] / 5;
-				if (i4 < 0) {
-					i4 = 0;
-				}
-				flameBuffer1[k3] = i4;
-			}
-
-		}
-
-		System.arraycopy(flameLineOffsets, 1, flameLineOffsets, 0, c - 1);
-
-		flameLineOffsets[c - 1] = (int) (Math.sin((double) loopCycle / 14D) * 16D + Math.sin((double) loopCycle / 15D) * 14D + Math.sin((double) loopCycle / 16D) * 12D);
-		if (flameMainColor > 0) {
-			flameMainColor -= 4;
-		}
-		if (flameSecondaryColor > 0) {
-			flameSecondaryColor -= 4;
-		}
-		if (flameMainColor == 0 && flameSecondaryColor == 0) {
-			int l3 = (int) (Math.random() * 2000D);
-			if (l3 == 0) {
-				flameMainColor = 1024;
-			}
-			if (l3 == 1) {
-				flameSecondaryColor = 1024;
-			}
-		}
-	}
-
-	public boolean saveWave(byte abyte0[], int i) {
-		return abyte0 == null || Signlink.wavesave(abyte0, i);
-	}
 
        public void resetInterfaceAnimation(int i) {
                RSInterface parentInterface = RSInterface.interfaceCache[i];
@@ -5732,7 +5678,7 @@ public void drawChatArea() {
 			if (!flag) {
 				loginMessage1 = "";
 				loginMessage2 = "Connecting to server...";
-				drawLoginScreen(true);
+                           loginScreen.drawLoginScreen(true);
 			}
 			socketStream = new RSSocket(this, openSocket((ClientSettings.SERVER_WORLD == 1) ? 43594 : 43596 + ClientSettings.SERVER_WORLD + portOff));
 			long l = TextClass.longForName(s);
@@ -6022,7 +5968,7 @@ public void drawChatArea() {
 				for (int k1 = socketStream.read(); k1 >= 0; k1--) {
 					loginMessage1 = "You have only just left another world";
 					loginMessage2 = "Your profile will be transferred in: " + k1 + " seconds";
-					drawLoginScreen(true);
+                                   loginScreen.drawLoginScreen(true);
 					try {
 						Thread.sleep(1000L);
 					} catch (Exception _ex) {
@@ -8212,47 +8158,9 @@ public void drawChatArea() {
 		DrawingArea.setDrawingArea(l1, i1, k1, j1);
 	}
 
-	public void randomizeBackground(Background background) {
-		int j = 256;
-		for (int k = 0; k < flameGradient1.length; k++) {
-			flameGradient1[k] = 0;
-		}
-
-		for (int l = 0; l < 5000; l++) {
-			int i1 = (int) (Math.random() * 128D * (double) j);
-			flameGradient1[i1] = (int) (Math.random() * 256D);
-		}
-
-		for (int j1 = 0; j1 < 20; j1++) {
-			for (int k1 = 1; k1 < j - 1; k1++) {
-				for (int i2 = 1; i2 < 127; i2++) {
-					int k2 = i2 + (k1 << 7);
-					flameGradient2[k2] = (flameGradient1[k2 - 1] + flameGradient1[k2 + 1] + flameGradient1[k2 - 128] + flameGradient1[k2 + 128]) / 4;
-				}
-
-			}
-
-			int ai[] = flameGradient1;
-			flameGradient1 = flameGradient2;
-			flameGradient2 = ai;
-		}
-
-		if (background != null) {
-			int l1 = 0;
-			for (int j2 = 0; j2 < background.height; j2++) {
-				for (int l2 = 0; l2 < background.width; l2++) {
-					if (background.pixels[l1++] != 0) {
-						int i3 = l2 + 16 + background.offsetX;
-						int j3 = j2 + 16 + background.offsetY;
-						int k3 = i3 + (j3 << 7);
-						flameGradient1[k3] = 0;
-					}
-				}
-
-			}
-
-		}
-	}
+        public void randomizeBackground(Background background) {
+                flamesEffect.randomizeBackground(background);
+        }
 
         public void decodePlayerUpdateMask(int i, int j, Stream stream, Player player) {
 		if ((i & 0x400) != 0) {
@@ -8505,7 +8413,7 @@ public void drawChatArea() {
 		}
 		drawCycle++;
 		if (!loggedIn) {
-			drawLoginScreen(false);
+                       loginScreen.drawLoginScreen(false);
 		} else {
 			drawGameScreen();
 		}
@@ -9482,89 +9390,9 @@ public void drawChatArea() {
 		return new DataInputStream(inputstream);
 	}
 	
-	public void doFlamesDrawing() {
-		char c = '\u0100';
-		if (flameMainColor > 0) {
-			for (int i = 0; i < 256; i++) {
-				if (flameMainColor > 768) {
-					flameBuffer[i] = blendColors(flamePaletteRed[i], flamePaletteGreen[i], 1024 - flameMainColor);
-				} else if (flameMainColor > 256) {
-					flameBuffer[i] = flamePaletteGreen[i];
-				} else {
-					flameBuffer[i] = blendColors(flamePaletteGreen[i], flamePaletteRed[i], 256 - flameMainColor);
-				}
-			}
-
-		} else if (flameSecondaryColor > 0) {
-			for (int j = 0; j < 256; j++) {
-				if (flameSecondaryColor > 768) {
-					flameBuffer[j] = blendColors(flamePaletteRed[j], flamePaletteBlue[j], 1024 - flameSecondaryColor);
-				} else if (flameSecondaryColor > 256) {
-					flameBuffer[j] = flamePaletteBlue[j];
-				} else {
-					flameBuffer[j] = blendColors(flamePaletteBlue[j], flamePaletteRed[j], 256 - flameSecondaryColor);
-				}
-			}
-
-		} else {
-			System.arraycopy(flamePaletteRed, 0, flameBuffer, 0, 256);
-
-		}
-               System.arraycopy(titleBackgroundLeft.pixels, 0, titleLeftProducer.pixels, 0, 33920);
-
-		int i1 = 0;
-		int j1 = 1152;
-		for (int k1 = 1; k1 < c - 1; k1++) {
-			int l1 = flameLineOffsets[k1] * (c - k1) / c;
-			int j2 = 22 + l1;
-			if (j2 < 0) {
-				j2 = 0;
-			}
-			i1 += j2;
-			for (int l2 = j2; l2 < 128; l2++) {
-				int j3 = flameBuffer1[i1++];
-				if (j3 != 0) {
-					int l3 = j3;
-					int j4 = 256 - j3;
-					j3 = flameBuffer[j3];
-                                   int l4 = titleLeftProducer.pixels[j1];
-                                   titleLeftProducer.pixels[j1++] = ((j3 & 0xff00ff) * l3 + (l4 & 0xff00ff) * j4 & 0xff00ff00) + ((j3 & 0xff00) * l3 + (l4 & 0xff00) * j4 & 0xff0000) >> 8;
-				} else {
-					j1++;
-				}
-			}
-
-			j1 += j2;
-		}
-
-		titleLeftProducer.drawGraphics(0, super.graphics, 0);
-               System.arraycopy(titleBackgroundRight.pixels, 0, titleRightProducer.pixels, 0, 33920);
-
-		i1 = 0;
-		j1 = 1176;
-		for (int k2 = 1; k2 < c - 1; k2++) {
-			int i3 = flameLineOffsets[k2] * (c - k2) / c;
-			int k3 = 103 - i3;
-			j1 += i3;
-			for (int i4 = 0; i4 < k3; i4++) {
-				int k4 = flameBuffer1[i1++];
-				if (k4 != 0) {
-					int i5 = k4;
-					int j5 = 256 - k4;
-					k4 = flameBuffer[k4];
-                                   int k5 = titleRightProducer.pixels[j1];
-                                   titleRightProducer.pixels[j1++] = ((k4 & 0xff00ff) * i5 + (k5 & 0xff00ff) * j5 & 0xff00ff00) + ((k4 & 0xff00) * i5 + (k5 & 0xff00) * j5 & 0xff0000) >> 8;
-				} else {
-					j1++;
-				}
-			}
-
-			i1 += 128 - k3;
-			j1 += 128 - k3 - i3;
-		}
-
-		titleRightProducer.drawGraphics(0, super.graphics, 637);
-	}
+        public void doFlamesDrawing() {
+                flamesEffect.doFlamesDrawing();
+        }
 
        public void updateOtherPlayers(Stream stream) {
 		int j = stream.readBits(8);
@@ -9619,108 +9447,13 @@ public void drawChatArea() {
 		}
 	}
 
-	public void drawLoginScreen(boolean flag) {
-		resetImageProducers();
-		loginRightProducer.initDrawingArea();
-		loginBoxBackground.draw(0, 0);
-		char c = '\u0168';
-		char c1 = '\310';
-		if (loginScreenState == 0) {
-			int i = c1 / 2 + 80;
-			plainFont.textCenterShadow(0x75a9a9, c / 2, onDemandFetcher.statusString, i, true);
-			i = c1 / 2 - 20;
-			chatTextDrawingArea.textCenterShadow(0xffff00, c / 2, "Welcome to " + ClientSettings.SERVER_NAME + "", i, true);
-			i += 30;
-			int l = c / 2 - 80;
-			int k1 = c1 / 2 + 20;
-			loginButtonBackground.draw(l - 73, k1 - 20);
-			chatTextDrawingArea.textCenterShadow(0xffffff, l, "New User", k1 + 5, true);
-			l = c / 2 + 80;
-			loginButtonBackground.draw(l - 73, k1 - 20);
-			chatTextDrawingArea.textCenterShadow(0xffffff, l, "Existing User", k1 + 5, true);
-		}
-		if (loginScreenState == 2) {
-			int j = c1 / 2 - 40;
-			if (loginMessage1.length() > 0) {
-				chatTextDrawingArea.textCenterShadow(0xffff00, c / 2, loginMessage1, j - 15, true);
-				chatTextDrawingArea.textCenterShadow(0xffff00, c / 2, loginMessage2, j, true);
-				j += 30;
-			} else {
-				chatTextDrawingArea.textCenterShadow(0xffff00, c / 2, loginMessage2, j - 7, true);
-				j += 30;
-			}
-			chatTextDrawingArea.textLeftShadow(true, c / 2 - 90, 0xffffff, "Username: " + myUsername + (loginScreenCursorPos == 0 & loopCycle % 40 < 20 ? "@yel@|" : ""), j);
-			j += 15;
-			chatTextDrawingArea.textLeftShadow(true, c / 2 - 88, 0xffffff, "Password: " + TextClass.passwordAsterisks(myPassword) + (loginScreenCursorPos == 1 & loopCycle % 40 < 20 ? "@yel@|" : ""), j);
-			j += 15;
-			if (!flag) {
-				int i1 = c / 2 - 80;
-				int l1 = c1 / 2 + 50;
-				loginButtonBackground.draw(i1 - 73, l1 - 20);
-				chatTextDrawingArea.textCenterShadow(0xffffff, i1, "Login", l1 + 5, true);
-				i1 = c / 2 + 80;
-				loginButtonBackground.draw(i1 - 73, l1 - 20);
-				chatTextDrawingArea.textCenterShadow(0xffffff, i1, "Cancel", l1 + 5, true);
-			}
-		}
-		if (loginScreenState == 3) {
-			chatTextDrawingArea.textCenterShadow(0xffff00, c / 2, "Create a free account", c1 / 2 - 60, true);
-			int k = c1 / 2 - 35;
-			chatTextDrawingArea.textCenterShadow(0xffffff, c / 2, "To create a new account just click", k, true);
-			k += 15;
-			chatTextDrawingArea.textCenterShadow(0xffffff, c / 2, "\"Cancel\" below, and click \"Existing User\".", k, true);
-			k += 15;
-			chatTextDrawingArea.textCenterShadow(0xffffff, c / 2, "Log in with any credentials you want and an", k, true);
-			k += 15;
-			chatTextDrawingArea.textCenterShadow(0xffffff, c / 2, "account will automatically be created for you.", k, true);
-			k += 15;
-			int j1 = c / 2;
-			int i2 = c1 / 2 + 50;
-			loginButtonBackground.draw(j1 - 73, i2 - 20);
-			chatTextDrawingArea.textCenterShadow(0xffffff, j1, "Cancel", i2 + 5, true);
-		}
-		loginRightProducer.drawGraphics(171, super.graphics, 202);
-		if (welcomeScreenRaised) {
-			welcomeScreenRaised = false;
-			titleImageProducer.drawGraphics(0, super.graphics, 128);
-			loginLeftProducer.drawGraphics(371, super.graphics, 202);
-			titleTopLeftProducer.drawGraphics(265, super.graphics, 0);
-			titleTopRightProducer.drawGraphics(265, super.graphics, 562);
-			titleBottomLeftProducer.drawGraphics(171, super.graphics, 128);
-			titleBottomRightProducer.drawGraphics(171, super.graphics, 562);
-		}
-	}
+        public void drawLoginScreen(boolean flag) {
+                loginScreen.drawLoginScreen(flag);
+        }
 
-	public void drawFlames() {
-		drawingFlames = true;
-		try {
-			long l = System.currentTimeMillis();
-			int i = 0;
-			int j = 20;
-			while (flameThreadActive) {
-				flameDrawingCounter++;
-				calcFlamesPosition();
-				calcFlamesPosition();
-				doFlamesDrawing();
-				if (++i > 10) {
-					long l1 = System.currentTimeMillis();
-					int k = (int) (l1 - l) / 10 - j;
-					j = 40 - k;
-					if (j < 5) {
-						j = 5;
-					}
-					i = 0;
-					l = l1;
-				}
-				try {
-					Thread.sleep(j);
-				} catch (Exception _ex) {
-				}
-			}
-		} catch (Exception _ex) {
-		}
-		drawingFlames = false;
-	}
+        public void drawFlames() {
+                flamesEffect.drawFlames();
+        }
 
 	public void raiseWelcomeScreen() {
 		welcomeScreenRaised = true;
@@ -10069,106 +9802,9 @@ public void drawChatArea() {
 
 	}
 
-	public void processLoginScreenInput() {
-		if (loginScreenState == 0) {
-			int i = super.myWidth / 2 - 80;
-			int l = super.myHeight / 2 + 20;
-			l += 20;
-			if (super.clickMode3 == 1 && super.saveClickX >= i - 75 && super.saveClickX <= i + 75 && super.saveClickY >= l - 20 && super.saveClickY <= l + 20) {
-				loginScreenState = 3;
-				loginScreenCursorPos = 0;
-			}
-			i = super.myWidth / 2 + 80;
-			if (super.clickMode3 == 1 && super.saveClickX >= i - 75 && super.saveClickX <= i + 75 && super.saveClickY >= l - 20 && super.saveClickY <= l + 20) {
-				loginMessage1 = "";
-				loginMessage2 = "Enter your username & password.";
-				loginScreenState = 2;
-				loginScreenCursorPos = 0;
-			}
-		} else {
-			if (loginScreenState == 2) {
-				int j = super.myHeight / 2 - 40;
-				j += 30;
-				j += 25;
-				if (super.clickMode3 == 1 && super.saveClickY >= j - 15 && super.saveClickY < j) {
-					loginScreenCursorPos = 0;
-				}
-				j += 15;
-				if (super.clickMode3 == 1 && super.saveClickY >= j - 15 && super.saveClickY < j) {
-					loginScreenCursorPos = 1;
-				}
-				j += 15;
-				int i1 = super.myWidth / 2 - 80;
-				int k1 = super.myHeight / 2 + 50;
-				k1 += 20;
-				if (super.clickMode3 == 1 && super.saveClickX >= i1 - 75 && super.saveClickX <= i1 + 75 && super.saveClickY >= k1 - 20 && super.saveClickY <= k1 + 20) {
-					loginFailures = 0;
-					login(myUsername, myPassword, false);
-					if (loggedIn) {
-						return;
-					}
-				}
-				i1 = super.myWidth / 2 + 80;
-				if (super.clickMode3 == 1 && super.saveClickX >= i1 - 75 && super.saveClickX <= i1 + 75 && super.saveClickY >= k1 - 20 && super.saveClickY <= k1 + 20) {
-					loginScreenState = 0;
-					// myUsername = "";
-					// myPassword = "";
-				}
-				do {
-					int l1 = readChar(-796);
-					if (l1 == -1) {
-						break;
-					}
-					boolean flag1 = false;
-					for (int i2 = 0; i2 < validUserPassChars.length(); i2++) {
-						if (l1 != validUserPassChars.charAt(i2)) {
-							continue;
-						}
-						flag1 = true;
-						break;
-					}
-
-					if (loginScreenCursorPos == 0) {
-						if (l1 == 8 && myUsername.length() > 0) {
-							myUsername = myUsername.substring(0, myUsername.length() - 1);
-						}
-						if (l1 == 9 || l1 == 10 || l1 == 13) {
-							loginScreenCursorPos = 1;
-						}
-						if (flag1) {
-							myUsername += (char) l1;
-						}
-						if (myUsername.length() > 12) {
-							myUsername = myUsername.substring(0, 12);
-						}
-					} else if (loginScreenCursorPos == 1) {
-						if (l1 == 8 && myPassword.length() > 0) {
-							myPassword = myPassword.substring(0, myPassword.length() - 1);
-						}
-						if (l1 == 9 || l1 == 10 || l1 == 13) {
-							login(myUsername, myPassword, false);
-							loginScreenCursorPos = 0;
-						}
-						if (flag1) {
-							myPassword += (char) l1;
-						}
-						if (myPassword.length() > 20) {
-							myPassword = myPassword.substring(0, 20);
-						}
-					}
-				} while (true);
-				return;
-			}
-			if (loginScreenState == 3) {
-				int k = super.myWidth / 2;
-				int j1 = super.myHeight / 2 + 50;
-				j1 += 20;
-				if (super.clickMode3 == 1 && super.saveClickX >= k - 75 && super.saveClickX <= k + 75 && super.saveClickY >= j1 - 20 && super.saveClickY <= j1 + 20) {
-					loginScreenState = 0;
-				}
-			}
-		}
-	}
+        public void processLoginScreenInput() {
+                loginScreen.processLoginScreenInput();
+        }
 
 	public void markMinimap(Sprite sprite, int i, int j) {
 		int k = cameraYaw + minimapRotationOffset & 0x7ff;
@@ -11885,6 +11521,8 @@ public void drawChatArea() {
                 unusedSlotIndex = -1;
                 fileCRC = new CRC32();
                 chatAreaRenderer = new ChatAreaRenderer(this);
+                loginScreen = new LoginScreen(this);
+                flamesEffect = new FlamesEffect(this);
         }
 	public CRC32 fileCRC;
 	public static String server;
@@ -12300,6 +11938,8 @@ public void drawChatArea() {
         public TextDrawingArea boldFont;
         public TextDrawingArea chatTextDrawingArea;
         public final ChatAreaRenderer chatAreaRenderer;
+        public final LoginScreen loginScreen;
+        public final FlamesEffect flamesEffect;
         public int flameOffset;
 	public int backDialogID;
 	public int cameraXOffset;
