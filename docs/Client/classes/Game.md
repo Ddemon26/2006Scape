@@ -172,3 +172,4 @@ public String getClipBoard()
 
 Utility helpers like `random` and `intToKOrMilLongName` now reside in
 [`GameUtils`](GameUtils.md).
+Chat area rendering code lives in [`ChatAreaRenderer`](ChatAreaRenderer.md).
