@@ -54,7 +54,7 @@ public final class SystemMidiPlayer extends AbstractMidiController implements Re
                     midiSequencer.open();
 		    resetAllControllers(-1L);
 		} catch (Exception exception) {
-                   Game.closeMidiSystem();
+                    core.GameMusicController.closeMidiSystem();
 		}
     }
     
