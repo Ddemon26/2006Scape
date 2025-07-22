@@ -24,6 +24,7 @@
 - [FrameBase](Client/classes/FrameBase.md)
 - [FlamesEffect](Client/classes/FlamesEffect.md)
 - [Game](Client/classes/Game.md)
+- [GameMusicController](Client/classes/GameMusicController.md)
 - [GameUtils](Client/classes/GameUtils.md)
 - [GraphicsObject](Client/classes/GraphicsObject.md)
 - [Ground](Client/classes/Ground.md)

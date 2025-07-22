@@ -60,6 +60,7 @@ import core.MusicSystem;
 import core.ChatAreaRenderer;
 import core.LoginScreen;
 import core.FlamesEffect;
+import core.GameMusicController;
 import render.Background;
 import render.BoundaryObject;
 import render.CollisionMap;
@@ -97,117 +98,15 @@ public class Game extends RSApplet {
 	
 	private boolean graphicsEnabled = true;
 	
-       // Moved to GameUtils for readability
-	
-static final boolean musicIsntNull() {
-        return MusicSystem.musicIsntNull();
-}
-	
-       public static final void closeMidiSystem() {
-        MusicSystem.closeMidiSystem();
-       }
-	
-	
-	public void musics() {
-		for(int MusicIndex = 0; MusicIndex < 3536; MusicIndex++) {
-			byte[] abyte0 = GetMusic(MusicIndex);
-				if (abyte0 != null && abyte0.length > 0) {
-                                        decompressors[3].writeEntry(abyte0.length, abyte0, MusicIndex);
-				}
-			}
-		}
-	
-	public byte[] GetMusic(int Index) {
-		try {
-		File Music = new File(Signlink.findcachedir() + "./sounds/"+Index+".gz");
-		byte[] aByte = new byte[(int)Music.length()];
-		FileInputStream Fis = new FileInputStream(Music);
-		Fis.read(aByte);
-		Fis.close();
-		return aByte;
-		} catch(Exception e) {
-		return null;
-		}
-	}
-	
-static final void setVolume(int i) {
-        MusicSystem.setVolume(i);
-}
-	
-static final void setMidiVolume(int i) {
-        MusicSystem.setMidiVolume(i);
-}
-	
-static final synchronized void stopMusic(boolean bool) {
-        MusicSystem.stopMusic(bool);
-}
-	
-static final void stopMidiPlayback(boolean bool) {
-        MusicSystem.stopMidiPlayback(bool);
-}
-	
-static final boolean constructMusic() {
-        return MusicSystem.constructMusic();
-}
-	
-       final synchronized void queueSong(int delay, int volume,
-                    boolean bool, int music) {
-                if (MusicSystem.musicIsntNull()) {
-                        nextSong = music;
-                        onDemandFetcher.queueRequest(2, nextSong);
-                        MusicSystem.musicVolume2 = volume;
-                        MusicSystem.queuedSongId = -1;
-                        MusicSystem.autoPlaySong = true;
-                        MusicSystem.nextSongDelay = delay;
-                }
-        }
-	
-       final synchronized void playSong(int volume, boolean bool, int music) {
-                if (MusicSystem.musicIsntNull()) {
-                        nextSong = music;
-                        onDemandFetcher.queueRequest(2, nextSong);
-                        MusicSystem.musicVolume2 = volume;
-                        MusicSystem.queuedSongId = -1;
-                        MusicSystem.autoPlaySong = true;
-                        MusicSystem.nextSongDelay = -1;
-                }
-        }
-	
-	public void sendFrame126(String str,int i) {
-		RSInterface.interfaceCache[i].disabledText = str;
-		if(RSInterface.interfaceCache[i].parentID == tabInterfaceIDs[tabID])
-			needDrawTabArea = true;
-	}
-	
-        /* see MusicSystem.musicData */
-	
-       static final synchronized void processMusicQueue() {
-        MusicSystem.processMusicQueue();
-       }
-	
-       static final int calculateLogVolume(int i) {
-               return MusicSystem.calculateLogVolume(i);
-       }
-	
-       static final void playMidiTrack(int i_2_, byte[] is, boolean bool) {
-        MusicSystem.playMidiTrack(i_2_, is, bool);
-       }
-	
-       static final void queueMidiTrack(int i, int i_29_, boolean bool, byte[] is, int i_30_) {
-        MusicSystem.queueMidiTrack(i, i_29_, bool, is, i_30_);
-       }
-	
-       static final void initiateMidiFade(boolean bool, int i, int i_2_, byte[] is) {
-        MusicSystem.initiateMidiFade(bool, i, i_2_, is);
-       }
-	
-       static final void updateMidiFade(int i) {
-        MusicSystem.updateMidiFade(i);
-       }
+// Moved to GameUtils for readability
 
-        private void stopMidi() {
-                MusicSystem.stopMidi();
+        public void sendFrame126(String str,int i) {
+                RSInterface.interfaceCache[i].disabledText = str;
+                if(RSInterface.interfaceCache[i].parentID == tabInterfaceIDs[tabID])
+                        needDrawTabArea = true;
         }
+
+        /* see MusicSystem.musicData */
 
 	public boolean menuHasAddFriend(int j) {
 		if (j < 0) {
@@ -1144,13 +1043,13 @@ public void drawChatArea() {
 			if (volume != musicVolume) {
 				if (musicVolume != 0 || currentSong == -1) {
 					if (volume != 0)
-						setVolume(volume);
+                                                GameMusicController.setVolume(volume);
 					else {
-                                               stopMusic(false);
+                                                GameMusicController.stopMusic(false);
 						previousSong = 0;
 					}
 				} else {
-                                       playSong(volume, false, currentSong);
+                                        musicController.playSong(volume, false, currentSong);
 					previousSong = 0;//TODO temp music
 				}
 				musicVolume = volume;
@@ -1931,11 +1830,11 @@ public void drawChatArea() {
 		}
 
 		System.gc();
-		stopMidi();
+                musicController.stopMidi();
 		currentSong = -1;
 		nextSong = -1;
 		previousSong = 0;
-               queueSong(10, musicVolume, false, 0);
+                musicController.queueSong(10, musicVolume, false, 0);
 	}
 
        public void resetCharacterOptions() {
@@ -2003,7 +1902,7 @@ public void drawChatArea() {
 			mainGameProcessor();
 		}
 		processOnDemandQueue();
-               processMusicQueue();
+                GameMusicController.processMusicQueue();
 	}
 
        public void addPlayersToScene(boolean flag) {
@@ -4344,7 +4243,7 @@ public void drawChatArea() {
 		} catch (Exception _ex) {
 		}
 		socketStream = null;
-		stopMidi();
+                musicController.stopMidi();
 		if (mouseDetection != null) {
 			mouseDetection.running = false;
 		}
@@ -6561,7 +6460,7 @@ public void drawChatArea() {
 			if (previousSong < 0)
 				previousSong = 0;
 			if (previousSong == 0 && musicVolume != 0 && currentSong != -1) {
-                               playSong(musicVolume, false, currentSong);
+                                musicController.playSong(musicVolume, false, currentSong);
 			}
 		}
 	}
@@ -6674,7 +6573,7 @@ public void drawChatArea() {
 			drawLogo();
 			loadTitleScreen();
 			//CacheUtils.repackCacheIndex(1, decompressors);
-			constructMusic();
+                        GameMusicController.constructMusic();
 			StreamLoader streamLoader = streamLoaderForName(2, "config", "config", expectedCRCs[2], 30);
 			StreamLoader streamLoader_1 = streamLoaderForName(3, "interface", "interface", expectedCRCs[3], 35);
 			StreamLoader streamLoader_2 = streamLoaderForName(4, "2d graphics", "media", expectedCRCs[4], 40);
@@ -6697,7 +6596,7 @@ public void drawChatArea() {
                         AnimFrame.init(onDemandFetcher.getAnimCount());
 			Model.init(onDemandFetcher.getVersionCount(0), onDemandFetcher);
 			if (!lowMem) {
-                               queueSong(10, musicVolume, false, 0);
+                                musicController.queueSong(10, musicVolume, false, 0);
 				while (onDemandFetcher.getNodeCount() > 0) {
 					processOnDemandQueue();
 					try {
@@ -10141,9 +10040,9 @@ public void drawChatArea() {
 				}
 				if (i2 != -1 || previousSong != 0) {
 					if (i2 != -1 && currentSong != i2 && musicVolume != 0 && previousSong == 0)
-                                               queueSong(10, musicVolume, false, i2);
+                                                musicController.queueSong(10, musicVolume, false, i2);
 				} else
-                                       stopMusic(false);
+                                        GameMusicController.stopMusic(false);
 				currentSong = i2;
 				pktType = -1;
 				return true;
@@ -10154,7 +10053,7 @@ public void drawChatArea() {
 				if (i_61_ == 0x00ffff)
 					i_61_ = -1;
 				if (musicVolume != 0 && i_61_ != -1) {
-                                       playSong(musicVolume, false, i_60_);
+                                        musicController.playSong(musicVolume, false, i_60_);
 					previousSong = i_61_*20;
 				}
 				pktType = -1;
@@ -11523,6 +11422,7 @@ public void drawChatArea() {
                 chatAreaRenderer = new ChatAreaRenderer(this);
                 loginScreen = new LoginScreen(this);
                 flamesEffect = new FlamesEffect(this);
+                musicController = new GameMusicController(this);
         }
 	public CRC32 fileCRC;
 	public static String server;
@@ -11940,6 +11840,7 @@ public void drawChatArea() {
         public final ChatAreaRenderer chatAreaRenderer;
         public final LoginScreen loginScreen;
         public final FlamesEffect flamesEffect;
+        public final GameMusicController musicController;
         public int flameOffset;
 	public int backDialogID;
 	public int cameraXOffset;

@@ -6,8 +6,7 @@ NOTICE: IF YOU CHANGE ANYTHING IN GAME.JAVA, PLEASE COPY-PASTE THE WHOLE CLASS O
 
 ```java
 public class Game extends RSApplet {
-public void musics()
-public byte[] GetMusic(int Index)
+// music methods moved to [GameMusicController](GameMusicController.md)
 public void sendFrame126(String str,int i)
 public boolean menuHasAddFriend(int j)
 public void drawChatArea()
