@@ -32,7 +32,7 @@ public void drawCheckbox(boolean enabled, int x, int y)
 public void drawTabArea()
 public void animateTextures(int j)
 public void updateEntityText()
-public void calcCameraPos()
+public void calcCameraPos() -> CameraManager.calcCameraPos
 // menu rendering moved to [MenuManager](MenuManager.md)
 public void addFriend(long l) -> FriendManager.addFriend
 public int getTileHeight(int plane, int worldY, int worldX)
@@ -111,7 +111,7 @@ public void processGraphicsObjects()
 public void drawInterface(int scrollPos, int k, RSInterface widget, int l)
 public void randomizeBackground(Background background)
 public void decodePlayerUpdateMask(int i, int j, Stream stream, Player player)
-public void updateCameraPosition()
+public void updateCameraPosition() -> CameraManager.updateCameraPosition
 public void processDrawing()
 public boolean isFriendOrSelf(String s) -> FriendManager.isFriendOrSelf
 public static String combatDiffColor(int i, int j)
@@ -124,7 +124,7 @@ public void processPendingSpawns()
 public void updateSelfMovement(Stream stream)
 public void nullLoader()
 public boolean updateInterfaceAnimations(int i, int j)
-public int determineCameraPlane()
+public int determineCameraPlane() -> CameraManager.determineCameraPlane
 public int getCurrentPlane()
 public void delIgnore(long l) -> IgnoreManager.delIgnore
 public String getParameter(String s)
@@ -149,7 +149,7 @@ public void processLoginScreenInput()
 public void markMinimap(Sprite sprite, int i, int j)
 public void updateSceneObjects(int i, int j, int k, int l, int i1, int j1, int k1)
 public void updatePlayers(int i, Stream stream)
-public void setCameraPos(int j, int k, int l, int i1, int j1, int k1)
+public void setCameraPos(int j, int k, int l, int i1, int j1, int k1) -> CameraManager.setCameraPos
 public boolean parsePacket()
 public void run()
 public void renderGameView()

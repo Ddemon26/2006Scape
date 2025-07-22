@@ -9,6 +9,7 @@
 - [BoundaryObject](Client/classes/BoundaryObject.md)
 - [CachePlaceholder](Client/classes/CachePlaceholder.md)
 - [CacheUtils](Client/classes/CacheUtils.md)
+- [CameraManager](Client/classes/CameraManager.md)
 - [ChatAreaRenderer](Client/classes/ChatAreaRenderer.md)
 - [Censor](Client/classes/Censor.md)
 - [Client](Client/classes/Client.md)
