@@ -22,6 +22,7 @@
 - [FloorOverlay](Client/classes/FloorOverlay.md)
 - [FrameBase](Client/classes/FrameBase.md)
 - [Game](Client/classes/Game.md)
+- [GameUtils](Client/classes/GameUtils.md)
 - [GraphicsObject](Client/classes/GraphicsObject.md)
 - [Ground](Client/classes/Ground.md)
 - [IDK](Client/classes/IDK.md)

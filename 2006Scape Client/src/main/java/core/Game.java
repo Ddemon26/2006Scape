@@ -94,23 +94,7 @@ public class Game extends RSApplet {
 	
 	private boolean graphicsEnabled = true;
 	
-	public static int random(final float range) {
-		return (int) (java.lang.Math.random() * (range + 1));
-	}
-    
-
-	public static String intToKOrMilLongName(int i) {
-		String s = String.valueOf(i);
-		for (int k = s.length() - 3; k > 0; k -= 3) {
-			s = s.substring(0, k) + "," + s.substring(k);
-		}
-		if (s.length() > 8) {
-			s = "@gre@" + s.substring(0, s.length() - 8) + " million @whi@(" + s + ")";
-		} else if (s.length() > 4) {
-			s = "@cya@" + s.substring(0, s.length() - 4) + "K @whi@(" + s + ")";
-		}
-		return " " + s;
-	}
+       // Moved to GameUtils for readability
 	
 static final boolean musicIsntNull() {
         return MusicSystem.musicIsntNull();
@@ -8335,7 +8319,7 @@ static final boolean constructMusic() {
 								ItemDef itemDef = ItemDef.lookup(component.inv[k4] - 1);
 								String s2 = itemDef.name;
 								if (itemDef.stackable || component.invStackSizes[k4] != 1) {
-									s2 = s2 + " x" + intToKOrMilLongName(component.invStackSizes[k4]);
+                                                                        s2 = s2 + " x" + GameUtils.intToKOrMilLongName(component.invStackSizes[k4]);
 								}
 								int i9 = k2 + i6 * (115 + component.invSpritePadX);
 								int k9 = l2 + j5 * (12 + component.invSpritePadY);

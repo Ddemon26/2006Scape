@@ -6,8 +6,6 @@ NOTICE: IF YOU CHANGE ANYTHING IN GAME.JAVA, PLEASE COPY-PASTE THE WHOLE CLASS O
 
 ```java
 public class Game extends RSApplet {
-public static int random(final float range)
-public static String intToKOrMilLongName(int i)
 public void musics()
 public byte[] GetMusic(int Index)
 public void sendFrame126(String str,int i)
@@ -171,3 +169,6 @@ public void openSideInterface(int tab, int interfaceID)
 public final void mouseWheelMoved(MouseWheelEvent e)
 public String getClipBoard()
 ```
+
+Utility helpers like `random` and `intToKOrMilLongName` now reside in
+[`GameUtils`](GameUtils.md).
