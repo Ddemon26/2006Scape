@@ -78,7 +78,6 @@ public void buildChatAreaMenu(int j)
 public void drawFriendsListOrWelcomeScreen(RSInterface interfaceComponent)
 public String formatDate(int i)
 public void drawSplitpublicChat()
-public void screenshot(boolean sendMessage, String... subfolders)
 public void pushMessage(String s, int i, String s1)
 public void processMinimapActions()
 public void processTabClick()
@@ -166,9 +165,10 @@ public void definitionSearch(String name, int type)
 public void openInterface(int interfaceID)
 public void openSideInterface(int tab, int interfaceID)
 public final void mouseWheelMoved(MouseWheelEvent e)
-public String getClipBoard()
 ```
 
 Utility helpers like `random` and `intToKOrMilLongName` now reside in
 [`GameUtils`](GameUtils.md).
+Screenshots are handled by [`ScreenshotUtil`](ScreenshotUtil.md)
+and clipboard access via [`ClipboardUtil`](ClipboardUtil.md).
 Chat area rendering code lives in [`ChatAreaRenderer`](ChatAreaRenderer.md).
