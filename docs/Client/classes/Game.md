@@ -16,9 +16,9 @@ public Socket openSocket(int i) throws IOException
 public boolean processMenuClick()
 public void saveMidi(boolean flag, byte abyte0[])
 public void constructMapRegion()
-public void unlinkMRUNodes()
-public void generateMinimap(int i)
-public void spawnGroundItem(int i, int j)
+// cache cleanup moved to [CacheUtils](CacheUtils.md)
+// minimap rendering moved to [MinimapRenderer](MinimapRenderer.md)
+// ground item spawning moved to [GroundItemSpawner](GroundItemSpawner.md)
 public void addNpcsToScene(boolean flag)
 public boolean replayWave()
 public void loadError()
@@ -172,3 +172,5 @@ Utility helpers like `random` and `intToKOrMilLongName` now reside in
 Screenshots are handled by [`ScreenshotUtil`](ScreenshotUtil.md)
 and clipboard access via [`ClipboardUtil`](ClipboardUtil.md).
 Chat area rendering code lives in [`ChatAreaRenderer`](ChatAreaRenderer.md).
+Minimap logic lives in [`MinimapRenderer`](MinimapRenderer.md) and
+ground item piles are handled by [`GroundItemSpawner`](GroundItemSpawner.md).
