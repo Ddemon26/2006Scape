@@ -68,6 +68,9 @@ import core.GroundItemSpawner;
 import core.MenuManager;
 import core.EntityAnimationHandler;
 import core.EntityMovementHandler;
+import core.SettingApplier;
+import core.TabAreaRenderer;
+import core.EntityTextUpdater;
 import render.Background;
 import core.CameraManager;
 import render.BoundaryObject;
@@ -456,90 +459,8 @@ public void drawChatArea() {
 
 
        public void applyVarp(int i) {
-                int action = Varp.cache[i].actionType;
-		if (action == 0) {
-			return;
-		}
-		int config = variousSettings[i];
-		if (action == 1) {
-			if (config == 1) {
-				Texture.setBrightness(0.90000000000000002D);
-			}
-			if (config == 2) {
-				Texture.setBrightness(0.80000000000000004D);
-			}
-			if (config == 3) {
-				Texture.setBrightness(0.69999999999999996D);
-			}
-			if (config == 4) {
-				Texture.setBrightness(0.59999999999999998D);
-			}
-            ItemDef.spriteCache.unlinkAll();
-			welcomeScreenRaised = true;
-		}
-		if (action == 3) {
-			int volume = 0;
-			if (config == 0)
-				volume = 255;
-			if (config == 1)
-				volume = 192;
-			if (config == 2)
-				volume = 128;
-			if (config == 3)
-				volume = 64;
-			if (config == 4)
-				volume = 0;
-			if (volume != musicVolume) {
-				if (musicVolume != 0 || currentSong == -1) {
-					if (volume != 0)
-                                                GameMusicController.setVolume(volume);
-					else {
-                                                GameMusicController.stopMusic(false);
-						previousSong = 0;
-					}
-				} else {
-                                        musicController.playSong(volume, false, currentSong);
-					previousSong = 0;//TODO temp music
-				}
-				musicVolume = volume;
-			}
-		}
-		if (action == 4) {
-			SoundPlayer.setVolume(config);
-			if (config == 0) {
-				soundEffectEnabled = true;
-				setWaveVolume(0);
-			}
-			if (config == 1) {
-				soundEffectEnabled = true;
-				setWaveVolume(-400);
-			}
-			if (config == 2) {
-				soundEffectEnabled = true;
-				setWaveVolume(-800);
-			}
-			if (config == 3) {
-				soundEffectEnabled = true;
-				setWaveVolume(-1200);
-			}
-			if (config == 4) {
-				soundEffectEnabled = false;
-			}
-		}
-		if (action == 5) {
-			oneMouseButtonMode = config;
-		}
-		if (action == 6) {
-			chatEffectsState = config;
-		}
-		if (action == 8) {
-			splitpublicChat = config;
-			inputTaken = true;
-		}
-		if (action == 9) {
-			configActionId = config;
-		}
-	}
+                settingApplier.applyVarp(i);
+        }
 
 	public void updateEntities() {
 		try {
@@ -832,168 +753,25 @@ public void drawChatArea() {
                 friendManager.delFriend(l);
         }
 
-	public void drawButton(boolean enabled, int x, int y, int width) {
-		StreamLoader streamLoader_2 = streamLoaderForName(4, "2d graphics", "media", expectedCRCs[4], 40);
-		// All these sprites are 30x30
-		Sprite buttonLeft = new Sprite(streamLoader_2, "miscgraphics", enabled ? 7 : 4);
-		Sprite buttonRight = new Sprite(streamLoader_2, "miscgraphics", enabled ? 8 : 6);
-		int curWidth = 30;
-		buttonLeft.drawTransparentSprite(x, y);
-		while ((curWidth + 26) < width) {
-			buttonRight.drawTransparentSprite(x + curWidth, y);
-			curWidth += 26;
-		}
-		buttonRight.drawTransparentSprite(x + width - 30, y);
-	}
+    public void drawButton(boolean enabled, int x, int y, int width) {
+        tabAreaRenderer.drawButton(enabled, x, y, width);
+    }
 
-	public void drawCheckbox(boolean enabled, int x, int y) {
-		StreamLoader streamLoader_2 = streamLoaderForName(4, "2d graphics", "media", expectedCRCs[4], 40);
-		Sprite checkboxUnchecked = new Sprite(streamLoader_2, "miscgraphics", 10);
-		Sprite checkboxChecked = new Sprite(streamLoader_2, "miscgraphics", 11);
-	}
+    public void drawCheckbox(boolean enabled, int x, int y) {
+        tabAreaRenderer.drawCheckbox(enabled, x, y);
+    }
 
-	public void drawTabArea() {
-		textBackground.initDrawingArea();
-		Texture.lineOffsets = tabAreaOffsets;
-		invBack.draw(0, 0);
-		if (invOverlayInterfaceID == -1) {
-			if (tabInterfaceIDs[tabID] != -1) {
-				if (tabID == 7 && ClientSettings.CUSTOM_SETTINGS_TAB) {
-					try {
-						int centerX = 95;
-						int currentY = 10;
-						int textMiddle = 22;
-						int textTop = 14;
-						int textBottom = 29;
+    public void drawTabArea() {
+        tabAreaRenderer.drawTabArea();
+    }
 
-						drawButton(customSettingVisiblePlayerNames, centerX - 73, currentY, 146);
-						// buttonLeftDisabled.drawTransparentSprite(centerX - 73, currentY);
-						boldFont.textCenterShadow(Color.YELLOW.hashCode(), centerX, "always visible", currentY + textTop, true);
-						boldFont.textCenterShadow(Color.YELLOW.hashCode(), centerX, "player names", currentY + textBottom, true);
-						
-						drawButton(true, centerX - 73, currentY += 40, 146);
-						boldFont.textCenterShadow(Color.YELLOW.hashCode(), centerX, "item drops visible", currentY + textTop, true);
-						boldFont.textCenterShadow(Color.WHITE.hashCode(), centerX, intToKOrMil(customSettingMinItemValue) + " gp", currentY + textBottom, true);
-						
-						drawButton(true, centerX - 73, currentY += 40, 146);
-						boldFont.textCenterShadow(Color.YELLOW.hashCode(), centerX, "draw distance", currentY + textTop, true);
-						boldFont.textCenterShadow(Color.WHITE.hashCode(), centerX, WorldController.drawDistance + " tiles", currentY + textBottom, true);
+    public void animateTextures(int j) {
+        tabAreaRenderer.animateTextures(j);
+    }
 
-						drawButton(customSettingShowExperiencePerHour, centerX - 73, currentY += 40, 146);
-						boldFont.textCenterShadow(Color.YELLOW.hashCode(), centerX, "show exp info", currentY + textMiddle, true);
-						
-						drawButton(showInfo, centerX - 73, currentY += 40, 146);
-						boldFont.textCenterShadow(Color.YELLOW.hashCode(), centerX, "show debug info", currentY + textMiddle, true);
-
-						drawButton(customSettingVisualFixes, centerX - 73, currentY += 40, 146);
-						boldFont.textCenterShadow(Color.YELLOW.hashCode(), centerX, "visual fixes", currentY + textMiddle, true);
-					} catch (Exception e) { }
-				}
-			}
-		}
-		if (invOverlayInterfaceID != -1) {
-			drawInterface(0, 0, RSInterface.interfaceCache[invOverlayInterfaceID], 0);
-		} else if (tabInterfaceIDs[tabID] != -1) {
-			drawInterface(0, 0, RSInterface.interfaceCache[tabInterfaceIDs[tabID]], 0);
-		}
-		if (menuOpen && menuScreenArea == 1) {
-			drawMenu();
-		}
-		textBackground.drawGraphics(205, super.graphics, 553);
-		tabAreaBuffer.initDrawingArea();
-		Texture.lineOffsets = chatBoxAreaOffsets;
-	}
-
-       public void animateTextures(int j) {
-		if (!lowMem) {
-			if (Texture.textureLastUsed[17] >= j) {
-				Background background = Texture.textures[17];
-				int k = background.width * background.height - 1;
-				int j1 = background.width * animationCycle * 2;
-				byte abyte0[] = background.pixels;
-				byte abyte3[] = soundPayload;
-				for (int i2 = 0; i2 <= k; i2++) {
-					abyte3[i2] = abyte0[i2 - j1 & k];
-				}
-
-				background.pixels = abyte3;
-				soundPayload = abyte0;
-				Texture.unloadTexture(17);
-			}
-			if (Texture.textureLastUsed[24] >= j) {
-				Background background_1 = Texture.textures[24];
-				int l = background_1.width * background_1.height - 1;
-				int k1 = background_1.width * animationCycle * 2;
-				byte abyte1[] = background_1.pixels;
-				byte abyte4[] = soundPayload;
-				for (int j2 = 0; j2 <= l; j2++) {
-					abyte4[j2] = abyte1[j2 - k1 & l];
-				}
-
-				background_1.pixels = abyte4;
-				soundPayload = abyte1;
-				Texture.unloadTexture(24);
-			}
-			if (Texture.textureLastUsed[34] >= j) {
-				Background background_2 = Texture.textures[34];
-				int i1 = background_2.width * background_2.height - 1;
-				int l1 = background_2.width * animationCycle * 2;
-				byte abyte2[] = background_2.pixels;
-				byte abyte5[] = soundPayload;
-				for (int k2 = 0; k2 <= i1; k2++) {
-					abyte5[k2] = abyte2[k2 - l1 & i1];
-				}
-
-				background_2.pixels = abyte5;
-				soundPayload = abyte2;
-				Texture.unloadTexture(34);
-			}
-			if (Texture.textureLastUsed[40] >= j) {
-				Background background_2 = Texture.textures[40];
-				int i1 = background_2.width * background_2.height - 1;
-				int l1 = background_2.width * animationCycle * 2;
-				byte abyte2[] = background_2.pixels;
-				byte abyte5[] = soundPayload;
-				for (int k2 = 0; k2 <= i1; k2++) {
-					abyte5[k2] = abyte2[k2 - l1 & i1];
-				}
-
-				background_2.pixels = abyte5;
-				soundPayload = abyte2;
-				Texture.unloadTexture(40);
-			}
-		}
-	}
-
-       public void updateEntityText() {
-		for (int i = -1; i < playerCount; i++) {
-			int j;
-			if (i == -1) {
-				j = myPlayerIndex;
-			} else {
-				j = playerIndices[i];
-			}
-			Player player = playerArray[j];
-			if (player != null && player.textCycle > 0) {
-				player.textCycle--;
-				if (player.textCycle == 0) {
-					player.textSpoken = null;
-				}
-			}
-		}
-
-		for (int k = 0; k < npcCount; k++) {
-			int l = npcIndices[k];
-			NPC npc = npcArray[l];
-			if (npc != null && npc.textCycle > 0) {
-				npc.textCycle--;
-				if (npc.textCycle == 0) {
-					npc.textSpoken = null;
-				}
-			}
-		}
-
-	}
+    public void updateEntityText() {
+        entityTextUpdater.updateEntityText();
+    }
 
         public void calcCameraPos() {
                 cameraManager.calcCameraPos();
@@ -9588,6 +9366,9 @@ public void drawChatArea() {
                 cameraManager = new CameraManager(this);
                 entityAnimationHandler = new EntityAnimationHandler(this);
                 entityMovementHandler = new EntityMovementHandler(this);
+                settingApplier = new SettingApplier(this);
+                tabAreaRenderer = new TabAreaRenderer(this);
+                entityTextUpdater = new EntityTextUpdater(this);
         }
 	public CRC32 fileCRC;
 	public static String server;
@@ -10017,6 +9798,9 @@ public void drawChatArea() {
         public final CameraManager cameraManager;
         public final EntityAnimationHandler entityAnimationHandler;
         public final EntityMovementHandler entityMovementHandler;
+        public final SettingApplier settingApplier;
+        public final TabAreaRenderer tabAreaRenderer;
+        public final EntityTextUpdater entityTextUpdater;
         public int flameOffset;
 	public int backDialogID;
 	public int cameraXOffset;
