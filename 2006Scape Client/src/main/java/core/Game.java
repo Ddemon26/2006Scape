@@ -66,6 +66,8 @@ import core.ClipboardUtil;
 import core.MinimapRenderer;
 import core.GroundItemSpawner;
 import core.MenuManager;
+import core.EntityAnimationHandler;
+import core.EntityMovementHandler;
 import render.Background;
 import core.CameraManager;
 import render.BoundaryObject;
@@ -6309,316 +6311,12 @@ public void drawChatArea() {
 		for (int j = 0; j < npcCount; j++) {
 			int k = npcIndices[j];
 			NPC npc = npcArray[k];
-			if (npc != null) {
-                                updateEntityMovement(npc);
-			}
+                        if (npc != null) {
+                                entityMovementHandler.updateEntityMovement(npc);
+                        }
 		}
 	}
 
-       public void updateEntityMovement(Entity entity) {
-		if (entity.x < 128 || entity.y < 128 || entity.x >= 13184 || entity.y >= 13184) {
-			entity.anim = -1;
-                       entity.spotAnimId = -1;
-			entity.forceMoveStartCycle = 0;
-			entity.forceMoveEndCycle = 0;
-			entity.x = entity.smallX[0] * 128 + entity.size * 64;
-			entity.y = entity.smallY[0] * 128 + entity.size * 64;
-                       entity.clearMovement();
-		}
-		if (entity == myPlayer && (entity.x < 1536 || entity.y < 1536 || entity.x >= 11776 || entity.y >= 11776)) {
-			entity.anim = -1;
-                       entity.spotAnimId = -1;
-			entity.forceMoveStartCycle = 0;
-			entity.forceMoveEndCycle = 0;
-			entity.x = entity.smallX[0] * 128 + entity.size * 64;
-			entity.y = entity.smallY[0] * 128 + entity.size * 64;
-                       entity.clearMovement();
-		}
-               if (entity.forceMoveStartCycle > loopCycle) {
-                        updateForcedMovement(entity);
-               } else if (entity.forceMoveEndCycle >= loopCycle) {
-                       updateInterpolatedMovement(entity);
-               } else {
-                       updateWalkingStep(entity);
-		}
-           updateEntityFacing(entity);
-           updateEntityAnimation(entity);
-	}
-
-       public void updateForcedMovement(Entity entity) {
-		int i = entity.forceMoveStartCycle - loopCycle;
-		int j = entity.forceMoveStartX * 128 + entity.size * 64;
-		int k = entity.forceMoveStartY * 128 + entity.size * 64;
-		entity.x += (j - entity.x) / i;
-		entity.y += (k - entity.y) / i;
-		entity.movementDelay = 0;
-		if (entity.forceMoveDirection == 0) {
-			entity.turnDirection = 1024;
-		}
-		if (entity.forceMoveDirection == 1) {
-			entity.turnDirection = 1536;
-		}
-		if (entity.forceMoveDirection == 2) {
-			entity.turnDirection = 0;
-		}
-		if (entity.forceMoveDirection == 3) {
-			entity.turnDirection = 512;
-		}
-	}
-
-        public void updateInterpolatedMovement(Entity entity) {
-        if (entity.forceMoveEndCycle == loopCycle || entity.anim == -1 || entity.graphicDelay != 0 || entity.graphicFrameCycle + 1 > Animation.anims[entity.anim].getFrameDelay(entity.graphicFrame)) {
-			int i = entity.forceMoveEndCycle - entity.forceMoveStartCycle;
-			int j = loopCycle - entity.forceMoveStartCycle;
-			int k = entity.forceMoveStartX * 128 + entity.size * 64;
-			int l = entity.forceMoveStartY * 128 + entity.size * 64;
-			int i1 = entity.forceMoveEndX * 128 + entity.size * 64;
-			int j1 = entity.forceMoveEndY * 128 + entity.size * 64;
-			entity.x = (k * (i - j) + i1 * j) / i;
-			entity.y = (l * (i - j) + j1 * j) / i;
-		}
-		entity.movementDelay = 0;
-		if (entity.forceMoveDirection == 0) {
-			entity.turnDirection = 1024;
-		}
-		if (entity.forceMoveDirection == 1) {
-			entity.turnDirection = 1536;
-		}
-		if (entity.forceMoveDirection == 2) {
-			entity.turnDirection = 0;
-		}
-		if (entity.forceMoveDirection == 3) {
-			entity.turnDirection = 512;
-		}
-               entity.currentHeading = entity.turnDirection;
-	}
-
-        public void updateWalkingStep(Entity entity) {
-		entity.currentAnimation = entity.standAnimation;
-		if (entity.smallXYIndex == 0) {
-			entity.movementDelay = 0;
-			return;
-		}
-		if (entity.anim != -1 && entity.graphicDelay == 0) {
-			Animation animation = Animation.anims[entity.anim];
-			if (entity.animationDelay > 0 && animation.precedenceAnimating == 0) {
-				entity.movementDelay++;
-				return;
-			}
-			if (entity.animationDelay <= 0 && animation.precedenceWalking == 0) {
-				entity.movementDelay++;
-				return;
-			}
-		}
-		int i = entity.x;
-		int j = entity.y;
-		int k = entity.smallX[entity.smallXYIndex - 1] * 128 + entity.size * 64;
-		int l = entity.smallY[entity.smallXYIndex - 1] * 128 + entity.size * 64;
-		if (k - i > 256 || k - i < -256 || l - j > 256 || l - j < -256) {
-			entity.x = k;
-			entity.y = l;
-			return;
-		}
-		if (i < k) {
-			if (j < l) {
-				entity.turnDirection = 1280;
-			} else if (j > l) {
-				entity.turnDirection = 1792;
-			} else {
-				entity.turnDirection = 1536;
-			}
-		} else if (i > k) {
-			if (j < l) {
-				entity.turnDirection = 768;
-			} else if (j > l) {
-				entity.turnDirection = 256;
-			} else {
-				entity.turnDirection = 512;
-			}
-		} else if (j < l) {
-			entity.turnDirection = 1024;
-		} else {
-			entity.turnDirection = 0;
-		}
-               int i1 = entity.turnDirection - entity.currentHeading & 0x7ff;
-		if (i1 > 1024) {
-			i1 -= 2048;
-		}
-		int j1 = entity.turn180Animation;
-		if (i1 >= -256 && i1 <= 256) {
-			j1 = entity.walkAnimation;
-		} else if (i1 >= 256 && i1 < 768) {
-			j1 = entity.turn90CCWAnimation;
-		} else if (i1 >= -768 && i1 <= -256) {
-			j1 = entity.turn90CWAnimation;
-		}
-		if (j1 == -1) {
-			j1 = entity.walkAnimation;
-		}
-		entity.currentAnimation = j1;
-		int k1 = 4;
-               if (entity.currentHeading != entity.turnDirection && entity.interactingEntity == -1 && entity.turnSpeed != 0) {
-                       k1 = 2;
-               }
-		if (entity.smallXYIndex > 2) {
-			k1 = 6;
-		}
-		if (entity.smallXYIndex > 3) {
-			k1 = 8;
-		}
-		if (entity.movementDelay > 0 && entity.smallXYIndex > 1) {
-			k1 = 8;
-			entity.movementDelay--;
-		}
-                if (entity.movementQueueFlags[entity.smallXYIndex - 1]) {
-			k1 <<= 1;
-		}
-		if (k1 >= 8 && entity.currentAnimation == entity.walkAnimation && entity.runAnimation != -1) {
-			entity.currentAnimation = entity.runAnimation;
-		}
-		if (i < k) {
-			entity.x += k1;
-			if (entity.x > k) {
-				entity.x = k;
-			}
-		} else if (i > k) {
-			entity.x -= k1;
-			if (entity.x < k) {
-				entity.x = k;
-			}
-		}
-		if (j < l) {
-			entity.y += k1;
-			if (entity.y > l) {
-				entity.y = l;
-			}
-		} else if (j > l) {
-			entity.y -= k1;
-			if (entity.y < l) {
-				entity.y = l;
-			}
-		}
-		if (entity.x == k && entity.y == l) {
-			entity.smallXYIndex--;
-			if (entity.animationDelay > 0) {
-				entity.animationDelay--;
-			}
-		}
-	}
-
-       public void updateEntityFacing(Entity entity) {
-               if (entity.turnSpeed == 0) {
-                       return;
-               }
-		if (entity.interactingEntity != -1 && entity.interactingEntity < 32768) {
-			NPC npc = npcArray[entity.interactingEntity];
-			if (npc != null) {
-				int i1 = entity.x - npc.x;
-				int k1 = entity.y - npc.y;
-				if (i1 != 0 || k1 != 0) {
-					entity.turnDirection = (int) (Math.atan2(i1, k1) * 325.94900000000001D) & 0x7ff;
-				}
-			}
-		}
-		if (entity.interactingEntity >= 32768) {
-			int j = entity.interactingEntity - 32768;
-			if (j == localPlayerIndex) {
-				j = myPlayerIndex;
-			}
-			Player player = playerArray[j];
-			if (player != null) {
-				int l1 = entity.x - player.x;
-				int i2 = entity.y - player.y;
-				if (l1 != 0 || i2 != 0) {
-					entity.turnDirection = (int) (Math.atan2(l1, i2) * 325.94900000000001D) & 0x7ff;
-				}
-			}
-		}
-		if ((entity.focusX != 0 || entity.focusY != 0) && (entity.smallXYIndex == 0 || entity.movementDelay > 0)) {
-			int k = entity.x - (entity.focusX - baseX - baseX) * 64;
-			int j1 = entity.y - (entity.focusY - baseY - baseY) * 64;
-			if (k != 0 || j1 != 0) {
-				entity.turnDirection = (int) (Math.atan2(k, j1) * 325.94900000000001D) & 0x7ff;
-			}
-			entity.focusX = 0;
-			entity.focusY = 0;
-		}
-               int l = entity.turnDirection - entity.currentHeading & 0x7ff;
-               if (l != 0) {
-                       if (l < entity.turnSpeed || l > 2048 - entity.turnSpeed) {
-                               entity.currentHeading = entity.turnDirection;
-                       } else if (l > 1024) {
-                               entity.currentHeading -= entity.turnSpeed;
-                       } else {
-                               entity.currentHeading += entity.turnSpeed;
-                       }
-                       entity.currentHeading &= 0x7ff;
-                       if (entity.currentAnimation == entity.standAnimation && entity.currentHeading != entity.turnDirection) {
-                               if (entity.turnAnimation != -1) {
-                                       entity.currentAnimation = entity.turnAnimation;
-                                       return;
-                               }
-                               entity.currentAnimation = entity.walkAnimation;
-			}
-		}
-	}
-
-       public void updateEntityAnimation(Entity entity) {
-                entity.forcedAnimation = false;
-		if (entity.currentAnimation != -1) {
-			Animation animation = Animation.anims[entity.currentAnimation];
-			entity.animationFrameCycle++;
-                        if (entity.animationFrame < animation.frameCount && entity.animationFrameCycle > animation.getFrameDelay(entity.animationFrame)) {
-				entity.animationFrameCycle = 0;
-				entity.animationFrame++;
-			}
-			if (entity.animationFrame >= animation.frameCount) {
-				entity.animationFrameCycle = 0;
-				entity.animationFrame = 0;
-			}
-		}
-               if (entity.spotAnimId != -1 && loopCycle >= entity.spotAnimStartTick) {
-                       if (entity.spotAnimFrame < 0) {
-                               entity.spotAnimFrame = 0;
-                       }
-                       Animation animation_1 = SpotAnim.cache[entity.spotAnimId].animation;
-                       for (entity.spotAnimFrameCycle++; entity.spotAnimFrame < animation_1.frameCount && entity.spotAnimFrameCycle > animation_1.getFrameDelay(entity.spotAnimFrame); entity.spotAnimFrame++) {
-                               entity.spotAnimFrameCycle -= animation_1.getFrameDelay(entity.spotAnimFrame);
-                       }
-
-                       if (entity.spotAnimFrame >= animation_1.frameCount && (entity.spotAnimFrame < 0 || entity.spotAnimFrame >= animation_1.frameCount)) {
-                               entity.spotAnimId = -1;
-                       }
-		}
-		if (entity.anim != -1 && entity.graphicDelay <= 1) {
-			Animation animation_2 = Animation.anims[entity.anim];
-			if (animation_2.precedenceAnimating == 1 && entity.animationDelay > 0 && entity.forceMoveStartCycle <= loopCycle && entity.forceMoveEndCycle < loopCycle) {
-				entity.graphicDelay = 1;
-				return;
-			}
-		}
-		if (entity.anim != -1 && entity.graphicDelay == 0) {
-			Animation animation_3 = Animation.anims[entity.anim];
-                        for (entity.graphicFrameCycle++; entity.graphicFrame < animation_3.frameCount && entity.graphicFrameCycle > animation_3.getFrameDelay(entity.graphicFrame); entity.graphicFrame++) {
-                                entity.graphicFrameCycle -= animation_3.getFrameDelay(entity.graphicFrame);
-			}
-
-			if (entity.graphicFrame >= animation_3.frameCount) {
-				entity.graphicFrame -= animation_3.frameStep;
-				entity.graphicCycle++;
-				if (entity.graphicCycle >= animation_3.maxLoops) {
-					entity.anim = -1;
-				}
-				if (entity.graphicFrame < 0 || entity.graphicFrame >= animation_3.frameCount) {
-					entity.anim = -1;
-				}
-			}
-                        entity.forcedAnimation = animation_3.stretches;
-		}
-		if (entity.graphicDelay > 0) {
-			entity.graphicDelay--;
-		}
-	}
 
 	public void drawGameScreen() {
 		if (fullScreenInterfaceId != -1 && (loadingStage == 2 || super.fullGameScreen != null)) {
@@ -7557,9 +7255,9 @@ public void drawChatArea() {
 				j = playerIndices[i];
 			}
 			Player player = playerArray[j];
-			if (player != null) {
-                           updateEntityMovement(player);
-			}
+                        if (player != null) {
+                           entityMovementHandler.updateEntityMovement(player);
+                        }
 		}
 
 	}
@@ -10298,6 +9996,8 @@ public void drawChatArea() {
                 friendManager = new FriendManager(this);
                 ignoreManager = new IgnoreManager(this);
                 cameraManager = new CameraManager(this);
+                entityAnimationHandler = new EntityAnimationHandler(this);
+                entityMovementHandler = new EntityMovementHandler(this);
         }
 	public CRC32 fileCRC;
 	public static String server;
@@ -10723,6 +10423,8 @@ public void drawChatArea() {
         public final NpcUpdater npcUpdater;
         public final ChatModeHandler chatModeHandler;
         public final CameraManager cameraManager;
+        public final EntityAnimationHandler entityAnimationHandler;
+        public final EntityMovementHandler entityMovementHandler;
         public int flameOffset;
 	public int backDialogID;
 	public int cameraXOffset;

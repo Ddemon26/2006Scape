@@ -99,12 +99,12 @@ public String interfaceIntToString(int j)
 public void showErrorScreen()
 public URL getCodeBase()
 public void animateNpcs()
-public void updateEntityMovement(Entity entity)
-public void updateForcedMovement(Entity entity)
-public void updateInterpolatedMovement(Entity entity)
-public void updateWalkingStep(Entity entity)
-public void updateEntityFacing(Entity entity)
-public void updateEntityAnimation(Entity entity)
+public void updateEntityMovement(Entity entity) -> EntityMovementHandler.updateEntityMovement
+public void updateForcedMovement(Entity entity) -> EntityMovementHandler.updateForcedMovement
+public void updateInterpolatedMovement(Entity entity) -> EntityMovementHandler.updateInterpolatedMovement
+public void updateWalkingStep(Entity entity) -> EntityMovementHandler.updateWalkingStep
+public void updateEntityFacing(Entity entity) -> EntityAnimationHandler.updateEntityFacing
+public void updateEntityAnimation(Entity entity) -> EntityAnimationHandler.updateEntityAnimation
 public void drawGameScreen()
 public boolean buildFriendsListMenu(RSInterface listInterface)
 public void processGraphicsObjects()
