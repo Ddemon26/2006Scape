@@ -24,14 +24,14 @@ public void buildInterfaceMenu(int i, RSInterface parentInterface, int k, int l,
 public void drawScrollThumb(int j, int k, int l, int i1, int j1)
 public void updateNPCs(Stream stream, int i)
 public void processChatModeClick()
-public void applyVarp(int i)
+public void applyVarp(int i) -> SettingApplier.applyVarp
 public void updateEntities()
 public void delFriend(long l) -> FriendManager.delFriend
-public void drawButton(boolean enabled, int x, int y, int width)
-public void drawCheckbox(boolean enabled, int x, int y)
-public void drawTabArea()
-public void animateTextures(int j)
-public void updateEntityText()
+public void drawButton(boolean enabled, int x, int y, int width) -> TabAreaRenderer.drawButton
+public void drawCheckbox(boolean enabled, int x, int y) -> TabAreaRenderer.drawCheckbox
+public void drawTabArea() -> TabAreaRenderer.drawTabArea
+public void animateTextures(int j) -> TabAreaRenderer.animateTextures
+public void updateEntityText() -> EntityTextUpdater.updateEntityText
 public void calcCameraPos() -> CameraManager.calcCameraPos
 // menu rendering moved to [MenuManager](MenuManager.md)
 public void addFriend(long l) -> FriendManager.addFriend
