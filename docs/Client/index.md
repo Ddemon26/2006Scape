@@ -23,6 +23,8 @@
 - [DynamicObject](Client/classes/DynamicObject.md)
 - [Entity](Client/classes/Entity.md)
 - [EntityDef](Client/classes/EntityDef.md)
+- [EntityAnimationHandler](Client/classes/EntityAnimationHandler.md)
+- [EntityMovementHandler](Client/classes/EntityMovementHandler.md)
 - [FloorOverlay](Client/classes/FloorOverlay.md)
 - [FrameBase](Client/classes/FrameBase.md)
 - [FlamesEffect](Client/classes/FlamesEffect.md)
