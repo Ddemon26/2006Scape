@@ -8,5 +8,6 @@ Updates NPC movement and state each tick, extracted from [`Game`](Game.md).
 final class NpcUpdater {
     NpcUpdater(Game game)
     void updateNPCs(Stream stream, int size)
+    void updateNpcList(Stream stream)
 }
 ```
