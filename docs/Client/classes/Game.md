@@ -138,17 +138,17 @@ public void queuePendingSpawn(int j, int k, int l, int i1, int j1, int k1, int l
 public boolean interfaceIsSelected(RSInterface component)
 public DataInputStream openJagGrabInputStream(String s) throws IOException
 public void doFlamesDrawing()
-public void updateOtherPlayers(Stream stream)
+public void updateOtherPlayers(Stream stream) -> PlayerUpdater.updateOtherPlayers
 public void drawLoginScreen(boolean flag)
 public void drawFlames()
 public void raiseWelcomeScreen()
-public void handleMapPackets(Stream stream, int j)
+public void handleMapPackets(Stream stream, int j) -> MapPacketHandler.handleMapPackets
 public static void setLowMem()
-public void updateNpcList(Stream stream)
+public void updateNpcList(Stream stream) -> NpcUpdater.updateNpcList
 public void processLoginScreenInput()
 public void markMinimap(Sprite sprite, int i, int j)
 public void updateSceneObjects(int i, int j, int k, int l, int i1, int j1, int k1)
-public void updatePlayers(int i, Stream stream)
+public void updatePlayers(int i, Stream stream) -> PlayerUpdater.updatePlayers
 public void setCameraPos(int j, int k, int l, int i1, int j1, int k1) -> CameraManager.setCameraPos
 public boolean parsePacket()
 public void run()
