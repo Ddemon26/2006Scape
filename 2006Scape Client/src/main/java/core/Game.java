@@ -103,9 +103,8 @@ import util.Varp;
 public class Game extends RSApplet {
 
         private boolean graphicsEnabled = true;
-        private final FriendManager friendManager;
         private final IgnoreManager ignoreManager;
-	
+        private final FriendManager friendManager;
 // Moved to GameUtils for readability
 
 public void drawChatArea() {
@@ -437,344 +436,22 @@ public void drawChatArea() {
 		}
 	}
 
-       public void buildInterfaceMenu(int i, RSInterface parentInterface, int k, int l, int i1, int j1) {
-               if (parentInterface.type != 0 || parentInterface.children == null || parentInterface.hideUntilHovered) {
-                       return;
-               }
-               if (k < i || i1 < l || k > i + parentInterface.width || i1 > l + parentInterface.height) {
-                       return;
-               }
-               int k1 = parentInterface.children.length;
-               for (int l1 = 0; l1 < k1; l1++) {
-                       int i2 = parentInterface.childX[l1] + i;
-                       int j2 = parentInterface.childY[l1] + l - j1;
-                       RSInterface childWidget = RSInterface.interfaceCache[parentInterface.children[l1]];
-                        i2 += childWidget.offsetX;
-			j2 += childWidget.offsetY;
-			if ((childWidget.hoverTarget >= 0 || childWidget.hoverTextColor != 0) && k >= i2 && i1 >= j2 && k < i2 + childWidget.width && i1 < j2 + childWidget.height) {
-				if (childWidget.hoverTarget >= 0) {
-					hoveredWidgetId = childWidget.hoverTarget;
-				} else {
-					hoveredWidgetId = childWidget.id;
-				}
-			}
-			if (childWidget.type == 0) {
-				buildInterfaceMenu(i2, childWidget, k, j2, i1, childWidget.scrollPosition);
-				if (childWidget.scrollMax > childWidget.height) {
-                                       handleScrollbarInput(i2 + childWidget.width, childWidget.height, k, i1, childWidget, j2, true, childWidget.scrollMax);
-				}
-			} else {
-				if (childWidget.atActionType == 1 && k >= i2 && i1 >= j2 && k < i2 + childWidget.width && i1 < j2 + childWidget.height) {
-					boolean flag = false;
-					if (childWidget.contentType != 0) {
-						flag = buildFriendsListMenu(childWidget);
-					}
-					if (!flag) {
-						menuActionName[menuActionRow] = showInfo ? childWidget.tooltip + ", " + childWidget.id : childWidget.tooltip;
-						menuActionID[menuActionRow] = 315;
-						menuActionCmd3[menuActionRow] = childWidget.id;
-						menuActionRow++;
-					}
-				}
-				if (childWidget.atActionType == 2 && spellSelected == 0 && k >= i2 && i1 >= j2 && k < i2 + childWidget.width && i1 < j2 + childWidget.height) {
-					String s = childWidget.selectedActionName;
-					if (s.indexOf(" ") != -1) {
-						s = s.substring(0, s.indexOf(" "));
-					}
-					menuActionName[menuActionRow] = s + " @gre@" + childWidget.spellName;
-					menuActionID[menuActionRow] = 626;
-					menuActionCmd3[menuActionRow] = childWidget.id;
-					menuActionRow++;
-				}
-				if (childWidget.atActionType == 3 && k >= i2 && i1 >= j2 && k < i2 + childWidget.width && i1 < j2 + childWidget.height) {
-					menuActionName[menuActionRow] = "Close";
-					menuActionID[menuActionRow] = 200;
-					menuActionCmd3[menuActionRow] = childWidget.id;
-					menuActionRow++;
-				}
-				if (childWidget.atActionType == 4 && k >= i2 && i1 >= j2 && k < i2 + childWidget.width && i1 < j2 + childWidget.height) {
-					menuActionName[menuActionRow] = showInfo ? childWidget.tooltip + ", " + childWidget.id : childWidget.tooltip;
-					menuActionID[menuActionRow] = 169;
-					menuActionCmd3[menuActionRow] = childWidget.id;
-					menuActionRow++;
-				}
-				if (childWidget.atActionType == 5 && k >= i2 && i1 >= j2 && k < i2 + childWidget.width && i1 < j2 + childWidget.height) {
-					menuActionName[menuActionRow] = showInfo ? childWidget.tooltip + ", " + childWidget.id : childWidget.tooltip;
-					menuActionID[menuActionRow] = 646;
-					menuActionCmd3[menuActionRow] = childWidget.id;
-					menuActionRow++;
-				}
-				if (childWidget.atActionType == 6 && !actionPending && k >= i2 && i1 >= j2 && k < i2 + childWidget.width && i1 < j2 + childWidget.height) {
-					menuActionName[menuActionRow] = showInfo ? childWidget.tooltip + ", " + childWidget.id : childWidget.tooltip;
-					menuActionID[menuActionRow] = 679;
-					menuActionCmd3[menuActionRow] = childWidget.id;
-					menuActionRow++;
-				}
-				if (childWidget.type == 2) {
-					int k2 = 0;
-					for (int l2 = 0; l2 < childWidget.height; l2++) {
-						for (int i3 = 0; i3 < childWidget.width; i3++) {
-							int j3 = i2 + i3 * (32 + childWidget.invSpritePadX);
-							int k3 = j2 + l2 * (32 + childWidget.invSpritePadY);
-							if (k2 < 20) {
-								j3 += childWidget.spritesX[k2];
-								k3 += childWidget.spritesY[k2];
-							}
-							if (k >= j3 && i1 >= k3 && k < j3 + 32 && i1 < k3 + 32) {
-								mouseInvInterfaceIndex = k2;
-								lastActiveInvInterface = childWidget.id;
-								if (childWidget.inv[k2] > 0) {
-									ItemDef itemDef = ItemDef.lookup(childWidget.inv[k2] - 1);
-									if (itemSelected == 1 && childWidget.isInventoryInterface) {
-										if (childWidget.id != selectedItemInterfaceId || k2 != selectedItemSlot) {
-											menuActionName[menuActionRow] = "Use " + selectedItemName + " with @lre@" + itemDef.name;
-											menuActionID[menuActionRow] = 870;
-											menuActionCmd1[menuActionRow] = itemDef.id;
-											menuActionCmd2[menuActionRow] = k2;
-											menuActionCmd3[menuActionRow] = childWidget.id;
-											menuActionRow++;
-										}
-									} else if (spellSelected == 1 && childWidget.isInventoryInterface) {
-										if ((spellUsableOn & 0x10) == 16) {
-											menuActionName[menuActionRow] = spellTooltip + " @lre@" + itemDef.name;
-											menuActionID[menuActionRow] = 543;
-											menuActionCmd1[menuActionRow] = itemDef.id;
-											menuActionCmd2[menuActionRow] = k2;
-											menuActionCmd3[menuActionRow] = childWidget.id;
-											menuActionRow++;
-										}
-									} else {
-										if (childWidget.isInventoryInterface) {
-											for (int l3 = 4; l3 >= 3; l3--) {
-												if (itemDef.actions != null && itemDef.actions[l3] != null) {
-													menuActionName[menuActionRow] = itemDef.actions[l3] + " @lre@" + itemDef.name;
-													if (l3 == 3) {
-															menuActionID[menuActionRow] = 493;
-													}
-													if (l3 == 4) {
-															menuActionID[menuActionRow] = 847;
-													}
-													menuActionCmd1[menuActionRow] = itemDef.id;
-													menuActionCmd2[menuActionRow] = k2;
-													menuActionCmd3[menuActionRow] = childWidget.id;
-													menuActionRow++;
-												} else if (l3 == 4) {
-													menuActionName[menuActionRow] = "Drop @lre@" + itemDef.name;
-													menuActionID[menuActionRow] = 847;
-													menuActionCmd1[menuActionRow] = itemDef.id;
-													menuActionCmd2[menuActionRow] = k2;
-													menuActionCmd3[menuActionRow] = childWidget.id;
-													menuActionRow++;
-												}
-											}
+        public void buildInterfaceMenu(int i, RSInterface parentInterface, int k, int l, int i1, int j1) {
+                interfaceMenuBuilder.buildInterfaceMenu(i, parentInterface, k, l, i1, j1);
+        }
 
-										}
-										if (childWidget.usableItemInterface) {
-										    if (shiftDown)
-											{
-												menuActionName[menuActionRow] = "Drop @lre@" + itemDef.name;
-											} else {
-												menuActionName[menuActionRow] = "Use @lre@" + itemDef.name;
-											}
-											menuActionID[menuActionRow] = 447;
-											menuActionCmd1[menuActionRow] = itemDef.id;
-											menuActionCmd2[menuActionRow] = k2;
-											menuActionCmd3[menuActionRow] = childWidget.id;
-											menuActionRow++;
-										}
-										if (childWidget.isInventoryInterface && itemDef.actions != null) {
-											for (int i4 = 2; i4 >= 0; i4--) {
-												if (itemDef.actions[i4] != null) {
-													if (shiftDown)
-													{
-														menuActionName[menuActionRow] = "Drop @lre@" + itemDef.name;
-														menuActionCmd1[menuActionRow] = itemDef.id;
-														menuActionCmd2[menuActionRow] = k2;
-														menuActionCmd3[menuActionRow] = childWidget.id;
-													}
-													else
-													{
-														menuActionName[menuActionRow] = itemDef.actions[i4] + " @lre@" + itemDef.name; //Seems like it's Wear + SPACE + ItemName.
-														if (i4 == 0) {
-															menuActionID[menuActionRow] = 74;
-														}
-														if (i4 == 1) {
-															menuActionID[menuActionRow] = 454;
-														}
-														if (i4 == 2) {
-															menuActionID[menuActionRow] = 539;
-														}
-														menuActionCmd1[menuActionRow] = itemDef.id;
-														menuActionCmd2[menuActionRow] = k2;
-														menuActionCmd3[menuActionRow] = childWidget.id;
-														menuActionRow++;
-													}
-												}
-											}
 
-										}
-										if (childWidget.actions != null && !(RSInterface.interfaceCache[5383].disabledText.startsWith("Search") && childWidget.parentID == 5292)) {
-											for (int j4 = 4; j4 >= 0; j4--) {
-												if (childWidget.actions[j4] != null) {
-													menuActionName[menuActionRow] = childWidget.actions[j4] + " @lre@" + itemDef.name;
-													if (j4 == 0) {
-														menuActionID[menuActionRow] = 632;
-													}
-													if (j4 == 1) {
-														menuActionID[menuActionRow] = 78;
-													}
-													if (j4 == 2) {
-														menuActionID[menuActionRow] = 867;
-													}
-													if (j4 == 3) {
-														menuActionID[menuActionRow] = 431;
-													}
-													if (j4 == 4) {
-														menuActionID[menuActionRow] = 53;
-													}
-													menuActionCmd1[menuActionRow] = itemDef.id;
-													menuActionCmd2[menuActionRow] = k2;
-													menuActionCmd3[menuActionRow] = childWidget.id;
-													menuActionRow++;
-												}
-											}
-										}
-										menuActionName[menuActionRow] = "Examine @lre@" + itemDef.name + (showInfo ? " @gre@(@whi@" + (childWidget.inv[k2] - 1) + "@gre@)" : "");
-										menuActionID[menuActionRow] = 1125;
-										menuActionCmd1[menuActionRow] = itemDef.id;
-										menuActionCmd2[menuActionRow] = k2;
-										menuActionCmd3[menuActionRow] = childWidget.id;
-										menuActionRow++;
-									}
-								}
-							}
-							k2++;
-						}
+        public void drawScrollThumb(int j, int k, int l, int i1, int j1) {
+                interfaceMenuBuilder.drawScrollThumb(j, k, l, i1, j1);
+        }
+        public void updateNPCs(Stream stream, int i) {
+                npcUpdater.updateNPCs(stream, i);
+        }
 
-					}
+        public void processChatModeClick() {
+                chatModeHandler.processChatModeClick();
+        }
 
-				}
-			}
-		}
-	}
-
-	public void drawScrollThumb(int j, int k, int l, int i1, int j1) {
-		scrollBar1.draw(i1, l);
-		scrollBar2.draw(i1, l + j - 16);
-		DrawingArea.fillArea(j - 32, l + 16, scrollBarColor, 16, i1);
-		int k1 = (j - 32) * j / j1;
-		if (k1 < 8) {
-			k1 = 8;
-		}
-		int l1 = (j - 32 - k1) * k / (j1 - j);
-		DrawingArea.fillArea(k1, l + 16 + l1, scrollBarHandleColor, 16, i1);
-		DrawingArea.drawVerticalLine(l + 16 + l1, scrollBarLightColor, k1, i1);
-		DrawingArea.drawVerticalLine(l + 16 + l1, scrollBarLightColor, k1, i1 + 1);
-		DrawingArea.drawHorizontalLine(l + 16 + l1, scrollBarLightColor, 16, i1);
-		DrawingArea.drawHorizontalLine(l + 17 + l1, scrollBarLightColor, 16, i1);
-		DrawingArea.drawVerticalLine(l + 16 + l1, scrollBarDarkColor, k1, i1 + 15);
-		DrawingArea.drawVerticalLine(l + 17 + l1, scrollBarDarkColor, k1 - 1, i1 + 14);
-		DrawingArea.drawHorizontalLine(l + 15 + l1 + k1, scrollBarDarkColor, 16, i1);
-		DrawingArea.drawHorizontalLine(l + 14 + l1 + k1, scrollBarDarkColor, 15, i1 + 1);
-	}
-
-	public void updateNPCs(Stream stream, int i) {
-		entityRemovalCount = 0;
-		playerUpdateCount = 0;
-               updateNpcList(stream);
-               addLocalNPCs(i, stream);
-               processNpcUpdateMasks(stream);
-		for (int k = 0; k < entityRemovalCount; k++) {
-			int l = removedEntityIndices[k];
-			if (npcArray[l].lastUpdateCycle != loopCycle) {
-                                npcArray[l].definition = null;
-				npcArray[l] = null;
-			}
-		}
-
-		if (stream.currentOffset != i) {
-			Signlink.reporterror(myUsername + " size mismatch in getnpcpos - pos:" + stream.currentOffset + " psize:" + i);
-			throw new RuntimeException("eek");
-		}
-		for (int i1 = 0; i1 < npcCount; i1++) {
-			if (npcArray[npcIndices[i1]] == null) {
-				Signlink.reporterror(myUsername + " null entry in npc list - pos:" + i1 + " size:" + npcCount);
-				throw new RuntimeException("eek");
-			}
-		}
-
-	}
-
-	public void processChatModeClick() {
-		if (super.clickMode3 == 1) {
-			if (super.saveClickX >= 6 && super.saveClickX <= 106 && super.saveClickY >= 467 && super.saveClickY <= 499) {
-				publicChatMode = (publicChatMode + 1) % 4;
-				chatSettingsUpdateNeeded = true;
-				inputTaken = true;
-				stream.createFrame(95);
-				stream.writeWordBigEndian(publicChatMode);
-				stream.writeWordBigEndian(privateChatMode);
-				stream.writeWordBigEndian(tradeMode);
-			}
-			if (super.saveClickX >= 135 && super.saveClickX <= 235 && super.saveClickY >= 467 && super.saveClickY <= 499) {
-				privateChatMode = (privateChatMode + 1) % 3;
-				chatSettingsUpdateNeeded = true;
-				inputTaken = true;
-				stream.createFrame(95);
-				stream.writeWordBigEndian(publicChatMode);
-				stream.writeWordBigEndian(privateChatMode);
-				stream.writeWordBigEndian(tradeMode);
-			}
-			if (super.saveClickX >= 273 && super.saveClickX <= 373 && super.saveClickY >= 467 && super.saveClickY <= 499) {
-				tradeMode = (tradeMode + 1) % 3;
-				chatSettingsUpdateNeeded = true;
-				inputTaken = true;
-				stream.createFrame(95);
-				stream.writeWordBigEndian(publicChatMode);
-				stream.writeWordBigEndian(privateChatMode);
-				stream.writeWordBigEndian(tradeMode);
-			}
-			if (super.saveClickX >= 412 && super.saveClickX <= 512 && super.saveClickY >= 467 && super.saveClickY <= 499) {
-				if (openInterfaceID == -1) {
-					closeOpenInterfaces();
-					reportAbuseInput = "";
-					canMute = false;
-					for (RSInterface element : RSInterface.interfaceCache) {
-						if (element == null || element.contentType != 600) {
-							continue;
-						}
-						reportAbuseInterfaceID = openInterfaceID = element.parentID;
-						break;
-					}
-
-				} else {
-					pushMessage("Please close the public interface you have open before using 'report abuse'", 0, "");
-				}
-			}
-			abuseReportCounter++;
-			if (abuseReportCounter > 1386) {
-				abuseReportCounter = 0;
-				stream.createFrame(165);
-				stream.writeWordBigEndian(0);
-				int j = stream.currentOffset;
-				stream.writeWordBigEndian(139);
-				stream.writeWordBigEndian(150);
-				stream.writeWord(32131);
-				stream.writeWordBigEndian((int) (Math.random() * 256D));
-				stream.writeWord(3250);
-				stream.writeWordBigEndian(177);
-				stream.writeWord(24859);
-				stream.writeWordBigEndian(119);
-				if ((int) (Math.random() * 2D) == 0) {
-					stream.writeWord(47234);
-				}
-				if ((int) (Math.random() * 2D) == 0) {
-					stream.writeWordBigEndian(21);
-				}
-				stream.writeBytes(stream.currentOffset - j);
-			}
-		}
-	}
 
        public void applyVarp(int i) {
                 int action = Varp.cache[i].actionType;
@@ -10615,6 +10292,9 @@ public void drawChatArea() {
                 minimapRenderer = new MinimapRenderer(this);
                 groundItemSpawner = new GroundItemSpawner(this);
                 menuManager = new MenuManager(this);
+                interfaceMenuBuilder = new InterfaceMenuBuilder(this);
+                npcUpdater = new NpcUpdater(this);
+                chatModeHandler = new ChatModeHandler(this);
                 friendManager = new FriendManager(this);
                 ignoreManager = new IgnoreManager(this);
                 cameraManager = new CameraManager(this);
@@ -11039,6 +10719,9 @@ public void drawChatArea() {
         public final MinimapRenderer minimapRenderer;
         public final GroundItemSpawner groundItemSpawner;
         public final MenuManager menuManager;
+        public final InterfaceMenuBuilder interfaceMenuBuilder;
+        public final NpcUpdater npcUpdater;
+        public final ChatModeHandler chatModeHandler;
         public final CameraManager cameraManager;
         public int flameOffset;
 	public int backDialogID;
