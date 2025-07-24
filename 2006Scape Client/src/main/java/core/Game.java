@@ -97,6 +97,7 @@ import util.ISAACRandomGen;
 import util.Node;
 import util.NodeList;
 import util.SizeConstants;
+import core.PendingSpawnManager;
 import util.VarBit;
 import util.Varp;
 
@@ -1905,16 +1906,7 @@ public void drawChatArea() {
 	}
 
        public void locatePendingSpawns() {
-               PendingSpawn pendingSpawn = (PendingSpawn) pendingSpawns.reverseGetFirst();
-               for (; pendingSpawn != null; pendingSpawn = (PendingSpawn) pendingSpawns.reverseGetNext()) {
-                       if (pendingSpawn.delay == -1) {
-                               pendingSpawn.spawnDelay = 0;
-                               locateSceneObject(pendingSpawn);
-                       } else {
-                               pendingSpawn.unlink();
-                       }
-               }
-
+               pendingSpawnManager.locatePendingSpawns();
        }
 
 	void drawLoadingText(int i, String s) {
@@ -5375,32 +5367,8 @@ public void drawChatArea() {
 	}
 
        public void locateSceneObject(PendingSpawn pendingSpawn) {
-		int i = 0;
-		int j = -1;
-		int k = 0;
-		int l = 0;
-		if (pendingSpawn.category == 0) {
-			i = worldController.getBoundaryObjectUid(pendingSpawn.plane, pendingSpawn.x, pendingSpawn.y);
-		}
-		if (pendingSpawn.category == 1) {
-			i = worldController.getWallDecorationUid(pendingSpawn.plane, pendingSpawn.x, pendingSpawn.y);
-		}
-		if (pendingSpawn.category == 2) {
-			i = worldController.getSceneObjectUid(pendingSpawn.plane, pendingSpawn.x, pendingSpawn.y);
-		}
-		if (pendingSpawn.category == 3) {
-			i = worldController.getTileDecorationUid(pendingSpawn.plane, pendingSpawn.x, pendingSpawn.y);
-		}
-		if (i != 0) {
-			int i1 = worldController.getObjectConfig(pendingSpawn.plane, pendingSpawn.x, pendingSpawn.y, i);
-			j = i >> 14 & 0x7fff;
-			k = i1 & 0x1f;
-			l = i1 >> 6;
-		}
-		pendingSpawn.oldId = j;
-		pendingSpawn.oldOrientation = k;
-		pendingSpawn.oldType = l;
-	}
+               pendingSpawnManager.locateSceneObject(pendingSpawn);
+        }
 
        public final void processSoundQueue() {
 		for (int index = 0; index < currentSound; index++) {
@@ -7040,35 +7008,9 @@ public void drawChatArea() {
 
 	}
 
-	public void processPendingSpawns() {
-		if (loadingStage == 2) {
-			for (PendingSpawn pendingSpawn = (PendingSpawn) pendingSpawns.reverseGetFirst(); pendingSpawn != null; pendingSpawn = (PendingSpawn) pendingSpawns.reverseGetNext()) {
-				if (pendingSpawn.delay > 0) {
-					pendingSpawn.delay--;
-				}
-				if (pendingSpawn.delay == 0) {
-					if (pendingSpawn.oldId < 0 || ObjectManager.isObjectVisible(pendingSpawn.oldId, pendingSpawn.oldOrientation)) {
-                                                updateSceneObjects(pendingSpawn.y, pendingSpawn.plane, pendingSpawn.oldType, pendingSpawn.oldOrientation, pendingSpawn.x, pendingSpawn.category, pendingSpawn.oldId);
-						pendingSpawn.unlink();
-					}
-				} else {
-					if (pendingSpawn.spawnDelay > 0) {
-						pendingSpawn.spawnDelay--;
-					}
-					if (pendingSpawn.spawnDelay == 0 && pendingSpawn.x >= 1 && pendingSpawn.y >= 1 && pendingSpawn.x <= 102 && pendingSpawn.y <= 102 && (pendingSpawn.id < 0 || ObjectManager.isObjectVisible(pendingSpawn.id, pendingSpawn.type))) {
-                                                updateSceneObjects(pendingSpawn.y, pendingSpawn.plane, pendingSpawn.orientation, pendingSpawn.type, pendingSpawn.x, pendingSpawn.category, pendingSpawn.id);
-						pendingSpawn.spawnDelay = -1;
-						if (pendingSpawn.id == pendingSpawn.oldId && pendingSpawn.oldId == -1) {
-							pendingSpawn.unlink();
-						} else if (pendingSpawn.id == pendingSpawn.oldId && pendingSpawn.orientation == pendingSpawn.oldType && pendingSpawn.type == pendingSpawn.oldOrientation) {
-							pendingSpawn.unlink();
-						}
-					}
-				}
-			}
-
-		}
-	}
+       public void processPendingSpawns() {
+               pendingSpawnManager.processPendingSpawns();
+        }
 
 
        public void updateSelfMovement(Stream stream) {
@@ -7376,241 +7318,25 @@ public void drawChatArea() {
                 chatTextDrawingArea.drawRandomColorText(4, 0xffffff, s, loopCycle / 1000, 15);
 	}
 
-	public void drawMinimap() {
-		chatBackground.initDrawingArea();
-		if (minimapState == 2) {
-			byte abyte0[] = mapBack.pixels;
-			int ai[] = DrawingArea.pixels;
-			int k2 = abyte0.length;
-			for (int i5 = 0; i5 < k2; i5++) {
-				if (abyte0[i5] == 0) {
-					ai[i5] = 0;
-				}
-			}
+       public void drawMinimap() {
+               minimapRenderer.drawMinimap();
+        }
 
-			compass.drawTransformed(33, cameraYaw, mapBackWidths, 256, mapBackLeft, 25, 0, 0, 33, 25);
-			tabAreaBuffer.initDrawingArea();
-			Texture.lineOffsets = chatBoxAreaOffsets;
-			return;
-		}
-		int i = cameraYaw + minimapRotationOffset & 0x7ff;
-		int j = 48 + myPlayer.x / 32;
-		int l2 = 464 - myPlayer.y / 32;
-           minimapImage.drawTransformed(151, i, minimapLineLengths, 256 + minimapZoom, minimapLineOffset, l2, 5, 25, 146, j);
-		compass.drawTransformed(33, cameraYaw, mapBackWidths, 256, mapBackLeft, 25, 0, 0, 33, 25);
-		// Minimap icons (shops, quest etc)
-		for (int j5 = 0; j5 < minimapIconCount; j5++) {
-			int k = minimapIconX[j5] * 4 + 2 - myPlayer.x / 32;
-			int i3 = minimapIconY[j5] * 4 + 2 - myPlayer.y / 32;
-			markMinimap(minimapIconSprites[j5], k, i3);
-		}
+       public void npcScreenPos(Entity entity, int i) {
+               minimapRenderer.npcScreenPos(entity, i);
+        }
 
-		for (int k5 = 0; k5 < 104; k5++) {
-			for (int l5 = 0; l5 < 104; l5++) {
-                                NodeList itemList = groundArray[plane][k5][l5];
-                                if (itemList != null) {
-					int l = k5 * 4 + 2 - myPlayer.x / 32;
-					int j3 = l5 * 4 + 2 - myPlayer.y / 32;
-					markMinimap(mapDotItem, l, j3);
-				}
-			}
-		}
+       public void calcEntityScreenPos(int i, int j, int l) {
+               minimapRenderer.calcEntityScreenPos(i, j, l);
+        }
 
-		for (int i6 = 0; i6 < npcCount; i6++) {
-			NPC npc = npcArray[npcIndices[i6]];
-			if (npc != null && npc.isVisible()) {
-                                EntityDef entityDef = npc.definition;
-                                if (entityDef.childrenIDs != null) {
-                                        entityDef = entityDef.transform();
-                                }
-                                if (entityDef != null && entityDef.minimapVisible && entityDef.clickable) {
-					int i1 = npc.x / 32 - myPlayer.x / 32;
-					int k3 = npc.y / 32 - myPlayer.y / 32;
-					markMinimap(mapDotNPC, i1, k3);
-				}
-			}
-		}
-
-		for (int j6 = 0; j6 < playerCount; j6++) {
-			Player player = playerArray[playerIndices[j6]];
-			if (player != null && player.isVisible()) {
-				int j1 = player.x / 32 - myPlayer.x / 32;
-				int l3 = player.y / 32 - myPlayer.y / 32;
-				boolean flag1 = false;
-				boolean flag2 = false;
-				long l6 = TextClass.longForName(player.name);
-
-				if (myPlayer.team != 0 && player.team != 0 && myPlayer.team == player.team || player.combatLevel == 0) {
-					flag1 = true;
-				}
-
-				for (int k6 = 0; k6 < friendsCount; k6++) {
-					if (l6 != friendsListAsLongs[k6] || friendsNodeIDs[k6] == 0) {
-						continue;
-					}
-					flag2 = true;
-					break;
-				}
-
-				if (flag1) {
-					markMinimap(mapDotTeam, j1, l3);
-				} else if (flag2) {
-					markMinimap(mapDotFriend, j1, l3);
-				} else {
-					markMinimap(mapDotPlayer, j1, l3);
-				}
-			}
-		}
-
-		if (hintIconState != 0 && loopCycle % 20 < 10) {
-			if (hintIconState == 1 && hintNpcIndex >= 0 && hintNpcIndex < npcArray.length) {
-				NPC npc = npcArray[hintNpcIndex];
-				if (npc != null) {
-					int k1 = npc.x / 32 - myPlayer.x / 32;
-					int i4 = npc.y / 32 - myPlayer.y / 32;
-					drawMinimapHint(mapMarker, i4, k1);
-				}
-			}
-			if (hintIconState == 2) {
-				int l1 = (selectedNpcId - baseX) * 4 + 2 - myPlayer.x / 32;
-				int j4 = (destinationX - baseY) * 4 + 2 - myPlayer.y / 32;
-				drawMinimapHint(mapMarker, j4, l1);
-			}
-			if (hintIconState == 10 && selectedPlayerId >= 0 && selectedPlayerId < playerArray.length) {
-				Player targetPlayer = playerArray[selectedPlayerId];
-				if (targetPlayer != null) {
-					int i2 = targetPlayer.x / 32 - myPlayer.x / 32;
-					int k4 = targetPlayer.y / 32 - myPlayer.y / 32;
-					drawMinimapHint(mapMarker, k4, i2);
-				}
-			}
-		}
-		if (destX != 0) {
-			int j2 = destX * 4 + 2 - myPlayer.x / 32;
-			int l4 = destY * 4 + 2 - myPlayer.y / 32;
-			markMinimap(mapFlag, j2, l4);
-		}
-		// Draw player square on mini map
-		DrawingArea.fillArea(3, 78, 0xffffff, 3, 97);
-		tabAreaBuffer.initDrawingArea();
-		Texture.lineOffsets = chatBoxAreaOffsets;
-	}
-
-	public void npcScreenPos(Entity entity, int i) {
-		calcEntityScreenPos(entity.x, i, entity.y);
-
-		// aryan entity.entScreenX = spriteDrawX; entity.entScreenY =
-		// spriteDrawY;
-	}
-
-	public void calcEntityScreenPos(int i, int j, int l) {
-		if (i < 128 || l < 128 || i > 13056 || l > 13056) {
-			spriteDrawX = -1;
-			spriteDrawY = -1;
-			return;
-		}
-		int i1 = getTileHeight(plane, l, i) - j;
-		i -= xCameraPos;
-		i1 -= zCameraPos;
-		l -= yCameraPos;
-		int j1 = Model.sineTable[yCameraCurve];
-		int k1 = Model.cosineTable[yCameraCurve];
-		int l1 = Model.sineTable[xCameraCurve];
-		int i2 = Model.cosineTable[xCameraCurve];
-		int j2 = l * l1 + i * i2 >> 16;
-		l = l * i2 - i * l1 >> 16;
-		i = j2;
-		j2 = i1 * k1 - l * j1 >> 16;
-		l = i1 * j1 + l * k1 >> 16;
-		i1 = j2;
-		if (l >= 50) {
-			spriteDrawX = Texture.textureInt1 + (i << 9) / l;
-			spriteDrawY = Texture.textureInt2 + (i1 << 9) / l;
-		} else {
-			spriteDrawX = -1;
-			spriteDrawY = -1;
-		}
-	}
-
-	public void buildSplitPrivateChatMenu() {
-		if (splitpublicChat == 0) {
-			return;
-		}
-		int i = 0;
-		if (systemUpdateTimer != 0) {
-			i = 1;
-		}
-		for (int j = 0; j < 100; j++) {
-			if (chatMessages[j] != null) {
-				int k = chatTypes[j];
-				String s = chatNames[j];
-				if (s != null && s.startsWith("@cr1@")) {
-					s = s.substring(5);
-				}
-				if (s != null && s.startsWith("@cr2@")) {
-					s = s.substring(5);
-				}
-				if ((k == 3 || k == 7) && (k == 7 || privateChatMode == 0 || privateChatMode == 1 && isFriendOrSelf(s))) {
-					int l = 329 - i * 13;
-					if (super.mouseX > 4 && super.mouseY - 4 > l - 10 && super.mouseY - 4 <= l + 3) {
-						int i1 = boldFont.getTextWidth("From:  " + s + chatMessages[j]) + 25;
-						if (i1 > 450) {
-							i1 = 450;
-						}
-						if (super.mouseX < 4 + i1) {
-							if (myPrivilege >= 1 && myPrivilege <= 3) {
-								menuActionName[menuActionRow] = "Report abuse @whi@" + s;
-								menuActionID[menuActionRow] = 2606;
-								menuActionRow++;
-							}
-							menuActionName[menuActionRow] = "Add ignore @whi@" + s;
-							menuActionID[menuActionRow] = 2042;
-							menuActionRow++;
-							menuActionName[menuActionRow] = "Reply to @whi@" + s;
-							menuActionID[menuActionRow] = 2639;
-							menuActionRow++;
-							menuActionName[menuActionRow] = "Add friend @whi@" + s;
-							menuActionID[menuActionRow] = 2337;
-							menuActionRow++;
-						}
-					}
-					if (++i >= 5) {
-						return;
-					}
-				}
-				if ((k == 5 || k == 6) && privateChatMode < 2 && ++i >= 5) {
-					return;
-				}
-			}
-		}
-
-	}
+       public void buildSplitPrivateChatMenu() {
+               chatAreaRenderer.buildSplitPrivateChatMenu();
+        }
 
        public void queuePendingSpawn(int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2) {
-		PendingSpawn pendingSpawn = null;
-		for (PendingSpawn pendingSpawnIter = (PendingSpawn) pendingSpawns.reverseGetFirst(); pendingSpawnIter != null; pendingSpawnIter = (PendingSpawn) pendingSpawns.reverseGetNext()) {
-			if (pendingSpawnIter.plane != l1 || pendingSpawnIter.x != i2 || pendingSpawnIter.y != j1 || pendingSpawnIter.category != i1) {
-				continue;
-			}
-			pendingSpawn = pendingSpawnIter;
-			break;
-		}
-
-		if (pendingSpawn == null) {
-			pendingSpawn = new PendingSpawn();
-			pendingSpawn.plane = l1;
-			pendingSpawn.category = i1;
-			pendingSpawn.x = i2;
-			pendingSpawn.y = j1;
-			locateSceneObject(pendingSpawn);
-			pendingSpawns.insertHead(pendingSpawn);
-		}
-		pendingSpawn.id = k;
-		pendingSpawn.type = k1;
-		pendingSpawn.orientation = l;
-		pendingSpawn.spawnDelay = j2;
-		pendingSpawn.delay = j;
-	}
+               pendingSpawnManager.queuePendingSpawn(j, k, l, i1, j1, k1, l1, i2, j2);
+        }
 
        public boolean interfaceIsSelected(RSInterface component) {
                if (component.valueCompareType == null) {
@@ -9354,6 +9080,7 @@ public void drawChatArea() {
                 flamesEffect = new FlamesEffect(this);
                 musicController = new GameMusicController(this);
                 minimapRenderer = new MinimapRenderer(this);
+                pendingSpawnManager = new PendingSpawnManager(this);
                 groundItemSpawner = new GroundItemSpawner(this);
                 menuManager = new MenuManager(this);
                 interfaceMenuBuilder = new InterfaceMenuBuilder(this);
@@ -9788,6 +9515,7 @@ public void drawChatArea() {
         public final FlamesEffect flamesEffect;
         public final GameMusicController musicController;
         public final MinimapRenderer minimapRenderer;
+        public final PendingSpawnManager pendingSpawnManager;
         public final GroundItemSpawner groundItemSpawner;
         public final MenuManager menuManager;
         public final InterfaceMenuBuilder interfaceMenuBuilder;

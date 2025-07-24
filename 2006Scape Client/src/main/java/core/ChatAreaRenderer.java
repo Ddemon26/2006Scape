@@ -151,4 +151,59 @@ final class ChatAreaRenderer {
         game.tabAreaBuffer.initDrawingArea();
         Texture.lineOffsets = game.chatBoxAreaOffsets;
     }
+
+    /** Builds the private chat context menu when split chat is enabled. */
+    void buildSplitPrivateChatMenu() {
+        if (game.splitpublicChat == 0) {
+            return;
+        }
+        int lines = 0;
+        if (game.systemUpdateTimer != 0) {
+            lines = 1;
+        }
+        for (int j = 0; j < 100; j++) {
+            if (game.chatMessages[j] != null) {
+                int type = game.chatTypes[j];
+                String name = game.chatNames[j];
+                if (name != null && name.startsWith("@cr1@")) {
+                    name = name.substring(5);
+                }
+                if (name != null && name.startsWith("@cr2@")) {
+                    name = name.substring(5);
+                }
+                if ((type == 3 || type == 7) && (type == 7 || game.privateChatMode == 0 ||
+                        game.privateChatMode == 1 && game.isFriendOrSelf(name))) {
+                    int y = 329 - lines * 13;
+                    if (game.mouseX > 4 && game.mouseY - 4 > y - 10 && game.mouseY - 4 <= y + 3) {
+                        int width = game.boldFont.getTextWidth("From:  " + name + game.chatMessages[j]) + 25;
+                        if (width > 450) {
+                            width = 450;
+                        }
+                        if (game.mouseX < 4 + width) {
+                            if (game.myPrivilege >= 1 && game.myPrivilege <= 3) {
+                                game.menuActionName[game.menuActionRow] = "Report abuse @whi@" + name;
+                                game.menuActionID[game.menuActionRow] = 2606;
+                                game.menuActionRow++;
+                            }
+                            game.menuActionName[game.menuActionRow] = "Add ignore @whi@" + name;
+                            game.menuActionID[game.menuActionRow] = 2042;
+                            game.menuActionRow++;
+                            game.menuActionName[game.menuActionRow] = "Reply to @whi@" + name;
+                            game.menuActionID[game.menuActionRow] = 2639;
+                            game.menuActionRow++;
+                            game.menuActionName[game.menuActionRow] = "Add friend @whi@" + name;
+                            game.menuActionID[game.menuActionRow] = 2337;
+                            game.menuActionRow++;
+                        }
+                    }
+                    if (++lines >= 5) {
+                        return;
+                    }
+                }
+                if ((type == 5 || type == 6) && game.privateChatMode < 2 && ++lines >= 5) {
+                    return;
+                }
+            }
+        }
+    }
 }
