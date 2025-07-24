@@ -25,7 +25,7 @@ public void drawScrollThumb(int j, int k, int l, int i1, int j1)
 public void updateNPCs(Stream stream, int i)
 public void processChatModeClick()
 public void applyVarp(int i) -> SettingApplier.applyVarp
-public void updateEntities()
+public void updateEntities() -> EntityOverlayRenderer.renderEntityOverlays
 public void delFriend(long l) -> FriendManager.delFriend
 public void drawButton(boolean enabled, int x, int y, int width) -> TabAreaRenderer.drawButton
 public void drawCheckbox(boolean enabled, int x, int y) -> TabAreaRenderer.drawCheckbox

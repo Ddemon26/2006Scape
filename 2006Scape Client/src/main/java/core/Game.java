@@ -71,6 +71,7 @@ import core.EntityMovementHandler;
 import core.SettingApplier;
 import core.TabAreaRenderer;
 import core.EntityTextUpdater;
+import core.EntityOverlayRenderer;
 import core.InputHandler;
 import core.PlayerStatsCalculator;
 import core.DefinitionSearcher;
@@ -306,251 +307,7 @@ public void drawChatArea() {
 					}
 				}
 			}
-			// Entity stuff
-                        int overheadTextCount = 0;
-                        for (int j = -1; j < playerCount + npcCount; j++) {
-                                Entity entity;
-                                if (j == -1) {
-                                        entity = myPlayer;
-                                } else if (j < playerCount) {
-                                        entity = playerArray[playerIndices[j]];
-                                } else {
-                                        entity = npcArray[npcIndices[j - playerCount]];
-                                }
-                                if (entity == null || !entity.isVisible()) {
-                                        continue;
-                                }
-                                if (entity instanceof NPC) {
-                                EntityDef entityDef = ((NPC) entity).definition;
-					if (entityDef.childrenIDs != null) {
-                                        entityDef = entityDef.transform();
-					}
-					if (entityDef == null) {
-						continue;
-					}
-				}
-				if (j < playerCount) {
-					int l = 30;
-					Player player = (Player) entity;
-					if (player.combatLevel == 0) {
-						if (customSettingVisiblePlayerNames) {
-							// Show shops
-							npcScreenPos(entity, entity.height + 15);
-							// ItemDef.getSprite(995, 1000, 0xffff00).drawTransparentSprite(spriteDrawX - 16, spriteDrawY - l);
-							plainFont.textCenter(0x00ffff, "[SHOP]", spriteDrawY - 5, spriteDrawX);
-						}
-					} else if (customSettingVisiblePlayerNames) {
-						// Show player names
-						npcScreenPos(entity, entity.height + 15);
-						plainFont.textCenter(0xffffff, player.name, spriteDrawY - 5, spriteDrawX);
-						if (player.privelage >= 1) {
-							npcScreenPos(entity, entity.height + 15);
-							int icon = Math.max(0, Math.min(1, player.privelage - 1));
-							modIcons[icon].draw( spriteDrawX - player.name.length() * 3 - 16, spriteDrawY - 7);
-						}
-					}
-					if (player.headIcon >= 0) {
-						npcScreenPos(entity, entity.height + 15);
-						if (spriteDrawX > -1) {
-							if (player.skullIcon < 2) {
-								skullIcons[player.skullIcon].drawTransparentSprite(spriteDrawX - 12, spriteDrawY - l);
-								l += 25;
-							}
-							if (player.headIcon < 7) {
-								headIcons[player.headIcon].drawTransparentSprite(spriteDrawX - 12, spriteDrawY - l);
-								l += 18;
-							}
-						}
-					}
-					if (j >= 0 && hintIconState == 10 && selectedPlayerId == playerIndices[j]) {
-						npcScreenPos(entity, entity.height + 15);
-						if (spriteDrawX > -1) {
-							headIconsHint[1].drawTransparentSprite(spriteDrawX - 12, spriteDrawY - l);
-						}
-					}
-				} else {
-                                EntityDef entityDef_1 = ((NPC) entity).definition;
-                                        if (entityDef_1.headIcon >= 0 && entityDef_1.headIcon < headIcons.length) {
-						npcScreenPos(entity, entity.height + 15);
-						if (spriteDrawX > -1) {
-                                                        headIcons[entityDef_1.headIcon].drawTransparentSprite(spriteDrawX - 12, spriteDrawY - 30);
-						}
-					}
-					if (hintIconState == 1 && hintNpcIndex == npcIndices[j - playerCount] && loopCycle % 20 < 10) {
-						npcScreenPos(entity, entity.height + 15);
-						if (spriteDrawX > -1) {
-							headIconsHint[0].drawTransparentSprite(spriteDrawX - 12, spriteDrawY - 28);
-						}
-					}
-				}
-				// Chat messages sent
-				if (entity.textSpoken != null && (j >= playerCount || publicChatMode == 0 || publicChatMode == 3 || publicChatMode == 1 && isFriendOrSelf(((Player) entity).name))) {
-					npcScreenPos(entity, entity.height);
-                                        if (spriteDrawX > -1 && overheadTextCount < maxDisplayedText) {
-                                                textWidth[overheadTextCount] = chatTextDrawingArea.measurePlainTextWidth(entity.textSpoken) / 2;
-                                                textHeight[overheadTextCount] = chatTextDrawingArea.fontHeight;
-                                                textX[overheadTextCount] = spriteDrawX;
-                                                textY[overheadTextCount] = spriteDrawY;
-                                                textColors[overheadTextCount] = entity.chatColor;
-                                                textEffects[overheadTextCount] = entity.chatEffect;
-                                                textCycles[overheadTextCount] = entity.textCycle;
-                                                overheadTexts[overheadTextCount++] = entity.textSpoken;
-						if (chatEffectsState == 0 && entity.chatEffect >= 1 && entity.chatEffect <= 3) {
-                                                        textHeight[overheadTextCount] += 10;
-                                                        textY[overheadTextCount] += 5;
-						}
-						if (chatEffectsState == 0 && entity.chatEffect == 4) {
-                                                        textWidth[overheadTextCount] = 60;
-						}
-						if (chatEffectsState == 0 && entity.chatEffect == 5) {
-                                                        textHeight[overheadTextCount] += 5;
-						}
-					}
-				}
-				// HP markers for player?
-				if (entity.loopCycleStatus > loopCycle) {
-					try {
-						npcScreenPos(entity, entity.height + 15);
-						if (spriteDrawX > -1) {
-							int i1 = entity.currentHealth * 30 / entity.maxHealth;
-							if (i1 > 30) {
-								i1 = 30;
-							}
-							DrawingArea.fillArea(5, spriteDrawY - 3, 0x00ff00, i1, spriteDrawX - 15);
-							DrawingArea.fillArea(5, spriteDrawY - 3, 0xff0000, 30 - i1, spriteDrawX - 15 + i1);
-						}
-					} catch (Exception e) {
-					}
-				}
-				// Hit markers
-				for (int j1 = 0; j1 < 4; j1++) {
-					if (entity.hitsLoopCycle[j1] > loopCycle) {
-						npcScreenPos(entity, entity.height / 2);
-						if (spriteDrawX > -1) {
-							if (j1 == 1) {
-								spriteDrawY -= 20;
-							}
-							if (j1 == 2) {
-								spriteDrawX -= 15;
-								spriteDrawY -= 10;
-							}
-							if (j1 == 3) {
-								spriteDrawX += 15;
-								spriteDrawY -= 10;
-							}
-							hitMarks[entity.hitMarkTypes[j1]].drawTransparentSprite(spriteDrawX - 12, spriteDrawY - 12);
-							plainFont.textCenter(0, String.valueOf(entity.hitArray[j1]), spriteDrawY + 4, spriteDrawX);
-							plainFont.textCenter(0xffffff, String.valueOf(entity.hitArray[j1]), spriteDrawY + 3, spriteDrawX - 1);
-						}
-					}
-				}
-			}
-			// Hit markers
-                        for (int k = 0; k < overheadTextCount; k++) {
-				int k1 = textX[k];
-				int l1 = textY[k];
-				int j2 = textWidth[k];
-				int k2 = textHeight[k];
-				boolean flag = true;
-				while (flag) {
-					flag = false;
-					for (int l2 = 0; l2 < k; l2++) {
-						if (l1 + 2 > textY[l2] - textHeight[l2] && l1 - k2 < textY[l2] + 2 && k1 - j2 < textX[l2] + textWidth[l2] && k1 + j2 > textX[l2] - textWidth[l2] && textY[l2] - textHeight[l2] < l1) {
-							l1 = textY[l2] - textHeight[l2];
-							flag = true;
-						}
-					}
-
-				}
-				spriteDrawX = textX[k];
-				spriteDrawY = textY[k] = l1;
-				String s = overheadTexts[k];
-				if (chatEffectsState == 0) {
-					int i3 = 0xffff00;
-					if (textColors[k] < 6) {
-						i3 = hitmarkColors[textColors[k]];
-					}
-					if (textColors[k] == 6) {
-						i3 = waveCycle % 20 >= 10 ? 0xffff00 : 0xff0000;
-					}
-					if (textColors[k] == 7) {
-						i3 = waveCycle % 20 >= 10 ? 0x00ffff : 255;
-					}
-					if (textColors[k] == 8) {
-						i3 = waveCycle % 20 >= 10 ? 0x80ff80 : 45056;
-					}
-					if (textColors[k] == 9) {
-						int j3 = 150 - textCycles[k];
-						if (j3 < 50) {
-							i3 = 0xff0000 + 1280 * j3;
-						} else if (j3 < 100) {
-							i3 = 0xffff00 - 0x50000 * (j3 - 50);
-						} else if (j3 < 150) {
-							i3 = 0x00ff00 + 5 * (j3 - 100);
-						}
-					}
-					if (textColors[k] == 10) {
-						int k3 = 150 - textCycles[k];
-						if (k3 < 50) {
-							i3 = 0xff0000 + 5 * k3;
-						} else if (k3 < 100) {
-							i3 = 0xff00ff - 0x50000 * (k3 - 50);
-						} else if (k3 < 150) {
-							i3 = 255 + 0x50000 * (k3 - 100) - 5 * (k3 - 100);
-						}
-					}
-					if (textColors[k] == 11) {
-						int l3 = 150 - textCycles[k];
-						if (l3 < 50) {
-							i3 = 0xffffff - 0x50005 * l3;
-						} else if (l3 < 100) {
-							i3 = 0x00ff00 + 0x50005 * (l3 - 50);
-						} else if (l3 < 150) {
-							i3 = 0xffffff - 0x50000 * (l3 - 100);
-						}
-					}
-					if (textEffects[k] == 0) {
-						chatTextDrawingArea.textCenter(0, s, spriteDrawY + 1, spriteDrawX);
-						chatTextDrawingArea.textCenter(i3, s, spriteDrawY, spriteDrawX);
-					}
-					if (textEffects[k] == 1) {
-                                                chatTextDrawingArea.drawWavyCenteredText(0, s, spriteDrawX, waveCycle, spriteDrawY + 1);
-                                                chatTextDrawingArea.drawWavyCenteredText(i3, s, spriteDrawX, waveCycle, spriteDrawY);
-					}
-					if (textEffects[k] == 2) {
-                                                chatTextDrawingArea.drawWavyText(spriteDrawX, s, waveCycle, spriteDrawY + 1, 0);
-                                                chatTextDrawingArea.drawWavyText(spriteDrawX, s, waveCycle, spriteDrawY, i3);
-					}
-					if (textEffects[k] == 3) {
-                                                chatTextDrawingArea.drawShakeText(150 - textCycles[k], s, waveCycle, spriteDrawY + 1, spriteDrawX, 0);
-                                                chatTextDrawingArea.drawShakeText(150 - textCycles[k], s, waveCycle, spriteDrawY, spriteDrawX, i3);
-					}
-					if (textEffects[k] == 4) {
-                                                int i4 = chatTextDrawingArea.measurePlainTextWidth(s);
-						int k4 = (150 - textCycles[k]) * (i4 + 100) / 150;
-						DrawingArea.setDrawingArea(334, spriteDrawX - 50, spriteDrawX + 50, 0);
-						chatTextDrawingArea.textLeft(0, s, spriteDrawY + 1, spriteDrawX + 50 - k4);
-						chatTextDrawingArea.textLeft(i3, s, spriteDrawY, spriteDrawX + 50 - k4);
-						DrawingArea.defaultDrawingAreaSize();
-					}
-					if (textEffects[k] == 5) {
-						int j4 = 150 - textCycles[k];
-						int l4 = 0;
-						if (j4 < 25) {
-							l4 = j4 - 25;
-						} else if (j4 > 125) {
-							l4 = j4 - 125;
-						}
-                                                DrawingArea.setDrawingArea(spriteDrawY + 5, 0, 512, spriteDrawY - chatTextDrawingArea.fontHeight - 1);
-						chatTextDrawingArea.textCenter(0, s, spriteDrawY + 1 + l4, spriteDrawX);
-						chatTextDrawingArea.textCenter(i3, s, spriteDrawY + l4, spriteDrawX);
-						DrawingArea.defaultDrawingAreaSize();
-					}
-				} else {
-					chatTextDrawingArea.textCenter(0, s, spriteDrawY + 1, spriteDrawX);
-					chatTextDrawingArea.textCenter(0xffff00, s, spriteDrawY, spriteDrawX);
-				}
-			}
+                        entityOverlayRenderer.renderEntityOverlays();
 		} catch (Exception e) {
 		}
 	}
@@ -8380,6 +8137,7 @@ public void drawChatArea() {
                 settingApplier = new SettingApplier(this);
                 tabAreaRenderer = new TabAreaRenderer(this);
                 entityTextUpdater = new EntityTextUpdater(this);
+                entityOverlayRenderer = new EntityOverlayRenderer(this);
                 loginManager = new LoginManager(this);
                 pathfinder = new Pathfinder(this);
         }
@@ -8816,6 +8574,7 @@ public void drawChatArea() {
         public final SettingApplier settingApplier;
         public final TabAreaRenderer tabAreaRenderer;
         public final EntityTextUpdater entityTextUpdater;
+        public final EntityOverlayRenderer entityOverlayRenderer;
         public final LoginManager loginManager;
         public final Pathfinder pathfinder;
         public int flameOffset;
