@@ -70,8 +70,9 @@
 - [ObjectManager](Client/classes/ObjectManager.md)
 - [OnDemandData](Client/classes/OnDemandData.md)
 - [OnDemandFetcher](Client/classes/OnDemandFetcher.md)
-- [OnDemandFetcherParent](Client/classes/OnDemandFetcherParent.md)- [Pen
-dingSpawn](Client/classes/PendingSpawn.md)
+- [OnDemandFetcherParent](Client/classes/OnDemandFetcherParent.md)
+- [PendingSpawn](Client/classes/PendingSpawn.md)
+- [PendingSpawnManager](Client/classes/PendingSpawnManager.md)
 - [PlainTile](Client/classes/PlainTile.md)
 - [Player](Client/classes/Player.md)
 - [PlayerUpdater](Client/classes/PlayerUpdater.md)

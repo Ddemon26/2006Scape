@@ -59,7 +59,7 @@ public boolean saveWave(byte abyte0[], int i)
 public void resetInterfaceAnimation(int i)
 public void drawHeadIcon()
 public void mainGameProcessor()
-public void locatePendingSpawns()
+public void locatePendingSpawns() -> PendingSpawnManager.locatePendingSpawns
 public void handleScrollbarInput(int i, int j, int k, int l, RSInterface scrollInterface, int i1, boolean flag, int j1)
 public boolean walkToObject(int i, int j, int k)
 public StreamLoader streamLoaderForName(int i, String s, String s1, int j, int k)
@@ -91,7 +91,7 @@ public boolean doWalkTo(int i, int j, int k, int i1, int j1, int k1, int l1, int
 public void processNpcUpdateMasks(Stream stream)
 public void buildAtNPCMenu(EntityDef entityDef, int i, int j, int k)
 public void buildAtPlayerMenu(int i, int j, Player player, int k)
-public void locateSceneObject(PendingSpawn pendingSpawn)
+public void locateSceneObject(PendingSpawn pendingSpawn) -> PendingSpawnManager.locateSceneObject
 public final void processSoundQueue()
 public void addLocalPlayers(Stream stream, int i)
 public void processMainScreenClick()
@@ -119,7 +119,7 @@ public void setWaveVolume(int i)
 public void draw3dScreen()
 public void addIgnore(long l) -> IgnoreManager.addIgnore
 public void animatePlayers()
-public void processPendingSpawns()
+public void processPendingSpawns() -> PendingSpawnManager.processPendingSpawns
 // menu sizing moved to [MenuManager](MenuManager.md)
 public void updateSelfMovement(Stream stream)
 public void nullLoader()
@@ -130,11 +130,11 @@ public void delIgnore(long l) -> IgnoreManager.delIgnore
 public String getParameter(String s)
 public int extractInterfaceValues(RSInterface component, int j)
 public void drawTooltip()
-public void drawMinimap()
-public void npcScreenPos(Entity entity, int i)
-public void calcEntityScreenPos(int i, int j, int l)
-public void buildSplitPrivateChatMenu()
-public void queuePendingSpawn(int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2)
+public void drawMinimap() -> MinimapRenderer.drawMinimap
+public void npcScreenPos(Entity entity, int i) -> MinimapRenderer.npcScreenPos
+public void calcEntityScreenPos(int i, int j, int l) -> MinimapRenderer.calcEntityScreenPos
+public void buildSplitPrivateChatMenu() -> ChatAreaRenderer.buildSplitPrivateChatMenu
+public void queuePendingSpawn(int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2) -> PendingSpawnManager.queuePendingSpawn
 public boolean interfaceIsSelected(RSInterface component)
 public DataInputStream openJagGrabInputStream(String s) throws IOException
 public void doFlamesDrawing()

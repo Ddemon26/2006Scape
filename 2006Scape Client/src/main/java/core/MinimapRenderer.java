@@ -1,7 +1,15 @@
 package core;
 
 import game.ObjectDef;
+import game.NPC;
+import game.Player;
+import game.EntityDef;
+import game.Entity;
+import render.DrawingArea;
 import render.Texture;
+import render.Model;
+import util.NodeList;
+import ui.TextClass;
 
 /** Handles minimap generation extracted from {@link Game}. */
 final class MinimapRenderer {
@@ -136,6 +144,150 @@ final class MinimapRenderer {
                     }
                 }
             }
+        }
+    }
+
+    /** Draws the minimap including icons and hints. */
+    void drawMinimap() {
+        game.chatBackground.initDrawingArea();
+        if (game.minimapState == 2) {
+            byte[] src = game.mapBack.pixels;
+            int[] dst = DrawingArea.pixels;
+            for (int idx = 0; idx < src.length; idx++) {
+                if (src[idx] == 0) {
+                    dst[idx] = 0;
+                }
+            }
+            game.compass.drawTransformed(33, game.cameraYaw, game.mapBackWidths, 256, game.mapBackLeft, 25, 0, 0, 33, 25);
+            game.tabAreaBuffer.initDrawingArea();
+            Texture.lineOffsets = game.chatBoxAreaOffsets;
+            return;
+        }
+        int rotation = game.cameraYaw + game.minimapRotationOffset & 0x7ff;
+        int x = 48 + game.myPlayer.x / 32;
+        int y = 464 - game.myPlayer.y / 32;
+        game.minimapImage.drawTransformed(151, rotation, game.minimapLineLengths, 256 + game.minimapZoom,
+                game.minimapLineOffset, y, 5, 25, 146, x);
+        game.compass.drawTransformed(33, game.cameraYaw, game.mapBackWidths, 256, game.mapBackLeft, 25, 0, 0, 33, 25);
+        for (int i = 0; i < game.minimapIconCount; i++) {
+            int dx = game.minimapIconX[i] * 4 + 2 - game.myPlayer.x / 32;
+            int dy = game.minimapIconY[i] * 4 + 2 - game.myPlayer.y / 32;
+            game.markMinimap(game.minimapIconSprites[i], dx, dy);
+        }
+        for (int mx = 0; mx < 104; mx++) {
+            for (int my = 0; my < 104; my++) {
+                NodeList itemList = game.groundArray[game.plane][mx][my];
+                if (itemList != null) {
+                    int dx = mx * 4 + 2 - game.myPlayer.x / 32;
+                    int dy = my * 4 + 2 - game.myPlayer.y / 32;
+                    game.markMinimap(game.mapDotItem, dx, dy);
+                }
+            }
+        }
+        for (int n = 0; n < game.npcCount; n++) {
+            NPC npc = game.npcArray[game.npcIndices[n]];
+            if (npc != null && npc.isVisible()) {
+                EntityDef def = npc.definition;
+                if (def.childrenIDs != null) {
+                    def = def.transform();
+                }
+                if (def != null && def.minimapVisible && def.clickable) {
+                    int dx = npc.x / 32 - game.myPlayer.x / 32;
+                    int dy = npc.y / 32 - game.myPlayer.y / 32;
+                    game.markMinimap(game.mapDotNPC, dx, dy);
+                }
+            }
+        }
+        for (int p = 0; p < game.playerCount; p++) {
+            Player player = game.playerArray[game.playerIndices[p]];
+            if (player != null && player.isVisible()) {
+                int dx = player.x / 32 - game.myPlayer.x / 32;
+                int dy = player.y / 32 - game.myPlayer.y / 32;
+                boolean team = false;
+                boolean friend = false;
+                long nameAsLong = TextClass.longForName(player.name);
+                if (game.myPlayer.team != 0 && player.team != 0 && game.myPlayer.team == player.team || player.combatLevel == 0) {
+                    team = true;
+                }
+                for (int f = 0; f < game.friendsCount; f++) {
+                    if (nameAsLong != game.friendsListAsLongs[f] || game.friendsNodeIDs[f] == 0) {
+                        continue;
+                    }
+                    friend = true;
+                    break;
+                }
+                if (team) {
+                    game.markMinimap(game.mapDotTeam, dx, dy);
+                } else if (friend) {
+                    game.markMinimap(game.mapDotFriend, dx, dy);
+                } else {
+                    game.markMinimap(game.mapDotPlayer, dx, dy);
+                }
+            }
+        }
+        if (game.hintIconState != 0 && game.loopCycle % 20 < 10) {
+            if (game.hintIconState == 1 && game.hintNpcIndex >= 0 && game.hintNpcIndex < game.npcArray.length) {
+                NPC npc = game.npcArray[game.hintNpcIndex];
+                if (npc != null) {
+                    int dx = npc.x / 32 - game.myPlayer.x / 32;
+                    int dy = npc.y / 32 - game.myPlayer.y / 32;
+                    game.drawMinimapHint(game.mapMarker, dy, dx);
+                }
+            }
+            if (game.hintIconState == 2) {
+                int dx = (game.selectedNpcId - game.baseX) * 4 + 2 - game.myPlayer.x / 32;
+                int dy = (game.destinationX - game.baseY) * 4 + 2 - game.myPlayer.y / 32;
+                game.drawMinimapHint(game.mapMarker, dy, dx);
+            }
+            if (game.hintIconState == 10 && game.selectedPlayerId >= 0 && game.selectedPlayerId < game.playerArray.length) {
+                Player target = game.playerArray[game.selectedPlayerId];
+                if (target != null) {
+                    int dx = target.x / 32 - game.myPlayer.x / 32;
+                    int dy = target.y / 32 - game.myPlayer.y / 32;
+                    game.drawMinimapHint(game.mapMarker, dy, dx);
+                }
+            }
+        }
+        if (game.destX != 0) {
+            int dx = game.destX * 4 + 2 - game.myPlayer.x / 32;
+            int dy = game.destY * 4 + 2 - game.myPlayer.y / 32;
+            game.markMinimap(game.mapFlag, dx, dy);
+        }
+        DrawingArea.fillArea(3, 78, 0xffffff, 3, 97);
+        game.tabAreaBuffer.initDrawingArea();
+        Texture.lineOffsets = game.chatBoxAreaOffsets;
+    }
+
+    void npcScreenPos(Entity entity, int height) {
+        calcEntityScreenPos(entity.x, height, entity.y);
+    }
+
+    void calcEntityScreenPos(int x, int z, int y) {
+        if (x < 128 || y < 128 || x > 13056 || y > 13056) {
+            game.spriteDrawX = -1;
+            game.spriteDrawY = -1;
+            return;
+        }
+        int tileHeight = game.getTileHeight(game.plane, y, x) - z;
+        x -= game.xCameraPos;
+        tileHeight -= game.zCameraPos;
+        y -= game.yCameraPos;
+        int sinY = Model.sineTable[game.yCameraCurve];
+        int cosY = Model.cosineTable[game.yCameraCurve];
+        int sinX = Model.sineTable[game.xCameraCurve];
+        int cosX = Model.cosineTable[game.xCameraCurve];
+        int tmp = y * sinX + x * cosX >> 16;
+        y = y * cosX - x * sinX >> 16;
+        x = tmp;
+        tmp = tileHeight * cosY - y * sinY >> 16;
+        y = tileHeight * sinY + y * cosY >> 16;
+        tileHeight = tmp;
+        if (y >= 50) {
+            game.spriteDrawX = Texture.textureInt1 + (x << 9) / y;
+            game.spriteDrawY = Texture.textureInt2 + (tileHeight << 9) / y;
+        } else {
+            game.spriteDrawX = -1;
+            game.spriteDrawY = -1;
         }
     }
 
