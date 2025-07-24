@@ -13,7 +13,7 @@ public void startRunnable(Runnable runnable, int i)
 public Socket openSocket(int i) throws IOException
 public boolean processMenuClick() -> MenuManager.processMenuClick
 public void saveMidi(boolean flag, byte abyte0[])
-public void constructMapRegion()
+public void constructMapRegion() -> MapRegionBuilder.constructMapRegion
 // cache cleanup moved to [CacheUtils](CacheUtils.md)
 // minimap rendering moved to [MinimapRenderer](MinimapRenderer.md)
 // ground item spawning moved to [GroundItemSpawner](GroundItemSpawner.md)
