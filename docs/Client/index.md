@@ -26,6 +26,7 @@
 - [EntityDef](Client/classes/EntityDef.md)
 - [EntityAnimationHandler](Client/classes/EntityAnimationHandler.md)
 - [EntityMovementHandler](Client/classes/EntityMovementHandler.md)
+- [EntityOverlayRenderer](Client/classes/EntityOverlayRenderer.md)
 - [EntityTextUpdater](Client/classes/EntityTextUpdater.md)
 - [FloorOverlay](Client/classes/FloorOverlay.md)
 - [FrameBase](Client/classes/FrameBase.md)
