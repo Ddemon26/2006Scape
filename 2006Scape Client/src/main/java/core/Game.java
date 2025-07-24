@@ -71,6 +71,9 @@ import core.EntityMovementHandler;
 import core.SettingApplier;
 import core.TabAreaRenderer;
 import core.EntityTextUpdater;
+import core.InputHandler;
+import core.PlayerStatsCalculator;
+import core.DefinitionSearcher;
 import render.Background;
 import core.CameraManager;
 import render.BoundaryObject;
@@ -3589,7 +3592,7 @@ public void drawChatArea() {
 							searchType = 1;
 							searchString = inputString.substring(args[0].length() + 1);
 						}
-						definitionSearch(searchString, searchType);
+						DefinitionSearcher.search(this, searchString, searchType);
 					}
 				}
 				// deleting characters
@@ -3613,7 +3616,7 @@ public void drawChatArea() {
 							searchType = 1;
 							searchString = inputString.substring(args[0].length() + 1);
 						}
-						definitionSearch(searchString, searchType);
+						DefinitionSearcher.search(this, searchString, searchType);
 					}
 				}
 				// submitted string
@@ -4321,8 +4324,8 @@ public void drawChatArea() {
 						if (super.saveClickY >= startY && super.saveClickY <= (startY + 30)) {
 							customSettingShowExperiencePerHour= !customSettingShowExperiencePerHour;
 							customSettingShowExperiencePerHourStart = System.currentTimeMillis();
-							customSettingShowExperiencePerHourStartExp = calculateTotalExp();
-							customSettingShowExperiencePerHourStartLevels = calculateTotalLevels();
+							customSettingShowExperiencePerHourStartExp = PlayerStatsCalculator.calculateTotalExp(currentExp);
+							customSettingShowExperiencePerHourStartLevels = PlayerStatsCalculator.calculateTotalLevels(maxStats);
 						}
 						startY += 40;
 						if (super.saveClickY >= startY && super.saveClickY <= (startY + 30)) {
@@ -8870,7 +8873,7 @@ public void drawChatArea() {
 			debugY += 3;
 			
 			// Calculate exp/h
-			long currentExpGained = calculateTotalExp();
+			long currentExpGained = PlayerStatsCalculator.calculateTotalExp(currentExp);
 			long expGained = currentExpGained - customSettingShowExperiencePerHourStartExp;
 			long expPerHour = (long) ((expGained * 3600000D) / (System.currentTimeMillis() - customSettingShowExperiencePerHourStart));
 
@@ -8878,7 +8881,7 @@ public void drawChatArea() {
 			chatTextDrawingArea.textLeftShadow(true, debugX + 4, Color.WHITE.hashCode(), "Exp per hour:", debugY += 15);
 			chatTextDrawingArea.textRightShadow(true, debugX + debugWidth - 4, Color.YELLOW.hashCode(), intToShortLetter((int) expPerHour), debugY);
 			chatTextDrawingArea.textLeftShadow(true, debugX + 4, Color.WHITE.hashCode(), "Levels gained:", debugY += 15);
-			chatTextDrawingArea.textRightShadow(true, debugX + debugWidth - 4, Color.YELLOW.hashCode(), "" + (calculateTotalLevels() - customSettingShowExperiencePerHourStartLevels), debugY);
+			chatTextDrawingArea.textRightShadow(true, debugX + debugWidth - 4, Color.YELLOW.hashCode(), "" + (PlayerStatsCalculator.calculateTotalLevels(maxStats) - customSettingShowExperiencePerHourStartLevels), debugY);
 		}
 
 		// Draw main screen
@@ -9584,229 +9587,13 @@ public void drawChatArea() {
 	public void keyPressed(KeyEvent keyevent)
 	{
 		super.keyPressed(keyevent);
-		switch (keyevent.getKeyCode())
-		{
-			case KeyEvent.VK_ESCAPE:
-				closeOpenInterfaces();
-				break;
-			case KeyEvent.VK_F1:
-				needDrawTabArea = true;
-				tabID = 3;
-				tabAreaAltered = true;
-				break;
-			case KeyEvent.VK_F2:
-				needDrawTabArea = true;
-				tabID = 4;
-				tabAreaAltered = true;
-				break;
-			case KeyEvent.VK_F3:
-				needDrawTabArea = true;
-				tabID = 5;
-				tabAreaAltered = true;
-				break;
-			case KeyEvent.VK_F4:
-				needDrawTabArea = true;
-				tabID = 6;
-				tabAreaAltered = true;
-				break;
-			case KeyEvent.VK_F5:
-				needDrawTabArea = true;
-				tabID = 0;
-				tabAreaAltered = true;
-				break;
-			case KeyEvent.VK_F6:
-				needDrawTabArea = true;
-				tabID = 1;
-				tabAreaAltered = true;
-				break;
-			case KeyEvent.VK_F7:
-				needDrawTabArea = true;
-				tabID = 2;
-				tabAreaAltered = true;
-				break;
-			case KeyEvent.VK_F8:
-				needDrawTabArea = true;
-				tabID = 8;
-				tabAreaAltered = true;
-				break;
-			case KeyEvent.VK_F9:
-				needDrawTabArea = true;
-				tabID = 11;
-				tabAreaAltered = true;
-				break;
-			case KeyEvent.VK_F10:
-				needDrawTabArea = true;
-				tabID = 12;
-				tabAreaAltered = true;
-				break;
-			case KeyEvent.VK_F11:
-				needDrawTabArea = true;
-				tabID = 13;
-				tabAreaAltered = true;
-				break;
-			case KeyEvent.VK_F12:
-				needDrawTabArea = true;
-				tabID = 10;
-				tabAreaAltered = true;
-				break;
-			case KeyEvent.VK_PAGE_UP:
-				if (zoom > -1) {
-					zoom--;
-					if (ClientSettings.SHOW_ZOOM_LEVEL_MESSAGES) {
-						pushMessage("Your zoom level is now: " + zoom, 0, "");
-					}
-				}
-				break;
-			case KeyEvent.VK_PAGE_DOWN:
-				if (zoom < (WorldController.drawDistance / 3)) {
-					zoom++;
-					if (ClientSettings.SHOW_ZOOM_LEVEL_MESSAGES) {
-						pushMessage("Your zoom level is now: " + zoom, 0, "");
-					}
-				}
-				break;
-			case KeyEvent.VK_V:
-				if (keyevent.isControlDown()) {
-                                        inputString += ClipboardUtil.getClipboardText();
-					if (inputString.length() > 80) {
-						inputString = inputString.substring(0, 80);
-					}
-					inputTaken = true;
-				}
-
-		}
-		  if (ClientSettings.SCREENSHOTS_ENABLED && keyevent.getKeyCode() == KeyEvent.VK_PRINTSCREEN && keyevent.isControlDown()) {
-                        ScreenshotUtil.capture(this, true);
-		}
+        InputHandler.handleKeyPressed(this, keyevent);
 	}
 
-	public long calculateTotalExp() {
-		long exp = 0;
-		for (int i = 0; i < currentExp.length; i++) {
-			exp += currentExp[i];
-		}
-		return exp;
-	}
-
-	public int calculateTotalLevels() {
-		int levels = 0;
-		for (int i = 0; i < maxStats.length; i++) {
-			levels += maxStats[i];
-		}
-		// need to remove 4 for some reason
-		return levels - 4;
-	}
 
 	
-	public void definitionSearch(String name, int type) {
-		int amount = 0;
-		int definitionResultsTotal = 0;
-		int definitionResultIDs[] = new int[352];
-		String definitionResults[] = new String[352];
-		String sType = "";
-		if (type == 1) {
-			amount = ItemDef.totalItems;
-			sType = "Item";
-		} else if (type == 2) {
-			amount = EntityDef.totalNPCs;
-			sType = "NPC";
-		} else if (type == 3) {
-			amount = ObjectDef.totalObjects;
-			sType = "Object";
-		} else {
-			type = 1;
-			amount = ItemDef.totalItems;
-			sType = "Item";
-		}	
-		if (type != 1) {
-			for (int line = 0; line < 100; line++) {
-				pushMessage("", 0, "");
-			}
-		}
-        if (name == null || name.length() == 0) {
-            definitionResultsTotal = 0;
-            return;
-        }
-
-        String search = name;
-        String parts[] = new String[100];
-        int found = 0;
-        do {
-            int regex = search.indexOf(" ");
-            if (regex == -1) {
-                break;
-            }
-            String part = search.substring(0, regex).trim();
-            if (part.length() > 0) {
-                parts[found++] = part.toLowerCase();
-            }
-            search = search.substring(regex + 1);
-        } while (true);
-		search = search.trim();
-		if (search.length() > 0) {
-			parts[found++] = search.toLowerCase();
-        }
-        definitionResultsTotal = 0;
-        label0: for (int definition = 0; definition < amount; definition++) {
-			String result = "";
-			if (type == 1) {
-				ItemDef item = ItemDef.lookup(definition);
-				if (item.certTemplateID != -1 || item.name == null) {
-					continue;
-				}
-				result = item.name + "@bla@ - " + new String(item.description, StandardCharsets.UTF_8);
-			} else if (type == 2) {
-				EntityDef npc = EntityDef.forID(definition);
-				if (npc.name == null) {
-					continue;
-				}
-				result = npc.name;
-			} else if (type == 3) {
-				ObjectDef object = ObjectDef.forID(definition);
-				if (object.name == null) {
-					continue;
-				}
-				result = object.name;
-			}
-            for (int index = 0; index < found; index++) {
-                if (!result.toLowerCase().contains(parts[index])) {
-                    continue label0;
-                }
-            }
-			
-			if (type != 1) {
-				pushMessage("@whi@[" + definition + "] @blu@" + result + "", 0, "");
-			}
-            definitionResults[definitionResultsTotal] = result;
-            definitionResultIDs[definitionResultsTotal] = definition;
-            definitionResultsTotal++;
-            if (definitionResultsTotal >= definitionResults.length) {
-                break;
-            }
-        }
-
-		if (type == 1) {
-			// Open bank public interface
-			needDrawTabArea = true;
-			int interfaceID = 5382;
-			RSInterface childWidget = RSInterface.interfaceCache[interfaceID];
-			openInterface(5292); // Bank public interface
-			RSInterface.interfaceCache[5383].disabledText = "Search results for @yel@" + name; // The Bank of Text
-
-			int itemCount = 0;
-			for (int ID : definitionResultIDs) {
-				if (ID > 0 && itemCount < childWidget.inv.length) {
-					childWidget.inv[itemCount] = ID + 1; // Sets item ID;
-					childWidget.invStackSizes[itemCount++] = 1; // Sets item amoounts
-				}
-			}
-			while (itemCount < childWidget.inv.length) {
-				childWidget.inv[itemCount] = 0;
-				childWidget.invStackSizes[itemCount++] = 0;
-			}
-		} else {
-			pushMessage("@blu@" + sType + " @bla@search results for @blu@" + name + "@bla@ displayed above (@blu@" + definitionResultsTotal + "@bla@ results).", 0, "");
-		}
+	    public void definitionSearch(String name, int type) {
+        DefinitionSearcher.search(this, name, type);
     }
 
 	public void openInterface(int interfaceID) {
@@ -9847,28 +9634,7 @@ public void drawChatArea() {
 	}
 
 	public final void mouseWheelMoved(MouseWheelEvent e) {
-		int notches = e.getWheelRotation();
-		if (ClientSettings.CONTROL_KEY_ZOOMING && !e.isControlDown()) {
-			return;
-		}
-		// If mouse over main game screen, without anything else opened
-		if (openInterfaceID == -1 && mouseX < 515 && mouseY < 340) {
-			if (notches < 0) {
-				if (zoom > -1) {
-					zoom--;
-					if (ClientSettings.SHOW_ZOOM_LEVEL_MESSAGES) {
-						pushMessage("Your zoom level is now: " + zoom, 0, "");
-					}
-				}
-			} else {
-				if (zoom < (WorldController.drawDistance / 3)) {
-					zoom++;
-					if (ClientSettings.SHOW_ZOOM_LEVEL_MESSAGES) {
-						pushMessage("Your zoom level is now: " + zoom, 0, "");
-					}
-				}
-			}
-		}
+        InputHandler.handleMouseWheelMoved(this, e);
 	}
 
 }
