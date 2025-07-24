@@ -51,6 +51,7 @@
 - [MRUCache](Client/classes/MRUCache.md)
 - [Main](Client/classes/Main.md)
 - [MapPacketHandler](Client/classes/MapPacketHandler.md)
+- [MapRegionBuilder](Client/classes/MapRegionBuilder.md)
 - [Midi](Client/classes/Midi.md)
 - [MidiFile](Client/classes/MidiFile.md)
 - [MidiHandler](Client/classes/MidiHandler.md)
