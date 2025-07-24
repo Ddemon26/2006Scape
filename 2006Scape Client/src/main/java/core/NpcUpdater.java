@@ -3,6 +3,8 @@ package core;
 import net.Signlink;
 import net.Stream;
 
+import game.EntityDef;
+import game.Animation;
 import game.NPC;
 /** Updates NPCs each game tick, extracted from {@link Game}. */
 final class NpcUpdater {
@@ -17,7 +19,7 @@ final class NpcUpdater {
         game.playerUpdateCount = 0;
         updateNpcList(stream);
         game.addLocalNPCs(size, stream);
-        game.processNpcUpdateMasks(stream);
+        processNpcUpdateMasks(stream);
         for (int i = 0; i < game.entityRemovalCount; i++) {
             int l = game.removedEntityIndices[i];
             if (game.npcArray[l].lastUpdateCycle != game.loopCycle) {
@@ -85,6 +87,94 @@ final class NpcUpdater {
                 } else if (l1 == 3) {
                     game.removedEntityIndices[game.entityRemovalCount++] = j1;
                 }
+            }
+        }
+    }
+
+    private void processNpcUpdateMasks(Stream stream) {
+        for (int j = 0; j < game.playerUpdateCount; j++) {
+            int k = game.playerUpdateIndices[j];
+            NPC npc = game.npcArray[k];
+            int l = stream.readUnsignedByte();
+            if ((l & 0x10) != 0) {
+                int i1 = stream.readShortLE();
+                if (i1 == 0x00ffff) {
+                    i1 = -1;
+                }
+                int i2 = stream.readUnsignedByte();
+                if (i1 == npc.anim && i1 != -1) {
+                    int l2 = Animation.anims[i1].replayMode;
+                    if (l2 == 1) {
+                        npc.graphicFrame = 0;
+                        npc.graphicFrameCycle = 0;
+                        npc.graphicDelay = i2;
+                        npc.graphicCycle = 0;
+                    }
+                    if (l2 == 2) {
+                        npc.graphicCycle = 0;
+                    }
+                } else if (i1 == -1 || npc.anim == -1 || Animation.anims[i1].priority >= Animation.anims[npc.anim].priority) {
+                    npc.anim = i1;
+                    npc.graphicFrame = 0;
+                    npc.graphicFrameCycle = 0;
+                    npc.graphicDelay = i2;
+                    npc.graphicCycle = 0;
+                    npc.animationDelay = npc.smallXYIndex;
+                }
+            }
+            if ((l & 8) != 0) {
+                int j1 = stream.readUnsignedByteA();
+                int j2 = stream.readUnsignedByteNeg();
+                npc.updateHitData(j2, j1, game.loopCycle);
+                npc.loopCycleStatus = game.loopCycle + 300;
+                npc.currentHealth = stream.readUnsignedByteA();
+                npc.maxHealth = stream.readUnsignedByte();
+            }
+            if ((l & 0x80) != 0) {
+                npc.spotAnimId = stream.readUnsignedWord();
+                int k1 = stream.readDWord();
+                npc.spotAnimHeight = k1 >> 16;
+                npc.spotAnimStartTick = game.loopCycle + (k1 & 0xffff);
+                npc.spotAnimFrame = 0;
+                npc.spotAnimFrameCycle = 0;
+                if (npc.spotAnimStartTick > game.loopCycle) {
+                    npc.spotAnimFrame = -1;
+                }
+                if (npc.spotAnimId == 0x00ffff) {
+                    npc.spotAnimId = -1;
+                }
+            }
+            if ((l & 0x20) != 0) {
+                npc.interactingEntity = stream.readUnsignedWord();
+                if (npc.interactingEntity == 0x00ffff) {
+                    npc.interactingEntity = -1;
+                }
+            }
+            if ((l & 1) != 0) {
+                npc.textSpoken = stream.readString();
+                npc.textCycle = 100;
+            }
+            if ((l & 0x40) != 0) {
+                int l1 = stream.readUnsignedByteNeg();
+                int k2 = stream.readUnsignedByteSub();
+                npc.updateHitData(k2, l1, game.loopCycle);
+                npc.loopCycleStatus = game.loopCycle + 300;
+                npc.currentHealth = stream.readUnsignedByteSub();
+                npc.maxHealth = stream.readUnsignedByteNeg();
+            }
+            if ((l & 2) != 0) {
+                npc.definition = EntityDef.forID(stream.readShortLEAdd());
+                npc.size = npc.definition.size;
+                npc.turnSpeed = npc.definition.turnSpeed;
+                npc.walkAnimation = npc.definition.walkAnimation;
+                npc.turn180Animation = npc.definition.turn180Animation;
+                npc.turn90CWAnimation = npc.definition.turn90CWAnimation;
+                npc.turn90CCWAnimation = npc.definition.turn90CCWAnimation;
+                npc.standAnimation = npc.definition.standAnimation;
+            }
+            if ((l & 4) != 0) {
+                npc.focusX = stream.readShortLE();
+                npc.focusY = stream.readShortLE();
             }
         }
     }
