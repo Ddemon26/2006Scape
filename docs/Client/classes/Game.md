@@ -156,13 +156,13 @@ public void renderGameView()
 public void closeOpenInterfaces()
 public Game()
 public static final String validUserPassChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!\"\243$%^&*()-_=+[{]};:'@#~,<.>/?\\| ";
-public void keyPressed(KeyEvent keyevent)
-public long calculateTotalExp()
-public int calculateTotalLevels()
-public void definitionSearch(String name, int type)
+public void keyPressed(KeyEvent keyevent) -> InputHandler.handleKeyPressed
+public long calculateTotalExp() -> PlayerStatsCalculator.calculateTotalExp
+public int calculateTotalLevels() -> PlayerStatsCalculator.calculateTotalLevels
+public void definitionSearch(String name, int type) -> DefinitionSearcher.search
 public void openInterface(int interfaceID)
 public void openSideInterface(int tab, int interfaceID)
-public final void mouseWheelMoved(MouseWheelEvent e)
+public final void mouseWheelMoved(MouseWheelEvent e) -> InputHandler.handleMouseWheelMoved
 ```
 
 Utility helpers like `random` and `intToKOrMilLongName` now reside in
