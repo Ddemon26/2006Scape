@@ -74,7 +74,11 @@ import core.handlers.EntityAnimationHandler;
 import core.handlers.EntityMovementHandler;
 import core.renderers.TabAreaRenderer;
 import core.renderers.EntityOverlayRenderer;
+import core.renderers.SceneRenderer;
 import core.handlers.InputHandler;
+import core.handlers.InterfaceInputHandler;
+import core.handlers.LoadingHandler;
+import core.handlers.ProjectileHandler;
 import core.managers.LoginManager;
 import render.core.Background;
 import core.managers.CameraManager;
@@ -183,29 +187,8 @@ public void drawChatArea() {
         }
 
        public void addNpcsToScene(boolean flag) {
-		for (int j = 0; j < npcCount; j++) {
-			NPC npc = npcArray[npcIndices[j]];
-			int k = 0x20000000 + (npcIndices[j] << 14);
-                       if (npc == null || !npc.isVisible() || npc.definition.priorityRender != flag) {
-				continue;
-			}
-			int l = npc.x >> 7;
-			int i1 = npc.y >> 7;
-			if (l < 0 || l >= 104 || i1 < 0 || i1 >= 104) {
-				continue;
-			}
-			if (npc.size == 1 && (npc.x & 0x7f) == 64 && (npc.y & 0x7f) == 64) {
-				if (occupiedTiles[l][i1] == waveCycle) {
-					continue;
-				}
-				occupiedTiles[l][i1] = waveCycle;
-			}
-                       if (!npc.definition.clickable) {
-				k += 0x80000000;
-			}
-                   worldController.addAnimableObject(plane, npc.currentHeading, getTileHeight(plane, npc.y, npc.x), k, npc.y, (npc.size - 1) * 64 + 60, npc.x, npc, npc.forcedAnimation);
-		}
-	}
+                sceneRenderer.addNpcsToScene(flag);
+        }
 
 	public boolean replayWave() {
 		return Signlink.wavereplay();
@@ -249,7 +232,6 @@ public void drawChatArea() {
                 interfaceMenuBuilder.buildInterfaceMenu(i, parentInterface, k, l, i1, j1);
         }
 
-
         public void drawScrollThumb(int j, int k, int l, int i1, int j1) {
                 interfaceMenuBuilder.drawScrollThumb(j, k, l, i1, j1);
         }
@@ -260,7 +242,6 @@ public void drawChatArea() {
         public void processChatModeClick() {
                 chatModeHandler.processChatModeClick();
         }
-
 
        public void applyVarp(int i) {
                 settingApplier.applyVarp(i);
@@ -321,7 +302,6 @@ public void drawChatArea() {
                 return worldController.getTileHeight(plane, worldY, worldX, tileHeights, convertedTileFlags);
         }
 
-
 	public void resetLogout() {
 		loginManager.resetLogout();
 	}
@@ -342,7 +322,6 @@ public void drawChatArea() {
 
 	}
 
-
 	public void processGameLoop() {
 		if (rsAlreadyLoaded || loadingError || genericLoadingError) {
 			return;
@@ -358,155 +337,12 @@ public void drawChatArea() {
 	}
 
        public void addPlayersToScene(boolean flag) {
-		if (myPlayer.x >> 7 == destX && myPlayer.y >> 7 == destY) {
-			destX = 0;
-		}
-		int j = playerCount;
-		if (flag) {
-			j = 1;
-		}
-		for (int l = 0; l < j; l++) {
-			Player player;
-			int i1;
-			if (flag) {
-				player = myPlayer;
-				i1 = myPlayerIndex << 14;
-			} else {
-				player = playerArray[playerIndices[l]];
-				i1 = playerIndices[l] << 14;
-			}
-			if (player == null || !player.isVisible()) {
-				continue;
-			}
-			player.skipAnimations = (lowMem && playerCount > 50 || playerCount > 200) && !flag && player.currentAnimation == player.standAnimation;
-			int j1 = player.x >> 7;
-			int k1 = player.y >> 7;
-			if (j1 < 0 || j1 >= 104 || k1 < 0 || k1 >= 104) {
-				continue;
-			}
-                        if (player.overlayModel != null && loopCycle >= player.animationStartCycle && loopCycle < player.animationEndCycle) {
-				player.skipAnimations = false;
-                                player.animationBaseY = getTileHeight(plane, player.y, player.x);
-                               worldController.addAnimatingObject(plane, player.y, player, player.currentHeading, player.boundingBoxMaxY, player.x, player.animationBaseY, player.boundingBoxMinX, player.boundingBoxMaxX, i1, player.boundingBoxMinY);
-				continue;
-			}
-			if ((player.x & 0x7f) == 64 && (player.y & 0x7f) == 64) {
-				if (occupiedTiles[j1][k1] == waveCycle) {
-					continue;
-				}
-				occupiedTiles[j1][k1] = waveCycle;
-			}
-                        player.animationBaseY = getTileHeight(plane, player.y, player.x);
-                      worldController.addAnimableObject(plane, player.currentHeading, player.animationBaseY, i1, player.y, 60, player.x, player, player.forcedAnimation);
-		}
-
-	}
+                sceneRenderer.addPlayersToScene(flag);
+        }
 
        public boolean promptUserForInput(RSInterface widget) {
-               int j = widget.contentType;
-		if (interfaceMode == 2) {
-			if (j == 201) {
-				inputTaken = true;
-				inputDialogState = 0;
-				messagePromptRaised = true;
-				promptInput = "";
-				friendsListAction = 1;
-				inputPrompt = "Enter name of friend to add to list";
-			}
-			if (j == 202) {
-				inputTaken = true;
-				inputDialogState = 0;
-				messagePromptRaised = true;
-				promptInput = "";
-				friendsListAction = 2;
-				inputPrompt = "Enter name of friend to delete from list";
-			}
-		}
-		if (j == 205) {
-			reconnectDelay = 250;
-			return true;
-		}
-		if (j == 501) {
-			inputTaken = true;
-			inputDialogState = 0;
-			messagePromptRaised = true;
-			promptInput = "";
-			friendsListAction = 4;
-			inputPrompt = "Enter name of player to add to list";
-		}
-		if (j == 502) {
-			inputTaken = true;
-			inputDialogState = 0;
-			messagePromptRaised = true;
-			promptInput = "";
-			friendsListAction = 5;
-			inputPrompt = "Enter name of player to delete from list";
-		}
-		if (j >= 300 && j <= 313) {
-			int k = (j - 300) / 2;
-			int j1 = j & 1;
-			int i2 = characterStyle[k];
-			if (i2 != -1) {
-				do {
-					if (j1 == 0 && --i2 < 0) {
-						i2 = IDK.length - 1;
-					}
-					if (j1 == 1 && ++i2 >= IDK.length) {
-						i2 = 0;
-					}
-                                } while (IDK.cache[i2].nonSelectable || IDK.cache[i2].bodyPartId != k + (isMaleCharacter ? 0 : 7));
-				characterStyle[k] = i2;
-				characterDesignChanged = true;
-			}
-		}
-		if (j >= 314 && j <= 323) {
-			int l = (j - 314) / 2;
-			int k1 = j & 1;
-			int j2 = characterColorIndices[l];
-			if (k1 == 0 && --j2 < 0) {
-				j2 = appearanceColorOptions[l].length - 1;
-			}
-			if (k1 == 1 && ++j2 >= appearanceColorOptions[l].length) {
-				j2 = 0;
-			}
-			characterColorIndices[l] = j2;
-			characterDesignChanged = true;
-		}
-		if (j == 324 && !isMaleCharacter) {
-			isMaleCharacter = true;
-                   resetCharacterOptions();
-		}
-		if (j == 325 && isMaleCharacter) {
-			isMaleCharacter = false;
-                   resetCharacterOptions();
-		}
-		if (j == 326) {
-			stream.createFrame(101);
-			stream.writeWordBigEndian(isMaleCharacter ? 0 : 1);
-			for (int i1 = 0; i1 < 7; i1++) {
-				stream.writeWordBigEndian(characterStyle[i1]);
-			}
-
-			for (int l1 = 0; l1 < 5; l1++) {
-				stream.writeWordBigEndian(characterColorIndices[l1]);
-			}
-
-			return true;
-		}
-		if (j == 613) {
-			canMute = !canMute;
-		}
-		if (j >= 601 && j <= 612) {
-			closeOpenInterfaces();
-			if (reportAbuseInput.length() > 0) {
-				stream.createFrame(218);
-				stream.writeQWord(TextClass.longForName(reportAbuseInput));
-				stream.writeWordBigEndian(j - 601);
-				stream.writeWordBigEndian(canMute ? 1 : 0);
-			}
-		}
-		return false;
-	}
+                return interfaceInputHandler.promptUserForInput(widget);
+        }
 
        public void processPlayerUpdateMasks(Stream stream) {
 		for (int j = 0; j < playerUpdateCount; j++) {
@@ -522,134 +358,8 @@ public void drawChatArea() {
 	}
 
        public void drawMinimapLoc(int i, int k, int l, int i1, int j1) {
-		int k1 = worldController.getBoundaryObjectUid(j1, l, i);
-		if (k1 != 0) {
-			int l1 = worldController.getObjectConfig(j1, l, i, k1);
-			int k2 = l1 >> 6 & 3;
-			int i3 = l1 & 0x1f;
-			int k3 = k;
-			if (k1 > 0) {
-				k3 = i1;
-			}
-                       int ai[] = minimapImage.pixels;
-			int k4 = 24624 + l * 4 + (103 - i) * 512 * 4;
-			int i5 = k1 >> 14 & 0x7fff;
-			ObjectDef objectDef2 = ObjectDef.forID(i5);
-                        if (objectDef2.mapSceneId != -1) {
-                                Background background_2 = mapScenes[objectDef2.mapSceneId];
-				if (background_2 != null) {
-					int i6 = (objectDef2.sizeX * 4 - background_2.width) / 2;
-					int j6 = (objectDef2.sizeY * 4 - background_2.height) / 2;
-					background_2.draw(48 + l * 4 + i6, 48 + (104 - i - objectDef2.sizeY) * 4 + j6);
-				}
-			} else {
-				if (i3 == 0 || i3 == 2) {
-					if (k2 == 0) {
-						ai[k4] = k3;
-						ai[k4 + 512] = k3;
-						ai[k4 + 1024] = k3;
-						ai[k4 + 1536] = k3;
-					} else if (k2 == 1) {
-						ai[k4] = k3;
-						ai[k4 + 1] = k3;
-						ai[k4 + 2] = k3;
-						ai[k4 + 3] = k3;
-					} else if (k2 == 2) {
-						ai[k4 + 3] = k3;
-						ai[k4 + 3 + 512] = k3;
-						ai[k4 + 3 + 1024] = k3;
-						ai[k4 + 3 + 1536] = k3;
-					} else if (k2 == 3) {
-						ai[k4 + 1536] = k3;
-						ai[k4 + 1536 + 1] = k3;
-						ai[k4 + 1536 + 2] = k3;
-						ai[k4 + 1536 + 3] = k3;
-					}
-				}
-				if (i3 == 3) {
-					if (k2 == 0) {
-						ai[k4] = k3;
-					} else if (k2 == 1) {
-						ai[k4 + 3] = k3;
-					} else if (k2 == 2) {
-						ai[k4 + 3 + 1536] = k3;
-					} else if (k2 == 3) {
-						ai[k4 + 1536] = k3;
-					}
-				}
-				if (i3 == 2) {
-					if (k2 == 3) {
-						ai[k4] = k3;
-						ai[k4 + 512] = k3;
-						ai[k4 + 1024] = k3;
-						ai[k4 + 1536] = k3;
-					} else if (k2 == 0) {
-						ai[k4] = k3;
-						ai[k4 + 1] = k3;
-						ai[k4 + 2] = k3;
-						ai[k4 + 3] = k3;
-					} else if (k2 == 1) {
-						ai[k4 + 3] = k3;
-						ai[k4 + 3 + 512] = k3;
-						ai[k4 + 3 + 1024] = k3;
-						ai[k4 + 3 + 1536] = k3;
-					} else if (k2 == 2) {
-						ai[k4 + 1536] = k3;
-						ai[k4 + 1536 + 1] = k3;
-						ai[k4 + 1536 + 2] = k3;
-						ai[k4 + 1536 + 3] = k3;
-					}
-				}
-			}
-		}
-		k1 = worldController.getSceneObjectUid(j1, l, i);
-		if (k1 != 0) {
-			int i2 = worldController.getObjectConfig(j1, l, i, k1);
-			int l2 = i2 >> 6 & 3;
-			int j3 = i2 & 0x1f;
-			int l3 = k1 >> 14 & 0x7fff;
-			ObjectDef objectDef1 = ObjectDef.forID(l3);
-                        if (objectDef1.mapSceneId != -1) {
-                                Background background_1 = mapScenes[objectDef1.mapSceneId];
-				if (background_1 != null) {
-					int j5 = (objectDef1.sizeX * 4 - background_1.width) / 2;
-					int k5 = (objectDef1.sizeY * 4 - background_1.height) / 2;
-					background_1.draw(48 + l * 4 + j5, 48 + (104 - i - objectDef1.sizeY) * 4 + k5);
-				}
-			} else if (j3 == 9) {
-				int l4 = 0xeeeeee;
-				if (k1 > 0) {
-					l4 = 0xee0000;
-				}
-                           int ai1[] = minimapImage.pixels;
-				int l5 = 24624 + l * 4 + (103 - i) * 512 * 4;
-				if (l2 == 0 || l2 == 2) {
-					ai1[l5 + 1536] = l4;
-					ai1[l5 + 1024 + 1] = l4;
-					ai1[l5 + 512 + 2] = l4;
-					ai1[l5 + 3] = l4;
-				} else {
-					ai1[l5] = l4;
-					ai1[l5 + 512 + 1] = l4;
-					ai1[l5 + 1024 + 2] = l4;
-					ai1[l5 + 1536 + 3] = l4;
-				}
-			}
-		}
-		k1 = worldController.getTileDecorationUid(j1, l, i);
-		if (k1 != 0) {
-			int j2 = k1 >> 14 & 0x7fff;
-			ObjectDef objectDef = ObjectDef.forID(j2);
-                        if (objectDef.mapSceneId != -1) {
-                                Background background = mapScenes[objectDef.mapSceneId];
-				if (background != null) {
-					int i4 = (objectDef.sizeX * 4 - background.width) / 2;
-					int j4 = (objectDef.sizeY * 4 - background.height) / 2;
-					background.draw(48 + l * 4 + i4, 48 + (104 - i - objectDef.sizeY) * 4 + j4);
-				}
-			}
-		}
-	}
+                minimapRenderer.drawMinimapLoc(i, k, l, i1, j1);
+        }
 
 	public void loadTitleScreen() {
 		loginBoxBackground = new Background(titleStreamLoader, "titlebox", 0);
@@ -751,91 +461,16 @@ public void drawChatArea() {
 	}
 
 	public void loadingStages() {
-		if (lowMem && loadingStage == 2 && ObjectManager.currentPlane != plane) {
-			drawTextOnScreen(null, "Loading - please wait.");
-			loadingStage = 1;
-			loadingStartTime = System.currentTimeMillis();
-		}
-		if (loadingStage == 1) {
-			int j = checkMapLoadStatus();
-			if (j != 0 && System.currentTimeMillis() - loadingStartTime > 0x57e40L) {
-				Signlink.reporterror(myUsername + " glcfb " + serverSessionKey + "," + j + "," + lowMem + "," + decompressors[0] + "," + onDemandFetcher.getNodeCount() + "," + plane + "," + currentRegionX + "," + currentRegionY);
-				loadingStartTime = System.currentTimeMillis();
-			}
-		}
-		if (loadingStage == 2 && plane != lastPlane) {
-			lastPlane = plane;
-                       generateMinimap(plane);
-		}
-	}
+                loadingHandler.loadingStages();
+        }
 
 	public int checkMapLoadStatus() {
-		for (int i = 0; i < terrainData.length; i++) {
-			if (terrainData[i] == null && terrainArchiveIds[i] != -1) {
-				return -1;
-			}
-			if (objectMapData[i] == null && objectArchiveIds[i] != -1) {
-				return -2;
-			}
-		}
-
-		boolean flag = true;
-		for (int j = 0; j < terrainData.length; j++) {
-			byte abyte0[] = objectMapData[j];
-			if (abyte0 != null) {
-				int k = (regionBaseIds[j] >> 8) * 64 - baseX;
-				int l = (regionBaseIds[j] & 0xff) * 64 - baseY;
-				if (isDynamicRegion) {
-					k = 10;
-					l = 10;
-				}
-				flag &= ObjectManager.areObjectsReady(k, abyte0, l);
-			}
-		}
-
-		if (!flag) {
-			return -3;
-		}
-		if (regionLoading) {
-			return -4;
-		} else {
-			loadingStage = 2;
-			ObjectManager.currentPlane = plane;
-                       constructMapRegion();
-			stream.createFrame(121);
-			return 0;
-		}
-	}
+                return loadingHandler.checkMapLoadStatus();
+        }
 
        public void processProjectiles() {
-       for (Projectile projectile = (Projectile) projectileList.reverseGetFirst(); projectile != null; projectile = (Projectile) projectileList.reverseGetNext()) {
-                        if (projectile.plane != plane || loopCycle > projectile.endCycle) {
-                                projectile.unlink();
-                        } else if (loopCycle >= projectile.startCycle) {
-                                if (projectile.targetIndex > 0) {
-                                        NPC npc = npcArray[projectile.targetIndex - 1];
-                                        if (npc != null && npc.x >= 0 && npc.x < 13312 && npc.y >= 0 && npc.y < 13312) {
-                                                projectile.track(loopCycle, npc.y, getTileHeight(projectile.plane, npc.y, npc.x) - projectile.heightOffset, npc.x);
-                                        }
-                                }
-                                if (projectile.targetIndex < 0) {
-                                        int j = -projectile.targetIndex - 1;
-                                        Player player;
-                                        if (j == localPlayerIndex) {
-                                                player = myPlayer;
-                                        } else {
-                                                player = playerArray[j];
-                                        }
-                                        if (player != null && player.x >= 0 && player.x < 13312 && player.y >= 0 && player.y < 13312) {
-                                                projectile.track(loopCycle, player.y, getTileHeight(projectile.plane, player.y, player.x) - projectile.heightOffset, player.x);
-                                        }
-                                }
-                                projectile.update(animationCycle);
-                               worldController.addAnimableObject(plane, projectile.yaw, (int) projectile.currentHeight, -1, (int) projectile.currentY, 60, (int) projectile.currentX, projectile, false);
-                        }
-                }
-
-	}
+                projectileHandler.processProjectiles();
+        }
 
 	public AppletContext getAppletContext() {
 		if (Signlink.mainapp != null) {
@@ -959,7 +594,6 @@ public void drawChatArea() {
         public boolean saveWave(byte[] data, int i) {
                 return flamesEffect.saveWave(data, i);
         }
-
 
        public void resetInterfaceAnimation(int i) {
                RSInterface parentInterface = RSInterface.interfaceCache[i];
@@ -3972,13 +3606,10 @@ public void drawChatArea() {
         loginManager.login(s, s1, flag);
     }
 
-
-
     public boolean doWalkTo(int i, int j, int k, int i1, int j1, int k1, int l1, int i2, int j2, boolean flag, int k2) {
         return pathfinder.doWalkTo(i, j, k, i1, j1, k1, l1, i2, j2, flag, k2);
     }
 
-	
        static final int adjustColorBrightness(int i, int i_1_) {
 		if (i_1_ == -2)
 	   		return 12345678;
@@ -4970,7 +4601,6 @@ public void drawChatArea() {
 		}
 	}
 
-
 	public void drawGameScreen() {
 		if (fullScreenInterfaceId != -1 && (loadingStage == 2 || super.fullGameScreen != null)) {
 			if (loadingStage == 2) {
@@ -5760,6 +5390,7 @@ public void drawChatArea() {
         public void updateCameraPosition() {
                 cameraManager.updateCameraPosition();
         }
+
 	public void processDrawing() {
 		if (rsAlreadyLoaded || loadingError || genericLoadingError) {
 			showErrorScreen();
@@ -5918,7 +5549,6 @@ public void drawChatArea() {
        public void processPendingSpawns() {
                pendingSpawnManager.processPendingSpawns();
         }
-
 
        public void updateSelfMovement(Stream stream) {
 		stream.initBitAccess();
@@ -6404,9 +6034,11 @@ public void drawChatArea() {
         public void updatePlayers(int i, Stream stream) {
                 playerUpdater.updatePlayers(i, stream);
         }
+
    public void setCameraPos(int j, int k, int l, int i1, int j1, int k1) {
         cameraManager.setCameraPos(j, k, l, i1, j1, k1);
     }
+
 	public boolean parsePacket() {
 		if (socketStream == null) {
 			return false;
@@ -8005,6 +7637,10 @@ public void drawChatArea() {
                 tabAreaRenderer = new TabAreaRenderer(this);
                 entityTextUpdater = new EntityTextUpdater(this);
                 entityOverlayRenderer = new EntityOverlayRenderer(this);
+                sceneRenderer = new SceneRenderer(this);
+                interfaceInputHandler = new InterfaceInputHandler(this);
+                loadingHandler = new LoadingHandler(this);
+                projectileHandler = new ProjectileHandler(this);
                 loginManager = new LoginManager(this);
                 pathfinder = new Pathfinder(this);
         }
@@ -8442,6 +8078,10 @@ public void drawChatArea() {
         public final TabAreaRenderer tabAreaRenderer;
         public final EntityTextUpdater entityTextUpdater;
         public final EntityOverlayRenderer entityOverlayRenderer;
+        public final SceneRenderer sceneRenderer;
+        public final InterfaceInputHandler interfaceInputHandler;
+        public final LoadingHandler loadingHandler;
+        public final ProjectileHandler projectileHandler;
         public final LoginManager loginManager;
         public final Pathfinder pathfinder;
         public int flameOffset;
@@ -8501,9 +8141,7 @@ public void drawChatArea() {
         InputHandler.handleKeyPressed(this, keyevent);
 	}
 
-
-	
-	    public void definitionSearch(String name, int type) {
+	public void definitionSearch(String name, int type) {
         DefinitionSearcher.search(this, name, type);
     }
 
