@@ -8,6 +8,8 @@ Renders the game's chat UI area. Extracted from [`Game`](Game.md) to reduce its 
 final class ChatAreaRenderer {
     ChatAreaRenderer(Game game)
     void drawChatArea()
+    void buildChatAreaMenu(int j)
+    void drawSplitpublicChat()
     void buildSplitPrivateChatMenu()
 }
 ```

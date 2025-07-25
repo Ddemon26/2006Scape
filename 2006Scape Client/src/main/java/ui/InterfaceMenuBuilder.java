@@ -55,7 +55,7 @@ public final class InterfaceMenuBuilder {
             && mouseY < childY + child.height) {
           boolean flag = false;
           if (child.contentType != 0) {
-            flag = game.buildFriendsListMenu(child);
+            flag = game.friendManager.buildFriendsListMenu(child);
           }
           if (!flag) {
             game.menuActionName[game.menuActionRow] =

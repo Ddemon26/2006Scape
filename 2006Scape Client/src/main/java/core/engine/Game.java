@@ -116,7 +116,7 @@ public class Game extends RSApplet {
 
   private boolean graphicsEnabled = true;
   private final IgnoreManager ignoreManager;
-  private final FriendManager friendManager;
+  public final FriendManager friendManager;
 
   public void drawChatArea() {
     chatAreaRenderer.drawChatArea();
@@ -3012,321 +3012,11 @@ public class Game extends RSApplet {
   }
 
   public void buildChatAreaMenu(int j) {
-    int l = 0;
-    for (int i1 = 0; i1 < 100; i1++) {
-      if (chatMessages[i1] == null) {
-        continue;
-      }
-      int j1 = chatTypes[i1];
-      int k1 = 70 - l * 14 + chatScrollPosition + 4;
-      if (k1 < -20) {
-        break;
-      }
-      String s = chatNames[i1];
-      if (s != null && s.startsWith("@cr1@")) {
-        s = s.substring(5);
-      }
-      if (s != null && s.startsWith("@cr2@")) {
-        s = s.substring(5);
-      }
-      if (j1 == 0) {
-        l++;
-      }
-      if ((j1 == 1 || j1 == 2)
-          && (j1 == 1 || publicChatMode == 0 || publicChatMode == 1 && isFriendOrSelf(s))) {
-        if (j > k1 - 14 && j <= k1 && !s.equals(myPlayer.name)) {
-          if (myPrivilege >= 1 && myPrivilege <= 3) {
-            menuActionName[menuActionRow] = "Report abuse @whi@" + s;
-            menuActionID[menuActionRow] = 606;
-            menuActionRow++;
-          }
-          menuActionName[menuActionRow] = "Add ignore @whi@" + s;
-          menuActionID[menuActionRow] = 42;
-          menuActionRow++;
-          menuActionName[menuActionRow] = "Reply to @whi@" + s;
-          menuActionID[menuActionRow] = 639;
-          menuActionRow++;
-          menuActionName[menuActionRow] = "Add friend @whi@" + s;
-          menuActionID[menuActionRow] = 337;
-          menuActionRow++;
-        }
-        l++;
-      }
-      if ((j1 == 3 || j1 == 7)
-          && splitpublicChat == 0
-          && (j1 == 7 || privateChatMode == 0 || publicChatMode == 1 && isFriendOrSelf(s))) {
-        if (j > k1 - 14 && j <= k1) {
-          if (myPrivilege >= 1 && myPrivilege <= 3) {
-            menuActionName[menuActionRow] = "Report abuse @whi@" + s;
-            menuActionID[menuActionRow] = 606;
-            menuActionRow++;
-          }
-          menuActionName[menuActionRow] = "Add ignore @whi@" + s;
-          menuActionID[menuActionRow] = 42;
-          menuActionRow++;
-          menuActionName[menuActionRow] = "Reply to @whi@" + s;
-          menuActionID[menuActionRow] = 639;
-          menuActionRow++;
-          menuActionName[menuActionRow] = "Add friend @whi@" + s;
-          menuActionID[menuActionRow] = 337;
-          menuActionRow++;
-        }
-        l++;
-      }
-      if (j1 == 4 && (tradeMode == 0 || tradeMode == 1 && isFriendOrSelf(s))) {
-        if (j > k1 - 14 && j <= k1) {
-          menuActionName[menuActionRow] = "Accept trade @whi@" + s;
-          menuActionID[menuActionRow] = 484;
-          menuActionRow++;
-        }
-        l++;
-      }
-      if ((j1 == 5 || j1 == 6) && splitpublicChat == 0 && privateChatMode < 2) {
-        l++;
-      }
-      if (j1 == 8 && (tradeMode == 0 || tradeMode == 1 && isFriendOrSelf(s))) {
-        if (j > k1 - 14 && j <= k1) {
-          menuActionName[menuActionRow] = "Accept challenge @whi@" + s;
-          menuActionID[menuActionRow] = 6;
-          menuActionRow++;
-        }
-        l++;
-      }
-    }
+    chatAreaRenderer.buildChatAreaMenu(j);
   }
 
   public void drawFriendsListOrWelcomeScreen(RSInterface interfaceComponent) {
-    int j = interfaceComponent.contentType;
-    if (j >= 1 && j <= 100 || j >= 701 && j <= 800) {
-      if (j == 1 && interfaceMode == 0) {
-        interfaceComponent.disabledText = "Loading friend list";
-        interfaceComponent.atActionType = 0;
-        return;
-      }
-      if (j == 1 && interfaceMode == 1) {
-        interfaceComponent.disabledText = "Connecting to friendserver";
-        interfaceComponent.atActionType = 0;
-        return;
-      }
-      if (j == 2 && interfaceMode != 2) {
-        interfaceComponent.disabledText = "Please wait...";
-        interfaceComponent.atActionType = 0;
-        return;
-      }
-      int k = friendsCount;
-      if (interfaceMode != 2) {
-        k = 0;
-      }
-      if (j > 700) {
-        j -= 601;
-      } else {
-        j--;
-      }
-      if (j >= k) {
-        interfaceComponent.disabledText = "";
-        interfaceComponent.atActionType = 0;
-        return;
-      } else {
-        interfaceComponent.disabledText = friendsList[j];
-        interfaceComponent.atActionType = 1;
-        return;
-      }
-    }
-    if (j >= 101 && j <= 200 || j >= 801 && j <= 900) {
-      int l = friendsCount;
-      if (interfaceMode != 2) {
-        l = 0;
-      }
-      if (j > 800) {
-        j -= 701;
-      } else {
-        j -= 101;
-      }
-      if (j >= l) {
-        interfaceComponent.disabledText = "";
-        interfaceComponent.atActionType = 0;
-        return;
-      }
-      if (friendsNodeIDs[j] - 9 <= 0) {
-        interfaceComponent.disabledText = "@red@Offline";
-      } else if (friendsNodeIDs[j] == nodeID) {
-        interfaceComponent.disabledText = "@gre@World-" + (friendsNodeIDs[j] - 9);
-      } else {
-        interfaceComponent.disabledText = "@yel@World-" + (friendsNodeIDs[j] - 9);
-      }
-      interfaceComponent.atActionType = 1;
-      return;
-    }
-    if (j == 203) {
-      int i1 = friendsCount;
-      if (interfaceMode != 2) {
-        i1 = 0;
-      }
-      interfaceComponent.scrollMax = i1 * 15 + 20;
-      if (interfaceComponent.scrollMax <= interfaceComponent.height) {
-        interfaceComponent.scrollMax = interfaceComponent.height + 1;
-      }
-      return;
-    }
-    if (j >= 401 && j <= 500) {
-      if ((j -= 401) == 0 && interfaceMode == 0) {
-        interfaceComponent.disabledText = "Loading ignore list";
-        interfaceComponent.atActionType = 0;
-        return;
-      }
-      if (j == 1 && interfaceMode == 0) {
-        interfaceComponent.disabledText = "Please wait...";
-        interfaceComponent.atActionType = 0;
-        return;
-      }
-      int j1 = ignoreCount;
-      if (interfaceMode == 0) {
-        j1 = 0;
-      }
-      if (j >= j1) {
-        interfaceComponent.disabledText = "";
-        interfaceComponent.atActionType = 0;
-        return;
-      } else {
-        interfaceComponent.disabledText =
-            TextClass.fixName(TextClass.nameForLong(ignoreListAsLongs[j]));
-        interfaceComponent.atActionType = 1;
-        return;
-      }
-    }
-    if (j == 503) {
-      interfaceComponent.scrollMax = ignoreCount * 15 + 20;
-      if (interfaceComponent.scrollMax <= interfaceComponent.height) {
-        interfaceComponent.scrollMax = interfaceComponent.height + 1;
-      }
-      return;
-    }
-    if (j == 327) {
-      interfaceComponent.modelRotation1 = 150;
-      interfaceComponent.modelRotation2 = (int) (Math.sin((double) loopCycle / 40D) * 256D) & 0x7ff;
-      if (characterDesignChanged) {
-        for (int k1 = 0; k1 < 7; k1++) {
-          int l1 = characterStyle[k1];
-          if (l1 >= 0 && !IDK.cache[l1].ready()) {
-            return;
-          }
-        }
-
-        characterDesignChanged = false;
-        Model modelParts[] = new Model[7];
-        int i2 = 0;
-        for (int j2 = 0; j2 < 7; j2++) {
-          int k2 = characterStyle[j2];
-          if (k2 >= 0) {
-            modelParts[i2++] = IDK.cache[k2].getBodyModel();
-          }
-        }
-
-        Model model = new Model(i2, modelParts);
-        for (int l2 = 0; l2 < 5; l2++) {
-          if (characterColorIndices[l2] != 0) {
-            model.recolor(
-                appearanceColorOptions[l2][0],
-                appearanceColorOptions[l2][characterColorIndices[l2]]);
-            if (l2 == 1) {
-              model.recolor(
-                  additionalColorCodes[0], additionalColorCodes[characterColorIndices[l2]]);
-            }
-          }
-        }
-
-        model.buildVertexGroups();
-        model.applyFrame(Animation.anims[myPlayer.standAnimation].frameIds[0]);
-        model.applyLighting(64, 850, -30, -50, -30, true);
-        interfaceComponent.mediaType = 5;
-        interfaceComponent.mediaId = 0;
-        RSInterface.clearModelCache(model, 0, 5);
-      }
-      return;
-    }
-    if (j == 324) {
-      if (maleIconSprite == null) {
-        maleIconSprite = interfaceComponent.sprite1;
-        femaleIconSprite = interfaceComponent.sprite2;
-      }
-      if (isMaleCharacter) {
-        interfaceComponent.sprite1 = femaleIconSprite;
-        return;
-      } else {
-        interfaceComponent.sprite1 = maleIconSprite;
-        return;
-      }
-    }
-    if (j == 325) {
-      if (maleIconSprite == null) {
-        maleIconSprite = interfaceComponent.sprite1;
-        femaleIconSprite = interfaceComponent.sprite2;
-      }
-      if (isMaleCharacter) {
-        interfaceComponent.sprite1 = maleIconSprite;
-        return;
-      } else {
-        interfaceComponent.sprite1 = femaleIconSprite;
-        return;
-      }
-    }
-    if (j == 600) {
-      interfaceComponent.disabledText = reportAbuseInput;
-      if (loopCycle % 20 < 10) {
-        interfaceComponent.disabledText += "|";
-        return;
-      } else {
-        interfaceComponent.disabledText += " ";
-        return;
-      }
-    }
-    if (j == 613) {
-      if (myPrivilege >= 1 && myPrivilege <= 3) {
-        if (canMute) {
-          interfaceComponent.textColor = 0xff0000;
-          interfaceComponent.disabledText = "Moderator option: Mute player for 48 hours: <ON>";
-        } else {
-          interfaceComponent.textColor = 0xffffff;
-          interfaceComponent.disabledText = "Moderator option: Mute player for 48 hours: <OFF>";
-        }
-      } else {
-        interfaceComponent.disabledText = "";
-      }
-    }
-    if (j == 661)
-      if (recoveryQuestionChangeDate == 0)
-        interfaceComponent.disabledText =
-            "\\nYou have not yet set any recovery questions.\\nIt is @lre@strongly@yel@ recommended that you do so.\\n\\nIf you don't you will be @lre@unable to recover your\\n@lre@password@yel@ if you forget it, or it is stolen.";
-      else if (recoveryQuestionChangeDate <= currentDateOffset) {
-        interfaceComponent.disabledText =
-            "\\n\\nRecovery Questions Last Set:\\n@gre@" + formatDate(recoveryQuestionChangeDate);
-      } else {
-        int l1 = (currentDateOffset + 14) - recoveryQuestionChangeDate;
-        String s2;
-        if (l1 <= 0) s2 = "Earlier today";
-        else if (l1 == 1) s2 = "Yesterday";
-        else s2 = l1 + " days ago";
-        interfaceComponent.disabledText =
-            s2
-                + " you requested@lre@ new recovery\\n@lre@questions.@yel@ The requested change will occur\\non: @lre@"
-                + formatDate(recoveryQuestionChangeDate)
-                + "\\n\\nIf you do not remember making this request\\ncancel it immediately, and change your password.";
-      }
-    if (j == 663)
-      if (lastPasswordChange <= 0 || lastPasswordChange > currentDateOffset + 10)
-        interfaceComponent.disabledText = "Last password change:\\n@gre@Never changed";
-      else
-        interfaceComponent.disabledText =
-            "Last password change:\\n@gre@" + formatDate(lastPasswordChange);
-    if (j == 668) {
-      if (recoveryQuestionChangeDate > currentDateOffset) {
-        interfaceComponent.disabledText =
-            "To cancel this request:\\n1) Logout and return to the frontpage of this website.\\n2) Choose 'Cancel recovery questions'.";
-        return;
-      }
-      interfaceComponent.disabledText =
-          "To change your recovery questions:\\n1) Logout and return to the frontpage of this website.\\n2) Choose 'Set new recovery questions'.";
-    }
+    friendManager.drawFriendsListOrWelcomeScreen(interfaceComponent);
   }
 
   public String formatDate(int i) {
@@ -3347,66 +3037,7 @@ public class Game extends RSApplet {
   }
 
   public void drawSplitpublicChat() {
-    if (splitpublicChat == 0) {
-      return;
-    }
-    TextDrawingArea textDrawingArea = boldFont;
-    int i = 0;
-    if (systemUpdateTimer != 0) {
-      i = 1;
-    }
-    for (int j = 0; j < 100; j++) {
-      if (chatMessages[j] != null) {
-        int k = chatTypes[j];
-        String s = chatNames[j];
-        byte byte1 = 0;
-        if (s != null && s.startsWith("@cr1@")) {
-          s = s.substring(5);
-          byte1 = 1;
-        }
-        if (s != null && s.startsWith("@cr2@")) {
-          s = s.substring(5);
-          byte1 = 2;
-        }
-        if ((k == 3 || k == 7)
-            && (k == 7 || privateChatMode == 0 || privateChatMode == 1 && isFriendOrSelf(s))) {
-          int l = 329 - i * 13;
-          int k1 = 4;
-          textDrawingArea.textLeft(0, "From", l, k1);
-          textDrawingArea.textLeft(0x00ffff, "From", l - 1, k1);
-          k1 += textDrawingArea.getTextWidth("From ");
-          if (byte1 == 1) {
-            modIcons[0].draw(k1, l - 12);
-            k1 += 14;
-          }
-          if (byte1 == 2) {
-            modIcons[1].draw(k1, l - 12);
-            k1 += 14;
-          }
-          textDrawingArea.textLeft(0, s + ": " + chatMessages[j], l, k1);
-          textDrawingArea.textLeft(0x00ffff, s + ": " + chatMessages[j], l - 1, k1);
-          if (++i >= 5) {
-            return;
-          }
-        }
-        if (k == 5 && privateChatMode < 2) {
-          int i1 = 329 - i * 13;
-          textDrawingArea.textLeft(0, chatMessages[j], i1, 4);
-          textDrawingArea.textLeft(0x00ffff, chatMessages[j], i1 - 1, 4);
-          if (++i >= 5) {
-            return;
-          }
-        }
-        if (k == 6 && privateChatMode < 2) {
-          int j1 = 329 - i * 13;
-          textDrawingArea.textLeft(0, "To " + s + ": " + chatMessages[j], j1, 4);
-          textDrawingArea.textLeft(0x00ffff, "To " + s + ": " + chatMessages[j], j1 - 1, 4);
-          if (++i >= 5) {
-            return;
-          }
-        }
-      }
-    }
+    chatAreaRenderer.drawSplitpublicChat();
   }
 
   public void pushMessage(String s, int i, String s1) {
@@ -3820,7 +3451,7 @@ public class Game extends RSApplet {
         buildInterfaceMenu(
             17, RSInterface.interfaceCache[dialogID], super.mouseX, 357, super.mouseY, 0);
       } else if (super.mouseY < 434 && super.mouseX < 426) {
-        buildChatAreaMenu(super.mouseY - 357);
+        chatAreaRenderer.buildChatAreaMenu(super.mouseY - 357);
       }
     }
     if ((backDialogID != -1 || dialogID != -1)
@@ -4868,33 +4499,7 @@ public class Game extends RSApplet {
   }
 
   public boolean buildFriendsListMenu(RSInterface listInterface) {
-    int i = listInterface.contentType;
-    if (i >= 1 && i <= 200 || i >= 701 && i <= 900) {
-      if (i >= 801) {
-        i -= 701;
-      } else if (i >= 701) {
-        i -= 601;
-      } else if (i >= 101) {
-        i -= 101;
-      } else {
-        i--;
-      }
-      menuActionName[menuActionRow] = "Remove @whi@" + friendsList[i];
-      menuActionID[menuActionRow] = 792;
-      menuActionRow++;
-      menuActionName[menuActionRow] = "Message @whi@" + friendsList[i];
-      menuActionID[menuActionRow] = 639;
-      menuActionRow++;
-      return true;
-    }
-    if (i >= 401 && i <= 500) {
-      menuActionName[menuActionRow] = "Remove @whi@" + listInterface.disabledText;
-      menuActionID[menuActionRow] = 322;
-      menuActionRow++;
-      return true;
-    } else {
-      return false;
-    }
+    return friendManager.buildFriendsListMenu(listInterface);
   }
 
   public void processGraphicsObjects() {
@@ -4947,7 +4552,7 @@ public class Game extends RSApplet {
       k2 += component.offsetX;
       l2 += component.offsetY;
       if (component.contentType > 0) {
-        drawFriendsListOrWelcomeScreen(component);
+        friendManager.drawFriendsListOrWelcomeScreen(component);
       }
       if (component.type == 0) {
         if (component.scrollPosition > component.scrollMax - component.height) {
@@ -5488,7 +5093,7 @@ public class Game extends RSApplet {
   }
 
   public void draw3dScreen() {
-    drawSplitpublicChat();
+    chatAreaRenderer.drawSplitpublicChat();
     if (crossType == 1) {
       crosses[crossIndex / 100].drawTransparentSprite(crossX - 8 - 4, crossY - 8 - 4);
       clickPacketCounter++;

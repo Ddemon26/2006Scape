@@ -10,5 +10,7 @@ final class FriendManager {
     void addFriend(long id)
     void delFriend(long id)
     boolean isFriendOrSelf(String name)
+    void drawFriendsListOrWelcomeScreen(RSInterface component)
+    boolean buildFriendsListMenu(RSInterface listInterface)
 }
 ```
