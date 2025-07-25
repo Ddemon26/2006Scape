@@ -1,0 +1,124 @@
+[
+  {
+    "title": "Getting Started",
+    "items": [
+      {
+        "title": "Introduction",
+        "path": "documents/introduction.md"
+      },
+      {
+        "title": "Installation & Setup",
+        "path": "documents/installation.md"
+      },
+      {
+        "title": "Quick Start Guide",
+        "path": "documents/quick-start.md"
+      }
+    ]
+  },
+  {
+    "title": "Architecture",
+    "items": [
+      {
+        "title": "Server Overview",
+        "path": "documents/Server/Server-intro.md"
+      },
+      {
+        "title": "Client Overview", 
+        "path": "documents/Client/client-intro.md"
+      },
+      {
+        "title": "Parabot Integration",
+        "path": "documents/Parabot/Parabot-intro.md"
+      }
+    ]
+  },
+  {
+    "title": "Server Reference",
+    "items": [
+      {
+        "title": "Server Classes Index",
+        "path": "documents/Server/index.md"
+      },
+      {
+        "title": "Core Classes",
+        "path": "documents/Server/classes/GameEngine.md"
+      },
+      {
+        "title": "Player System",
+        "path": "documents/Server/classes/Player.md"
+      },
+      {
+        "title": "Combat System",
+        "path": "documents/Server/classes/CombatAssistant.md"
+      },
+      {
+        "title": "Skills System",
+        "path": "documents/Server/classes/SkillHandler.md"
+      }
+    ]
+  },
+  {
+    "title": "Client Reference", 
+    "items": [
+      {
+        "title": "Client Classes Index",
+        "path": "documents/Client/index.md"
+      },
+      {
+        "title": "Game Core",
+        "path": "documents/Client/classes/Game.md"
+      },
+      {
+        "title": "Player Entity",
+        "path": "documents/Client/classes/Player.md"
+      },
+      {
+        "title": "Rendering System",
+        "path": "documents/Client/classes/DrawingArea.md"
+      },
+      {
+        "title": "Network Protocol",
+        "path": "documents/Client/classes/Stream.md"
+      }
+    ]
+  },
+  {
+    "title": "Community",
+    "items": [
+      {
+        "title": "Community Hub",
+        "path": "documents/community/index.md"
+      },
+      {
+        "title": "Contributing Guide",
+        "path": "documents/community/contributing.md"
+      },
+      {
+        "title": "Discussion Forums",
+        "path": "documents/community/forums.md"
+      },
+      {
+        "title": "Chat & Support",
+        "path": "documents/community/chat.md"
+      },
+      {
+        "title": "Events & Meetups",
+        "path": "documents/community/events.md"
+      }
+    ]
+  },
+  {
+    "title": "Resources",
+    "items": [
+      {
+        "title": "Downloads",
+        "path": "documents/downloads/index.md"
+      },
+      {
+        "title": "All Resources",
+        "path": "documents/resources/index.md"
+      }
+    ]
+  }
+]

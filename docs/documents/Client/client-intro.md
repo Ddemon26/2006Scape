@@ -167,8 +167,8 @@ The client works closely with the [game server](../Server/Server-intro.md):
 
 ## External Resources
 
-- [Client Setup Guide](../usage.md)
+- [Client Setup Guide](../../usage.md)
 - [Server Architecture](../Server/Server-intro.md)
 - [Parabot Integration](../Parabot/Parabot-intro.md)
-- [Contributing Guidelines](../contributing.md)
+- [Contributing Guidelines](../community/contributing.md)
 - [Project Repository](https://github.com/2006-Scape/2006rebotted)

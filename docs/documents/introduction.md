@@ -22,21 +22,21 @@ While preserving the classic gameplay, we embrace modern development standards:
 
 ### Three-Component System
 
-#### 🖥️ [Game Server](Server/Server-intro.md)
+#### =� [Game Server](Server/Server-intro.md)
 The heart of 2006Scape, handling all game logic and world simulation:
 - **Technology**: Java-based server with custom networking
 - **Features**: Complete game world, combat, skills, quests, and player management
 - **Scale**: Supports hundreds of concurrent players
 - **Extensibility**: Plugin system for custom content
 
-#### 🎮 [Game Client](Client/client-intro.md)
+#### <� [Game Client](Client/client-intro.md)
 The player-facing application providing the complete game experience:
 - **Technology**: Java client with 3D rendering engine
 - **Features**: Full 3D world, user interface, audio system, and networking
 - **Compatibility**: Based on original RuneScape client architecture
 - **Performance**: Optimized for smooth gameplay on modern systems
 
-#### 🤖 [Parabot Integration](Parabot/Parabot-intro.md)
+#### > [Parabot Integration](Parabot/Parabot-intro.md)
 Scripting environment for automation and testing:
 - **Purpose**: Automated testing and bot development
 - **Integration**: Seamless connection to local development servers
@@ -88,9 +88,9 @@ The project exists to serve the RuneScape community:
 - **[Community Wiki](https://wiki.2006scape.org)**: Learn game mechanics and strategies
 
 ### For Developers
-- **[Setup Guide](usage.md)**: Get the development environment running
+- **[Setup Guide](installation.md)**: Get the development environment running
 - **[Architecture Docs](Server/Server-intro.md)**: Understand the codebase structure
-- **[Contributing Guide](contributing.md)**: Learn our development workflow
+- **[Contributing Guide](community/contributing.md)**: Learn our development workflow
 - **[API Reference](Server/classes/index.md)**: Explore the complete class documentation
 
 ### For Content Creators
@@ -142,9 +142,8 @@ We continue to evolve while staying true to our core mission:
 
 Whether you're a nostalgic player wanting to relive the golden age of RuneScape, a developer interested in game server architecture, or someone passionate about preserving gaming history, 2006Scape welcomes you.
 
-**Ready to start?** Check out our [Getting Started Guide](usage.md) or jump straight into the [Server](Server/Server-intro.md) and [Client](Client/client-intro.md) documentation.
+**Ready to start?** Check out our [Installation Guide](installation.md) or jump straight into the [Server](Server/Server-intro.md) and [Client](Client/client-intro.md) documentation.
 
 **Questions?** Join our [Discord community](https://discord.gg/hZ6VfWG) where thousands of players and developers are ready to help.
 
-Welcome to 2006Scape – where the adventure never ends! 🏰⚔️
-
+Welcome to 2006Scape  where the adventure never ends! <�
