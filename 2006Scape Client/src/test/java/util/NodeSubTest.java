@@ -1,35 +1,35 @@
 package util;
 
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 import util.collections.NodeSub;
 
-import static org.junit.Assert.*;
-
 public class NodeSubTest {
-    @Test
-    public void testUnlinkSubRemovesFromList() {
-        NodeSub a = new NodeSub();
-        NodeSub b = new NodeSub();
-        NodeSub c = new NodeSub();
+  @Test
+  public void testUnlinkSubRemovesFromList() {
+    NodeSub a = new NodeSub();
+    NodeSub b = new NodeSub();
+    NodeSub c = new NodeSub();
 
-        a.nextNodeSub = b;
-        b.prevNodeSub = a;
-        b.nextNodeSub = c;
-        c.prevNodeSub = b;
+    a.nextNodeSub = b;
+    b.prevNodeSub = a;
+    b.nextNodeSub = c;
+    c.prevNodeSub = b;
 
-        b.unlinkSub();
+    b.unlinkSub();
 
-        assertNull(b.prevNodeSub);
-        assertNull(b.nextNodeSub);
-        assertSame(c.prevNodeSub, a);
-        assertSame(a.nextNodeSub, c);
-    }
+    assertNull(b.prevNodeSub);
+    assertNull(b.nextNodeSub);
+    assertSame(c.prevNodeSub, a);
+    assertSame(a.nextNodeSub, c);
+  }
 
-    @Test
-    public void testUnlinkSubWithoutLinks() {
-        NodeSub node = new NodeSub();
-        node.unlinkSub();
-        assertNull(node.prevNodeSub);
-        assertNull(node.nextNodeSub);
-    }
+  @Test
+  public void testUnlinkSubWithoutLinks() {
+    NodeSub node = new NodeSub();
+    node.unlinkSub();
+    assertNull(node.prevNodeSub);
+    assertNull(node.nextNodeSub);
+  }
 }

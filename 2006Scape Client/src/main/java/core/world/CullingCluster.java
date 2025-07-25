@@ -6,25 +6,24 @@ package core.world;
 
 public final class CullingCluster {
 
-        CullingCluster() {
-        }
+  CullingCluster() {}
 
-        int minTileX;
-        int maxTileX;
-        int minTileZ;
-        int maxTileZ;
-        int type;
-        int minX;
-        int maxX;
-        int minZ;
-        int maxZ;
-        int minY;
-        int maxY;
-        int searchMask;
-        int startXFactor;
-        int endXFactor;
-        int startZFactor;
-        int endZFactor;
-        int startYFactor;
-        int endYFactor;
+  int minTileX;
+  int maxTileX;
+  int minTileZ;
+  int maxTileZ;
+  int type;
+  int minX;
+  int maxX;
+  int minZ;
+  int maxZ;
+  int minY;
+  int maxY;
+  int searchMask;
+  int startXFactor;
+  int endXFactor;
+  int startZFactor;
+  int endZFactor;
+  int startYFactor;
+  int endYFactor;
 }

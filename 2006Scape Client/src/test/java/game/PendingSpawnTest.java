@@ -1,13 +1,14 @@
 package game;
 
-import core.world.PendingSpawn;
-import org.junit.Test;
 import static org.junit.Assert.*;
 
+import core.world.PendingSpawn;
+import org.junit.Test;
+
 public class PendingSpawnTest {
-    @Test
-    public void testDefaultDelay() {
-        PendingSpawn spawn = new PendingSpawn();
-        assertEquals(-1, spawn.delay);
-    }
+  @Test
+  public void testDefaultDelay() {
+    PendingSpawn spawn = new PendingSpawn();
+    assertEquals(-1, spawn.delay);
+  }
 }
