@@ -1,17 +1,18 @@
-package core;
+package core.managers;
 
+import core.engine.Game;
 import game.PendingSpawn;
 import game.ObjectManager;
 
 /** Manages pending scene spawns extracted from {@link Game}. */
-final class PendingSpawnManager {
+public final class PendingSpawnManager {
     private final Game game;
 
-    PendingSpawnManager(Game game) {
+    public PendingSpawnManager(Game game) {
         this.game = game;
     }
 
-    void locatePendingSpawns() {
+    public void locatePendingSpawns() {
         PendingSpawn pendingSpawn = (PendingSpawn) game.pendingSpawns.reverseGetFirst();
         for (; pendingSpawn != null; pendingSpawn = (PendingSpawn) game.pendingSpawns.reverseGetNext()) {
             if (pendingSpawn.delay == -1) {
@@ -23,7 +24,7 @@ final class PendingSpawnManager {
         }
     }
 
-    void locateSceneObject(PendingSpawn pendingSpawn) {
+    public void locateSceneObject(PendingSpawn pendingSpawn) {
         int i = 0;
         int j = -1;
         int k = 0;
@@ -51,7 +52,7 @@ final class PendingSpawnManager {
         pendingSpawn.oldType = l;
     }
 
-    void processPendingSpawns() {
+    public void processPendingSpawns() {
         if (game.loadingStage == 2) {
             for (PendingSpawn pendingSpawn = (PendingSpawn) game.pendingSpawns.reverseGetFirst();
                  pendingSpawn != null; pendingSpawn = (PendingSpawn) game.pendingSpawns.reverseGetNext()) {
@@ -86,7 +87,7 @@ final class PendingSpawnManager {
         }
     }
 
-    void queuePendingSpawn(int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2) {
+    public void queuePendingSpawn(int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2) {
         PendingSpawn pendingSpawn = null;
         for (PendingSpawn pendingSpawnIter = (PendingSpawn) game.pendingSpawns.reverseGetFirst();
              pendingSpawnIter != null; pendingSpawnIter = (PendingSpawn) game.pendingSpawns.reverseGetNext()) {

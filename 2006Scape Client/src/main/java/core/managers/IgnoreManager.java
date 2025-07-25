@@ -1,19 +1,20 @@
-package core;
+package core.managers;
 
+import core.engine.Game;
 import net.Signlink;
 import ui.TextClass;
 
 /**
  * Handles ignore list operations extracted from {@link Game}.
  */
-final class IgnoreManager {
+public final class IgnoreManager {
     private final Game game;
 
-    IgnoreManager(Game game) {
+    public IgnoreManager(Game game) {
         this.game = game;
     }
 
-    void addIgnore(long l) {
+    public void addIgnore(long l) {
         try {
             if (l == 0L) {
                 return;
@@ -46,7 +47,7 @@ final class IgnoreManager {
         throw new RuntimeException();
     }
 
-    void delIgnore(long l) {
+    public void delIgnore(long l) {
         try {
             if (l == 0L) {
                 return;

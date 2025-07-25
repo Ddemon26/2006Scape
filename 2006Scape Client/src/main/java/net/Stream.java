@@ -5,7 +5,7 @@ package net;
 // Decompiler options: packimports(3) 
 
 import java.math.BigInteger;
-import core.ClientSettings;
+import core.engine.ClientSettings;
 import util.ISAACRandomGen;
 import util.NodeList;
 import util.NodeSub;

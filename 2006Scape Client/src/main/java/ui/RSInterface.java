@@ -2,8 +2,8 @@ package ui;
 
 import cache.MRUCache;
 import cache.StreamLoader;
-import core.ClientSettings;
-import core.Game;
+import core.engine.ClientSettings;
+import core.engine.Game;
 import game.AnimFrame;
 import game.Animation;
 import game.EntityDef;

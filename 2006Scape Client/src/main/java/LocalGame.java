@@ -1,10 +1,10 @@
-package core;
 
 /**
  * NOTICE: IF YOU CHANGE ANYTHING IN GAME.JAVA, PLEASE COPY-PASTE THE WHOLE CLASS OVER TO LOCALGAME.JAVA
  * THIS IS TO ALLOW LOCAL PARABOT TO CONTINUE TO WORK
  */
 
+import core.engine.Game;
 import java.applet.AppletContext;
 import java.awt.*;
 import java.awt.event.KeyEvent;

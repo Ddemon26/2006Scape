@@ -1,5 +1,7 @@
-package core;
+package core.managers;
 
+import core.engine.Game;
+import core.engine.ClientSettings;
 import java.io.IOException;
 import net.RSSocket;
 import util.NodeList;
@@ -11,14 +13,14 @@ import util.ISAACRandomGen;
 /**
  * Handles network login handshake extracted from {@link Game}.
  */
-final class LoginManager {
+public final class LoginManager {
     private final Game game;
 
-    LoginManager(Game game) {
+    public LoginManager(Game game) {
         this.game = game;
     }
 
-    void login(String username, String password, boolean flag) {
+    public void login(String username, String password, boolean flag) {
         Signlink.errorname = username;
         try {
             if (!flag) {

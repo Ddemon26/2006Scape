@@ -1,5 +1,8 @@
 package core;
 
+import core.engine.ClientSettings;
+import core.engine.RSApplet;
+import core.engine.RSFrame;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

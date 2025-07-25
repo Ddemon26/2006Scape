@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import core.RSApplet;
+import core.engine.RSApplet;
 
 public final class RSSocket implements Runnable {
 

@@ -1,5 +1,6 @@
 package core;
 
+import core.engine.Game;
 import game.EntityDef;
 import game.ItemDef;
 import game.ObjectDef;
@@ -9,10 +10,10 @@ import java.nio.charset.StandardCharsets;
 /**
  * Searches item, NPC or object definitions extracted from {@link Game}.
  */
-final class DefinitionSearcher {
+public final class DefinitionSearcher {
     private DefinitionSearcher() {}
 
-    static void search(Game game, String name, int type) {
+    public static void search(Game game, String name, int type) {
         int amount;
         int definitionResultsTotal = 0;
         int[] definitionResultIDs = new int[352];

@@ -1,15 +1,16 @@
-package core;
+package core.managers;
 
+import core.engine.Game;
 import render.DrawingArea;
 import ui.RSInterface;
 
 /**
  * Handles menu interactions extracted from {@link Game}.
  */
-final class MenuManager {
+public final class MenuManager {
     private final Game game;
 
-    MenuManager(Game game) {
+    public MenuManager(Game game) {
         this.game = game;
     }
 
@@ -20,7 +21,7 @@ final class MenuManager {
         }
     }
 
-    boolean menuHasAddFriend(int index) {
+    public boolean menuHasAddFriend(int index) {
         if (index < 0) {
             return false;
         }
@@ -31,7 +32,7 @@ final class MenuManager {
         return k == 337;
     }
 
-    boolean processMenuClick() {
+    public boolean processMenuClick() {
         if (game.activeInterfaceType != 0) {
             return false;
         }
@@ -139,7 +140,7 @@ final class MenuManager {
         return false;
     }
 
-    void drawMenu() {
+    public void drawMenu() {
         int xPos = game.menuOffsetX;
         int yPos = game.menuOffsetY;
         int menuW = game.menuWidth;
@@ -175,7 +176,7 @@ final class MenuManager {
         }
     }
 
-    void determineMenuSize() {
+    public void determineMenuSize() {
         int i = game.chatTextDrawingArea.getTextWidth("Choose Option");
         for (int j = 0; j < game.menuActionRow; j++) {
             int k = game.chatTextDrawingArea.getTextWidth(game.menuActionName[j]);

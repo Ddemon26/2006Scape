@@ -4,7 +4,7 @@ package audio;
  * Visit http://jode.sourceforge.net/
  */
 import java.io.InputStream;
-import core.Game;
+import core.engine.Game;
 
 /**
  * Converts 16-bit PCM samples stored in an integer buffer to 8-bit

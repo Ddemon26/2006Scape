@@ -1,5 +1,6 @@
 package core;
 
+import core.engine.Game;
 import net.Signlink;
 import render.Background;
 
@@ -9,7 +10,7 @@ import render.Background;
  *
  * NOTE: Only names/constants added/renamed. **No logic has been changed.**
  */
-final class FlamesEffect {
+public final class FlamesEffect {
     private static final char GRID_SIZE_256 = '\u0100';          // 256, stored as char as in original
     private static final int WIDTH_128 = 128;                      // width of flame buffers
     private static final int HEIGHT_256 = 256;                     // height of flame buffers
@@ -46,11 +47,11 @@ final class FlamesEffect {
 
     private final Game game;
 
-    FlamesEffect(Game game) {
+    public FlamesEffect(Game game) {
         this.game = game;
     }
 
-    void calcFlamesPosition() {
+    public void calcFlamesPosition() {
         char grid = GRID_SIZE_256; // keep original char usage
 
         for (int row = RANDOM_SPARK_START_ROW; row < RANDOM_SPARK_END_ROW; row++) {
@@ -120,11 +121,11 @@ final class FlamesEffect {
         }
     }
 
-    boolean saveWave(byte[] data, int index) {
+    public boolean saveWave(byte[] data, int index) {
         return data == null || Signlink.wavesave(data, index);
     }
 
-    void randomizeBackground(Background background) {
+    public void randomizeBackground(Background background) {
         int height = HEIGHT_256; // 256
         for (int i = 0; i < game.flameGradient1.length; i++) {
             game.flameGradient1[i] = 0;
@@ -166,7 +167,7 @@ final class FlamesEffect {
         }
     }
 
-    void doFlamesDrawing() {
+    public void doFlamesDrawing() {
         char grid = GRID_SIZE_256;
         if (game.flameMainColor > 0) {
             for (int i = 0; i < COLOR_MAX; i++) {
@@ -250,7 +251,7 @@ final class FlamesEffect {
         game.titleRightProducer.drawGraphics(0, game.graphics, DRAW_RIGHT_X);
     }
 
-    void drawFlames() {
+    public void drawFlames() {
         game.drawingFlames = true;
         try {
             long lastTime = System.currentTimeMillis();

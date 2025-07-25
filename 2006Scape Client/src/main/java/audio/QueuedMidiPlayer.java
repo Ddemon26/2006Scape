@@ -1,6 +1,6 @@
 package audio;
 
-import core.Game;
+import core.engine.Game;
 
 /* QueuedMidiPlayer - Decompiled by JODE
  * Visit http://jode.sourceforge.net/

@@ -1,4 +1,4 @@
-package core;
+package core.engine;
 
 /**
  * NOTICE: IF YOU CHANGE ANYTHING IN GAME.JAVA, PLEASE COPY-PASTE THE WHOLE CLASS OVER TO LOCALGAME.JAVA
@@ -35,6 +35,22 @@ import audio.SoundPlayer;
 import audio.Sounds;
 import cache.CachePlaceholder;
 import cache.StreamLoader;
+import core.CacheUtils;
+import core.ClipboardUtil;
+import core.DefinitionSearcher;
+import core.EntityTextUpdater;
+import core.FlamesEffect;
+import core.GroundItemSpawner;
+import core.InterfaceMenuBuilder;
+import core.LoginScreen;
+import core.MapRegionBuilder;
+import core.NpcUpdater;
+import core.Pathfinder;
+import core.PlayerStatsCalculator;
+import core.PlayerUpdater;
+import core.ScreenshotUtil;
+import core.SettingApplier;
+import core.GameUtils;
 import game.AnimFrame;
 import game.Animation;
 import game.Entity;
@@ -56,30 +72,19 @@ import net.OnDemandFetcher;
 import net.RSSocket;
 import net.Signlink;
 import net.Stream;
-import core.MusicSystem;
-import core.ChatAreaRenderer;
-import core.LoginScreen;
-import core.FlamesEffect;
-import core.GameMusicController;
-import core.ScreenshotUtil;
-import core.ClipboardUtil;
-import core.MinimapRenderer;
-import core.GroundItemSpawner;
-import core.MenuManager;
-import core.EntityAnimationHandler;
-import core.EntityMovementHandler;
-import core.SettingApplier;
-import core.TabAreaRenderer;
-import core.EntityTextUpdater;
-import core.EntityOverlayRenderer;
-import core.InputHandler;
-import core.PlayerStatsCalculator;
-import core.DefinitionSearcher;
-import core.MapRegionBuilder;
-import core.LoginManager;
-import core.Pathfinder;
+import core.managers.MusicSystem;
+import core.renderers.ChatAreaRenderer;
+import core.managers.GameMusicController;
+import core.renderers.MinimapRenderer;
+import core.managers.MenuManager;
+import core.handlers.EntityAnimationHandler;
+import core.handlers.EntityMovementHandler;
+import core.renderers.TabAreaRenderer;
+import core.renderers.EntityOverlayRenderer;
+import core.handlers.InputHandler;
+import core.managers.LoginManager;
 import render.Background;
-import core.CameraManager;
+import core.managers.CameraManager;
 import render.BoundaryObject;
 import render.CollisionMap;
 import render.DrawingArea;
@@ -104,7 +109,12 @@ import util.ISAACRandomGen;
 import util.Node;
 import util.NodeList;
 import util.SizeConstants;
-import core.PendingSpawnManager;
+import core.managers.PendingSpawnManager;
+import core.managers.IgnoreManager;
+import core.managers.FriendManager;
+import core.handlers.MapPacketHandler;
+import core.handlers.ChatModeHandler;
+import core.engine.ClientSettings;
 import util.VarBit;
 import util.Varp;
 
@@ -3762,13 +3772,13 @@ public void drawChatArea() {
 	}
 
 	int customTabAction = 0;
-	static boolean customSettingVisiblePlayerNames = false;
-	static int customSettingMinItemValue = Integer.MAX_VALUE;
-	boolean customSettingShowExperiencePerHour = false;
-	long customSettingShowExperiencePerHourStartExp = 0;
-	long customSettingShowExperiencePerHourStart = System.currentTimeMillis();
-	int customSettingShowExperiencePerHourStartLevels = 0;
-	boolean customSettingVisualFixes = true;
+	public static boolean customSettingVisiblePlayerNames = false;
+	public static int customSettingMinItemValue = Integer.MAX_VALUE;
+	public boolean customSettingShowExperiencePerHour = false;
+	public long customSettingShowExperiencePerHourStartExp = 0;
+	public long customSettingShowExperiencePerHourStart = System.currentTimeMillis();
+	public int customSettingShowExperiencePerHourStartLevels = 0;
+	public boolean customSettingVisualFixes = true;
 
 	public void processTabClick() {
 		if (super.clickMode3 == 1) {

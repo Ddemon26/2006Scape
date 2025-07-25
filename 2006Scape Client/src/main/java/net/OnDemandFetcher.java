@@ -12,8 +12,8 @@ import java.net.Socket;
 import java.util.zip.CRC32;
 import java.util.zip.GZIPInputStream;
 import cache.StreamLoader;
-import core.ClientSettings;
-import core.Game;
+import core.engine.ClientSettings;
+import core.engine.Game;
 import util.NodeList;
 import util.NodeSubList;
 

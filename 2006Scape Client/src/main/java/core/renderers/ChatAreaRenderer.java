@@ -1,5 +1,6 @@
-package core;
+package core.renderers;
 
+import core.engine.Game;
 import render.DrawingArea;
 import render.Texture;
 import ui.RSInterface;
@@ -9,14 +10,14 @@ import ui.TextDrawingArea;
 /**
  * Renders the game's chat area. Extracted from {@link Game} for readability.
  */
-final class ChatAreaRenderer {
+public final class ChatAreaRenderer {
     private final Game game;
 
-    ChatAreaRenderer(Game game) {
+    public ChatAreaRenderer(Game game) {
         this.game = game;
     }
 
-    void drawChatArea() {
+    public void drawChatArea() {
         game.fullScreenBackground.initDrawingArea();
         Texture.lineOffsets = game.chatAreaOffsets;
         game.chatBack.draw(0, 0);
@@ -153,7 +154,7 @@ final class ChatAreaRenderer {
     }
 
     /** Builds the private chat context menu when split chat is enabled. */
-    void buildSplitPrivateChatMenu() {
+    public void buildSplitPrivateChatMenu() {
         if (game.splitpublicChat == 0) {
             return;
         }

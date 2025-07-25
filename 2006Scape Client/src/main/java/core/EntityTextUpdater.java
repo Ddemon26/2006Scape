@@ -1,17 +1,18 @@
 package core;
 
+import core.engine.Game;
 import game.Player;
 import game.NPC;
 
 /** Clears expired overhead text for players and NPCs, extracted from {@link Game}. */
-final class EntityTextUpdater {
+public final class EntityTextUpdater {
     private final Game game;
 
-    EntityTextUpdater(Game game) {
+    public EntityTextUpdater(Game game) {
         this.game = game;
     }
 
-    void updateEntityText() {
+    public void updateEntityText() {
         for (int i = -1; i < game.playerCount; i++) {
             int j;
             if (i == -1) {

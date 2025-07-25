@@ -12,7 +12,7 @@ import javax.sound.midi.Receiver;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
-import core.Game;
+import core.engine.Game;
 
 public final class SystemMidiPlayer extends AbstractMidiController implements Receiver
 {
@@ -54,7 +54,7 @@ public final class SystemMidiPlayer extends AbstractMidiController implements Re
                     midiSequencer.open();
 		    resetAllControllers(-1L);
 		} catch (Exception exception) {
-                    core.GameMusicController.closeMidiSystem();
+                    core.managers.GameMusicController.closeMidiSystem();
 		}
     }
     

@@ -2,7 +2,7 @@ package game;
 
 import cache.MRUCache;
 import cache.StreamLoader;
-import core.Game;
+import core.engine.Game;
 import net.OnDemandFetcher;
 import net.Stream;
 import render.Model;

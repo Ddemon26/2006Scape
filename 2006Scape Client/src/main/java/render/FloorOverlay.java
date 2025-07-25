@@ -7,7 +7,7 @@ package render;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import cache.StreamLoader;
-import core.ClientSettings;
+import core.engine.ClientSettings;
 import net.Stream;
 
 public final class FloorOverlay {

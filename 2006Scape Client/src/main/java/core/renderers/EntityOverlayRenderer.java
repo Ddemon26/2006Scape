@@ -1,4 +1,5 @@
-package core;
+package core.renderers;
+import core.engine.Game;
 import game.Entity;
 import game.EntityDef;
 import game.NPC;
@@ -6,14 +7,14 @@ import game.Player;
 import render.DrawingArea;
 
 /** Renders entity overlays like names and hit markers extracted from {@link Game}. */
-final class EntityOverlayRenderer {
+public final class EntityOverlayRenderer {
     private final Game game;
 
-    EntityOverlayRenderer(Game game) {
+    public EntityOverlayRenderer(Game game) {
         this.game = game;
     }
 
-    void renderEntityOverlays() {
+    public void renderEntityOverlays() {
                                 int overheadTextCount = 0;
                                 for (int j = -1; j < game.playerCount + game.npcCount; j++) {
                                         Entity entity;

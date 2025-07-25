@@ -1,4 +1,5 @@
-package core;
+
+import core.engine.ClientSettings;
 
 public final class Client {
 	public static void main(String[] args) {

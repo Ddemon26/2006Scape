@@ -1,8 +1,9 @@
-package core;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import net.Signlink;
+import core.engine.ClientSettings;
+import core.engine.Game;
 
 public final class Main {
 

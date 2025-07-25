@@ -1,14 +1,16 @@
-package core;
+package core.handlers;
+
+import core.engine.Game;
 
 /** Handles chat mode toggling extracted from {@link Game}. */
-final class ChatModeHandler {
+public final class ChatModeHandler {
     private final Game game;
 
-    ChatModeHandler(Game game) {
+    public ChatModeHandler(Game game) {
         this.game = game;
     }
 
-    void processChatModeClick() {
+    public void processChatModeClick() {
         if (game.clickMode3 == 1) {
             if (game.saveClickX >= 6 && game.saveClickX <= 106 && game.saveClickY >= 467 && game.saveClickY <= 499) {
                 game.publicChatMode = (game.publicChatMode + 1) % 4;

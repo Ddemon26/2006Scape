@@ -1,18 +1,19 @@
 package core;
 
+import core.engine.Game;
 import render.CollisionMap;
 
 /**
  * Performs A* style walking path calculations extracted from {@link Game}.
  */
-final class Pathfinder {
+public final class Pathfinder {
     private final Game game;
 
-    Pathfinder(Game game) {
+    public Pathfinder(Game game) {
         this.game = game;
     }
 
-    boolean doWalkTo(int i, int j, int k, int i1, int j1, int k1, int l1, int i2, int j2, boolean flag, int k2) {
+    public boolean doWalkTo(int i, int j, int k, int i1, int j1, int k1, int l1, int i2, int j2, boolean flag, int k2) {
         byte byte0 = 104;
         byte byte1 = 104;
         for (int l2 = 0; l2 < byte0; l2++) {

@@ -1,5 +1,6 @@
 package core;
 
+import core.engine.Game;
 import game.ObjectDef;
 import game.ObjectManager;
 import net.Signlink;
@@ -7,14 +8,14 @@ import render.Model;
 import render.Texture;
 
 /** Builds map regions and requests region files, extracted from {@link Game}. */
-final class MapRegionBuilder {
+public final class MapRegionBuilder {
     private final Game game;
 
-    MapRegionBuilder(Game game) {
+    public MapRegionBuilder(Game game) {
         this.game = game;
     }
 
-    void constructMapRegion() {
+    public void constructMapRegion() {
         try {
             game.lastPlane = -1;
             game.graphicsObjectList.removeAll();

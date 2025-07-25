@@ -1,4 +1,4 @@
-package core;
+package core.managers;
 
 import audio.MidiPlayer;
 import audio.SystemMidiPlayer;

@@ -1,5 +1,6 @@
-package core;
+package core.handlers;
 
+import core.engine.Game;
 import game.Item;
 import game.ObjectDef;
 import game.Player;
@@ -14,14 +15,14 @@ import util.NodeList;
 /**
  * Processes map-related packets extracted from {@link Game}.
  */
-final class MapPacketHandler {
+public final class MapPacketHandler {
     private final Game game;
 
-    MapPacketHandler(Game game) {
+    public MapPacketHandler(Game game) {
         this.game = game;
     }
 
-    void handleMapPackets(Stream stream, int j) {
+    public void handleMapPackets(Stream stream, int j) {
 		if (j == 84) {
 			int k = stream.readUnsignedByte();
 			int j3 = game.mapEventX + (k >> 4 & 7);

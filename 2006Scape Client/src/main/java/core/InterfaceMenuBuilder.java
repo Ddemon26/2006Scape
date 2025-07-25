@@ -1,18 +1,19 @@
 package core;
 
+import core.engine.Game;
 import game.ItemDef;
 import render.DrawingArea;
 import ui.RSInterface;
 
 /** Builds interface context menus extracted from {@link Game}. */
-final class InterfaceMenuBuilder {
+public final class InterfaceMenuBuilder {
     private final Game game;
 
-    InterfaceMenuBuilder(Game game) {
+    public InterfaceMenuBuilder(Game game) {
         this.game = game;
     }
 
-    void buildInterfaceMenu(int x, RSInterface parent, int mouseX, int y, int mouseY, int scroll) {
+    public void buildInterfaceMenu(int x, RSInterface parent, int mouseX, int y, int mouseY, int scroll) {
         if (parent.type != 0 || parent.children == null || parent.hideUntilHovered) {
             return;
         }
@@ -213,7 +214,7 @@ final class InterfaceMenuBuilder {
         }
     }
 
-    void drawScrollThumb(int j, int k, int l, int i1, int j1) {
+    public void drawScrollThumb(int j, int k, int l, int i1, int j1) {
         game.scrollBar1.draw(i1, l);
         game.scrollBar2.draw(i1, l + j - 16);
         DrawingArea.fillArea(j - 32, l + 16, game.scrollBarColor, 16, i1);

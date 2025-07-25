@@ -1,7 +1,7 @@
 package game;
 
 import cache.MRUCache;
-import core.Game;
+import core.engine.Game;
 import net.Stream;
 import render.Model;
 import ui.TextClass;

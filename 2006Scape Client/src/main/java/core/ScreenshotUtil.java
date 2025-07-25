@@ -1,5 +1,7 @@
 package core;
 
+import core.engine.ClientSettings;
+import core.engine.Game;
 import javax.imageio.ImageIO;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;

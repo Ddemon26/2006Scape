@@ -1,5 +1,9 @@
-package core;
+package core.handlers;
 
+import core.engine.Game;
+import core.engine.ClientSettings;
+import core.ClipboardUtil;
+import core.ScreenshotUtil;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
 import render.WorldController;
@@ -7,10 +11,10 @@ import render.WorldController;
 /**
  * Processes keyboard and mouse wheel input extracted from {@link Game}.
  */
-final class InputHandler {
+public final class InputHandler {
     private InputHandler() {}
 
-    static void handleKeyPressed(Game game, KeyEvent keyevent) {
+    public static void handleKeyPressed(Game game, KeyEvent keyevent) {
         switch (keyevent.getKeyCode()) {
             case KeyEvent.VK_ESCAPE:
                 game.closeOpenInterfaces();
@@ -110,7 +114,7 @@ final class InputHandler {
         }
     }
 
-    static void handleMouseWheelMoved(Game game, MouseWheelEvent e) {
+    public static void handleMouseWheelMoved(Game game, MouseWheelEvent e) {
         int notches = e.getWheelRotation();
         if (ClientSettings.CONTROL_KEY_ZOOMING && !e.isControlDown()) {
             return;

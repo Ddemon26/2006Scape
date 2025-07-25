@@ -1,5 +1,6 @@
-package core;
+package core.managers;
 
+import core.engine.Game;
 import net.Signlink;
 import render.Model;
 

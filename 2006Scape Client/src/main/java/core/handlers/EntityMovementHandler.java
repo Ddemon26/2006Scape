@@ -1,5 +1,6 @@
-package core;
+package core.handlers;
 
+import core.engine.Game;
 import game.Entity;
 import game.NPC;
 import game.Player;
@@ -9,14 +10,14 @@ import game.SpotAnim;
 /**
  * Updates entity movement logic extracted from {@link Game}.
  */
-final class EntityMovementHandler {
+public final class EntityMovementHandler {
     private final Game game;
 
-    EntityMovementHandler(Game game) {
+    public EntityMovementHandler(Game game) {
         this.game = game;
     }
 
-    void updateEntityMovement(Entity entity) {
+    public void updateEntityMovement(Entity entity) {
         if (entity.x < 128 || entity.y < 128 || entity.x >= 13184 || entity.y >= 13184) {
             entity.anim = -1;
             entity.spotAnimId = -1;

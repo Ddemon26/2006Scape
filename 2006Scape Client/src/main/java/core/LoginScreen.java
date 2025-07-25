@@ -1,20 +1,21 @@
 
 package core;
 
-import core.ClientSettings;
+import core.engine.ClientSettings;
+import core.engine.Game;
 import ui.TextClass;
 
 /**
  * Handles login screen input and rendering. Extracted from {@link Game}.
  */
-final class LoginScreen {
+public final class LoginScreen {
     private final Game game;
 
-    LoginScreen(Game game) {
+    public LoginScreen(Game game) {
         this.game = game;
     }
 
-    void processLoginScreenInput() {
+    public void processLoginScreenInput() {
         if (game.loginScreenState == 0) {
             int i = game.myWidth / 2 - 80;
             int l = game.myHeight / 2 + 20;
@@ -113,7 +114,7 @@ final class LoginScreen {
         }
     }
 
-    void drawLoginScreen(boolean flag) {
+    public void drawLoginScreen(boolean flag) {
         game.resetImageProducers();
         game.loginRightProducer.initDrawingArea();
         game.loginBoxBackground.draw(0, 0);

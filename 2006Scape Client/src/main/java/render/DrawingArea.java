@@ -1,6 +1,6 @@
 package render;
 
-import core.ClientSettings;
+import core.engine.ClientSettings;
 import util.NodeSub;
 
 // Decompiled by Jad v1.5.8f. Copyright 2001 Pavel Kouznetsov.

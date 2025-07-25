@@ -1,4 +1,4 @@
-package core;
+package core.engine;
 
 // Decompiled by Jad v1.5.8f. Copyright 2001 Pavel Kouznetsov.
 // Jad home page: http://www.kpdus.com/jad.html
@@ -23,7 +23,7 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 	private int mouseWheelY = 0;
 	public static boolean removeShiftDropOnMenuOpen;
 
-	final void createClientFrame(int i, int j) {
+	public final void createClientFrame(int i, int j) {
 		myWidth = j;
 		myHeight = i;
 		this.setPreferredSize(new Dimension(this.myWidth, this.myHeight));
@@ -606,7 +606,7 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 	public final void keyTyped(KeyEvent keyevent) {
 	}
 
-	final int readChar(int dummy) {
+	public final int readChar(int dummy) {
 		while (dummy >= 0) {
 			for (int j = 1; j > 0; j++) {
 				;
@@ -723,7 +723,7 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 		graphics.drawString(s, (myWidth - fontmetrics.stringWidth(s)) / 2, j + 22);
 	}
 
-	RSApplet() {
+	public RSApplet() {
 		delayTime = 20;
 		minDelay = 1;
 		aLongArray7 = new long[10];
@@ -740,14 +740,14 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 	private final long[] aLongArray7;
 	int fps;
 	boolean shouldDebug;
-	int myWidth;
-	int myHeight;
-	Graphics graphics;
+	public int myWidth;
+	public int myHeight;
+	public Graphics graphics;
 	RSImageProducer fullGameScreen;
-	RSFrame gameFrame;
+	public RSFrame gameFrame;
 	private boolean shouldClearScreen;
-	boolean awtFocus;
-	int idleTime;
+	public boolean awtFocus;
+	public int idleTime;
 	int clickMode2;
 	public int mouseX;
 	public int mouseY;
@@ -755,11 +755,11 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 	private int clickX;
 	private int clickY;
 	private long clickTime;
-	int clickMode3;
-	int saveClickX;
-	int saveClickY;
+	public int clickMode3;
+	public int saveClickX;
+	public int saveClickY;
         long lastClickTime;
-	final int[] keyArray;
+	public final int[] keyArray;
 	private final int[] charQueue;
 	private int readIndex;
 	private int writeIndex;

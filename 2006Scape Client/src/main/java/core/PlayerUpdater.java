@@ -1,5 +1,6 @@
 package core;
 
+import core.engine.Game;
 import game.Player;
 import net.Signlink;
 import net.Stream;
@@ -7,14 +8,14 @@ import net.Stream;
 /**
  * Updates the local and other players each tick, extracted from {@link Game}.
  */
-final class PlayerUpdater {
+public final class PlayerUpdater {
     private final Game game;
 
-    PlayerUpdater(Game game) {
+    public PlayerUpdater(Game game) {
         this.game = game;
     }
 
-    void updatePlayers(int size, Stream stream) {
+    public void updatePlayers(int size, Stream stream) {
         game.entityRemovalCount = 0;
         game.playerUpdateCount = 0;
         game.updateSelfMovement(stream);

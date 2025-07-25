@@ -1,19 +1,20 @@
-package core;
+package core.managers;
 
+import core.engine.Game;
 import net.Signlink;
 import ui.TextClass;
 
 /**
  * Handles friend list operations extracted from {@link Game}.
  */
-final class FriendManager {
+public final class FriendManager {
     private final Game game;
 
-    FriendManager(Game game) {
+    public FriendManager(Game game) {
         this.game = game;
     }
 
-    void addFriend(long l) {
+    public void addFriend(long l) {
         try {
             if (l == 0L) {
                 return;
@@ -57,7 +58,7 @@ final class FriendManager {
         throw new RuntimeException();
     }
 
-    void delFriend(long l) {
+    public void delFriend(long l) {
         try {
             if (l == 0L) {
                 return;
@@ -83,7 +84,7 @@ final class FriendManager {
         }
     }
 
-    boolean isFriendOrSelf(String s) {
+    public boolean isFriendOrSelf(String s) {
         if (s == null) {
             return false;
         }

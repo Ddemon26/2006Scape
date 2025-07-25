@@ -1,19 +1,20 @@
 package core;
 
+import core.engine.Game;
 import game.Item;
 import game.ItemDef;
 import util.Node;
 import util.NodeList;
 
 /** Manages ground item piles extracted from {@link Game}. */
-final class GroundItemSpawner {
+public final class GroundItemSpawner {
     private final Game game;
 
-    GroundItemSpawner(Game game) {
+    public GroundItemSpawner(Game game) {
         this.game = game;
     }
 
-    void spawnGroundItem(int i, int j) {
+    public void spawnGroundItem(int i, int j) {
         NodeList itemList = game.groundArray[game.plane][i][j];
         if (itemList == null) {
             game.worldController.clearItemPile(game.plane, i, j);

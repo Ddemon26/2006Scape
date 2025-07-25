@@ -1,5 +1,6 @@
-package core;
+package core.handlers;
 
+import core.engine.Game;
 import game.Entity;
 import game.NPC;
 import game.Player;
@@ -9,10 +10,10 @@ import game.SpotAnim;
 /**
  * Handles entity facing and animation logic extracted from {@link Game}.
  */
-final class EntityAnimationHandler {
+public final class EntityAnimationHandler {
     private final Game game;
 
-    EntityAnimationHandler(Game game) {
+    public EntityAnimationHandler(Game game) {
         this.game = game;
     }
 

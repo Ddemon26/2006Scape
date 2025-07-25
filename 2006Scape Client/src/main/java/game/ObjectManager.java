@@ -1,6 +1,6 @@
 package game;
 
-import core.ClientSettings;
+import core.engine.ClientSettings;
 import net.OnDemandFetcher;
 import net.Stream;
 import render.CollisionMap;

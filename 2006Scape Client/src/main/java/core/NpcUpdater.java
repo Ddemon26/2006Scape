@@ -1,5 +1,6 @@
 package core;
 
+import core.engine.Game;
 import net.Signlink;
 import net.Stream;
 
@@ -7,14 +8,14 @@ import game.EntityDef;
 import game.Animation;
 import game.NPC;
 /** Updates NPCs each game tick, extracted from {@link Game}. */
-final class NpcUpdater {
+public final class NpcUpdater {
     private final Game game;
 
-    NpcUpdater(Game game) {
+    public NpcUpdater(Game game) {
         this.game = game;
     }
 
-    void updateNPCs(Stream stream, int size) {
+    public void updateNPCs(Stream stream, int size) {
         game.entityRemovalCount = 0;
         game.playerUpdateCount = 0;
         updateNpcList(stream);

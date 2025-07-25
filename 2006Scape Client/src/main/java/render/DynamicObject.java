@@ -1,6 +1,6 @@
 package render;
 
-import core.Game;
+import core.engine.Game;
 import game.Animable;
 import game.Animation;
 import game.ObjectDef;

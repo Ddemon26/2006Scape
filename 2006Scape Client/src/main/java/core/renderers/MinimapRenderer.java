@@ -1,5 +1,6 @@
-package core;
+package core.renderers;
 
+import core.engine.Game;
 import game.ObjectDef;
 import game.NPC;
 import game.Player;
@@ -12,7 +13,7 @@ import util.NodeList;
 import ui.TextClass;
 
 /** Handles minimap generation extracted from {@link Game}. */
-final class MinimapRenderer {
+public final class MinimapRenderer {
     // ===================== Magic Numbers -> Named Constants =====================
     private static final int TILE_COUNT_WITH_BORDER = 104;           // world size per axis incl. border
     private static final int INNER_TILE_START = 1;                    // first drawable/iterable tile index
@@ -55,7 +56,7 @@ final class MinimapRenderer {
 
     private final Game game;
 
-    MinimapRenderer(Game game) {
+    public MinimapRenderer(Game game) {
         this.game = game;
     }
 
@@ -63,7 +64,7 @@ final class MinimapRenderer {
      * Generates the minimap for the given plane.
      * NOTE: Only names/constants changed. Logic and control flow remain identical.
      */
-    void generateMinimap(int plane) {
+    public void generateMinimap(int plane) {
         int[] minimapPixels = game.minimapImage.pixels;
         for (int idx = 0; idx < minimapPixels.length; idx++) {
             minimapPixels[idx] = 0;
@@ -148,7 +149,7 @@ final class MinimapRenderer {
     }
 
     /** Draws the minimap including icons and hints. */
-    void drawMinimap() {
+    public void drawMinimap() {
         game.chatBackground.initDrawingArea();
         if (game.minimapState == 2) {
             byte[] src = game.mapBack.pixels;
@@ -258,11 +259,11 @@ final class MinimapRenderer {
         Texture.lineOffsets = game.chatBoxAreaOffsets;
     }
 
-    void npcScreenPos(Entity entity, int height) {
+    public void npcScreenPos(Entity entity, int height) {
         calcEntityScreenPos(entity.x, height, entity.y);
     }
 
-    void calcEntityScreenPos(int x, int z, int y) {
+    public void calcEntityScreenPos(int x, int z, int y) {
         if (x < 128 || y < 128 || x > 13056 || y > 13056) {
             game.spriteDrawX = -1;
             game.spriteDrawY = -1;

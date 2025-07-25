@@ -2,8 +2,8 @@ package game;
 
 import cache.MRUCache;
 import cache.StreamLoader;
-import core.ClientSettings;
-import core.Game;
+import core.engine.ClientSettings;
+import core.engine.Game;
 import net.Stream;
 import render.Model;
 import util.VarBit;

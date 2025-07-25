@@ -1,6 +1,8 @@
-package core;
+package core.renderers;
 
 import cache.StreamLoader;
+import core.engine.Game;
+import core.engine.ClientSettings;
 import render.Texture;
 import render.Sprite;
 import render.RSImageProducer;
@@ -11,14 +13,14 @@ import render.WorldController;
 import java.awt.Color;
 
 /** Renders the tab area UI extracted from {@link Game}. */
-final class TabAreaRenderer {
+public final class TabAreaRenderer {
     private final Game game;
 
-    TabAreaRenderer(Game game) {
+    public TabAreaRenderer(Game game) {
         this.game = game;
     }
 
-    void drawButton(boolean enabled, int x, int y, int width) {
+    public void drawButton(boolean enabled, int x, int y, int width) {
         StreamLoader streamLoader_2 = game.streamLoaderForName(4, "2d graphics", "media", game.expectedCRCs[4], 40);
         Sprite buttonLeft = new Sprite(streamLoader_2, "miscgraphics", enabled ? 7 : 4);
         Sprite buttonRight = new Sprite(streamLoader_2, "miscgraphics", enabled ? 8 : 6);
@@ -31,13 +33,13 @@ final class TabAreaRenderer {
         buttonRight.drawTransparentSprite(x + width - 30, y);
     }
 
-    void drawCheckbox(boolean enabled, int x, int y) {
+    public void drawCheckbox(boolean enabled, int x, int y) {
         StreamLoader streamLoader_2 = game.streamLoaderForName(4, "2d graphics", "media", game.expectedCRCs[4], 40);
         Sprite checkboxUnchecked = new Sprite(streamLoader_2, "miscgraphics", 10);
         Sprite checkboxChecked = new Sprite(streamLoader_2, "miscgraphics", 11);
     }
 
-    void drawTabArea() {
+    public void drawTabArea() {
         game.textBackground.initDrawingArea();
         Texture.lineOffsets = game.tabAreaOffsets;
         game.invBack.draw(0, 0);
@@ -88,7 +90,7 @@ final class TabAreaRenderer {
         Texture.lineOffsets = game.chatBoxAreaOffsets;
     }
 
-    void animateTextures(int j) {
+    public void animateTextures(int j) {
         if (!game.lowMem) {
             if (Texture.textureLastUsed[17] >= j) {
                 Background background = Texture.textures[17];

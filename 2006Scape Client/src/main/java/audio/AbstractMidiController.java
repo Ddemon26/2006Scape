@@ -1,6 +1,6 @@
 package audio;
 
-import core.MusicSystem;
+import core.managers.MusicSystem;
 
 /* AbstractMidiController - Decompiled by JODE
  * Visit http://jode.sourceforge.net/

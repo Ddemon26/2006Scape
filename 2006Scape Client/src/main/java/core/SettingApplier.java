@@ -1,19 +1,21 @@
 package core;
 
 import audio.SoundPlayer;
+import core.engine.Game;
+import core.managers.GameMusicController;
 import render.Texture;
 import game.ItemDef;
 import util.Varp;
 
 /** Applies configuration changes originally handled in {@link Game}. */
-final class SettingApplier {
+public final class SettingApplier {
     private final Game game;
 
-    SettingApplier(Game game) {
+    public SettingApplier(Game game) {
         this.game = game;
     }
 
-    void applyVarp(int i) {
+    public void applyVarp(int i) {
         int action = Varp.cache[i].actionType;
         if (action == 0) {
             return;

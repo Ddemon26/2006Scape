@@ -10,7 +10,7 @@ import java.awt.MediaTracker;
 import java.awt.Toolkit;
 import java.awt.image.PixelGrabber;
 import cache.StreamLoader;
-import core.ClientSettings;
+import core.engine.ClientSettings;
 import net.Stream;
 
 public final class Sprite extends DrawingArea {
