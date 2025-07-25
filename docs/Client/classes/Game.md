@@ -56,12 +56,12 @@ public void drawLogo()
 public void processOnDemandQueue()
 public void calcFlamesPosition()
 public boolean saveWave(byte abyte0[], int i)
-public void resetInterfaceAnimation(int i)
+public void resetInterfaceAnimation(int i) -> InterfaceInputHandler.resetInterfaceAnimation
 public void drawHeadIcon()
 public void mainGameProcessor()
 public void locatePendingSpawns() -> PendingSpawnManager.locatePendingSpawns
-public void handleScrollbarInput(int i, int j, int k, int l, RSInterface scrollInterface, int i1, boolean flag, int j1)
-public boolean walkToObject(int i, int j, int k)
+public void handleScrollbarInput(int i, int j, int k, int l, RSInterface scrollInterface, int i1, boolean flag, int j1) -> InterfaceInputHandler.handleScrollbarInput
+public boolean walkToObject(int i, int j, int k) -> Pathfinder.walkToObject
 public StreamLoader streamLoaderForName(int i, String s, String s1, int j, int k)
 public void dropClient()
 public void drawTextOnScreen(String s, String s1)
@@ -160,8 +160,8 @@ public void keyPressed(KeyEvent keyevent) -> InputHandler.handleKeyPressed
 public long calculateTotalExp() -> PlayerStatsCalculator.calculateTotalExp
 public int calculateTotalLevels() -> PlayerStatsCalculator.calculateTotalLevels
 public void definitionSearch(String name, int type) -> DefinitionSearcher.search
-public void openInterface(int interfaceID)
-public void openSideInterface(int tab, int interfaceID)
+public void openInterface(int interfaceID) -> InterfaceInputHandler.openInterface
+public void openSideInterface(int tab, int interfaceID) -> InterfaceInputHandler.openSideInterface
 public final void mouseWheelMoved(MouseWheelEvent e) -> InputHandler.handleMouseWheelMoved
 ```
 

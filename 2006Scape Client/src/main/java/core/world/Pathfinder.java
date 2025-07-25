@@ -1,6 +1,7 @@
 package core.world;
 
 import core.engine.Game;
+import game.definitions.ObjectDef;
 
 /** Performs A* style walking path calculations extracted from {@link Game}. */
 public final class Pathfinder {
@@ -227,5 +228,39 @@ public final class Pathfinder {
       return true;
     }
     return i != 1;
+  }
+
+  public boolean walkToObject(int i, int j, int k) {
+    int i1 = i >> 14 & 0x7fff;
+    int j1 = game.worldController.getObjectConfig(game.plane, k, j, i);
+    if (j1 == -1) {
+      return false;
+    }
+    int k1 = j1 & 0x1f;
+    int l1 = j1 >> 6 & 3;
+    if (k1 == 10 || k1 == 11 || k1 == 22) {
+      ObjectDef objectDef = ObjectDef.forID(i1);
+      int i2;
+      int j2;
+      if (l1 == 0 || l1 == 2) {
+        i2 = objectDef.sizeX;
+        j2 = objectDef.sizeY;
+      } else {
+        i2 = objectDef.sizeY;
+        j2 = objectDef.sizeX;
+      }
+      int k2 = objectDef.defaultOrientation;
+      if (l1 != 0) {
+        k2 = (k2 << l1 & 0xf) + (k2 >> 4 - l1);
+      }
+      doWalkTo(2, 0, j2, 0, game.myPlayer.smallY[0], i2, k2, j, game.myPlayer.smallX[0], false, k);
+    } else {
+      doWalkTo(2, l1, 0, k1 + 1, game.myPlayer.smallY[0], 0, 0, j, game.myPlayer.smallX[0], false, k);
+    }
+    game.crossX = game.saveClickX;
+    game.crossY = game.saveClickY;
+    game.crossType = 2;
+    game.crossIndex = 0;
+    return true;
   }
 }

@@ -41,6 +41,7 @@
 - [IDK](Client/classes/IDK.md)
 - [IgnoreManager](Client/classes/IgnoreManager.md)
 - [InputHandler](Client/classes/InputHandler.md)
+- [InterfaceInputHandler](Client/classes/InterfaceInputHandler.md)
 - [InterfaceMenuBuilder](Client/classes/InterfaceMenuBuilder.md)
 - [ISAACRandomGen](Client/classes/ISAACRandomGen.md)
 - [Instrument](Client/classes/Instrument.md)

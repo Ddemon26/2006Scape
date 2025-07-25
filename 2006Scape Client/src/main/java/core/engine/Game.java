@@ -591,19 +591,7 @@ public class Game extends RSApplet {
   }
 
   public void resetInterfaceAnimation(int i) {
-    RSInterface parentInterface = RSInterface.interfaceCache[i];
-    if (parentInterface == null || parentInterface.children == null) return;
-    for (int element : parentInterface.children) {
-      if (element == -1) {
-        break;
-      }
-      RSInterface childWidget = RSInterface.interfaceCache[element];
-      if (childWidget.type == 1) {
-        resetInterfaceAnimation(childWidget.id);
-      }
-      childWidget.animationFrame = 0;
-      childWidget.animationCycle = 0;
-    }
+    interfaceInputHandler.resetInterfaceAnimation(i);
   }
 
   public void drawHeadIcon() {
@@ -1018,74 +1006,12 @@ public class Game extends RSApplet {
 
   public void handleScrollbarInput(
       int i, int j, int k, int l, RSInterface scrollInterface, int i1, boolean flag, int j1) {
-    int scrollPadding;
-    if (scrollBarDragging) {
-      scrollPadding = 32;
-    } else {
-      scrollPadding = 0;
-    }
-    scrollBarDragging = false;
-    if (k >= i && k < i + 16 && l >= i1 && l < i1 + 16) {
-      scrollInterface.scrollPosition -= clickCycle * 4;
-      if (flag) {
-        needDrawTabArea = true;
-      }
-    } else if (k >= i && k < i + 16 && l >= i1 + j - 16 && l < i1 + j) {
-      scrollInterface.scrollPosition += clickCycle * 4;
-      if (flag) {
-        needDrawTabArea = true;
-      }
-    } else if (k >= i - scrollPadding
-        && k < i + 16 + scrollPadding
-        && l >= i1 + 16
-        && l < i1 + j - 16
-        && clickCycle > 0) {
-      int l1 = (j - 32) * j / j1;
-      if (l1 < 8) {
-        l1 = 8;
-      }
-      int i2 = l - i1 - 16 - l1 / 2;
-      int j2 = j - 32 - l1;
-      scrollInterface.scrollPosition = (j1 - j) * i2 / j2;
-      if (flag) {
-        needDrawTabArea = true;
-      }
-      scrollBarDragging = true;
-    }
+    interfaceInputHandler.handleScrollbarInput(
+        i, j, k, l, scrollInterface, i1, flag, j1);
   }
 
   public boolean walkToObject(int i, int j, int k) {
-    int i1 = i >> 14 & 0x7fff;
-    int j1 = worldController.getObjectConfig(plane, k, j, i);
-    if (j1 == -1) {
-      return false;
-    }
-    int k1 = j1 & 0x1f;
-    int l1 = j1 >> 6 & 3;
-    if (k1 == 10 || k1 == 11 || k1 == 22) {
-      ObjectDef objectDef = ObjectDef.forID(i1);
-      int i2;
-      int j2;
-      if (l1 == 0 || l1 == 2) {
-        i2 = objectDef.sizeX;
-        j2 = objectDef.sizeY;
-      } else {
-        i2 = objectDef.sizeY;
-        j2 = objectDef.sizeX;
-      }
-      int k2 = objectDef.defaultOrientation;
-      if (l1 != 0) {
-        k2 = (k2 << l1 & 0xf) + (k2 >> 4 - l1);
-      }
-      doWalkTo(2, 0, j2, 0, myPlayer.smallY[0], i2, k2, j, myPlayer.smallX[0], false, k);
-    } else {
-      doWalkTo(2, l1, 0, k1 + 1, myPlayer.smallY[0], 0, 0, j, myPlayer.smallX[0], false, k);
-    }
-    crossX = super.saveClickX;
-    crossY = super.saveClickY;
-    crossType = 2;
-    crossIndex = 0;
-    return true;
+    return pathfinder.walkToObject(i, j, k);
   }
 
   public StreamLoader streamLoaderForName(int i, String s, String s1, int j, int k) {
@@ -8388,42 +8314,11 @@ public class Game extends RSApplet {
   }
 
   public void openInterface(int interfaceID) {
-    resetInterfaceAnimation(interfaceID);
-    if (invOverlayInterfaceID != -1) {
-      invOverlayInterfaceID = -1;
-      needDrawTabArea = true;
-      tabAreaAltered = true;
-    }
-    if (backDialogID != -1) {
-      backDialogID = -1;
-      inputTaken = true;
-    }
-    if (inputDialogState != 0) {
-      inputDialogState = 0;
-      inputTaken = true;
-    }
-    if (interfaceID == 15244) {
-      if (ClientSettings.SNOW_OVERLAY_FORCE_ENABLED
-          || (ClientSettings.SNOW_OVERLAY_ENABLED
-              && FloorOverlay.getTodaysDate().contains(ClientSettings.SNOW_MONTH))) {
-        openInterfaceID = 15819;
-      } else {
-        openInterfaceID = 15801;
-      }
-      fullScreenInterfaceId = 15244;
-    } else {
-      openInterfaceID = interfaceID;
-    }
-    actionPending = false;
+    interfaceInputHandler.openInterface(interfaceID);
   }
 
   public void openSideInterface(int tab, int interfaceID) {
-    if (interfaceID == 0x00ffff) {
-      interfaceID = -1;
-    }
-    tabInterfaceIDs[tab] = interfaceID;
-    needDrawTabArea = true;
-    tabAreaAltered = true;
+    interfaceInputHandler.openSideInterface(tab, interfaceID);
   }
 
   public final void mouseWheelMoved(MouseWheelEvent e) {
