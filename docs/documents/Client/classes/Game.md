@@ -71,7 +71,7 @@ public void run()
 public void build3dScreenMenu()
 public void cleanUpForQuit()
 public void printDebug()
-public void processInput()
+public void processInput() -> InputHandler.processInput
 public void buildChatAreaMenu(int j) -> ChatAreaRenderer.buildChatAreaMenu
 public void drawFriendsListOrWelcomeScreen(RSInterface interfaceComponent) -> FriendManager.drawFriendsListOrWelcomeScreen
 public String formatDate(int i)
@@ -162,6 +162,7 @@ public int calculateTotalLevels() -> PlayerStatsCalculator.calculateTotalLevels
 public void definitionSearch(String name, int type) -> DefinitionSearcher.search
 public void openInterface(int interfaceID) -> InterfaceInputHandler.openInterface
 public void openSideInterface(int tab, int interfaceID) -> InterfaceInputHandler.openSideInterface
+public void mouseWheelDragged(int i, int j) -> InputHandler.handleMouseWheelDragged
 public final void mouseWheelMoved(MouseWheelEvent e) -> InputHandler.handleMouseWheelMoved
 ```
 
