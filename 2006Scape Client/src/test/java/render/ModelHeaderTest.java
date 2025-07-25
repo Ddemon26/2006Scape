@@ -1,6 +1,7 @@
 package render;
 
 import org.junit.Test;
+import render.geometry.ModelHeader;
 
 import static org.junit.Assert.*;
 

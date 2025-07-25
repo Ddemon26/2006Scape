@@ -1,7 +1,7 @@
 package core.managers;
 
 import core.engine.Game;
-import render.DrawingArea;
+import render.core.DrawingArea;
 import ui.RSInterface;
 
 /**

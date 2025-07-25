@@ -1,6 +1,7 @@
 package util;
 
 import org.junit.Test;
+import util.configuration.VarBit;
 
 import java.lang.reflect.Field;
 

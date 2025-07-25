@@ -1,6 +1,7 @@
 package game;
 
-import net.Stream;
+import core.network.Stream;
+import game.animation.FrameBase;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

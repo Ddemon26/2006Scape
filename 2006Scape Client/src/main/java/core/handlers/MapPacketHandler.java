@@ -1,16 +1,16 @@
 package core.handlers;
 
 import core.engine.Game;
-import game.Item;
-import game.ObjectDef;
-import game.Player;
-import game.NPC;
-import game.GraphicsObject;
-import game.Projectile;
+import game.items.Item;
+import game.definitions.ObjectDef;
+import game.entities.Player;
+import game.entities.GraphicsObject;
+import game.entities.Projectile;
 import audio.Sounds;
-import net.Stream;
-import render.*;
-import util.NodeList;
+import core.network.Stream;
+import render.geometry.Model;
+import render.objects.*;
+import util.collections.NodeList;
 
 /**
  * Processes map-related packets extracted from {@link Game}.

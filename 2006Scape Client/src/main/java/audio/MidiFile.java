@@ -1,6 +1,6 @@
 package audio;
 
-import net.Stream;
+import core.network.Stream;
 
 /* MidiFile - Decompiled by JODE
  * Visit http://jode.sourceforge.net/

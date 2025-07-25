@@ -1,8 +1,7 @@
 package core.managers;
 
 import core.engine.Game;
-import game.PendingSpawn;
-import game.ObjectManager;
+import core.world.PendingSpawn;
 
 /** Manages pending scene spawns extracted from {@link Game}. */
 public final class PendingSpawnManager {

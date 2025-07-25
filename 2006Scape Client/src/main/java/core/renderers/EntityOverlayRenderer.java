@@ -1,10 +1,10 @@
 package core.renderers;
 import core.engine.Game;
-import game.Entity;
-import game.EntityDef;
-import game.NPC;
-import game.Player;
-import render.DrawingArea;
+import game.entities.Entity;
+import game.definitions.EntityDef;
+import game.entities.NPC;
+import game.entities.Player;
+import render.core.DrawingArea;
 
 /** Renders entity overlays like names and hit markers extracted from {@link Game}. */
 public final class EntityOverlayRenderer {

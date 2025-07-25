@@ -1,8 +1,7 @@
 package core.managers;
 
 import audio.MidiPlayer;
-import audio.SystemMidiPlayer;
-import net.Signlink;
+import core.network.Signlink;
 
 /**
  * Extracted music system logic from the massive {@link Game} class.

@@ -1,6 +1,8 @@
 package render;
 
 import org.junit.Test;
+import render.geometry.VertexNormal;
+
 import static org.junit.Assert.*;
 
 public class VertexNormalTest {

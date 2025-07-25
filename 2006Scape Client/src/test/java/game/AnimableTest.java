@@ -1,5 +1,6 @@
 package game;
 
+import game.entities.Animable;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

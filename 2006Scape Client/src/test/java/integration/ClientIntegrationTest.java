@@ -5,11 +5,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import cache.MRUCache;
-import util.NodeHashTable;
-import util.NodeSub;
-import util.ISAACRandomGen;
-import game.ItemPile;
-import game.Animable;
+import util.collections.NodeHashTable;
+import util.collections.NodeSub;
+import util.cryptography.ISAACRandomGen;
+import game.items.ItemPile;
+import game.entities.Animable;
 
 public class ClientIntegrationTest {
 

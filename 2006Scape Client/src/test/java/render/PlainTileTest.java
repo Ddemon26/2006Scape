@@ -1,6 +1,7 @@
 package render;
 
 import org.junit.Test;
+import render.tiles.PlainTile;
 
 import static org.junit.Assert.*;
 

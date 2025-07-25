@@ -1,7 +1,7 @@
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import net.Signlink;
+import core.network.Signlink;
 import core.engine.ClientSettings;
 import core.engine.Game;
 

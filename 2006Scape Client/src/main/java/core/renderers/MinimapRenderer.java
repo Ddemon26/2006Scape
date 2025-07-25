@@ -1,15 +1,15 @@
 package core.renderers;
 
 import core.engine.Game;
-import game.ObjectDef;
-import game.NPC;
-import game.Player;
-import game.EntityDef;
-import game.Entity;
-import render.DrawingArea;
-import render.Texture;
-import render.Model;
-import util.NodeList;
+import game.definitions.ObjectDef;
+import game.entities.NPC;
+import game.entities.Player;
+import game.definitions.EntityDef;
+import game.entities.Entity;
+import render.core.DrawingArea;
+import render.core.Texture;
+import render.geometry.Model;
+import util.collections.NodeList;
 import ui.TextClass;
 
 /** Handles minimap generation extracted from {@link Game}. */

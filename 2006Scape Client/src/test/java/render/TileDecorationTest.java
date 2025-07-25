@@ -1,6 +1,7 @@
 package render;
 
 import org.junit.Test;
+import render.objects.TileDecoration;
 
 import static org.junit.Assert.*;
 

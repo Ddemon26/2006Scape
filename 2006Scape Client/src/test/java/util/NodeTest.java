@@ -1,6 +1,8 @@
 package util;
 
 import org.junit.Test;
+import util.collections.Node;
+
 import static org.junit.Assert.*;
 
 public class NodeTest {

@@ -1,6 +1,8 @@
 package util;
 
 import org.junit.Test;
+import util.compression.BZip2State;
+
 import static org.junit.Assert.*;
 
 public class BZip2StateTest {

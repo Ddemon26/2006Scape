@@ -1,5 +1,7 @@
 package game;
 
+import game.entities.Animable;
+import game.items.ItemPile;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;

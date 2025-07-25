@@ -1,8 +1,8 @@
 package core.renderers;
 
 import core.engine.Game;
-import render.DrawingArea;
-import render.Texture;
+import render.core.DrawingArea;
+import render.core.Texture;
 import ui.RSInterface;
 import ui.TextClass;
 import ui.TextDrawingArea;

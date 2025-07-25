@@ -1,7 +1,6 @@
 package core.engine;
 
 import java.math.BigInteger;
-import render.Texture;
 
 /**
  * ClientSettings

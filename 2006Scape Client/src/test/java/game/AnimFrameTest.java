@@ -1,5 +1,6 @@
 package game;
 
+import game.animation.AnimFrame;
 import org.junit.Test;
 
 import java.lang.reflect.Field;

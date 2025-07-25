@@ -1,9 +1,9 @@
 package cache;
 
-import net.Signlink;
-import util.NodeHashTable;
-import util.NodeSub;
-import util.NodeSubList;
+import core.network.Signlink;
+import util.collections.NodeHashTable;
+import util.collections.NodeSub;
+import util.collections.NodeSubList;
 
 // Decompiled by Jad v1.5.8f. Copyright 2001 Pavel Kouznetsov.
 // Jad home page: http://www.kpdus.com/jad.html

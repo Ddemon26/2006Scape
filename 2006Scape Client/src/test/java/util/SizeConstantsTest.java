@@ -1,6 +1,8 @@
 package util;
 
 import org.junit.Test;
+import util.constants.SizeConstants;
+
 import static org.junit.Assert.*;
 
 public class SizeConstantsTest {

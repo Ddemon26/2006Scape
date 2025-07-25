@@ -3,13 +3,11 @@ package core.renderers;
 import cache.StreamLoader;
 import core.engine.Game;
 import core.engine.ClientSettings;
-import render.Texture;
-import render.Sprite;
-import render.RSImageProducer;
-import render.Background;
+import render.core.Texture;
+import render.core.Sprite;
+import render.core.Background;
 import ui.RSInterface;
-import audio.SoundPlayer;
-import render.WorldController;
+import core.world.WorldController;
 import java.awt.Color;
 
 /** Renders the tab area UI extracted from {@link Game}. */

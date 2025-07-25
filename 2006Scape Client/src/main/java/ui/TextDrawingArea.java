@@ -6,8 +6,8 @@ package ui;
 
 import java.util.Random;
 import cache.StreamLoader;
-import net.Stream;
-import render.DrawingArea;
+import core.network.Stream;
+import render.core.DrawingArea;
 
 public final class TextDrawingArea extends DrawingArea {
 

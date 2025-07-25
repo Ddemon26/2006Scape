@@ -2,11 +2,11 @@ package core.handlers;
 
 import core.engine.Game;
 import core.engine.ClientSettings;
-import core.ClipboardUtil;
-import core.ScreenshotUtil;
+import util.helpers.ClipboardUtil;
+import util.helpers.ScreenshotUtil;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
-import render.WorldController;
+import core.world.WorldController;
 
 /**
  * Processes keyboard and mouse wheel input extracted from {@link Game}.

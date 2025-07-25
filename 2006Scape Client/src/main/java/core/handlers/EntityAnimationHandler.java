@@ -1,11 +1,11 @@
 package core.handlers;
 
 import core.engine.Game;
-import game.Entity;
-import game.NPC;
-import game.Player;
-import game.Animation;
-import game.SpotAnim;
+import game.entities.Entity;
+import game.entities.NPC;
+import game.entities.Player;
+import game.animation.Animation;
+import game.animation.SpotAnim;
 
 /**
  * Handles entity facing and animation logic extracted from {@link Game}.

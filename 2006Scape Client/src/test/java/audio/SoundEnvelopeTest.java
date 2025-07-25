@@ -1,6 +1,6 @@
 package audio;
 
-import net.Stream;
+import core.network.Stream;
 import org.junit.Test;
 
 import java.lang.reflect.Field;

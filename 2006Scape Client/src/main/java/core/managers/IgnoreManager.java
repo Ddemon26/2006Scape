@@ -1,7 +1,7 @@
 package core.managers;
 
 import core.engine.Game;
-import net.Signlink;
+import core.network.Signlink;
 import ui.TextClass;
 
 /**

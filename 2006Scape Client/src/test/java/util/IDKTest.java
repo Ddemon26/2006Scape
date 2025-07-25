@@ -1,8 +1,9 @@
 package util;
 
 import org.junit.Test;
-import render.Model;
-import render.ModelHeader;
+import render.geometry.Model;
+import render.geometry.ModelHeader;
+import util.configuration.IDK;
 
 import java.lang.reflect.Field;
 

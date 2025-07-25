@@ -1,8 +1,8 @@
 package core.managers;
 
 import core.engine.Game;
-import net.Signlink;
-import render.Model;
+import core.network.Signlink;
+import render.geometry.Model;
 
 /**
  * Handles camera movement and orientation calculations.

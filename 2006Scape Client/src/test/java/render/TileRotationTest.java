@@ -1,6 +1,8 @@
 package render;
 
 import org.junit.Test;
+import render.geometry.TileRotation;
+
 import static org.junit.Assert.*;
 
 public class TileRotationTest {

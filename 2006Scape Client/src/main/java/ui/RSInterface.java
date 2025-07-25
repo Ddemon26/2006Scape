@@ -4,13 +4,12 @@ import cache.MRUCache;
 import cache.StreamLoader;
 import core.engine.ClientSettings;
 import core.engine.Game;
-import game.AnimFrame;
-import game.Animation;
-import game.EntityDef;
-import game.ItemDef;
-import net.Stream;
-import render.Model;
-import render.Sprite;
+import game.animation.AnimFrame;
+import game.definitions.EntityDef;
+import game.definitions.ItemDef;
+import core.network.Stream;
+import render.geometry.Model;
+import render.core.Sprite;
 
 public final class RSInterface {
 

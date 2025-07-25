@@ -1,12 +1,10 @@
 package core.managers;
 
 import core.engine.Game;
-import net.Signlink;
-import net.OnDemandFetcher;
-import ui.RSInterface;
+import core.network.Signlink;
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 
 /**
  * Handles music related actions originally embedded in {@link Game}.

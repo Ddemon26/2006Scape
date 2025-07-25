@@ -1,11 +1,8 @@
 package core.handlers;
 
 import core.engine.Game;
-import game.Entity;
-import game.NPC;
-import game.Player;
-import game.Animation;
-import game.SpotAnim;
+import game.entities.Entity;
+import game.animation.Animation;
 
 /**
  * Updates entity movement logic extracted from {@link Game}.

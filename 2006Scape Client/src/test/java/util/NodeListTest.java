@@ -2,6 +2,8 @@ package util;
 
 import org.junit.Before;
 import org.junit.Test;
+import util.collections.Node;
+import util.collections.NodeList;
 
 import static org.junit.Assert.*;
 

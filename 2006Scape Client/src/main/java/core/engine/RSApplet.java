@@ -12,7 +12,7 @@ import java.awt.font.TextAttribute;
 import java.net.URI;
 import java.util.Map;
 import java.util.Objects;
-import render.RSImageProducer;
+import render.core.RSImageProducer;
 
 @SuppressWarnings({"serial", "rawtypes", "unchecked"})
 public class RSApplet extends Applet implements Runnable, MouseListener, MouseWheelListener, MouseMotionListener, KeyListener, FocusListener, WindowListener {

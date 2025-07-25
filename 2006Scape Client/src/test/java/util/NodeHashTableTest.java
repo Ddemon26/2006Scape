@@ -2,6 +2,9 @@ package util;
 
 import org.junit.Before;
 import org.junit.Test;
+import util.collections.Node;
+import util.collections.NodeHashTable;
+
 import static org.junit.Assert.*;
 
 public class NodeHashTableTest {

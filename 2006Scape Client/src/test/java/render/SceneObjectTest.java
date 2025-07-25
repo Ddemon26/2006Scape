@@ -1,6 +1,7 @@
 package render;
 
 import org.junit.Test;
+import render.objects.SceneObject;
 
 import static org.junit.Assert.*;
 

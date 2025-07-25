@@ -1,7 +1,7 @@
 package cache;
 
-import net.Stream;
-import util.BZip2Decompressor;
+import core.network.Stream;
+import util.compression.BZip2Decompressor;
 
 // Decompiled by Jad v1.5.8f. Copyright 2001 Pavel Kouznetsov.
 // Jad home page: http://www.kpdus.com/jad.html

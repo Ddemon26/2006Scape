@@ -2,10 +2,10 @@ package cache;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
+
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import util.NodeSub;
+
+import util.collections.NodeSub;
 
 public class MRUCacheTest {
 

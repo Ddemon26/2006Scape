@@ -1,6 +1,7 @@
 package render;
 
 import org.junit.Test;
+import core.world.CollisionMap;
 
 import static org.junit.Assert.*;
 

@@ -3,12 +3,12 @@ package core.managers;
 import core.engine.Game;
 import core.engine.ClientSettings;
 import java.io.IOException;
-import net.RSSocket;
-import util.NodeList;
-import game.Player;
-import net.Signlink;
+import core.network.RSSocket;
+import util.collections.NodeList;
+import game.entities.Player;
+import core.network.Signlink;
 import ui.TextClass;
-import util.ISAACRandomGen;
+import util.cryptography.ISAACRandomGen;
 
 /**
  * Handles network login handshake extracted from {@link Game}.

@@ -1,8 +1,8 @@
 package util;
 
 import org.junit.Test;
+import util.helpers.Censor;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import static org.junit.Assert.*;

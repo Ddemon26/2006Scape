@@ -1,6 +1,7 @@
 package render;
 
 import org.junit.Test;
+import render.core.Sprite;
 
 import java.lang.reflect.Field;
 
