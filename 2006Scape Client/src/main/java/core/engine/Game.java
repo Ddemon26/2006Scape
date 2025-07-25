@@ -977,7 +977,7 @@ public class Game extends RSApplet {
     pendingSpawnManager.locatePendingSpawns();
   }
 
-  void drawLoadingText(int i, String s) {
+  public void drawLoadingText(int i, String s) {
     loadingPercent = i;
     errorMessage = s;
     resetImageProducers();
@@ -4050,197 +4050,11 @@ public class Game extends RSApplet {
   }
 
   public void buildAtNPCMenu(EntityDef entityDef, int i, int j, int k) {
-    if (menuActionRow >= 400) {
-      return;
-    }
-    if (entityDef.childrenIDs != null) {
-      entityDef = entityDef.transform();
-    }
-    if (entityDef == null) {
-      return;
-    }
-    if (!entityDef.clickable) {
-      return;
-    }
-    String s = entityDef.name;
-    if (entityDef.combatLevel != 0) {
-      s =
-          s
-              + combatDiffColor(myPlayer.combatLevel, entityDef.combatLevel)
-              + " (level-"
-              + entityDef.combatLevel
-              + ")";
-    }
-    if (itemSelected == 1) {
-      menuActionName[menuActionRow] = "Use " + selectedItemName + " with @yel@" + s;
-      menuActionID[menuActionRow] = 582;
-      menuActionCmd1[menuActionRow] = i;
-      menuActionCmd2[menuActionRow] = k;
-      menuActionCmd3[menuActionRow] = j;
-      menuActionRow++;
-      return;
-    }
-    if (spellSelected == 1) {
-      if ((spellUsableOn & 2) == 2) {
-        menuActionName[menuActionRow] = spellTooltip + " @yel@" + s;
-        menuActionID[menuActionRow] = 413;
-        menuActionCmd1[menuActionRow] = i;
-        menuActionCmd2[menuActionRow] = k;
-        menuActionCmd3[menuActionRow] = j;
-        menuActionRow++;
-      }
-    } else {
-      if (entityDef.actions != null) {
-        for (int l = 4; l >= 0; l--) {
-          if (entityDef.actions[l] != null && !entityDef.actions[l].equalsIgnoreCase("attack")) {
-            menuActionName[menuActionRow] = entityDef.actions[l] + " @yel@" + s;
-            if (l == 0) {
-              menuActionID[menuActionRow] = 20;
-            }
-            if (l == 1) {
-              menuActionID[menuActionRow] = 412;
-            }
-            if (l == 2) {
-              menuActionID[menuActionRow] = 225;
-            }
-            if (l == 3) {
-              menuActionID[menuActionRow] = 965;
-            }
-            if (l == 4) {
-              menuActionID[menuActionRow] = 478;
-            }
-            menuActionCmd1[menuActionRow] = i;
-            menuActionCmd2[menuActionRow] = k;
-            menuActionCmd3[menuActionRow] = j;
-            menuActionRow++;
-          }
-        }
-      }
-      if (entityDef.actions != null) {
-        for (int i1 = 4; i1 >= 0; i1--) {
-          if (entityDef.actions[i1] != null && entityDef.actions[i1].equalsIgnoreCase("attack")) {
-            char c = '\0';
-            if (entityDef.combatLevel > myPlayer.combatLevel) {
-              c = '\u07D0';
-            }
-            menuActionName[menuActionRow] = entityDef.actions[i1] + " @yel@" + s;
-            if (i1 == 0) {
-              menuActionID[menuActionRow] = 20 + c;
-            }
-            if (i1 == 1) {
-              menuActionID[menuActionRow] = 412 + c;
-            }
-            if (i1 == 2) {
-              menuActionID[menuActionRow] = 225 + c;
-            }
-            if (i1 == 3) {
-              menuActionID[menuActionRow] = 965 + c;
-            }
-            if (i1 == 4) {
-              menuActionID[menuActionRow] = 478 + c;
-            }
-            menuActionCmd1[menuActionRow] = i;
-            menuActionCmd2[menuActionRow] = k;
-            menuActionCmd3[menuActionRow] = j;
-            menuActionRow++;
-          }
-        }
-      }
-      menuActionName[menuActionRow] =
-          "Examine @yel@" + s + (showInfo ? " @gre@(@whi@" + entityDef.type + "@gre@)" : "");
-      menuActionID[menuActionRow] = 1025;
-      menuActionCmd1[menuActionRow] = i;
-      menuActionCmd2[menuActionRow] = k;
-      menuActionCmd3[menuActionRow] = j;
-      menuActionRow++;
-    }
+    menuManager.buildAtNPCMenu(entityDef, i, j, k);
   }
 
   public void buildAtPlayerMenu(int i, int j, Player player, int k) {
-    if (player == myPlayer) {
-      return;
-    }
-    if (menuActionRow >= 400) {
-      return;
-    }
-    String s;
-    if (player.skill == 0) {
-      if (player.combatLevel > 0) {
-        s =
-            player.name
-                + combatDiffColor(myPlayer.combatLevel, player.combatLevel)
-                + " (level-"
-                + player.combatLevel
-                + ")";
-      } else {
-        s = player.name + " @cya@(store)";
-      }
-    } else {
-      s = player.name + " (skill-" + player.skill + ")";
-    }
-    if (itemSelected == 1) {
-      menuActionName[menuActionRow] = "Use " + selectedItemName + " with @whi@" + s;
-      menuActionID[menuActionRow] = 491;
-      menuActionCmd1[menuActionRow] = j;
-      menuActionCmd2[menuActionRow] = i;
-      menuActionCmd3[menuActionRow] = k;
-      menuActionRow++;
-    } else if (spellSelected == 1) {
-      if ((spellUsableOn & 8) == 8) {
-        menuActionName[menuActionRow] = spellTooltip + " @whi@" + s;
-        menuActionID[menuActionRow] = 365;
-        menuActionCmd1[menuActionRow] = j;
-        menuActionCmd2[menuActionRow] = i;
-        menuActionCmd3[menuActionRow] = k;
-        menuActionRow++;
-      }
-    } else {
-      for (int l = 4; l >= 0; l--) {
-        if (atPlayerActions[l] != null) {
-          menuActionName[menuActionRow] = atPlayerActions[l] + " @whi@" + s;
-          char c = '\0';
-          if (atPlayerActions[l].equalsIgnoreCase("attack")) {
-            if (player.combatLevel > myPlayer.combatLevel) {
-              c = '\u07D0';
-            }
-            if (myPlayer.team != 0 && player.team != 0) {
-              if (myPlayer.team == player.team) {
-                c = '\u07D0';
-              } else {
-                c = '\0';
-              }
-            }
-          } else if (atPlayerArray[l]) {
-            c = '\u07D0';
-          }
-          if (l == 0) {
-            menuActionID[menuActionRow] = 561 + c;
-          }
-          if (l == 1) {
-            menuActionID[menuActionRow] = 779 + c;
-          }
-          if (l == 2) {
-            menuActionID[menuActionRow] = 27 + c;
-          }
-          if (l == 3) {
-            menuActionID[menuActionRow] = 577 + c;
-          }
-          if (l == 4) {
-            menuActionID[menuActionRow] = 729 + c;
-          }
-          menuActionCmd1[menuActionRow] = j;
-          menuActionCmd2[menuActionRow] = i;
-          menuActionCmd3[menuActionRow] = k;
-          menuActionRow++;
-        }
-      }
-    }
-    for (int i1 = 0; i1 < menuActionRow; i1++) {
-      if (menuActionID[i1] == 516) {
-        menuActionName[i1] = "Walk here @whi@" + s;
-        return;
-      }
-    }
+    menuManager.buildAtPlayerMenu(i, j, player, k);
   }
 
   public void locateSceneObject(PendingSpawn pendingSpawn) {
@@ -4248,105 +4062,9 @@ public class Game extends RSApplet {
   }
 
   public final void processSoundQueue() {
-    for (int index = 0; index < currentSound; index++) {
-      // if (soundDelay[index] <= 0) {
-      boolean flag1 = false;
-      try {
-        Stream stream = Sounds.createSoundStream(soundType[index], sound[index]);
-        new SoundPlayer(
-            (InputStream) new ByteArrayInputStream(stream.buffer, 0, stream.currentOffset),
-            soundVolume[index],
-            soundDelay[index]);
-        if (System.currentTimeMillis() + (long) (stream.currentOffset / 22)
-            > lastSoundUpdate + (long) (soundBufferOffset / 22)) {
-          soundBufferOffset = stream.currentOffset;
-          lastSoundUpdate = System.currentTimeMillis();
-        }
-      } catch (Exception exception) {
-        exception.printStackTrace();
-      }
-      if (!flag1 || soundDelay[index] == -5) {
-        currentSound--;
-        for (int j = index; j < currentSound; j++) {
-          sound[j] = sound[j + 1];
-          soundType[j] = soundType[j + 1];
-          soundDelay[j] = soundDelay[j + 1];
-          soundVolume[j] = soundVolume[j + 1];
-        }
-        index--;
-      } else {
-        soundDelay[index] = -5;
-      }
-      /*} else {
-      	soundDelay[index]--;
-      }*/
-    }
-    if (previousSong > 0) {
-      previousSong -= 20;
-      if (previousSong < 0) previousSong = 0;
-      if (previousSong == 0 && musicVolume != 0 && currentSong != -1) {
-        musicController.playSong(musicVolume, false, currentSong);
-      }
-    }
+    musicController.processSoundQueue();
   }
 
-  private void connectServer() {
-    int j = 5;
-    expectedCRCs[8] = 0;
-    int k = 0;
-    while (expectedCRCs[8] == 0) {
-      String s = "Unknown problem";
-      drawLoadingText(20, "Connecting to web server");
-      try {
-        DataInputStream datainputstream =
-            openJagGrabInputStream("crc" + (int) (Math.random() * 99999999D) + "-" + 317);
-        Stream crcStream = new Stream(new byte[40]);
-        datainputstream.readFully(crcStream.buffer, 0, 40);
-        datainputstream.close();
-        for (int i1 = 0; i1 < 9; i1++) expectedCRCs[i1] = crcStream.readDWord();
-
-        int j1 = crcStream.readDWord();
-        int k1 = 1234;
-        for (int l1 = 0; l1 < 9; l1++) k1 = (k1 << 1) + expectedCRCs[l1];
-
-        if (j1 != k1) {
-          s = "checksum problem";
-          expectedCRCs[8] = 0;
-        }
-      } catch (EOFException _ex) {
-        s = "EOF problem";
-        expectedCRCs[8] = 0;
-      } catch (IOException _ex) {
-        s = "FileServer Connection problem";
-        // Check if we already have cache files, if so then allow the client to load anyway
-        String cacheDir = Signlink.findcachedir();
-        expectedCRCs[8] = new File(cacheDir + "main_file_cache.dat").length() > 0 ? 1 : 0;
-      } catch (Exception _ex) {
-        s = "logic problem";
-        expectedCRCs[8] = 0;
-        if (!Signlink.reporterror) return;
-      }
-      if (expectedCRCs[8] == 0) {
-        k++;
-        for (int l = j; l > 0; l--) {
-          if (k >= 10) {
-            drawLoadingText(10, "Game updated - please reload page");
-            l = 10;
-          } else {
-            drawLoadingText(10, s + " - retry in " + l + " secs.");
-          }
-          try {
-            Thread.sleep(1000L);
-          } catch (Exception _ex) {
-          }
-        }
-
-        j *= 2;
-        if (j > 60) j = 60;
-        useJaggrab = !useJaggrab;
-      }
-    }
-  }
 
   void startUp() {
     drawLoadingText(20, "Starting up");
@@ -4371,7 +4089,7 @@ public class Game extends RSApplet {
       }
     }
     try {
-      connectServer();
+      loadingHandler.connectServer();
       titleStreamLoader = streamLoaderForName(1, "title screen", "title", expectedCRCs[1], 25);
       plainFont = new TextDrawingArea(false, "p11_full", titleStreamLoader);
       boldFont = new TextDrawingArea(false, "p12_full", titleStreamLoader);

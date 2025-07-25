@@ -48,6 +48,7 @@
 - [ItemDef](Client/classes/ItemDef.md)
 - [ItemPile](Client/classes/ItemPile.md)
 - [LocalGame](Client/classes/LocalGame.md)
+- [LoadingHandler](Client/classes/LoadingHandler.md)
 - [LoginScreen](Client/classes/LoginScreen.md)
 - [LoginManager](Client/classes/LoginManager.md)
 - [MRUCache](Client/classes/MRUCache.md)

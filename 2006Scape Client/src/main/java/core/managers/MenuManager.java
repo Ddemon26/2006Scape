@@ -3,6 +3,8 @@ package core.managers;
 import core.engine.Game;
 import render.core.DrawingArea;
 import ui.RSInterface;
+import game.definitions.EntityDef;
+import game.entities.Player;
 
 /** Handles menu interactions extracted from {@link Game}. */
 public final class MenuManager {
@@ -275,6 +277,199 @@ public final class MenuManager {
       game.menuOffsetY = j2;
       game.menuWidth = i;
       game.menuHeight = 15 * game.menuActionRow + 22;
+    }
+  }
+
+  /** Build context menu entries for interacting with an NPC. */
+  public void buildAtNPCMenu(EntityDef entityDef, int i, int j, int k) {
+    if (game.menuActionRow >= 400) {
+      return;
+    }
+    if (entityDef.childrenIDs != null) {
+      entityDef = entityDef.transform();
+    }
+    if (entityDef == null || !entityDef.clickable) {
+      return;
+    }
+    String s = entityDef.name;
+    if (entityDef.combatLevel != 0) {
+      s =
+          s
+              + game.combatDiffColor(game.myPlayer.combatLevel, entityDef.combatLevel)
+              + " (level-"
+              + entityDef.combatLevel
+              + ")";
+    }
+    if (game.itemSelected == 1) {
+      game.menuActionName[game.menuActionRow] = "Use " + game.selectedItemName + " with @yel@" + s;
+      game.menuActionID[game.menuActionRow] = 582;
+      game.menuActionCmd1[game.menuActionRow] = i;
+      game.menuActionCmd2[game.menuActionRow] = k;
+      game.menuActionCmd3[game.menuActionRow] = j;
+      game.menuActionRow++;
+      return;
+    }
+    if (game.spellSelected == 1) {
+      if ((game.spellUsableOn & 2) == 2) {
+        game.menuActionName[game.menuActionRow] = game.spellTooltip + " @yel@" + s;
+        game.menuActionID[game.menuActionRow] = 413;
+        game.menuActionCmd1[game.menuActionRow] = i;
+        game.menuActionCmd2[game.menuActionRow] = k;
+        game.menuActionCmd3[game.menuActionRow] = j;
+        game.menuActionRow++;
+      }
+    } else {
+      if (entityDef.actions != null) {
+        for (int l = 4; l >= 0; l--) {
+          if (entityDef.actions[l] != null && !entityDef.actions[l].equalsIgnoreCase("attack")) {
+            game.menuActionName[game.menuActionRow] = entityDef.actions[l] + " @yel@" + s;
+            if (l == 0) {
+              game.menuActionID[game.menuActionRow] = 20;
+            }
+            if (l == 1) {
+              game.menuActionID[game.menuActionRow] = 412;
+            }
+            if (l == 2) {
+              game.menuActionID[game.menuActionRow] = 225;
+            }
+            if (l == 3) {
+              game.menuActionID[game.menuActionRow] = 965;
+            }
+            if (l == 4) {
+              game.menuActionID[game.menuActionRow] = 478;
+            }
+            game.menuActionCmd1[game.menuActionRow] = i;
+            game.menuActionCmd2[game.menuActionRow] = k;
+            game.menuActionCmd3[game.menuActionRow] = j;
+            game.menuActionRow++;
+          }
+        }
+      }
+      if (entityDef.actions != null) {
+        for (int i1 = 4; i1 >= 0; i1--) {
+          if (entityDef.actions[i1] != null && entityDef.actions[i1].equalsIgnoreCase("attack")) {
+            char c = '\0';
+            if (entityDef.combatLevel > game.myPlayer.combatLevel) {
+              c = '\u07D0';
+            }
+            game.menuActionName[game.menuActionRow] = entityDef.actions[i1] + " @yel@" + s;
+            if (i1 == 0) {
+              game.menuActionID[game.menuActionRow] = 20 + c;
+            }
+            if (i1 == 1) {
+              game.menuActionID[game.menuActionRow] = 412 + c;
+            }
+            if (i1 == 2) {
+              game.menuActionID[game.menuActionRow] = 225 + c;
+            }
+            if (i1 == 3) {
+              game.menuActionID[game.menuActionRow] = 965 + c;
+            }
+            if (i1 == 4) {
+              game.menuActionID[game.menuActionRow] = 478 + c;
+            }
+            game.menuActionCmd1[game.menuActionRow] = i;
+            game.menuActionCmd2[game.menuActionRow] = k;
+            game.menuActionCmd3[game.menuActionRow] = j;
+            game.menuActionRow++;
+          }
+        }
+      }
+      game.menuActionName[game.menuActionRow] =
+          "Examine @yel@" + s + (game.showInfo ? " @gre@(@whi@" + entityDef.type + "@gre@)" : "");
+      game.menuActionID[game.menuActionRow] = 1025;
+      game.menuActionCmd1[game.menuActionRow] = i;
+      game.menuActionCmd2[game.menuActionRow] = k;
+      game.menuActionCmd3[game.menuActionRow] = j;
+      game.menuActionRow++;
+    }
+  }
+
+  /** Build context menu entries for interacting with another player. */
+  public void buildAtPlayerMenu(int i, int j, Player player, int k) {
+    if (player == game.myPlayer) {
+      return;
+    }
+    if (game.menuActionRow >= 400) {
+      return;
+    }
+    String s;
+    if (player.skill == 0) {
+      if (player.combatLevel > 0) {
+        s =
+            player.name
+                + game.combatDiffColor(game.myPlayer.combatLevel, player.combatLevel)
+                + " (level-"
+                + player.combatLevel
+                + ")";
+      } else {
+        s = player.name + " @cya@(store)";
+      }
+    } else {
+      s = player.name + " (skill-" + player.skill + ")";
+    }
+    if (game.itemSelected == 1) {
+      game.menuActionName[game.menuActionRow] = "Use " + game.selectedItemName + " with @whi@" + s;
+      game.menuActionID[game.menuActionRow] = 491;
+      game.menuActionCmd1[game.menuActionRow] = j;
+      game.menuActionCmd2[game.menuActionRow] = i;
+      game.menuActionCmd3[game.menuActionRow] = k;
+      game.menuActionRow++;
+    } else if (game.spellSelected == 1) {
+      if ((game.spellUsableOn & 8) == 8) {
+        game.menuActionName[game.menuActionRow] = game.spellTooltip + " @whi@" + s;
+        game.menuActionID[game.menuActionRow] = 365;
+        game.menuActionCmd1[game.menuActionRow] = j;
+        game.menuActionCmd2[game.menuActionRow] = i;
+        game.menuActionCmd3[game.menuActionRow] = k;
+        game.menuActionRow++;
+      }
+    } else {
+      for (int l = 4; l >= 0; l--) {
+        if (game.atPlayerActions[l] != null) {
+          game.menuActionName[game.menuActionRow] = game.atPlayerActions[l] + " @whi@" + s;
+          char c = '\0';
+          if (game.atPlayerActions[l].equalsIgnoreCase("attack")) {
+            if (player.combatLevel > game.myPlayer.combatLevel) {
+              c = '\u07D0';
+            }
+            if (game.myPlayer.team != 0 && player.team != 0) {
+              if (game.myPlayer.team == player.team) {
+                c = '\u07D0';
+              } else {
+                c = '\0';
+              }
+            }
+          } else if (game.atPlayerArray[l]) {
+            c = '\u07D0';
+          }
+          if (l == 0) {
+            game.menuActionID[game.menuActionRow] = 561 + c;
+          }
+          if (l == 1) {
+            game.menuActionID[game.menuActionRow] = 779 + c;
+          }
+          if (l == 2) {
+            game.menuActionID[game.menuActionRow] = 27 + c;
+          }
+          if (l == 3) {
+            game.menuActionID[game.menuActionRow] = 577 + c;
+          }
+          if (l == 4) {
+            game.menuActionID[game.menuActionRow] = 729 + c;
+          }
+          game.menuActionCmd1[game.menuActionRow] = j;
+          game.menuActionCmd2[game.menuActionRow] = i;
+          game.menuActionCmd3[game.menuActionRow] = k;
+          game.menuActionRow++;
+        }
+      }
+    }
+    for (int i1 = 0; i1 < game.menuActionRow; i1++) {
+      if (game.menuActionID[i1] == 516) {
+        game.menuActionName[i1] = "Walk here @whi@" + s;
+        return;
+      }
     }
   }
 }
