@@ -1,5 +1,6 @@
 package cache;
 
+import core.engine.Game;
 import core.network.Signlink;
 import game.animation.SpotAnim;
 import game.definitions.EntityDef;
