@@ -2,6 +2,11 @@ package core.managers;
 
 import core.engine.Game;
 import core.network.Signlink;
+import audio.SoundPlayer;
+import audio.Sounds;
+import core.network.Stream;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.File;
 import java.io.FileInputStream;
 
@@ -82,6 +87,50 @@ public final class GameMusicController {
       MusicSystem.queuedSongId = -1;
       MusicSystem.autoPlaySong = true;
       MusicSystem.nextSongDelay = -1;
+    }
+  }
+
+  /**
+   * Process the queued sound effects and background music.
+   *
+   * <p>Originally part of {@link core.engine.Game#processSoundQueue()}.
+   */
+  public void processSoundQueue() {
+    for (int index = 0; index < game.currentSound; index++) {
+      boolean flag1 = false;
+      try {
+        Stream stream = Sounds.createSoundStream(game.soundType[index], game.sound[index]);
+        new SoundPlayer(
+            (InputStream) new ByteArrayInputStream(stream.buffer, 0, stream.currentOffset),
+            game.soundVolume[index],
+            game.soundDelay[index]);
+        if (System.currentTimeMillis() + (long) (stream.currentOffset / 22)
+            > game.lastSoundUpdate + (long) (game.soundBufferOffset / 22)) {
+          game.soundBufferOffset = stream.currentOffset;
+          game.lastSoundUpdate = System.currentTimeMillis();
+        }
+      } catch (Exception exception) {
+        exception.printStackTrace();
+      }
+      if (!flag1 || game.soundDelay[index] == -5) {
+        game.currentSound--;
+        for (int j = index; j < game.currentSound; j++) {
+          game.sound[j] = game.sound[j + 1];
+          game.soundType[j] = game.soundType[j + 1];
+          game.soundDelay[j] = game.soundDelay[j + 1];
+          game.soundVolume[j] = game.soundVolume[j + 1];
+        }
+        index--;
+      } else {
+        game.soundDelay[index] = -5;
+      }
+    }
+    if (game.previousSong > 0) {
+      game.previousSong -= 20;
+      if (game.previousSong < 0) game.previousSong = 0;
+      if (game.previousSong == 0 && game.musicVolume != 0 && game.currentSong != -1) {
+        playSong(game.musicVolume, false, game.currentSong);
+      }
     }
   }
 

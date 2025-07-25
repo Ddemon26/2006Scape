@@ -89,10 +89,10 @@ public int blendColors(int i, int j, int k)
 public void login(String s, String s1, boolean flag)
 public boolean doWalkTo(int i, int j, int k, int i1, int j1, int k1, int l1, int i2, int j2, boolean flag, int k2)
 public void processNpcUpdateMasks(Stream stream)
-public void buildAtNPCMenu(EntityDef entityDef, int i, int j, int k)
-public void buildAtPlayerMenu(int i, int j, Player player, int k)
+public void buildAtNPCMenu(EntityDef entityDef, int i, int j, int k) -> MenuManager.buildAtNPCMenu
+public void buildAtPlayerMenu(int i, int j, Player player, int k) -> MenuManager.buildAtPlayerMenu
 public void locateSceneObject(PendingSpawn pendingSpawn) -> PendingSpawnManager.locateSceneObject
-public final void processSoundQueue()
+public final void processSoundQueue() -> GameMusicController.processSoundQueue
 public void addLocalPlayers(Stream stream, int i)
 public void processMainScreenClick()
 public String interfaceIntToString(int j)

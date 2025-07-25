@@ -11,5 +11,6 @@ public final class GameMusicController {
     byte[] getMusic(int index)
     void queueSong(int delay, int volume, boolean bool, int music)
     void playSong(int volume, boolean bool, int music)
+    void processSoundQueue()
 }
 ```

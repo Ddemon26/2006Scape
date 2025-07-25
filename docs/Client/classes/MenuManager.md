@@ -12,5 +12,7 @@ final class MenuManager {
     boolean processMenuClick()
     void drawMenu()
     void determineMenuSize()
+    void buildAtNPCMenu(EntityDef def, int id, int x, int y)
+    void buildAtPlayerMenu(int x, int id, Player player, int y)
 }
 ```
