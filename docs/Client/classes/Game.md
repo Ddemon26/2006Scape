@@ -72,10 +72,10 @@ public void build3dScreenMenu()
 public void cleanUpForQuit()
 public void printDebug()
 public void processInput()
-public void buildChatAreaMenu(int j)
-public void drawFriendsListOrWelcomeScreen(RSInterface interfaceComponent)
+public void buildChatAreaMenu(int j) -> ChatAreaRenderer.buildChatAreaMenu
+public void drawFriendsListOrWelcomeScreen(RSInterface interfaceComponent) -> FriendManager.drawFriendsListOrWelcomeScreen
 public String formatDate(int i)
-public void drawSplitpublicChat()
+public void drawSplitpublicChat() -> ChatAreaRenderer.drawSplitpublicChat
 public void pushMessage(String s, int i, String s1)
 public void processMinimapActions()
 public void processTabClick()
@@ -106,7 +106,7 @@ public void updateWalkingStep(Entity entity) -> EntityMovementHandler.updateWalk
 public void updateEntityFacing(Entity entity) -> EntityAnimationHandler.updateEntityFacing
 public void updateEntityAnimation(Entity entity) -> EntityAnimationHandler.updateEntityAnimation
 public void drawGameScreen()
-public boolean buildFriendsListMenu(RSInterface listInterface)
+public boolean buildFriendsListMenu(RSInterface listInterface) -> FriendManager.buildFriendsListMenu
 public void processGraphicsObjects()
 public void drawInterface(int scrollPos, int k, RSInterface widget, int l)
 public void randomizeBackground(Background background)
