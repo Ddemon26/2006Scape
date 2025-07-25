@@ -1,6 +1,8 @@
 package core.handlers;
 
 import core.engine.Game;
+import core.engine.ClientSettings;
+import render.tiles.FloorOverlay;
 import ui.RSInterface;
 import ui.TextClass;
 import util.configuration.IDK;
@@ -118,5 +120,105 @@ public final class InterfaceInputHandler {
       }
     }
     return false;
+  }
+
+  public void handleScrollbarInput(
+      int i,
+      int j,
+      int k,
+      int l,
+      RSInterface scrollInterface,
+      int i1,
+      boolean flag,
+      int j1) {
+    int scrollPadding;
+    if (game.scrollBarDragging) {
+      scrollPadding = 32;
+    } else {
+      scrollPadding = 0;
+    }
+    game.scrollBarDragging = false;
+    if (k >= i && k < i + 16 && l >= i1 && l < i1 + 16) {
+      scrollInterface.scrollPosition -= game.clickCycle * 4;
+      if (flag) {
+        game.needDrawTabArea = true;
+      }
+    } else if (k >= i && k < i + 16 && l >= i1 + j - 16 && l < i1 + j) {
+      scrollInterface.scrollPosition += game.clickCycle * 4;
+      if (flag) {
+        game.needDrawTabArea = true;
+      }
+    } else if (k >= i - scrollPadding
+        && k < i + 16 + scrollPadding
+        && l >= i1 + 16
+        && l < i1 + j - 16
+        && game.clickCycle > 0) {
+      int l1 = (j - 32) * j / j1;
+      if (l1 < 8) {
+        l1 = 8;
+      }
+      int i2 = l - i1 - 16 - l1 / 2;
+      int j2 = j - 32 - l1;
+      scrollInterface.scrollPosition = (j1 - j) * i2 / j2;
+      if (flag) {
+        game.needDrawTabArea = true;
+      }
+      game.scrollBarDragging = true;
+    }
+  }
+
+  public void resetInterfaceAnimation(int i) {
+    RSInterface parentInterface = RSInterface.interfaceCache[i];
+    if (parentInterface == null || parentInterface.children == null) return;
+    for (int element : parentInterface.children) {
+      if (element == -1) {
+        break;
+      }
+      RSInterface childWidget = RSInterface.interfaceCache[element];
+      if (childWidget.type == 1) {
+        resetInterfaceAnimation(childWidget.id);
+      }
+      childWidget.animationFrame = 0;
+      childWidget.animationCycle = 0;
+    }
+  }
+
+  public void openInterface(int interfaceID) {
+    resetInterfaceAnimation(interfaceID);
+    if (game.invOverlayInterfaceID != -1) {
+      game.invOverlayInterfaceID = -1;
+      game.needDrawTabArea = true;
+      game.tabAreaAltered = true;
+    }
+    if (game.backDialogID != -1) {
+      game.backDialogID = -1;
+      game.inputTaken = true;
+    }
+    if (game.inputDialogState != 0) {
+      game.inputDialogState = 0;
+      game.inputTaken = true;
+    }
+    if (interfaceID == 15244) {
+      if (ClientSettings.SNOW_OVERLAY_FORCE_ENABLED
+          || (ClientSettings.SNOW_OVERLAY_ENABLED
+              && FloorOverlay.getTodaysDate().contains(ClientSettings.SNOW_MONTH))) {
+        game.openInterfaceID = 15819;
+      } else {
+        game.openInterfaceID = 15801;
+      }
+      game.fullScreenInterfaceId = 15244;
+    } else {
+      game.openInterfaceID = interfaceID;
+    }
+    game.actionPending = false;
+  }
+
+  public void openSideInterface(int tab, int interfaceID) {
+    if (interfaceID == 0x00ffff) {
+      interfaceID = -1;
+    }
+    game.tabInterfaceIDs[tab] = interfaceID;
+    game.needDrawTabArea = true;
+    game.tabAreaAltered = true;
   }
 }
