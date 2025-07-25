@@ -268,43 +268,7 @@ public void drawChatArea() {
 
 	public void updateEntities() {
 		try {
-			// Draw item info
-			for (int k5 = 0; k5 < 104; k5++) {
-				for (int l5 = 0; l5 < 104; l5++) {
-                                        NodeList itemList = groundArray[plane][k5][l5];
-                                        if (itemList != null) {
-						int offset = 5;
-                                                for (Item item = (Item) itemList.reverseGetFirst(); item != null; item = (Item) itemList.reverseGetNext()) {
-							ItemDef itemDef = ItemDef.lookup(item.ID);
-							long totalValue = Math.max(1, item.amount) * Math.max(1, itemDef.value);
-							totalValue = totalValue > 0 ? totalValue : Integer.MAX_VALUE;
-							calcEntityScreenPos(k5 * 128 + 64, 20, l5 * 128 + 64);
-							// only show ground items names if worth more than x (1k default)
-							if (totalValue >= customSettingMinItemValue) {
-								int color = Color.WHITE.hashCode();
-								if (totalValue >= 1e5) {
-									color = Color.GREEN.hashCode();
-								} else if (totalValue >= 1e4) {
-									color = Color.CYAN.hashCode();
-								} else if (totalValue >= 1e3) {
-									color = Color.YELLOW.hashCode();
-								}
-								String text = "";
-								if (item.amount > 1) {
-									DecimalFormatSymbols separator = new DecimalFormatSymbols();
-									separator.setGroupingSeparator(',');
-									DecimalFormat formatter = new DecimalFormat("#,###,###,###", separator);
-									text += formatter.format(item.amount) + " x ";
-								}
-								text += itemDef.name + " (" +  intToShortLetter(totalValue) + " gp)";
-								plainFont.textLeft(color, text, spriteDrawY - offset, spriteDrawX - (plainFont.getTextWidth(text) / 2));
-								offset += 10;
-							}
-						}
-					}
-				}
-			}
-                        entityOverlayRenderer.renderEntityOverlays();
+			entityOverlayRenderer.renderEntityOverlays();
 		} catch (Exception e) {
 		}
 	}
@@ -345,78 +309,21 @@ public void drawChatArea() {
         }
 
         public int getTileHeight(int plane, int worldY, int worldX) {
-                int l = worldX >> 7;
-                int i1 = worldY >> 7;
-                if (l < 0 || i1 < 0 || l > 103 || i1 > 103) {
-                        return 0;
+                // Convert byte[][][] to int[][][] for compatibility
+                int[][][] convertedTileFlags = new int[tileFlags.length][tileFlags[0].length][tileFlags[0][0].length];
+                for (int i = 0; i < tileFlags.length; i++) {
+                    for (int j = 0; j < tileFlags[i].length; j++) {
+                        for (int k = 0; k < tileFlags[i][j].length; k++) {
+                            convertedTileFlags[i][j][k] = tileFlags[i][j][k];
+                        }
+                    }
                 }
-                int j1 = plane;
-                if (j1 < 3 && (tileFlags[1][l][i1] & 2) == 2) {
-                        j1++;
-                }
-                int k1 = worldX & 0x7f;
-                int l1 = worldY & 0x7f;
-                int i2 = tileHeights[j1][l][i1] * (128 - k1) + tileHeights[j1][l + 1][i1] * k1 >> 7;
-                int j2 = tileHeights[j1][l][i1 + 1] * (128 - k1) + tileHeights[j1][l + 1][i1 + 1] * k1 >> 7;
-                return i2 * (128 - l1) + j2 * l1 >> 7;
+                return worldController.getTileHeight(plane, worldY, worldX, tileHeights, convertedTileFlags);
         }
 
-	public static String intToKOrMil(int j) {
-		if (j < 0x186a0) {
-			return String.valueOf(j);
-		}
-		if (j < 0x989680) {
-			return j / 1000 + "K";
-		} else {
-			return j / 0xf4240 + "M";
-		}
-	}
-
-	public static String intToShortLetter(long number) {
-		DecimalFormat nf = new DecimalFormat("0.0");
-		double i = number;
-		if (i >= 1e9) { // 1B
-				return nf.format((i / 1e9)) + "B";
-		}
-		if (i >= 1e7) { // 1K
-				return (int) (i / 1e6) + "M";
-		}
-		if (i >= 1e6) { // 1M
-				return nf.format((i / 1e6)) + "M";
-		}
-		if (i >= 1e4) { // 1K
-				return (int) (i / 1e3) + "K";
-		}
-		if (i >= 1e3) { // 1K
-				return nf.format((i / 1e3)) + "K";
-		}
-		return "" + number;
-	}
 
 	public void resetLogout() {
-		try {
-			if (socketStream != null) {
-				socketStream.close();
-			}
-		} catch (Exception _ex) {
-		}
-		socketStream = null;
-		loggedIn = false;
-		loginScreenState = 0;
-		// myUsername = "";
-		// myPassword = "";
-		unlinkMRUNodes();
-		worldController.initToNull();
-		for (int i = 0; i < 4; i++) {
-			collisionMaps[i].reset();
-		}
-
-		System.gc();
-                musicController.stopMidi();
-		currentSong = -1;
-		nextSong = -1;
-		previousSong = 0;
-                musicController.queueSong(10, musicVolume, false, 0);
+		loginManager.resetLogout();
 	}
 
        public void resetCharacterOptions() {
@@ -435,43 +342,6 @@ public void drawChatArea() {
 
 	}
 
-       public void addLocalNPCs(int i, Stream stream) {
-		while (stream.bitPosition + 21 < i * 8) {
-			int k = stream.readBits(14);
-			if (k == 16383) {
-				break;
-			}
-			if (npcArray[k] == null) {
-				npcArray[k] = new NPC();
-			}
-			NPC npc = npcArray[k];
-			npcIndices[npcCount++] = k;
-			npc.lastUpdateCycle = loopCycle;
-			int l = stream.readBits(5);
-			if (l > 15) {
-				l -= 32;
-			}
-			int i1 = stream.readBits(5);
-			if (i1 > 15) {
-				i1 -= 32;
-			}
-			int j1 = stream.readBits(1);
-                        npc.definition = EntityDef.forID(stream.readBits(ClientSettings.NPC_BITS));
-			int k1 = stream.readBits(1);
-			if (k1 == 1) {
-				playerUpdateIndices[playerUpdateCount++] = k;
-			}
-                        npc.size = npc.definition.size;
-                       npc.turnSpeed = npc.definition.turnSpeed;
-                        npc.walkAnimation = npc.definition.walkAnimation;
-                        npc.turn180Animation = npc.definition.turn180Animation;
-                        npc.turn90CWAnimation = npc.definition.turn90CWAnimation;
-                        npc.turn90CCWAnimation = npc.definition.turn90CCWAnimation;
-                        npc.standAnimation = npc.definition.standAnimation;
-			npc.setPos(myPlayer.smallX[0] + i1, myPlayer.smallY[0] + l, j1 == 1);
-		}
-		stream.finishBitAccess();
-	}
 
 	public void processGameLoop() {
 		if (rsAlreadyLoaded || loadingError || genericLoadingError) {
@@ -2523,7 +2393,7 @@ public void drawChatArea() {
 				pushMessage(formatter.format(stackWidget.invStackSizes[j]) + " x " + itemDef.name, 0, "");
 			}
 			if (itemDef.description != null) {
-				pushMessage(new String(itemDef.description) + " (" + intToKOrMil(itemDef.value) + "gp ea)", 0, "");
+				pushMessage(new String(itemDef.description) + " (" + GameUtils.intToKOrMil(itemDef.value) + "gp ea)", 0, "");
 			} else {
 				pushMessage("It's a " + itemDef.name + ".", 0, "");
 			}
@@ -2585,7 +2455,7 @@ public void drawChatArea() {
 			ItemDef itemDef_1 = ItemDef.lookup(i1);
 			String s6;
 			if (itemDef_1.description != null) {
-				s6 = new String(itemDef_1.description) + " (" + intToKOrMil(itemDef_1.value) + "gp ea)";
+				s6 = new String(itemDef_1.description) + " (" + GameUtils.intToKOrMil(itemDef_1.value) + "gp ea)";
 			} else {
 				s6 = "It's a " + itemDef_1.name + ".";
 			}
@@ -5533,8 +5403,8 @@ public void drawChatArea() {
 										if (itemSprite.trimWidth == 33 || component.invStackSizes[i3] != 1) {
 											// Draw item amounts
 											int k10 = component.invStackSizes[i3];
-											plainFont.textLeft(0, intToKOrMil(k10), j6 + 10 + j7, k5 + 1 + k6); // shadow
-											plainFont.textLeft(0xffff00, intToKOrMil(k10), j6 + 9 + j7, k5 + k6); // top layer
+											plainFont.textLeft(0, GameUtils.intToKOrMil(k10), j6 + 10 + j7, k5 + 1 + k6); // shadow
+											plainFont.textLeft(0xffff00, GameUtils.intToKOrMil(k10), j6 + 9 + j7, k5 + k6); // top layer
 										}
 									}
 								}
@@ -7913,7 +7783,7 @@ public void drawChatArea() {
 
 			// Draw items
 			chatTextDrawingArea.textLeftShadow(true, debugX + 4, Color.WHITE.hashCode(), "Exp per hour:", debugY += 15);
-			chatTextDrawingArea.textRightShadow(true, debugX + debugWidth - 4, Color.YELLOW.hashCode(), intToShortLetter((int) expPerHour), debugY);
+			chatTextDrawingArea.textRightShadow(true, debugX + debugWidth - 4, Color.YELLOW.hashCode(), GameUtils.intToShortLetter((int) expPerHour), debugY);
 			chatTextDrawingArea.textLeftShadow(true, debugX + 4, Color.WHITE.hashCode(), "Levels gained:", debugY += 15);
 			chatTextDrawingArea.textRightShadow(true, debugX + debugWidth - 4, Color.YELLOW.hashCode(), "" + (PlayerStatsCalculator.calculateTotalLevels(maxStats) - customSettingShowExperiencePerHourStartLevels), debugY);
 		}

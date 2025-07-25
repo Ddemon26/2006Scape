@@ -8,6 +8,7 @@ import render.core.Sprite;
 import render.core.Background;
 import ui.RSInterface;
 import core.world.WorldController;
+import util.helpers.GameUtils;
 import java.awt.Color;
 
 /** Renders the tab area UI extracted from {@link Game}. */
@@ -57,7 +58,7 @@ public final class TabAreaRenderer {
 
                         drawButton(true, centerX - 73, currentY += 40, 146);
                         game.boldFont.textCenterShadow(Color.YELLOW.hashCode(), centerX, "item drops visible", currentY + textTop, true);
-                        game.boldFont.textCenterShadow(Color.WHITE.hashCode(), centerX, game.intToKOrMil(game.customSettingMinItemValue) + " gp", currentY + textBottom, true);
+                        game.boldFont.textCenterShadow(Color.WHITE.hashCode(), centerX, GameUtils.intToKOrMil(game.customSettingMinItemValue) + " gp", currentY + textBottom, true);
 
                         drawButton(true, centerX - 73, currentY += 40, 146);
                         game.boldFont.textCenterShadow(Color.YELLOW.hashCode(), centerX, "draw distance", currentY + textTop, true);

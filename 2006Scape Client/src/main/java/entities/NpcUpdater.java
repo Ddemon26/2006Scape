@@ -7,6 +7,7 @@ import core.network.Stream;
 import game.definitions.EntityDef;
 import game.animation.Animation;
 import game.entities.NPC;
+import core.engine.ClientSettings;
 /** Updates NPCs each game tick, extracted from {@link Game}. */
 public final class NpcUpdater {
     private final Game game;
@@ -19,7 +20,7 @@ public final class NpcUpdater {
         game.entityRemovalCount = 0;
         game.playerUpdateCount = 0;
         updateNpcList(stream);
-        game.addLocalNPCs(size, stream);
+        this.addLocalNPCs(size, stream);
         processNpcUpdateMasks(stream);
         for (int i = 0; i < game.entityRemovalCount; i++) {
             int l = game.removedEntityIndices[i];
@@ -178,5 +179,43 @@ public final class NpcUpdater {
                 npc.focusY = stream.readShortLE();
             }
         }
+    }
+
+    public void addLocalNPCs(int i, Stream stream) {
+        while (stream.bitPosition + 21 < i * 8) {
+            int k = stream.readBits(14);
+            if (k == 16383) {
+                break;
+            }
+            if (game.npcArray[k] == null) {
+                game.npcArray[k] = new NPC();
+            }
+            NPC npc = game.npcArray[k];
+            game.npcIndices[game.npcCount++] = k;
+            npc.lastUpdateCycle = game.loopCycle;
+            int l = stream.readBits(5);
+            if (l > 15) {
+                l -= 32;
+            }
+            int i1 = stream.readBits(5);
+            if (i1 > 15) {
+                i1 -= 32;
+            }
+            int j1 = stream.readBits(1);
+            npc.definition = EntityDef.forID(stream.readBits(ClientSettings.NPC_BITS));
+            int k1 = stream.readBits(1);
+            if (k1 == 1) {
+                game.playerUpdateIndices[game.playerUpdateCount++] = k;
+            }
+            npc.size = npc.definition.size;
+            npc.turnSpeed = npc.definition.turnSpeed;
+            npc.walkAnimation = npc.definition.walkAnimation;
+            npc.turn180Animation = npc.definition.turn180Animation;
+            npc.turn90CWAnimation = npc.definition.turn90CWAnimation;
+            npc.turn90CCWAnimation = npc.definition.turn90CCWAnimation;
+            npc.standAnimation = npc.definition.standAnimation;
+            npc.setPos(game.myPlayer.smallX[0] + i1, game.myPlayer.smallY[0] + l, j1 == 1);
+        }
+        stream.finishBitAccess();
     }
 }

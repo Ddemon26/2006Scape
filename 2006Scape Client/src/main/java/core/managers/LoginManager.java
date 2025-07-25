@@ -355,4 +355,30 @@ public final class LoginManager {
         }
         game.loginMessage2 = "Error connecting to server.";
     }
+
+    public void resetLogout() {
+        try {
+            if (game.socketStream != null) {
+                game.socketStream.close();
+            }
+        } catch (Exception _ex) {
+        }
+        game.socketStream = null;
+        game.loggedIn = false;
+        game.loginScreenState = 0;
+        // myUsername = "";
+        // myPassword = "";
+        game.unlinkMRUNodes();
+        game.worldController.initToNull();
+        for (int i = 0; i < 4; i++) {
+            game.collisionMaps[i].reset();
+        }
+
+        System.gc();
+        game.musicController.stopMidi();
+        game.currentSong = -1;
+        game.nextSong = -1;
+        game.previousSong = 0;
+        game.musicController.queueSong(10, game.musicVolume, false, 0);
+    }
 }

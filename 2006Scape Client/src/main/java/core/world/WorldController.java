@@ -135,6 +135,23 @@ public final class WorldController {
                 }
 	}
 
+        public int getTileHeight(int plane, int worldY, int worldX, int[][][] tileHeights, int[][][] tileFlags) {
+                int l = worldX >> 7;
+                int i1 = worldY >> 7;
+                if (l < 0 || i1 < 0 || l > 103 || i1 > 103) {
+                        return 0;
+                }
+                int j1 = plane;
+                if (j1 < 3 && (tileFlags[1][l][i1] & 2) == 2) {
+                        j1++;
+                }
+                int k1 = worldX & 0x7f;
+                int l1 = worldY & 0x7f;
+                int i2 = tileHeights[j1][l][i1] * (128 - k1) + tileHeights[j1][l + 1][i1] * k1 >> 7;
+                int j2 = tileHeights[j1][l][i1 + 1] * (128 - k1) + tileHeights[j1][l + 1][i1 + 1] * k1 >> 7;
+                return i2 * (128 - l1) + j2 * l1 >> 7;
+        }
+
         public void addTile(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2, int k2, int l2, int i3, int j3, int k3, int l3, int i4, int j4, int k4, int l4) {
 		if (l == 0) {
                     PlainTile tile = new PlainTile(k2, l2, i3, j3, -1, k4, false);

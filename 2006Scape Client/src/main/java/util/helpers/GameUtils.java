@@ -26,4 +26,42 @@ public final class GameUtils {
         }
         return " " + s;
     }
+
+    /**
+     * Formats numbers to K/M format with basic thresholds.
+     */
+    public static String intToKOrMil(int j) {
+        if (j < 0x186a0) {
+            return String.valueOf(j);
+        }
+        if (j < 0x989680) {
+            return j / 1000 + "K";
+        } else {
+            return j / 0xf4240 + "M";
+        }
+    }
+
+    /**
+     * Formats numbers with decimal precision and letter suffixes (K, M, B).
+     */
+    public static String intToShortLetter(long number) {
+        java.text.DecimalFormat nf = new java.text.DecimalFormat("0.0");
+        double i = number;
+        if (i >= 1e9) { // 1B
+            return nf.format((i / 1e9)) + "B";
+        }
+        if (i >= 1e7) { // 1K
+            return (int) (i / 1e6) + "M";
+        }
+        if (i >= 1e6) { // 1M
+            return nf.format((i / 1e6)) + "M";
+        }
+        if (i >= 1e4) { // 1K
+            return (int) (i / 1e3) + "K";
+        }
+        if (i >= 1e3) { // 1K
+            return nf.format((i / 1e3)) + "K";
+        }
+        return "" + number;
+    }
 }
