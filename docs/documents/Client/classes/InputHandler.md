@@ -8,5 +8,7 @@ Processes keyboard and mouse wheel input extracted from [`Game`](Game.md).
 final class InputHandler {
     static void handleKeyPressed(Game game, KeyEvent event)
     static void handleMouseWheelMoved(Game game, MouseWheelEvent event)
+    static void handleMouseWheelDragged(Game game, int dx, int dy)
+    static void processInput(Game game)
 }
 ```
