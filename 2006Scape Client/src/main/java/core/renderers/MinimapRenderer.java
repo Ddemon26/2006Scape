@@ -9,6 +9,7 @@ import game.entities.Player;
 import render.core.Background;
 import render.core.DrawingArea;
 import render.core.Texture;
+import render.core.Sprite;
 import render.geometry.Model;
 import ui.TextClass;
 import util.collections.NodeList;
@@ -198,7 +199,7 @@ public final class MinimapRenderer {
     for (int i = 0; i < game.minimapIconCount; i++) {
       int dx = game.minimapIconX[i] * 4 + 2 - game.myPlayer.x / 32;
       int dy = game.minimapIconY[i] * 4 + 2 - game.myPlayer.y / 32;
-      game.markMinimap(game.minimapIconSprites[i], dx, dy);
+      markMinimap(game.minimapIconSprites[i], dx, dy);
     }
     for (int mx = 0; mx < 104; mx++) {
       for (int my = 0; my < 104; my++) {
@@ -206,7 +207,7 @@ public final class MinimapRenderer {
         if (itemList != null) {
           int dx = mx * 4 + 2 - game.myPlayer.x / 32;
           int dy = my * 4 + 2 - game.myPlayer.y / 32;
-          game.markMinimap(game.mapDotItem, dx, dy);
+          markMinimap(game.mapDotItem, dx, dy);
         }
       }
     }
@@ -220,7 +221,7 @@ public final class MinimapRenderer {
         if (def != null && def.minimapVisible && def.clickable) {
           int dx = npc.x / 32 - game.myPlayer.x / 32;
           int dy = npc.y / 32 - game.myPlayer.y / 32;
-          game.markMinimap(game.mapDotNPC, dx, dy);
+          markMinimap(game.mapDotNPC, dx, dy);
         }
       }
     }
@@ -244,11 +245,11 @@ public final class MinimapRenderer {
           break;
         }
         if (team) {
-          game.markMinimap(game.mapDotTeam, dx, dy);
+          markMinimap(game.mapDotTeam, dx, dy);
         } else if (friend) {
-          game.markMinimap(game.mapDotFriend, dx, dy);
+          markMinimap(game.mapDotFriend, dx, dy);
         } else {
-          game.markMinimap(game.mapDotPlayer, dx, dy);
+          markMinimap(game.mapDotPlayer, dx, dy);
         }
       }
     }
@@ -282,7 +283,7 @@ public final class MinimapRenderer {
     if (game.destX != 0) {
       int dx = game.destX * 4 + 2 - game.myPlayer.x / 32;
       int dy = game.destY * 4 + 2 - game.myPlayer.y / 32;
-      game.markMinimap(game.mapFlag, dx, dy);
+      markMinimap(game.mapFlag, dx, dy);
     }
     DrawingArea.fillArea(3, 78, 0xffffff, 3, 97);
     game.tabAreaBuffer.initDrawingArea();
@@ -336,6 +337,28 @@ public final class MinimapRenderer {
         || iconId == ICON_DUNGEON
         || iconId == ICON_LADDER_UP
         || iconId == ICON_LADDER_DOWN;
+  }
+
+  /** Render a sprite on the minimap at the given offset. */
+  public void markMinimap(Sprite sprite, int dx, int dy) {
+    int angle = game.cameraYaw + game.minimapRotationOffset & 0x7ff;
+    int distSq = dx * dx + dy * dy;
+    if (distSq > 6400) {
+      return;
+    }
+    int sin = Model.sineTable[angle];
+    int cos = Model.cosineTable[angle];
+    sin = sin * 256 / (game.minimapZoom + 256);
+    cos = cos * 256 / (game.minimapZoom + 256);
+    int x = dy * sin + dx * cos >> 16;
+    int y = dy * cos - dx * sin >> 16;
+    if (distSq > 2500) {
+      sprite.drawWithMask(
+          game.mapBack, 83 - y - sprite.trimHeight / 2 - 4, 94 + x - sprite.trimWidth / 2 + 4);
+    } else {
+      sprite.drawTransparentSprite(
+          94 + x - sprite.trimWidth / 2 + 4, 83 - y - sprite.trimHeight / 2 - 4);
+    }
   }
 
   public void drawMinimapLoc(int i, int k, int l, int i1, int j1) {

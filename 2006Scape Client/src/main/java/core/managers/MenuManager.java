@@ -4,7 +4,13 @@ import core.engine.Game;
 import render.core.DrawingArea;
 import ui.RSInterface;
 import game.definitions.EntityDef;
+import game.definitions.ObjectDef;
+import game.definitions.ItemDef;
 import game.entities.Player;
+import game.entities.NPC;
+import game.items.Item;
+import render.geometry.Model;
+import util.collections.NodeList;
 
 /** Handles menu interactions extracted from {@link Game}. */
 public final class MenuManager {
@@ -277,6 +283,202 @@ public final class MenuManager {
       game.menuOffsetY = j2;
       game.menuWidth = i;
       game.menuHeight = 15 * game.menuActionRow + 22;
+    }
+  }
+
+  /** Build the 3D scene context menu for objects, NPCs, players and items. */
+  public void build3dScreenMenu() {
+    if (game.itemSelected == 0 && game.spellSelected == 0) {
+      game.menuActionName[game.menuActionRow] = "Walk here";
+      game.menuActionID[game.menuActionRow] = 516;
+      game.menuActionCmd2[game.menuActionRow] = game.mouseX;
+      game.menuActionCmd3[game.menuActionRow] = game.mouseY;
+      game.menuActionRow++;
+    }
+    int prev = -1;
+    for (int k = 0; k < Model.queueLength; k++) {
+      int uid = Model.faceQueue[k];
+      int tileX = uid & 0x7f;
+      int tileY = uid >> 7 & 0x7f;
+      int type = uid >> 29 & 3;
+      int id = uid >> 14 & 0x7fff;
+      if (uid == prev) {
+        continue;
+      }
+      prev = uid;
+      if (type == 2 && game.worldController.getObjectConfig(game.plane, tileX, tileY, uid) >= 0) {
+        ObjectDef def = ObjectDef.forID(id);
+        if (def.childrenIDs != null) {
+          def = def.getChildDefinition();
+        }
+        if (def == null) {
+          continue;
+        }
+        if (game.itemSelected == 1) {
+          game.menuActionName[game.menuActionRow] =
+              "Use " + game.selectedItemName + " with @cya@" + def.name;
+          game.menuActionID[game.menuActionRow] = 62;
+          game.menuActionCmd1[game.menuActionRow] = uid;
+          game.menuActionCmd2[game.menuActionRow] = tileX;
+          game.menuActionCmd3[game.menuActionRow] = tileY;
+          game.menuActionRow++;
+        } else if (game.spellSelected == 1) {
+          if ((game.spellUsableOn & 4) == 4) {
+            game.menuActionName[game.menuActionRow] = game.spellTooltip + " @cya@" + def.name;
+            game.menuActionID[game.menuActionRow] = 956;
+            game.menuActionCmd1[game.menuActionRow] = uid;
+            game.menuActionCmd2[game.menuActionRow] = tileX;
+            game.menuActionCmd3[game.menuActionRow] = tileY;
+            game.menuActionRow++;
+          }
+        } else {
+          if (def.actions != null) {
+            for (int opt = 4; opt >= 0; opt--) {
+              if (def.actions[opt] != null) {
+                game.menuActionName[game.menuActionRow] = def.actions[opt] + " @cya@" + def.name;
+                if (opt == 0) {
+                  game.menuActionID[game.menuActionRow] = 502;
+                }
+                if (opt == 1) {
+                  game.menuActionID[game.menuActionRow] = 900;
+                }
+                if (opt == 2) {
+                  game.menuActionID[game.menuActionRow] = 113;
+                }
+                if (opt == 3) {
+                  game.menuActionID[game.menuActionRow] = 872;
+                }
+                if (opt == 4) {
+                  game.menuActionID[game.menuActionRow] = 1062;
+                }
+                game.menuActionCmd1[game.menuActionRow] = uid;
+                game.menuActionCmd2[game.menuActionRow] = tileX;
+                game.menuActionCmd3[game.menuActionRow] = tileY;
+                game.menuActionRow++;
+              }
+            }
+          }
+          game.menuActionName[game.menuActionRow] =
+              "Examine @cya@" + def.name
+                  + (game.showInfo
+                      ? " @gre@(@whi@" + id + "@gre@) (@whi@" + (tileX + game.baseX) + "," + (tileY + game.baseY) + "@gre@)"
+                      : "");
+          game.menuActionID[game.menuActionRow] = 1226;
+          game.menuActionCmd1[game.menuActionRow] = def.type << 14;
+          game.menuActionCmd2[game.menuActionRow] = tileX;
+          game.menuActionCmd3[game.menuActionRow] = tileY;
+          game.menuActionRow++;
+        }
+      }
+      if (type == 1) {
+        NPC npc = game.npcArray[id];
+        if (npc.definition.size == 1 && (npc.x & 0x7f) == 64 && (npc.y & 0x7f) == 64) {
+          for (int j2 = 0; j2 < game.npcCount; j2++) {
+            NPC npc2 = game.npcArray[game.npcIndices[j2]];
+            if (npc2 != null
+                && npc2 != npc
+                && npc2.definition.size == 1
+                && npc2.x == npc.x
+                && npc2.y == npc.y) {
+              buildAtNPCMenu(npc2.definition, game.npcIndices[j2], tileY, tileX);
+            }
+          }
+
+          for (int l2 = 0; l2 < game.playerCount; l2++) {
+            Player pl = game.playerArray[game.playerIndices[l2]];
+            if (pl != null && pl.x == npc.x && pl.y == npc.y) {
+              buildAtPlayerMenu(tileX, game.playerIndices[l2], pl, tileY);
+            }
+          }
+        }
+        buildAtNPCMenu(npc.definition, id, tileY, tileX);
+      }
+      if (type == 0) {
+        Player player = game.playerArray[id];
+        if ((player.x & 0x7f) == 64 && (player.y & 0x7f) == 64) {
+          for (int k2 = 0; k2 < game.npcCount; k2++) {
+            NPC npc = game.npcArray[game.npcIndices[k2]];
+            if (npc != null && npc.definition.size == 1 && npc.x == player.x && npc.y == player.y) {
+              buildAtNPCMenu(npc.definition, game.npcIndices[k2], tileY, tileX);
+            }
+          }
+
+          for (int i3 = 0; i3 < game.playerCount; i3++) {
+            Player target = game.playerArray[game.playerIndices[i3]];
+            if (target != null && target != player && target.x == player.x && target.y == player.y) {
+              buildAtPlayerMenu(tileX, game.playerIndices[i3], target, tileY);
+            }
+          }
+        }
+        buildAtPlayerMenu(tileX, id, player, tileY);
+      }
+      if (type == 3) {
+        NodeList itemList = game.groundArray[game.plane][tileX][tileY];
+        if (itemList != null) {
+          for (Item item = (Item) itemList.getFirst(); item != null; item = (Item) itemList.getNext()) {
+            ItemDef itemDef = ItemDef.lookup(item.ID);
+            if (game.itemSelected == 1) {
+              game.menuActionName[game.menuActionRow] =
+                  "Use " + game.selectedItemName + " with @lre@" + itemDef.name;
+              game.menuActionID[game.menuActionRow] = 511;
+              game.menuActionCmd1[game.menuActionRow] = item.ID;
+              game.menuActionCmd2[game.menuActionRow] = tileX;
+              game.menuActionCmd3[game.menuActionRow] = tileY;
+              game.menuActionRow++;
+            } else if (game.spellSelected == 1) {
+              if ((game.spellUsableOn & 1) == 1) {
+                game.menuActionName[game.menuActionRow] = game.spellTooltip + " @lre@" + itemDef.name;
+                game.menuActionID[game.menuActionRow] = 94;
+                game.menuActionCmd1[game.menuActionRow] = item.ID;
+                game.menuActionCmd2[game.menuActionRow] = tileX;
+                game.menuActionCmd3[game.menuActionRow] = tileY;
+                game.menuActionRow++;
+              }
+            } else {
+              for (int j3 = 4; j3 >= 0; j3--) {
+                if (itemDef.groundActions != null && itemDef.groundActions[j3] != null) {
+                  game.menuActionName[game.menuActionRow] =
+                      itemDef.groundActions[j3] + " @lre@" + itemDef.name;
+                  if (j3 == 0) {
+                    game.menuActionID[game.menuActionRow] = 652;
+                  }
+                  if (j3 == 1) {
+                    game.menuActionID[game.menuActionRow] = 567;
+                  }
+                  if (j3 == 2) {
+                    game.menuActionID[game.menuActionRow] = 234;
+                  }
+                  if (j3 == 3) {
+                    game.menuActionID[game.menuActionRow] = 244;
+                  }
+                  if (j3 == 4) {
+                    game.menuActionID[game.menuActionRow] = 213;
+                  }
+                  game.menuActionCmd1[game.menuActionRow] = item.ID;
+                  game.menuActionCmd2[game.menuActionRow] = tileX;
+                  game.menuActionCmd3[game.menuActionRow] = tileY;
+                  game.menuActionRow++;
+                } else if (j3 == 2) {
+                  game.menuActionName[game.menuActionRow] = "Take @lre@" + itemDef.name;
+                  game.menuActionID[game.menuActionRow] = 234;
+                  game.menuActionCmd1[game.menuActionRow] = item.ID;
+                  game.menuActionCmd2[game.menuActionRow] = tileX;
+                  game.menuActionCmd3[game.menuActionRow] = tileY;
+                  game.menuActionRow++;
+                }
+              }
+
+              game.menuActionName[game.menuActionRow] =
+                  "Examine @lre@" + itemDef.name + (game.showInfo ? " @gre@(@whi@" + item.ID + "@gre@)" : "");
+              game.menuActionID[game.menuActionRow] = 1448;
+              game.menuActionCmd1[game.menuActionRow] = item.ID;
+              game.menuActionCmd2[game.menuActionRow] = tileX;
+              game.menuActionCmd3[game.menuActionRow] = tileY;
+              game.menuActionRow++;
+            }
+          }
+        }
+      }
     }
   }
 

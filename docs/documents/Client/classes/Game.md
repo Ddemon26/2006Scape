@@ -68,7 +68,7 @@ public void drawTextOnScreen(String s, String s1)
 public void doAction(int i)
 public void updateRestrictedArea()
 public void run()
-public void build3dScreenMenu()
+public void build3dScreenMenu() -> MenuManager.build3dScreenMenu
 public void cleanUpForQuit()
 public void printDebug()
 public void processInput() -> InputHandler.processInput
@@ -146,7 +146,7 @@ public void handleMapPackets(Stream stream, int j) -> MapPacketHandler.handleMap
 public static void setLowMem()
 public void updateNpcList(Stream stream) -> NpcUpdater.updateNpcList
 public void processLoginScreenInput() -> LoginScreen.processLoginScreenInput
-public void markMinimap(Sprite sprite, int i, int j)
+public void markMinimap(Sprite sprite, int i, int j) -> MinimapRenderer.markMinimap
 public void updateSceneObjects(int i, int j, int k, int l, int i1, int j1, int k1)
 public void updatePlayers(int i, Stream stream) -> PlayerUpdater.updatePlayers
 public void setCameraPos(int j, int k, int l, int i1, int j1, int k1) -> CameraManager.setCameraPos

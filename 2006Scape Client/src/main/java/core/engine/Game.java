@@ -2104,214 +2104,6 @@ public class Game extends RSApplet {
     }
   }
 
-  public void build3dScreenMenu() {
-    if (itemSelected == 0 && spellSelected == 0) {
-      menuActionName[menuActionRow] = "Walk here";
-      menuActionID[menuActionRow] = 516;
-      menuActionCmd2[menuActionRow] = super.mouseX;
-      menuActionCmd3[menuActionRow] = super.mouseY;
-      menuActionRow++;
-    }
-    int j = -1;
-    for (int k = 0; k < Model.queueLength; k++) {
-      int l = Model.faceQueue[k];
-      int i1 = l & 0x7f;
-      int j1 = l >> 7 & 0x7f;
-      int k1 = l >> 29 & 3;
-      int l1 = l >> 14 & 0x7fff;
-      if (l == j) {
-        continue;
-      }
-      j = l;
-      if (k1 == 2 && worldController.getObjectConfig(plane, i1, j1, l) >= 0) {
-        ObjectDef objectDef = ObjectDef.forID(l1);
-        if (objectDef.childrenIDs != null) {
-          objectDef = objectDef.getChildDefinition();
-        }
-        if (objectDef == null) {
-          continue;
-        }
-        if (itemSelected == 1) {
-          menuActionName[menuActionRow] =
-              "Use " + selectedItemName + " with @cya@" + objectDef.name;
-          menuActionID[menuActionRow] = 62;
-          menuActionCmd1[menuActionRow] = l;
-          menuActionCmd2[menuActionRow] = i1;
-          menuActionCmd3[menuActionRow] = j1;
-          menuActionRow++;
-        } else if (spellSelected == 1) {
-          if ((spellUsableOn & 4) == 4) {
-            menuActionName[menuActionRow] = spellTooltip + " @cya@" + objectDef.name;
-            menuActionID[menuActionRow] = 956;
-            menuActionCmd1[menuActionRow] = l;
-            menuActionCmd2[menuActionRow] = i1;
-            menuActionCmd3[menuActionRow] = j1;
-            menuActionRow++;
-          }
-        } else {
-          if (objectDef.actions != null) {
-            for (int i2 = 4; i2 >= 0; i2--) {
-              if (objectDef.actions[i2] != null) {
-                menuActionName[menuActionRow] = objectDef.actions[i2] + " @cya@" + objectDef.name;
-                if (i2 == 0) {
-                  menuActionID[menuActionRow] = 502;
-                }
-                if (i2 == 1) {
-                  menuActionID[menuActionRow] = 900;
-                }
-                if (i2 == 2) {
-                  menuActionID[menuActionRow] = 113;
-                }
-                if (i2 == 3) {
-                  menuActionID[menuActionRow] = 872;
-                }
-                if (i2 == 4) {
-                  menuActionID[menuActionRow] = 1062;
-                }
-                menuActionCmd1[menuActionRow] = l;
-                menuActionCmd2[menuActionRow] = i1;
-                menuActionCmd3[menuActionRow] = j1;
-                menuActionRow++;
-              }
-            }
-          }
-          menuActionName[menuActionRow] =
-              "Examine @cya@"
-                  + objectDef.name
-                  + (showInfo
-                      ? " @gre@(@whi@"
-                          + l1
-                          + "@gre@) (@whi@"
-                          + (i1 + baseX)
-                          + ","
-                          + (j1 + baseY)
-                          + "@gre@)"
-                      : "");
-          menuActionID[menuActionRow] = 1226;
-          menuActionCmd1[menuActionRow] = objectDef.type << 14;
-          menuActionCmd2[menuActionRow] = i1;
-          menuActionCmd3[menuActionRow] = j1;
-          menuActionRow++;
-        }
-      }
-      if (k1 == 1) {
-        NPC npc = npcArray[l1];
-        if (npc.definition.size == 1 && (npc.x & 0x7f) == 64 && (npc.y & 0x7f) == 64) {
-          for (int j2 = 0; j2 < npcCount; j2++) {
-            NPC npc2 = npcArray[npcIndices[j2]];
-            if (npc2 != null
-                && npc2 != npc
-                && npc2.definition.size == 1
-                && npc2.x == npc.x
-                && npc2.y == npc.y) {
-              buildAtNPCMenu(npc2.definition, npcIndices[j2], j1, i1);
-            }
-          }
-
-          for (int l2 = 0; l2 < playerCount; l2++) {
-            Player player = playerArray[playerIndices[l2]];
-            if (player != null && player.x == npc.x && player.y == npc.y) {
-              buildAtPlayerMenu(i1, playerIndices[l2], player, j1);
-            }
-          }
-        }
-        buildAtNPCMenu(npc.definition, l1, j1, i1);
-      }
-      if (k1 == 0) {
-        Player player = playerArray[l1];
-        if ((player.x & 0x7f) == 64 && (player.y & 0x7f) == 64) {
-          for (int k2 = 0; k2 < npcCount; k2++) {
-            NPC npc = npcArray[npcIndices[k2]];
-            if (npc != null && npc.definition.size == 1 && npc.x == player.x && npc.y == player.y) {
-              buildAtNPCMenu(npc.definition, npcIndices[k2], j1, i1);
-            }
-          }
-
-          for (int i3 = 0; i3 < playerCount; i3++) {
-            Player targetPlayer = playerArray[playerIndices[i3]];
-            if (targetPlayer != null
-                && targetPlayer != player
-                && targetPlayer.x == player.x
-                && targetPlayer.y == player.y) {
-              buildAtPlayerMenu(i1, playerIndices[i3], targetPlayer, j1);
-            }
-          }
-        }
-        buildAtPlayerMenu(i1, l1, player, j1);
-      }
-      if (k1 == 3) {
-        NodeList itemList = groundArray[plane][i1][j1];
-        if (itemList != null) {
-          for (Item item = (Item) itemList.getFirst();
-              item != null;
-              item = (Item) itemList.getNext()) {
-            ItemDef itemDef = ItemDef.lookup(item.ID);
-            if (itemSelected == 1) {
-              menuActionName[menuActionRow] =
-                  "Use " + selectedItemName + " with @lre@" + itemDef.name;
-              menuActionID[menuActionRow] = 511;
-              menuActionCmd1[menuActionRow] = item.ID;
-              menuActionCmd2[menuActionRow] = i1;
-              menuActionCmd3[menuActionRow] = j1;
-              menuActionRow++;
-            } else if (spellSelected == 1) {
-              if ((spellUsableOn & 1) == 1) {
-                menuActionName[menuActionRow] = spellTooltip + " @lre@" + itemDef.name;
-                menuActionID[menuActionRow] = 94;
-                menuActionCmd1[menuActionRow] = item.ID;
-                menuActionCmd2[menuActionRow] = i1;
-                menuActionCmd3[menuActionRow] = j1;
-                menuActionRow++;
-              }
-            } else {
-              for (int j3 = 4; j3 >= 0; j3--) {
-                if (itemDef.groundActions != null && itemDef.groundActions[j3] != null) {
-                  menuActionName[menuActionRow] =
-                      itemDef.groundActions[j3] + " @lre@" + itemDef.name;
-                  if (j3 == 0) {
-                    menuActionID[menuActionRow] = 652;
-                  }
-                  if (j3 == 1) {
-                    menuActionID[menuActionRow] = 567;
-                  }
-                  if (j3 == 2) {
-                    menuActionID[menuActionRow] = 234;
-                  }
-                  if (j3 == 3) {
-                    menuActionID[menuActionRow] = 244;
-                  }
-                  if (j3 == 4) {
-                    menuActionID[menuActionRow] = 213;
-                  }
-                  menuActionCmd1[menuActionRow] = item.ID;
-                  menuActionCmd2[menuActionRow] = i1;
-                  menuActionCmd3[menuActionRow] = j1;
-                  menuActionRow++;
-                } else if (j3 == 2) {
-                  menuActionName[menuActionRow] = "Take @lre@" + itemDef.name;
-                  menuActionID[menuActionRow] = 234;
-                  menuActionCmd1[menuActionRow] = item.ID;
-                  menuActionCmd2[menuActionRow] = i1;
-                  menuActionCmd3[menuActionRow] = j1;
-                  menuActionRow++;
-                }
-              }
-
-              menuActionName[menuActionRow] =
-                  "Examine @lre@"
-                      + itemDef.name
-                      + (showInfo ? " @gre@(@whi@" + item.ID + "@gre@)" : "");
-              menuActionID[menuActionRow] = 1448;
-              menuActionCmd1[menuActionRow] = item.ID;
-              menuActionCmd2[menuActionRow] = i1;
-              menuActionCmd3[menuActionRow] = j1;
-              menuActionRow++;
-            }
-          }
-        }
-      }
-    }
-  }
 
   public void cleanUpForQuit() {
     Signlink.reporterror = false;
@@ -2855,7 +2647,7 @@ public class Game extends RSApplet {
       int k2 = (int) (Math.cos(d) * 57D);
       mapEdge.drawRotated(83 - k2 - 20, d, 94 + j2 + 4 - 10);
     } else {
-      markMinimap(sprite, x, y);
+      minimapRenderer.markMinimap(sprite, x, y);
     }
   }
 
@@ -2882,7 +2674,7 @@ public class Game extends RSApplet {
         buildInterfaceMenu(
             4, RSInterface.interfaceCache[openInterfaceID], super.mouseX, 4, super.mouseY, 0);
       } else {
-        build3dScreenMenu();
+        menuManager.build3dScreenMenu();
       }
     }
     if (hoveredWidgetId != lastHoveredWidgetId) {
@@ -5057,26 +4849,6 @@ public class Game extends RSApplet {
     loginScreen.processLoginScreenInput();
   }
 
-  public void markMinimap(Sprite sprite, int i, int j) {
-    int k = cameraYaw + minimapRotationOffset & 0x7ff;
-    int l = i * i + j * j;
-    if (l > 6400) {
-      return;
-    }
-    int i1 = Model.sineTable[k];
-    int j1 = Model.cosineTable[k];
-    i1 = i1 * 256 / (minimapZoom + 256);
-    j1 = j1 * 256 / (minimapZoom + 256);
-    int k1 = j * i1 + i * j1 >> 16;
-    int l1 = j * j1 - i * i1 >> 16;
-    if (l > 2500) {
-      sprite.drawWithMask(
-          mapBack, 83 - l1 - sprite.trimHeight / 2 - 4, 94 + k1 - sprite.trimWidth / 2 + 4);
-    } else {
-      sprite.drawTransparentSprite(
-          94 + k1 - sprite.trimWidth / 2 + 4, 83 - l1 - sprite.trimHeight / 2 - 4);
-    }
-  }
 
   public void updateSceneObjects(int i, int j, int k, int l, int i1, int j1, int k1) {
     if (i1 >= 1 && i >= 1 && i1 <= 102 && i <= 102) {
