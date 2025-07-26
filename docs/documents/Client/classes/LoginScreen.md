@@ -11,5 +11,6 @@ final class LoginScreen {
     void drawLogo()
     void processLoginScreenInput()
     void drawLoginScreen(boolean flag)
+    void showErrorScreen()
 }
 ```

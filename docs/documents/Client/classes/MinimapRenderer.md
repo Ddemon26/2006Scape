@@ -13,5 +13,6 @@ final class MinimapRenderer {
     void npcScreenPos(Entity entity, int height)
     void calcEntityScreenPos(int x, int z, int y)
     void processMinimapActions()
+    void processMainScreenClick()
 }
 ```
