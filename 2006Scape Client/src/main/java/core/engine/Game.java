@@ -357,96 +357,6 @@ public class Game extends RSApplet {
     minimapRenderer.drawMinimapLoc(i, k, l, i1, j1);
   }
 
-  public void loadTitleScreen() {
-    loginBoxBackground = new Background(titleStreamLoader, "titlebox", 0);
-    loginButtonBackground = new Background(titleStreamLoader, "titlebutton", 0);
-    runeBackgrounds = new Background[12];
-    int j = 0;
-    try {
-      j = Integer.parseInt(getParameter("fl_icon"));
-    } catch (Exception _ex) {
-    }
-    if (j == 0) {
-      for (int k = 0; k < 12; k++) {
-        runeBackgrounds[k] = new Background(titleStreamLoader, "runes", k);
-      }
-
-    } else {
-      for (int l = 0; l < 12; l++) {
-        runeBackgrounds[l] = new Background(titleStreamLoader, "runes", 12 + (l & 3));
-      }
-    }
-    titleBackgroundLeft = new Sprite(128, 265);
-    titleBackgroundRight = new Sprite(128, 265);
-    System.arraycopy(titleLeftProducer.pixels, 0, titleBackgroundLeft.pixels, 0, 33920);
-
-    System.arraycopy(titleRightProducer.pixels, 0, titleBackgroundRight.pixels, 0, 33920);
-
-    flamePaletteRed = new int[256];
-    for (int k1 = 0; k1 < 64; k1++) {
-      flamePaletteRed[k1] = k1 * 0x40000;
-    }
-
-    for (int l1 = 0; l1 < 64; l1++) {
-      flamePaletteRed[l1 + 64] = 0xff0000 + 1024 * l1;
-    }
-
-    for (int i2 = 0; i2 < 64; i2++) {
-      flamePaletteRed[i2 + 128] = 0xffff00 + 4 * i2;
-    }
-
-    for (int j2 = 0; j2 < 64; j2++) {
-      flamePaletteRed[j2 + 192] = 0xffffff;
-    }
-
-    flamePaletteGreen = new int[256];
-    for (int k2 = 0; k2 < 64; k2++) {
-      flamePaletteGreen[k2] = k2 * 1024;
-    }
-
-    for (int l2 = 0; l2 < 64; l2++) {
-      flamePaletteGreen[l2 + 64] = 0x00ff00 + 4 * l2;
-    }
-
-    for (int i3 = 0; i3 < 64; i3++) {
-      flamePaletteGreen[i3 + 128] = 0x00ffff + 0x40000 * i3;
-    }
-
-    for (int j3 = 0; j3 < 64; j3++) {
-      flamePaletteGreen[j3 + 192] = 0xffffff;
-    }
-
-    flamePaletteBlue = new int[256];
-    for (int k3 = 0; k3 < 64; k3++) {
-      flamePaletteBlue[k3] = k3 * 4;
-    }
-
-    for (int l3 = 0; l3 < 64; l3++) {
-      flamePaletteBlue[l3 + 64] = 255 + 0x40000 * l3;
-    }
-
-    for (int i4 = 0; i4 < 64; i4++) {
-      flamePaletteBlue[i4 + 128] = 0xff00ff + 1024 * i4;
-    }
-
-    for (int j4 = 0; j4 < 64; j4++) {
-      flamePaletteBlue[j4 + 192] = 0xffffff;
-    }
-
-    flameBuffer = new int[256];
-    flameGradient1 = new int[32768];
-    flameGradient2 = new int[32768];
-    randomizeBackground(null);
-    flameBuffer1 = new int[32768];
-    flameBuffer2 = new int[32768];
-    drawLoadingText(10, "Connecting to fileserver");
-    if (!flameThreadActive) {
-      drawFlames = true;
-      flameThreadActive = true;
-      startRunnable(this, 2);
-    }
-  }
-
   public static void setHighMem() {
     WorldController.lowMem = false;
     Texture.lowMem = false;
@@ -475,60 +385,6 @@ public class Game extends RSApplet {
     }
   }
 
-  public void drawLogo() {
-    byte abyte0[] = titleStreamLoader.getFileData("title.dat");
-    Sprite sprite = new Sprite(abyte0, this);
-    titleLeftProducer.initDrawingArea();
-    sprite.drawSprite(0, 0);
-    titleRightProducer.initDrawingArea();
-    sprite.drawSprite(-637, 0);
-    titleImageProducer.initDrawingArea();
-    sprite.drawSprite(-128, 0);
-    loginLeftProducer.initDrawingArea();
-    sprite.drawSprite(-202, -371);
-    loginRightProducer.initDrawingArea();
-    sprite.drawSprite(-202, -171);
-    titleTopLeftProducer.initDrawingArea();
-    sprite.drawSprite(0, -265);
-    titleTopRightProducer.initDrawingArea();
-    sprite.drawSprite(-562, -265);
-    titleBottomLeftProducer.initDrawingArea();
-    sprite.drawSprite(-128, -171);
-    titleBottomRightProducer.initDrawingArea();
-    sprite.drawSprite(-562, -171);
-    int ai[] = new int[sprite.width];
-    for (int j = 0; j < sprite.height; j++) {
-      for (int k = 0; k < sprite.width; k++) {
-        ai[k] = sprite.pixels[sprite.width - k - 1 + sprite.width * j];
-      }
-
-      System.arraycopy(ai, 0, sprite.pixels, sprite.width * j, sprite.width);
-    }
-
-    titleLeftProducer.initDrawingArea();
-    sprite.drawSprite(382, 0);
-    titleRightProducer.initDrawingArea();
-    sprite.drawSprite(-255, 0);
-    titleImageProducer.initDrawingArea();
-    sprite.drawSprite(254, 0);
-    loginLeftProducer.initDrawingArea();
-    sprite.drawSprite(180, -371);
-    loginRightProducer.initDrawingArea();
-    sprite.drawSprite(180, -171);
-    titleTopLeftProducer.initDrawingArea();
-    sprite.drawSprite(382, -265);
-    titleTopRightProducer.initDrawingArea();
-    sprite.drawSprite(-180, -265);
-    titleBottomLeftProducer.initDrawingArea();
-    sprite.drawSprite(254, -171);
-    titleBottomRightProducer.initDrawingArea();
-    sprite.drawSprite(-180, -171);
-    sprite = new Sprite(titleStreamLoader, "logo", 0);
-    titleImageProducer.initDrawingArea();
-    sprite.drawTransparentSprite(382 - sprite.width / 2 - 128, 18);
-    sprite = null;
-    System.gc();
-  }
 
   public void processOnDemandQueue() {
     do {
@@ -2574,8 +2430,8 @@ public class Game extends RSApplet {
     titleBottomRightProducer = new RSImageProducer(75, 94, getGameComponent());
     DrawingArea.setAllPixelsToZero();
     if (titleStreamLoader != null) {
-      drawLogo();
-      loadTitleScreen();
+      loginScreen.drawLogo();
+      loginScreen.loadTitleScreen();
     }
     welcomeScreenRaised = true;
   }
@@ -2914,8 +2770,8 @@ public class Game extends RSApplet {
       boldFont = new TextDrawingArea(false, "p12_full", titleStreamLoader);
       chatTextDrawingArea = new TextDrawingArea(false, "b12_full", titleStreamLoader);
       TextDrawingArea smallFont = new TextDrawingArea(true, "q8_full", titleStreamLoader);
-      drawLogo();
-      loadTitleScreen();
+      loginScreen.drawLogo();
+      loginScreen.loadTitleScreen();
       // CacheUtils.repackCacheIndex(1, decompressors);
       GameMusicController.constructMusic();
       StreamLoader streamLoader = streamLoaderForName(2, "config", "config", expectedCRCs[2], 30);
