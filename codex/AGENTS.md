@@ -7,6 +7,21 @@ push branches and open **standard pull‑requests (PRs)** against the 2006Scape 
 > anything is unclear, **pause execution and ask the maintainer directly in the sandbox conversation** (stdout).
 > **Do NOT open Issues or clarification PRs.**
 
+## ✨ Addendum — Mandatory Rule for God‑Class Decomposition (Section 6)
+
+> **This rule is non‑negotiable and MUST be enforced by any automated agent operating on 2006Scape.**
+
+When breaking down a *god class* into smaller, single‑responsibility units, the agent **MUST NOT** alter any existing code or logic. Implementation code **MUST** be copied verbatim (line‑for‑line) into the new classes.
+
+*The only permitted edits during this operation are:*
+
+1. Changing field or method access modifiers from `private` to `public` **solely** to expose members that need to remain accessible across the newly separated classes.
+2. Moving the **unmodified** code into appropriately named, smaller classes/files that satisfy the size and 
+   responsibility guidelines already specified in **Section 6 Refactor Heuristics**.
+
+Any deviation (e.g., re‑ordering logic, renaming methods, extracting smaller helper methods, or introducing additional behaviour) **MUST** cause the agent to halt and emit a **\[BOT‑QUESTION]** for human guidance.
+
+
 ---
 
 ## 0 Glossary
