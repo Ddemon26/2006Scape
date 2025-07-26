@@ -4,6 +4,9 @@ import core.engine.ClientSettings;
 import core.engine.Game;
 import render.core.Background;
 import render.core.Sprite;
+import render.core.DrawingArea;
+import render.core.RSImageProducer;
+import render.core.Texture;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -421,5 +424,96 @@ public final class LoginScreen {
       g.drawString("2: Try rebooting your computer, and reloading", 30, l);
       l += 30;
     }
+  }
+
+  /** Recreate image producers used by the login screen. */
+  public void resetImageProducers() {
+    if (game.titleImageProducer != null) {
+      return;
+    }
+    game.fullGameScreen = null;
+    game.fullScreenBackground = null;
+    game.chatBackground = null;
+    game.textBackground = null;
+    game.tabAreaBuffer = null;
+    game.tabAreaIconBuffer = null;
+    game.tabAreaBackgroundBuffer = null;
+    game.mapEdgeBuffer = null;
+    game.titleLeftProducer = new RSImageProducer(128, 265, game.getGameComponent());
+    DrawingArea.setAllPixelsToZero();
+    game.titleRightProducer = new RSImageProducer(128, 265, game.getGameComponent());
+    DrawingArea.setAllPixelsToZero();
+    game.titleImageProducer = new RSImageProducer(509, 171, game.getGameComponent());
+    DrawingArea.setAllPixelsToZero();
+    game.loginLeftProducer = new RSImageProducer(360, 132, game.getGameComponent());
+    DrawingArea.setAllPixelsToZero();
+    game.loginRightProducer = new RSImageProducer(360, 200, game.getGameComponent());
+    DrawingArea.setAllPixelsToZero();
+    game.titleTopLeftProducer = new RSImageProducer(202, 238, game.getGameComponent());
+    DrawingArea.setAllPixelsToZero();
+    game.titleTopRightProducer = new RSImageProducer(203, 238, game.getGameComponent());
+    DrawingArea.setAllPixelsToZero();
+    game.titleBottomLeftProducer = new RSImageProducer(74, 94, game.getGameComponent());
+    DrawingArea.setAllPixelsToZero();
+    game.titleBottomRightProducer = new RSImageProducer(75, 94, game.getGameComponent());
+    DrawingArea.setAllPixelsToZero();
+    if (game.titleStreamLoader != null) {
+      drawLogo();
+      loadTitleScreen();
+    }
+    game.welcomeScreenRaised = true;
+  }
+
+  /** Reset all image producers before entering the game. */
+  public void resetAllImageProducers() {
+    if (game.fullGameScreen != null) return;
+    game.nullLoader();
+    game.titleImageProducer = null;
+    game.loginLeftProducer = null;
+    game.loginRightProducer = null;
+    game.titleTopLeftProducer = null;
+    game.titleTopRightProducer = null;
+    game.titleBottomLeftProducer = null;
+    game.titleBottomRightProducer = null;
+    game.fullScreenBackground = null;
+    game.chatBackground = null;
+    game.textBackground = null;
+    game.tabAreaBuffer = null;
+    game.tabAreaIconBuffer = null;
+    game.mapEdgeBuffer = null;
+    game.tabAreaBackgroundBuffer = null;
+    game.fullGameScreen = new RSImageProducer(765, 503, game.getGameComponent());
+    game.welcomeScreenRaised = true;
+  }
+
+  /** Reset producers when login fails or reconnecting. */
+  public void resetImageProducers2() {
+    if (game.fullScreenBackground != null) {
+      return;
+    }
+    game.nullLoader();
+    game.fullGameScreen = null;
+    game.titleImageProducer = null;
+    game.loginLeftProducer = null;
+    game.loginRightProducer = null;
+    game.titleLeftProducer = null;
+    game.titleRightProducer = null;
+    game.titleTopLeftProducer = null;
+    game.titleTopRightProducer = null;
+    game.titleBottomLeftProducer = null;
+    game.titleBottomRightProducer = null;
+    game.fullScreenBackground = new RSImageProducer(479, 96, game.getGameComponent());
+    game.chatBackground = new RSImageProducer(172, 156, game.getGameComponent());
+    DrawingArea.setAllPixelsToZero();
+    game.mapBack.draw(0, 0);
+    game.textBackground = new RSImageProducer(190, 261, game.getGameComponent());
+    game.tabAreaBuffer = new RSImageProducer(512, 334, game.getGameComponent());
+    DrawingArea.setAllPixelsToZero();
+    game.tabAreaIconBuffer = new RSImageProducer(496, 50, game.getGameComponent());
+    game.tabAreaBackgroundBuffer = new RSImageProducer(269, 37, game.getGameComponent());
+    game.mapEdgeBuffer = new RSImageProducer(249, 45, game.getGameComponent());
+    game.welcomeScreenRaised = true;
+    game.tabAreaBuffer.initDrawingArea();
+    Texture.lineOffsets = game.chatBoxAreaOffsets;
   }
 }

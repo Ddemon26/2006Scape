@@ -14,5 +14,6 @@ final class MinimapRenderer {
     void calcEntityScreenPos(int x, int z, int y)
     void processMinimapActions()
     void processMainScreenClick()
+    void drawMinimapHint(Sprite sprite, int y, int x)
 }
 ```

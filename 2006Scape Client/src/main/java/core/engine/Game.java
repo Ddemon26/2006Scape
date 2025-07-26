@@ -2180,215 +2180,27 @@ public class Game extends RSApplet {
     interfaceInputHandler.processTabClick();
   }
   public void resetImageProducers() {
-    if (titleImageProducer != null) {
-      return;
-    }
-    super.fullGameScreen = null;
-    fullScreenBackground = null;
-    chatBackground = null;
-    textBackground = null;
-    tabAreaBuffer = null;
-    tabAreaIconBuffer = null;
-    tabAreaBackgroundBuffer = null;
-    mapEdgeBuffer = null;
-    titleLeftProducer = new RSImageProducer(128, 265, getGameComponent());
-    DrawingArea.setAllPixelsToZero();
-    titleRightProducer = new RSImageProducer(128, 265, getGameComponent());
-    DrawingArea.setAllPixelsToZero();
-    titleImageProducer = new RSImageProducer(509, 171, getGameComponent());
-    DrawingArea.setAllPixelsToZero();
-    loginLeftProducer = new RSImageProducer(360, 132, getGameComponent());
-    DrawingArea.setAllPixelsToZero();
-    loginRightProducer = new RSImageProducer(360, 200, getGameComponent());
-    DrawingArea.setAllPixelsToZero();
-    titleTopLeftProducer = new RSImageProducer(202, 238, getGameComponent());
-    DrawingArea.setAllPixelsToZero();
-    titleTopRightProducer = new RSImageProducer(203, 238, getGameComponent());
-    DrawingArea.setAllPixelsToZero();
-    titleBottomLeftProducer = new RSImageProducer(74, 94, getGameComponent());
-    DrawingArea.setAllPixelsToZero();
-    titleBottomRightProducer = new RSImageProducer(75, 94, getGameComponent());
-    DrawingArea.setAllPixelsToZero();
-    if (titleStreamLoader != null) {
-      loginScreen.drawLogo();
-      loginScreen.loadTitleScreen();
-    }
-    welcomeScreenRaised = true;
+    loginScreen.resetImageProducers();
   }
 
   public void resetAllImageProducers() {
-    if (super.fullGameScreen != null) return;
-    nullLoader();
-    titleImageProducer = null;
-    loginLeftProducer = null;
-    loginRightProducer = null;
-    titleTopLeftProducer = null;
-    titleTopRightProducer = null;
-    titleBottomLeftProducer = null;
-    titleBottomRightProducer = null;
-    fullScreenBackground = null;
-    chatBackground = null;
-    textBackground = null;
-    tabAreaBuffer = null;
-    tabAreaIconBuffer = null;
-    mapEdgeBuffer = null;
-    tabAreaBackgroundBuffer = null;
-    super.fullGameScreen = new RSImageProducer(765, 503, getGameComponent());
-    welcomeScreenRaised = true;
+    loginScreen.resetAllImageProducers();
   }
 
   public void resetImageProducers2() {
-    if (fullScreenBackground != null) {
-      return;
-    }
-    nullLoader();
-    super.fullGameScreen = null;
-    titleImageProducer = null;
-    loginLeftProducer = null;
-    loginRightProducer = null;
-    titleLeftProducer = null;
-    titleRightProducer = null;
-    titleTopLeftProducer = null;
-    titleTopRightProducer = null;
-    titleBottomLeftProducer = null;
-    titleBottomRightProducer = null;
-    fullScreenBackground = new RSImageProducer(479, 96, getGameComponent());
-    chatBackground = new RSImageProducer(172, 156, getGameComponent());
-    DrawingArea.setAllPixelsToZero();
-    mapBack.draw(0, 0);
-    textBackground = new RSImageProducer(190, 261, getGameComponent());
-    tabAreaBuffer = new RSImageProducer(512, 334, getGameComponent());
-    DrawingArea.setAllPixelsToZero();
-    tabAreaIconBuffer = new RSImageProducer(496, 50, getGameComponent());
-    tabAreaBackgroundBuffer = new RSImageProducer(269, 37, getGameComponent());
-    mapEdgeBuffer = new RSImageProducer(249, 45, getGameComponent());
-    welcomeScreenRaised = true;
-    tabAreaBuffer.initDrawingArea();
-    Texture.lineOffsets = chatBoxAreaOffsets;
-    // SignLink.midii.fadeOut();
+    loginScreen.resetImageProducers2();
   }
 
   public void drawMinimapHint(Sprite sprite, int y, int x) {
-    int l = x * x + y * y;
-    if (l > 4225 && l < 90000) {
-      int i1 = cameraYaw + minimapRotationOffset & 0x7ff;
-      int j1 = Model.sineTable[i1];
-      int k1 = Model.cosineTable[i1];
-      j1 = (j1 * 256) / (minimapZoom + 256);
-      k1 = (k1 * 256) / (minimapZoom + 256);
-      int l1 = y * j1 + x * k1 >> 16;
-      int i2 = y * k1 - x * j1 >> 16;
-      double d = Math.atan2((double) l1, (double) i2);
-      int j2 = (int) (Math.sin(d) * 63D);
-      int k2 = (int) (Math.cos(d) * 57D);
-      mapEdge.drawRotated(83 - k2 - 20, d, 94 + j2 + 4 - 10);
-    } else {
-      minimapRenderer.markMinimap(sprite, x, y);
-    }
+    minimapRenderer.drawMinimapHint(sprite, y, x);
   }
 
   public void processRightClick() {
-    if (activeInterfaceType != 0) {
-      return;
-    }
-    menuActionName[0] = "Cancel";
-    menuActionID[0] = 1107;
-    menuActionRow = 1;
-    if (fullScreenInterfaceId != -1) {
-      hoveredWidgetId = 0;
-      buildInterfaceMenu(
-          0, RSInterface.interfaceCache[fullScreenInterfaceId], super.mouseX, 0, super.mouseY, 0);
-      if (hoveredWidgetId != lastHoveredWidgetId) {
-        lastHoveredWidgetId = hoveredWidgetId;
-      }
-      return;
-    }
-    buildSplitPrivateChatMenu();
-    hoveredWidgetId = 0;
-    if (super.mouseX > 4 && super.mouseY > 4 && super.mouseX < 516 && super.mouseY < 338) {
-      if (openInterfaceID != -1) {
-        buildInterfaceMenu(
-            4, RSInterface.interfaceCache[openInterfaceID], super.mouseX, 4, super.mouseY, 0);
-      } else {
-        menuManager.build3dScreenMenu();
-      }
-    }
-    if (hoveredWidgetId != lastHoveredWidgetId) {
-      lastHoveredWidgetId = hoveredWidgetId;
-    }
-    hoveredWidgetId = 0;
-    if (super.mouseX > 553 && super.mouseY > 205 && super.mouseX < 743 && super.mouseY < 466) {
-      if (invOverlayInterfaceID != -1) {
-        buildInterfaceMenu(
-            553,
-            RSInterface.interfaceCache[invOverlayInterfaceID],
-            super.mouseX,
-            205,
-            super.mouseY,
-            0);
-      } else if (tabInterfaceIDs[tabID] != -1) {
-        buildInterfaceMenu(
-            553,
-            RSInterface.interfaceCache[tabInterfaceIDs[tabID]],
-            super.mouseX,
-            205,
-            super.mouseY,
-            0);
-      }
-    }
-    if (hoveredWidgetId != hoveredTabId) {
-      needDrawTabArea = true;
-      hoveredTabId = hoveredWidgetId;
-    }
-    hoveredWidgetId = 0;
-    if (super.mouseX > 17 && super.mouseY > 357 && super.mouseX < 496 && super.mouseY < 453) {
-      if (backDialogID != -1) {
-        buildInterfaceMenu(
-            17, RSInterface.interfaceCache[backDialogID], super.mouseX, 357, super.mouseY, 0);
-      } else if (dialogID != -1) {
-        buildInterfaceMenu(
-            17, RSInterface.interfaceCache[dialogID], super.mouseX, 357, super.mouseY, 0);
-      } else if (super.mouseY < 434 && super.mouseX < 426) {
-        chatAreaRenderer.buildChatAreaMenu(super.mouseY - 357);
-      }
-    }
-    if ((backDialogID != -1 || dialogID != -1)
-        && hoveredWidgetId != lastInteractionId) { // TODO remove if any issues
-      inputTaken = true;
-      lastInteractionId = hoveredWidgetId;
-    }
-    processMinimapActions();
-    boolean flag = false;
-    while (!flag) {
-      flag = true;
-      for (int j = 0; j < menuActionRow - 1; j++) {
-        if (menuActionID[j] < 1000 && menuActionID[j + 1] > 1000) {
-          String s = menuActionName[j];
-          menuActionName[j] = menuActionName[j + 1];
-          menuActionName[j + 1] = s;
-          int k = menuActionID[j];
-          menuActionID[j] = menuActionID[j + 1];
-          menuActionID[j + 1] = k;
-          k = menuActionCmd2[j];
-          menuActionCmd2[j] = menuActionCmd2[j + 1];
-          menuActionCmd2[j + 1] = k;
-          k = menuActionCmd3[j];
-          menuActionCmd3[j] = menuActionCmd3[j + 1];
-          menuActionCmd3[j + 1] = k;
-          k = menuActionCmd1[j];
-          menuActionCmd1[j] = menuActionCmd1[j + 1];
-          menuActionCmd1[j + 1] = k;
-          flag = false;
-        }
-      }
-    }
+    menuManager.processRightClick();
   }
 
   public int blendColors(int i, int j, int k) {
-    int l = 256 - k;
-    return ((i & 0xff00ff) * l + (j & 0xff00ff) * k & 0xff00ff00)
-            + ((i & 0xff00) * l + (j & 0xff00) * k & 0xff0000)
-        >> 8;
+    return GameUtils.blendColors(i, j, k);
   }
 
   public void login(String s, String s1, boolean flag) {
