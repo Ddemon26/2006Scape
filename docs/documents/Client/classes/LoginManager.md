@@ -8,5 +8,7 @@ Handles the network login handshake extracted from [`Game`](Game.md).
 final class LoginManager {
     LoginManager(Game game)
     void login(String username, String password, boolean flag)
+    void dropClient()
+    void resetLogout()
 }
 ```

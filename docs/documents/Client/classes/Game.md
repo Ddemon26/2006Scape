@@ -38,7 +38,7 @@ public void addFriend(long l) -> FriendManager.addFriend
 public int getTileHeight(int plane, int worldY, int worldX)
 public static String intToKOrMil(int j)
 public static String intToShortLetter(long number)
-public void resetLogout()
+public void resetLogout() -> LoginManager.resetLogout
 public void resetCharacterOptions()
 public void addLocalNPCs(int i, Stream stream)
 public void processGameLoop()
@@ -62,8 +62,8 @@ public void mainGameProcessor()
 public void locatePendingSpawns() -> PendingSpawnManager.locatePendingSpawns
 public void handleScrollbarInput(int i, int j, int k, int l, RSInterface scrollInterface, int i1, boolean flag, int j1) -> InterfaceInputHandler.handleScrollbarInput
 public boolean walkToObject(int i, int j, int k) -> Pathfinder.walkToObject
-public StreamLoader streamLoaderForName(int i, String s, String s1, int j, int k)
-public void dropClient()
+public StreamLoader streamLoaderForName(int i, String s, String s1, int j, int k) -> LoadingHandler.streamLoaderForName
+public void dropClient() -> LoginManager.dropClient
 public void drawTextOnScreen(String s, String s1)
 public void doAction(int i)
 public void updateRestrictedArea()
@@ -136,16 +136,16 @@ public void calcEntityScreenPos(int i, int j, int l) -> MinimapRenderer.calcEnti
 public void buildSplitPrivateChatMenu() -> ChatAreaRenderer.buildSplitPrivateChatMenu
 public void queuePendingSpawn(int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2) -> PendingSpawnManager.queuePendingSpawn
 public boolean interfaceIsSelected(RSInterface component)
-public DataInputStream openJagGrabInputStream(String s) throws IOException
+public DataInputStream openJagGrabInputStream(String s) throws IOException -> LoadingHandler.openJagGrabInputStream
 public void doFlamesDrawing()
 public void updateOtherPlayers(Stream stream) -> PlayerUpdater.updateOtherPlayers
-public void drawLoginScreen(boolean flag)
+public void drawLoginScreen(boolean flag) -> LoginScreen.drawLoginScreen
 public void drawFlames()
 public void raiseWelcomeScreen()
 public void handleMapPackets(Stream stream, int j) -> MapPacketHandler.handleMapPackets
 public static void setLowMem()
 public void updateNpcList(Stream stream) -> NpcUpdater.updateNpcList
-public void processLoginScreenInput()
+public void processLoginScreenInput() -> LoginScreen.processLoginScreenInput
 public void markMinimap(Sprite sprite, int i, int j)
 public void updateSceneObjects(int i, int j, int k, int l, int i1, int j1, int k1)
 public void updatePlayers(int i, Stream stream) -> PlayerUpdater.updatePlayers

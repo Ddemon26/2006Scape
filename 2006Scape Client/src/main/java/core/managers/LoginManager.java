@@ -360,6 +360,28 @@ public final class LoginManager {
     game.loginMessage2 = "Error connecting to server.";
   }
 
+  /** Handle a connection drop and attempt reconnection. */
+  public void dropClient() {
+    if (game.reconnectDelay > 0) {
+      resetLogout();
+      return;
+    }
+    game.drawTextOnScreen("Please wait - attempting to reestablish", "Connection lost");
+    game.minimapState = 0;
+    game.destX = 0;
+    RSSocket rsSocket = game.socketStream;
+    game.loggedIn = false;
+    game.loginFailures = 0;
+    login(game.myUsername, game.myPassword, true);
+    if (!game.loggedIn) {
+      resetLogout();
+    }
+    try {
+      rsSocket.close();
+    } catch (Exception _ex) {
+    }
+  }
+
   public void resetLogout() {
     try {
       if (game.socketStream != null) {
