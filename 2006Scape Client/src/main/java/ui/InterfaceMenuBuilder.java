@@ -139,10 +139,24 @@ public final class InterfaceMenuBuilder {
                 game.lastActiveInvInterface = child.id;
                 if (child.inv[index] > 0) {
                   ItemDef itemDef = ItemDef.lookup(child.inv[index] - 1);
-                  if (game.spellSelected == 1 && child.isInventoryInterface) {
+                  if (game.itemSelected == 1 && child.isInventoryInterface) {
+                    if (child.id != game.selectedItemInterfaceId
+                            || index != game.selectedItemSlot) {
+                      game.menuActionName[game.menuActionRow] =
+                              "Use "
+                                      + game.selectedItemName
+                                      + " with @lre@"
+                                      + itemDef.name;
+                      game.menuActionID[game.menuActionRow] = 870;
+                      game.menuActionCmd1[game.menuActionRow] = itemDef.id;
+                      game.menuActionCmd2[game.menuActionRow] = index;
+                      game.menuActionCmd3[game.menuActionRow] = child.id;
+                      game.menuActionRow++;
+                    }
+                  } else if (game.spellSelected == 1 && child.isInventoryInterface) {
                     if ((game.spellUsableOn & 0x10) == 16) {
                       game.menuActionName[game.menuActionRow] =
-                          game.spellTooltip + " @lre@" + itemDef.name;
+                              game.spellTooltip + " @lre@" + itemDef.name;
                       game.menuActionID[game.menuActionRow] = 582;
                       game.menuActionCmd1[game.menuActionRow] = itemDef.id;
                       game.menuActionCmd2[game.menuActionRow] = index;
