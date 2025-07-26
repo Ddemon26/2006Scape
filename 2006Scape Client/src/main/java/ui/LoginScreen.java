@@ -2,6 +2,8 @@ package ui;
 
 import core.engine.ClientSettings;
 import core.engine.Game;
+import render.core.Background;
+import render.core.Sprite;
 
 /** Handles login screen input and rendering. Extracted from {@link Game}. */
 public final class LoginScreen {
@@ -9,6 +11,141 @@ public final class LoginScreen {
 
   public LoginScreen(Game game) {
     this.game = game;
+  }
+
+  /** Load title screen graphics and initialise flame buffers. */
+  public void loadTitleScreen() {
+    game.loginBoxBackground = new Background(game.titleStreamLoader, "titlebox", 0);
+    game.loginButtonBackground = new Background(game.titleStreamLoader, "titlebutton", 0);
+    game.runeBackgrounds = new Background[12];
+    int j = 0;
+    try {
+      j = Integer.parseInt(game.getParameter("fl_icon"));
+    } catch (Exception _ex) {
+    }
+    if (j == 0) {
+      for (int k = 0; k < 12; k++) {
+        game.runeBackgrounds[k] = new Background(game.titleStreamLoader, "runes", k);
+      }
+    } else {
+      for (int l = 0; l < 12; l++) {
+        game.runeBackgrounds[l] =
+            new Background(game.titleStreamLoader, "runes", 12 + (l & 3));
+      }
+    }
+    game.titleBackgroundLeft = new Sprite(128, 265);
+    game.titleBackgroundRight = new Sprite(128, 265);
+    System.arraycopy(game.titleLeftProducer.pixels, 0, game.titleBackgroundLeft.pixels, 0, 33920);
+    System.arraycopy(game.titleRightProducer.pixels, 0, game.titleBackgroundRight.pixels, 0, 33920);
+
+    game.flamePaletteRed = new int[256];
+    for (int k1 = 0; k1 < 64; k1++) {
+      game.flamePaletteRed[k1] = k1 * 0x40000;
+    }
+    for (int l1 = 0; l1 < 64; l1++) {
+      game.flamePaletteRed[l1 + 64] = 0xff0000 + 1024 * l1;
+    }
+    for (int i2 = 0; i2 < 64; i2++) {
+      game.flamePaletteRed[i2 + 128] = 0xffff00 + 4 * i2;
+    }
+    for (int j2 = 0; j2 < 64; j2++) {
+      game.flamePaletteRed[j2 + 192] = 0xffffff;
+    }
+
+    game.flamePaletteGreen = new int[256];
+    for (int k2 = 0; k2 < 64; k2++) {
+      game.flamePaletteGreen[k2] = k2 * 1024;
+    }
+    for (int l2 = 0; l2 < 64; l2++) {
+      game.flamePaletteGreen[l2 + 64] = 0x00ff00 + 4 * l2;
+    }
+    for (int i3 = 0; i3 < 64; i3++) {
+      game.flamePaletteGreen[i3 + 128] = 0x00ffff + 0x40000 * i3;
+    }
+    for (int j3 = 0; j3 < 64; j3++) {
+      game.flamePaletteGreen[j3 + 192] = 0xffffff;
+    }
+
+    game.flamePaletteBlue = new int[256];
+    for (int k3 = 0; k3 < 64; k3++) {
+      game.flamePaletteBlue[k3] = k3 * 4;
+    }
+    for (int l3 = 0; l3 < 64; l3++) {
+      game.flamePaletteBlue[l3 + 64] = 255 + 0x40000 * l3;
+    }
+    for (int i4 = 0; i4 < 64; i4++) {
+      game.flamePaletteBlue[i4 + 128] = 0xff00ff + 1024 * i4;
+    }
+    for (int j4 = 0; j4 < 64; j4++) {
+      game.flamePaletteBlue[j4 + 192] = 0xffffff;
+    }
+
+    game.flameBuffer = new int[256];
+    game.flameGradient1 = new int[32768];
+    game.flameGradient2 = new int[32768];
+    game.randomizeBackground(null);
+    game.flameBuffer1 = new int[32768];
+    game.flameBuffer2 = new int[32768];
+    game.drawLoadingText(10, "Connecting to fileserver");
+    if (!game.flameThreadActive) {
+      game.drawFlames = true;
+      game.flameThreadActive = true;
+      game.startRunnable(game, 2);
+    }
+  }
+
+  /** Draw the cached logo and title screen pieces. */
+  public void drawLogo() {
+    byte[] abyte0 = game.titleStreamLoader.getFileData("title.dat");
+    Sprite sprite = new Sprite(abyte0, game);
+    game.titleLeftProducer.initDrawingArea();
+    sprite.drawSprite(0, 0);
+    game.titleRightProducer.initDrawingArea();
+    sprite.drawSprite(-637, 0);
+    game.titleImageProducer.initDrawingArea();
+    sprite.drawSprite(-128, 0);
+    game.loginLeftProducer.initDrawingArea();
+    sprite.drawSprite(-202, -371);
+    game.loginRightProducer.initDrawingArea();
+    sprite.drawSprite(-202, -171);
+    game.titleTopLeftProducer.initDrawingArea();
+    sprite.drawSprite(0, -265);
+    game.titleTopRightProducer.initDrawingArea();
+    sprite.drawSprite(-562, -265);
+    game.titleBottomLeftProducer.initDrawingArea();
+    sprite.drawSprite(-128, -171);
+    game.titleBottomRightProducer.initDrawingArea();
+    sprite.drawSprite(-562, -171);
+    int[] ai = new int[sprite.width];
+    for (int j = 0; j < sprite.height; j++) {
+      for (int k = 0; k < sprite.width; k++) {
+        ai[k] = sprite.pixels[sprite.width - k - 1 + sprite.width * j];
+      }
+      System.arraycopy(ai, 0, sprite.pixels, sprite.width * j, sprite.width);
+    }
+    game.titleLeftProducer.initDrawingArea();
+    sprite.drawSprite(382, 0);
+    game.titleRightProducer.initDrawingArea();
+    sprite.drawSprite(-255, 0);
+    game.titleImageProducer.initDrawingArea();
+    sprite.drawSprite(254, 0);
+    game.loginLeftProducer.initDrawingArea();
+    sprite.drawSprite(180, -371);
+    game.loginRightProducer.initDrawingArea();
+    sprite.drawSprite(180, -171);
+    game.titleTopLeftProducer.initDrawingArea();
+    sprite.drawSprite(382, -265);
+    game.titleTopRightProducer.initDrawingArea();
+    sprite.drawSprite(-180, -265);
+    game.titleBottomLeftProducer.initDrawingArea();
+    sprite.drawSprite(254, -171);
+    game.titleBottomRightProducer.initDrawingArea();
+    sprite.drawSprite(-180, -171);
+    sprite = new Sprite(game.titleStreamLoader, "logo", 0);
+    game.titleImageProducer.initDrawingArea();
+    sprite.drawTransparentSprite(382 - sprite.width / 2 - 128, 18);
+    sprite = null;
+    System.gc();
   }
 
   public void processLoginScreenInput() {
