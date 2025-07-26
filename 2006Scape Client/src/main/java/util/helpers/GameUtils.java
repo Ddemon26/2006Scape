@@ -57,6 +57,11 @@ public final class GameUtils {
     return "" + number;
   }
 
+  /** Formats interface integers, returning an asterisk for very large values. */
+  public static String interfaceIntToString(int value) {
+    return value < 0x3b9ac9ff ? String.valueOf(value) : "*";
+  }
+
   /** Formats a date offset using the game's epoch offset logic. */
   public static String formatDate(int offset, int currentDateOffset) {
     if (offset > currentDateOffset + 10) {

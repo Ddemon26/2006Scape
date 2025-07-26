@@ -501,4 +501,67 @@ public final class MinimapRenderer {
       game.menuActionRow = 2;
     }
   }
+
+  /** Handles minimap clicking previously done in {@link Game}. */
+  public void processMainScreenClick() {
+    if (game.minimapState != 0) {
+      return;
+    }
+    if (game.clickMode3 == 1) {
+      int i = game.saveClickX - 25 - 550;
+      int j = game.saveClickY - 5 - 4;
+      if (i >= 0 && j >= 0 && i < 146 && j < 151) {
+        i -= 73;
+        j -= 75;
+        int k = game.cameraYaw + game.minimapRotationOffset & 0x7ff;
+        int i1 = Texture.sineTable[k];
+        int j1 = Texture.cosineTable[k];
+        i1 = i1 * (game.minimapZoom + 256) >> 8;
+        j1 = j1 * (game.minimapZoom + 256) >> 8;
+        int k1 = j * i1 + i * j1 >> 11;
+        int l1 = j * j1 - i * i1 >> 11;
+        int i2 = game.myPlayer.x + k1 >> 7;
+        int j2 = game.myPlayer.y - l1 >> 7;
+        boolean flag1 =
+            game.doWalkTo(1, 0, 0, 0, game.myPlayer.smallY[0], 0, 0, j2, game.myPlayer.smallX[0], true, i2);
+        if (flag1) {
+          game.stream.writeWordBigEndian(i);
+          game.stream.writeWordBigEndian(j);
+          game.stream.writeWord(game.cameraYaw);
+          game.stream.writeWordBigEndian(57);
+          game.stream.writeWordBigEndian(game.minimapRotationOffset);
+          game.stream.writeWordBigEndian(game.minimapZoom);
+          game.stream.writeWordBigEndian(89);
+          game.stream.writeWord(game.myPlayer.x);
+          game.stream.writeWord(game.myPlayer.y);
+          game.stream.writeWordBigEndian(game.alternatePathFound);
+          game.stream.writeWordBigEndian(63);
+        }
+      }
+      Game.antiCheatPacketCounter++;
+      if (Game.antiCheatPacketCounter > 1151) {
+        Game.antiCheatPacketCounter = 0;
+        game.stream.createFrame(246);
+        game.stream.writeWordBigEndian(0);
+        int l = game.stream.currentOffset;
+        if ((int) (Math.random() * 2D) == 0) {
+          game.stream.writeWordBigEndian(101);
+        }
+        game.stream.writeWordBigEndian(197);
+        game.stream.writeWord((int) (Math.random() * 65536D));
+        game.stream.writeWordBigEndian((int) (Math.random() * 256D));
+        game.stream.writeWordBigEndian(67);
+        game.stream.writeWord(14214);
+        if ((int) (Math.random() * 2D) == 0) {
+          game.stream.writeWord(29487);
+        }
+        game.stream.writeWord((int) (Math.random() * 65536D));
+        if ((int) (Math.random() * 2D) == 0) {
+          game.stream.writeWordBigEndian(220);
+        }
+        game.stream.writeWordBigEndian(180);
+        game.stream.writeBytes(game.stream.currentOffset - l);
+      }
+    }
+  }
 }

@@ -719,7 +719,7 @@ public class Game extends RSApplet {
       super.clickMode3 = 0;
     }
     if (!menuManager.processMenuClick()) {
-      processMainScreenClick();
+      minimapRenderer.processMainScreenClick();
       processTabClick();
       processChatModeClick();
     }
@@ -2117,7 +2117,7 @@ public class Game extends RSApplet {
     super.shouldDebug = true;
   }
 
-  Component getGameComponent() {
+  public Component getGameComponent() {
     if (Signlink.mainapp != null) {
       return Signlink.mainapp;
     } else {
@@ -2955,131 +2955,11 @@ public class Game extends RSApplet {
     }
     stream.finishBitAccess();
   }
-
-  public void processMainScreenClick() {
-    if (minimapState != 0) {
-      return;
-    }
-    if (super.clickMode3 == 1) {
-      int i = super.saveClickX - 25 - 550;
-      int j = super.saveClickY - 5 - 4;
-      if (i >= 0 && j >= 0 && i < 146 && j < 151) {
-        i -= 73;
-        j -= 75;
-        int k = cameraYaw + minimapRotationOffset & 0x7ff;
-        int i1 = Texture.sineTable[k];
-        int j1 = Texture.cosineTable[k];
-        i1 = i1 * (minimapZoom + 256) >> 8;
-        j1 = j1 * (minimapZoom + 256) >> 8;
-        int k1 = j * i1 + i * j1 >> 11;
-        int l1 = j * j1 - i * i1 >> 11;
-        int i2 = myPlayer.x + k1 >> 7;
-        int j2 = myPlayer.y - l1 >> 7;
-        boolean flag1 =
-            doWalkTo(1, 0, 0, 0, myPlayer.smallY[0], 0, 0, j2, myPlayer.smallX[0], true, i2);
-        if (flag1) {
-          stream.writeWordBigEndian(i);
-          stream.writeWordBigEndian(j);
-          stream.writeWord(cameraYaw);
-          stream.writeWordBigEndian(57);
-          stream.writeWordBigEndian(minimapRotationOffset);
-          stream.writeWordBigEndian(minimapZoom);
-          stream.writeWordBigEndian(89);
-          stream.writeWord(myPlayer.x);
-          stream.writeWord(myPlayer.y);
-          stream.writeWordBigEndian(alternatePathFound);
-          stream.writeWordBigEndian(63);
-        }
-      }
-      antiCheatPacketCounter++;
-      if (antiCheatPacketCounter > 1151) {
-        antiCheatPacketCounter = 0;
-        stream.createFrame(246);
-        stream.writeWordBigEndian(0);
-        int l = stream.currentOffset;
-        if ((int) (Math.random() * 2D) == 0) {
-          stream.writeWordBigEndian(101);
-        }
-        stream.writeWordBigEndian(197);
-        stream.writeWord((int) (Math.random() * 65536D));
-        stream.writeWordBigEndian((int) (Math.random() * 256D));
-        stream.writeWordBigEndian(67);
-        stream.writeWord(14214);
-        if ((int) (Math.random() * 2D) == 0) {
-          stream.writeWord(29487);
-        }
-        stream.writeWord((int) (Math.random() * 65536D));
-        if ((int) (Math.random() * 2D) == 0) {
-          stream.writeWordBigEndian(220);
-        }
-        stream.writeWordBigEndian(180);
-        stream.writeBytes(stream.currentOffset - l);
-      }
-    }
-  }
-
   public String interfaceIntToString(int j) {
-    if (j < 0x3b9ac9ff) {
-      return String.valueOf(j);
-    } else {
-      return "*";
-    }
+    return GameUtils.interfaceIntToString(j);
   }
 
-  public void showErrorScreen() {
-    Graphics g = getGameComponent().getGraphics();
-    g.setColor(Color.black);
-    g.fillRect(0, 0, 765, 503);
-    setFrameRate(1);
-    if (loadingError) {
-      flameThreadActive = false;
-      g.setFont(new Font("Helvetica", 1, 16));
-      g.setColor(Color.yellow);
-      int k = 35;
-      g.drawString(
-          "Sorry, an error has occured whilst loading " + ClientSettings.SERVER_NAME + "", 30, k);
-      k += 50;
-      g.setColor(Color.white);
-      g.drawString("To fix this try the following (in order):", 30, k);
-      k += 50;
-      g.setColor(Color.white);
-      g.setFont(new Font("Helvetica", 1, 12));
-      g.drawString("1: Try closing ALL open web-browser windows, and reloading", 30, k);
-      k += 30;
-      g.drawString("2: Try clearing your web-browsers cache from tools->internet options", 30, k);
-      k += 30;
-      g.drawString("3: Try using a different game-world", 30, k);
-      k += 30;
-      g.drawString("4: Try rebooting your computer", 30, k);
-      k += 30;
-      g.drawString("5: Try selecting a different version of Java from the play-game menu", 30, k);
-    }
-    if (genericLoadingError) {
-      flameThreadActive = false;
-      g.setFont(new Font("Helvetica", 1, 20));
-      g.setColor(Color.white);
-      g.drawString("Error - unable to load game!", 50, 50);
-      g.drawString("To play " + ClientSettings.SERVER_NAME + " make sure you play from", 50, 100);
-      g.drawString("" + ClientSettings.SERVER_WEBSITE + "", 50, 150);
-    }
-    if (rsAlreadyLoaded) {
-      flameThreadActive = false;
-      g.setColor(Color.yellow);
-      int l = 35;
-      g.drawString(
-          "Error a copy of " + ClientSettings.SERVER_NAME + " already appears to be loaded", 30, l);
-      l += 50;
-      g.setColor(Color.white);
-      g.drawString("To fix this try the following (in order):", 30, l);
-      l += 50;
-      g.setColor(Color.white);
-      g.setFont(new Font("Helvetica", 1, 12));
-      g.drawString("1: Try closing ALL open web-browser windows, and reloading", 30, l);
-      l += 30;
-      g.drawString("2: Try rebooting your computer, and reloading", 30, l);
-      l += 30;
-    }
-  }
+
 
   public URL getCodeBase() {
     // if (SignLink.mainapp != null) {
@@ -3940,7 +3820,7 @@ public class Game extends RSApplet {
 
   public void processDrawing() {
     if (rsAlreadyLoaded || loadingError || genericLoadingError) {
-      showErrorScreen();
+      loginScreen.showErrorScreen();
       return;
     }
     drawCycle++;

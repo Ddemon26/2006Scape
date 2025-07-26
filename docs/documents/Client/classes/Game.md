@@ -92,9 +92,9 @@ public void buildAtPlayerMenu(int i, int j, Player player, int k) -> MenuManager
 public void locateSceneObject(PendingSpawn pendingSpawn) -> PendingSpawnManager.locateSceneObject
 public final void processSoundQueue() -> GameMusicController.processSoundQueue
 public void addLocalPlayers(Stream stream, int i)
-public void processMainScreenClick()
-public String interfaceIntToString(int j)
-public void showErrorScreen()
+public void processMainScreenClick() -> MinimapRenderer.processMainScreenClick
+public String interfaceIntToString(int j) -> GameUtils.interfaceIntToString
+public void showErrorScreen() -> LoginScreen.showErrorScreen
 public URL getCodeBase()
 public void animateNpcs()
 public void updateEntityMovement(Entity entity) -> EntityMovementHandler.updateEntityMovement

@@ -382,7 +382,7 @@ public class RSApplet extends Applet
     }
   }
 
-  final void setFrameRate(int fps) {
+  public final void setFrameRate(int fps) {
     delayTime = 1000 / fps;
   }
 
@@ -686,7 +686,7 @@ public class RSApplet extends Applet
 
   void raiseWelcomeScreen() {}
 
-  Component getGameComponent() {
+  public Component getGameComponent() {
     return this;
   }
 

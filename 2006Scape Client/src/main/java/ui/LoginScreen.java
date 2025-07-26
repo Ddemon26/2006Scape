@@ -4,6 +4,9 @@ import core.engine.ClientSettings;
 import core.engine.Game;
 import render.core.Background;
 import render.core.Sprite;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
 
 /** Handles login screen input and rendering. Extracted from {@link Game}. */
 public final class LoginScreen {
@@ -357,6 +360,66 @@ public final class LoginScreen {
       game.titleTopRightProducer.drawGraphics(265, game.graphics, 562);
       game.titleBottomLeftProducer.drawGraphics(171, game.graphics, 128);
       game.titleBottomRightProducer.drawGraphics(171, game.graphics, 562);
+    }
+  }
+
+  /** Draws an error screen when loading fails. */
+  public void showErrorScreen() {
+    Graphics g = game.getGameComponent().getGraphics();
+    g.setColor(Color.black);
+    g.fillRect(0, 0, 765, 503);
+    game.setFrameRate(1);
+    if (game.loadingError) {
+      game.flameThreadActive = false;
+      g.setFont(new Font("Helvetica", Font.BOLD, 16));
+      g.setColor(Color.yellow);
+      int k = 35;
+      g.drawString(
+          "Sorry, an error has occured whilst loading " + ClientSettings.SERVER_NAME + "",
+          30,
+          k);
+      k += 50;
+      g.setColor(Color.white);
+      g.drawString("To fix this try the following (in order):", 30, k);
+      k += 50;
+      g.setColor(Color.white);
+      g.setFont(new Font("Helvetica", Font.BOLD, 12));
+      g.drawString("1: Try closing ALL open web-browser windows, and reloading", 30, k);
+      k += 30;
+      g.drawString("2: Try clearing your web-browsers cache from tools->internet options", 30, k);
+      k += 30;
+      g.drawString("3: Try using a different game-world", 30, k);
+      k += 30;
+      g.drawString("4: Try rebooting your computer", 30, k);
+      k += 30;
+      g.drawString("5: Try selecting a different version of Java from the play-game menu", 30, k);
+    }
+    if (game.genericLoadingError) {
+      game.flameThreadActive = false;
+      g.setFont(new Font("Helvetica", Font.BOLD, 20));
+      g.setColor(Color.white);
+      g.drawString("Error - unable to load game!", 50, 50);
+      g.drawString("To play " + ClientSettings.SERVER_NAME + " make sure you play from", 50, 100);
+      g.drawString("" + ClientSettings.SERVER_WEBSITE + "", 50, 150);
+    }
+    if (game.rsAlreadyLoaded) {
+      game.flameThreadActive = false;
+      g.setColor(Color.yellow);
+      int l = 35;
+      g.drawString(
+          "Error a copy of " + ClientSettings.SERVER_NAME + " already appears to be loaded",
+          30,
+          l);
+      l += 50;
+      g.setColor(Color.white);
+      g.drawString("To fix this try the following (in order):", 30, l);
+      l += 50;
+      g.setColor(Color.white);
+      g.setFont(new Font("Helvetica", Font.BOLD, 12));
+      g.drawString("1: Try closing ALL open web-browser windows, and reloading", 30, l);
+      l += 30;
+      g.drawString("2: Try rebooting your computer, and reloading", 30, l);
+      l += 30;
     }
   }
 }

@@ -10,6 +10,7 @@ public final class GameUtils {
     public static String intToKOrMilLongName(int i)
     public static String intToKOrMil(int j)
     public static String intToShortLetter(long number)
+    public static String interfaceIntToString(int value)
     public static String formatDate(int offset, int currentDateOffset)
 }
 ```
