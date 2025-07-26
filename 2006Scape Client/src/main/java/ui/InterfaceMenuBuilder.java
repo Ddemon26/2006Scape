@@ -157,7 +157,7 @@ public final class InterfaceMenuBuilder {
                     if ((game.spellUsableOn & 0x10) == 16) {
                       game.menuActionName[game.menuActionRow] =
                               game.spellTooltip + " @lre@" + itemDef.name;
-                      game.menuActionID[game.menuActionRow] = 582;
+                      game.menuActionID[game.menuActionRow] = 543;
                       game.menuActionCmd1[game.menuActionRow] = itemDef.id;
                       game.menuActionCmd2[game.menuActionRow] = index;
                       game.menuActionCmd3[game.menuActionRow] = child.id;
