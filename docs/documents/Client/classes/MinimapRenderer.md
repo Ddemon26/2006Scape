@@ -12,5 +12,6 @@ final class MinimapRenderer {
     void markMinimap(Sprite sprite, int dx, int dy)
     void npcScreenPos(Entity entity, int height)
     void calcEntityScreenPos(int x, int z, int y)
+    void processMinimapActions()
 }
 ```

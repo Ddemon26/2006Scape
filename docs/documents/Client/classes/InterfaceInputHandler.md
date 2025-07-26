@@ -14,5 +14,6 @@ final class InterfaceInputHandler {
     void resetInterfaceAnimation(int i)
     void openInterface(int interfaceID)
     void openSideInterface(int tab, int interfaceID)
+    void processTabClick()
 }
 ```

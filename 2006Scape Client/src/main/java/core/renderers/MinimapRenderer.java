@@ -490,4 +490,15 @@ public final class MinimapRenderer {
       }
     }
   }
+
+  /** Adds minimap context menu actions previously in {@link Game}. */
+  public void processMinimapActions() {
+    int x = game.mouseX;
+    int y = game.mouseY;
+    if (x >= 551 && x <= 577 && y >= 7 && y <= 40) {
+      game.menuActionName[1] = "Face North";
+      game.menuActionID[1] = 696;
+      game.menuActionRow = 2;
+    }
+  }
 }
