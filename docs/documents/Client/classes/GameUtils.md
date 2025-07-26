@@ -11,6 +11,7 @@ public final class GameUtils {
     public static String intToKOrMil(int j)
     public static String intToShortLetter(long number)
     public static String interfaceIntToString(int value)
+    public static int blendColors(int c1, int c2, int weight)
     public static String formatDate(int offset, int currentDateOffset)
 }
 ```

@@ -78,12 +78,12 @@ public void pushMessage(String s, int i, String s1)
 public void processMinimapActions() -> MinimapRenderer.processMinimapActions
 public void processTabClick() -> InterfaceInputHandler.processTabClick
 public void run()
-public void resetImageProducers()
-public void resetAllImageProducers()
-public void resetImageProducers2()
-public void drawMinimapHint(Sprite sprite, int y, int x)
-public void processRightClick()
-public int blendColors(int i, int j, int k)
+public void resetImageProducers() -> LoginScreen.resetImageProducers
+public void resetAllImageProducers() -> LoginScreen.resetAllImageProducers
+public void resetImageProducers2() -> LoginScreen.resetImageProducers2
+public void drawMinimapHint(Sprite sprite, int y, int x) -> MinimapRenderer.drawMinimapHint
+public void processRightClick() -> MenuManager.processRightClick
+public int blendColors(int i, int j, int k) -> GameUtils.blendColors
 public void login(String s, String s1, boolean flag)
 public boolean doWalkTo(int i, int j, int k, int i1, int j1, int k1, int l1, int i2, int j2, boolean flag, int k2)
 public void processNpcUpdateMasks(Stream stream)

@@ -261,13 +261,13 @@ public final class MinimapRenderer {
         if (npc != null) {
           int dx = npc.x / 32 - game.myPlayer.x / 32;
           int dy = npc.y / 32 - game.myPlayer.y / 32;
-          game.drawMinimapHint(game.mapMarker, dy, dx);
+          drawMinimapHint(game.mapMarker, dy, dx);
         }
       }
       if (game.hintIconState == 2) {
         int dx = (game.selectedNpcId - game.baseX) * 4 + 2 - game.myPlayer.x / 32;
         int dy = (game.destinationX - game.baseY) * 4 + 2 - game.myPlayer.y / 32;
-        game.drawMinimapHint(game.mapMarker, dy, dx);
+        drawMinimapHint(game.mapMarker, dy, dx);
       }
       if (game.hintIconState == 10
           && game.selectedPlayerId >= 0
@@ -276,7 +276,7 @@ public final class MinimapRenderer {
         if (target != null) {
           int dx = target.x / 32 - game.myPlayer.x / 32;
           int dy = target.y / 32 - game.myPlayer.y / 32;
-          game.drawMinimapHint(game.mapMarker, dy, dx);
+          drawMinimapHint(game.mapMarker, dy, dx);
         }
       }
     }
@@ -358,6 +358,26 @@ public final class MinimapRenderer {
     } else {
       sprite.drawTransparentSprite(
           94 + x - sprite.trimWidth / 2 + 4, 83 - y - sprite.trimHeight / 2 - 4);
+    }
+  }
+
+  /** Draw a hint arrow on the minimap or fall back to {@link #markMinimap}. */
+  public void drawMinimapHint(Sprite sprite, int y, int x) {
+    int dist = x * x + y * y;
+    if (dist > 4225 && dist < 90000) {
+      int angle = game.cameraYaw + game.minimapRotationOffset & 0x7ff;
+      int sin = Model.sineTable[angle];
+      int cos = Model.cosineTable[angle];
+      sin = sin * 256 / (game.minimapZoom + 256);
+      cos = cos * 256 / (game.minimapZoom + 256);
+      int sinX = y * sin + x * cos >> 16;
+      int cosY = y * cos - x * sin >> 16;
+      double rad = Math.atan2((double) sinX, (double) cosY);
+      int dx = (int) (Math.sin(rad) * 63D);
+      int dy = (int) (Math.cos(rad) * 57D);
+      game.mapEdge.drawRotated(83 - dy - 20, rad, 94 + dx + 4 - 10);
+    } else {
+      markMinimap(sprite, x, y);
     }
   }
 

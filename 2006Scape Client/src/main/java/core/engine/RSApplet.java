@@ -749,7 +749,7 @@ public class RSApplet extends Applet
   public int myWidth;
   public int myHeight;
   public Graphics graphics;
-  RSImageProducer fullGameScreen;
+  public RSImageProducer fullGameScreen;
   public RSFrame gameFrame;
   private boolean shouldClearScreen;
   public boolean awtFocus;

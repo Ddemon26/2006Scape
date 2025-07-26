@@ -12,5 +12,8 @@ final class LoginScreen {
     void processLoginScreenInput()
     void drawLoginScreen(boolean flag)
     void showErrorScreen()
+    void resetImageProducers()
+    void resetAllImageProducers()
+    void resetImageProducers2()
 }
 ```

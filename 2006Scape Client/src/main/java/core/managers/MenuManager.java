@@ -674,4 +674,122 @@ public final class MenuManager {
       }
     }
   }
+
+  /** Handles right-click menu generation previously in {@link Game}. */
+  public void processRightClick() {
+    if (game.activeInterfaceType != 0) {
+      return;
+    }
+    game.menuActionName[0] = "Cancel";
+    game.menuActionID[0] = 1107;
+    game.menuActionRow = 1;
+    if (game.fullScreenInterfaceId != -1) {
+      game.hoveredWidgetId = 0;
+      game.buildInterfaceMenu(
+          0,
+          RSInterface.interfaceCache[game.fullScreenInterfaceId],
+          game.mouseX,
+          0,
+          game.mouseY,
+          0);
+      if (game.hoveredWidgetId != game.lastHoveredWidgetId) {
+        game.lastHoveredWidgetId = game.hoveredWidgetId;
+      }
+      return;
+    }
+    game.buildSplitPrivateChatMenu();
+    game.hoveredWidgetId = 0;
+    if (game.mouseX > 4 && game.mouseY > 4 && game.mouseX < 516 && game.mouseY < 338) {
+      if (game.openInterfaceID != -1) {
+        game.buildInterfaceMenu(
+            4,
+            RSInterface.interfaceCache[game.openInterfaceID],
+            game.mouseX,
+            4,
+            game.mouseY,
+            0);
+      } else {
+        build3dScreenMenu();
+      }
+    }
+    if (game.hoveredWidgetId != game.lastHoveredWidgetId) {
+      game.lastHoveredWidgetId = game.hoveredWidgetId;
+    }
+    game.hoveredWidgetId = 0;
+    if (game.mouseX > 553 && game.mouseY > 205 && game.mouseX < 743 && game.mouseY < 466) {
+      if (game.invOverlayInterfaceID != -1) {
+        game.buildInterfaceMenu(
+            553,
+            RSInterface.interfaceCache[game.invOverlayInterfaceID],
+            game.mouseX,
+            205,
+            game.mouseY,
+            0);
+      } else if (game.tabInterfaceIDs[game.tabID] != -1) {
+        game.buildInterfaceMenu(
+            553,
+            RSInterface.interfaceCache[game.tabInterfaceIDs[game.tabID]],
+            game.mouseX,
+            205,
+            game.mouseY,
+            0);
+      }
+    }
+    if (game.hoveredWidgetId != game.hoveredTabId) {
+      game.needDrawTabArea = true;
+      game.hoveredTabId = game.hoveredWidgetId;
+    }
+    game.hoveredWidgetId = 0;
+    if (game.mouseX > 17 && game.mouseY > 357 && game.mouseX < 496 && game.mouseY < 453) {
+      if (game.backDialogID != -1) {
+        game.buildInterfaceMenu(
+            17,
+            RSInterface.interfaceCache[game.backDialogID],
+            game.mouseX,
+            357,
+            game.mouseY,
+            0);
+      } else if (game.dialogID != -1) {
+        game.buildInterfaceMenu(
+            17,
+            RSInterface.interfaceCache[game.dialogID],
+            game.mouseX,
+            357,
+            game.mouseY,
+            0);
+      } else if (game.mouseY < 434 && game.mouseX < 426) {
+        game.chatAreaRenderer.buildChatAreaMenu(game.mouseY - 357);
+      }
+    }
+    if ((game.backDialogID != -1 || game.dialogID != -1)
+        && game.hoveredWidgetId != game.lastInteractionId) {
+      game.inputTaken = true;
+      game.lastInteractionId = game.hoveredWidgetId;
+    }
+    game.processMinimapActions();
+    boolean sorted = false;
+    while (!sorted) {
+      sorted = true;
+      for (int j = 0; j < game.menuActionRow - 1; j++) {
+        if (game.menuActionID[j] < 1000 && game.menuActionID[j + 1] > 1000) {
+          String s = game.menuActionName[j];
+          game.menuActionName[j] = game.menuActionName[j + 1];
+          game.menuActionName[j + 1] = s;
+          int k = game.menuActionID[j];
+          game.menuActionID[j] = game.menuActionID[j + 1];
+          game.menuActionID[j + 1] = k;
+          k = game.menuActionCmd2[j];
+          game.menuActionCmd2[j] = game.menuActionCmd2[j + 1];
+          game.menuActionCmd2[j + 1] = k;
+          k = game.menuActionCmd3[j];
+          game.menuActionCmd3[j] = game.menuActionCmd3[j + 1];
+          game.menuActionCmd3[j + 1] = k;
+          k = game.menuActionCmd1[j];
+          game.menuActionCmd1[j] = game.menuActionCmd1[j + 1];
+          game.menuActionCmd1[j + 1] = k;
+          sorted = false;
+        }
+      }
+    }
+  }
 }

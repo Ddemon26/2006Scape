@@ -62,6 +62,20 @@ public final class GameUtils {
     return value < 0x3b9ac9ff ? String.valueOf(value) : "*";
   }
 
+  /**
+   * Blends two RGB colors by the given weight.
+   *
+   * @param c1 the first color
+   * @param c2 the second color
+   * @param weight how much of {@code c2} to blend in (0-256)
+   * @return the blended RGB value
+   */
+  public static int blendColors(int c1, int c2, int weight) {
+    int inv = 256 - weight;
+    return ((c1 & 0xff00ff) * inv + (c2 & 0xff00ff) * weight & 0xff00ff00)
+        + ((c1 & 0xff00) * inv + (c2 & 0xff00) * weight & 0xff0000) >> 8;
+  }
+
   /** Formats a date offset using the game's epoch offset logic. */
   public static String formatDate(int offset, int currentDateOffset) {
     if (offset > currentDateOffset + 10) {
