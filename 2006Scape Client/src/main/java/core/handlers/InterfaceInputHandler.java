@@ -6,6 +6,8 @@ import render.tiles.FloorOverlay;
 import ui.RSInterface;
 import ui.TextClass;
 import util.configuration.IDK;
+import util.helpers.ScreenshotUtil;
+import entities.PlayerStatsCalculator;
 
 /** Handles interface widget input processing extracted from {@link Game}. */
 public final class InterfaceInputHandler {
@@ -220,5 +222,205 @@ public final class InterfaceInputHandler {
     game.tabInterfaceIDs[tab] = interfaceID;
     game.needDrawTabArea = true;
     game.tabAreaAltered = true;
+  }
+
+  /** Handles tab clicking logic previously in {@link Game}. */
+  public void processTabClick() {
+    if (game.clickMode3 != 1) {
+      return;
+    }
+    if (game.saveClickX >= 539
+        && game.saveClickX <= 573
+        && game.saveClickY >= 169
+        && game.saveClickY < 205
+        && game.tabInterfaceIDs[0] != -1) {
+      game.needDrawTabArea = true;
+      game.tabID = 0;
+      game.tabAreaAltered = true;
+    }
+    if (game.saveClickX >= 569
+        && game.saveClickX <= 599
+        && game.saveClickY >= 168
+        && game.saveClickY < 205
+        && game.tabInterfaceIDs[1] != -1) {
+      game.needDrawTabArea = true;
+      game.tabID = 1;
+      game.tabAreaAltered = true;
+      if (ClientSettings.SCREENSHOTS_ENABLED && ClientSettings.AUTOMATIC_SCREENSHOTS_ENABLED) {
+        java.util.Timer timer = new java.util.Timer();
+        java.util.TimerTask delayedScreenshot =
+            new java.util.TimerTask() {
+              @Override
+              public void run() {
+                ScreenshotUtil.capture(game, false, "stats");
+              }
+            };
+        timer.schedule(delayedScreenshot, 300);
+      }
+    }
+    if (game.saveClickX >= 597
+        && game.saveClickX <= 627
+        && game.saveClickY >= 168
+        && game.saveClickY < 205
+        && game.tabInterfaceIDs[2] != -1) {
+      game.needDrawTabArea = true;
+      game.tabID = 2;
+      game.tabAreaAltered = true;
+    }
+    if (game.saveClickX >= 625
+        && game.saveClickX <= 669
+        && game.saveClickY >= 168
+        && game.saveClickY < 203
+        && game.tabInterfaceIDs[3] != -1) {
+      game.needDrawTabArea = true;
+      game.tabID = 3;
+      game.tabAreaAltered = true;
+    }
+    if (game.saveClickX >= 666
+        && game.saveClickX <= 696
+        && game.saveClickY >= 168
+        && game.saveClickY < 205
+        && game.tabInterfaceIDs[4] != -1) {
+      game.needDrawTabArea = true;
+      game.tabID = 4;
+      game.tabAreaAltered = true;
+    }
+    if (game.saveClickX >= 694
+        && game.saveClickX <= 724
+        && game.saveClickY >= 168
+        && game.saveClickY < 205
+        && game.tabInterfaceIDs[5] != -1) {
+      game.needDrawTabArea = true;
+      game.tabID = 5;
+      game.tabAreaAltered = true;
+    }
+    if (game.saveClickX >= 722
+        && game.saveClickX <= 756
+        && game.saveClickY >= 169
+        && game.saveClickY < 205
+        && game.tabInterfaceIDs[6] != -1) {
+      game.needDrawTabArea = true;
+      game.tabID = 6;
+      game.tabAreaAltered = true;
+    }
+    if (game.saveClickX >= 540
+        && game.saveClickX <= 574
+        && game.saveClickY >= 466
+        && game.saveClickY < 502
+        && game.tabInterfaceIDs[7] != -1
+        && ClientSettings.CUSTOM_SETTINGS_TAB) {
+      game.needDrawTabArea = true;
+      game.tabID = 7;
+      game.tabAreaAltered = true;
+    }
+    if (game.saveClickX >= 572
+        && game.saveClickX <= 602
+        && game.saveClickY >= 466
+        && game.saveClickY < 503
+        && game.tabInterfaceIDs[8] != -1) {
+      game.needDrawTabArea = true;
+      game.tabID = 8;
+      game.tabAreaAltered = true;
+    }
+    if (game.saveClickX >= 599
+        && game.saveClickX <= 629
+        && game.saveClickY >= 466
+        && game.saveClickY < 503
+        && game.tabInterfaceIDs[9] != -1) {
+      game.needDrawTabArea = true;
+      game.tabID = 9;
+      game.tabAreaAltered = true;
+    }
+    if (game.saveClickX >= 627
+        && game.saveClickX <= 671
+        && game.saveClickY >= 467
+        && game.saveClickY < 502
+        && game.tabInterfaceIDs[10] != -1) {
+      game.needDrawTabArea = true;
+      game.tabID = 10;
+      game.tabAreaAltered = true;
+    }
+    if (game.saveClickX >= 669
+        && game.saveClickX <= 699
+        && game.saveClickY >= 466
+        && game.saveClickY < 503
+        && game.tabInterfaceIDs[11] != -1) {
+      game.needDrawTabArea = true;
+      game.tabID = 11;
+      game.tabAreaAltered = true;
+    }
+    if (game.saveClickX >= 696
+        && game.saveClickX <= 726
+        && game.saveClickY >= 466
+        && game.saveClickY < 503
+        && game.tabInterfaceIDs[12] != -1) {
+      game.needDrawTabArea = true;
+      game.tabID = 12;
+      game.tabAreaAltered = true;
+    }
+    if (game.saveClickX >= 724
+        && game.saveClickX <= 758
+        && game.saveClickY >= 466
+        && game.saveClickY < 502
+        && game.tabInterfaceIDs[13] != -1) {
+      game.needDrawTabArea = true;
+      game.tabID = 13;
+      game.tabAreaAltered = true;
+    }
+    if (game.invOverlayInterfaceID == -1 && game.tabInterfaceIDs[game.tabID] != -1) {
+      if (game.tabID == 7
+          && ClientSettings.CUSTOM_SETTINGS_TAB
+          && game.saveClickX >= 575
+          && game.saveClickX <= 720
+          && game.saveClickY >= 210
+          && game.saveClickY <= 465) {
+        int startY = 220;
+        if (game.saveClickY >= startY && game.saveClickY <= startY + 30) {
+          Game.customSettingVisiblePlayerNames = !Game.customSettingVisiblePlayerNames;
+        }
+        startY += 40;
+        if (game.saveClickY >= startY && game.saveClickY <= startY + 30) {
+          game.inputTaken = true;
+          game.inputDialogState = 0;
+          game.messagePromptRaised = true;
+          game.promptInput = "";
+          game.inputPrompt = "Enter minimum item value";
+          game.customTabAction = 1;
+        }
+        startY += 40;
+        if (game.saveClickY >= startY && game.saveClickY <= startY + 30) {
+          game.inputTaken = true;
+          game.inputDialogState = 0;
+          game.messagePromptRaised = true;
+          game.promptInput = "";
+          game.inputPrompt = "Enter new draw distance";
+          game.customTabAction = 2;
+        }
+        startY += 40;
+        if (game.saveClickY >= startY && game.saveClickY <= startY + 30) {
+          game.customSettingShowExperiencePerHour = !game.customSettingShowExperiencePerHour;
+          game.customSettingShowExperiencePerHourStart = System.currentTimeMillis();
+          game.customSettingShowExperiencePerHourStartExp =
+              PlayerStatsCalculator.calculateTotalExp(game.currentExp);
+          game.customSettingShowExperiencePerHourStartLevels =
+              PlayerStatsCalculator.calculateTotalLevels(game.maxStats);
+        }
+        startY += 40;
+        if (game.saveClickY >= startY && game.saveClickY <= startY + 30) {
+          game.showInfo = !game.showInfo;
+        }
+        startY += 40;
+        if (game.saveClickY >= startY && game.saveClickY <= startY + 30) {
+          game.customSettingVisualFixes = !game.customSettingVisualFixes;
+          ClientSettings.BILINEAR_MINIMAP_FILTERING = !ClientSettings.BILINEAR_MINIMAP_FILTERING;
+          ClientSettings.FIX_TRANSPARENCY_OVERFLOW = !ClientSettings.FIX_TRANSPARENCY_OVERFLOW;
+          ClientSettings.FULL_512PX_VIEWPORT = !ClientSettings.FULL_512PX_VIEWPORT;
+        }
+      }
+    }
+    if (game.flashingTabId == game.tabID) {
+      game.stream.createFrame(152);
+      game.stream.writeWordBigEndian(game.tabID);
+    }
   }
 }

@@ -56,4 +56,32 @@ public final class GameUtils {
     }
     return "" + number;
   }
+
+  /** Formats a date offset using the game's epoch offset logic. */
+  public static String formatDate(int offset, int currentDateOffset) {
+    if (offset > currentDateOffset + 10) {
+      return "Unknown";
+    }
+    long ms = ((long) offset + 11745L) * 0x5265c00L;
+    java.util.Calendar calendar = java.util.Calendar.getInstance();
+    calendar.setTime(new java.util.Date(ms));
+    int day = calendar.get(5);
+    int month = calendar.get(2);
+    int year = calendar.get(1);
+    String[] months = {
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    };
+    return day + "-" + months[month] + "-" + year;
+  }
 }

@@ -2138,20 +2138,7 @@ public class Game extends RSApplet {
   }
 
   public String formatDate(int i) {
-    if (i > currentDateOffset + 10) {
-      return "Unknown";
-    } else {
-      long l = ((long) i + 11745L) * 0x5265c00L;
-      Calendar calendar = Calendar.getInstance();
-      calendar.setTime(new Date(l));
-      int j = calendar.get(5);
-      int k = calendar.get(2);
-      int i1 = calendar.get(1);
-      String as[] = {
-        "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-      };
-      return j + "-" + as[k] + "-" + i1;
-    }
+    return GameUtils.formatDate(i, currentDateOffset);
   }
 
   public void drawSplitpublicChat() {
@@ -2178,15 +2165,8 @@ public class Game extends RSApplet {
   }
 
   public void processMinimapActions() {
-    int x = super.mouseX;
-    int y = super.mouseY;
-    if (x >= 551 && x <= 577 && y >= 7 && y <= 40) {
-      menuActionName[1] = "Face North";
-      menuActionID[1] = 696;
-      menuActionRow = 2;
-    }
+    minimapRenderer.processMinimapActions();
   }
-
   public int customTabAction = 0;
   public static boolean customSettingVisiblePlayerNames = false;
   public static int customSettingMinItemValue = Integer.MAX_VALUE;
@@ -2197,208 +2177,8 @@ public class Game extends RSApplet {
   public boolean customSettingVisualFixes = true;
 
   public void processTabClick() {
-    if (super.clickMode3 == 1) {
-      if (super.saveClickX >= 539
-          && super.saveClickX <= 573
-          && super.saveClickY >= 169
-          && super.saveClickY < 205
-          && tabInterfaceIDs[0] != -1) {
-        needDrawTabArea = true;
-        tabID = 0;
-        tabAreaAltered = true;
-      }
-      if (super.saveClickX >= 569
-          && super.saveClickX <= 599
-          && super.saveClickY >= 168
-          && super.saveClickY < 205
-          && tabInterfaceIDs[1] != -1) {
-        needDrawTabArea = true;
-        tabID = 1;
-        tabAreaAltered = true;
-        if (ClientSettings.SCREENSHOTS_ENABLED && ClientSettings.AUTOMATIC_SCREENSHOTS_ENABLED) {
-          java.util.Timer timer = new java.util.Timer();
-          java.util.TimerTask delayedScreenshot =
-              new java.util.TimerTask() {
-                @Override
-                public void run() {
-                  ScreenshotUtil.capture(Game.this, false, "stats");
-                }
-              };
-          timer.schedule(delayedScreenshot, 300);
-        }
-      }
-      if (super.saveClickX >= 597
-          && super.saveClickX <= 627
-          && super.saveClickY >= 168
-          && super.saveClickY < 205
-          && tabInterfaceIDs[2] != -1) {
-        needDrawTabArea = true;
-        tabID = 2;
-        tabAreaAltered = true;
-      }
-      if (super.saveClickX >= 625
-          && super.saveClickX <= 669
-          && super.saveClickY >= 168
-          && super.saveClickY < 203
-          && tabInterfaceIDs[3] != -1) {
-        needDrawTabArea = true;
-        tabID = 3;
-        tabAreaAltered = true;
-      }
-      if (super.saveClickX >= 666
-          && super.saveClickX <= 696
-          && super.saveClickY >= 168
-          && super.saveClickY < 205
-          && tabInterfaceIDs[4] != -1) {
-        needDrawTabArea = true;
-        tabID = 4;
-        tabAreaAltered = true;
-      }
-      if (super.saveClickX >= 694
-          && super.saveClickX <= 724
-          && super.saveClickY >= 168
-          && super.saveClickY < 205
-          && tabInterfaceIDs[5] != -1) {
-        needDrawTabArea = true;
-        tabID = 5;
-        tabAreaAltered = true;
-      }
-      if (super.saveClickX >= 722
-          && super.saveClickX <= 756
-          && super.saveClickY >= 169
-          && super.saveClickY < 205
-          && tabInterfaceIDs[6] != -1) {
-        needDrawTabArea = true;
-        tabID = 6;
-        tabAreaAltered = true;
-      }
-      if (super.saveClickX >= 540
-          && super.saveClickX <= 574
-          && super.saveClickY >= 466
-          && super.saveClickY < 502
-          && tabInterfaceIDs[7] != -1
-          && ClientSettings.CUSTOM_SETTINGS_TAB) {
-        /* Unused tab bottom left */
-        needDrawTabArea = true;
-        tabID = 7;
-        tabAreaAltered = true;
-      }
-      if (super.saveClickX >= 572
-          && super.saveClickX <= 602
-          && super.saveClickY >= 466
-          && super.saveClickY < 503
-          && tabInterfaceIDs[8] != -1) {
-        needDrawTabArea = true;
-        tabID = 8;
-        tabAreaAltered = true;
-      }
-      if (super.saveClickX >= 599
-          && super.saveClickX <= 629
-          && super.saveClickY >= 466
-          && super.saveClickY < 503
-          && tabInterfaceIDs[9] != -1) {
-        needDrawTabArea = true;
-        tabID = 9;
-        tabAreaAltered = true;
-      }
-      if (super.saveClickX >= 627
-          && super.saveClickX <= 671
-          && super.saveClickY >= 467
-          && super.saveClickY < 502
-          && tabInterfaceIDs[10] != -1) {
-        needDrawTabArea = true;
-        tabID = 10;
-        tabAreaAltered = true;
-      }
-      if (super.saveClickX >= 669
-          && super.saveClickX <= 699
-          && super.saveClickY >= 466
-          && super.saveClickY < 503
-          && tabInterfaceIDs[11] != -1) {
-        needDrawTabArea = true;
-        tabID = 11;
-        tabAreaAltered = true;
-      }
-      if (super.saveClickX >= 696
-          && super.saveClickX <= 726
-          && super.saveClickY >= 466
-          && super.saveClickY < 503
-          && tabInterfaceIDs[12] != -1) {
-        needDrawTabArea = true;
-        tabID = 12;
-        tabAreaAltered = true;
-      }
-      if (super.saveClickX >= 724
-          && super.saveClickX <= 758
-          && super.saveClickY >= 466
-          && super.saveClickY < 502
-          && tabInterfaceIDs[13] != -1) {
-        needDrawTabArea = true;
-        tabID = 13;
-        tabAreaAltered = true;
-      }
-      if (invOverlayInterfaceID == -1) {
-        if (tabInterfaceIDs[tabID] != -1) {
-          // Handle our custom tab
-          if (tabID == 7
-              && ClientSettings.CUSTOM_SETTINGS_TAB
-              && super.saveClickX >= 575
-              && super.saveClickX <= 720
-              && super.saveClickY >= 210
-              && super.saveClickY <= 465) {
-            int startY = 217 + 3;
-            if (super.saveClickY >= startY && super.saveClickY <= (startY + 30)) {
-              customSettingVisiblePlayerNames = !customSettingVisiblePlayerNames;
-            }
-            startY += 40;
-            if (super.saveClickY >= startY && super.saveClickY <= (startY + 30)) {
-              inputTaken = true;
-              inputDialogState = 0;
-              messagePromptRaised = true;
-              promptInput = "";
-              inputPrompt = "Enter minimum item value";
-              customTabAction = 1;
-            }
-            startY += 40;
-            if (super.saveClickY >= startY && super.saveClickY <= (startY + 30)) {
-              inputTaken = true;
-              inputDialogState = 0;
-              messagePromptRaised = true;
-              promptInput = "";
-              inputPrompt = "Enter new draw distance";
-              customTabAction = 2;
-            }
-            startY += 40;
-            if (super.saveClickY >= startY && super.saveClickY <= (startY + 30)) {
-              customSettingShowExperiencePerHour = !customSettingShowExperiencePerHour;
-              customSettingShowExperiencePerHourStart = System.currentTimeMillis();
-              customSettingShowExperiencePerHourStartExp =
-                  PlayerStatsCalculator.calculateTotalExp(currentExp);
-              customSettingShowExperiencePerHourStartLevels =
-                  PlayerStatsCalculator.calculateTotalLevels(maxStats);
-            }
-            startY += 40;
-            if (super.saveClickY >= startY && super.saveClickY <= (startY + 30)) {
-              showInfo = !showInfo;
-            }
-            startY += 40;
-            if (super.saveClickY >= startY && super.saveClickY <= (startY + 30)) {
-              customSettingVisualFixes = !customSettingVisualFixes;
-              ClientSettings.BILINEAR_MINIMAP_FILTERING =
-                  !ClientSettings.BILINEAR_MINIMAP_FILTERING;
-              ClientSettings.FIX_TRANSPARENCY_OVERFLOW = !ClientSettings.FIX_TRANSPARENCY_OVERFLOW;
-              ClientSettings.FULL_512PX_VIEWPORT = !ClientSettings.FULL_512PX_VIEWPORT;
-            }
-          }
-        }
-      }
-      if (flashingTabId == tabID) {
-        stream.createFrame(152);
-        stream.writeWordBigEndian(tabID);
-      }
-    }
+    interfaceInputHandler.processTabClick();
   }
-
   public void resetImageProducers() {
     if (titleImageProducer != null) {
       return;

@@ -72,11 +72,11 @@ public void printDebug()
 public void processInput() -> InputHandler.processInput
 public void buildChatAreaMenu(int j) -> ChatAreaRenderer.buildChatAreaMenu
 public void drawFriendsListOrWelcomeScreen(RSInterface interfaceComponent) -> FriendManager.drawFriendsListOrWelcomeScreen
-public String formatDate(int i)
+public String formatDate(int i) -> GameUtils.formatDate
 public void drawSplitpublicChat() -> ChatAreaRenderer.drawSplitpublicChat
 public void pushMessage(String s, int i, String s1)
-public void processMinimapActions()
-public void processTabClick()
+public void processMinimapActions() -> MinimapRenderer.processMinimapActions
+public void processTabClick() -> InterfaceInputHandler.processTabClick
 public void run()
 public void resetImageProducers()
 public void resetAllImageProducers()
