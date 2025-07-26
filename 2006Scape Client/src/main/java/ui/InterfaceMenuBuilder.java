@@ -229,7 +229,8 @@ public final class InterfaceMenuBuilder {
                         }
                       }
                     }
-                    if (child.actions != null) {
+                    if (child.actions != null && !(RSInterface.interfaceCache[5383].disabledText.startsWith("Search")
+                            && child.parentID == 5292)) {
                       for (int k4 = 4; k4 >= 0; k4--) {
                         if (child.actions[k4] != null) {
                           game.menuActionName[game.menuActionRow] =
