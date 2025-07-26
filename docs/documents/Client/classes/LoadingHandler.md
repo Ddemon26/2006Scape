@@ -10,5 +10,7 @@ final class LoadingHandler {
     void loadingStages()
     int checkMapLoadStatus()
     void connectServer()
+    DataInputStream openJagGrabInputStream(String s) throws IOException
+    StreamLoader streamLoaderForName(int i, String s, String s1, int j, int k)
 }
 ```

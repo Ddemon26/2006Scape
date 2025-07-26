@@ -69,8 +69,6 @@ import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
@@ -1015,146 +1013,11 @@ public class Game extends RSApplet {
   }
 
   public StreamLoader streamLoaderForName(int i, String s, String s1, int j, int k) {
-    byte abyte0[] = null;
-    int l = 5;
-    try {
-      if (decompressors[0] != null) {
-        abyte0 = decompressors[0].decompress(i);
-      }
-    } catch (Exception _ex) {
-    }
-    if (abyte0 != null && ClientSettings.CHECK_CRC) {
-      fileCRC.reset();
-      fileCRC.update(abyte0);
-      int i1 = (int) fileCRC.getValue();
-      if (i1 != j) abyte0 = null;
-    }
-    if (abyte0 != null) {
-      StreamLoader streamLoader = new StreamLoader(abyte0);
-      return streamLoader;
-    }
-    int j1 = 0;
-    while (abyte0 == null) {
-      String s2 = "Unknown error";
-      drawLoadingText(k, "Requesting " + s);
-      try {
-        int k1 = 0;
-        DataInputStream datainputstream = openJagGrabInputStream(s1 + j);
-        byte abyte1[] = new byte[6];
-        datainputstream.readFully(abyte1, 0, 6);
-        Stream stream = new Stream(abyte1);
-        stream.currentOffset = 3;
-        int i2 = stream.read3Bytes() + 6;
-        int j2 = 6;
-        abyte0 = new byte[i2];
-        System.arraycopy(abyte1, 0, abyte0, 0, 6);
-
-        while (j2 < i2) {
-          int l2 = i2 - j2;
-          if (l2 > 1000) {
-            l2 = 1000;
-          }
-          int j3 = datainputstream.read(abyte0, j2, l2);
-          if (j3 < 0) {
-            s2 = "Length error: " + j2 + "/" + i2;
-            throw new IOException("EOF");
-          }
-          j2 += j3;
-          int k3 = j2 * 100 / i2;
-          if (k3 != k1) {
-            drawLoadingText(k, "Loading " + s + " - " + k3 + "%");
-          }
-          k1 = k3;
-        }
-        datainputstream.close();
-        try {
-          if (decompressors[0] != null) {
-            decompressors[0].writeEntry(abyte0.length, abyte0, i);
-          }
-        } catch (Exception _ex) {
-          decompressors[0] = null;
-        }
-
-        if (abyte0 != null && ClientSettings.CHECK_CRC) {
-          fileCRC.reset();
-          fileCRC.update(abyte0);
-          int i3 = (int) fileCRC.getValue();
-          if (i3 != j) {
-            abyte0 = null;
-            j1++;
-            s2 = "Checksum error: " + i3;
-          }
-        }
-
-      } catch (IOException ioexception) {
-        if (s2.equals("Unknown error")) {
-          s2 = "Connection error";
-        }
-        abyte0 = null;
-      } catch (NullPointerException _ex) {
-        s2 = "Null error";
-        abyte0 = null;
-        if (!Signlink.reporterror) {
-          return null;
-        }
-      } catch (ArrayIndexOutOfBoundsException _ex) {
-        s2 = "Bounds error";
-        abyte0 = null;
-        if (!Signlink.reporterror) {
-          return null;
-        }
-      } catch (Exception _ex) {
-        s2 = "Unexpected error";
-        abyte0 = null;
-        if (!Signlink.reporterror) {
-          return null;
-        }
-      }
-      if (abyte0 == null) {
-        for (int l1 = l; l1 > 0; l1--) {
-          if (j1 >= 3) {
-            drawLoadingText(k, "Game updated - please reload page");
-            l1 = 10;
-          } else {
-            drawLoadingText(k, s2 + " - Retrying in " + l1);
-          }
-          try {
-            Thread.sleep(1000L);
-          } catch (Exception _ex) {
-          }
-        }
-
-        l *= 2;
-        if (l > 60) {
-          l = 60;
-        }
-        useJaggrab = !useJaggrab;
-      }
-    }
-
-    StreamLoader streamLoader_1 = new StreamLoader(abyte0);
-    return streamLoader_1;
+    return loadingHandler.streamLoaderForName(i, s, s1, j, k);
   }
 
   public void dropClient() {
-    if (reconnectDelay > 0) {
-      resetLogout();
-      return;
-    }
-    drawTextOnScreen("Please wait - attempting to reestablish", "Connection lost");
-    minimapState = 0;
-    destX = 0;
-    RSSocket rsSocket = socketStream;
-    loggedIn = false;
-    loginFailures = 0;
-    login(myUsername, myPassword, true);
-    if (!loggedIn) {
-      resetLogout();
-    }
-    try {
-      rsSocket.close();
-    } catch (Exception _ex) {
-    }
+    loginManager.dropClient();
   }
 
   public void drawTextOnScreen(String s, String s1) {
@@ -5163,24 +5026,7 @@ public class Game extends RSApplet {
   }
 
   public DataInputStream openJagGrabInputStream(String s) throws IOException {
-    // if(!useJaggrab)
-    // if(signlink.mainapp != null)
-    // return signlink.openurl(s);
-    // else
-    // return new DataInputStream((new URL(getCodeBase(), s)).openStream());
-    if (jaggrabSocket != null) {
-      try {
-        jaggrabSocket.close();
-      } catch (Exception _ex) {
-      }
-      jaggrabSocket = null;
-    }
-    jaggrabSocket = openSocket(43595);
-    jaggrabSocket.setSoTimeout(10000);
-    java.io.InputStream inputstream = jaggrabSocket.getInputStream();
-    OutputStream outputstream = jaggrabSocket.getOutputStream();
-    outputstream.write(("JAGGRAB /" + s + "\n\n").getBytes());
-    return new DataInputStream(inputstream);
+    return loadingHandler.openJagGrabInputStream(s);
   }
 
   public void doFlamesDrawing() {
