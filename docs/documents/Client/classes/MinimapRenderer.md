@@ -9,6 +9,7 @@ final class MinimapRenderer {
     MinimapRenderer(Game game)
     void generateMinimap(int plane)
     void drawMinimap()
+    void markMinimap(Sprite sprite, int dx, int dy)
     void npcScreenPos(Entity entity, int height)
     void calcEntityScreenPos(int x, int z, int y)
 }
