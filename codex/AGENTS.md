@@ -128,6 +128,7 @@ An automated refactor **SHOULD**:
 3. Convert duplicated literal IDs to shared enums/records.
 4. Migrate legacy collections (Vector, Hashtable) to modern ones.
 5. Preserve public API surface; mark breaking‑change PRs with ⚠️ breaking‑change in the title.
+6. Client accepts \\n for new line, but not \n for in-game interface components
 
 ---
 

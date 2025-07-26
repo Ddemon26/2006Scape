@@ -22,21 +22,21 @@ While preserving the classic gameplay, we embrace modern development standards:
 
 ### Three-Component System
 
-#### =¥ [Game Server](Server/Server-intro.md)
+#### [Game Server](Server/Server-intro.md)
 The heart of 2006Scape, handling all game logic and world simulation:
 - **Technology**: Java-based server with custom networking
 - **Features**: Complete game world, combat, skills, quests, and player management
 - **Scale**: Supports hundreds of concurrent players
 - **Extensibility**: Plugin system for custom content
 
-#### <® [Game Client](Client/client-intro.md)
+#### [Game Client](Client/client-intro.md)
 The player-facing application providing the complete game experience:
 - **Technology**: Java client with 3D rendering engine
 - **Features**: Full 3D world, user interface, audio system, and networking
 - **Compatibility**: Based on original RuneScape client architecture
 - **Performance**: Optimized for smooth gameplay on modern systems
 
-#### > [Parabot Integration](Parabot/Parabot-intro.md)
+#### > [Parabot Integration](Parabot/Parabot-intro.md)
 Scripting environment for automation and testing:
 - **Purpose**: Automated testing and bot development
 - **Integration**: Seamless connection to local development servers
@@ -146,4 +146,4 @@ Whether you're a nostalgic player wanting to relive the golden age of RuneScape,
 
 **Questions?** Join our [Discord community](https://discord.gg/hZ6VfWG) where thousands of players and developers are ready to help.
 
-Welcome to 2006Scape  where the adventure never ends! <ð”
+Welcome to 2006Scape where the adventure never ends!

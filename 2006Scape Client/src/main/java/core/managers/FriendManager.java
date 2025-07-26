@@ -297,11 +297,13 @@ public final class FriendManager {
     }
     if (j == 661) {
       if (game.recoveryQuestionChangeDate == 0) {
-        interfaceComponent.disabledText =
-            "\nYou have not yet set any recovery questions.\nIt is @lre@strongly@yel@ recommended that you do so.\n\nIf you don't you will be @lre@unable to recover your\n@lre@password@yel@ if you forget it, or it is stolen.";
+        interfaceComponent.disabledText = // Client accepts \\n for new line, but not \n for interface components
+                "\\nYou have not yet set any recovery questions.\\nIt is @lre@strongly@yel@ recommended that you do so." +
+                        "\\n\\nIf you don't you will be @lre@unable to recover your\\n" +
+                        "@lre@password@yel@ if you forget it, or it is stolen.";
       } else if (game.recoveryQuestionChangeDate <= game.currentDateOffset) {
         interfaceComponent.disabledText =
-            "\n\nRecovery Questions Last Set:\n@gre@" + game.formatDate(game.recoveryQuestionChangeDate);
+            "\\n\\nRecovery Questions Last Set:\\n@gre@" + game.formatDate(game.recoveryQuestionChangeDate);
       } else {
         int l1 = (game.currentDateOffset + 14) - game.recoveryQuestionChangeDate;
         String s2;
@@ -310,27 +312,27 @@ public final class FriendManager {
         else s2 = l1 + " days ago";
         interfaceComponent.disabledText =
             s2
-                + " you requested@lre@ new recovery\n@lre@questions.@yel@ The requested change will occur\non: @lre@"
+                + " you requested@lre@ new recovery\\n@lre@questions.@yel@ The requested change will occur\\non: @lre@"
                 + game.formatDate(game.recoveryQuestionChangeDate)
-                + "\n\nIf you do not remember making this request\ncancel it immediately, and change your password.";
+                + "\\n\\nIf you do not remember making this request\\ncancel it immediately, and change your password.";
       }
       return;
     }
     if (j == 663) {
       if (game.lastPasswordChange <= 0 || game.lastPasswordChange > game.currentDateOffset + 10)
-        interfaceComponent.disabledText = "Last password change:\n@gre@Never changed";
+        interfaceComponent.disabledText = "Last password change:\\n@gre@Never changed";
       else
         interfaceComponent.disabledText =
-            "Last password change:\n@gre@" + game.formatDate(game.lastPasswordChange);
+            "Last password change:\\n@gre@" + game.formatDate(game.lastPasswordChange);
       return;
     }
     if (j == 668) {
       if (game.recoveryQuestionChangeDate > game.currentDateOffset) {
         interfaceComponent.disabledText =
-            "To cancel this request:\n1) Logout and return to the frontpage of this website.\n2) Choose 'Cancel recovery questions'.";
+            "To cancel this request:\\n1) Logout and return to the frontpage of this website.\\n2) Choose 'Cancel recovery questions'.";
       } else {
         interfaceComponent.disabledText =
-            "To change your recovery questions:\n1) Logout and return to the frontpage of this website.\n2) Choose 'Set new recovery questions'.";
+            "To change your recovery questions:\\n1) Logout and return to the frontpage of this website.\\n2) Choose 'Set new recovery questions'.";
       }
     }
   }
