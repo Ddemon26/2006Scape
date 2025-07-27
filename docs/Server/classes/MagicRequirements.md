@@ -8,8 +8,8 @@ Magic Requirements helper class.
 
 ```java
 public class MagicRequirements {
-public static boolean wearingStaff(Player player, int runeId)
-public static boolean checkMagicReqs(Player c, int spell)
-public static boolean checkMagicReqs(Player c, int spell, boolean runesRequired)
-public static int getStaffNeeded(Player c)
+public static boolean wearingStaff(game.entities.Player player, int runeId)
+public static boolean checkMagicReqs(game.entities.Player c, int spell)
+public static boolean checkMagicReqs(game.entities.Player c, int spell, boolean runesRequired)
+public static int getStaffNeeded(game.entities.Player c)
 ```

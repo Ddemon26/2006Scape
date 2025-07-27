@@ -8,7 +8,7 @@ Defined in [`2006Scape Server/src/main/java/com/rs2/game/items/UseItem.java`](20
 
 ```java
 public class UseItem {
-public static void itemOnObject(Player c, int objectID, int objectX, int objectY, int itemId)
-public static void itemOnItem(Player player, int itemUsed, int useWith)
-public static void itemOnNpc(final Player c, final int itemId, final int npcId, final int slot)
+public static void itemOnObject(game.entities.Player c, int objectID, int objectX, int objectY, int itemId)
+public static void itemOnItem(game.entities.Player player, int itemUsed, int useWith)
+public static void itemOnNpc(final game.entities.Player c, final int itemId, final int npcId, final int slot)
 ```

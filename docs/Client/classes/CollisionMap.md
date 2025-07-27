@@ -1,12 +1,12 @@
-# CollisionMap
+# core.world.CollisionMap
 
-Defined in [`2006Scape Client/src/main/java/CollisionMap.java`](2006Scape Client/src/main/java/CollisionMap.java).
+Defined in [`2006Scape Client/src/main/java/core.world.CollisionMap.java`](2006Scape Client/src/main/java/core.world.CollisionMap.java).
 
 Collision Map helper class.
 
 ```java
-final class CollisionMap {
-public CollisionMap()
+final class core.world.CollisionMap {
+public core.world.CollisionMap()
 public void reset()
 public void addWall(int i, int j, int k, int l, boolean flag)
 public void addObject(boolean flag, int j, int k, int l, int i1, int j1)

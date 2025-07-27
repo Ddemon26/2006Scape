@@ -8,6 +8,6 @@ Dye.java  @author Andrew (Mr Extremez)
 
 ```java
 public enum Dye {
-public static boolean blockDye(Player player, Dye dye, int itemUsed, int useWith)
-public static void dyeItem(Player player, int itemUsed, int useWith)
+public static boolean blockDye(game.entities.Player player, Dye dye, int itemUsed, int useWith)
+public static void dyeItem(game.entities.Player player, int itemUsed, int useWith)
 ```

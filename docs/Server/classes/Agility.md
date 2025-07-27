@@ -8,10 +8,10 @@ Gameplay logic related to the Agility skill.
 
 ```java
 public class Agility {
-public Agility(Player player)
+public Agility(game.entities.Player player)
 public void resetAgilityProgress()
 public void walk(int EndX, int EndY, int Emote, int endingAnimation)
-public static void brimhavenSkippingStone(final Player player)
+public static void brimhavenSkippingStone(final game.entities.Player player)
 public void execute(CycleEventContainer container)
 public void stop()
 public void execute(CycleEventContainer container)

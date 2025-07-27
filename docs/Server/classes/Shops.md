@@ -12,6 +12,6 @@ public static HashMap<Integer, Shop> npc = new HashMap<Integer, Shop>();
 public static Shop forId(int id)
 public int getNpc()
 public int getShop()
-public static void dialogueShop(Player c, int npcClick)
-public static void openShop(Player c, int npcClickId)
+public static void dialogueShop(game.entities.Player c, int npcClick)
+public static void openShop(game.entities.Player c, int npcClickId)
 ```

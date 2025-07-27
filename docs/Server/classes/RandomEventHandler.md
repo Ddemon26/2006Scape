@@ -9,8 +9,8 @@ Eventhandler class @author Andrew (Mr Extremez)
 ```java
 * Eventhandler class
 public static int CALL_RANDOM = 350 + Misc.random(100);
-public static void resetEvent(Player c)
-public static void failEvent(Player client)
-public static void callRandom(Player c) { // add all random events here
-public static void addRandom(Player c)
+public static void resetEvent(game.entities.Player c)
+public static void failEvent(game.entities.Player client)
+public static void callRandom(game.entities.Player c) { // add all random events here
+public static void addRandom(game.entities.Player c)
 ```

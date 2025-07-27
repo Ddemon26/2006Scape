@@ -8,8 +8,8 @@ Cannon @author Andrew (Mr Extremez)
 
 ```java
 public class DwarfCannon {
-public DwarfCannon(Player player2)
-public static void makeBall(Player player)
+public DwarfCannon(game.entities.Player player2)
+public static void makeBall(game.entities.Player player)
 public void execute(CycleEventContainer container)
 public void stop()
 public void placeCannon()

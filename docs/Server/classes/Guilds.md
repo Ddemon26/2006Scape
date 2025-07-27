@@ -8,7 +8,7 @@ Guilds Class @author Andrew (I'm A Boss on Rune-Server, Mr Extremez on Moparscap
 
 ```java
 public class Guilds {
-public static void attemptGuild(Player player, int objectId)
-public static void movePlayer(Player player, int objectId)
-public static boolean checkRequirements(Player player, int objectId)
+public static void attemptGuild(game.entities.Player player, int objectId)
+public static void movePlayer(game.entities.Player player, int objectId)
+public static boolean checkRequirements(game.entities.Player player, int objectId)
 ```

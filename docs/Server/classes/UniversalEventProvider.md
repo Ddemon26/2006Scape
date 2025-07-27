@@ -10,6 +10,6 @@ A universal event provider which posts, provides and deprives subscribers.  @aut
 public final class UniversalEventProvider implements EventProvider {
 public void provideSubscriber(EventSubscriber<?> subscriber)
 public void depriveSubscriber(EventSubscriber<?> subscriber)
-public <E extends Event> void post(Player player, E event)
+public <E extends Event> void post(game.entities.Player player, E event)
 public Multimap<Class<? extends Event>, EventSubscriber<? super Event>> getEvents()
 ```

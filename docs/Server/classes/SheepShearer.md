@@ -8,5 +8,5 @@ Sheep Shearer @author Andrew (Mr Extremez)
 
 ```java
 public class SheepShearer {
-public static void showInformation(Player client)
+public static void showInformation(game.entities.Player client)
 ```

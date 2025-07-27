@@ -8,7 +8,7 @@ Soft Clay @author Andrew (Mr Extremez)
 
 ```java
 public class SoftClay {
-public static void makeClay(final Player player)
+public static void makeClay(final game.entities.Player player)
 public void execute(CycleEventContainer container)
 public void stop()
 ```

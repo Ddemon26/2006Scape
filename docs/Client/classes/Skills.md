@@ -1,9 +1,9 @@
-# Skills
+# game.mechanics.Skills
 
-Defined in [`2006Scape Client/src/main/java/Skills.java`](2006Scape Client/src/main/java/Skills.java).
+Defined in [`2006Scape Client/src/main/java/game.mechanics.Skills.java`](2006Scape Client/src/main/java/game.mechanics.Skills.java).
 
-Skills helper class.
+game.mechanics.Skills helper class.
 
 ```java
-final class Skills {
+final class game.mechanics.Skills {
 ```

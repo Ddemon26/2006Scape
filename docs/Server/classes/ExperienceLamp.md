@@ -8,7 +8,7 @@ Experience Lamp helper class.
 
 ```java
 public class ExperienceLamp {
-public static void buttons(Player player, int id)
-public static void addExp(Player c)
-public static void rubLamp(Player c, int id)
+public static void buttons(game.entities.Player player, int id)
+public static void addExp(game.entities.Player c)
+public static void rubLamp(game.entities.Player c, int id)
 ```

@@ -8,9 +8,9 @@ Cast Requirements helper class.
 
 ```java
 public class CastRequirements {
-public static boolean hasRunes(Player c, int[] runes, int[] amount)
-public static boolean hasRunes(Player player, int[][] runes)
-public static void deleteRunes(Player player, int[][] runes)
-public static void deleteRunes(Player c, int[] runes, int[] amount)
-public static boolean hasRequiredLevel(Player c, int i)
+public static boolean hasRunes(game.entities.Player c, int[] runes, int[] amount)
+public static boolean hasRunes(game.entities.Player player, int[][] runes)
+public static void deleteRunes(game.entities.Player player, int[][] runes)
+public static void deleteRunes(game.entities.Player c, int[] runes, int[] amount)
+public static boolean hasRequiredLevel(game.entities.Player c, int i)
 ```

@@ -8,7 +8,7 @@ Gameplay logic related to the Agility skill.
 
 ```java
 public class ApeAtollAgility {
-public ApeAtollAgility(Player player)
+public ApeAtollAgility(game.entities.Player player)
 public boolean apeAtollCourse(int objectId)
 public void execute(CycleEventContainer container)
 public void stop()

@@ -8,5 +8,5 @@ Knights Sword helper class.
 
 ```java
 public class KnightsSword {
-public static void showInformation(Player player)
+public static void showInformation(game.entities.Player player)
 ```

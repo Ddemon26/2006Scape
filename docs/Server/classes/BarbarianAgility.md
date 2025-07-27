@@ -8,7 +8,7 @@ Gameplay logic related to the Agility skill.
 
 ```java
 public class BarbarianAgility {
-public BarbarianAgility(Player player)
+public BarbarianAgility(game.entities.Player player)
 public boolean barbarianCourse(int objectId)
 public void execute(CycleEventContainer container)
 public void stop()

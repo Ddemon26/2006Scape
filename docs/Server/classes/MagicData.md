@@ -9,13 +9,13 @@ Magic Data helper class.
 ```java
 public class MagicData {
 public static String getSpellName(int id)
-public static boolean multis(Player c)
-public static int getFreezeTime(Player c)
-public static int getStartHeight(Player c)
-public static int getEndHeight(Player c)
-public static int getStartDelay(Player c)
-public static boolean godSpells(Player c)
-public static int getEndGfxHeight(Player c)
-public static int getStartGfxHeight(Player c)
-public static boolean fullVoidMage(Player c)
+public static boolean multis(game.entities.Player c)
+public static int getFreezeTime(game.entities.Player c)
+public static int getStartHeight(game.entities.Player c)
+public static int getEndHeight(game.entities.Player c)
+public static int getStartDelay(game.entities.Player c)
+public static boolean godSpells(game.entities.Player c)
+public static int getEndGfxHeight(game.entities.Player c)
+public static int getStartGfxHeight(game.entities.Player c)
+public static boolean fullVoidMage(game.entities.Player c)
 ```

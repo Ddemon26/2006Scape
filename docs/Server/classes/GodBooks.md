@@ -8,8 +8,8 @@ Handles the preaching of god books @author Final Project
 
 ```java
 public enum GodBooks {
-public static void sendPreachOptions(Player player, int itemId)
-public static void handlePreach(Player player, int itemId, int actionButtonId)
+public static void sendPreachOptions(game.entities.Player player, int itemId)
+public static void handlePreach(game.entities.Player player, int itemId, int actionButtonId)
 public void execute(CycleEventContainer container)
 public void stop()
 ```

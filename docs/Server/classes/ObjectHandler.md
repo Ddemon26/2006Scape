@@ -58,13 +58,13 @@ public void createAnObject(int id, int x, int y, int face) {
 #### Overloaded Creation Methods
 ```java
 // Create object for specific player
-public void createAnObject(Player c, int id, int x, int y) {
+public void createAnObject(game.entities.Player c, int id, int x, int y) {
     Objects object = new Objects(id, x, y, c.heightLevel, 0, 10, 0);
     processObjectCreation(object, id);
 }
 
 // Create object with height and face
-public void createAnObject(Player player, int id, int x, int y, int h, int face) {
+public void createAnObject(game.entities.Player player, int id, int x, int y, int h, int face) {
     Objects object = new Objects(id, x, y, h, face, 10, 0);
     processObjectCreation(object, id);
 }
@@ -158,11 +158,11 @@ public Objects getObjectByPosition(int x, int y) {
 
 ### Object Visibility and Updates
 
-#### `updateObjects(Player c)`
+#### `updateObjects(game.entities.Player c)`
 Updates object visibility for a specific player:
 
 ```java
-public void updateObjects(Player c) {
+public void updateObjects(game.entities.Player c) {
     for (Objects o : globalObjects) {
         if (c != null) {
             // Special handling for trees and rocks at height 0
@@ -202,7 +202,7 @@ public void placeObject(Objects o) {
     Region.addClipping(o.getObjectX(), o.getObjectY(), o.getObjectHeight(), 0);
     
     // Update all nearby players
-    for (Player p : PlayerHandler.players) {
+    for (game.entities.Player p : PlayerHandler.players) {
         if (p != null) {
             Client person = (Client) p;
             
@@ -333,7 +333,7 @@ public void teleportObelisk(int port) {
     }
     
     // Teleport all players near the obelisk
-    for (Player player : PlayerHandler.players) {
+    for (game.entities.Player player : PlayerHandler.players) {
         if (player != null) {
             Client c = (Client) player;
             
@@ -470,12 +470,12 @@ if (objectHandler.isObelisk(objectId)) {
 GameEngine.objectHandler.process();
 ```
 
-### Player Integration
+### game.entities.Player Integration
 ```java
 // Update objects when player moves to new area
 objectHandler.updateObjects(player);
 
-// Player interacts with object
+// game.entities.Player interacts with object
 Objects obj = objectHandler.objectExists(x, y, player.heightLevel);
 if (obj != null) {
     // Handle interaction
@@ -500,7 +500,7 @@ Region.addClipping(x, y, height, clipType);
 ## Related Classes
 
 - [`Objects`](Objects.md) - Individual object data structure
-- [`Player`](Player.md) - Players who interact with objects
+- [`game.entities.Player`](game.entities.Player.md) - Players who interact with objects
 - [`PacketSender`](PacketSender.md) - Sends object updates to client
 - [`Region`](Region.md) - Handles collision and clipping
 - [`GameEngine`](GameEngine.md) - Calls ObjectHandler.process() every tick

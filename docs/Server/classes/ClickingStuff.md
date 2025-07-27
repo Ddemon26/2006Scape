@@ -8,5 +8,5 @@ Clicking stuff (interfaces)
 
 ```java
 public class ClickingStuff implements PacketType {
-public void processPacket(Player player, Packet packet)
+public void processPacket(game.entities.Player player, Packet packet)
 ```

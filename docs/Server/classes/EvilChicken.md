@@ -8,5 +8,5 @@ Evil Chicken helper class.
 
 ```java
 public class EvilChicken {
-public static void spawnChicken(Player c)
+public static void spawnChicken(game.entities.Player c)
 ```

@@ -5,13 +5,13 @@
 
 ## Overview
 
-The `ShopHandler` class manages the entire shop system for the 2006Scape server, including both NPC shops and player-owned shops. It handles shop inventory management, restocking mechanics, price calculations, and player interactions with shops. This system supports dynamic inventory changes, automatic restocking, and real-time updates for all players viewing a shop.
+The `ShopHandler` class manages the entire shop system for the 2006Scape server, including both game.entities.NPC shops and player-owned shops. It handles shop inventory management, restocking mechanics, price calculations, and player interactions with shops. This system supports dynamic inventory changes, automatic restocking, and real-time updates for all players viewing a shop.
 
 ## Key Responsibilities
 
 - **Shop Management**: Loading, creating, and managing shop configurations
 - **Inventory Control**: Tracking stock levels, restocking items, and managing shop inventories
-- **Player Shops**: Supporting player-owned shops with custom inventories
+- **game.entities.Player Shops**: Supporting player-owned shops with custom inventories
 - **Real-time Updates**: Synchronizing shop changes across all viewing players
 - **Economic Balance**: Managing buy/sell prices and stock limitations
 - **Data Persistence**: Loading shop configurations from JSON files
@@ -22,7 +22,7 @@ The `ShopHandler` class manages the entire shop system for the 2006Scape server,
 ```java
 public static int MAX_SHOPS = 800;              // Maximum number of shops
 public static int MAX_SHOP_ITEMS = 40;          // Items per shop
-public static int[][] shopItems = new int[MAX_SHOPS][MAX_SHOP_ITEMS];      // Item IDs
+public static int[][] shopItems = new int[MAX_SHOPS][MAX_SHOP_ITEMS];      // game.items.Item IDs
 public static int[][] shopItemsN = new int[MAX_SHOPS][MAX_SHOP_ITEMS];     // Stock amounts
 public static int[][] shopItemsDelay = new int[MAX_SHOPS][MAX_SHOP_ITEMS]; // Restock timers
 public static int[][] shopItemsSN = new int[MAX_SHOPS][MAX_SHOP_ITEMS];    // Standard stock
@@ -204,7 +204,7 @@ public static int getStock(int shopId, int itemId) {
             return shopItemsN[shopId][slot];
         }
     }
-    return -1; // Item not found
+    return -1; // game.items.Item not found
 }
 ```
 
@@ -232,7 +232,7 @@ public static void refreshshop(int shopId) {
     // Update all players viewing this shop
     for (int playerId = 1; playerId < PlayerHandler.players.length; playerId++) {
         if (PlayerHandler.players[playerId] != null) {
-            Player player = PlayerHandler.players[playerId];
+            game.entities.Player player = PlayerHandler.players[playerId];
             if (player.isShopping && player.shopId == shopId) {
                 player.updateShop = true;
                 player.updateShop(shopId);
@@ -242,7 +242,7 @@ public static void refreshshop(int shopId) {
 }
 ```
 
-### Player-Owned Shops
+### game.entities.Player-Owned Shops
 
 #### `createPlayerShop(Client player)`
 Creates a player-owned shop using their bank items:
@@ -256,7 +256,7 @@ public static void createPlayerShop(Client player) {
     }
     
     player.shopId = shopId;
-    shopSModifier[shopId] = 0;  // Player shops don't buy items
+    shopSModifier[shopId] = 0;  // game.entities.Player shops don't buy items
     shopBModifier[shopId] = 0;  // Custom pricing
     shopName[shopId] = player.properName + "'s Store";
     
@@ -384,7 +384,7 @@ private static int getEmptyshop() {
 // Check if item is in stock
 int stock = ShopHandler.getStock(shopId, itemId);
 if (stock > 0) {
-    // Item is available
+    // game.items.Item is available
 }
 
 // Purchase items from shop
@@ -394,7 +394,7 @@ ShopHandler.buyItem(shopId, itemId, amount);
 ShopHandler.refreshshop(shopId);
 ```
 
-### Player Shop Management
+### game.entities.Player Shop Management
 ```java
 // Create player shop
 ShopHandler.createPlayerShop(player);
@@ -404,7 +404,7 @@ ShopHandler.closePlayerShop(player);
 
 // Check if player owns shop
 if (ShopHandler.playerOwnsStore(shopId, player)) {
-    // Player can manage this shop
+    // game.entities.Player can manage this shop
 }
 ```
 
@@ -426,7 +426,7 @@ Shop prices are calculated using modifiers:
 
 ### Stock Management
 - **Standard Items**: Automatically restock to original amounts
-- **Player-Sold Items**: Gradually removed from shop over time
+- **game.entities.Player-Sold Items**: Gradually removed from shop over time
 - **Overstocking**: Items sold by players are slowly discounted
 
 ### Restocking System
@@ -440,11 +440,11 @@ Shop prices are calculated using modifiers:
 - **Efficient Loops**: Only process active shops with valid modifiers
 - **Batch Updates**: Group shop refreshes together
 - **Memory Management**: Clean up empty shop slots regularly
-- **Player Filtering**: Only update players actually viewing shops
+- **game.entities.Player Filtering**: Only update players actually viewing shops
 
 ### Scalability
 - **Shop Limits**: Maximum of 800 shops supported
-- **Item Limits**: 40 items per shop maximum
+- **game.items.Item Limits**: 40 items per shop maximum
 - **Update Frequency**: Process every game tick for responsive restocking
 
 ## Best Practices
@@ -465,7 +465,7 @@ Shop prices are calculated using modifiers:
 GameEngine.shopHandler.process();
 ```
 
-### Player Integration
+### game.entities.Player Integration
 ```java
 // When player opens shop
 player.isShopping = true;
@@ -486,8 +486,8 @@ int sellPrice = player.getShopAssistant().getSellPrice(itemId, shopId);
 
 ## Related Classes
 
-- [`ShopAssistant`](ShopAssistant.md) - Player-specific shop interactions
+- [`ShopAssistant`](ShopAssistant.md) - game.entities.Player-specific shop interactions
 - [`ShopData`](ShopData.md) - Shop configuration data structure
 - [`GameEngine`](GameEngine.md) - Calls ShopHandler.process() every tick
-- [`Player`](Player.md) - Contains shop state and interactions
+- [`game.entities.Player`](game.entities.Player.md) - Contains shop state and interactions
 - [`ItemAssistant`](ItemAssistant.md) - Handles item transactions

@@ -8,9 +8,9 @@ Desert Cactus helper class.
 
 ```java
 public class DesertCactus {
-public static int getCacCutter(Player player)
-public static void checkCactus(Player c, int objectId, int obX, int obY)
-public static void cutCactus(final Player c, int itemId, final int objectId, final int obX, final int obY)
+public static int getCacCutter(game.entities.Player player)
+public static void checkCactus(game.entities.Player c, int objectId, int obX, int obY)
+public static void cutCactus(final game.entities.Player c, int itemId, final int objectId, final int obX, final int obY)
 public void execute(CycleEventContainer container)
 public void stop()
 ```

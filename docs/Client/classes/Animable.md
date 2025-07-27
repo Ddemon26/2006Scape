@@ -1,9 +1,9 @@
-# Animable
+# game.entities.Animable
 
-Defined in [`2006Scape Client/src/main/java/Animable.java`](2006Scape Client/src/main/java/Animable.java).
+Defined in [`2006Scape Client/src/main/java/game.entities.Animable.java`](2006Scape Client/src/main/java/game.entities.Animable.java).
 
-Animable helper class.
+game.entities.Animable helper class.
 
 ```java
-public class Animable extends NodeSub {
+public class game.entities.Animable extends util.collections.NodeSub {
 ```

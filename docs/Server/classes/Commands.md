@@ -8,10 +8,10 @@ Discord commands for .
 
 ```java
 public class Commands implements PacketType {
-public void processPacket(Player player, Packet packet)
-public static void playerCommands(Player player, String playerCommand, String[] arguments)
+public void processPacket(game.entities.Player player, Packet packet)
+public static void playerCommands(game.entities.Player player, String playerCommand, String[] arguments)
 public void run()
-public static void moderatorCommands(Player player, String playerCommand, String[] arguments)
-public static void adminCommands(Player player, String playerCommand, String[] arguments)
-public static void developerCommands(Player player, String playerCommand, String[] arguments)
+public static void moderatorCommands(game.entities.Player player, String playerCommand, String[] arguments)
+public static void adminCommands(game.entities.Player player, String playerCommand, String[] arguments)
+public static void developerCommands(game.entities.Player player, String playerCommand, String[] arguments)
 ```

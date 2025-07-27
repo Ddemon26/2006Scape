@@ -8,13 +8,13 @@ Other Objects helper class.
 
 ```java
 public class OtherObjects {
-public static boolean openKharid(Player player, int objectId)
-public static boolean openShantay(Player player, int objectId)
-public static void movePlayer(Player player)
-public static void interactCurtain(Player player, int objectType, int x, int y)
-public static void initKharid(Player player, int objectId)
-public static void initShantay(Player player, int objectId)
-public static void searchSpecialObject(Player player, int objectType)
+public static boolean openKharid(game.entities.Player player, int objectId)
+public static boolean openShantay(game.entities.Player player, int objectId)
+public static void movePlayer(game.entities.Player player)
+public static void interactCurtain(game.entities.Player player, int objectType, int x, int y)
+public static void initKharid(game.entities.Player player, int objectId)
+public static void initShantay(game.entities.Player player, int objectId)
+public static void searchSpecialObject(game.entities.Player player, int objectType)
 public void execute(CycleEventContainer container)
 public void stop()
 public void execute(CycleEventContainer container)

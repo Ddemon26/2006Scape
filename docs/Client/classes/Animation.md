@@ -1,11 +1,11 @@
-# Animation
+# game.animation.Animation
 
-Defined in [`2006Scape Client/src/main/java/Animation.java`](2006Scape Client/src/main/java/Animation.java).
+Defined in [`2006Scape Client/src/main/java/game.animation.Animation.java`](2006Scape Client/src/main/java/game.animation.Animation.java).
 
-Animation helper class.
+game.animation.Animation helper class.
 
 ```java
-public final class Animation {
-public static void unpackConfig(StreamLoader streamLoader)
+public final class game.animation.Animation {
+public static void unpackConfig(core.network.StreamLoader streamLoader)
 public int getFrameDelay(int frameIndex)
 ```

@@ -1,15 +1,15 @@
-# NodeSubList
+# util.collections.NodeSubList
 
-Defined in [`2006Scape Client/src/main/java/NodeSubList.java`](2006Scape Client/src/main/java/NodeSubList.java).
+Defined in [`2006Scape Client/src/main/java/util.collections.NodeSubList.java`](2006Scape Client/src/main/java/util.collections.NodeSubList.java).
 
-Node Sub List helper class.
+util.collections.Node Sub List helper class.
 
 ```java
-final class NodeSubList {
-public NodeSubList()
-public void insertHead(NodeSub nodeSub)
-public NodeSub popTail()
-public NodeSub reverseGetFirst()
-public NodeSub reverseGetNext()
+final class util.collections.NodeSubList {
+public util.collections.NodeSubList()
+public void insertHead(util.collections.NodeSub nodeSub)
+public util.collections.NodeSub popTail()
+public util.collections.NodeSub reverseGetFirst()
+public util.collections.NodeSub reverseGetNext()
 public int getNodeCount()
 ```

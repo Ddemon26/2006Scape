@@ -1,22 +1,22 @@
-# Model
+# render.geometry.Model
 
-Defined in [`2006Scape Client/src/main/java/Model.java`](2006Scape Client/src/main/java/Model.java).
+Defined in [`2006Scape Client/src/main/java/render.geometry.Model.java`](2006Scape Client/src/main/java/render.geometry.Model.java).
 
-Model helper class.
+render.geometry.Model helper class.
 
 ```java
-public final class Model extends Animable {
+public final class render.geometry.Model extends game.entities.Animable {
 public static void clearCache()
-public static void init(int i, OnDemandFetcherParent onDemandFetcherParent)
+public static void init(int i, core.managers.OnDemandFetcherParent onDemandFetcherParent)
 public static void loadModelData(byte abyte0[], int j)
 public static void unload(int j)
-public static Model create(int j)
+public static render.geometry.Model create(int j)
 public static boolean isLoaded(int i)
-public Model(int i, Model models[])
-public Model(Model models[])
-public Model(boolean flag, boolean flag1, boolean flag2, Model model)
-public Model(boolean flag, boolean flag1, Model model)
-public void copyFromModel(Model src, boolean shareColor)
+public render.geometry.Model(int i, render.geometry.Model models[])
+public render.geometry.Model(render.geometry.Model models[])
+public render.geometry.Model(boolean flag, boolean flag1, boolean flag2, render.geometry.Model model)
+public render.geometry.Model(boolean flag, boolean flag1, render.geometry.Model model)
+public void copyFromModel(render.geometry.Model src, boolean shareColor)
 public void calculateBounds()
 public void calculateBoundsY()
 public void buildVertexGroups()
@@ -32,5 +32,5 @@ public void applyLighting(int i, int j, int k, int l, int i1, boolean flag)
 public void applyShading(int i, int j, int k, int l, int i1)
 public void transformVertices(int j, int k, int l, int i1, int j1, int k1)
 public void render(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2)
-public static final Model placeholderModel = new Model();
+public static final render.geometry.Model placeholderModel = new render.geometry.Model();
 ```

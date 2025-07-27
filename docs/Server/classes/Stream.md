@@ -1,11 +1,11 @@
-# Stream
+# core.network.Stream
 
 **Package:** `com.rs2.util`  
-**Source:** [`2006Scape Server/src/main/java/com/rs2/util/Stream.java`](2006Scape Server/src/main/java/com/rs2/util/Stream.java)
+**Source:** [`2006Scape Server/src/main/java/com/rs2/util/core.network.Stream.java`](2006Scape Server/src/main/java/com/rs2/util/core.network.Stream.java)
 
 ## Overview
 
-The `Stream` class is a specialized binary data serialization utility designed for the RuneScape network protocol. It provides efficient methods for writing and reading various data types to/from byte arrays, with support for different byte orders, bit-level operations, and packet encryption. This class is fundamental to all client-server communication, handling the serialization of game data into packets that can be transmitted over the network.
+The `core.network.Stream` class is a specialized binary data serialization utility designed for the RuneScape network protocol. It provides efficient methods for writing and reading various data types to/from byte arrays, with support for different byte orders, bit-level operations, and packet encryption. This class is fundamental to all client-server communication, handling the serialization of game data into packets that can be transmitted over the network.
 
 ## Key Responsibilities
 
@@ -39,18 +39,18 @@ public IsaacRandom packetEncryption = null;  // ISAAC cipher for packet encrypti
 
 ## Constructors
 
-### `Stream()`
+### `core.network.Stream()`
 Creates an empty stream:
 ```java
-public Stream() {
+public core.network.Stream() {
     // Creates stream with no initial buffer
 }
 ```
 
-### `Stream(byte[] buffer)`
+### `core.network.Stream(byte[] buffer)`
 Creates a stream with an existing buffer:
 ```java
-public Stream(byte[] buffer) {
+public core.network.Stream(byte[] buffer) {
     this.buffer = buffer;
     this.currentOffset = 0;
 }
@@ -318,7 +318,7 @@ public void reset() {
 ### Basic Packet Creation
 ```java
 // Create a simple fixed-size packet
-Stream stream = new Stream(new byte[1024]);
+core.network.Stream stream = new core.network.Stream(new byte[1024]);
 stream.createFrame(123);  // Packet ID 123
 stream.writeByte(42);     // Some data
 stream.writeWord(1000);   // More data
@@ -327,7 +327,7 @@ stream.writeWord(1000);   // More data
 ### Variable-Size Packet
 ```java
 // Create a variable-size packet
-stream.createFrameVarSizeWord(53);  // Item update packet
+stream.createFrameVarSizeWord(53);  // game.items.Item update packet
 stream.writeWord(3214);             // Interface ID
 stream.writeWord(28);               // Number of items
 
@@ -344,13 +344,13 @@ for (int i = 0; i < 28; i++) {
 stream.endFrameVarSizeWord();  // Finalize packet size
 ```
 
-### Bit Packing (Player Updates)
+### Bit Packing (game.entities.Player Updates)
 ```java
-// Player movement updates use bit packing for efficiency
+// game.entities.Player movement updates use bit packing for efficiency
 stream.initBitAccess();
 stream.writeBits(8, playerCount);  // Number of players
 
-for (Player player : players) {
+for (game.entities.Player player : players) {
     if (player.didTeleport) {
         stream.writeBits(1, 1);  // Update required
         stream.writeBits(2, 3);  // Teleport flag
@@ -474,9 +474,9 @@ public int readDWord_v2() {
 
 ### PacketSender Integration
 ```java
-// PacketSender uses Stream for all packet construction
-Player player = getPlayer();
-Stream outStream = player.getOutStream();
+// PacketSender uses core.network.Stream for all packet construction
+game.entities.Player player = getPlayer();
+core.network.Stream outStream = player.getOutStream();
 outStream.createFrame(123);
 outStream.writeByte(data);
 player.flushOutStream();
@@ -484,7 +484,7 @@ player.flushOutStream();
 
 ### Network Layer Integration
 ```java
-// Stream data is sent over network connections
+// core.network.Stream data is sent over network connections
 byte[] packetData = new byte[stream.currentOffset];
 System.arraycopy(stream.buffer, 0, packetData, 0, stream.currentOffset);
 session.write(packetData);
@@ -492,8 +492,8 @@ session.write(packetData);
 
 ### Protocol Handlers
 ```java
-// Incoming packets are read using Stream methods
-Stream inStream = new Stream(packetData);
+// Incoming packets are read using core.network.Stream methods
+core.network.Stream inStream = new core.network.Stream(packetData);
 int value1 = inStream.readByte();
 int value2 = inStream.readWord();
 String text = inStream.readString();
@@ -501,8 +501,8 @@ String text = inStream.readString();
 
 ## Related Classes
 
-- [`PacketSender`](PacketSender.md) - Uses Stream for packet construction
-- [`Player`](Player.md) - Contains output Stream for packet sending
+- [`PacketSender`](PacketSender.md) - Uses core.network.Stream for packet construction
+- [`game.entities.Player`](game.entities.Player.md) - Contains output core.network.Stream for packet sending
 - [`IsaacRandom`](IsaacRandom.md) - Provides packet encryption
 - [`Constants`](Constants.md) - Defines buffer sizes and limits
-- Network protocol handlers - Use Stream for data serialization
+- Network protocol handlers - Use core.network.Stream for data serialization

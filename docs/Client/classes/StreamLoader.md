@@ -1,11 +1,11 @@
-# StreamLoader
+# core.network.StreamLoader
 
-Defined in [`2006Scape Client/src/main/java/StreamLoader.java`](2006Scape Client/src/main/java/StreamLoader.java).
+Defined in [`2006Scape Client/src/main/java/core.network.StreamLoader.java`](2006Scape Client/src/main/java/core.network.StreamLoader.java).
 
-Stream Loader helper class.
+core.network.Stream Loader helper class.
 
 ```java
-final class StreamLoader {
-public StreamLoader(byte archiveData[])
+final class core.network.StreamLoader {
+public core.network.StreamLoader(byte archiveData[])
 public byte[] getFileData(String s)
 ```

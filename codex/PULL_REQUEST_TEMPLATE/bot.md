@@ -1,13 +1,13 @@
 # 🤖 RuneBot Pull Request
 
 > **PR Title format**: `[BOT] <type(scope)>: <summary>`\
-> Example: `[BOT] refactor(rename): Class29 → SoundEnvelope`
+> Example: `[BOT] refactor(rename): Class29 → audio.SoundEnvelope`
 
 ---
 
 ## ✅ Pre‑flight Checklist
 
-| Item                                | Status |
+| game.items.Item                                | Status |
 | ----------------------------------- | ------ |
 | `mvn -B verify -o` passes (offline) |        |
 | `spotbugs:check` passes             |        |

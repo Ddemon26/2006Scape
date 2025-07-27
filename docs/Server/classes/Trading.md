@@ -11,19 +11,19 @@ The `Trading` class manages the player-to-player trading system in the 2006Scape
 
 - **Trade Requests**: Initiating and accepting trade requests between players
 - **Trade Interface**: Managing the trading interface and its components
-- **Item Offers**: Handling the addition and removal of items from trade offers
+- **game.items.Item Offers**: Handling the addition and removal of items from trade offers
 - **Trade Validation**: Ensuring trades are valid and players have sufficient inventory space
 - **Trade Confirmation**: Implementing the two-stage confirmation process
-- **Item Exchange**: Transferring items between players when trades complete
+- **game.items.Item Exchange**: Transferring items between players when trades complete
 - **Trade Cancellation**: Handling declined trades and returning items
 
 ## Core Architecture
 
-### Player Association
+### game.entities.Player Association
 ```java
-private final Player player;
+private final game.entities.Player player;
 
-public Trading(Player player) {
+public Trading(game.entities.Player player) {
     this.player = player;
 }
 ```
@@ -32,7 +32,7 @@ Each Trading instance is tied to a specific player, managing their side of any t
 
 ### Trade States
 ```java
-// In Player class
+// In game.entities.Player class
 public boolean inTrade;
 public boolean tradeConfirmed;
 public boolean tradeConfirmed2;
@@ -53,7 +53,7 @@ Initiates a trade request with another player:
 
 ```java
 public void requestTrade(int playerId) {
-    Player otherPlayer = PlayerHandler.players[playerId];
+    game.entities.Player otherPlayer = PlayerHandler.players[playerId];
     
     // Validate trade request
     if (otherPlayer == null || !validTradeRequest(otherPlayer)) {
@@ -79,7 +79,7 @@ Opens the trading interface for a player:
 
 ```java
 public void openTrade() {
-    Player otherPlayer = PlayerHandler.players[player.tradeWith];
+    game.entities.Player otherPlayer = PlayerHandler.players[player.tradeWith];
     
     // Reset trade state
     resetTrade();
@@ -100,14 +100,14 @@ public void openTrade() {
 }
 ```
 
-### Item Management
+### game.items.Item Management
 
 #### `tradeItem(int itemId, int fromSlot, int amount)`
 Adds an item to the trade offer:
 
 ```java
 public void tradeItem(int itemId, int fromSlot, int amount) {
-    Player otherPlayer = PlayerHandler.players[player.tradeWith];
+    game.entities.Player otherPlayer = PlayerHandler.players[player.tradeWith];
     
     // Validate trade state
     if (!player.inTrade || !player.canOffer) {
@@ -126,7 +126,7 @@ public void tradeItem(int itemId, int fromSlot, int amount) {
     otherPlayer.tradeConfirmed = false;
     
     // Handle stackable items
-    if (Item.itemStackable[itemId]) {
+    if (game.items.Item.itemStackable[itemId]) {
         boolean itemInTrade = false;
         for (int i = 0; i < player.offeredItemsCount; i++) {
             if (player.offeredItems[i] == itemId) {
@@ -166,7 +166,7 @@ Removes an item from the trade offer:
 
 ```java
 public boolean fromTrade(int itemId, int fromSlot, int amount) {
-    Player otherPlayer = PlayerHandler.players[player.tradeWith];
+    game.entities.Player otherPlayer = PlayerHandler.players[player.tradeWith];
     
     // Validate trade state
     if (!player.inTrade || !player.canOffer) {
@@ -217,7 +217,7 @@ Displays the trade confirmation screen:
 
 ```java
 public void confirmScreen() {
-    Player otherPlayer = PlayerHandler.players[player.tradeWith];
+    game.entities.Player otherPlayer = PlayerHandler.players[player.tradeWith];
     
     // Send confirmation interface
     player.getPacketSender().sendFrame248(3443, 3213);
@@ -232,7 +232,7 @@ public void confirmScreen() {
         playerItems.append("\\nNothing!");
     }
     for (int i = 0; i < player.offeredItemsCount; i++) {
-        String itemName = Item.getItemName(player.offeredItems[i]);
+        String itemName = game.items.Item.getItemName(player.offeredItems[i]);
         if (player.offeredItemsN[i] > 1) {
             playerItems.append("\\n").append(player.offeredItemsN[i]).append(" x ").append(itemName);
         } else {
@@ -245,7 +245,7 @@ public void confirmScreen() {
         otherItems.append("\\nNothing!");
     }
     for (int i = 0; i < otherPlayer.offeredItemsCount; i++) {
-        String itemName = Item.getItemName(otherPlayer.offeredItems[i]);
+        String itemName = game.items.Item.getItemName(otherPlayer.offeredItems[i]);
         if (otherPlayer.offeredItemsN[i] > 1) {
             otherItems.append("\\n").append(otherPlayer.offeredItemsN[i]).append(" x ").append(itemName);
         } else {
@@ -267,7 +267,7 @@ Handles the final trade confirmation:
 
 ```java
 public void confirmAccepted() {
-    Player otherPlayer = PlayerHandler.players[player.tradeWith];
+    game.entities.Player otherPlayer = PlayerHandler.players[player.tradeWith];
     
     // Mark this player as confirmed
     player.tradeConfirmed2 = true;
@@ -313,7 +313,7 @@ Transfers items from the other player to this player:
 
 ```java
 public void giveItems() {
-    Player otherPlayer = PlayerHandler.players[player.tradeWith];
+    game.entities.Player otherPlayer = PlayerHandler.players[player.tradeWith];
     
     // Check if other player has offered items
     if (otherPlayer.offeredItemsCount == 0) {
@@ -328,7 +328,7 @@ public void giveItems() {
             // Log the trade
             GameLogger.writeLog(player.playerName, "trade", 
                 player.playerName + " received " + otherPlayer.offeredItemsN[i] + 
-                " x " + Item.getItemName(otherPlayer.offeredItems[i]) + 
+                " x " + game.items.Item.getItemName(otherPlayer.offeredItems[i]) + 
                 " from " + otherPlayer.playerName);
         }
     }
@@ -340,7 +340,7 @@ Verifies that both players have enough inventory space for the trade:
 
 ```java
 public boolean tradeSuccessful() {
-    Player otherPlayer = PlayerHandler.players[player.tradeWith];
+    game.entities.Player otherPlayer = PlayerHandler.players[player.tradeWith];
     
     // Count required inventory slots
     int freeSlots = player.getItemAssistant().freeSlots();
@@ -349,8 +349,8 @@ public boolean tradeSuccessful() {
     // Calculate slots needed for non-stackable items
     for (int i = 0; i < otherPlayer.offeredItemsCount; i++) {
         if (otherPlayer.offeredItems[i] > 0) {
-            if (Item.itemStackable[otherPlayer.offeredItems[i]] || 
-                Item.itemIsNote[otherPlayer.offeredItems[i]]) {
+            if (game.items.Item.itemStackable[otherPlayer.offeredItems[i]] || 
+                game.items.Item.itemIsNote[otherPlayer.offeredItems[i]]) {
                 // Check if player already has this stackable item
                 if (player.getItemAssistant().playerHasItem(otherPlayer.offeredItems[i])) {
                     continue;
@@ -384,7 +384,7 @@ Cancels the trade and returns all items:
 
 ```java
 public void declineTrade(boolean tellOther) {
-    Player otherPlayer = PlayerHandler.players[player.tradeWith];
+    game.entities.Player otherPlayer = PlayerHandler.players[player.tradeWith];
     
     // Return player's offered items
     for (int i = 0; i < player.offeredItemsCount; i++) {
@@ -414,7 +414,7 @@ public void declineTrade(boolean tellOther) {
 
 ### Initiating a Trade
 ```java
-// Player clicks "Trade with" option on another player
+// game.entities.Player clicks "Trade with" option on another player
 player.getTrading().requestTrade(targetPlayerId);
 
 // Target player accepts the trade request
@@ -424,10 +424,10 @@ targetPlayer.getTrading().requestTrade(player.playerId);
 
 ### Offering Items
 ```java
-// Player offers 100 coins from inventory slot 0
+// game.entities.Player offers 100 coins from inventory slot 0
 player.getTrading().tradeItem(995, 0, 100);
 
-// Player offers all coins from inventory slot 0
+// game.entities.Player offers all coins from inventory slot 0
 int coinAmount = player.getItemAssistant().getItemAmount(995);
 player.getTrading().tradeItem(995, 0, coinAmount);
 ```
@@ -466,7 +466,7 @@ CycleEventHandler.getSingleton().stopEvents(player);
 
 ## Related Classes
 
-- [`Player`](Player.md) - Contains Trading instance
+- [`game.entities.Player`](game.entities.Player.md) - Contains Trading instance
 - [`ItemAssistant`](ItemAssistant.md) - Handles item transfers
 - [`PacketSender`](PacketSender.md) - Sends trade interfaces
 - [`PlayerHandler`](PlayerHandler.md) - Manages player references

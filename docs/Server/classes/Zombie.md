@@ -8,5 +8,5 @@ Zombie helper class.
 
 ```java
 public class Zombie {
-public static void spawnZombie(Player c)
+public static void spawnZombie(game.entities.Player c)
 ```

@@ -8,8 +8,8 @@ Range Max Hit helper class.
 
 ```java
 public class RangeMaxHit {
-public static int calculateRangeDefence(Player c)
-public static int calculateRangeAttack(Player c)
-public static int rangeMaxHit(Player c)
+public static int calculateRangeDefence(game.entities.Player c)
+public static int calculateRangeAttack(game.entities.Player c)
+public static int rangeMaxHit(game.entities.Player c)
 public static int getRangeStr(int i)
 ```

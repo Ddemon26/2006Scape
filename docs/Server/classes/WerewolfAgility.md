@@ -8,7 +8,7 @@ Gameplay logic related to the Agility skill.
 
 ```java
 public class WerewolfAgility {
-public WerewolfAgility(Player player)
+public WerewolfAgility(game.entities.Player player)
 public boolean werewolfCourse(int objectId)
 public void execute(CycleEventContainer container)
 public void stop()

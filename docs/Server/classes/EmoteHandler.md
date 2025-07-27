@@ -8,7 +8,7 @@ Handles emote related functionality.
 
 ```java
 public class EmoteHandler {
-public EmoteHandler(Player player2)
+public EmoteHandler(game.entities.Player player2)
 public static HashMap<Integer, Emotes> emotes = new HashMap<Integer, Emotes>();
 public static Emotes loadEmote(int buttonId)
 public void startEmote(int buttonId)

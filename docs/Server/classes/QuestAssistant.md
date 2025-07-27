@@ -8,11 +8,11 @@ Quest Assistant @author Andrew (Mr Extremez)
 
 ```java
 public class QuestAssistant {
-public static void sendStages(Player player)
+public static void sendStages(game.entities.Player player)
 public int getStringId()
 public boolean questStatus()
 public int getButton()
 public String getName()
 public static Quests forButton(int button)
-public static void questButtons(Player player, int buttonId)
+public static void questButtons(game.entities.Player player, int buttonId)
 ```

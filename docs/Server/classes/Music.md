@@ -8,6 +8,6 @@ http://runescape.wikia.com/wiki/Music Good resource song id = 2 absx/64 = 1 absy
 
 ```java
 public class Music {
-public static void checkMusic(Player c)
-public static void playMusic(Player c)
+public static void checkMusic(game.entities.Player c)
+public static void playMusic(game.entities.Player c)
 ```

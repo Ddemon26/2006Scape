@@ -8,5 +8,5 @@ Shade helper class.
 
 ```java
 public class Shade {
-public static void spawnShade(Player c)
+public static void spawnShade(game.entities.Player c)
 ```

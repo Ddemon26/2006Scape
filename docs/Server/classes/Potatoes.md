@@ -8,7 +8,7 @@ Potatoes helper class.
 
 ```java
 public class Potatoes extends SkillHandler {
-public Potatoes(Player player)
+public Potatoes(game.entities.Player player)
 public int getNewPotatoID()
 public int getIngredient()
 public int getReq()

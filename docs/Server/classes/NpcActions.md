@@ -8,7 +8,7 @@ Npc Actions helper class.
 
 ```java
 public class NpcActions {
-public NpcActions(Player player2)
+public NpcActions(game.entities.Player player2)
 public void firstClickNpc(int npcType)
 public void secondClickNpc(int npcType)
 public void thirdClickNpc(int npcType)

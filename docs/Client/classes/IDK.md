@@ -1,14 +1,14 @@
-# IDK
+# game.definitions.IDK
 
-Defined in [`2006Scape Client/src/main/java/IDK.java`](2006Scape Client/src/main/java/IDK.java).
+Defined in [`2006Scape Client/src/main/java/game.definitions.IDK.java`](2006Scape Client/src/main/java/game.definitions.IDK.java).
 
-IDK helper class.
+game.definitions.IDK helper class.
 
 ```java
-public final class IDK {
-public static void unpackConfig(StreamLoader streamLoader)
+public final class game.definitions.IDK {
+public static void unpackConfig(core.network.StreamLoader streamLoader)
 public boolean ready()
-public Model getBodyModel()
+public render.geometry.Model getBodyModel()
 public boolean headLoaded()
-public Model getHeadModel()
+public render.geometry.Model getHeadModel()
 ```

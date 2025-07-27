@@ -60,7 +60,7 @@ public CycleEventContainer addEvent(Object owner, CycleEvent event, int cycles) 
 ```
 
 **Parameters:**
-- `owner`: The object that owns this event (typically a Player, NPC, or game system)
+- `owner`: The object that owns this event (typically a game.entities.Player, game.entities.NPC, or game system)
 - `event`: The CycleEvent implementation containing the code to execute
 - `cycles`: Number of game ticks to wait before executing the event
 
@@ -197,7 +197,7 @@ CycleEventHandler.getSingleton().addEvent(player, new CycleEvent() {
 ### Skill Actions
 ```java
 // Woodcutting example
-public void startWoodcutting(final Player player, final int treeId, final int axeId) {
+public void startWoodcutting(final game.entities.Player player, final int treeId, final int axeId) {
     // Store the event container for potential cancellation
     player.woodcuttingEvent = CycleEventHandler.getSingleton().addEvent(player, new CycleEvent() {
         @Override
@@ -247,5 +247,5 @@ public void startWoodcutting(final Player player, final int treeId, final int ax
 - [`CycleEvent`](CycleEvent.md) - Interface for event implementations
 - [`CycleEventContainer`](CycleEventContainer.md) - Wrapper for events with timing
 - [`GameEngine`](GameEngine.md) - Calls process() every tick
-- [`Player`](Player.md) - Common event owner
+- [`game.entities.Player`](game.entities.Player.md) - Common event owner
 - [`Npc`](Npc.md) - Common event owner

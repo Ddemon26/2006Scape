@@ -8,5 +8,5 @@ Defined in [`2006Scape Server/src/main/java/com/rs2/game/content/quests/impl/Coo
 
 ```java
 public class CooksAssistant {
-public static void showInformation(Player client)
+public static void showInformation(game.entities.Player client)
 ```

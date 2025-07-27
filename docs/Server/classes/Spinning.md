@@ -8,9 +8,9 @@ Spinning helper class.
 
 ```java
 public class Spinning extends CraftingData {
-public static void showSpinning(Player player)
-public static void getAmount(Player c, int amount)
-public static void spinItem(final Player player)
+public static void showSpinning(game.entities.Player player)
+public static void getAmount(game.entities.Player c, int amount)
+public static void spinItem(final game.entities.Player player)
 public void execute(CycleEventContainer container)
 public void stop()
 ```

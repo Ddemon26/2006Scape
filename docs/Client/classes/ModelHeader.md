@@ -1,10 +1,10 @@
-# ModelHeader
+# render.geometry.ModelHeader
 
-Defined in [`2006Scape Client/src/main/java/ModelHeader.java`](2006Scape Client/src/main/java/ModelHeader.java).
+Defined in [`2006Scape Client/src/main/java/render.geometry.ModelHeader.java`](2006Scape Client/src/main/java/render.geometry.ModelHeader.java).
 
-Model Header helper class.
+render.geometry.Model Header helper class.
 
 ```java
-final class ModelHeader {
-public ModelHeader()
+final class render.geometry.ModelHeader {
+public render.geometry.ModelHeader()
 ```

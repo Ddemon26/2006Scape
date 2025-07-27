@@ -1,11 +1,11 @@
-# Censor
+# util.helpers.Censor
 
-Defined in [`2006Scape Client/src/main/java/Censor.java`](2006Scape Client/src/main/java/Censor.java).
+Defined in [`2006Scape Client/src/main/java/util.helpers.Censor.java`](2006Scape Client/src/main/java/util.helpers.Censor.java).
 
-Censor helper class.
+util.helpers.Censor helper class.
 
 ```java
-final class Censor {
-public static void loadConfig(StreamLoader streamLoader)
+final class util.helpers.Censor {
+public static void loadConfig(core.network.StreamLoader streamLoader)
 public static String doCensor(String s)
 ```

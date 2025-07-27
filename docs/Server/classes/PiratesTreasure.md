@@ -8,5 +8,5 @@ Pirates Treasure @author Andrew (Mr Extremez)
 
 ```java
 public class PiratesTreasure {
-public static void showInformation(Player client)
+public static void showInformation(game.entities.Player client)
 ```

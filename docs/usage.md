@@ -102,11 +102,11 @@ When running locally:
 
 ```
 2006rebotted/
-├── 2006Scape Server/          # Game server code
+├── 2006Scape Server/          # core.engine.Game server code
 │   ├── src/main/java/com/rs2/ # Server source code
-│   ├── data/                  # Game data files
+│   ├── data/                  # core.engine.Game data files
 │   └── pom.xml               # Maven configuration
-├── 2006Scape Client/          # Game client code
+├── 2006Scape Client/          # core.engine.Game client code
 │   ├── src/main/java/        # Client source code
 │   └── pom.xml               # Maven configuration
 ├── docs/                      # Documentation
@@ -119,7 +119,7 @@ When running locally:
 
 #### Server Development
 1. **Core Logic**: Edit files in `2006Scape Server/src/main/java/com/rs2/`
-2. **Game Data**: Modify files in `2006Scape Server/data/`
+2. **core.engine.Game Data**: Modify files in `2006Scape Server/data/`
 3. **Testing**: Restart server and test with local client
 
 #### Client Development
@@ -211,7 +211,7 @@ java -jar Parabot.jar -local
 4. **Contribute**: See our [Contributing Guide](contributing.md)
 
 ### For Players
-1. **Learn the Game**: Check the [Community Wiki](https://wiki.2006scape.org)
+1. **Learn the core.engine.Game**: Check the [Community Wiki](https://wiki.2006scape.org)
 2. **Join Events**: Participate in community events
 3. **Report Issues**: Help improve the game by reporting bugs
 4. **Share Feedback**: Let us know what you think!
@@ -221,5 +221,5 @@ java -jar Parabot.jar -local
 - **Official Website**: [2006Scape.org](https://2006scape.org)
 - **Community Discord**: [Join here](https://discord.gg/hZ6VfWG)
 - **GitHub Repository**: [Source code](https://github.com/2006-Scape/2006rebotted)
-- **Community Wiki**: [Game guides](https://wiki.2006scape.org)
+- **Community Wiki**: [core.engine.Game guides](https://wiki.2006scape.org)
 - **Rune-Server Forum**: [Development discussions](https://www.rune-server.ee/forums/2006scape.318/)

@@ -14,7 +14,7 @@ public int getItem2()
 public int getProduct()
 public int getLevel()
 public double getXp()
-public static boolean makeArrow(final Player player, int itemUsed, int usedWith)
+public static boolean makeArrow(final game.entities.Player player, int itemUsed, int usedWith)
 public void execute(CycleEventContainer container)
 public void stop()
 ```

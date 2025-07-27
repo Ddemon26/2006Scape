@@ -1,12 +1,12 @@
-# RSImageProducer
+# core.renderers.RSImageProducer
 
-Defined in [`2006Scape Client/src/main/java/RSImageProducer.java`](2006Scape Client/src/main/java/RSImageProducer.java).
+Defined in [`2006Scape Client/src/main/java/core.renderers.RSImageProducer.java`](2006Scape Client/src/main/java/core.renderers.RSImageProducer.java).
 
 RSImage Producer helper class.
 
 ```java
-final class RSImageProducer implements ImageProducer, ImageObserver {
-public RSImageProducer(int width, int height, Component component)
+final class core.renderers.RSImageProducer implements ImageProducer, ImageObserver {
+public core.renderers.RSImageProducer(int width, int height, Component component)
 public void initDrawingArea()
 public void drawGraphics(int i, Graphics g, int k)
 public synchronized void addConsumer(ImageConsumer imageconsumer)

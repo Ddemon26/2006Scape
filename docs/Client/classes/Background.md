@@ -1,12 +1,12 @@
-# Background
+# render.core.Background
 
-Defined in [`2006Scape Client/src/main/java/Background.java`](2006Scape Client/src/main/java/Background.java).
+Defined in [`2006Scape Client/src/main/java/render.core.Background.java`](2006Scape Client/src/main/java/render.core.Background.java).
 
-Background helper class.
+render.core.Background helper class.
 
 ```java
-public final class Background extends DrawingArea {
-public Background(StreamLoader streamLoader, String s, int i)
+public final class render.core.Background extends render.core.DrawingArea {
+public render.core.Background(core.network.StreamLoader streamLoader, String s, int i)
 public void downscaleHalf()
 public void normalize()
 public void flipHorizontal()

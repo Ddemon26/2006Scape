@@ -8,7 +8,7 @@ Enchant Staff helper class.
 
 ```java
 public class EnchantStaff {
-public static boolean staffButtons(Player player, int button)
+public static boolean staffButtons(game.entities.Player player, int button)
 public static HashMap<Integer, staffData> craftingStaff = new HashMap<Integer, staffData>();
 public static staffData forId(int id)
 public int getButton()

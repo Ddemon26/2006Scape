@@ -9,7 +9,7 @@ The `GroundItem` class represents an individual item that exists on the ground i
 
 ## Key Responsibilities
 
-- **Item Data Storage**: Storing item ID, amount, and location information
+- **game.items.Item Data Storage**: Storing item ID, amount, and location information
 - **Ownership Tracking**: Managing who dropped the item and can see it
 - **Visibility Control**: Handling private/public visibility phases
 - **Timer Management**: Tracking hide and removal timers
@@ -20,11 +20,11 @@ The `GroundItem` class represents an individual item that exists on the ground i
 ### Data Structure
 ```java
 public class GroundItem {
-    public int itemId;          // Item definition ID
+    public int itemId;          // game.items.Item definition ID
     public int itemX, itemY;    // World coordinates
     public int itemH;           // Height level (0-3)
     public int itemAmount;      // Stack size
-    public int itemController;  // Player ID who owns/dropped the item
+    public int itemController;  // game.entities.Player ID who owns/dropped the item
     public int hideTicks;       // Ticks until item becomes public
     public int removeTicks;     // Ticks until item despawns
     public String ownerName;    // Name of the player who dropped it
@@ -32,11 +32,11 @@ public class GroundItem {
 ```
 
 ### Lifecycle Phases
-Ground items go through distinct phases during their lifetime:
+render.objects.Ground items go through distinct phases during their lifetime:
 
 1. **Private Phase** (`hideTicks > 0`): Only visible to the dropper
 2. **Public Phase** (`hideTicks = 0, removeTicks > 0`): Visible to all players
-3. **Removal** (`removeTicks = 0`): Item is deleted from the world
+3. **Removal** (`removeTicks = 0`): game.items.Item is deleted from the world
 
 ## Constructor
 
@@ -58,17 +58,17 @@ public GroundItem(int id, int x, int y, int height, int amount,
 ```
 
 **Parameters:**
-- `id` - Item definition ID from the cache
+- `id` - game.items.Item definition ID from the cache
 - `x, y` - World coordinates where the item is located
 - `height` - Height level (0=ground, 1-3=upper levels)
 - `amount` - Number of items in the stack
-- `controller` - Player ID who dropped the item (determines initial visibility)
+- `controller` - game.entities.Player ID who dropped the item (determines initial visibility)
 - `hideTicks` - Number of game ticks before item becomes public (typically 100)
 - `name` - Username of the player who dropped the item
 
 ## Accessor Methods
 
-### Item Identity
+### game.items.Item Identity
 ```java
 public int getItemId() {
     return itemId;
@@ -105,10 +105,10 @@ public String getName() {
 }
 ```
 
-## Usage in the Item System
+## Usage in the game.items.Item System
 
 ### Creation Process
-Ground items are typically created when:
+render.objects.Ground items are typically created when:
 - Players drop items from their inventory
 - NPCs die and drop loot
 - Objects are harvested (mining, woodcutting)
@@ -116,16 +116,16 @@ Ground items are typically created when:
 - Special events occur
 
 ```java
-// Example: Player drops an item
+// Example: game.entities.Player drops an item
 GroundItem droppedItem = new GroundItem(
     995,                    // Coins
-    player.absX,           // Player's X coordinate
-    player.absY,           // Player's Y coordinate
-    player.heightLevel,    // Player's height level
+    player.absX,           // game.entities.Player's X coordinate
+    player.absY,           // game.entities.Player's Y coordinate
+    player.heightLevel,    // game.entities.Player's height level
     1000,                  // Amount (1000 coins)
-    player.playerId,       // Player who dropped it
+    player.playerId,       // game.entities.Player who dropped it
     ItemHandler.HIDE_TICKS, // 100 ticks private visibility
-    player.playerName      // Player's name
+    player.playerName      // game.entities.Player's name
 );
 ```
 
@@ -210,36 +210,36 @@ if (item.removeTicks > 0) {
     // Mark for removal
     if (item.removeTicks == 1) {
         item.removeTicks = 0;
-        // Item will be deleted
+        // game.items.Item will be deleted
     }
 }
 ```
 
 ## Usage Examples
 
-### Creating Different Types of Ground Items
+### Creating Different Types of render.objects.Ground Items
 
-#### Player Drop
+#### game.entities.Player Drop
 ```java
-// Player drops coins
+// game.entities.Player drops coins
 GroundItem coins = new GroundItem(
     995,                        // Coins ID
-    player.absX, player.absY,   // Player location
+    player.absX, player.absY,   // game.entities.Player location
     player.heightLevel,         // Same height as player
     500,                        // 500 coins
-    player.playerId,            // Player owns it
+    player.playerId,            // game.entities.Player owns it
     100,                        // 100 ticks private
-    player.playerName           // Player's name
+    player.playerName           // game.entities.Player's name
 );
 ```
 
-#### NPC Death Drop
+#### game.entities.NPC Death Drop
 ```java
-// NPC drops loot for killer
+// game.entities.NPC drops loot for killer
 GroundItem loot = new GroundItem(
     1277,                       // Dragon sword
-    npc.absX, npc.absY,        // NPC location
-    npc.heightLevel,           // Same height as NPC
+    npc.absX, npc.absY,        // game.entities.NPC location
+    npc.heightLevel,           // Same height as game.entities.NPC
     1,                         // Single item
     killer.playerId,           // Killer gets it first
     100,                       // Private for 100 ticks
@@ -247,9 +247,9 @@ GroundItem loot = new GroundItem(
 );
 ```
 
-#### Public Item (No Private Phase)
+#### Public game.items.Item (No Private Phase)
 ```java
-// Item that's immediately public
+// game.items.Item that's immediately public
 GroundItem publicItem = new GroundItem(
     itemId, x, y, height,
     amount,
@@ -260,11 +260,11 @@ GroundItem publicItem = new GroundItem(
 publicItem.removeTicks = 200;  // Will despawn in 200 ticks
 ```
 
-### Checking Item Properties
+### Checking game.items.Item Properties
 ```java
 // Check if item belongs to specific player
 if (groundItem.getName().equalsIgnoreCase(player.playerName)) {
-    // Player can pick up this item
+    // game.entities.Player can pick up this item
 }
 
 // Check if item is in private phase
@@ -278,7 +278,7 @@ if (groundItem.hideTicks > 0) {
 if (groundItem.getItemX() == targetX && 
     groundItem.getItemY() == targetY && 
     groundItem.getItemH() == targetHeight) {
-    // Item is at target location
+    // game.items.Item is at target location
 }
 ```
 
@@ -336,7 +336,7 @@ for (GroundItem item : items) {
 }
 ```
 
-### Player Integration
+### game.entities.Player Integration
 ```java
 // Players interact with ground items
 player.getPacketSender().createGroundItem(
@@ -344,7 +344,7 @@ player.getPacketSender().createGroundItem(
 
 // Pickup attempts
 if (item.getName().equalsIgnoreCase(player.playerName) || item.hideTicks == 0) {
-    // Player can pick up this item
+    // game.entities.Player can pick up this item
 }
 ```
 
@@ -361,5 +361,5 @@ GroundItem drop = new GroundItem(
 - [`ItemHandler`](ItemHandler.md) - Manages collections of GroundItems
 - [`ItemAssistant`](ItemAssistant.md) - Handles player item operations
 - [`GameEngine`](GameEngine.md) - Processes ground items every tick
-- [`Player`](Player.md) - Interacts with ground items
+- [`game.entities.Player`](game.entities.Player.md) - Interacts with ground items
 - [`PacketSender`](PacketSender.md) - Sends ground item updates to clients

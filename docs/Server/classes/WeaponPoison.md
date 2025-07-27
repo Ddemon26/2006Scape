@@ -11,5 +11,5 @@ Manages weapon poisoning. @author Andew added every single weapon to the enum @a
 public int getItemId()
 public static HashMap<Integer, Weapon> weapon = new HashMap<Integer, Weapon>();
 public int[][] getNewItemId()
-public static void execute(final Player player, int itemUse, int useWith)
+public static void execute(final game.entities.Player player, int itemUse, int useWith)
 ```

@@ -9,5 +9,5 @@ Shield of Arrav @author RedSparr0w
 ```java
 public class ShieldArrav {
 public ShieldArrav(Client client)
-public static void showInformation(Player player)
+public static void showInformation(game.entities.Player player)
 ```

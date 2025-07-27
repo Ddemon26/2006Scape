@@ -1,9 +1,9 @@
-# BZip2State
+# util.compression.BZip2State
 
-Defined in [`2006Scape Client/src/main/java/BZip2State.java`](2006Scape Client/src/main/java/BZip2State.java).
+Defined in [`2006Scape Client/src/main/java/util.compression.BZip2State.java`](2006Scape Client/src/main/java/util.compression.BZip2State.java).
 
-BZip2State helper class.
+util.compression.BZip2State helper class.
 
 ```java
-final class BZip2State {
+final class util.compression.BZip2State {
 ```

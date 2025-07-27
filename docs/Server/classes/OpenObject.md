@@ -8,5 +8,5 @@ Feb 17, 2018 : 6:44:26 AM OpenObject.java  @author Andrew (Mr Extremez)
 
 ```java
 public class OpenObject {
-public static void interactObject(Player player, int objectType)
+public static void interactObject(game.entities.Player player, int objectType)
 ```

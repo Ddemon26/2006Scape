@@ -8,7 +8,7 @@ Created by IntelliJ IDEA. User: vayken Date: 22/02/12 Time: 15:43 To change this
 
 ```java
 public class Compost {
-public Compost(Player player)
+public Compost(game.entities.Player player)
 public static CompostBinLocations forId(int index)
 public static CompostBinLocations forPosition(int x, int y)
 public int getCompostIndex()

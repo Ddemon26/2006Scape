@@ -8,6 +8,6 @@ Defined in [`2006Scape Server/src/main/java/com/rs2/game/objects/impl/Webs.java`
 
 ```java
 public class Webs {
-public static boolean webs(Player player, int object)
-public static void slashWeb(Player player, final int objectClickId, final int objectX, final int objectY)
+public static boolean webs(game.entities.Player player, int object)
+public static void slashWeb(game.entities.Player player, final int objectClickId, final int objectX, final int objectY)
 ```

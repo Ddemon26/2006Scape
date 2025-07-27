@@ -9,7 +9,7 @@ Defined in [`2006Scape Server/src/main/java/com/rs2/game/content/minigames/maget
 ```java
 public class MageTrainingArena {
 public static void process()
-public MageTrainingArena(Player c)
+public MageTrainingArena(game.entities.Player c)
 public void openShop()
 public int getTelekineticPointValue(int itemId)
 public int getAlchemyPointValue(int itemId)

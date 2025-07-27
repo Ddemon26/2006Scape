@@ -8,7 +8,7 @@ Defined in [`2006Scape Server/src/main/java/com/rs2/game/npcs/impl/MilkCow.java`
 
 ```java
 public class MilkCow {
-public static void milk(final Player player)
+public static void milk(final game.entities.Player player)
 public void execute(CycleEventContainer container)
 public void stop()
 ```

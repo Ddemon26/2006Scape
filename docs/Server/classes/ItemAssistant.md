@@ -12,27 +12,27 @@ The `ItemAssistant` class is a comprehensive helper class that manages all item-
 - **Inventory Management**: Adding, removing, and organizing items in player inventory
 - **Banking System**: Depositing, withdrawing, and managing bank storage
 - **Equipment Handling**: Wearing, removing, and managing equipped items
-- **Item Validation**: Checking item existence, tradeability, and requirements
+- **game.items.Item Validation**: Checking item existence, tradeability, and requirements
 - **Combat Bonuses**: Calculating and updating equipment bonuses
 - **Death Mechanics**: Managing items kept on death and item dropping
 - **Special Items**: Handling unique item behaviors and restrictions
 
 ## Core Architecture
 
-### Player Association
+### game.entities.Player Association
 ```java
-private final Player player;
+private final game.entities.Player player;
 
-public ItemAssistant(Player player) {
+public ItemAssistant(game.entities.Player player) {
     this.player = player;
 }
 ```
 
 Each ItemAssistant instance is tied to a specific player, managing their personal item data.
 
-### Item ID Convention
+### game.items.Item ID Convention
 The server uses a consistent item ID convention:
-- **Storage Arrays**: Item IDs are stored as `itemId + 1` (to distinguish from empty slots which are 0)
+- **Storage Arrays**: game.items.Item IDs are stored as `itemId + 1` (to distinguish from empty slots which are 0)
 - **Method Parameters**: Methods typically accept the actual item ID
 - **Conversion**: Internal methods handle the +1/-1 conversion automatically
 
@@ -135,7 +135,7 @@ public void addOrDropItem(int itemId, int amount) {
 }
 ```
 
-### Item Validation
+### game.items.Item Validation
 
 #### `playerHasItem(int itemId)` / `playerHasItem(int itemId, int amount)`
 Checks if player has specific items:
@@ -510,7 +510,7 @@ player.getItemAssistant().getBonus();
 player.getItemAssistant().writeBonus();
 ```
 
-### Item Validation
+### game.items.Item Validation
 ```java
 // Check if item is tradeable
 if (player.getItemAssistant().tradeable(itemId)) {
@@ -534,7 +534,7 @@ if (player.getItemAssistant().hasFreeSlots(5)) {
 - **Memory Management**: Clean up temporary arrays and objects
 
 ### Common Pitfalls
-- **Item ID Confusion**: Remember the +1/-1 convention for storage vs parameters
+- **game.items.Item ID Confusion**: Remember the +1/-1 convention for storage vs parameters
 - **Stack Overflow**: Check for maximum item amounts in stackable items
 - **Null Checks**: Always verify player and stream existence
 - **Concurrent Modification**: Be careful when modifying arrays during iteration
@@ -551,9 +551,9 @@ if (player.getItemAssistant().hasFreeSlots(5)) {
 
 ## Related Classes
 
-- [`Player`](Player.md) - Contains ItemAssistant instance
+- [`game.entities.Player`](game.entities.Player.md) - Contains ItemAssistant instance
 - [`ItemHandler`](ItemHandler.md) - Manages ground items
-- [`ItemDefinition`](ItemDefinition.md) - Item properties and definitions
+- [`ItemDefinition`](ItemDefinition.md) - game.items.Item properties and definitions
 - [`EquipmentDefinition`](EquipmentDefinition.md) - Equipment bonuses and requirements
-- [`ItemConstants`](ItemConstants.md) - Item-related constants and arrays
+- [`ItemConstants`](ItemConstants.md) - game.items.Item-related constants and arrays
 - [`PacketSender`](PacketSender.md) - Sends item updates to client

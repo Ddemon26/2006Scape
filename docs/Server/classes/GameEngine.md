@@ -10,7 +10,7 @@ The `GameEngine` class is the core heart of the 2006Scape server. It serves as t
 ## Key Responsibilities
 
 - **Server Initialization**: Sets up all handlers, loads game data, and initializes integrations
-- **Game Loop Management**: Executes the main server tick that processes all game logic
+- **core.engine.Game Loop Management**: Executes the main server tick that processes all game logic
 - **Resource Management**: Handles memory management and performance monitoring
 - **Integration Services**: Manages Discord, website, and external service connections
 - **Graceful Shutdown**: Ensures proper cleanup and player data saving on server shutdown
@@ -26,7 +26,7 @@ public static PlayerHandler playerHandler = new PlayerHandler();
 public static NpcHandler npcHandler = new NpcHandler();
 public static ShopHandler shopHandler = new ShopHandler();
 public static ObjectHandler objectHandler = new ObjectHandler();
-public static ObjectManager objectManager = new ObjectManager();
+public static core.managers.ObjectManager objectManager = new core.managers.ObjectManager();
 public static FightCaves fightCaves = new FightCaves();
 public static Trawler trawler = new Trawler();
 ```
@@ -49,14 +49,14 @@ The server entry point that:
 - `-gui`: Enables the server control panel GUI
 - `-config <file>`: Loads external configuration file
 
-### Game Loop Execution
+### core.engine.Game Loop Execution
 The main game tick runs every 600ms and processes components in this order:
 
 1. **ItemHandler** - Processes ground items, respawning, and cleanup
 2. **PlayerHandler** - Updates all player states, movement, and actions
-3. **NpcHandler** - Processes NPC AI, movement, and combat
+3. **NpcHandler** - Processes game.entities.NPC AI, movement, and combat
 4. **ShopHandler** - Updates shop inventories and restocking
-5. **ObjectManager** - Manages dynamic world objects
+5. **core.managers.ObjectManager** - Manages dynamic world objects
 6. **Minigames** - Processes Castle Wars, Fight Pits, Pest Control
 7. **CycleEventHandler** - Executes scheduled events
 8. **Integration Services** - Updates Discord activity and website stats
@@ -80,7 +80,7 @@ if (totalCycleDuration > 500) {
 Key configuration options loaded at startup:
 - `Constants.SERVER_NAME` - Server display name
 - `Constants.WORLD` - World number
-- `Constants.CYCLE_TIME` - Game tick interval (default: 600ms)
+- `Constants.CYCLE_TIME` - core.engine.Game tick interval (default: 600ms)
 - `Constants.GUI_ENABLED` - Control panel visibility
 - `Constants.SERVER_DEBUG` - Debug mode toggle
 
@@ -147,7 +147,7 @@ The GameEngine includes robust error handling:
 ## Related Classes
 
 - [`PlayerHandler`](PlayerHandler.md) - Manages all connected players
-- [`NpcHandler`](NpcHandler.md) - Controls NPC behavior and spawning
+- [`NpcHandler`](NpcHandler.md) - Controls game.entities.NPC behavior and spawning
 - [`ItemHandler`](ItemHandler.md) - Handles ground items and cleanup
 - [`CycleEventHandler`](CycleEventHandler.md) - Manages scheduled events
 - [`Constants`](Constants.md) - Server configuration constants

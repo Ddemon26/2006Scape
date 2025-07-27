@@ -5,16 +5,16 @@
 
 ## Overview
 
-The `Npc` class represents an individual Non-Player Character in the 2006Scape server. It contains all the data and behavior for a single NPC instance, including position, combat stats, AI state, animations, and interactions. This class works in conjunction with the [`NpcHandler`](NpcHandler.md) to provide a complete NPC system with movement, combat, and special behaviors.
+The `Npc` class represents an individual Non-game.entities.Player Character in the 2006Scape server. It contains all the data and behavior for a single game.entities.NPC instance, including position, combat stats, AI state, animations, and interactions. This class works in conjunction with the [`NpcHandler`](NpcHandler.md) to provide a complete game.entities.NPC system with movement, combat, and special behaviors.
 
 ## Key Responsibilities
 
-- **NPC State Management**: Tracking position, health, and status
-- **Movement and Pathfinding**: Handling NPC movement and walking patterns
+- **game.entities.NPC State Management**: Tracking position, health, and status
+- **Movement and Pathfinding**: Handling game.entities.NPC movement and walking patterns
 - **Combat Integration**: Managing combat stats, damage, and death states
-- **Animation and Graphics**: Controlling NPC animations and visual effects
-- **Player Interaction**: Handling NPC-player interactions and facing
-- **Special Behaviors**: Supporting unique NPC mechanics and transformations
+- **game.animation.Animation and Graphics**: Controlling game.entities.NPC animations and visual effects
+- **game.entities.Player Interaction**: Handling game.entities.NPC-player interactions and facing
+- **Special Behaviors**: Supporting unique game.entities.NPC mechanics and transformations
 - **Update Management**: Coordinating visual updates sent to players
 
 ## Core Architecture
@@ -22,7 +22,7 @@ The `Npc` class represents an individual Non-Player Character in the 2006Scape s
 ### Basic Properties
 ```java
 public int npcId;           // Unique instance ID
-public int npcType;         // NPC type/definition ID
+public int npcType;         // game.entities.NPC type/definition ID
 public int absX, absY;      // World coordinates
 public int heightLevel;     // Height level (0-3)
 public int spawnX, spawnY;  // Original spawn location
@@ -31,7 +31,7 @@ public int spawnX, spawnY;  // Original spawn location
 ### Combat Properties
 ```java
 public int HP, MaxHP;       // Current and maximum hit points
-public int maxHit;          // Maximum damage this NPC can deal
+public int maxHit;          // Maximum damage this game.entities.NPC can deal
 public int defence, attack; // Combat stats
 public int combatLevel;     // Combat level
 public boolean isDead;      // Death state
@@ -43,7 +43,7 @@ public boolean underAttack; // Currently in combat
 public int moveX, moveY;    // Movement deltas
 public int direction;       // Current facing direction
 public int walkingType;     // Movement behavior type
-public boolean randomWalk;  // Whether NPC walks randomly
+public boolean randomWalk;  // Whether game.entities.NPC walks randomly
 public boolean walkingHome; // Returning to spawn point
 ```
 
@@ -52,7 +52,7 @@ public boolean walkingHome; // Returning to spawn point
 ### Constructor and Initialization
 
 #### `Npc(int npcId, int npcType)`
-Creates a new NPC instance:
+Creates a new game.entities.NPC instance:
 
 ```java
 public Npc(int npcId, int npcType) {
@@ -68,7 +68,7 @@ public Npc(int npcId, int npcType) {
 
 **Parameters:**
 - `npcId`: Unique instance identifier
-- `npcType`: NPC definition type
+- `npcType`: game.entities.NPC definition type
 
 ### Movement and Positioning
 
@@ -100,10 +100,10 @@ public void getRandomAndHomeNPCWalking(int i) {
 }
 ```
 
-This method is called by the NpcHandler to process NPC movement each tick.
+This method is called by the NpcHandler to process game.entities.NPC movement each tick.
 
 #### `turnNpc(int x, int y)`
-Makes the NPC face a specific coordinate:
+Makes the game.entities.NPC face a specific coordinate:
 
 ```java
 public void turnNpc(int x, int y) {
@@ -114,14 +114,14 @@ public void turnNpc(int x, int y) {
 }
 ```
 
-### Player Interaction
+### game.entities.Player Interaction
 
-#### `facePlayer(Player player)`
-Makes the NPC face a specific player:
+#### `facePlayer(game.entities.Player player)`
+Makes the game.entities.NPC face a specific player:
 
 ```java
-public void facePlayer(Player player) {
-    // Check if NPC is immobile
+public void facePlayer(game.entities.Player player) {
+    // Check if game.entities.NPC is immobile
     for (int element : immobileNpcs) {
         if (npcType == element) {
             return;
@@ -141,10 +141,10 @@ private static int[] immobileNpcs = {
 };
 ```
 
-### Visual Effects and Animation
+### Visual Effects and game.animation.Animation
 
 #### `startAnimation(int animId, int npcId)`
-Starts an animation for the NPC:
+Starts an animation for the game.entities.NPC:
 
 ```java
 public int startAnimation(int animId, int npcId) {
@@ -173,11 +173,11 @@ public void gfx100(int gfx) {
 }
 ```
 
-- `gfx0()`: Ground-level graphics effect
+- `gfx0()`: render.objects.Ground-level graphics effect
 - `gfx100()`: Height-100 graphics effect
 
 #### `forceChat(String text)`
-Makes the NPC display chat text:
+Makes the game.entities.NPC display chat text:
 
 ```java
 public void forceChat(String text) {
@@ -190,7 +190,7 @@ public void forceChat(String text) {
 ### Transformation System
 
 #### `requestTransform(int id)`
-Transforms the NPC into a different type:
+Transforms the game.entities.NPC into a different type:
 
 ```java
 public void requestTransform(int id) {
@@ -200,11 +200,11 @@ public void requestTransform(int id) {
 }
 ```
 
-#### `shearSheep(Player player, int itemNeeded, int itemGiven, int animation, final int currentId, final int newId, int transformTime)`
+#### `shearSheep(game.entities.Player player, int itemNeeded, int itemGiven, int animation, final int currentId, final int newId, int transformTime)`
 Specialized method for sheep shearing mechanics:
 
 ```java
-public void shearSheep(Player player, int itemNeeded, int itemGiven, int animation, 
+public void shearSheep(game.entities.Player player, int itemNeeded, int itemGiven, int animation, 
                       final int currentId, final int newId, int transformTime) {
     // Check if player has required tool
     if (!player.getItemAssistant().playerHasItem(itemNeeded)) {
@@ -252,11 +252,11 @@ public void shearSheep(Player player, int itemNeeded, int itemGiven, int animati
 
 ### Update System
 
-#### `updateNPCMovement(Stream str)`
+#### `updateNPCMovement(core.network.Stream str)`
 Writes movement data to the update stream:
 
 ```java
-public void updateNPCMovement(Stream str) {
+public void updateNPCMovement(core.network.Stream str) {
     if (str != null) {
         if (direction == -1) {
             // No movement
@@ -281,11 +281,11 @@ public void updateNPCMovement(Stream str) {
 }
 ```
 
-#### `appendNPCUpdateBlock(Stream str)`
+#### `appendNPCUpdateBlock(core.network.Stream str)`
 Writes all pending updates to the stream:
 
 ```java
-public void appendNPCUpdateBlock(Stream str) {
+public void appendNPCUpdateBlock(core.network.Stream str) {
     if (!updateRequired) {
         return;
     }
@@ -319,7 +319,7 @@ public void appendNPCUpdateBlock(Stream str) {
 ### Utility Methods
 
 #### `name()`
-Gets the NPC's display name:
+Gets the game.entities.NPC's display name:
 
 ```java
 public String name() {
@@ -329,14 +329,14 @@ public String name() {
 
 #### Hit Update Methods
 ```java
-public void appendHitUpdate(Stream str) {
+public void appendHitUpdate(core.network.Stream str) {
     str.writeByte(hitDiff);
     str.writeByteA(hitUpdateRequired ? 1 : 0);
     str.writeByte(HP);
     str.writeByte(MaxHP);
 }
 
-public void appendHitUpdate2(Stream str) {
+public void appendHitUpdate2(core.network.Stream str) {
     str.writeByte(hitDiff2);
     str.writeByteS(hitUpdateRequired2 ? 1 : 0);
     str.writeByte(HP);
@@ -350,8 +350,8 @@ public void appendHitUpdate2(Stream str) {
 ```java
 public boolean underAttack;     // Currently being attacked
 public boolean aggressive;      // Attacks players on sight
-public int underAttackBy;       // Player ID attacking this NPC
-public int killerId;            // Player who will get loot rights
+public int underAttackBy;       // game.entities.Player ID attacking this game.entities.NPC
+public int killerId;            // game.entities.Player who will get loot rights
 public int attackTimer;         // Combat delay timer
 public int freezeTimer;         // Freeze spell duration
 ```
@@ -359,7 +359,7 @@ public int freezeTimer;         // Freeze spell duration
 ### Update Flags
 ```java
 public boolean updateRequired;          // Needs client update
-public boolean animUpdateRequired;      // Animation changed
+public boolean animUpdateRequired;      // game.animation.Animation changed
 public boolean hitUpdateRequired;       // Took damage
 public boolean forcedChatRequired;      // Has chat message
 public boolean dirUpdateRequired;       // Direction changed
@@ -369,8 +369,8 @@ public boolean transformUpdateRequired; // Appearance changed
 ### Special Properties
 ```java
 public boolean summoner;        // Is a summoned creature
-public int summonedBy;          // Player who summoned this NPC
-public int spawnedBy;           // Player who spawned this NPC
+public int summonedBy;          // game.entities.Player who summoned this game.entities.NPC
+public int spawnedBy;           // game.entities.Player who spawned this game.entities.NPC
 public boolean respawns;        // Should respawn after death
 public int chasingRat;          // For cat NPCs chasing rats
 ```
@@ -379,7 +379,7 @@ public int chasingRat;          // For cat NPCs chasing rats
 
 ### Creating and Configuring NPCs
 ```java
-// Create new NPC
+// Create new game.entities.NPC
 Npc npc = new Npc(slotId, NPC_TYPE_GUARD);
 npc.absX = 3200;
 npc.absY = 3200;
@@ -387,7 +387,7 @@ npc.heightLevel = 0;
 npc.HP = 100;
 npc.MaxHP = 100;
 
-// Make NPC face a player
+// Make game.entities.NPC face a player
 npc.facePlayer(player);
 
 // Start animation
@@ -396,7 +396,7 @@ npc.startAnimation(ATTACK_ANIMATION, npc.npcId);
 
 ### Visual Effects
 ```java
-// Ground graphics
+// render.objects.Ground graphics
 npc.gfx0(EXPLOSION_GFX);
 
 // Height graphics
@@ -408,7 +408,7 @@ npc.forceChat("Help! I'm being attacked!");
 
 ### Transformations
 ```java
-// Transform NPC
+// Transform game.entities.NPC
 npc.requestTransform(NEW_NPC_TYPE);
 
 // Sheep shearing example
@@ -418,7 +418,7 @@ npc.shearSheep(player, SHEARS, WOOL, SHEARING_ANIMATION,
 
 ### Movement Control
 ```java
-// Make NPC face specific coordinates
+// Make game.entities.NPC face specific coordinates
 npc.turnNpc(targetX, targetY);
 
 // Set movement destination
@@ -438,15 +438,15 @@ int direction = npc.getNextWalkingDirection2();
 - **Distance Checking**: Only update NPCs near players
 
 ### Resource Management
-- **Animation Caching**: Reuse animation data where possible
+- **game.animation.Animation Caching**: Reuse animation data where possible
 - **Graphics Optimization**: Minimize graphics effect usage
 - **Update Frequency**: Balance update rate with performance
 
 ## Best Practices
 
-1. **Always validate NPC state** before performing operations
+1. **Always validate game.entities.NPC state** before performing operations
 2. **Use appropriate update flags** to minimize network traffic
-3. **Handle special cases** for unique NPC types
+3. **Handle special cases** for unique game.entities.NPC types
 4. **Clean up resources** when NPCs are removed
 5. **Coordinate with NpcHandler** for global operations
 6. **Use transformation system** for temporary appearance changes
@@ -463,7 +463,7 @@ NpcHandler.npcs[npcId] = new Npc(npcId, npcType);
 npcHandler.process(); // Calls methods on individual NPCs
 ```
 
-### Player Integration
+### game.entities.Player Integration
 ```java
 // NPCs interact with players
 npc.facePlayer(player);
@@ -472,7 +472,7 @@ npc.underAttackBy = player.playerId;
 
 ### Combat Integration
 ```java
-// Combat affects NPC state
+// Combat affects game.entities.NPC state
 npc.HP -= damage;
 npc.hitDiff = damage;
 npc.hitUpdateRequired = true;
@@ -480,9 +480,9 @@ npc.hitUpdateRequired = true;
 
 ## Related Classes
 
-- [`NpcHandler`](NpcHandler.md) - Manages all NPC instances
-- [`Player`](Player.md) - Interacts with NPCs
-- [`Stream`](Stream.md) - Handles update packet data
-- [`CycleEventHandler`](CycleEventHandler.md) - Manages NPC events
-- [`NpcList`](NpcList.md) - NPC definition data
+- [`NpcHandler`](NpcHandler.md) - Manages all game.entities.NPC instances
+- [`game.entities.Player`](game.entities.Player.md) - Interacts with NPCs
+- [`core.network.Stream`](core.network.Stream.md) - Handles update packet data
+- [`CycleEventHandler`](CycleEventHandler.md) - Manages game.entities.NPC events
+- [`NpcList`](NpcList.md) - game.entities.NPC definition data
 - [`Misc`](Misc.md) - Utility methods for calculations

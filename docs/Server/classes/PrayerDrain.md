@@ -8,7 +8,7 @@ Prayer Drain helper class.
 
 ```java
 public class PrayerDrain {
-public static void handlePrayerDrain(Player player)
-public static void reducePrayerLevel(Player c)
-public static void resetPrayers(Player player)
+public static void handlePrayerDrain(game.entities.Player player)
+public static void reducePrayerLevel(game.entities.Player c)
+public static void resetPrayers(game.entities.Player player)
 ```

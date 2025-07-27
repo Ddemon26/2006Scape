@@ -8,6 +8,6 @@ Defined in [`2006Scape Server/src/main/java/com/rs2/game/items/Weight.java`](200
 
 ```java
 public class Weight {
-public static void calcWeight(Player c, int item, String action)
-public static void updateWeight(Player player)
+public static void calcWeight(game.entities.Player c, int item, String action)
+public static void updateWeight(game.entities.Player player)
 ```

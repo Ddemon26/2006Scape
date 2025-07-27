@@ -8,6 +8,6 @@ Gameplay logic related to the Agility skill.
 
 ```java
 public class GnomeAgility {
-public GnomeAgility(Player player)
+public GnomeAgility(game.entities.Player player)
 public boolean gnomeCourse(int objectId)
 ```

@@ -1,13 +1,13 @@
-# Player
+# game.entities.Player
 
-Defined in [`2006Scape Client/src/main/java/Player.java`](2006Scape Client/src/main/java/Player.java).
+Defined in [`2006Scape Client/src/main/java/game.entities.Player.java`](2006Scape Client/src/main/java/game.entities.Player.java).
 
-Player helper class.
+game.entities.Player helper class.
 
 ```java
-public final class Player extends Entity {
-public Model getRotatedModel()
-public void updatePlayer(Stream stream)
+public final class game.entities.Player extends game.entities.Entity {
+public render.geometry.Model getRotatedModel()
+public void updatePlayer(core.network.Stream stream)
 public boolean isVisible()
-public Model getDialogueModel()
+public render.geometry.Model getDialogueModel()
 ```

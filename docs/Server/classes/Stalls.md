@@ -15,7 +15,7 @@ public int getFace()
 public int[][] getStalls()
 public static int r(int random)
 public static boolean isObject(int object)
-public static void attemptStall(final Player p, final int objectId, final int x, final int y)
+public static void attemptStall(final game.entities.Player p, final int objectId, final int x, final int y)
 public void execute(CycleEventContainer container)
 public void stop()
 ```

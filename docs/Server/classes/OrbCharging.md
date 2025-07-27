@@ -8,7 +8,7 @@ Orb Charging helper class.
 
 ```java
 public class OrbCharging {
-public static void chargeOrbs(final Player player, final int spellId, final int objectId)
+public static void chargeOrbs(final game.entities.Player player, final int spellId, final int objectId)
 public void execute(CycleEventContainer container)
 public void stop()
 public int getObjectId(final int object)

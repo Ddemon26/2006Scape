@@ -8,5 +8,5 @@ Dialogue Options @author Andrew (Mr Extremez)
 
 ```java
 public class DialogueOptions {
-public static void handleDialogueOptions(Player player, int buttonId)
+public static void handleDialogueOptions(game.entities.Player player, int buttonId)
 ```

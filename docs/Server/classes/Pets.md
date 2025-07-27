@@ -10,8 +10,8 @@ Pets helper class.
 public class Pets {
 public static boolean isCatItem(int itemId)
 public static boolean isCat(int npcId)
-public static void dropPet(Player player, int itemId, int slot)
-public void quickPickup(Player player, int id)
-public void pickUpPet(Player player, int id)
+public static void dropPet(game.entities.Player player, int itemId, int slot)
+public void quickPickup(game.entities.Player player, int id)
+public void pickUpPet(game.entities.Player player, int id)
 public static int summonItemId(int itemId)
 ```

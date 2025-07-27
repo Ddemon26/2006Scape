@@ -8,7 +8,7 @@ Created by IntelliJ IDEA. User: vayken Date: 24/02/12 Time: 20:34 To change this
 
 ```java
 public class Flowers { // todo scarecrow 6059
-public Flowers(Player player)
+public Flowers(game.entities.Player player)
 public static FlowerData forId(int seedId)
 public int getSeedId()
 public int getHarvestId()

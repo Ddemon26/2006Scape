@@ -8,6 +8,6 @@ Leather Making helper class.
 
 ```java
 public class LeatherMaking extends CraftingData {
-public static void craftLeather(final Player player, final int buttonId)
+public static void craftLeather(final game.entities.Player player, final int buttonId)
 public void stop()
 ```

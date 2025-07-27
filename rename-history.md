@@ -2,7 +2,7 @@
 
 This document lists variable or identifier renames found in the commit history.
 
-## WorldController
+## core.world.WorldController
  - method314 -> processTile
  - method305 -> applySceneLighting
  - method320 -> isTileVisible
@@ -95,7 +95,7 @@ This document lists variable or identifier renames found in the commit history.
 - class28_2 -> queuedObj
 - class28_3 -> sceneObj
 
-## Ground
+## render.objects.Ground
 - aBoolean1322 -> tileActive
 - aBoolean1323 -> inQueue
 - aBoolean1324 -> needsProcessing
@@ -104,9 +104,9 @@ This document lists variable or identifier renames found in the commit history.
 - anInt1327 -> cullOpposite
 - anInt1328 -> boundaryFlags
 
-## MRUNodes -> MRUCache
+## MRUNodes -> util.collections.MRUCache
 
-## RSInterface
+## core.renderers.RSInterface
  - anInt255 -> enabledMediaType
  - method206 -> getModelForMedia
  - forID -> lookup
@@ -131,14 +131,14 @@ This document lists variable or identifier renames found in the commit history.
 - aBoolean268 -> textShadow
 - aByte254 -> opacity
 
-## EntityDef
+## game.definitions.EntityDef
  - method464 -> copyFromModel
  - method160 -> getModel
  - aByte816 -> config
 
-## Flo -> FloorOverlay
+## Flo -> render.tiles.FloorOverlay
 
-## Game
+## core.engine.Game
  - method446 -> clearMovement
  - anInt952 -> menuHeight
  - anInt989 -> dragCounter
@@ -393,12 +393,12 @@ This document lists variable or identifier renames found in the commit history.
  - anInt992 -> scrollPadding
  - anInt1273 -> unusedField1273
 
-## RSApplet
-- TextDrawingArea -> clean
+## core.engine.RSApplet
+- core.renderers.TextDrawingArea -> clean
 - aLong215 -> currentTime
 - anInt34 -> idleTicks
 
-## OnDemandFetcher
+## core.managers.OnDemandFetcher
  - method548 -> requestModel
  - method225 -> decompress
  - method234 -> writeEntry
@@ -420,14 +420,14 @@ This document lists variable or identifier renames found in the commit history.
 - aClass19_1368 -> incompleteRequestQueue
 - aClass19_1370 -> pendingRequestQueue
 
-## Runnable_Impl1 -> MidiHandler
+## Runnable_Impl1 -> audio.MidiHandler
 
-## InputStream_Sub1 -> MuLawInputStream
+## InputStream_Sub1 -> audio.MuLawInputStream
  - anInt404 -> id
  - anInt812 -> x
  - anInt813 -> y
 
-## Stream
+## core.network.Stream
  - anIntArray1409 -> BIT_MASKS
  - anInt1412 -> poolSize
  - nodeList -> pool
@@ -456,22 +456,22 @@ This document lists variable or identifier renames found in the commit history.
  - method441 -> writeBytesReverseAdd
  - method442 -> readBytesReverse
 
-## TextInput
+## core.handlers.TextInput
  - method525 -> decodeChatMessage
  - method526 -> encodeChatMessage
  - aCharArray631 -> charBuffer
 
-## Object5 -> SceneObject
+## Object5 -> game.world.SceneObject
 
-## Animable_Sub5 -> DynamicObject
+## Animable_Sub5 -> game.world.DynamicObject
 - method258 -> getFrameDelay
 - anInt811 -> tileHeight
 - class46 -> objectDef
 
-## Object2 -> WallDecoration
+## Object2 -> game.world.WallDecoration
  - aClass30_Sub2_Sub4_814 -> renderable
 
-## Object1 -> BoundaryObject
+## Object1 -> game.world.BoundaryObject
 
  - anInt273 -> plane
  - anInt274 -> x
@@ -481,7 +481,7 @@ This document lists variable or identifier renames found in the commit history.
  - aClass30_Sub2_Sub4_279 -> secondary
  - aByte281 -> config
 
-## Animable_Sub3 -> GraphicsObject
+## Animable_Sub3 -> game.entities.GraphicsObject
  - anInt412 -> rotation
  - anInt1560 -> plane
  - anInt1561 -> x
@@ -494,9 +494,9 @@ This document lists variable or identifier renames found in the commit history.
  - anInt1570 -> frameCycle
  - method454 -> update
 
-## Object4 -> ItemPile
+## Object4 -> game.items.ItemPile
 
-## Class56_Sub1_Sub2 -> QueuedMidiPlayer
+## Class56_Sub1_Sub2 -> audio.QueuedMidiPlayer
  - anIntArray216 -> trackTicks
  - method520 -> readDeltaTime
  - method521 -> isTrackFinished
@@ -519,9 +519,9 @@ This document lists variable or identifier renames found in the commit history.
 - method832 -> poll
 - method833 -> stopMidi
 
-## Class56_Sub1 -> AbstractMidiController
+## Class56_Sub1 -> audio.AbstractMidiController
 
-## Sprite
+## render.core.Sprite
  - method343 -> initializeDrawingArea
  - method344 -> adjustRgb
  - method345 -> crop
@@ -536,7 +536,7 @@ This document lists variable or identifier renames found in the commit history.
  - anInt1442 -> offsetX
  - anInt1443 -> offsetY
 
-## RSImageProducer
+## core.renderers.RSImageProducer
  - anIntArray315 -> pixels
  - anInt316 -> width
  - anInt317 -> height
@@ -545,20 +545,20 @@ This document lists variable or identifier renames found in the commit history.
  - anImage320 -> image
  - method239 -> updateImage
 
-## Class40 -> ShapedTile
+## Class40 -> render.tiles.ShapedTile
 
-## Class56_Sub1_Sub1 -> SystemMidiPlayer
+## Class56_Sub1_Sub1 -> audio.SystemMidiPlayer
 - method790 -> closeMidiSystem
 - aReceiver1850 -> midiReceiver
 - aSequencer1851 -> midiSequencer
 
-## Class47 -> CullingCluster
+## Class47 -> core.world.CullingCluster
 
-## Class56 -> MidiPlayer
+## Class56 -> audio.MidiPlayer
 
-## Object3 -> TileDecoration
+## Object3 -> game.world.TileDecoration
 
-## Class13 -> BZip2Decompressor
+## Class13 -> util.compression.BZip2Decompressor
  - class32 -> state
 
 ## Kotlin -> Java
@@ -578,7 +578,7 @@ This document lists variable or identifier renames found in the commit history.
  - method81 -> drawMinimapSprite
  - method70 -> updateMultiCombatArea
 
-## ObjectManager
+## core.managers.ObjectManager
  - anIntArrayArrayArray135 -> renderFlags
  - anIntArrayArray139 -> tileShading
  - method172 -> getTerrainNoise
@@ -610,46 +610,46 @@ This document lists variable or identifier renames found in the commit history.
 - obj12 -> boundarySecondary
 - obj13 -> wallDecorationOffset
 
-## Censor
+## util.helpers.Censor
  - method509 -> applyWordFilter
 
-## NodeCache -> NodeHashTable
+## NodeCache -> util.collections.NodeHashTable
 
-## NPC
+## game.entities.NPC
  - method450 -> getBaseModel
  - aAnimation_407 -> animation
  - anInt410 -> scaleX
  - anInt411 -> scaleY
 
-## Animable_Sub4 -> Projectile
+## Animable_Sub4 -> game.entities.Projectile
 
-## Class30_Sub1 -> PendingSpawn
+## Class30_Sub1 -> game.entities.PendingSpawn
 
-## Class4 -> TileRotation
+## Class4 -> core.world.TileRotation
 
-## Class36 -> AnimFrame
+## Class36 -> game.animation.AnimFrame
  - anInt1681 -> transformX
  - anInt1682 -> transformY
  - anInt1683 -> transformZ
 
-## Class18 -> FrameBase
+## Class18 -> game.animation.FrameBase
 
-## Class21 -> PlainTile
+## Class21 -> render.tiles.PlainTile
 
-## Class43 -> ModelHeader
+## Class43 -> render.geometry.ModelHeader
 
-## Class6 -> SoundFilter
+## Class6 -> audio.SoundFilter
  - class29 -> envelope
 
-## Class39 -> Instrument
+## Class39 -> audio.Instrument
 
-## Class29 -> SoundEnvelope
+## Class29 -> audio.SoundEnvelope
 
-## Class33 -> VertexNormal
+## Class33 -> render.geometry.VertexNormal
 
-## DummyClass -> CachePlaceholder
+## DummyClass -> util.compression.CachePlaceholder
 
-## Class11 -> MidiFile
+## Class11 -> audio.MidiFile
  - aByteArray210 -> opcodeSizeTable
  - anIntArray212 -> trackStatus
  - anIntArray214 -> trackPositions
@@ -658,16 +658,16 @@ This document lists variable or identifier renames found in the commit history.
  - method524 -> readEvent
  - method535 -> parseEvent
 
-## IDK
+## game.definitions.IDK
  - anInt405 -> modelId
 
-## ItemDef
+## game.definitions.ItemDef
  - anIntArray408 -> originalModelColors
  - anIntArray409 -> modifiedModelColors
  - aclass30_sub2_sub4_sub6_1s -> combinedModels
  - aclass30_sub2_sub4_sub6s -> combinedModels
 
-## Model
+## render.geometry.Model
 - nullLoader -> clearCache
 - method459 -> init
 - method460 -> loadModelData
@@ -766,13 +766,13 @@ This document lists variable or identifier renames found in the commit history.
 - class36_1 -> secondaryFrame
 - class18 -> frameBase
 
-## Sounds
+## audio.Sounds
  - aClass3_Sub12_211 -> stream
 
-## Decompressor
+## util.compression.Decompressor
  - method235 -> writeBlock
 
-## CollisionMap
+## core.world.CollisionMap
  - anInt290 -> xInset
  - anInt291 -> yInset
  - anInt292 -> width
@@ -789,7 +789,7 @@ This document lists variable or identifier renames found in the commit history.
  - method218 -> unblockTile
  - method219 -> canReachWall
 
-## Censor
+## util.helpers.Censor
  - aCharArrayArray624 -> topLevelDomains
  - anIntArray625 -> tldBehavior
  - aCharArrayArray621 -> badWords
@@ -823,7 +823,7 @@ This document lists variable or identifier renames found in the commit history.
 - method523 -> isBannedName
 - method524 -> computeNameHash
 
-## Background
+## render.core.Background
  - anInt1456 -> maxWidth
  - anInt1457 -> maxHeight
  - anIntArray1451 -> palette
@@ -840,7 +840,7 @@ This document lists variable or identifier renames found in the commit history.
  - method361 -> draw
  - method362 -> blit
 
-## Texture
+## render.core.Texture
  - nullLoader -> reset
  - method364 -> init
  - method365 -> resize
@@ -877,10 +877,10 @@ This document lists variable or identifier renames found in the commit history.
  - aBoolean1464 -> highQuality
  - anInt1465 -> alpha
 
-## Model
+## render.geometry.Model
  - method476 -> recolor
 
-## ObjectDef
+## game.definitions.ObjectDef
  - anIntArray773 -> modelIds
  - anIntArray776 -> modelTypes
  - anInt744 -> sizeX
@@ -920,23 +920,23 @@ This document lists variable or identifier renames found in the commit history.
 - aBoolean779 -> clipped
 - aModelArray741s -> tempModelArray
 
-## VarBit
+## game.definitions.VarBit
  - anInt648 -> configId
  - anInt649 -> leastSignificantBit
  - anInt650 -> mostSignificantBit
  - aBoolean651 -> isActive
 
-## OnDemandData
+## core.managers.OnDemandData
  - dataType -> type
  - buffer -> data
  - ID -> id
  - loopCycle -> cycleCount
 
-## TextClass
+## core.renderers.TextClass
  - method585 -> hashSpriteName
  - method586 -> intToIpString
 
-## TextDrawingArea
+## core.renderers.TextDrawingArea
  - aByteArrayArray1491 -> glyphPixels
  - anIntArray1492 -> glyphWidths
  - anIntArray1493 -> glyphHeights
@@ -952,7 +952,7 @@ This document lists variable or identifier renames found in the commit history.
  - method388 -> drawShakeText
  - method390 -> drawRandomColorText
 
-## Player
+## game.entities.Player
  - anIntArray1700 -> bodyColors
  - anInt1702 -> gender
  - method452 -> getBaseModel
@@ -974,7 +974,7 @@ This document lists variable or identifier renames found in the commit history.
 - aclass30_sub2_sub4_sub6_1s -> combinedModels
 - aclass30_sub2_sub4_sub6s -> modelParts
 
-## Entity
+## game.entities.Entity
  - anInt1504 -> turnSpeed
  - anInt1520 -> spotAnimId
  - anInt1521 -> spotAnimFrame
@@ -1013,7 +1013,7 @@ This document lists variable or identifier renames found in the commit history.
 - anInt1556 -> turn90CWAnimation
 - anInt1557 -> turn90CCWAnimation
 
-## ShapedTile
+## render.tiles.ShapedTile
  - aBoolean683 -> flatShading
  - anInt684 -> shape
  - anInt685 -> rotation
@@ -1035,12 +1035,12 @@ This document lists variable or identifier renames found in the commit history.
 - anIntArrayArray696 -> shapeVertexIndices
 - anIntArrayArray697 -> shapeFaceTemplates
 
-## Varp
+## game.definitions.Varp
  - anInt702 -> varpCount
  - anIntArray703 -> varpIndices
  - anInt709 -> actionType
  - aBoolean713 -> isActive
-## Game
+## core.engine.Game
  - aBoolean831 -> flameThreadActive
  - aBoolean872 -> useJaggrab
  - aBoolean954 -> hasFocus
@@ -1155,10 +1155,10 @@ This document lists variable or identifier renames found in the commit history.
 - class9 -> component
 - class9 -> component
 - class9 -> rsInterface
-## DrawingArea
+## render.core.DrawingArea
  - anInt1387 -> viewportHalfHeight
 
-## EntityDef
+## game.definitions.EntityDef
  - anInt55 -> turn90CCWAnimation
  - anInt56 -> cacheIndex
  - anInt57 -> transformVarbit
@@ -1180,7 +1180,7 @@ This document lists variable or identifier renames found in the commit history.
  - aBoolean87 -> minimapVisible
  - aBoolean93 -> priorityRender
  - aclass30_sub2_sub4_sub6s -> tempModels
-## Animation
+## game.animation.Animation
  - anInt352 -> frameCount
  - anIntArray353 -> frameIds
  - anIntArray354 -> secondaryFrameIds
@@ -1197,12 +1197,12 @@ This document lists variable or identifier renames found in the commit history.
 - anInt365 -> replayMode
 - anInt367 -> animationCount
 
-## NodeSub
+## util.collections.NodeSub
  - anInt1305 -> subNodeCounter
 
-## Entity
+## game.entities.Entity
  - aBoolean1541 -> forcedAnimation
  - aBooleanArray1553 -> movementQueueFlags
 
-## SizeConstants
+## core.engine.SizeConstants
  - anIntArray552 -> permutationTable

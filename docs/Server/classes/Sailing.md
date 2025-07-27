@@ -8,11 +8,11 @@ Defined in [`2006Scape Server/src/main/java/com/rs2/game/content/traveling/Saili
 
 ```java
 public class Sailing {
-public static boolean checkForCash(Player c)
-public static boolean checkForCoins(Player c)
-public static boolean searchForAlcohol(Player c)
-public static boolean quickSearch(Player c)
-public static void startTravel(final Player c, final int i)
+public static boolean checkForCash(game.entities.Player c)
+public static boolean checkForCoins(game.entities.Player c)
+public static boolean searchForAlcohol(game.entities.Player c)
+public static boolean quickSearch(game.entities.Player c)
+public static void startTravel(final game.entities.Player c, final int i)
 public void execute(CycleEventContainer container)
 public void stop()
 public void execute(CycleEventContainer container)

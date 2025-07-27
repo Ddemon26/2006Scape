@@ -20,11 +20,11 @@ The `CombatAssistant` class is the core combat system for players in the 2006Sca
 
 ## Core Architecture
 
-### Player Association
+### game.entities.Player Association
 ```java
-private final Player player;
+private final game.entities.Player player;
 
-public CombatAssistant(Player player) {
+public CombatAssistant(game.entities.Player player) {
     this.player = player;
 }
 ```
@@ -46,7 +46,7 @@ public boolean inCombat() {
 
 **Returns:** `true` if player is under attack by NPCs or other players
 
-### NPC Combat Processing
+### game.entities.NPC Combat Processing
 
 #### `delayedHit(int i)`
 Processes delayed combat hits against NPCs:
@@ -60,7 +60,7 @@ public void delayedHit(int npcIndex) {
     
     Npc npc = NpcHandler.npcs[npcIndex];
     
-    // Handle NPC block animation
+    // Handle game.entities.NPC block animation
     if (npc.attackTimer <= 3 || (npc.attackTimer == 0 && npc.hitDelayTimer > 0 && !player.castingMagic)) {
         npc.animNumber = NpcEmotes.getBlockEmote(npcIndex);
         npc.animUpdateRequired = true;
@@ -75,7 +75,7 @@ public void delayedHit(int npcIndex) {
         }
     }
     
-    // Make NPC face the player
+    // Make game.entities.NPC face the player
     npc.facePlayer(player);
     
     // Set killer ID for loot rights
@@ -109,7 +109,7 @@ public void delayedHit(int npcIndex) {
 ### Melee Combat
 
 #### `applyNpcMeleeDamage(int npcIndex, int damageMask)`
-Applies melee damage to an NPC:
+Applies melee damage to an game.entities.NPC:
 
 ```java
 public void applyNpcMeleeDamage(int npcIndex, int damageMask) {
@@ -162,7 +162,7 @@ public void applyNpcMeleeDamage(int npcIndex, int damageMask) {
     // Award experience based on combat style
     awardMeleeExperience(damage);
     
-    // Apply damage to NPC
+    // Apply damage to game.entities.NPC
     if (damageMask == 1) {
         npc.hitDiff = damage;
         npc.hitUpdateRequired = true;
@@ -213,7 +213,7 @@ private void processRangedAttack(int npcIndex) {
     if (Misc.random(4) == 1 && player.lastArrowUsed == 9242 && damage > 0) { // Ruby bolts
         npc.gfx0(754);
         damage = npc.HP / 5; // 20% of target's HP
-        // Player takes damage too
+        // game.entities.Player takes damage too
         player.handleHitMask(player.playerLevel[Constants.HITPOINTS] / 10);
         player.dealDamage(player.playerLevel[Constants.HITPOINTS] / 10);
         player.gfx0(754);
@@ -265,7 +265,7 @@ private void processRangedAttack(int npcIndex) {
         player.getItemAssistant().dropArrowNpc();
     }
     
-    // Apply damage to NPC
+    // Apply damage to game.entities.NPC
     npc.underAttack = true;
     npc.hitDiff = damage;
     npc.HP -= damage;
@@ -370,7 +370,7 @@ private void processMagicAttack(int npcIndex) {
         }
     }
     
-    // Apply damage to NPC
+    // Apply damage to game.entities.NPC
     npc.underAttack = true;
     if (MagicData.MAGIC_SPELLS[player.oldSpellId][6] != 0) {
         npc.hitDiff = damage;
@@ -526,7 +526,7 @@ if (player.getCombatAssistant().inCombat()) {
     return;
 }
 
-// Process delayed hit on NPC
+// Process delayed hit on game.entities.NPC
 player.getCombatAssistant().delayedHit(npcIndex);
 ```
 
@@ -576,16 +576,16 @@ if (player.usingSpecial && player.specAmount >= 25) {
 
 ## Integration Points
 
-### Player Integration
+### game.entities.Player Integration
 ```java
 // Combat assistant is part of every player
-Player player = new Player();
+game.entities.Player player = new game.entities.Player();
 CombatAssistant combat = player.getCombatAssistant();
 ```
 
-### NPC Integration
+### game.entities.NPC Integration
 ```java
-// Combat affects NPC state
+// Combat affects game.entities.NPC state
 NpcHandler.npcs[i].underAttack = true;
 NpcHandler.npcs[i].HP -= damage;
 ```
@@ -599,7 +599,7 @@ boolean hasSpecialAttack = player.usingSpecial;
 
 ## Related Classes
 
-- [`Player`](Player.md) - Contains CombatAssistant instance
+- [`game.entities.Player`](game.entities.Player.md) - Contains CombatAssistant instance
 - [`NpcHandler`](NpcHandler.md) - Manages combat targets
 - [`MeleeData`](MeleeData.md) - Melee combat constants and data
 - [`RangeData`](RangeData.md) - Ranged combat constants and data

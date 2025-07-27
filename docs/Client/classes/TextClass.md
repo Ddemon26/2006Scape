@@ -1,11 +1,11 @@
-# TextClass
+# core.renderers.TextClass
 
-Defined in [`2006Scape Client/src/main/java/TextClass.java`](2006Scape Client/src/main/java/TextClass.java).
+Defined in [`2006Scape Client/src/main/java/core.renderers.TextClass.java`](2006Scape Client/src/main/java/core.renderers.TextClass.java).
 
 Text Class helper class.
 
 ```java
-final class TextClass {
+final class core.renderers.TextClass {
 public static long longForName(String s)
 public static String nameForLong(long l)
 public static long hashSpriteName(String s)

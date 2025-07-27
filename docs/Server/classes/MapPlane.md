@@ -12,5 +12,5 @@ public MapPlane(int level, Tile[][] tiles)
 public int getLevel()
 public int getSize()
 public Tile getTile(int x, int z)
-public Stream<Tile> getTiles()
+public core.network.Stream<Tile> getTiles()
 ```

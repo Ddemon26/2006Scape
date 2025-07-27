@@ -8,7 +8,7 @@ Rangers Guild @author Aintaro @edit Haile N.
 
 ```java
 public class RangersGuild {
-public RangersGuild(Player player)
+public RangersGuild(game.entities.Player player)
 public void fireAtTarget()
 public void execute(CycleEventContainer container)
 public void stop()

@@ -8,7 +8,7 @@ Play List helper class.
 
 ```java
 public class PlayList {
-public PlayList(Player player2)
+public PlayList(game.entities.Player player2)
 public int songId()
 public int configId()
 public int configNumber()

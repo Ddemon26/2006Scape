@@ -8,14 +8,14 @@ Melee Data helper class.
 
 ```java
 public class MeleeData {
-public static boolean fullVoidMelee(Player c)
-public static int calculateMeleeAttack(Player c)
-public static int bestMeleeAtk(Player c)
-public static int calculateMeleeDefence(Player c)
-public static int bestMeleeDef(Player c)
-public static int getAttackDelay(Player c)
-public static void getPlayerAnimIndex(Player c)
-public static int getWeaponAnimation(Player c)
-public static int getBlockEmote(Player c)
-public static int getHitDelay(Player c)
+public static boolean fullVoidMelee(game.entities.Player c)
+public static int calculateMeleeAttack(game.entities.Player c)
+public static int bestMeleeAtk(game.entities.Player c)
+public static int calculateMeleeDefence(game.entities.Player c)
+public static int bestMeleeDef(game.entities.Player c)
+public static int getAttackDelay(game.entities.Player c)
+public static void getPlayerAnimIndex(game.entities.Player c)
+public static int getWeaponAnimation(game.entities.Player c)
+public static int getBlockEmote(game.entities.Player c)
+public static int getHitDelay(game.entities.Player c)
 ```

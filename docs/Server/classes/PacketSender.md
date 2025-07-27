@@ -13,8 +13,8 @@ The `PacketSender` class is the primary interface for sending data packets from 
 - **Inventory Updates**: Sending item data to various interface containers
 - **Visual Effects**: Animations, graphics, sounds, and screen effects
 - **Communication**: Chat messages, private messages, and clan chat
-- **World Updates**: Ground items, objects, NPCs, and environmental changes
-- **Player State**: Skill levels, configurations, and status updates
+- **World Updates**: render.objects.Ground items, objects, NPCs, and environmental changes
+- **game.entities.Player State**: Skill levels, configurations, and status updates
 - **Login Process**: Complete player initialization and world synchronization
 
 ## Core Architecture
@@ -30,11 +30,11 @@ player.getPacketSender()
 
 Each method returns `this`, allowing for method chaining and cleaner code.
 
-### Player Association
+### game.entities.Player Association
 ```java
-private final Player player;
+private final game.entities.Player player;
 
-public PacketSender(Player player) {
+public PacketSender(game.entities.Player player) {
     this.player = player;
 }
 ```
@@ -191,19 +191,19 @@ public PacketSender closeAllWindows() {
 }
 ```
 
-### Inventory and Item Management
+### Inventory and game.items.Item Management
 
-#### `sendUpdateItems(int frame, Item[] items)`
+#### `sendUpdateItems(int frame, game.items.Item[] items)`
 Updates item containers (inventory, bank, shop, etc.):
 
 ```java
-public PacketSender sendUpdateItems(int frame, Item[] items) {
+public PacketSender sendUpdateItems(int frame, game.items.Item[] items) {
     if (player.getOutStream() != null) {
         player.getOutStream().createFrameVarSizeWord(53);
         player.getOutStream().writeWord(frame);
         player.getOutStream().writeWord(items.length);
         
-        for (Item item : items) {
+        for (game.items.Item item : items) {
             // Handle item count encoding
             if (item.getCount() > 254) {
                 player.getOutStream().writeByte(255);
@@ -243,7 +243,7 @@ public PacketSender sendItemOnInterface(int itemId, int amount, int childId) {
 }
 ```
 
-### Ground Items
+### render.objects.Ground Items
 
 #### `createGroundItem(int itemId, int x, int y, int amount)`
 Shows a ground item to the player:
@@ -375,7 +375,7 @@ public PacketSender sendConfig(int id, int state) {
 - `502` - Split chat mode
 - `108` - Autocast spell
 
-### Skills and Stats
+### game.mechanics.Skills and Stats
 
 #### `setSkillLevel(int skillId, int currentLevel, int experience)`
 Updates skill information:
@@ -507,8 +507,8 @@ Always check for null output streams to prevent crashes.
 
 ## Related Classes
 
-- [`Player`](Player.md) - Contains PacketSender instance
+- [`game.entities.Player`](game.entities.Player.md) - Contains PacketSender instance
 - [`Client`](Client.md) - Concrete player with network session
-- [`Stream`](Stream.md) - Handles packet data serialization
+- [`core.network.Stream`](core.network.Stream.md) - Handles packet data serialization
 - [`PlayerAssistant`](PlayerAssistant.md) - Uses PacketSender for player operations
 - [`ItemAssistant`](ItemAssistant.md) - Uses PacketSender for inventory updates

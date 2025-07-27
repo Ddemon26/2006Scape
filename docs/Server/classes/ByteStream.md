@@ -4,7 +4,7 @@ Package `com.rs2.world.clip`.
 
 Defined in [`2006Scape Server/src/main/java/com/rs2/world/clip/ByteStream.java`](2006Scape Server/src/main/java/com/rs2/world/clip/ByteStream.java).
 
-Byte Stream helper class.
+Byte core.network.Stream helper class.
 
 ```java
 public class ByteStream {

@@ -8,5 +8,5 @@ Lost City @author Olivier (JohnsonPhillips / JohnsonMichaels123)
 
 ```java
 public class LostCity {
-public static void showInformation(Player client)
+public static void showInformation(game.entities.Player client)
 ```

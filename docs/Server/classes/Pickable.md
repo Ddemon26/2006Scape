@@ -8,7 +8,7 @@ Pickables @author Andrew (Mr Extremez)
 
 ```java
 public class Pickable {
-public static void pickObject(final Player player, final int objectType, final int objectX, final int objectY)
+public static void pickObject(final game.entities.Player player, final int objectType, final int objectX, final int objectY)
 public void execute(CycleEventContainer container)
 public void stop()
 ```

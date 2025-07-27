@@ -9,7 +9,7 @@ Cast On Other helper class.
 ```java
 public class CastOnOther extends CastRequirements {
 public static boolean castOnOtherSpells(int castingSpellId)
-public static void teleOtherDistance(Player c, int type, int i)
+public static void teleOtherDistance(game.entities.Player c, int type, int i)
 public void execute(CycleEventContainer container)
 public void stop()
 ```

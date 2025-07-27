@@ -8,7 +8,7 @@ Objects Actions helper class.
 
 ```java
 public class ObjectsActions {
-public ObjectsActions(Player player2)
+public ObjectsActions(game.entities.Player player2)
 public void firstClickObject(int objectType, int objectX, int objectY)
 public void execute(CycleEventContainer container)
 public void stop()

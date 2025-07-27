@@ -1,18 +1,18 @@
-# NodeList
+# util.collections.NodeList
 
-Defined in [`2006Scape Client/src/main/java/NodeList.java`](2006Scape Client/src/main/java/NodeList.java).
+Defined in [`2006Scape Client/src/main/java/util.collections.NodeList.java`](2006Scape Client/src/main/java/util.collections.NodeList.java).
 
-Node List helper class.
+util.collections.Node List helper class.
 
 ```java
-final class NodeList {
-public NodeList()
-public void insertHead(Node node)
-public void insertTail(Node node)
-public Node popHead()
-public Node reverseGetFirst()
-public Node getFirst()
-public Node reverseGetNext()
-public Node getNext()
+final class util.collections.NodeList {
+public util.collections.NodeList()
+public void insertHead(util.collections.Node node)
+public void insertTail(util.collections.Node node)
+public util.collections.Node popHead()
+public util.collections.Node reverseGetFirst()
+public util.collections.Node getFirst()
+public util.collections.Node reverseGetNext()
+public util.collections.Node getNext()
 public void removeAll()
 ```

@@ -8,8 +8,8 @@ Farming helper class.
 
 ```java
 public class Farming {
-public static void processCalc(Player p)
-public static boolean inspectObject(Player player, int x, int y)
-public static boolean guide(Player player, int x, int y)
-public static boolean harvest(Player player, int x, int y)
+public static void processCalc(game.entities.Player p)
+public static boolean inspectObject(game.entities.Player player, int x, int y)
+public static boolean guide(game.entities.Player player, int x, int y)
+public static boolean harvest(game.entities.Player player, int x, int y)
 ```

@@ -1,6 +1,6 @@
-# 2006Scape - Game Server
+# 2006Scape - core.engine.Game Server
 
-This is the Game Server component of our emulated Runescape environment.
+This is the core.engine.Game Server component of our emulated Runescape environment.
 It's responsibility is to provide the instructions for the in-game world, its entities, and respond to player interactions.
 Contained within is an implementation of the Runescape network protocol roughly around version 508.
 When run, this java application will listen on TCP port 43594.

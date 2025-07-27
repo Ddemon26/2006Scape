@@ -8,7 +8,7 @@ Defined in [`2006Scape Server/src/main/java/com/rs2/game/content/skills/fletchin
 
 ```java
 public class LogCuttingInterface {
-public static void handleLog(Player c, int item1, int item2)
-public static void fletchInterface(Player c, int item)
-public static void handleItemOnItem(Player player, int itemUsed, int useWith)
+public static void handleLog(game.entities.Player c, int item1, int item2)
+public static void fletchInterface(game.entities.Player c, int item)
+public static void handleItemOnItem(game.entities.Player player, int itemUsed, int useWith)
 ```

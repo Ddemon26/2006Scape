@@ -8,5 +8,5 @@ River Troll helper class.
 
 ```java
 public class RiverTroll {
-public static void spawnRiverTroll(Player client)
+public static void spawnRiverTroll(game.entities.Player client)
 ```

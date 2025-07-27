@@ -8,11 +8,11 @@ Alchemy helper class.
 
 ```java
 public class Alchemy {
-public Alchemy(Player c)
+public Alchemy(game.entities.Player c)
 public void searchCupboard(int objectID)
 public void alchItem(int itemID, int spellID)
 public void collectCoins()
 public void clearItems()
 public static void process()
-public static void updateInterface(Player player)
+public static void updateInterface(game.entities.Player player)
 ```

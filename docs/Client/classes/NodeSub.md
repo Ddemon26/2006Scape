@@ -1,11 +1,11 @@
-# NodeSub
+# util.collections.NodeSub
 
-Defined in [`2006Scape Client/src/main/java/NodeSub.java`](2006Scape Client/src/main/java/NodeSub.java).
+Defined in [`2006Scape Client/src/main/java/util.collections.NodeSub.java`](2006Scape Client/src/main/java/util.collections.NodeSub.java).
 
-Node Sub helper class.
+util.collections.Node Sub helper class.
 
 ```java
-public class NodeSub extends Node {
+public class util.collections.NodeSub extends util.collections.Node {
 public final void unlinkSub()
-public NodeSub()
+public util.collections.NodeSub()
 ```

@@ -1,12 +1,12 @@
-# TextDrawingArea
+# core.renderers.TextDrawingArea
 
-Defined in [`2006Scape Client/src/main/java/TextDrawingArea.java`](2006Scape Client/src/main/java/TextDrawingArea.java).
+Defined in [`2006Scape Client/src/main/java/core.renderers.TextDrawingArea.java`](2006Scape Client/src/main/java/core.renderers.TextDrawingArea.java).
 
 Text Drawing Area helper class.
 
 ```java
-public final class TextDrawingArea extends DrawingArea {
-public TextDrawingArea(boolean flag, String s, StreamLoader streamLoader)
+public final class core.renderers.TextDrawingArea extends render.core.DrawingArea {
+public core.renderers.TextDrawingArea(boolean flag, String s, core.network.StreamLoader streamLoader)
 public void textRight(int i, String s, int k, int l)
 public void textCenter(int i, String s, int k, int l)
 public void textCenterShadow(int _color, int _x, String s, int _y, boolean _shadow)

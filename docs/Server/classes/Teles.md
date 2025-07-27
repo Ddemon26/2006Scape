@@ -8,8 +8,8 @@ Teles @author Andrew (Mr Extremez)
 
 ```java
 public class Teles {
-public static void useAOG(Player player)
-public static void useROD(Player player)
-public static void useGN(Player player)
-public static void necklaces(Player player)
+public static void useAOG(game.entities.Player player)
+public static void useROD(game.entities.Player player)
+public static void useGN(game.entities.Player player)
+public static void necklaces(game.entities.Player player)
 ```

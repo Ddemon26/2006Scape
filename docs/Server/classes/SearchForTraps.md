@@ -12,7 +12,7 @@ public int getChestId()
 public int getLevelReq()
 public double getXp()
 public int[][] getReward()
-public static void searchForTraps(final Player client, final int chestId)
+public static void searchForTraps(final game.entities.Player client, final int chestId)
 public void execute(CycleEventContainer container)
 public void stop()
 ```

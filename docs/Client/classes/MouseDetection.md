@@ -1,11 +1,11 @@
-# MouseDetection
+# core.handlers.MouseDetection
 
-Defined in [`2006Scape Client/src/main/java/MouseDetection.java`](2006Scape Client/src/main/java/MouseDetection.java).
+Defined in [`2006Scape Client/src/main/java/core.handlers.MouseDetection.java`](2006Scape Client/src/main/java/core.handlers.MouseDetection.java).
 
 Mouse Detection helper class.
 
 ```java
-final class MouseDetection implements Runnable {
+final class core.handlers.MouseDetection implements Runnable {
 public void run()
-public MouseDetection(Game client1)
+public core.handlers.MouseDetection(core.engine.Game client1)
 ```

@@ -1,16 +1,16 @@
-# EntityDef
+# game.definitions.EntityDef
 
-Defined in [`2006Scape Client/src/main/java/EntityDef.java`](2006Scape Client/src/main/java/EntityDef.java).
+Defined in [`2006Scape Client/src/main/java/game.definitions.EntityDef.java`](2006Scape Client/src/main/java/game.definitions.EntityDef.java).
 
-Entity Def helper class.
+game.entities.Entity Def helper class.
 
 ```java
-public final class EntityDef {
-public static EntityDef forID(int i)
-public Model getModel()
-public EntityDef transform()
-public static void unpackConfig(StreamLoader streamLoader)
+public final class game.definitions.EntityDef {
+public static game.definitions.EntityDef forID(int i)
+public render.geometry.Model getModel()
+public game.definitions.EntityDef transform()
+public static void unpackConfig(core.network.StreamLoader streamLoader)
 public static void nullLoader()
-public Model getAnimatedModel(int primaryFrame, int secondaryFrame, int[] frameData)
-public static MRUCache mruNodes = new MRUCache(30);
+public render.geometry.Model getAnimatedModel(int primaryFrame, int secondaryFrame, int[] frameData)
+public static util.collections.MRUCache mruNodes = new util.collections.MRUCache(30);
 ```

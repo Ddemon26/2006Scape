@@ -8,5 +8,5 @@ AntiSpam @author Andrew (I'm A Boss on Rune-Server and Mr Extremez on Mopar & Ru
 
 ```java
 public class AntiSpam {
-public static boolean blockedWords(Player player, String word, boolean chat)
+public static boolean blockedWords(game.entities.Player player, String word, boolean chat)
 ```

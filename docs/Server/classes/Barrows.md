@@ -8,7 +8,7 @@ Barrows helper class.
 
 ```java
 public class Barrows {
-public Barrows(Player player)
+public Barrows(game.entities.Player player)
 public int randomBarrows()
 public int randomRunes()
 public int randomPots()

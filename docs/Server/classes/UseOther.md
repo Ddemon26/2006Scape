@@ -8,6 +8,6 @@ Use Other helper class.
 
 ```java
 public class UseOther {
-public static void useUp(final Player player, final int objectId)
-public static void useDown(final Player player, final int objectId)
+public static void useUp(final game.entities.Player player, final int objectId)
+public static void useDown(final game.entities.Player player, final int objectId)
 ```

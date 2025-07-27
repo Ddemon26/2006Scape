@@ -8,7 +8,7 @@ Created by IntelliJ IDEA. User: vayken Date: 18/03/12 Time: 11:00 To change this
 
 ```java
 public class Seedling {
-public Seedling(Player player)
+public Seedling(game.entities.Player player)
 public static SeedlingData getSeed(int seedId)
 public static SeedlingData getUnwatered(int seedId)
 public static SeedlingData getWatered(int seedId)

@@ -10,5 +10,5 @@ Npc Emotes @author Andrew (Mr Extremez)
 public enum NpcEmotes {
 public static int getAttackEmote(int i)
 public static int getBlockEmote(int i)
-public static int getDeadEmote(Player player, int i)
+public static int getDeadEmote(game.entities.Player player, int i)
 ```

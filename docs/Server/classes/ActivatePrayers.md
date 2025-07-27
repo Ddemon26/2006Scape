@@ -8,5 +8,5 @@ Activate Prayers helper class.
 
 ```java
 public class ActivatePrayers {
-public static void activatePrayer(Player player, int i)
+public static void activatePrayer(game.entities.Player player, int i)
 ```

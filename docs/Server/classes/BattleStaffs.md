@@ -12,7 +12,7 @@ public int getOrb()
 public int getLevelReq()
 public int getXP()
 public int getBattlestaff()
-public static void makeBattleStaff(Player player, int itemUsed, int usedWith)
+public static void makeBattleStaff(game.entities.Player player, int itemUsed, int usedWith)
 public void execute(CycleEventContainer container)
 public void stop()
 ```

@@ -8,5 +8,5 @@ Castle War Objects helper class.
 
 ```java
 public class CastleWarObjects {
-public static void handleObject(Player player, int id, int x, int y)
+public static void handleObject(game.entities.Player player, int id, int x, int y)
 ```

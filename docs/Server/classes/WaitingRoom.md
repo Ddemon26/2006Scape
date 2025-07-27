@@ -8,17 +8,17 @@ Waiting Room helper class.
 
 ```java
 public abstract class WaitingRoom {
-public ArrayList<Player> waiting = new ArrayList<Player>();
+public ArrayList<game.entities.Player> waiting = new ArrayList<game.entities.Player>();
 public abstract Boundary getLocation();
 public abstract boolean startGame();
 public abstract void onStart();
-public abstract void onLeave(Player player);
-public abstract void onJoin(Player p);
+public abstract void onLeave(game.entities.Player player);
+public abstract void onJoin(game.entities.Player p);
 public abstract void onTimeChange();
 public abstract boolean canStart();
 public WaitingRoom(int minutes, int minimum)
-public void join(Player player)
-public void leave(Player player)
+public void join(game.entities.Player player)
+public void leave(game.entities.Player player)
 public void reset()
 public void startWaiting()
 public void execute(CycleEventContainer container)

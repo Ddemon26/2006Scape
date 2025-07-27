@@ -8,6 +8,6 @@ ObjectDefaults @author Andrew (Mr Extremez)
 
 ```java
 public class ObjectDefaults {
-public static int getObjectType(Player player, int objectType)
-public static int getObjectFace(Player player, int objectType)
+public static int getObjectType(game.entities.Player player, int objectType)
+public static int getObjectFace(game.entities.Player player, int objectType)
 ```

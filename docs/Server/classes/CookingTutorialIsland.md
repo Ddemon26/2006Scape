@@ -8,9 +8,9 @@ Cooking Tutorial Island helper class.
 
 ```java
 public class CookingTutorialIsland extends SkillHandler {
-public static void cookThisFood(Player p, int i, int object)
-public static void getAmount(Player player, int amount)
-public static void resetCooking(Player c)
+public static void cookThisFood(game.entities.Player p, int i, int object)
+public static void getAmount(game.entities.Player player, int amount)
+public static void resetCooking(game.entities.Player c)
 public void execute(CycleEventContainer container)
 public void stop()
 public void execute(CycleEventContainer container)

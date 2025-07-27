@@ -8,6 +8,6 @@ Smithing Interface helper class.
 
 ```java
 public class SmithingInterface {
-public SmithingInterface(Player player)
+public SmithingInterface(game.entities.Player player)
 public void showSmithInterface(int itemId)
 ```

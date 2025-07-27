@@ -14,7 +14,7 @@ public int getItem2()
 public int getProduct()
 public int getLevel()
 public double getXp()
-public static boolean StringBow(final Player player, int itemUsed, int usedWith)
+public static boolean StringBow(final game.entities.Player player, int itemUsed, int usedWith)
 public void execute(CycleEventContainer container)
 public void stop()
 ```

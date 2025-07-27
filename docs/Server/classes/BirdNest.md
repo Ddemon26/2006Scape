@@ -8,7 +8,7 @@ Aug 31, 2017 : 3:02:33 AM BirdsNest.java @author Andrew (Mr Extremez)
 
 ```java
 public class BirdNest {
-public static void handleBirdNest(Player player, int itemId, int nestType)
-public static void birdNests(Player player)
-public static void dropNest(Player player)
+public static void handleBirdNest(game.entities.Player player, int itemId, int nestType)
+public static void birdNests(game.entities.Player player)
+public static void dropNest(game.entities.Player player)
 ```

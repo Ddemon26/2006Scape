@@ -10,7 +10,7 @@ Fight Caves helper class.
 public class FightCaves {
 public void spawnNextWave(Client player)
 public static void ytMejKotEffect(Client player, int i)
-public static void spawnHealers(Player c, int i, int amount)
+public static void spawnHealers(game.entities.Player c, int i, int amount)
 public static void tzKihEffect(Client player, int i, int damage)
 public static void tzKekEffect(Client player, int i)
 public static int getHp(int npc)
@@ -20,7 +20,7 @@ public static int getDef(int npc)
 public void execute(CycleEventContainer container)
 public void stop()
 public static void handleJadDeath(int i)
-public static void healJad(Player c, int i)
+public static void healJad(game.entities.Player c, int i)
 public static void tzhaarDeathHandler(int i)
 public static boolean isFightCaveNpc(int i)
 ```

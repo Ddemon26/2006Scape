@@ -1,16 +1,16 @@
-# Player
+# game.entities.Player
 
 **Package:** `com.rs2.game.players`  
-**Source:** [`2006Scape Server/src/main/java/com/rs2/game/players/Player.java`](2006Scape Server/src/main/java/com/rs2/game/players/Player.java)
+**Source:** [`2006Scape Server/src/main/java/com/rs2/game/players/game.entities.Player.java`](2006Scape Server/src/main/java/com/rs2/game/players/game.entities.Player.java)
 
 ## Overview
 
-The `Player` class is the core abstract base class that represents a player character in the 2006Scape server. It serves as the foundation for all player-related functionality, containing comprehensive systems for skills, combat, inventory management, social features, and game mechanics. This class is extended by the [`Client`](Client.md) class to create concrete player instances.
+The `game.entities.Player` class is the core abstract base class that represents a player character in the 2006Scape server. It serves as the foundation for all player-related functionality, containing comprehensive systems for skills, combat, inventory management, social features, and game mechanics. This class is extended by the [`Client`](Client.md) class to create concrete player instances.
 
 ## Key Responsibilities
 
-- **Player State Management**: Coordinates, health, skills, equipment, and inventory
-- **Game System Integration**: Provides access to all major game systems through assistant classes
+- **game.entities.Player State Management**: Coordinates, health, skills, equipment, and inventory
+- **core.engine.Game System Integration**: Provides access to all major game systems through assistant classes
 - **Event Processing**: Handles player actions, combat, movement, and interactions
 - **Network Communication**: Manages packet sending and receiving
 - **Persistence**: Handles player data saving and loading
@@ -19,7 +19,7 @@ The `Player` class is the core abstract base class that represents a player char
 ## Core Architecture
 
 ### Assistant Pattern
-The Player class uses the Assistant pattern extensively, providing specialized helper classes for different aspects of gameplay:
+The game.entities.Player class uses the Assistant pattern extensively, providing specialized helper classes for different aspects of gameplay:
 
 ```java
 private final ItemAssistant itemAssistant = new ItemAssistant(this);
@@ -41,7 +41,7 @@ private final Slayer slayer = new Slayer(this);
 
 ## Essential Methods
 
-### Player Management
+### game.entities.Player Management
 
 #### `process()`
 The main player processing method called every game tick:
@@ -148,7 +148,7 @@ public void startCurrentTask(int ticksBetweenExecution, CycleEvent event) {
 Handles all item-related operations:
 - Inventory management
 - Equipment handling
-- Item creation and deletion
+- game.items.Item creation and deletion
 - Special item effects
 
 ```java
@@ -207,7 +207,7 @@ public WoodTrees getTrees() { return trees; }
 ## Location & Area Methods
 
 ### Area Detection
-The Player class provides numerous methods for detecting player location:
+The game.entities.Player class provides numerous methods for detecting player location:
 
 ```java
 public boolean inWild() // Wilderness check
@@ -221,15 +221,15 @@ public boolean inArea(int x, int y, int x1, int y1) // Custom area check
 ### Distance Calculations
 
 ```java
-public boolean withinDistance(Player otherPlayer) // Player distance
-public boolean withinDistance(Npc npc) // NPC distance
+public boolean withinDistance(game.entities.Player otherPlayer) // game.entities.Player distance
+public boolean withinDistance(Npc npc) // game.entities.NPC distance
 public int distanceToPoint(int pointX, int pointY) // Point distance
 public boolean goodDistance(int objectX, int objectY, int playerX, int playerY, int distance)
 ```
 
 ## Kill Count System
 
-The Player class includes a comprehensive NPC kill count tracking system:
+The game.entities.Player class includes a comprehensive game.entities.NPC kill count tracking system:
 
 ```java
 public int getNpcKillCount(int npcId) {
@@ -248,7 +248,7 @@ public boolean displayRegularKcMessages = false;
 
 ## Temporary Data Storage
 
-The Player class provides a flexible temporary data system:
+The game.entities.Player class provides a flexible temporary data system:
 
 ```java
 public Object getTemporary(String name) {
@@ -262,7 +262,7 @@ public void addTemporary(String name, Object value) {
 
 ## Usage Examples
 
-### Basic Player Operations
+### Basic game.entities.Player Operations
 ```java
 // Get player's combat level
 int combatLevel = player.calculateCombatLevel();
@@ -279,7 +279,7 @@ player.getPlayerAssistant().addSkillXP(1000, 0); // 1000 Attack XP
 
 ### Combat Operations
 ```java
-// Start combat with NPC
+// Start combat with game.entities.NPC
 player.getCombatAssistant().attackNpc(npcId);
 
 // Check if player can attack
@@ -291,14 +291,14 @@ if (player.getCombatAssistant().checkReqs()) {
 player.dealDamage(damage);
 ```
 
-### Item Management
+### game.items.Item Management
 ```java
 // Add item to inventory
 player.getItemAssistant().addItem(itemId, amount);
 
 // Check if player has item
 if (player.getItemAssistant().playerHasItem(itemId, amount)) {
-    // Player has the item
+    // game.entities.Player has the item
 }
 
 // Delete item
@@ -330,9 +330,9 @@ player.getAllotment().plantSeed(seedId, patchId);
 
 ## Related Classes
 
-- [`Client`](Client.md) - Concrete implementation of Player
+- [`Client`](Client.md) - Concrete implementation of game.entities.Player
 - [`PlayerHandler`](PlayerHandler.md) - Manages all players
 - [`PlayerAssistant`](PlayerAssistant.md) - Core player utilities
-- [`ItemAssistant`](ItemAssistant.md) - Item management
+- [`ItemAssistant`](ItemAssistant.md) - game.items.Item management
 - [`CombatAssistant`](CombatAssistant.md) - Combat mechanics
 - [`PacketSender`](PacketSender.md) - Network communication

@@ -4,7 +4,7 @@ Package `com.rs2.util`.
 
 Defined in [`2006Scape Server/src/main/java/com/rs2/util/CustomPrintStream.java`](2006Scape Server/src/main/java/com/rs2/util/CustomPrintStream.java).
 
-Custom Print Stream helper class.
+Custom Print core.network.Stream helper class.
 
 ```java
 public class CustomPrintStream extends PrintStream {

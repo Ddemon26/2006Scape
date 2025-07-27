@@ -8,6 +8,6 @@ God Pages helper class.
 
 ```java
 public class GodPages {
-public static void fillBook(Player player, int oldBook, int newBook, int page1, int page2, int page3)
-public static void itemOnItemHandle(Player player, int useWith, int itemUsed)
+public static void fillBook(game.entities.Player player, int oldBook, int newBook, int page1, int page2, int page3)
+public static void itemOnItemHandle(game.entities.Player player, int useWith, int itemUsed)
 ```

@@ -8,8 +8,8 @@ Gnome Glider helper class.
 
 ```java
 public class GnomeGlider {
-public static void flightButtons(Player player, int button)
-public static void handleFlight(final Player player, final int flightId)
+public static void flightButtons(game.entities.Player player, int button)
+public static void handleFlight(final game.entities.Player player, final int flightId)
 public void execute(CycleEventContainer container)
 public void stop()
 public void execute(CycleEventContainer container)

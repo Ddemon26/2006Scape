@@ -1,11 +1,11 @@
-# DrawingArea
+# render.core.DrawingArea
 
-Defined in [`2006Scape Client/src/main/java/DrawingArea.java`](2006Scape Client/src/main/java/DrawingArea.java).
+Defined in [`2006Scape Client/src/main/java/render.core.DrawingArea.java`](2006Scape Client/src/main/java/render.core.DrawingArea.java).
 
 Drawing Area helper class.
 
 ```java
-public class DrawingArea extends NodeSub {
+public class render.core.DrawingArea extends util.collections.NodeSub {
 public static void initDrawingArea(int i, int j, int ai[])
 public static void defaultDrawingAreaSize()
 public static void setDrawingArea(int i, int j, int k, int l)

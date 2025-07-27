@@ -9,19 +9,19 @@ The `PlayerHandler` class is the central management system for all connected pla
 
 ## Key Responsibilities
 
-- **Player Management**: Maintaining the global array of connected players
+- **game.entities.Player Management**: Maintaining the global array of connected players
 - **Connection Handling**: Managing new player connections and disconnections
-- **Player Processing**: Coordinating player updates, movement, and actions
+- **game.entities.Player Processing**: Coordinating player updates, movement, and actions
 - **State Management**: Tracking player counts, names, and online status
 - **Cleanup Operations**: Handling logout procedures and resource cleanup
-- **Update Coordination**: Managing player and NPC update packets
+- **Update Coordination**: Managing player and game.entities.NPC update packets
 - **Server Updates**: Coordinating server restarts and player kicks
 
 ## Core Data Structures
 
-### Player Arrays and Counters
+### game.entities.Player Arrays and Counters
 ```java
-public static Player players[] = new Player[Constants.MAX_PLAYERS];
+public static game.entities.Player players[] = new game.entities.Player[Constants.MAX_PLAYERS];
 public static int playerCount = 0;
 public static int playerShopCount = 0;
 public static String playersCurrentlyOn[] = new String[Constants.MAX_PLAYERS];
@@ -38,7 +38,7 @@ private boolean kickAllPlayers = false;
 
 ## Core Methods
 
-### Player Connection Management
+### game.entities.Player Connection Management
 
 #### `newPlayerClient(Client client)`
 Handles new player connections by finding an available slot:
@@ -72,7 +72,7 @@ public boolean newPlayerClient(Client client) {
         .getAddress().getHostAddress();
     
     if (Constants.SERVER_DEBUG) {
-        System.out.println("Player assigned to slot " + slot);
+        System.out.println("game.entities.Player assigned to slot " + slot);
     }
     
     return true;
@@ -81,11 +81,11 @@ public boolean newPlayerClient(Client client) {
 
 **Returns:** `true` if player was successfully added, `false` if server is full
 
-#### `removePlayer(Player player)`
+#### `removePlayer(game.entities.Player player)`
 Handles player disconnection and cleanup:
 
 ```java
-public void removePlayer(Player player) {
+public void removePlayer(game.entities.Player player) {
     if (player == null) return;
     
     // Handle ongoing activities
@@ -123,7 +123,7 @@ public void removePlayer(Player player) {
     // Save player data
     Client client = (Client) player;
     if (PlayerSave.saveGame(client)) {
-        System.out.println("Game saved for player " + player.playerName);
+        System.out.println("core.engine.Game saved for player " + player.playerName);
     } else {
         System.out.println("Could not save for " + player.playerName);
     }
@@ -135,7 +135,7 @@ public void removePlayer(Player player) {
 }
 ```
 
-### Player Information Management
+### game.entities.Player Information Management
 
 #### `updatePlayerNames()`
 Updates the global player name list and counts:
@@ -161,7 +161,7 @@ public void updatePlayerNames() {
 }
 ```
 
-#### Player Lookup Methods
+#### game.entities.Player Lookup Methods
 
 ```java
 public static int getPlayerID(String playerName) {
@@ -305,9 +305,9 @@ public void process() {
 
 ### Update System Management
 
-#### Player Update Processing
+#### game.entities.Player Update Processing
 ```java
-public void updatePlayer(Player player, Stream stream) {
+public void updatePlayer(game.entities.Player player, core.network.Stream stream) {
     // Handle player movement and appearance updates
     // Synchronize player positions with other players
     // Send appearance changes to nearby players
@@ -315,13 +315,13 @@ public void updatePlayer(Player player, Stream stream) {
 }
 ```
 
-#### NPC Update Processing
+#### game.entities.NPC Update Processing
 ```java
-public void updateNPC(Player player, Stream stream) {
-    // Update NPC list for the player
-    // Handle NPC movement and animations
+public void updateNPC(game.entities.Player player, core.network.Stream stream) {
+    // Update game.entities.NPC list for the player
+    // Handle game.entities.NPC movement and animations
     // Add/remove NPCs from player's view
-    // Send NPC update packets to client
+    // Send game.entities.NPC update packets to client
     
     updateBlock.currentOffset = 0;
     if (stream != null) {
@@ -336,12 +336,12 @@ public void updateNPC(Player player, Stream stream) {
     // Process existing NPCs in player's list
     for (int i = 0; i < size; i++) {
         if (!player.rebuildNPCList && player.withinDistance(player.npcList[i])) {
-            // Update NPC movement and add to update block
+            // Update game.entities.NPC movement and add to update block
             player.npcList[i].updateNPCMovement(stream);
             player.npcList[i].appendNPCUpdateBlock(updateBlock);
             player.npcList[player.npcListSize++] = player.npcList[i];
         } else {
-            // Remove NPC from player's list
+            // Remove game.entities.NPC from player's list
             int npcId = player.npcList[i].npcId;
             stream.writeBits(1, 1);
             stream.writeBits(2, 3);
@@ -411,7 +411,7 @@ public void kickAllPlayers() {
 // Check if a player is online
 if (PlayerHandler.isPlayerOn("PlayerName")) {
     int playerId = PlayerHandler.getPlayerID("PlayerName");
-    Player player = PlayerHandler.players[playerId];
+    game.entities.Player player = PlayerHandler.players[playerId];
     // Interact with player
 }
 
@@ -425,13 +425,13 @@ int totalPlayers = PlayerHandler.getPlayerCount() + PlayerHandler.getPlayerShopC
 // Process all online players
 for (int i = 0; i < PlayerHandler.players.length; i++) {
     if (PlayerHandler.players[i] != null && !PlayerHandler.players[i].disconnected) {
-        Player player = PlayerHandler.players[i];
+        game.entities.Player player = PlayerHandler.players[i];
         // Process player
     }
 }
 
 // Send message to all players
-for (Player player : PlayerHandler.players) {
+for (game.entities.Player player : PlayerHandler.players) {
     if (player != null && !player.disconnected) {
         player.getPacketSender().sendMessage("Server announcement!");
     }
@@ -459,9 +459,9 @@ int playerShops = PlayerHandler.getPlayerShopCount();
 - **Memory Management**: Properly clean up disconnected players
 
 ### Resource Management
-- **Player Limits**: Enforce maximum player counts
+- **game.entities.Player Limits**: Enforce maximum player counts
 - **Connection Tracking**: Monitor connection sources and limits
-- **Update Coordination**: Efficiently manage player and NPC updates
+- **Update Coordination**: Efficiently manage player and game.entities.NPC updates
 
 ## Best Practices
 
@@ -481,12 +481,12 @@ int playerShops = PlayerHandler.getPlayerShopCount();
 GameEngine.playerHandler.process();
 ```
 
-### Player Lifecycle
+### game.entities.Player Lifecycle
 ```java
 // New connection
 playerHandler.newPlayerClient(client);
 
-// Player processing
+// game.entities.Player processing
 player.process();
 player.update();
 
@@ -496,18 +496,18 @@ playerHandler.removePlayer(player);
 
 ### Update System
 ```java
-// Player updates
+// game.entities.Player updates
 playerHandler.updatePlayer(player, stream);
 
-// NPC updates
+// game.entities.NPC updates
 playerHandler.updateNPC(player, stream);
 ```
 
 ## Related Classes
 
-- [`Player`](Player.md) - Individual player instance
+- [`game.entities.Player`](game.entities.Player.md) - Individual player instance
 - [`Client`](Client.md) - Concrete player with network session
 - [`GameEngine`](GameEngine.md) - Calls PlayerHandler.process() every tick
 - [`PlayerSave`](PlayerSave.md) - Handles player data persistence
-- [`Stream`](Stream.md) - Network packet handling
-- [`NpcHandler`](NpcHandler.md) - NPC management counterpart
+- [`core.network.Stream`](core.network.Stream.md) - Network packet handling
+- [`NpcHandler`](NpcHandler.md) - game.entities.NPC management counterpart

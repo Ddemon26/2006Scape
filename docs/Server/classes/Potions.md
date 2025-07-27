@@ -8,7 +8,7 @@ Potions helper class.
 
 ```java
 public class Potions {
-public Potions(Player player)
+public Potions(game.entities.Player player)
 public void handlePotion(int itemId, int slot)
 public void execute(CycleEventContainer container)
 public void stop()

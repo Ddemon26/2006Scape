@@ -8,7 +8,7 @@ Farming Task helper class.
 
 ```java
 public class FarmingTask extends CycleEventContainer {
-public FarmingTask(Player player)
+public FarmingTask(game.entities.Player player)
 public void execute(CycleEventContainer container)
 public void stop()
 ```

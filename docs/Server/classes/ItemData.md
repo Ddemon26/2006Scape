@@ -4,7 +4,7 @@ Package `com.rs2.game.items`.
 
 Defined in [`2006Scape Server/src/main/java/com/rs2/game/items/ItemData.java`](2006Scape Server/src/main/java/com/rs2/game/items/ItemData.java).
 
-Item Data helper class.
+game.items.Item Data helper class.
 
 ```java
 public class ItemData {

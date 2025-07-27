@@ -1,9 +1,9 @@
-# ItemPile
+# game.items.ItemPile
 
-Defined in [`2006Scape Client/src/main/java/ItemPile.java`](2006Scape Client/src/main/java/ItemPile.java).
+Defined in [`2006Scape Client/src/main/java/game.items.ItemPile.java`](2006Scape Client/src/main/java/game.items.ItemPile.java).
 
-Item Pile helper class.
+game.items.Item Pile helper class.
 
 ```java
-final class ItemPile {
+final class game.items.ItemPile {
 ```

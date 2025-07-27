@@ -1,11 +1,11 @@
-# RSApplet
+# core.engine.RSApplet
 
-Defined in [`2006Scape Client/src/main/java/RSApplet.java`](2006Scape Client/src/main/java/RSApplet.java).
+Defined in [`2006Scape Client/src/main/java/core.engine.RSApplet.java`](2006Scape Client/src/main/java/core.engine.RSApplet.java).
 
-RSApplet helper class.
+core.engine.RSApplet helper class.
 
 ```java
-public class RSApplet extends Applet implements Runnable, MouseListener, MouseWheelListener, MouseMotionListener, KeyListener, FocusListener, WindowListener {
+public class core.engine.RSApplet extends Applet implements Runnable, MouseListener, MouseWheelListener, MouseMotionListener, KeyListener, FocusListener, WindowListener {
 public void mouseClicked(MouseEvent e)
 public void mouseEntered(MouseEvent e)
 public void mouseExited(MouseEvent e)

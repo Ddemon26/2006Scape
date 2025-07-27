@@ -8,5 +8,5 @@ Click Tab helper class.
 
 ```java
 public class ClickTab implements PacketType {
-public void processPacket(final Player player, Packet packet)
+public void processPacket(final game.entities.Player player, Packet packet)
 ```

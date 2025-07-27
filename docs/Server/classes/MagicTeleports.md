@@ -8,6 +8,6 @@ Magic Teleports helper class.
 
 ```java
 public class MagicTeleports {
-public static void handleLoginText(Player player)
-public static void handleSpellTeleport(Player player, SpellTeleport teleport)
+public static void handleLoginText(game.entities.Player player)
+public static void handleSpellTeleport(game.entities.Player player, SpellTeleport teleport)
 ```

@@ -4,7 +4,7 @@ Package `org.apollo.cache.def`.
 
 Defined in [`2006Scape Server/src/main/java/org/apollo/cache/def/EquipmentDefinition.java`](2006Scape Server/src/main/java/org/apollo/cache/def/EquipmentDefinition.java).
 
-Represents a type of Item that may be equipped.  @author Graham
+Represents a type of game.items.Item that may be equipped.  @author Graham
 
 ```java
 public final class EquipmentDefinition {

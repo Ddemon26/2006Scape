@@ -8,7 +8,7 @@ Gameplay logic related to the Agility skill.
 
 ```java
 public class PyramidAgility {
-public PyramidAgility(Player player)
+public PyramidAgility(game.entities.Player player)
 public boolean pyramidCourse(int objectId)
 public void execute(CycleEventContainer container)
 public void stop()

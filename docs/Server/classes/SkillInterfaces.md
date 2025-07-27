@@ -8,7 +8,7 @@ Skill Interfaces helper class.
 
 ```java
 public class SkillInterfaces {
-public SkillInterfaces(Player player)
+public SkillInterfaces(game.entities.Player player)
 public void menuCompilation(int screen)
 public void attackComplex(int screen)
 public void strengthComplex(int screen)

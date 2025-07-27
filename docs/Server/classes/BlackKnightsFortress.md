@@ -8,5 +8,5 @@ Black Knights Fortress helper class.
 
 ```java
 public class BlackKnightsFortress {
-public static void showInformation(Player client)
+public static void showInformation(game.entities.Player client)
 ```

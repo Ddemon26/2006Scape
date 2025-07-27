@@ -8,5 +8,5 @@ Searching helper class.
 
 ```java
 public class Searching {
-public static void searchObject(final Player player, int objectType)
+public static void searchObject(final game.entities.Player player, int objectType)
 ```

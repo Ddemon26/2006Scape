@@ -9,17 +9,17 @@ The `ItemHandler` class manages all ground items in the 2006Scape server world. 
 
 ## Key Responsibilities
 
-- **Ground Item Management**: Creating, tracking, and removing items on the ground
+- **render.objects.Ground game.items.Item Management**: Creating, tracking, and removing items on the ground
 - **Visibility Control**: Managing item visibility between private and public states
-- **Item Lifecycle**: Handling item aging, expiration, and cleanup
-- **Player Interaction**: Processing item pickup and drop requests
+- **game.items.Item Lifecycle**: Handling item aging, expiration, and cleanup
+- **game.entities.Player Interaction**: Processing item pickup and drop requests
 - **World Synchronization**: Updating item visibility for all nearby players
-- **Special Item Handling**: Managing unique behaviors for specific items
+- **Special game.items.Item Handling**: Managing unique behaviors for specific items
 - **Performance Optimization**: Efficient processing of large numbers of ground items
 
 ## Core Architecture
 
-### Item Storage
+### game.items.Item Storage
 ```java
 public List<GroundItem> items = new ArrayList<GroundItem>();
 public static final int HIDE_TICKS = 100;
@@ -27,20 +27,20 @@ public static final int HIDE_TICKS = 100;
 
 The ItemHandler maintains a list of all ground items and uses a tick-based system for managing item visibility and expiration.
 
-### Item Lifecycle States
-1. **Private Phase**: Item visible only to owner (HIDE_TICKS duration)
-2. **Public Phase**: Item visible to all players (HIDE_TICKS duration)
-3. **Removal**: Item deleted from world
+### game.items.Item Lifecycle States
+1. **Private Phase**: game.items.Item visible only to owner (HIDE_TICKS duration)
+2. **Public Phase**: game.items.Item visible to all players (HIDE_TICKS duration)
+3. **Removal**: game.items.Item deleted from world
 
 ## Core Methods
 
-### Item Creation
+### game.items.Item Creation
 
-#### `createGroundItem(Player c, int itemId, int itemX, int itemY, int itemAmount, int playerId)`
+#### `createGroundItem(game.entities.Player c, int itemId, int itemX, int itemY, int itemAmount, int playerId)`
 Creates a new ground item at the specified location:
 
 ```java
-public void createGroundItem(Player c, int itemId, int itemX, int itemY, int itemAmount, int playerId) {
+public void createGroundItem(game.entities.Player c, int itemId, int itemX, int itemY, int itemAmount, int playerId) {
     if (itemId <= 0) return;
     
     // Handle special item cases
@@ -101,13 +101,13 @@ public void createGroundItem(Player c, int itemId, int itemX, int itemY, int ite
 ```
 
 **Parameters:**
-- `c`: Player creating the item
+- `c`: game.entities.Player creating the item
 - `itemId`: ID of the item to create
 - `itemX, itemY`: World coordinates
 - `itemAmount`: Quantity of items
 - `playerId`: ID of the player who owns the item
 
-### Item Visibility Management
+### game.items.Item Visibility Management
 
 #### `createGlobalItem(GroundItem item)`
 Makes an item visible to all players:
@@ -119,7 +119,7 @@ public void createGlobalItem(GroundItem item) {
     }
     
     // Show item to all nearby players
-    for (Player p : PlayerHandler.players) {
+    for (game.entities.Player p : PlayerHandler.players) {
         if (p != null) {
             Client person = (Client) p;
             if (person != null) {
@@ -145,11 +145,11 @@ public void createGlobalItem(GroundItem item) {
 }
 ```
 
-#### `reloadItems(Player c)`
+#### `reloadItems(game.entities.Player c)`
 Updates item visibility for a specific player:
 
 ```java
-public void reloadItems(Player c) {
+public void reloadItems(game.entities.Player c) {
     // First pass: Remove all items from client view
     for (GroundItem i : items) {
         if (c != null && i != null) {
@@ -190,13 +190,13 @@ public void reloadItems(Player c) {
 }
 ```
 
-### Item Removal
+### game.items.Item Removal
 
-#### `removeGroundItem(Player c, int itemId, int itemX, int itemY, boolean add)`
+#### `removeGroundItem(game.entities.Player c, int itemId, int itemX, int itemY, boolean add)`
 Handles item pickup by players:
 
 ```java
-public void removeGroundItem(Player c, int itemId, int itemX, int itemY, boolean add) {
+public void removeGroundItem(game.entities.Player c, int itemId, int itemX, int itemY, boolean add) {
     for (GroundItem i : items) {
         if (i.getItemId() == itemId && i.getItemX() == itemX && i.getItemY() == itemY) {
             
@@ -245,7 +245,7 @@ Removes an item from all players' views:
 
 ```java
 public void removeGlobalItem(GroundItem i, int itemId, int itemX, int itemY, int itemAmount) {
-    for (Player p : PlayerHandler.players) {
+    for (game.entities.Player p : PlayerHandler.players) {
         if (p != null) {
             Client person = (Client) p;
             if (person != null) {
@@ -259,7 +259,7 @@ public void removeGlobalItem(GroundItem i, int itemId, int itemX, int itemY, int
 }
 ```
 
-### Item Processing
+### game.items.Item Processing
 
 #### `process()`
 Main processing method called every game tick:
@@ -356,7 +356,7 @@ public void moveItem(GroundItem item, int itemX, int itemY) {
         items.add(item);
         
         // Update all players
-        for (Player p : PlayerHandler.players) {
+        for (game.entities.Player p : PlayerHandler.players) {
             if (p == null) continue;
             p.getPacketSender().removeGroundItem(item.itemId, oldX, oldY, item.itemAmount);
             reloadItems(p);
@@ -365,7 +365,7 @@ public void moveItem(GroundItem item, int itemX, int itemY) {
 }
 ```
 
-## Special Item Handling
+## Special game.items.Item Handling
 
 ### Broken Barrows Items
 ```java
@@ -387,13 +387,13 @@ Certain items like capes (IDs 2412-2414) vanish when dropped instead of appearin
 
 ## Usage Examples
 
-### Creating Ground Items
+### Creating render.objects.Ground Items
 ```java
-// Player drops an item
+// game.entities.Player drops an item
 ItemHandler itemHandler = GameEngine.itemHandler;
 itemHandler.createGroundItem(player, 995, player.absX, player.absY, 1000, player.playerId);
 
-// NPC drops loot
+// game.entities.NPC drops loot
 itemHandler.createGroundItem(killer, 4151, npc.absX, npc.absY, 1, killer.playerId);
 
 // Spawn a global item
@@ -403,7 +403,7 @@ itemHandler.createGlobalItem(item);
 
 ### Picking Up Items
 ```java
-// Player attempts to pick up item
+// game.entities.Player attempts to pick up item
 itemHandler.removeGroundItem(player, itemId, x, y, true);
 
 // Check if item exists before pickup
@@ -413,7 +413,7 @@ if (itemHandler.itemExists(itemId, x, y)) {
 }
 ```
 
-### Managing Item Visibility
+### Managing game.items.Item Visibility
 ```java
 // Reload items for player entering new area
 itemHandler.reloadItems(player);
@@ -434,7 +434,7 @@ if (item != null) {
 - **Memory Management**: Clean up expired items promptly
 
 ### Resource Management
-- **Item Limits**: Monitor total number of ground items
+- **game.items.Item Limits**: Monitor total number of ground items
 - **Update Frequency**: Balance between responsiveness and performance
 - **Network Optimization**: Minimize unnecessary packet sends
 
@@ -456,25 +456,25 @@ if (item != null) {
 GameEngine.itemHandler.process();
 ```
 
-### Player Integration
+### game.entities.Player Integration
 ```java
-// Player drops item
+// game.entities.Player drops item
 player.getItemAssistant().dropItem(itemId);
 
-// Player picks up item
+// game.entities.Player picks up item
 player.getItemAssistant().pickupItem(itemId, x, y);
 ```
 
 ### Combat Integration
 ```java
-// NPC death drops
+// game.entities.NPC death drops
 itemHandler.createGroundItem(killer, dropId, npc.absX, npc.absY, amount, killer.playerId);
 ```
 
 ## Related Classes
 
 - [`GroundItem`](GroundItem.md) - Individual ground item data structure
-- [`Player`](Player.md) - Players who interact with ground items
+- [`game.entities.Player`](game.entities.Player.md) - Players who interact with ground items
 - [`ItemAssistant`](ItemAssistant.md) - Handles player item operations
 - [`PacketSender`](PacketSender.md) - Sends ground item packets to client
 - [`GlobalDropsHandler`](GlobalDropsHandler.md) - Manages global item spawns

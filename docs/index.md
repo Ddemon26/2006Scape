@@ -20,10 +20,10 @@ The game server handles all game logic, player interactions, and world simulatio
 - **[Server Architecture](Server/Server-intro.md)** - Core concepts and design
 - **[Server Classes](Server/classes/index.md)** - Complete API reference
 - **Key Components:**
-  - Game Engine - Core server loop and event handling
-  - Player Management - Authentication, sessions, and data persistence  
+  - core.engine.Game Engine - Core server loop and event handling
+  - game.entities.Player Management - Authentication, sessions, and data persistence  
   - Combat System - Melee, ranged, and magic combat mechanics
-  - Skills System - All 23 skills with authentic mechanics
+  - game.mechanics.Skills System - All 23 skills with authentic mechanics
   - Quest System - Story-driven content and progression
 
 ### 🎮 [Client](Client/client-intro.md)
@@ -47,7 +47,7 @@ Scripting client for automation and testing. Allows developers to create bots fo
 
 ### For Players
 - **[Download & Play](https://2006scape.org)** - Official client download
-- **[Community Wiki](https://wiki.2006scape.org)** - Game guides and information
+- **[Community Wiki](https://wiki.2006scape.org)** - core.engine.Game guides and information
 
 ### For Developers
 - **[Development Setup](usage.md)** - Build from source

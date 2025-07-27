@@ -8,5 +8,5 @@ Handles runecrafting actions @author Andrew (Mr Extremez)
 
 ```java
 public class RuneCraftingActions {
-public static void handleRuneCrafting(Player player, int objectId)
+public static void handleRuneCrafting(game.entities.Player player, int objectId)
 ```

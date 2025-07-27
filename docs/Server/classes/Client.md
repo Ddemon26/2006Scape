@@ -5,20 +5,20 @@
 
 ## Overview
 
-The `Client` class is the concrete implementation of the abstract [`Player`](Player.md) class. It represents an actual connected player in the 2006Scape server, handling the network session and providing the bridge between the game logic and the client connection. Every logged-in player is represented by a Client instance.
+The `Client` class is the concrete implementation of the abstract [`game.entities.Player`](game.entities.Player.md) class. It represents an actual connected player in the 2006Scape server, handling the network session and providing the bridge between the game logic and the client connection. Every logged-in player is represented by a Client instance.
 
 ## Key Responsibilities
 
 - **Network Session Management**: Maintains the connection to the game client
-- **Player Instantiation**: Creates concrete player instances with proper initialization
+- **game.entities.Player Instantiation**: Creates concrete player instances with proper initialization
 - **Bot Support**: Handles both real players and bot accounts
-- **Stream Management**: Manages input/output streams for packet communication
+- **core.network.Stream Management**: Manages input/output streams for packet communication
 
 ## Class Structure
 
 ```java
-public class Client extends Player {
-    // Inherits all Player functionality
+public class Client extends game.entities.Player {
+    // Inherits all game.entities.Player functionality
     // Adds network session management
     // Provides concrete implementation
 }
@@ -33,7 +33,7 @@ Creates a new Client instance for a real player connection:
 public Client(GameSession s, int _playerId) {
     super(_playerId);
     session = s;
-    outStream = new Stream(new byte[Constants.BUFFER_SIZE]);
+    outStream = new core.network.Stream(new byte[Constants.BUFFER_SIZE]);
     outStream.currentOffset = 0;
     buffer = new byte[Constants.BUFFER_SIZE];
 }
@@ -95,7 +95,7 @@ The Client class works closely with the Apollo network framework:
 // - Bandwidth management
 ```
 
-### Stream Management
+### core.network.Stream Management
 Each Client maintains its own output stream:
 
 ```java
@@ -108,7 +108,7 @@ Each Client maintains its own output stream:
 
 ## Usage Examples
 
-### Creating a New Player Connection
+### Creating a New game.entities.Player Connection
 ```java
 // When a player connects
 GameSession session = // ... obtained from network layer
@@ -140,19 +140,19 @@ if (client.getSession() == null || !client.getSession().isActive()) {
 }
 ```
 
-## Relationship with Player Class
+## Relationship with game.entities.Player Class
 
-The Client class inherits all functionality from Player:
+The Client class inherits all functionality from game.entities.Player:
 
 ```java
-// All Player methods are available:
+// All game.entities.Player methods are available:
 client.getItemAssistant().addItem(995, 1000); // Add coins
 client.getPlayerAssistant().movePlayer(3200, 3200, 0); // Teleport
-client.getCombatAssistant().attackNpc(npcId); // Attack NPC
+client.getCombatAssistant().attackNpc(npcId); // Attack game.entities.NPC
 client.getPacketSender().sendMessage("Hello!"); // Send message
 ```
 
-## Bot vs Real Player Differences
+## Bot vs Real game.entities.Player Differences
 
 ### Real Players
 - Have active GameSession
@@ -195,7 +195,7 @@ Each Client allocates its own buffers:
 
 ### Resource Cleanup
 ```java
-// Cleanup happens in Player.destruct():
+// Cleanup happens in game.entities.Player.destruct():
 // - Closes network session
 // - Clears buffers
 // - Removes from player list
@@ -240,8 +240,8 @@ session.onDisconnect(() -> client.logout(true));
 
 ## Related Classes
 
-- [`Player`](Player.md) - Abstract base class with all game functionality
+- [`game.entities.Player`](game.entities.Player.md) - Abstract base class with all game functionality
 - [`PlayerHandler`](PlayerHandler.md) - Manages all Client instances
 - [`GameSession`](GameSession.md) - Network session management
 - [`PacketSender`](PacketSender.md) - Handles outgoing packet communication
-- [`Stream`](Stream.md) - Packet data serialization
+- [`core.network.Stream`](core.network.Stream.md) - Packet data serialization

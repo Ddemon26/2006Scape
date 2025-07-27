@@ -9,21 +9,21 @@ The `PlayerAssistant` class is a comprehensive utility class that provides essen
 
 ## Key Responsibilities
 
-- **Movement and Teleportation**: Player positioning, pathfinding, and teleport mechanics
+- **Movement and Teleportation**: game.entities.Player positioning, pathfinding, and teleport mechanics
 - **Skill Management**: Experience calculation, level-ups, and skill-related utilities
 - **Interface Management**: Login screens, sidebars, and UI components
 - **Combat Utilities**: Path blocking, following, and combat-related calculations
-- **Game Mechanics**: Energy management, special item handling, and game state management
-- **Administrative Functions**: Player validation, debugging, and server utilities
+- **core.engine.Game Mechanics**: Energy management, special item handling, and game state management
+- **Administrative Functions**: game.entities.Player validation, debugging, and server utilities
 - **Visual Effects**: Animations, graphics, and camera controls
 
 ## Core Architecture
 
-### Player Association
+### game.entities.Player Association
 ```java
-private Player player;
+private game.entities.Player player;
 
-public PlayerAssistant(Player player) {
+public PlayerAssistant(game.entities.Player player) {
     this.player = player;
 }
 ```
@@ -290,7 +290,7 @@ Handles player following mechanics:
 public void followPlayer() {
     if (player.followPlayerId <= 0) return;
     
-    Player target = PlayerHandler.players[player.followPlayerId];
+    game.entities.Player target = PlayerHandler.players[player.followPlayerId];
     if (target == null || target.disconnected) {
         resetFollow();
         return;
@@ -549,7 +549,7 @@ if (player.getPlayerAssistant().isPlayer()) {
 
 ## Related Classes
 
-- [`Player`](Player.md) - Contains PlayerAssistant instance
+- [`game.entities.Player`](game.entities.Player.md) - Contains PlayerAssistant instance
 - [`Client`](Client.md) - Concrete player implementation
 - [`PacketSender`](PacketSender.md) - Interface updates and communication
 - [`CycleEventHandler`](CycleEventHandler.md) - Scheduled events and delays

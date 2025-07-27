@@ -8,7 +8,7 @@ Created by IntelliJ IDEA. User: vayken Date: 24/02/12 Time: 20:34 To change this
 
 ```java
 public class Herbs {
-public Herbs(Player player)
+public Herbs(game.entities.Player player)
 public static HerbData forId(int seedId)
 public int getSeedId()
 public int getHarvestId()

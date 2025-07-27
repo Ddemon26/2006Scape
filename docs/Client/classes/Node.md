@@ -1,11 +1,11 @@
-# Node
+# util.collections.Node
 
-Defined in [`2006Scape Client/src/main/java/Node.java`](2006Scape Client/src/main/java/Node.java).
+Defined in [`2006Scape Client/src/main/java/util.collections.Node.java`](2006Scape Client/src/main/java/util.collections.Node.java).
 
-Node helper class.
+util.collections.Node helper class.
 
 ```java
-public class Node {
+public class util.collections.Node {
 public final void unlink()
-public Node()
+public util.collections.Node()
 ```

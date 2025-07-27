@@ -1,12 +1,12 @@
-# NodeHashTable
+# util.collections.NodeHashTable
 
-Defined in [`2006Scape Client/src/main/java/NodeHashTable.java`](2006Scape Client/src/main/java/NodeHashTable.java).
+Defined in [`2006Scape Client/src/main/java/util.collections.NodeHashTable.java`](2006Scape Client/src/main/java/util.collections.NodeHashTable.java).
 
-Node Hash Table helper class.
+util.collections.Node Hash Table helper class.
 
 ```java
-final class NodeHashTable {
-public NodeHashTable()
-public Node findNodeById(long id)
-public void insertNode(Node node, long id)
+final class util.collections.NodeHashTable {
+public util.collections.NodeHashTable()
+public util.collections.Node findNodeById(long id)
+public void insertNode(util.collections.Node node, long id)
 ```

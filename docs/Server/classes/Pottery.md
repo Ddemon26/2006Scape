@@ -8,8 +8,8 @@ Defined in [`2006Scape Server/src/main/java/com/rs2/game/content/skills/crafting
 
 ```java
 public class Pottery {
-public static void showUnfire(Player c)
-public static void showFire(Player c)
+public static void showUnfire(game.entities.Player c)
+public static void showFire(game.entities.Player c)
 public void execute(CycleEventContainer container)
 public void stop()
 public void execute(CycleEventContainer container)

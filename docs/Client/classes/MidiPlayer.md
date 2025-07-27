@@ -1,10 +1,10 @@
-# MidiPlayer
+# audio.MidiPlayer
 
-Defined in [`2006Scape Client/src/main/java/MidiPlayer.java`](2006Scape Client/src/main/java/MidiPlayer.java).
+Defined in [`2006Scape Client/src/main/java/audio.MidiPlayer.java`](2006Scape Client/src/main/java/audio.MidiPlayer.java).
 
-Midi Player helper class.
+audio.Midi game.entities.Player helper class.
 
 ```java
-abstract class MidiPlayer {
-public MidiPlayer()
+abstract class audio.MidiPlayer {
+public audio.MidiPlayer()
 ```

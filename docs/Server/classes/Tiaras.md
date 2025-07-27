@@ -8,6 +8,6 @@ Tiaras helper class.
 
 ```java
 public class Tiaras {
-public static boolean bindTiara(Player player, int itemId, int objectId)
-public static void handleTiara(Player player, int id)
+public static boolean bindTiara(game.entities.Player player, int itemId, int objectId)
+public static void handleTiara(game.entities.Player player, int id)
 ```

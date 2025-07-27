@@ -8,8 +8,8 @@ Defined in [`2006Scape Server/src/main/java/com/rs2/game/content/skills/runecraf
 
 ```java
 public class Runecrafting {
-public Runecrafting(Player player)
-public static void locate(Player c, int xPos, int yPos)
+public Runecrafting(game.entities.Player player)
+public static void locate(game.entities.Player c, int xPos, int yPos)
 public void enterAltar(int objId, int itemUse)
 public Altar_Data forObj(int obj)
 public Altars forAltar(int id)

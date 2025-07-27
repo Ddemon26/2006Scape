@@ -8,5 +8,5 @@ Melee Max Hit helper class.
 
 ```java
 public class MeleeMaxHit {
-public static int calculateMeleeMaxHit(Player c)
+public static int calculateMeleeMaxHit(game.entities.Player c)
 ```

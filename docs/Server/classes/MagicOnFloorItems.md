@@ -8,7 +8,7 @@ Magic on floor items
 
 ```java
 public class MagicOnFloorItems implements PacketType {
-public void processPacket(final Player player, Packet packet)
+public void processPacket(final game.entities.Player player, Packet packet)
 public void execute(CycleEventContainer container)
 public void stop()
 ```

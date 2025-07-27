@@ -114,7 +114,7 @@ If **any** item fails, the agent **MUST** emit a \[BOT‑QUESTION] with details 
 Every commit **MUST** be a single‑line summary ≤ 72 chars starting with \[BOT]:
 
 ```
-[BOT] chore(format): apply spotless to Player and Npc packages
+[BOT] chore(format): apply spotless to game.entities.Player and Npc packages
 ```
 
 If more detail is needed, use the PR body – not extra commit lines.

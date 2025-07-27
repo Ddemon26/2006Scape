@@ -15,7 +15,7 @@ public int getProduct()
 public int getQuantity()
 public int getLevel()
 public double getXp()
-public static boolean makeTips(final Player player, int itemUsed, int usedWith)
+public static boolean makeTips(final game.entities.Player player, int itemUsed, int usedWith)
 public void execute(CycleEventContainer container)
 public void stop()
 ```

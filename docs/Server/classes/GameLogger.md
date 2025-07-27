@@ -4,7 +4,7 @@ Package `com.rs2.util`.
 
 Defined in [`2006Scape Server/src/main/java/com/rs2/util/GameLogger.java`](2006Scape Server/src/main/java/com/rs2/util/GameLogger.java).
 
-Game Logger helper class.
+core.engine.Game Logger helper class.
 
 ```java
 public class GameLogger {

@@ -9,7 +9,7 @@ Handles report related functionality.
 ```java
 public class ReportHandler {
 public static void addText(String name, byte[] data, int dataLength)
-public static void handleReport(Player c, Packet packet) throws Exception
+public static void handleReport(game.entities.Player c, Packet packet) throws Exception
 public static void writeReport(String data, String text, String file)
 public static boolean hasSpoke(String s)
 public static String getMonth(String s)

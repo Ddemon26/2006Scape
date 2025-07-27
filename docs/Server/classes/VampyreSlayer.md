@@ -8,5 +8,5 @@ Vampyre Slayer @author Andrew (Mr Extremez)
 
 ```java
 public class VampyreSlayer {
-public static void showInformation(Player client)
+public static void showInformation(game.entities.Player client)
 ```

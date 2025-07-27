@@ -8,5 +8,5 @@ Tree Spirit helper class.
 
 ```java
 public class TreeSpirit {
-public static void spawnTreeSpirit(Player p)
+public static void spawnTreeSpirit(game.entities.Player p)
 ```

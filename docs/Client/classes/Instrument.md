@@ -1,13 +1,13 @@
-# Instrument
+# audio.Instrument
 
-Defined in [`2006Scape Client/src/main/java/Instrument.java`](2006Scape Client/src/main/java/Instrument.java).
+Defined in [`2006Scape Client/src/main/java/audio.Instrument.java`](2006Scape Client/src/main/java/audio.Instrument.java).
 
-Instrument helper class.
+audio.Instrument helper class.
 
 ```java
-final class Instrument {
+final class audio.Instrument {
 public static void initializeTables()
 public int[] synthesize(int length, int rate)
-public void decode(Stream stream)
-public Instrument()
+public void decode(core.network.Stream stream)
+public audio.Instrument()
 ```

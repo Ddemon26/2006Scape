@@ -4,7 +4,7 @@ Package `org.apollo.cache.def`.
 
 Defined in [`2006Scape Server/src/main/java/org/apollo/cache/def/ItemDefinition.java`](2006Scape Server/src/main/java/org/apollo/cache/def/ItemDefinition.java).
 
-Represents a type of Item.  @author Graham
+Represents a type of game.items.Item.  @author Graham
 
 ```java
 public final class ItemDefinition {

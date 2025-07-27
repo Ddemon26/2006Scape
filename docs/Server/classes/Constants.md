@@ -5,15 +5,15 @@
 
 ## Overview
 
-The `Constants` class serves as the central configuration hub for the 2006Scape server, containing all essential server settings, game constants, and configuration values. This class defines everything from server identity and network settings to game mechanics, skill IDs, and NPC classifications. Many of these values can be modified at runtime using the ConfigLoader system, making it easy to customize server behavior without code changes.
+The `Constants` class serves as the central configuration hub for the 2006Scape server, containing all essential server settings, game constants, and configuration values. This class defines everything from server identity and network settings to game mechanics, skill IDs, and game.entities.NPC classifications. Many of these values can be modified at runtime using the ConfigLoader system, making it easy to customize server behavior without code changes.
 
 ## Key Responsibilities
 
 - **Server Configuration**: Core server settings like name, world ID, and network ports
-- **Game Mechanics**: XP rates, respawn locations, and gameplay toggles
+- **core.engine.Game Mechanics**: XP rates, respawn locations, and gameplay toggles
 - **Network Settings**: Connection limits, timeouts, and security parameters
 - **Skill System**: Skill IDs and related constants
-- **NPC Classification**: Boss and slayer monster categorization
+- **game.entities.NPC Classification**: Boss and slayer monster categorization
 - **Security**: RSA encryption keys and authentication settings
 - **Performance**: Buffer sizes, cycle timing, and optimization parameters
 
@@ -49,7 +49,7 @@ public static boolean TUTORIAL_ISLAND = false;      // Tutorial Island enabled
 public static boolean WEBSITE_INTEGRATION = false;  // Website features
 ```
 
-### Game Mechanics and Gameplay
+### core.engine.Game Mechanics and Gameplay
 
 #### Experience and Progression
 ```java
@@ -58,7 +58,7 @@ public static boolean VARIABLE_XP_RATE = false;        // Allow player choice
 public static int[] VARIABLE_XP_RATES = {1, 2, 5, 10}; // Available XP rates
 ```
 
-#### Player Management
+#### game.entities.Player Management
 ```java
 public static int SAVE_TIMER = 120;           // Auto-save interval (seconds)
 public static int RESPAWN_X = 3222;           // Death respawn X coordinate
@@ -87,20 +87,20 @@ public static boolean ADMIN_CAN_SELL_ITEMS = false; // Allow admin shop sales
 
 #### System Performance
 ```java
-public static final int CYCLE_TIME = 600;           // Game tick interval (ms)
+public static final int CYCLE_TIME = 600;           // core.engine.Game tick interval (ms)
 public static final int BUFFER_SIZE = 10000;        // Network buffer size
 public static int CYCLE_LOGGING_TICK = 10;          // Logging frequency
 public static boolean CYCLE_LOGGING = true;         // Enable cycle logging
 ```
 
-#### Game Limits
+#### core.engine.Game Limits
 ```java
 public static final int ITEM_LIMIT = 17000;         // Maximum item ID
 public static final int MAXITEM_AMOUNT = Integer.MAX_VALUE; // Max item stack
 public static final int NO_TELEPORT_WILD_LEVEL = 20; // Teleport restriction level
 ```
 
-#### NPC Behavior
+#### game.entities.NPC Behavior
 ```java
 public static final int NPC_RANDOM_WALK_DISTANCE = 5;  // Random walk radius
 public static final int NPC_FOLLOW_DISTANCE = 10;      // Follow distance
@@ -159,7 +159,7 @@ These constants are used throughout the server to reference specific skills in a
 ```java
 public static int[] SIDEBARS = { 
     2423,  // Attack tab
-    3917,  // Skills tab
+    3917,  // game.mechanics.Skills tab
     638,   // Quest tab
     3213,  // Inventory tab
     1644,  // Equipment tab
@@ -175,7 +175,7 @@ public static int[] SIDEBARS = {
 };
 ```
 
-## NPC Classification Systems
+## game.entities.NPC Classification Systems
 
 ### Boss NPCs
 ```java
@@ -227,7 +227,7 @@ public static final String[] UNDEAD = {
 };
 ```
 
-## Special Item Arrays
+## Special game.items.Item Arrays
 
 ### Fun Weapons (Dueling)
 ```java
@@ -268,21 +268,21 @@ int defenceXP = player.playerXP[Constants.DEFENCE];
 player.getPlayerAssistant().refreshSkill(Constants.HITPOINTS);
 ```
 
-### NPC Classification Checks
+### game.entities.NPC Classification Checks
 ```java
-// Check if NPC is a boss
+// Check if game.entities.NPC is a boss
 if (Constants.BOSS_NPC_IDS.contains(npcType)) {
     // Handle boss mechanics
     player.bossKillCount++;
 }
 
-// Check if NPC is a slayer monster
+// Check if game.entities.NPC is a slayer monster
 if (Constants.SLAYER_NPC_IDS.contains(npcType)) {
     // Award slayer experience
     player.getPlayerAssistant().addSkillXP(damage * 4, Constants.SLAYER);
 }
 
-// Check if NPC is undead
+// Check if game.entities.NPC is undead
 boolean isUndead = false;
 String npcName = NpcHandler.getNpcListName(npcType).toLowerCase();
 for (String undeadName : Constants.UNDEAD) {
@@ -390,14 +390,14 @@ engine.setMaxPlayers(Constants.MAX_PLAYERS);
 engine.setCycleTime(Constants.CYCLE_TIME);
 ```
 
-### Game Systems
+### core.engine.Game Systems
 ```java
-// Skills system uses skill constants
+// game.mechanics.Skills system uses skill constants
 for (int skill = 0; skill <= Constants.RUNECRAFTING; skill++) {
     player.getPlayerAssistant().refreshSkill(skill);
 }
 
-// Combat system uses NPC classifications
+// Combat system uses game.entities.NPC classifications
 if (Constants.BOSS_NPC_IDS.contains(npc.npcType)) {
     // Apply boss-specific mechanics
 }
@@ -407,6 +407,6 @@ if (Constants.BOSS_NPC_IDS.contains(npc.npcType)) {
 
 - [`ConfigLoader`](ConfigLoader.md) - Loads external configuration to override constants
 - [`GameEngine`](GameEngine.md) - Uses constants for server initialization
-- [`Player`](Player.md) - Uses skill constants and game settings
-- [`NpcHandler`](NpcHandler.md) - Uses NPC classification constants
+- [`game.entities.Player`](game.entities.Player.md) - Uses skill constants and game settings
+- [`NpcHandler`](NpcHandler.md) - Uses game.entities.NPC classification constants
 - All server classes - Reference constants for configuration values

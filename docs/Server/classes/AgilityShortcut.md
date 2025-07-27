@@ -8,5 +8,5 @@ Agility Shortcuts @author Andrew (Mr Extremez)
 
 ```java
 public class AgilityShortcut {
-public static void processAgilityShortcut(Player player)
+public static void processAgilityShortcut(game.entities.Player player)
 ```

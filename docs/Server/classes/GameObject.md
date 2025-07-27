@@ -4,7 +4,7 @@ Package `com.rs2.world`.
 
 Defined in [`2006Scape Server/src/main/java/com/rs2/world/GameObject.java`](2006Scape Server/src/main/java/com/rs2/world/GameObject.java).
 
-Game Object helper class.
+core.engine.Game Object helper class.
 
 ```java
 public final class GameObject {

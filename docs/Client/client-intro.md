@@ -8,7 +8,7 @@ The 2006Scape client provides the complete user interface and 3D world rendering
 The [`Client`](classes/Client.md) class serves as the central hub, coordinating all client subsystems including rendering, networking, input handling, and game state management.
 
 **Key responsibilities:**
-- Game loop and frame rendering
+- core.engine.Game loop and frame rendering
 - Server communication
 - User input processing
 - Interface management
@@ -18,40 +18,40 @@ The [`Client`](classes/Client.md) class serves as the central hub, coordinating 
 
 #### 3D World Rendering
 The client features a complete 3D rendering system for the game world:
-- [`WorldController`](classes/WorldController.md) - Manages 3D world rendering and scene graph
-- [`Model`](classes/Model.md) - 3D model representation and rendering
-- [`Ground`](classes/Ground.md) - Terrain and floor rendering
-- [`ObjectManager`](classes/ObjectManager.md) - World object placement and rendering
+- [`core.world.WorldController`](classes/core.world.WorldController.md) - Manages 3D world rendering and scene graph
+- [`render.geometry.Model`](classes/render.geometry.Model.md) - 3D model representation and rendering
+- [`render.objects.Ground`](classes/render.objects.Ground.md) - Terrain and floor rendering
+- [`core.managers.ObjectManager`](classes/core.managers.ObjectManager.md) - World object placement and rendering
 
 #### Graphics and UI
-- [`DrawingArea`](classes/DrawingArea.md) - 2D graphics rendering utilities
-- [`RSImageProducer`](classes/RSImageProducer.md) - Image rendering and manipulation
-- [`Sprite`](classes/Sprite.md) - 2D sprite handling
-- [`TextDrawingArea`](classes/TextDrawingArea.md) - Text rendering system
+- [`render.core.DrawingArea`](classes/render.core.DrawingArea.md) - 2D graphics rendering utilities
+- [`core.renderers.RSImageProducer`](classes/core.renderers.RSImageProducer.md) - Image rendering and manipulation
+- [`render.core.Sprite`](classes/render.core.Sprite.md) - 2D sprite handling
+- [`core.renderers.TextDrawingArea`](classes/core.renderers.TextDrawingArea.md) - Text rendering system
 
-### Game Entities
+### core.engine.Game Entities
 
 #### Players and NPCs
-- [`Player`](classes/Player.md) - Represents other players in the game world
-- [`NPC`](classes/NPC.md) - Non-player character representation
-- [`Entity`](classes/Entity.md) - Base class for all game entities
+- [`game.entities.Player`](classes/game.entities.Player.md) - Represents other players in the game world
+- [`game.entities.NPC`](classes/game.entities.NPC.md) - Non-player character representation
+- [`game.entities.Entity`](classes/game.entities.Entity.md) - Base class for all game entities
 
 #### Items and Objects
-- [`Item`](classes/Item.md) - Individual item representation
-- [`ItemDef`](classes/ItemDef.md) - Item definitions and properties
-- [`ObjectDef`](classes/ObjectDef.md) - World object definitions
+- [`game.items.Item`](classes/game.items.Item.md) - Individual item representation
+- [`game.definitions.ItemDef`](classes/game.definitions.ItemDef.md) - game.items.Item definitions and properties
+- [`game.definitions.ObjectDef`](classes/game.definitions.ObjectDef.md) - World object definitions
 
 ### User Interface System
 
 #### Interface Management
-- [`RSInterface`](classes/RSInterface.md) - Game interface components and widgets
-- [`TextInput`](classes/TextInput.md) - Text input handling
-- [`MouseDetection`](classes/MouseDetection.md) - Mouse input processing
+- [`core.renderers.RSInterface`](classes/core.renderers.RSInterface.md) - core.engine.Game interface components and widgets
+- [`core.handlers.TextInput`](classes/core.handlers.TextInput.md) - Text input handling
+- [`core.handlers.MouseDetection`](classes/core.handlers.MouseDetection.md) - Mouse input processing
 
-#### Game Screens
+#### core.engine.Game Screens
 The client handles various game screens and interfaces:
 - Login screen
-- Game world view
+- core.engine.Game world view
 - Inventory management
 - Chat system
 - Settings panels
@@ -61,47 +61,47 @@ The client handles various game screens and interfaces:
 ### Server Communication
 The client communicates with the [game server](../Server/Server-intro.md) using a binary protocol:
 
-- [`RSSocket`](classes/RSSocket.md) - Low-level network socket handling
-- [`Stream`](classes/Stream.md) - Data serialization and packet handling
-- [`OnDemandFetcher`](classes/OnDemandFetcher.md) - Asset downloading from server
+- [`core.network.RSSocket`](classes/core.network.RSSocket.md) - Low-level network socket handling
+- [`core.network.Stream`](classes/core.network.Stream.md) - Data serialization and packet handling
+- [`core.managers.OnDemandFetcher`](classes/core.managers.OnDemandFetcher.md) - Asset downloading from server
 
 ### Protocol Integration
 - **Login Process**: Authenticates with server and receives initial game state
-- **Game Updates**: Receives world state changes and entity updates
+- **core.engine.Game Updates**: Receives world state changes and entity updates
 - **User Actions**: Sends player input and actions to server
 
 ## Audio System
 
 ### Music and Sound
 Complete audio system supporting MIDI music and sound effects:
-- [`MidiPlayer`](classes/MidiPlayer.md) - MIDI music playback
-- [`SoundPlayer`](classes/SoundPlayer.md) - Sound effect management
-- [`Sounds`](classes/Sounds.md) - Audio asset management
+- [`audio.MidiPlayer`](classes/audio.MidiPlayer.md) - MIDI music playback
+- [`audio.SoundPlayer`](classes/audio.SoundPlayer.md) - Sound effect management
+- [`audio.Sounds`](classes/audio.Sounds.md) - Audio asset management
 
 ### Audio Components
-- [`Instrument`](classes/Instrument.md) - MIDI instrument handling
-- [`SoundFilter`](classes/SoundFilter.md) - Audio processing and effects
+- [`audio.Instrument`](classes/audio.Instrument.md) - MIDI instrument handling
+- [`audio.SoundFilter`](classes/audio.SoundFilter.md) - Audio processing and effects
 
 ## Data Management
 
 ### Asset Loading
-- [`OnDemandData`](classes/OnDemandData.md) - Asset data management
-- [`StreamLoader`](classes/StreamLoader.md) - Resource loading utilities
-- [`MRUCache`](classes/MRUCache.md) - Most Recently Used cache for assets
+- [`core.managers.OnDemandData`](classes/core.managers.OnDemandData.md) - Asset data management
+- [`core.network.StreamLoader`](classes/core.network.StreamLoader.md) - Resource loading utilities
+- [`util.collections.MRUCache`](classes/util.collections.MRUCache.md) - Most Recently Used cache for assets
 
-### Game Data
-- [`ItemDef`](classes/ItemDef.md) - Item definitions and stats
-- [`ObjectDef`](classes/ObjectDef.md) - World object properties
-- [`EntityDef`](classes/EntityDef.md) - Entity definitions
+### core.engine.Game Data
+- [`game.definitions.ItemDef`](classes/game.definitions.ItemDef.md) - game.items.Item definitions and stats
+- [`game.definitions.ObjectDef`](classes/game.definitions.ObjectDef.md) - World object properties
+- [`game.definitions.EntityDef`](classes/game.definitions.EntityDef.md) - game.entities.Entity definitions
 
 ## Input and Controls
 
 ### User Input
-- [`MouseDetection`](classes/MouseDetection.md) - Mouse click and movement handling
-- [`TextInput`](classes/TextInput.md) - Keyboard input for chat and commands
-- Game controls for movement, interaction, and interface navigation
+- [`core.handlers.MouseDetection`](classes/core.handlers.MouseDetection.md) - Mouse click and movement handling
+- [`core.handlers.TextInput`](classes/core.handlers.TextInput.md) - Keyboard input for chat and commands
+- core.engine.Game controls for movement, interaction, and interface navigation
 
-### Game Interaction
+### core.engine.Game Interaction
 - Point-and-click movement
 - Object interaction
 - Combat targeting
@@ -151,10 +151,10 @@ Complete documentation for all 80+ client classes is available in the [Client Cl
 
 ### Most Important Classes
 - [`Client`](classes/Client.md) - Main client controller
-- [`WorldController`](classes/WorldController.md) - 3D world rendering
-- [`RSInterface`](classes/RSInterface.md) - User interface system
-- [`Player`](classes/Player.md) - Player representation
-- [`Model`](classes/Model.md) - 3D model system
+- [`core.world.WorldController`](classes/core.world.WorldController.md) - 3D world rendering
+- [`core.renderers.RSInterface`](classes/core.renderers.RSInterface.md) - User interface system
+- [`game.entities.Player`](classes/game.entities.Player.md) - game.entities.Player representation
+- [`render.geometry.Model`](classes/render.geometry.Model.md) - 3D model system
 
 ## Integration with Server
 

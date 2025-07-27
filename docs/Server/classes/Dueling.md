@@ -14,16 +14,16 @@ The `Dueling` class manages the player-versus-player dueling system in the 2006S
 - **Rule Configuration**: Managing duel rules and restrictions (no magic, no ranged, etc.)
 - **Interface Management**: Controlling the dueling interface and displays
 - **Duel Execution**: Processing the actual combat and determining winners
-- **Item Distribution**: Awarding staked items to the winner
+- **game.items.Item Distribution**: Awarding staked items to the winner
 - **Security**: Preventing scamming and ensuring fair duels
 
 ## Core Architecture
 
-### Player Association
+### game.entities.Player Association
 ```java
-private final Player player;
+private final game.entities.Player player;
 
-public Dueling(Player player) {
+public Dueling(game.entities.Player player) {
     this.player = player;
 }
 ```
@@ -552,7 +552,7 @@ public void changeDuelStuff() {
 
 ### Initiating a Duel
 ```java
-// Player right-clicks another player and selects "Challenge"
+// game.entities.Player right-clicks another player and selects "Challenge"
 player.getDueling().requestDuel(targetPlayerId);
 
 // Both players must request each other to start duel
@@ -561,10 +561,10 @@ targetPlayer.getDueling().requestDuel(player.playerId);
 
 ### Managing Stakes
 ```java
-// Player stakes an item
+// game.entities.Player stakes an item
 player.getDueling().stakeItem(itemId, inventorySlot, amount);
 
-// Player removes item from stake
+// game.entities.Player removes item from stake
 player.getDueling().fromDuel(itemId, stakeSlot, amount);
 ```
 
@@ -599,7 +599,7 @@ loser.getDueling().resetDuelItems();
 - **Network Optimization**: Minimize unnecessary packet sends
 
 ### Resource Management
-- **Item Validation**: Check item existence before staking
+- **game.items.Item Validation**: Check item existence before staking
 - **State Synchronization**: Keep both players' states in sync
 - **Exception Handling**: Gracefully handle disconnections during duels
 
@@ -615,10 +615,10 @@ loser.getDueling().resetDuelItems();
 
 ## Integration Points
 
-### Player Integration
+### game.entities.Player Integration
 ```java
 // Dueling is part of every player
-Player player = new Player();
+game.entities.Player player = new game.entities.Player();
 Dueling dueling = player.getDueling();
 ```
 
@@ -630,7 +630,7 @@ if (player.duelRule[RULE_NO_MAGIC]) {
 }
 ```
 
-### Item Integration
+### game.items.Item Integration
 ```java
 // Items are transferred during dueling
 player.getItemAssistant().addItem(itemId, amount);
@@ -639,7 +639,7 @@ player.getItemAssistant().deleteItem(itemId, amount);
 
 ## Related Classes
 
-- [`Player`](Player.md) - Contains Dueling instance
+- [`game.entities.Player`](game.entities.Player.md) - Contains Dueling instance
 - [`ItemAssistant`](ItemAssistant.md) - Handles item transfers
 - [`GameItem`](GameItem.md) - Represents staked items
 - [`RareProtection`](RareProtection.md) - Protects valuable items

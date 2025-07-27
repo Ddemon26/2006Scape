@@ -1,14 +1,14 @@
-# Stream
+# core.network.Stream
 
-Defined in [`2006Scape Client/src/main/java/Stream.java`](2006Scape Client/src/main/java/Stream.java).
+Defined in [`2006Scape Client/src/main/java/core.network.Stream.java`](2006Scape Client/src/main/java/core.network.Stream.java).
 
-Stream helper class.
+core.network.Stream helper class.
 
 ```java
-public final class Stream extends NodeSub {
-public static Stream create()
+public final class core.network.Stream extends util.collections.NodeSub {
+public static core.network.Stream create()
 public int readUnsignedByteAdd()
-public Stream(byte abyte0[])
+public core.network.Stream(byte abyte0[])
 public void createFrame(int i)
 public void writeWordBigEndian(int i)
 public void writeWord(int i)

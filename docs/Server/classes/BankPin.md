@@ -8,7 +8,7 @@ Handles the BankPin on Bank's  @author Michael @author Ian / Core @author Linus 
 
 ```java
 public class BankPin {
-public BankPin(Player player)
+public BankPin(game.entities.Player player)
 public int dateExpired()
 public int dateRequested()
 public void closeBankPin()

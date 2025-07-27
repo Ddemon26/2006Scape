@@ -8,5 +8,5 @@ Aug 24, 2017 : 4:20:18 AM DoubleGates.java @author Andrew (Mr Extremez)
 
 ```java
 public class DoubleGates extends GateHandler {
-public void useDoubleGate(Player player, int objectId)
+public void useDoubleGate(game.entities.Player player, int objectId)
 ```

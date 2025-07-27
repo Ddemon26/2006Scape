@@ -14,16 +14,16 @@ The `ShopAssistant` class manages all player interactions with shops in the 2006
 - **Price Calculation**: Determining buy and sell prices for items
 - **Inventory Management**: Transferring items between player and shop inventories
 - **Currency Handling**: Managing different currency types (coins, tokkul, etc.)
-- **Player-Owned Shops**: Supporting custom player-run shops
+- **game.entities.Player-Owned Shops**: Supporting custom player-run shops
 - **Shop Validation**: Checking if shops buy/sell specific items
 
 ## Core Architecture
 
-### Player Association
+### game.entities.Player Association
 ```java
-private final Player player;
+private final game.entities.Player player;
 
-public ShopAssistant(Player player) {
+public ShopAssistant(game.entities.Player player) {
     this.player = player;
 }
 ```
@@ -147,7 +147,7 @@ public boolean buyItem(int itemID, int fromSlot, int amount) {
     
     // Check inventory space
     int freeSlots = player.getItemAssistant().freeSlots();
-    if (freeSlots < amount && !Item.itemStackable[itemID]) {
+    if (freeSlots < amount && !game.items.Item.itemStackable[itemID]) {
         amount = freeSlots;
         player.getPacketSender().sendMessage("You don't have enough inventory space.");
     }
@@ -332,6 +332,6 @@ if (player.getShopAssistant().shopBuysItem(shopId, itemId)) {
 
 - [`ShopHandler`](ShopHandler.md) - Manages global shop state
 - [`ItemAssistant`](ItemAssistant.md) - Handles player inventory
-- [`Player`](Player.md) - Contains ShopAssistant instance
+- [`game.entities.Player`](game.entities.Player.md) - Contains ShopAssistant instance
 - [`PacketSender`](PacketSender.md) - Sends shop interfaces to client
 - [`ItemDefinition`](ItemDefinition.md) - Provides item base values

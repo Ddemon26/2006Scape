@@ -8,5 +8,5 @@ Handles abyssal related functionality.
 
 ```java
 public class AbyssalHandler {
-public static void handleAbyssalTeleport(Player player, int objectId)
+public static void handleAbyssalTeleport(game.entities.Player player, int objectId)
 ```

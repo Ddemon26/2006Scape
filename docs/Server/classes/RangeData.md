@@ -8,16 +8,16 @@ Range Data helper class.
 
 ```java
 public class RangeData {
-public static boolean usingCrystalBow(Player c)
-public static boolean usingBolts(Player c)
-public static boolean properBolts(Player c)
-public static boolean usingHally(Player c)
-public static boolean usingDart(Player player)
-public static boolean usingLongbow(Player player)
-public static int correctBowAndArrows(Player c)
-public static int getRangeStartGFX(Player c)
-public static int getRangeProjectileGFX(Player c)
-public static int getProjectileSpeed(Player c)
-public static int getProjectileShowDelay(Player c)
-public static boolean fullVoidRange(Player c)
+public static boolean usingCrystalBow(game.entities.Player c)
+public static boolean usingBolts(game.entities.Player c)
+public static boolean properBolts(game.entities.Player c)
+public static boolean usingHally(game.entities.Player c)
+public static boolean usingDart(game.entities.Player player)
+public static boolean usingLongbow(game.entities.Player player)
+public static int correctBowAndArrows(game.entities.Player c)
+public static int getRangeStartGFX(game.entities.Player c)
+public static int getRangeProjectileGFX(game.entities.Player c)
+public static int getProjectileSpeed(game.entities.Player c)
+public static int getProjectileShowDelay(game.entities.Player c)
+public static boolean fullVoidRange(game.entities.Player c)
 ```

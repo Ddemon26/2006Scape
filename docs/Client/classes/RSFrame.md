@@ -1,10 +1,10 @@
-# RSFrame
+# core.engine.RSFrame
 
-Defined in [`2006Scape Client/src/main/java/RSFrame.java`](2006Scape Client/src/main/java/RSFrame.java).
+Defined in [`2006Scape Client/src/main/java/core.engine.RSFrame.java`](2006Scape Client/src/main/java/core.engine.RSFrame.java).
 
-RSFrame helper class.
+core.engine.RSFrame helper class.
 
 ```java
-final class RSFrame extends Frame {
-public RSFrame(RSApplet applet)
+final class core.engine.RSFrame extends Frame {
+public core.engine.RSFrame(core.engine.RSApplet applet)
 ```

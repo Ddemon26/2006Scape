@@ -1,9 +1,9 @@
-# CullingCluster
+# core.world.CullingCluster
 
-Defined in [`2006Scape Client/src/main/java/CullingCluster.java`](2006Scape Client/src/main/java/CullingCluster.java).
+Defined in [`2006Scape Client/src/main/java/core.world.CullingCluster.java`](2006Scape Client/src/main/java/core.world.CullingCluster.java).
 
 Culling Cluster helper class.
 
 ```java
-final class CullingCluster {
+final class core.world.CullingCluster {
 ```

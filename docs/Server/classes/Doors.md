@@ -9,6 +9,6 @@ Doors helper class.
 ```java
 public class Doors {
 public static Doors getSingleton()
-public boolean handleDoor(Player player, int id, int x, int y, int z)
+public boolean handleDoor(game.entities.Player player, int id, int x, int y, int z)
 public void load()
 ```

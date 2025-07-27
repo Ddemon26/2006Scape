@@ -8,5 +8,5 @@ Handles packet related functionality.
 
 ```java
 public class PacketHandler {
-public static void processPacket(Player player, Packet packet)
+public static void processPacket(game.entities.Player player, Packet packet)
 ```

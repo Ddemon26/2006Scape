@@ -38,5 +38,5 @@ public static void addNameToFile(String Name)
 public static void addUserToFile(String Name)
 public static void addIpToFile(String Name)
 public static void addIpToMuteFile(String Name)
-public static boolean isMuted(Player player)
+public static boolean isMuted(game.entities.Player player)
 ```

@@ -8,7 +8,7 @@ Created by IntelliJ IDEA. User: vayken Date: 24/02/12 Time: 20:34 To change this
 
 ```java
 public class WoodTrees {
-public WoodTrees(Player player)
+public WoodTrees(game.entities.Player player)
 public static TreeData forId(int saplingId)
 public int getSaplingId()
 public int getRootsId()

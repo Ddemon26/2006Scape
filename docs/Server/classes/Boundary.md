@@ -10,13 +10,13 @@ Defined in [`2006Scape Server/src/main/java/com/rs2/world/Boundary.java`](2006Sc
 public class Boundary {
 public Boundary(int minX, int highX, int minY, int highY)
 public Boundary(int minX, int highX, int minY, int highY, int height)
-public static boolean isIn(Player player, Boundary[] boundaries)
-public static boolean isIn(Player player, Boundary boundaries)
+public static boolean isIn(game.entities.Player player, Boundary[] boundaries)
+public static boolean isIn(game.entities.Player player, Boundary boundaries)
 public static boolean isIn(int x, int y, Boundary boundaries)
 public static boolean isIn(int x, int y, int h, Boundary boundaries)
 public static boolean isIn(Npc npc, Boundary boundaries)
 public static boolean isIn(Npc npc, Boundary[] boundaries)
-public static boolean isInSameBoundary(Player player1, Player player2, Boundary[] boundaries)
+public static boolean isInSameBoundary(game.entities.Player player1, game.entities.Player player2, Boundary[] boundaries)
 public static int entitiesInArea(Boundary boundary)
 public static Coordinate centre(Boundary boundary)
 public static final Boundary F2P = new Boundary(2944, 3328, 3097, 3515);

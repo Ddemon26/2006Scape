@@ -8,10 +8,10 @@ Enchanting helper class.
 
 ```java
 public class Enchanting {
-public Enchanting(Player c)
+public Enchanting(game.entities.Player c)
 public void enchantItem(int itemID, int spellID)
 public void deposit()
 public void clearItems()
 public static void process()
-public static void updateInterface(Player player)
+public static void updateInterface(game.entities.Player player)
 ```

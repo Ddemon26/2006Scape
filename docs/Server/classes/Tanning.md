@@ -8,6 +8,6 @@ Tanning helper class.
 
 ```java
 public class Tanning extends CraftingData {
-public static void sendTanningInterface(final Player c)
-public static void tanHide(final Player player, final int buttonId)
+public static void sendTanningInterface(final game.entities.Player c)
+public static void tanHide(final game.entities.Player player, final int buttonId)
 ```

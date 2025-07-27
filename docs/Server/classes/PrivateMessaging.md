@@ -8,5 +8,5 @@ Private messaging, friends etc
 
 ```java
 public class PrivateMessaging implements PacketType {
-public void processPacket(Player player, Packet packet)
+public void processPacket(game.entities.Player player, Packet packet)
 ```

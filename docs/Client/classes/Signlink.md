@@ -1,11 +1,11 @@
-# Signlink
+# core.handlers.Signlink
 
-Defined in [`2006Scape Client/src/main/java/Signlink.java`](2006Scape Client/src/main/java/Signlink.java).
+Defined in [`2006Scape Client/src/main/java/core.handlers.Signlink.java`](2006Scape Client/src/main/java/core.handlers.Signlink.java).
 
-Signlink helper class.
+core.handlers.Signlink helper class.
 
 ```java
-public final class Signlink implements Runnable {
+public final class core.handlers.Signlink implements Runnable {
 public static final void startpriv(InetAddress inetaddress)
 public void run()
 public static boolean setVolume(int value)
@@ -20,5 +20,5 @@ public static synchronized boolean wavesave(byte abyte0[], int i)
 public static synchronized boolean wavereplay()
 public static synchronized void saveMidi(byte abyte0[], int i)
 public static void reporterror(String s)
-public static Midi midii = new Midi();
+public static audio.Midi midii = new audio.Midi();
 ```

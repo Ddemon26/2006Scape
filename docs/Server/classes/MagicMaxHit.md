@@ -8,6 +8,6 @@ Magic Max Hit helper class.
 
 ```java
 public class MagicMaxHit {
-public static int mageAttackBonus(Player c)
-public static int mageDefenceBonus(Player c)
+public static int mageAttackBonus(game.entities.Player c)
+public static int mageDefenceBonus(game.entities.Player c)
 ```

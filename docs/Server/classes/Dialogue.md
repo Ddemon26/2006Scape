@@ -8,5 +8,5 @@ Dialogue
 
 ```java
 public class Dialogue implements PacketType {
-public void processPacket(Player c, Packet packet)
+public void processPacket(game.entities.Player c, Packet packet)
 ```

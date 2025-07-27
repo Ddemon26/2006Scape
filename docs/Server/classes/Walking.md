@@ -8,5 +8,5 @@ Walking packet
 
 ```java
 public class Walking implements PacketType {
-public void processPacket(Player player, Packet packet)
+public void processPacket(game.entities.Player player, Packet packet)
 ```

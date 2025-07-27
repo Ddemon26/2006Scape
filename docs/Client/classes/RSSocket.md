@@ -1,12 +1,12 @@
-# RSSocket
+# core.network.RSSocket
 
-Defined in [`2006Scape Client/src/main/java/RSSocket.java`](2006Scape Client/src/main/java/RSSocket.java).
+Defined in [`2006Scape Client/src/main/java/core.network.RSSocket.java`](2006Scape Client/src/main/java/core.network.RSSocket.java).
 
-RSSocket helper class.
+core.network.RSSocket helper class.
 
 ```java
-final class RSSocket implements Runnable {
-public RSSocket(RSApplet RSApplet_, Socket socket1) throws IOException
+final class core.network.RSSocket implements Runnable {
+public core.network.RSSocket(core.engine.RSApplet RSApplet_, Socket socket1) throws IOException
 public void close()
 public int read() throws IOException
 public int available() throws IOException

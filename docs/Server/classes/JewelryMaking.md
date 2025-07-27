@@ -8,8 +8,8 @@ Jewelry Making helper class.
 
 ```java
 public class JewelryMaking {
-public static void mouldInterface(Player c)
-public static void stringAmulet(final Player c, final int itemUsed, final int usedWith)
-public static void mouldItem(Player player, int item, int amount)
+public static void mouldInterface(game.entities.Player c)
+public static void stringAmulet(final game.entities.Player c, final int itemUsed, final int usedWith)
+public static void mouldItem(game.entities.Player player, int item, int amount)
 public static String getRequiredMessage(String item)
 ```

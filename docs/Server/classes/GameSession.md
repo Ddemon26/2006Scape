@@ -8,8 +8,8 @@ Temporary quick and tear integration with apollo netcode. This needs redone when
 
 ```java
 public final class GameSession extends Session {
-public void setPlayer(Player player)
-public GameSession(Channel channel, Player player, boolean reconnecting)
+public void setPlayer(game.entities.Player player)
+public GameSession(Channel channel, game.entities.Player player, boolean reconnecting)
 public void destroy()
 public boolean isReconnecting()
 public void messageReceived(Object message)

@@ -8,11 +8,11 @@ Click Object helper class.
 
 ```java
 public class ClickObject implements PacketType {
-public void onObjectReached(Player player, Consumer<Player> consumer)
+public void onObjectReached(game.entities.Player player, Consumer<game.entities.Player> consumer)
 public void execute(CycleEventContainer container)
 public void stop()
-public void processPacket(final Player player, Packet packet)
-public void completeObjectClick(final Player player, int objectOption)
+public void processPacket(final game.entities.Player player, Packet packet)
+public void completeObjectClick(final game.entities.Player player, int objectOption)
 public void execute(CycleEventContainer container)
 public void stop()
 public void execute(CycleEventContainer container)

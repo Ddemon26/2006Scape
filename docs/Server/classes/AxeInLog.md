@@ -8,5 +8,5 @@ Axe In Log helper class.
 
 ```java
 public class AxeInLog {
-public static void pullAxeFromLog(Player player, int x, int y)
+public static void pullAxeFromLog(game.entities.Player player, int x, int y)
 ```

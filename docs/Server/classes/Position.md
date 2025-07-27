@@ -8,11 +8,11 @@ Position @author Andrew (I'm A Boss on Rune-Server, Mr Extremez on Moparscape & 
 
 ```java
 public class Position {
-public static boolean checkPosition(Player player, int x, int y, int h)
-public static boolean checkPlayerX(Player client, int x, int h)
-public static boolean checkPlayerY(Player player, int y, int h)
-public static boolean checkPlayerH(Player client, int h)
-public static boolean checkObject(Player client, int x, int y, int h)
-public static boolean checkObjectX(Player client, int x, int h)
-public static boolean checkObjectY(Player client, int y, int h)
+public static boolean checkPosition(game.entities.Player player, int x, int y, int h)
+public static boolean checkPlayerX(game.entities.Player client, int x, int h)
+public static boolean checkPlayerY(game.entities.Player player, int y, int h)
+public static boolean checkPlayerH(game.entities.Player client, int h)
+public static boolean checkObject(game.entities.Player client, int x, int y, int h)
+public static boolean checkObjectX(game.entities.Player client, int x, int h)
+public static boolean checkObjectY(game.entities.Player client, int y, int h)
 ```

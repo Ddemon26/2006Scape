@@ -8,8 +8,8 @@ Firemaking helper class.
 
 ```java
 public class Firemaking {
-public static void stopFiremaking(Player c)
-public static void attemptFire(final Player c, final int itemUsed, final int usedWith, final int x, final int y, final boolean groundObject)
+public static void stopFiremaking(game.entities.Player c)
+public static void attemptFire(final game.entities.Player c, final int itemUsed, final int usedWith, final int x, final int y, final boolean groundObject)
 public void execute(CycleEventContainer container)
 public void execute(CycleEventContainer container)
 public void stop()

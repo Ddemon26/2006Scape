@@ -1,11 +1,11 @@
-# Entity
+# game.entities.Entity
 
-Defined in [`2006Scape Client/src/main/java/Entity.java`](2006Scape Client/src/main/java/Entity.java).
+Defined in [`2006Scape Client/src/main/java/game.entities.Entity.java`](2006Scape Client/src/main/java/game.entities.Entity.java).
 
-Entity helper class.
+game.entities.Entity helper class.
 
 ```java
-public class Entity extends Animable {
+public class game.entities.Entity extends game.entities.Animable {
 public final void setPos(int i, int j, boolean flag)
 public final void clearMovement()
 public final void updateHitData(int j, int k, int l)

@@ -8,5 +8,5 @@ Restless Ghost @author Andrew (Mr Extremez)
 
 ```java
 public class RestlessGhost {
-public static void showInformation(Player client)
+public static void showInformation(game.entities.Player client)
 ```

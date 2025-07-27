@@ -8,7 +8,7 @@ Levers @author Andrew (Mr Extremez)
 
 ```java
 public class Levers {
-public static void pullLever(final Player player, int objectType)
+public static void pullLever(final game.entities.Player player, int objectType)
 public void execute(CycleEventContainer container)
 public void stop()
 ```

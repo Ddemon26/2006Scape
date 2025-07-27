@@ -8,6 +8,6 @@ Sandwhich Lady helper class.
 
 ```java
 public class SandwhichLady {
-public static void handleOptions(Player player, int actionbuttonId)
-public static void openSandwhichLady(Player c)
+public static void handleOptions(game.entities.Player player, int actionbuttonId)
+public static void openSandwhichLady(game.entities.Player c)
 ```

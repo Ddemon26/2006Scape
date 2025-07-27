@@ -8,9 +8,9 @@ Freaky Forester helper class.
 
 ```java
 public class FreakyForester {
-public static void teleportToLocation(Player c)
-public static String getPheasant(Player client)
-public static void leaveArea(Player client)
-public static void killedPheasant(Player c, int p)
-public static boolean hasKilledPheasant(Player client)
+public static void teleportToLocation(game.entities.Player c)
+public static String getPheasant(game.entities.Player client)
+public static void leaveArea(game.entities.Player client)
+public static void killedPheasant(game.entities.Player c, int p)
+public static boolean hasKilledPheasant(game.entities.Player client)
 ```

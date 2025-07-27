@@ -8,5 +8,5 @@ Bank 5 Items
 
 ```java
 public class Bank5 implements PacketType {
-public void processPacket(Player player, Packet packet)
+public void processPacket(game.entities.Player player, Packet packet)
 ```

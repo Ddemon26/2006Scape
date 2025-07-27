@@ -8,7 +8,7 @@ Defined in [`2006Scape Server/src/main/java/com/rs2/game/content/skills/crafting
 
 ```java
 public class GlassBlowing {
-public GlassBlowing(Player player)
+public GlassBlowing(game.entities.Player player)
 public boolean getStarted()
 public void setStarted(boolean started)
 public void showInterface()

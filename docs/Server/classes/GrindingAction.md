@@ -10,5 +10,5 @@ Grinding Action helper class.
 public class GrindingAction {
 public int getId()
 public int getEnd()
-public static void init(Player player, int itemUsed, int useWith)
+public static void init(game.entities.Player player, int itemUsed, int useWith)
 ```

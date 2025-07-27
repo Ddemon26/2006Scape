@@ -8,11 +8,11 @@ Created by IntelliJ IDEA. User: vayken Date: 23/02/12 Time: 12:12 To change this
 
 ```java
 public class ToolLeprechaun {
-public ToolLeprechaun(Player player)
-public Item[] storeItems = { new Item(5341), new Item(5343), new Item(952),
-public Item[] storeItems2 = { new Item(1925), new Item(6032),
-public Item[] storeItemsClient = { new Item(5341), new Item(5343),
-public Item[] storeItems2Client = { new Item(1925), new Item(6032),
+public ToolLeprechaun(game.entities.Player player)
+public game.items.Item[] storeItems = { new game.items.Item(5341), new game.items.Item(5343), new game.items.Item(952),
+public game.items.Item[] storeItems2 = { new game.items.Item(1925), new game.items.Item(6032),
+public game.items.Item[] storeItemsClient = { new game.items.Item(5341), new game.items.Item(5343),
+public game.items.Item[] storeItems2Client = { new game.items.Item(1925), new game.items.Item(6032),
 public static ToolStoreData forId(int toolId)
 public static ToolStoreData forIndex(int index)
 public int getToolIndex()

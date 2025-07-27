@@ -8,5 +8,5 @@ Defined in [`2006Scape Server/src/main/java/com/rs2/game/content/skills/smithing
 
 ```java
 public class Superheat {
-public static boolean superHeatItem(Player player, int itemID)
+public static boolean superHeatItem(game.entities.Player player, int itemID)
 ```

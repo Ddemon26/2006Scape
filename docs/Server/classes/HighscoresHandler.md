@@ -10,7 +10,7 @@ Handles highscores related functionality.
 public class HighscoresHandler {
 public ArrayList<Client> players = new ArrayList<>();
 public HighscoresHandler()
-public String getRank(Player player, int i, String sortBy)
+public String getRank(game.entities.Player player, int i, String sortBy)
 public int compare(Client client, Client t1)
 public int compare(Client client, Client t1)
 public int compare(Client client, Client t1)

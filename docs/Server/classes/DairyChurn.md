@@ -15,7 +15,7 @@ public int[] getUsed()
 public int getResult()
 public int getLevel()
 public double getExperience()
-public static void churnItem(final Player player, int buttonId)
+public static void churnItem(final game.entities.Player player, int buttonId)
 public void execute(CycleEventContainer container)
 public void stop()
 ```

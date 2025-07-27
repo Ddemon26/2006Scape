@@ -8,8 +8,8 @@ Crystal Chest helper class.
 
 ```java
 public class CrystalChest {
-public static void makeKey(Player c)
-public static boolean canOpen(Player c)
+public static void makeKey(game.entities.Player c)
+public static boolean canOpen(game.entities.Player c)
 public void execute(CycleEventContainer container)
 public void stop()
 public static int getLength()

@@ -8,5 +8,5 @@ SingleGates @author Andrew (Mr Extremez)
 
 ```java
 public class SingleGates extends GateHandler {
-public void useSingleGate(Player player, int objectId)
+public void useSingleGate(game.entities.Player player, int objectId)
 ```

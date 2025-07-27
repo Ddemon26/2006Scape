@@ -10,6 +10,6 @@ Climb Other helper class.
 public class ClimbOther {
 public int getClosed()
 public int getOpen()
-public static void handleOpenOther(Player player, int objectType)
-public static void useOther(Player player, int objectType)
+public static void handleOpenOther(game.entities.Player player, int objectType)
+public static void useOther(game.entities.Player player, int objectType)
 ```
