@@ -78,12 +78,12 @@ public class Game extends RSApplet {
     return " " + s;
   }
 
-  static final boolean musicIsntNull() {
+  static boolean musicIsntNull() {
     if (midiPlayer == null) return false;
     return true;
   }
 
-  public static final void closeMidiSystem() {
+  public static void closeMidiSystem() {
     if (midiPlayer != null) {
       stopMidiPlayback(false);
       if (midiFadeCycles > 0) {
@@ -173,14 +173,14 @@ public class Game extends RSApplet {
     }
   }
 
-  static final void setVolume(int i) {
+  static void setVolume(int i) {
     if (musicIsntNull()) {
       if (fetchMusic) musicVolume2 = i;
       else setMidiVolume(i);
     }
   }
 
-  static final void setMidiVolume(int i) {
+  static void setMidiVolume(int i) {
     if (midiPlayer != null) {
       if (midiFadeCycles == 0) {
         if (currentMidiVolume >= 0) {
@@ -191,18 +191,18 @@ public class Game extends RSApplet {
     }
   }
 
-  static final synchronized void stopMusic(boolean bool) {
+  static synchronized void stopMusic(boolean bool) {
     if (musicIsntNull()) {
       stopMidiPlayback(bool);
       fetchMusic = false;
     }
   }
 
-  static final void stopMidiPlayback(boolean bool) {
+  static void stopMidiPlayback(boolean bool) {
     playMidiTrack(0, null, bool);
   }
 
-  static final boolean constructMusic() {
+  static boolean constructMusic() {
     midiFadeCycles = 20;
     try {
       // changed from getting the class via string, not sure why it was done like that.
@@ -243,7 +243,7 @@ public class Game extends RSApplet {
 
   public static byte[] musicData;
 
-  static final synchronized void processMusicQueue() {
+  static synchronized void processMusicQueue() {
     if (musicIsntNull()) {
       if (fetchMusic) {
         byte[] is = musicData;
@@ -259,11 +259,11 @@ public class Game extends RSApplet {
     }
   }
 
-  static final int calculateLogVolume(int i) {
+  static int calculateLogVolume(int i) {
     return (int) (Math.log((double) i * 0.00390625) * 868.5889638065036 + 0.5);
   }
 
-  static final void playMidiTrack(int i_2_, byte[] is, boolean bool) {
+  static void playMidiTrack(int i_2_, byte[] is, boolean bool) {
     if (midiPlayer != null) {
       if (currentMidiVolume >= 0) {
         midiPlayer.stopMidi();
@@ -283,7 +283,7 @@ public class Game extends RSApplet {
     }
   }
 
-  static final void queueMidiTrack(int i, int i_29_, boolean bool, byte[] is, int i_30_) {
+  static void queueMidiTrack(int i, int i_29_, boolean bool, byte[] is, int i_30_) {
     if (midiPlayer != null) {
       if (i_29_ >= (currentMidiVolume ^ 0xffffffff)) {
         i -= 20;
@@ -306,7 +306,7 @@ public class Game extends RSApplet {
     }
   }
 
-  static final void initiateMidiFade(boolean bool, int i, int i_2_, byte[] is) {
+  static void initiateMidiFade(boolean bool, int i, int i_2_, byte[] is) {
     if (midiPlayer != null) {
       if (currentMidiVolume >= 0) {
         fadeStep = i;
@@ -328,7 +328,7 @@ public class Game extends RSApplet {
     }
   }
 
-  static final void updateMidiFade(int i) {
+  static void updateMidiFade(int i) {
     if (midiPlayer != null) {
       if (currentMidiVolume < i) {
         if (midiFadeCycles > 0) {
@@ -1099,7 +1099,7 @@ public class Game extends RSApplet {
     } while (true);
   }
 
-  public static final void sleep(long time) {
+  public static void sleep(long time) {
     if (time > 0L) {
       if (time % 10L != 0L) threadSleep(time);
       else {
@@ -1109,7 +1109,7 @@ public class Game extends RSApplet {
     }
   }
 
-  static final void threadSleep(long time) {
+  static void threadSleep(long time) {
     try {
       Thread.sleep(time);
     } catch (InterruptedException interruptedexception) {
@@ -7144,7 +7144,7 @@ public class Game extends RSApplet {
     return i != 1;
   }
 
-  static final int adjustColorBrightness(int i, int i_1_) {
+  static int adjustColorBrightness(int i, int i_1_) {
     if (i_1_ == -2) return 12345678;
     if (i_1_ == -1) {
       if (i < 0) i = 0;
