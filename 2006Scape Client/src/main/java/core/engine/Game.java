@@ -4,8 +4,6 @@ package core.engine;
  * NOTICE: IF YOU CHANGE ANYTHING IN GAME.JAVA, PLEASE COPY-PASTE THE WHOLE CLASS OVER TO
  * LOCALGAME.JAVA THIS IS TO ALLOW LOCAL PARABOT TO CONTINUE TO WORK
  */
-import audio.base.MidiPlayer;
-import audio.midi.*;
 import audio.sound.*;
 import core.handlers.*;
 import core.managers.*;
@@ -59,7 +57,1514 @@ import util.helpers.*;
 @SuppressWarnings("serial")
 public class Game extends RSApplet {
 
+  // TODO: EXTRACTION PLAN FOR GAME.JAVA GOD CLASS (14K+ lines, 462 fields)
+  //
+  // MAJOR FUNCTIONAL AREAS IDENTIFIED:
+  // 1. AUDIO/MUSIC SYSTEM - Extract to: AudioManager/MusicController
+  // 2. RENDERING/DRAWING - Extract to: GameRenderer/RenderSystem
+  // 3. NETWORK/PACKETS - Extract to: NetworkManager/PacketHandler
+  // 4. UI/INTERFACE - Extract to: UIManager/InterfaceController
+  // 5. WORLD/ENTITIES - Extract to: WorldManager/EntityController
+  // 6. INPUT HANDLING - Extract to: InputController
+  // 7. CACHE/FILE SYSTEM - Extract to: CacheManager/FileHandler
+  // 8. GAME STATE - Keep core state in Game, extract subsystems
+  //
+  // EXTRACTION STRATEGY:
+  // - Create manager classes for each major system
+  // - Use composition over inheritance
+  // - Maintain existing public API for compatibility
+  // - Move static utility methods to appropriate utility classes
+
+  // ============================================================================
+  // COMPREHENSIVE EXTRACTION PLAN FOR GAME.JAVA GOD CLASS BREAKDOWN
+  // ============================================================================
+  //
+  // PHASE 1: CREATE NEW MANAGER CLASSES (use existing packages where possible)
+  //
+  // 1. core.managers.AudioManager
+  //    - All midi/music methods (constructMusic, playMidiTrack, setVolume, etc.)
+  //    - Fields: midiPlayer, audioManager.musicData, musicVolume2, currentMidiVolume
+  //    - ~30 music-related methods identified
+  //
+  // 2. core.managers.CacheManager
+  //    - Cache operations (repackCacheIndex, fileToByteArray, musics, GetMusic)
+  //    - Fields: decompressors[], onDemandFetcher, fileCRC
+  //    - File I/O and cache management methods
+  //
+  // 3. core.managers.NetworkManager
+  //    - Network operations (openSocket, packet processing, login)
+  //    - Fields: socketStream, stream, inStream, loginResponse
+  //    - ~50+ network-related methods identified
+  //
+  // 4. core.managers.WorldManager
+  //    - World/entity management (spawnGroundItem, updateNPCs, addNpcsToScene)
+  //    - Fields: groundArray[][][], npcArray[], playerArray[], worldController
+  //    - World state and entity lifecycle methods
+  //
+  // 5. core.managers.UIManager (or extend existing core.renderers)
+  //    - UI state management (menuHasAddFriend, interface handling)
+  //    - Fields: menuActionID[], chatMessages[], dialogID
+  //    - Interface and menu state management
+  //
+  // 6. core.renderers.UIRenderer (extend existing renderer system)
+  //    - Drawing operations (drawScrollThumb, drawChatArea)
+  //    - Fields: scrollBar1, scrollBar2, scrollBarColor
+  //    - UI rendering and drawing utilities
+  //
+  // 7. core.handlers.InputController (extend existing handlers)
+  //    - Input processing (processMenuClick, key handling)
+  //    - Fields: menuOpen, clickMode3, mouseX, mouseY
+  //    - User input event handling
+  //
+  // PHASE 2: MOVE UTILITY METHODS
+  //
+  // 1. util.helpers.MathUtils
+  //    - random(), mathematical calculations
+  //
+  // 2. util.helpers.StringUtils
+  //    - intToKOrMilLongName(), string formatting utilities
+  //
+  // 3. util.helpers.FileUtils
+  //    - getFileNameWithoutExtension(), file operations
+  //
+  // PHASE 3: REFACTOR STRATEGY
+  //
+  // 1. Use composition over inheritance - inject managers into Game class
+  // 2. Maintain public API compatibility during transition
+  // 3. Extract methods in logical groups to minimize dependency breaking
+  // 4. Keep core game loop and state coordination in Game class
+  // 5. Move static utility methods first (least risk)
+  // 6. Extract managers one at a time, testing after each extraction
+  //
+  // ESTIMATED BREAKDOWN:
+  // - Current: ~14,000 lines, 462 fields in single class
+  // - Target: ~2,000 lines core Game class + 7 focused manager classes
+  // - Each manager class: 200-500 lines with clear responsibilities
+  //
+  // BENEFITS:
+  // - Improved maintainability and testability
+  // - Clear separation of concerns
+  // - Easier to understand and modify individual systems
+  // - Better alignment with existing architecture (managers/handlers/renderers)
+
+  public CRC32 fileCRC;
+  public static String server;
+  public int ignoreCount;
+  public long loadingStartTime;
+  public int[][] pathDistances;
+  public int[] friendsNodeIDs;
+  public NodeList[][][] groundArray;
+  public int[] flameBuffer1;
+  public int[] flameBuffer2;
+  public volatile boolean flameThreadActive;
+  public Socket jaggrabSocket;
+  public int loginScreenState;
+  public Stream chatBuffer;
+  public NPC[] npcArray;
+  public int npcCount;
+  public int[] npcIndices;
+  public int entityRemovalCount;
+  public int[] removedEntityIndices;
+  public int lastPacketType;
+  public int prevPacketType;
+  public int prevPacketType2;
+  public String messagePrompt;
+  public int publicChatMode;
+  public int privateChatMode;
+  public Stream updateBuffer;
+  public boolean soundEffectEnabled;
+  public static int systemUpdateCounter;
+  public int[] flameBuffer;
+  public int[] flamePaletteRed;
+  public int[] flamePaletteGreen;
+  public int[] flamePaletteBlue;
+  //public static int unusedCounter;
+  public int hintIconState;
+  public int openInterfaceID;
+  public int fullScreenInterfaceId = -1;
+  public int myPrivilege;
+  public final int[] currentExp;
+  //public static int musicId;
+  //public static int soundId;
+  public Background redStone1_3;
+  public Background redStone2_3;
+  public Background redStone3_2;
+  public Background redStone1_4;
+  public Background redStone2_4;
+  public Sprite multiOverlay;
+  public Sprite mapFlag;
+  public Sprite mapMarker;
+  public boolean useJaggrab;
+  public int selectedTargetId;
+  public final boolean[] tabFlashing;
+  public int weight;
+  public MouseDetection mouseDetection;
+  public volatile boolean drawFlames;
+  public String reportAbuseInput;
+  public int localPlayerIndex;
+  public boolean menuOpen;
+  public int hoveredWidgetId;
+  public String inputString;
+  public final int maxPlayers;
+  public final int myPlayerIndex;
+  public Player[] playerArray;
+  public int playerCount;
+  public int[] playerIndices;
+  public int playerUpdateCount;
+  public int[] playerUpdateIndices;
+  public Stream[] playerBuffers;
+  public int friendsCount;
+  public int interfaceMode;
+  public int[][] pathDirections;
+  public final int scrollBarLightColor;
+  public RSImageProducer backLeftIP1;
+  public RSImageProducer backLeftIP2;
+  public RSImageProducer backRightIP1;
+  public RSImageProducer backRightIP2;
+  public RSImageProducer backTopIP1;
+  public RSImageProducer backVmidIP1;
+  public RSImageProducer backVmidIP2;
+  public RSImageProducer backVmidIP3;
+  public RSImageProducer midSubscreenBuffer;
+  public byte[] soundPayload;
+  public int configActionId;
+  public int crossX;
+  public int crossY;
+  public int crossIndex;
+  public int crossType;
+  public int plane;
+  public final int[] currentStats;
+  public static int objectClickCounter;
+  public final long[] ignoreListAsLongs;
+  public boolean loadingError;
+  public final int scrollBarDarkColor;
+  public int[][] occupiedTiles;
+  public Sprite maleIconSprite;
+  public Sprite femaleIconSprite;
+  public int selectedPlayerId;
+  public int selectedNpcId;
+  public int destinationX;
+  public int destinationY;
+  public int lastMouseX;
+  public int lastMouseY;
+  public static int abuseReportCounter;
+  public final int[] chatTypes;
+  public final String[] chatNames;
+  public final String[] chatMessages;
+  public int animationCycle;
+  public WorldController worldController;
+  public Background[] sideIcons;
+  public int menuScreenArea;
+  public int menuOffsetX;
+  public int menuOffsetY;
+  public int menuWidth;
+  public int menuHeight;
+  public long privateMessageRecipient;
+  public boolean hasFocus;
+  public long[] friendsListAsLongs;
+  //public int currentSong;
+  public static int nodeID = 10;
+  public static int portOff;
+  public static boolean isMembers = true;
+  public static boolean lowMem;
+  public volatile boolean drawingFlames;
+  public int spriteDrawX;
+  public int spriteDrawY;
+  public final int[] hitmarkColors = {0xffff00, 0xff0000, 0x00ff00, 0x00ffff, 0xff00ff, 0xffffff};
+  public Background loginBoxBackground;
+  public Background loginButtonBackground;
+  public final int[] mapBackLeft;
+  public final int[] flameLineOffsets;
+  public final util.compression.Decompressor[] decompressors;
+  public int variousSettings[];
+  public boolean scrollBarDragging;
+  public final int maxDisplayedText;
+  public final int[] textX;
+  public final int[] textY;
+  public final int[] textHeight;
+  public final int[] textWidth;
+  public final int[] textColors;
+  public final int[] textEffects;
+  public final int[] textCycles;
+  public final String[] overheadTexts;
+  public int lastPlane;
+  public static int playerOptionCounter;
+  public Sprite[] hitMarks;
+  public int idleCycleCounter;
+  public int dragCounter;
+  public final int[] characterColorIndices;
+  public static boolean initialLoadComplete;
+  public Sprite mapEdge;
+  public final int scrollBarColor;
+  public static final int[][] appearanceColorOptions = {
+          {6798, 107, 10283, 16, 4797, 7744, 5799, 4634, 33697, 22433, 2983, 54193},
+          {
+                  8741, 12, 64030, 43162, 7735, 8404, 1701, 38430, 24094, 10153, 56621, 4783, 1341, 16578,
+                  35003, 25239
+          },
+          {
+                  25238, 8742, 12, 64030, 43162, 7735, 8404, 1701, 38430, 24094, 10153, 56621, 4783, 1341,
+                  16578, 35003
+          },
+          {4626, 11146, 6439, 12, 4758, 10270},
+          {4550, 4537, 5681, 5673, 5790, 6806, 8076, 4574}
+  };
+  public String amountOrNameInput;
+  public int daysSinceLastLogin;
+  public int packetSize;
+  public int packetType;
+  public int connectionTimeoutCounter;
+  public int keepAliveCounter;
+  public int reconnectDelay;
+  public NodeList projectileList;
+  public int overlayInterfaceId;
+  public static final int[] levelExperience;
+  public int minimapState;
+  public int mouseIdleTicks;
+  public int loadingStage;
+  public Background scrollBar1;
+  public Background scrollBar2;
+  public int lastHoveredWidgetId;
+  public Background backBase1;
+  public Background backBase2;
+  public Background backHmid1;
+  public boolean characterDesignChanged;
+  public Sprite[] mapFunctions;
+  public int baseX;
+  public int baseY;
+  public int prevBaseX;
+  public int prevBaseY;
+  public int loginFailures;
+  public int lastInteractionId;
+  public int flameMainColor;
+  public int flameSecondaryColor;
+  public int dialogID;
+  public final int[] maxStats;
+  public final int[] varpArray;
+  public int friendsListStatus;
+  public boolean isMaleCharacter;
+  public int hoveredTabId;
+  public String errorMessage;
+  public static int terrainLoadCycle;
+  public final int[] minimapLineOffset;
+  public StreamLoader titleStreamLoader;
+  public int flashingTabId;
+  public int multiCombatZone;
+  public NodeList graphicsObjectList;
+  public final int[] mapBackWidths;
+  public final RSInterface chatScrollComponent;
+  public Background[] mapScenes;
+  public static int drawCycle;
+  public int currentSound;
+  public final int scrollBarHandleColor;
+  public int friendsListAction;
+  public final int[] characterStyle;
+  public int mouseInvInterfaceIndex;
+  public int lastActiveInvInterface;
+  public int currentRegionX;
+  public int currentRegionY;
+  public int minimapIconCount;
+  public int[] minimapIconX;
+  public int[] minimapIconY;
+  public Sprite mapDotItem;
+  public Sprite mapDotNPC;
+  public Sprite mapDotPlayer;
+  public Sprite mapDotFriend;
+  public Sprite mapDotTeam;
+  public int loadingPercent;
+  public boolean regionLoading;
+  public String[] friendsList;
+  public Stream inStream;
+  public int dragInterfaceId;
+  public int draggedSlot;
+  public int activeInterfaceType;
+  public int dragStartX;
+  public int dragStartY;
+  public int chatScrollPosition;
+  public final int[] expectedCRCs;
+  public int[] menuActionCmd2;
+  public int[] menuActionCmd3;
+  public int[] menuActionID;
+  public int[] menuActionCmd1;
+  public Sprite[] headIcons;
+  public Sprite[] skullIcons;
+  public Sprite[] headIconsHint;
+  public static int mapLoadPacketCounter;
+  public boolean tabAreaAltered;
+  public int systemUpdateTimer;
+  public RSImageProducer titleImageProducer;
+  public RSImageProducer loginLeftProducer;
+  public RSImageProducer loginRightProducer;
+  public RSImageProducer titleLeftProducer;
+  public RSImageProducer titleRightProducer;
+  public RSImageProducer titleTopLeftProducer;
+  public RSImageProducer titleTopRightProducer;
+  public RSImageProducer titleBottomLeftProducer;
+  public RSImageProducer titleBottomRightProducer;
+  public static int antiCheatPacketCounter;
+  public int membersInt;
+  public String inputPrompt;
+  public Sprite compass;
+  public RSImageProducer tabAreaIconBuffer;
+  public RSImageProducer tabAreaBackgroundBuffer;
+  public RSImageProducer mapEdgeBuffer;
+  public static Player myPlayer;
+  public final String[] atPlayerActions;
+  public final boolean[] atPlayerArray;
+  public final int[][][] dynamicRegionData;
+  public final int[] tabInterfaceIDs = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+  public int menuActionRow;
+  public static int npcAttackCounter;
+  public int spellSelected;
+  public int selectedSpellId;
+  public int spellUsableOn;
+  public String spellTooltip;
+  public Sprite[] minimapIconSprites;
+  public boolean forceMapReload;
+  public static int clickPacketCounter;
+  public Background redStone1;
+  public Background redStone2;
+  public Background redStone3;
+  public Background redStone1_2;
+  public Background redStone2_2;
+  public int energy;
+  public boolean actionPending;
+  public Sprite[] crosses;
+  //public boolean musicEnabled;
+  public Background[] runeBackgrounds;
+  public boolean needDrawTabArea;
+  public int unreadMessages;
+  public static int npcInteractionCounter;
+  public boolean loggedIn;
+  public boolean canMute;
+  public boolean isDynamicRegion;
+  public static int loopCycle;
+  public static final String validUserPassChars =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!\"\243$%^&*()-_=+[{]};:'@#~,<.>/?\\| ";
+  public RSImageProducer textBackground;
+  public RSImageProducer chatBackground;
+  public RSImageProducer tabAreaBuffer;
+  public RSImageProducer fullScreenBackground;
+  public int daysSinceRecovChange;
+  public RSSocket socketStream;
+  public int minimapZoom;
+  public int minimapVerticalSpeed;
+  public static long lastSoundUpdate;
+  public String myUsername;
+  public String myPassword;
+  public static int itemUseCounter;
+  public boolean genericLoadingError;
+  public final int[] objectData = {
+          0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3
+  };
+  public int reportAbuseInterfaceID;
+  public NodeList pendingSpawns;
+  public int[] chatAreaOffsets;
+  public int[] tabAreaOffsets;
+  public int[] chatBoxAreaOffsets;
+  public byte[][] terrainData;
+  public static int actionCounter;
+  public int invOverlayInterfaceID;
+  public int[] flameGradient1;
+  public int[] flameGradient2;
+  public Stream stream;
+  public int lastLoginIp;
+  public int splitpublicChat;
+  public Background invBack;
+  public Background mapBack;
+  public Background chatBack;
+  public String[] menuActionName;
+  public Sprite titleBackgroundLeft;
+  public Sprite titleBackgroundRight;
+  public static final int[] additionalColorCodes = {
+          9104, 10275, 7595, 3610, 7975, 8526, 918, 38802, 24466, 10145, 58654, 5027, 1457, 16565, 34991,
+          25486
+  };
+  public static boolean flagged;
+  public final int[] sound;
+  public int flameDrawingCounter;
+  public int minimapRotationOffset;
+  public int minimapHorizontalSpeed;
+  public int chatScrollHeight;
+  public String promptInput;
+  public int clickCycle;
+  public int[][][] tileHeights;
+  public long serverSessionKey;
+  public int loginScreenCursorPos;
+  public final Background[] modIcons;
+  public long lastMouseClickTime;
+  public int tabID;
+  public int hintNpcIndex;
+  public boolean inputTaken;
+  public int inputDialogState;
+  public static int npcClickCounter;
+  //public int nextSong;
+  //public boolean songChanging;
+  public final int[] minimapLineLengths;
+  public CollisionMap[] collisionMaps;
+  public static int bitMasks[];
+  public boolean chatSettingsUpdateNeeded;
+  public int[] regionBaseIds;
+  public int[] terrainArchiveIds;
+  public int[] objectArchiveIds;
+  public int lastMousePacketX;
+  public int lastMousePacketY;
+  //public final int pathSearchMax = 100;
+  public final int[] soundType;
+  public boolean itemBeingDragged;
+  public int atInventoryLoopCycle;
+  public int atInventoryInterface;
+  public int atInventoryIndex;
+  public int atInventoryInterfaceType;
+  public byte[][] objectMapData;
+  public int tradeMode;
+  public int chatEffectsState;
+  public int restrictedArea;
+  public final boolean rsAlreadyLoaded;
+  public int oneMouseButtonMode;
+  public int minimapRandomTimer;
+  public boolean welcomeScreenRaised;
+  public boolean messagePromptRaised;
+  public static int soundBufferOffset;
+  public byte[][][] tileFlags;
+  //public int previousSong;
+  public int destX;
+  public int destY;
+  public Sprite minimapImage;
+  public int alternatePathFound;
+  public int waveCycle;
+  public String loginMessage1;
+  public String loginMessage2;
+  public int mapEventX;
+  public int mapEventY;
+  public TextDrawingArea plainFont;
+  public TextDrawingArea boldFont;
+  public TextDrawingArea chatTextDrawingArea;
+  public int flameOffset;
+  public int backDialogID;
+  public int[] pathTileX;
+  public int[] pathTileY;
+  public int itemSelected;
+  public int selectedItemSlot;
+  public int selectedItemInterfaceId;
+  public int selectedItemId;
+  public String selectedItemName;
+  public static int walkPacketCounter;
+  public int unusedSlotIndex;
+  public static int tiara;
+  //public static int unusedSettingValue;
+  public boolean showInfo = false;
+  //public static int midiVolume = 256;
+  /*public static int[] midiChannels =
+          new int[] {
+                  12800, 12800, 12800, 12800, 12800, 12800, 12800, 12800, 12800, 12800, 12800, 12800, 12800,
+                  12800, 12800, 12800
+          };*/
+  //public static int midiFadeCycles = 0;
+  //public static MidiPlayer midiPlayer;
+  //public static boolean fetchMusic = false;
+  //public static int musicVolume2;
+  //public static int currentMidiVolume = -1;
+  //public static byte[] queuedMidiData;
+  //public static int fadeVolume = 0;
+  //public static int fadeStep = 0;
+  //public static int queuedMidiVolume;
+  //public static boolean midiLooping;
+  //public static int nextSongDelay;
+  //public static boolean autoPlaySong;
+  //public static int queuedSongId;
+  //public static int musicVolume = 0;
+  public int[] gameScreenOffsets;
+  public int currentDateOffset;
+  //public int loginScreenDelay;
+  public int lastPasswordChange;
+  //public int scrollPadding;
+  //public int unusedRecoveryDate;
+  public int recoveryQuestionChangeDate;
+  public static int zoom = 3;
   private boolean graphicsEnabled = true;
+
+  static {
+    levelExperience = new int[99];
+    int i = 0;
+    for (int j = 0; j < 99; j++) {
+      int l = j + 1;
+      int i1 = (int) ((double) l + 300D * Math.pow(2D, (double) l / 7D));
+      i += i1;
+      levelExperience[j] = i / 4;
+    }
+
+    bitMasks = new int[32];
+    i = 2;
+    for (int k = 0; k < 32; k++) {
+      bitMasks[k] = i - 1;
+      i += i;
+    }
+  }
+
+  public ISAACRandomGen encryption;
+  public OnDemandFetcher onDemandFetcher;
+  MusicManager musicManager;
+
+  public Game() {
+    // Test if they're on 32-bit, warn them if they are
+    if (!System.getProperty("sun.arch.data.model").contains("64")) {
+      JOptionPane.showMessageDialog(
+              null,
+              "You're running 32-bit java. This will definitely cause problems.\nYou can get the right Java 8 at AdoptOpenJDK.net",
+              "You're running 32-bit Java!",
+              JOptionPane.INFORMATION_MESSAGE);
+      System.out.println("Please upgrade to 64-bit java to avoid problems! (AdoptOpenJDK.net)");
+    }
+    if (Double.parseDouble(System.getProperty("java.specification.version")) >= 1.9) {
+      JOptionPane.showMessageDialog(
+              null,
+              "You're not running Java 8. If you're using Parabot, this will cause problems!\nYou can get Java 8 from AdoptOpenJDK.net",
+              "You're not running Java 8!",
+              JOptionPane.INFORMATION_MESSAGE);
+      System.out.println("Please downgrade to Java 8 to avoid problems! (AdoptOpenJDK.net)");
+    }
+    server = ClientSettings.SERVER_IP;
+    pathDistances = new int[104][104];
+    friendsNodeIDs = new int[200];
+    groundArray = new NodeList[4][104][104];
+    flameThreadActive = false;
+    chatBuffer = new Stream(new byte[5000]);
+    npcArray = new NPC[16384];
+    npcIndices = new int[16384];
+    removedEntityIndices = new int[1000];
+    updateBuffer = Stream.create();
+    soundEffectEnabled = true;
+    openInterfaceID = -1;
+    currentExp = new int[Skills.skillsCount];
+    useJaggrab = false;
+    cameraShakeAmplitude = new int[5];
+    selectedTargetId = -1;
+    tabFlashing = new boolean[5];
+    drawFlames = false;
+    reportAbuseInput = "";
+    localPlayerIndex = -1;
+    menuOpen = false;
+    inputString = "";
+    maxPlayers = 2048;
+    myPlayerIndex = 2047;
+    playerArray = new Player[maxPlayers];
+    playerIndices = new int[maxPlayers];
+    playerUpdateIndices = new int[maxPlayers];
+    playerBuffers = new Stream[maxPlayers];
+    cameraYawOffsetSpeed = 1;
+    pathDirections = new int[104][104];
+    scrollBarLightColor = 0x766654;
+    soundPayload = new byte[16384];
+    currentStats = new int[Skills.skillsCount];
+    ignoreListAsLongs = new long[100];
+    loadingError = false;
+    scrollBarDarkColor = 0x332d25;
+    cameraShakeSpeed = new int[5];
+    occupiedTiles = new int[104][104];
+    chatTypes = new int[100];
+    chatNames = new String[100];
+    chatMessages = new String[100];
+    sideIcons = new Background[13];
+    hasFocus = true;
+    friendsListAsLongs = new long[200];
+    //AudioManager.currentSong = -1;
+    drawingFlames = false;
+    spriteDrawX = -1;
+    spriteDrawY = -1;
+    mapBackLeft = new int[33];
+    flameLineOffsets = new int[256];
+    decompressors = new util.compression.Decompressor[5];
+    variousSettings = new int[2000];
+    scrollBarDragging = false;
+    maxDisplayedText = 50;
+    textX = new int[maxDisplayedText];
+    textY = new int[maxDisplayedText];
+    textHeight = new int[maxDisplayedText];
+    textWidth = new int[maxDisplayedText];
+    textColors = new int[maxDisplayedText];
+    textEffects = new int[maxDisplayedText];
+    textCycles = new int[maxDisplayedText];
+    overheadTexts = new String[maxDisplayedText];
+    lastPlane = -1;
+    hitMarks = new Sprite[20];
+    characterColorIndices = new int[5];
+    scrollBarColor = 0x23201b;
+    amountOrNameInput = "";
+    projectileList = new NodeList();
+    cameraUpdatePending = false;
+    overlayInterfaceId = -1;
+    cameraShakeCycle = new int[5];
+    characterDesignChanged = false;
+    mapFunctions = new Sprite[100];
+    dialogID = -1;
+    maxStats = new int[Skills.skillsCount];
+    varpArray = new int[2000];
+    isMaleCharacter = true;
+    minimapLineOffset = new int[151];
+    flashingTabId = -1;
+    graphicsObjectList = new NodeList();
+    mapBackWidths = new int[33];
+    chatScrollComponent = new RSInterface();
+    mapScenes = new Background[100];
+    scrollBarHandleColor = 0x4d4233;
+    characterStyle = new int[7];
+    minimapIconX = new int[1000];
+    minimapIconY = new int[1000];
+    regionLoading = false;
+    friendsList = new String[200];
+    inStream = Stream.create();
+    expectedCRCs = new int[9];
+    menuActionCmd2 = new int[500];
+    menuActionCmd3 = new int[500];
+    menuActionID = new int[500];
+    menuActionCmd1 = new int[500];
+    headIcons = new Sprite[20];
+    headIconsHint = new Sprite[20];
+    skullIcons = new Sprite[20];
+    tabAreaAltered = false;
+    inputPrompt = "";
+    atPlayerActions = new String[5];
+    atPlayerArray = new boolean[5];
+    dynamicRegionData = new int[4][13][13];
+    cameraYOffsetSpeed = 2;
+    minimapIconSprites = new Sprite[1000];
+    forceMapReload = false;
+    actionPending = false;
+    crosses = new Sprite[8];
+    //musicEnabled = true;
+    needDrawTabArea = false;
+    loggedIn = false;
+    canMute = false;
+    isDynamicRegion = false;
+    isCameraLocked = false;
+    minimapVerticalSpeed = 1;
+    myUsername = "";
+    myPassword = "";
+    genericLoadingError = false;
+    reportAbuseInterfaceID = -1;
+    pendingSpawns = new NodeList();
+    cameraPitch = 128;
+    invOverlayInterfaceID = -1;
+    stream = Stream.create();
+    menuActionName = new String[500];
+    cameraShakeFrequency = new int[5];
+    minimapHorizontalSpeed = 2;
+    chatScrollHeight = 78;
+    promptInput = "";
+    modIcons = new Background[2];
+    tabID = 3;
+    inputTaken = false;
+    //songChanging = true;
+    minimapLineLengths = new int[151];
+    collisionMaps = new CollisionMap[4];
+    chatSettingsUpdateNeeded = false;
+    itemBeingDragged = false;
+    sound = new int[50];
+    soundType = new int[50];
+    soundDelay = new int[50];
+    soundVolume = new int[50];
+    rsAlreadyLoaded = false;
+    welcomeScreenRaised = false;
+    messagePromptRaised = false;
+    loginMessage1 = "";
+    loginMessage2 = "";
+    backDialogID = -1;
+    cameraXOffsetSpeed = 2;
+    pathTileX = new int[4000];
+    pathTileY = new int[4000];
+    unusedSlotIndex = -1;
+    fileCRC = new CRC32();
+  }
+
+  public void init() {
+    try {
+      portOff = 0;
+      setHighMem();
+      isMembers = true;
+      Signlink.storeid = 32;
+      Signlink.startpriv(InetAddress.getLocalHost());
+      initClientFrame(503, 765);
+    } catch (Exception exception) {
+      return;
+    }
+  }
+
+  void startUp() {
+    drawLoadingText(20, "Starting up");
+    //		try {
+    //			CacheDownloader.download(this, new
+    // URL("https://dl.dropboxusercontent.com/u/19852069/assets.zip"));
+    //		} catch (IOException e) {
+    //			e.printStackTrace();
+    //		}
+    if (Signlink.sunjava) {
+      super.minDelay = 5;
+    }
+    initialLoadComplete = true;
+    boolean flag = true;
+    if (!flag) {
+      genericLoadingError = true;
+      return;
+    }
+    if (Signlink.cache_dat != null) {
+      for (int i = 0; i < 5; i++) {
+        decompressors[i] =
+                new util.compression.Decompressor(Signlink.cache_dat, Signlink.cache_idx[i], i + 1);
+      }
+    }
+    try {
+      connectServer();
+      titleStreamLoader = streamLoaderForName(1, "title screen", "title", expectedCRCs[1], 25);
+      plainFont = new TextDrawingArea(false, "p11_full", titleStreamLoader);
+      boldFont = new TextDrawingArea(false, "p12_full", titleStreamLoader);
+      chatTextDrawingArea = new TextDrawingArea(false, "b12_full", titleStreamLoader);
+      TextDrawingArea smallFont = new TextDrawingArea(true, "q8_full", titleStreamLoader);
+      drawLogo();
+      loadTitleScreen();
+      // repackCacheIndex(1);
+      StreamLoader streamLoader = streamLoaderForName(2, "config", "config", expectedCRCs[2], 30);
+      StreamLoader streamLoader_1 =
+              streamLoaderForName(3, "interface", "interface", expectedCRCs[3], 35);
+      StreamLoader streamLoader_2 =
+              streamLoaderForName(4, "2d graphics", "media", expectedCRCs[4], 40);
+      StreamLoader streamLoader_3 =
+              streamLoaderForName(6, "textures", "textures", expectedCRCs[6], 45);
+      StreamLoader streamLoader_4 =
+              streamLoaderForName(7, "chat system", "wordenc", expectedCRCs[7], 50);
+      StreamLoader streamLoader_5 =
+              streamLoaderForName(8, "sound effects", "sounds", expectedCRCs[8], 55);
+      tileFlags = new byte[4][104][104];
+      tileHeights = new int[4][105][105];
+      worldController = new WorldController(tileHeights);
+      for (int j = 0; j < 4; j++) {
+        collisionMaps[j] = new CollisionMap();
+      }
+
+      minimapImage = new Sprite(512, 512);
+      StreamLoader streamLoader_6 =
+              streamLoaderForName(5, "update list", "versionlist", expectedCRCs[5], 60);
+      drawLoadingText(60, "Connecting to update server");
+      onDemandFetcher = new OnDemandFetcher();
+      onDemandFetcher.start(streamLoader_6, this);
+      musicManager = new MusicManager(this);
+      MusicManager.constructMusic();
+      musicManager.musics();
+      AnimFrame.init(onDemandFetcher.getAnimCount());
+      Model.init(onDemandFetcher.getVersionCount(0), onDemandFetcher);
+      if (!lowMem) {
+        musicManager.queueSong(10, MusicManager.musicVolume, false, 0);
+        while (onDemandFetcher.getNodeCount() > 0) {
+          processOnDemandQueue();
+          try {
+            Thread.sleep(100L);
+          } catch (Exception _ex) {
+          }
+          if (onDemandFetcher.socketErrorCount > 3) {
+            loadError();
+            return;
+          }
+        }
+      }
+      drawLoadingText(65, "Requesting animations");
+      int k = onDemandFetcher.getVersionCount(1);
+      for (int i1 = 0; i1 < k; i1++) {
+        onDemandFetcher.queueRequest(1, i1);
+      }
+
+      while (onDemandFetcher.getNodeCount() > 0) {
+        int j1 = k - onDemandFetcher.getNodeCount();
+        if (j1 > 0) {
+          drawLoadingText(65, "Loading animations - " + j1 * 100 / k + "%");
+        }
+        processOnDemandQueue();
+        try {
+          Thread.sleep(100L);
+        } catch (Exception _ex) {
+        }
+        if (onDemandFetcher.socketErrorCount > 3) {
+          loadError();
+          return;
+        }
+      }
+      drawLoadingText(70, "Requesting models");
+      k = onDemandFetcher.getVersionCount(0);
+      for (int k1 = 0; k1 < k; k1++) {
+        int l1 = onDemandFetcher.getModelIndex(k1);
+        if ((l1 & 1) != 0) {
+          onDemandFetcher.queueRequest(0, k1);
+        }
+      }
+
+      k = onDemandFetcher.getNodeCount();
+      while (onDemandFetcher.getNodeCount() > 0) {
+        int i2 = k - onDemandFetcher.getNodeCount();
+        if (i2 > 0) {
+          drawLoadingText(70, "Loading models - " + i2 * 100 / k + "%");
+        }
+        processOnDemandQueue();
+        try {
+          Thread.sleep(100L);
+        } catch (Exception _ex) {
+        }
+      }
+      if (decompressors[0] != null) {
+        drawLoadingText(75, "Requesting maps");
+        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(0, 48, 47));
+        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(1, 48, 47));
+        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(0, 48, 48));
+        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(1, 48, 48));
+        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(0, 48, 49));
+        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(1, 48, 49));
+        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(0, 47, 47));
+        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(1, 47, 47));
+        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(0, 47, 48));
+        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(1, 47, 48));
+        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(0, 148, 48));
+        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(1, 148, 48));
+        k = onDemandFetcher.getNodeCount();
+        while (onDemandFetcher.getNodeCount() > 0) {
+          int j2 = k - onDemandFetcher.getNodeCount();
+          if (j2 > 0) {
+            drawLoadingText(75, "Loading maps - " + j2 * 100 / k + "%");
+          }
+          processOnDemandQueue();
+          try {
+            Thread.sleep(100L);
+          } catch (Exception _ex) {
+          }
+        }
+      }
+      k = onDemandFetcher.getVersionCount(0);
+      for (int k2 = 0; k2 < k; k2++) {
+        int l2 = onDemandFetcher.getModelIndex(k2);
+        byte byte0 = 0;
+        if ((l2 & 8) != 0) {
+          byte0 = 10;
+        } else if ((l2 & 0x20) != 0) {
+          byte0 = 9;
+        } else if ((l2 & 0x10) != 0) {
+          byte0 = 8;
+        } else if ((l2 & 0x40) != 0) {
+          byte0 = 7;
+        } else if ((l2 & 0x80) != 0) {
+          byte0 = 6;
+        } else if ((l2 & 2) != 0) {
+          byte0 = 5;
+        } else if ((l2 & 4) != 0) {
+          byte0 = 4;
+        }
+        if ((l2 & 1) != 0) {
+          byte0 = 3;
+        }
+        if (byte0 != 0) {
+          onDemandFetcher.validateOrQueue(byte0, 0, k2);
+        }
+      }
+
+      onDemandFetcher.requestMapFiles(isMembers);
+      if (!lowMem) {
+        int l = onDemandFetcher.getVersionCount(2);
+        for (int i3 = 1; i3 < l; i3++) {
+          if (onDemandFetcher.isMidiRequired(i3)) {
+            onDemandFetcher.validateOrQueue((byte) 1, 2, i3);
+          }
+        }
+      }
+      drawLoadingText(80, "Unpacking media");
+      invBack = new Background(streamLoader_2, "invback", 0);
+      chatBack = new Background(streamLoader_2, "chatback", 0);
+      mapBack = new Background(streamLoader_2, "mapback", 0);
+      backBase1 = new Background(streamLoader_2, "backbase1", 0);
+      backBase2 = new Background(streamLoader_2, "backbase2", 0);
+      backHmid1 = new Background(streamLoader_2, "backhmid1", 0);
+      for (int j3 = 0; j3 < 13; j3++) {
+        sideIcons[j3] = new Background(streamLoader_2, "sideicons", j3);
+      }
+
+      compass = new Sprite(streamLoader_2, "compass", 0);
+      mapEdge = new Sprite(streamLoader_2, "mapedge", 0);
+      mapEdge.crop();
+
+      multiOverlay = new Sprite(streamLoader_2, "overlay_multiway", 0);
+      try {
+        for (int k3 = 0; k3 < 100; k3++) {
+          mapScenes[k3] = new Background(streamLoader_2, "mapscene", k3);
+        }
+
+      } catch (Exception _ex) {
+      }
+      try {
+        for (int l3 = 0; l3 < 100; l3++) {
+          mapFunctions[l3] = new Sprite(streamLoader_2, "mapfunction", l3);
+        }
+
+      } catch (Exception _ex) {
+      }
+      try {
+        for (int i4 = 0; i4 < 20; i4++) {
+          hitMarks[i4] = new Sprite(streamLoader_2, "hitmarks", i4);
+        }
+
+      } catch (Exception _ex) {
+      }
+      try {
+        for (int h1 = 0; h1 < 6; h1++) {
+          headIconsHint[h1] = new Sprite(streamLoader_2, "headicons_hint", h1);
+        }
+        for (int j4 = 0; j4 < 8; j4++) {
+          headIcons[j4] = new Sprite(streamLoader_2, "headicons_prayer", j4);
+        }
+        for (int j45 = 0; j45 < 3; j45++) {
+          skullIcons[j45] = new Sprite(streamLoader_2, "headicons_pk", j45);
+        }
+      } catch (Exception _ex) {
+      }
+      mapFlag = new Sprite(streamLoader_2, "mapmarker", 0);
+      mapMarker = new Sprite(streamLoader_2, "mapmarker", 1);
+      for (int k4 = 0; k4 < 8; k4++) {
+        crosses[k4] = new Sprite(streamLoader_2, "cross", k4);
+      }
+
+      mapDotItem = new Sprite(streamLoader_2, "mapdots", 0);
+      mapDotNPC = new Sprite(streamLoader_2, "mapdots", 1);
+      mapDotPlayer = new Sprite(streamLoader_2, "mapdots", 2);
+      mapDotFriend = new Sprite(streamLoader_2, "mapdots", 3);
+      mapDotTeam = new Sprite(streamLoader_2, "mapdots", 4);
+      scrollBar1 = new Background(streamLoader_2, "scrollbar", 0);
+      scrollBar2 = new Background(streamLoader_2, "scrollbar", 1);
+      redStone1 = new Background(streamLoader_2, "redstone1", 0);
+      redStone2 = new Background(streamLoader_2, "redstone2", 0);
+      redStone3 = new Background(streamLoader_2, "redstone3", 0);
+      redStone1_2 = new Background(streamLoader_2, "redstone1", 0);
+      redStone1_2.flipHorizontal();
+      redStone2_2 = new Background(streamLoader_2, "redstone2", 0);
+      redStone2_2.flipHorizontal();
+      redStone1_3 = new Background(streamLoader_2, "redstone1", 0);
+      redStone1_3.flipVertical();
+      redStone2_3 = new Background(streamLoader_2, "redstone2", 0);
+      redStone2_3.flipVertical();
+      redStone3_2 = new Background(streamLoader_2, "redstone3", 0);
+      redStone3_2.flipVertical();
+      redStone1_4 = new Background(streamLoader_2, "redstone1", 0);
+      redStone1_4.flipHorizontal();
+      redStone1_4.flipVertical();
+      redStone2_4 = new Background(streamLoader_2, "redstone2", 0);
+      redStone2_4.flipHorizontal();
+      redStone2_4.flipVertical();
+      for (int l4 = 0; l4 < 2; l4++) {
+        modIcons[l4] = new Background(streamLoader_2, "mod_icons", l4);
+      }
+
+      Sprite sprite = new Sprite(streamLoader_2, "backleft1", 0);
+      backLeftIP1 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
+      sprite.drawSprite(0, 0);
+      sprite = new Sprite(streamLoader_2, "backleft2", 0);
+      backLeftIP2 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
+      sprite.drawSprite(0, 0);
+      sprite = new Sprite(streamLoader_2, "backright1", 0);
+      backRightIP1 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
+      sprite.drawSprite(0, 0);
+      sprite = new Sprite(streamLoader_2, "backright2", 0);
+      backRightIP2 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
+      sprite.drawSprite(0, 0);
+      sprite = new Sprite(streamLoader_2, "backtop1", 0);
+      backTopIP1 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
+      sprite.drawSprite(0, 0);
+      sprite = new Sprite(streamLoader_2, "backvmid1", 0);
+      backVmidIP1 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
+      sprite.drawSprite(0, 0);
+      sprite = new Sprite(streamLoader_2, "backvmid2", 0);
+      backVmidIP2 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
+      sprite.drawSprite(0, 0);
+      sprite = new Sprite(streamLoader_2, "backvmid3", 0);
+      backVmidIP3 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
+      sprite.drawSprite(0, 0);
+      sprite = new Sprite(streamLoader_2, "backhmid2", 0);
+      midSubscreenBuffer = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
+      sprite.drawSprite(0, 0);
+      int i5 = (int) (Math.random() * 21D) - 10;
+      int j5 = (int) (Math.random() * 21D) - 10;
+      int k5 = (int) (Math.random() * 21D) - 10;
+      int l5 = (int) (Math.random() * 41D) - 20;
+      for (int i6 = 0; i6 < 100; i6++) {
+        if (mapFunctions[i6] != null) {
+          mapFunctions[i6].adjustRgb(i5 + l5, j5 + l5, k5 + l5);
+        }
+        if (mapScenes[i6] != null) {
+          mapScenes[i6].adjustPalette(i5 + l5, j5 + l5, k5 + l5);
+        }
+      }
+
+      drawLoadingText(83, "Unpacking textures");
+      Texture.loadTextures(streamLoader_3);
+      Texture.setBrightness(0.80000000000000004D);
+      Texture.initCache();
+      drawLoadingText(86, "Unpacking config");
+      Animation.unpackConfig(streamLoader);
+      ObjectDef.unpackConfig(streamLoader);
+      FloorOverlay.unpackConfig(streamLoader);
+      ItemDef.unpackConfig(streamLoader);
+      EntityDef.unpackConfig(streamLoader);
+      IDK.unpackConfig(streamLoader);
+      SpotAnim.unpackConfig(streamLoader);
+      Varp.unpackConfig(streamLoader);
+      VarBit.unpackConfig(streamLoader);
+      ItemDef.isMembers = isMembers;
+      // if (!lowMem) {
+      drawLoadingText(90, "Unpacking sounds");
+      byte abyte0[] = streamLoader_5.getFileData("sounds.dat");
+      Stream stream = new Stream(abyte0);
+      Sounds.unpack(stream);
+      // }
+      drawLoadingText(95, "Unpacking interfaces");
+      TextDrawingArea textFonts[] = {plainFont, boldFont, chatTextDrawingArea, smallFont};
+      RSInterface.unpack(streamLoader_1, textFonts, streamLoader_2);
+      drawLoadingText(100, "Preparing game engine");
+      for (int j6 = 0; j6 < 33; j6++) {
+        int k6 = 999;
+        int i7 = 0;
+        for (int k7 = 0; k7 < 34; k7++) {
+          if (mapBack.pixels[k7 + j6 * mapBack.width] == 0) {
+            if (k6 == 999) {
+              k6 = k7;
+            }
+            continue;
+          }
+          if (k6 == 999) {
+            continue;
+          }
+          i7 = k7;
+          break;
+        }
+
+        mapBackLeft[j6] = k6;
+        mapBackWidths[j6] = i7 - k6;
+      }
+
+      for (int l6 = 5; l6 < 156; l6++) {
+        int j7 = 999;
+        int l7 = 0;
+        for (int j8 = 25; j8 < 172; j8++) {
+          if (mapBack.pixels[j8 + l6 * mapBack.width] == 0 && (j8 > 34 || l6 > 34)) {
+            if (j7 == 999) {
+              j7 = j8;
+            }
+            continue;
+          }
+          if (j7 == 999) {
+            continue;
+          }
+          l7 = j8;
+          break;
+        }
+
+        minimapLineOffset[l6 - 5] = j7 - 25;
+        minimapLineLengths[l6 - 5] = l7 - j7;
+      }
+      Texture.resize(765, 503);
+      gameScreenOffsets = Texture.lineOffsets;
+      Texture.resize(479, 96);
+      chatAreaOffsets = Texture.lineOffsets;
+      Texture.resize(190, 261);
+      tabAreaOffsets = Texture.lineOffsets;
+      Texture.resize(512, 334);
+      chatBoxAreaOffsets = Texture.lineOffsets;
+      int ai[] = new int[9];
+      for (int i8 = 0; i8 < 9; i8++) {
+        int k8 = 128 + i8 * 32 + 15;
+        int l8 = 600 + k8 * 3;
+        int i9 = Texture.sineTable[k8];
+        ai[i8] = l8 * i9 >> 16;
+      }
+
+      WorldController.buildVisibilityMap(500, 800, 512, 334, ai);
+      Censor.loadConfig(streamLoader_4);
+      mouseDetection = new MouseDetection(this);
+      startRunnable(mouseDetection, 10);
+      DynamicObject.client = this;
+      ObjectDef.clientInstance = this;
+      EntityDef.clientInstance = this;
+
+      if (myUsername != "" && myPassword != "") login(myUsername, myPassword, false);
+      return;
+    } catch (Exception exception) {
+      Signlink.reporterror("loaderror " + errorMessage + " " + loadingPercent);
+    }
+    loadingError = true;
+  }
+
+  public void processGameLoop() {
+    if (rsAlreadyLoaded || loadingError || genericLoadingError) {
+      return;
+    }
+    loopCycle++;
+    if (!loggedIn) {
+      processLoginScreenInput();
+    } else {
+      mainGameProcessor();
+    }
+    processOnDemandQueue();
+    MusicManager.processMusicQueue();
+  }
+
+  public void mainGameProcessor() {
+    if (systemUpdateTimer > 1) {
+      systemUpdateTimer--;
+    }
+    if (reconnectDelay > 0) {
+      reconnectDelay--;
+    }
+    // TODO: Technically, this loop should be < 5 for authenticity, but until we reduce server
+    // inefficiencies
+    // (for example killing a bunch of cows results in client lag,
+    // likely from all the items on the ground for example), < 100 is fine.
+    // OSRS uses < 100 and there are no drawbacks from having this < 100.
+    for (int j = 0; j < 100; j++) {
+      if (!parsePacket()) {
+        break;
+      }
+    }
+
+    if (!loggedIn) {
+      return;
+    }
+    synchronized (mouseDetection.syncObject) {
+      if (flagged) {
+        if (super.clickMode3 != 0 || mouseDetection.coordsIndex >= 40) {
+          stream.createFrame(45);
+          stream.writeWordBigEndian(0);
+          int j2 = stream.currentOffset;
+          int j3 = 0;
+          for (int j4 = 0; j4 < mouseDetection.coordsIndex; j4++) {
+            if (j2 - stream.currentOffset >= 240) {
+              break;
+            }
+            j3++;
+            int l4 = mouseDetection.coordsY[j4];
+            if (l4 < 0) {
+              l4 = 0;
+            } else if (l4 > 502) {
+              l4 = 502;
+            }
+            int k5 = mouseDetection.coordsX[j4];
+            if (k5 < 0) {
+              k5 = 0;
+            } else if (k5 > 764) {
+              k5 = 764;
+            }
+            int i6 = l4 * 765 + k5;
+            if (mouseDetection.coordsY[j4] == -1 && mouseDetection.coordsX[j4] == -1) {
+              k5 = -1;
+              l4 = -1;
+              i6 = 0x7ffff;
+            }
+            if (k5 == lastMousePacketX && l4 == lastMousePacketY) {
+              if (mouseIdleTicks < 2047) {
+                mouseIdleTicks++;
+              }
+            } else {
+              int j6 = k5 - lastMousePacketX;
+              lastMousePacketX = k5;
+              int k6 = l4 - lastMousePacketY;
+              lastMousePacketY = l4;
+              if (mouseIdleTicks < 8 && j6 >= -32 && j6 <= 31 && k6 >= -32 && k6 <= 31) {
+                j6 += 32;
+                k6 += 32;
+                stream.writeWord((mouseIdleTicks << 12) + (j6 << 6) + k6);
+                mouseIdleTicks = 0;
+              } else if (mouseIdleTicks < 8) {
+                stream.writeDWordBigEndian(0x800000 + (mouseIdleTicks << 19) + i6);
+                mouseIdleTicks = 0;
+              } else {
+                stream.writeDWord(0xc0000000 + (mouseIdleTicks << 19) + i6);
+                mouseIdleTicks = 0;
+              }
+            }
+          }
+
+          stream.writeBytes(stream.currentOffset - j2);
+          if (j3 >= mouseDetection.coordsIndex) {
+            mouseDetection.coordsIndex = 0;
+          } else {
+            mouseDetection.coordsIndex -= j3;
+            for (int i5 = 0; i5 < mouseDetection.coordsIndex; i5++) {
+              mouseDetection.coordsX[i5] = mouseDetection.coordsX[i5 + j3];
+              mouseDetection.coordsY[i5] = mouseDetection.coordsY[i5 + j3];
+            }
+          }
+        }
+      } else {
+        mouseDetection.coordsIndex = 0;
+      }
+    }
+    if (super.clickMode3 != 0) {
+      long l = (super.lastClickTime - lastMouseClickTime) / 50L;
+      if (l > 4095L) {
+        l = 4095L;
+      }
+      lastMouseClickTime = super.lastClickTime;
+      int k2 = super.saveClickY;
+      if (k2 < 0) {
+        k2 = 0;
+      } else if (k2 > 502) {
+        k2 = 502;
+      }
+      int k3 = super.saveClickX;
+      if (k3 < 0) {
+        k3 = 0;
+      } else if (k3 > 764) {
+        k3 = 764;
+      }
+      int k4 = k2 * 765 + k3;
+      int j5 = 0;
+      if (super.clickMode3 == 2) {
+        j5 = 1;
+      }
+      int l5 = (int) l;
+      stream.createFrame(241);
+      stream.writeDWord((l5 << 20) + (j5 << 19) + k4);
+    }
+    if (cameraUpdateDelay > 0) {
+      cameraUpdateDelay--;
+    }
+    if (super.keyArray[1] == 1
+            || super.keyArray[2] == 1
+            || super.keyArray[3] == 1
+            || super.keyArray[4] == 1) {
+      cameraUpdatePending = true;
+    }
+    if (cameraUpdatePending && cameraUpdateDelay <= 0) {
+      cameraUpdateDelay = 20;
+      cameraUpdatePending = false;
+      stream.createFrame(86);
+      stream.writeWord(cameraPitch);
+      stream.writeShortA(cameraYaw);
+    }
+    if (super.awtFocus && !hasFocus) {
+      hasFocus = true;
+      stream.createFrame(3);
+      stream.writeWordBigEndian(1);
+    }
+    if (!super.awtFocus && hasFocus) {
+      hasFocus = false;
+      stream.createFrame(3);
+      stream.writeWordBigEndian(0);
+    }
+    loadingStages();
+    processPendingSpawns();
+    processSoundQueue();
+    connectionTimeoutCounter++;
+    if (connectionTimeoutCounter > 750) {
+      dropClient();
+    }
+    animatePlayers();
+    animateNpcs();
+    updateEntityText();
+    animationCycle++;
+    if (crossType != 0) {
+      crossIndex += 20;
+      if (crossIndex >= 400) {
+        crossType = 0;
+      }
+    }
+    if (atInventoryInterfaceType != 0) {
+      atInventoryLoopCycle++;
+      if (atInventoryLoopCycle >= 15) {
+        if (atInventoryInterfaceType == 2) {
+          needDrawTabArea = true;
+        }
+        if (atInventoryInterfaceType == 3) {
+          inputTaken = true;
+        }
+        atInventoryInterfaceType = 0;
+      }
+    }
+    if (activeInterfaceType != 0) {
+      dragCounter++;
+      if (super.mouseX > dragStartX + 5
+              || super.mouseX < dragStartX - 5
+              || super.mouseY > dragStartY + 5
+              || super.mouseY < dragStartY - 5) {
+        itemBeingDragged = true;
+      }
+      if (super.clickMode2 == 0) {
+        if (activeInterfaceType == 2) {
+          needDrawTabArea = true;
+        }
+        if (activeInterfaceType == 3) {
+          inputTaken = true;
+        }
+        activeInterfaceType = 0;
+        if (itemBeingDragged && dragCounter >= 5) {
+          lastActiveInvInterface = -1;
+          processRightClick();
+          if (lastActiveInvInterface == dragInterfaceId && mouseInvInterfaceIndex != draggedSlot) {
+            RSInterface dragInterface = RSInterface.interfaceCache[dragInterfaceId];
+            int j1 = 0;
+            if (configActionId == 1 && dragInterface.contentType == 206) {
+              j1 = 1;
+            }
+            if (dragInterface.inv[mouseInvInterfaceIndex] <= 0) {
+              j1 = 0;
+            }
+            if (dragInterface.insertItems) {
+              int l2 = draggedSlot;
+              int l3 = mouseInvInterfaceIndex;
+              dragInterface.inv[l3] = dragInterface.inv[l2];
+              dragInterface.invStackSizes[l3] = dragInterface.invStackSizes[l2];
+              dragInterface.inv[l2] = -1;
+              dragInterface.invStackSizes[l2] = 0;
+            } else if (j1 == 1) {
+              int i3 = draggedSlot;
+              for (int i4 = mouseInvInterfaceIndex; i3 != i4; ) {
+                if (i3 > i4) {
+                  dragInterface.swapInventoryItems(i3, i3 - 1);
+                  i3--;
+                } else if (i3 < i4) {
+                  dragInterface.swapInventoryItems(i3, i3 + 1);
+                  i3++;
+                }
+              }
+
+            } else {
+              dragInterface.swapInventoryItems(draggedSlot, mouseInvInterfaceIndex);
+            }
+            stream.createFrame(214);
+            stream.writeShortLEA(dragInterfaceId);
+            stream.writeByteNeg(j1);
+            stream.writeShortLEA(draggedSlot);
+            stream.writeShortLEDup(mouseInvInterfaceIndex);
+          }
+        } else if ((oneMouseButtonMode == 1 || menuHasAddFriend(menuActionRow - 1))
+                && menuActionRow > 2) {
+          determineMenuSize();
+        } else if (menuActionRow > 0) {
+          doAction(menuActionRow - 1);
+        }
+        atInventoryLoopCycle = 10;
+        super.clickMode3 = 0;
+      }
+    }
+    if (WorldController.clickedTileX != -1) {
+      int k = WorldController.clickedTileX;
+      int k1 = WorldController.clickedTileY;
+      boolean flag =
+              doWalkTo(0, 0, 0, 0, myPlayer.smallY[0], 0, 0, k1, myPlayer.smallX[0], true, k);
+      WorldController.clickedTileX = -1;
+      WorldController.clickedTileY = -1;
+      if (flag) {
+        crossX = super.saveClickX;
+        crossY = super.saveClickY;
+        crossType = 1;
+        crossIndex = 0;
+      }
+    }
+    if (super.clickMode3 == 1 && messagePrompt != null) {
+      messagePrompt = null;
+      inputTaken = true;
+      super.clickMode3 = 0;
+    }
+    if (!processMenuClick()) {
+      processMainScreenClick();
+      processTabClick();
+      processChatModeClick();
+    }
+    if (super.clickMode2 == 1 || super.clickMode3 == 1) {
+      clickCycle++;
+    }
+    if (loadingStage == 2) {
+      updateCameraPosition();
+    }
+    if (loadingStage == 2 && isCameraLocked) {
+      calcCameraPos();
+    }
+    for (int i1 = 0; i1 < 5; i1++) {
+      cameraShakeCycle[i1]++;
+    }
+
+    processInput();
+    super.idleTime++; // Idle timer nope!
+    /*if (super.idleTime > 12000) {
+    	reconnectDelay = 250;
+    	super.idleTime -= 500;
+    	stream.createFrame(202);
+    }*/
+    idleCycleCounter++;
+    if (idleCycleCounter > 500) {
+      idleCycleCounter = 0;
+      int l1 = (int) (Math.random() * 8D);
+      if ((l1 & 1) == 1) {
+        cameraXOffset += cameraXOffsetSpeed;
+      }
+      if ((l1 & 2) == 2) {
+        cameraYOffset += cameraYOffsetSpeed;
+      }
+      if ((l1 & 4) == 4) {
+        cameraYawOffset += cameraYawOffsetSpeed;
+      }
+    }
+    if (cameraXOffset < -50) {
+      cameraXOffsetSpeed = 2;
+    }
+    if (cameraXOffset > 50) {
+      cameraXOffsetSpeed = -2;
+    }
+    if (cameraYOffset < -55) {
+      cameraYOffsetSpeed = 2;
+    }
+    if (cameraYOffset > 55) {
+      cameraYOffsetSpeed = -2;
+    }
+    if (cameraYawOffset < -40) {
+      cameraYawOffsetSpeed = 1;
+    }
+    if (cameraYawOffset > 40) {
+      cameraYawOffsetSpeed = -1;
+    }
+    minimapRandomTimer++;
+    if (minimapRandomTimer > 500) {
+      minimapRandomTimer = 0;
+      int i2 = (int) (Math.random() * 8D);
+      if ((i2 & 1) == 1) {
+        minimapRotationOffset += minimapHorizontalSpeed;
+      }
+      if ((i2 & 2) == 2) {
+        minimapZoom += minimapVerticalSpeed;
+      }
+    }
+    if (minimapRotationOffset < -60) {
+      minimapHorizontalSpeed = 2;
+    }
+    if (minimapRotationOffset > 60) {
+      minimapHorizontalSpeed = -2;
+    }
+    if (minimapZoom < -20) {
+      minimapVerticalSpeed = 1;
+    }
+    if (minimapZoom > 10) {
+      minimapVerticalSpeed = -1;
+    }
+    keepAliveCounter++;
+    if (keepAliveCounter > 50) {
+      stream.createFrame(0);
+    }
+    try {
+      if (socketStream != null && stream.currentOffset > 0) {
+        socketStream.queueBytes(stream.currentOffset, stream.buffer);
+        stream.currentOffset = 0;
+        keepAliveCounter = 0;
+      }
+    } catch (IOException _ex) {
+      dropClient();
+    } catch (Exception exception) {
+      resetLogout();
+    }
+  }
+
+  // ============================================================================
+  // UTILITY METHODS SECTION - EXTRACT TO: util.helpers.MathUtils
+  // ============================================================================
 
   public static int random(final float range) {
     return (int) (java.lang.Math.random() * (range + 1));
@@ -78,7 +1583,13 @@ public class Game extends RSApplet {
     return " " + s;
   }
 
-  static boolean musicIsntNull() {
+  // ============================================================================
+  // MUSIC SYSTEM SECTION - EXTRACT TO: core.managers.AudioManager
+  // Related fields: midiPlayer, audioManager.musicData, musicVolume2, currentMidiVolume, etc.
+  // All music/midi methods should be moved to AudioManager
+  // ============================================================================
+
+  /*static boolean musicIsntNull() {
     if (midiPlayer == null) return false;
     return true;
   }
@@ -92,62 +1603,6 @@ public class Game extends RSApplet {
       }
       midiPlayer.shutdown();
       midiPlayer = null;
-    }
-  }
-
-  public static String getFileNameWithoutExtension(String fileName) {
-    File tmpFile = new File(fileName);
-    tmpFile.getName();
-    int whereDot = tmpFile.getName().lastIndexOf('.');
-    if (0 < whereDot && whereDot <= tmpFile.getName().length() - 2) {
-      return tmpFile.getName().substring(0, whereDot);
-    }
-    return "";
-  }
-
-  public String indexLocation(int cacheIndex, int index) {
-    return Signlink.findcachedir()
-        + "index"
-        + cacheIndex
-        + "/"
-        + (index != -1 ? index + ".gz" : "");
-  }
-
-  public void repackCacheIndex(int cacheIndex) {
-    System.out.println("Started repacking index " + cacheIndex + ".");
-    int indexLength = new File(indexLocation(cacheIndex, -1)).listFiles().length;
-    File[] file = new File(indexLocation(cacheIndex, -1)).listFiles();
-    try {
-      for (int index = 0; index < indexLength; index++) {
-        int fileIndex = Integer.parseInt(getFileNameWithoutExtension(file[index].toString()));
-        byte[] data = fileToByteArray(cacheIndex, fileIndex);
-        if (data != null && data.length > 0) {
-          decompressors[cacheIndex].writeEntry(data.length, data, fileIndex);
-          System.out.println("Repacked " + fileIndex + ".");
-        } else {
-          System.out.println("Unable to locate index " + fileIndex + ".");
-        }
-      }
-    } catch (Exception e) {
-      System.out.println("Error packing cache index " + cacheIndex + ".");
-    }
-    System.out.println("Finished repacking " + cacheIndex + ".");
-  }
-
-  public byte[] fileToByteArray(int cacheIndex, int index) {
-    try {
-      if (indexLocation(cacheIndex, index).length() <= 0
-          || indexLocation(cacheIndex, index) == null) {
-        return null;
-      }
-      File file = new File(indexLocation(cacheIndex, index));
-      byte[] fileData = new byte[(int) file.length()];
-      FileInputStream fis = new FileInputStream(file);
-      fis.read(fileData);
-      fis.close();
-      return fileData;
-    } catch (Exception e) {
-      return null;
     }
   }
 
@@ -214,7 +1669,7 @@ public class Game extends RSApplet {
     return true;
   }
 
-  final synchronized void queueSong(int i_30_, int volume, boolean bool, int music) {
+  final synchronized void audioManager.queueSong(int i_30_, int volume, boolean bool, int music) {
     if (musicIsntNull()) {
       nextSong = music;
       onDemandFetcher.queueRequest(2, nextSong);
@@ -236,17 +1691,12 @@ public class Game extends RSApplet {
     }
   }
 
-  public void sendFrame126(String str, int i) {
-    RSInterface.interfaceCache[i].disabledText = str;
-    if (RSInterface.interfaceCache[i].parentID == tabInterfaceIDs[tabID]) needDrawTabArea = true;
-  }
-
-  public static byte[] musicData;
+  public static byte[] audioManager.musicData;
 
   static synchronized void processMusicQueue() {
     if (musicIsntNull()) {
       if (fetchMusic) {
-        byte[] is = musicData;
+        byte[] is = audioManager.musicData;
         if (is != null) {
           if (nextSongDelay >= 0) initiateMidiFade(autoPlaySong, nextSongDelay, musicVolume2, is);
           else if (queuedSongId >= 0)
@@ -266,7 +1716,7 @@ public class Game extends RSApplet {
   static void playMidiTrack(int i_2_, byte[] is, boolean bool) {
     if (midiPlayer != null) {
       if (currentMidiVolume >= 0) {
-        midiPlayer.stopMidi();
+        midiPlayer.audioManager.stopMidi();
         currentMidiVolume = -1;
         queuedMidiData = null;
         midiFadeCycles = 20;
@@ -349,7 +1799,7 @@ public class Game extends RSApplet {
         midiPlayer.adjustVolume(currentMidiVolume, fadeVolume);
         midiFadeCycles--;
         if (midiFadeCycles == 0) {
-          midiPlayer.stopMidi();
+          midiPlayer.audioManager.stopMidi();
           midiFadeCycles = 20;
           currentMidiVolume = -1;
         }
@@ -358,7 +1808,7 @@ public class Game extends RSApplet {
     }
   }
 
-  private void stopMidi() {
+  private void audioManager.stopMidi() {
     if (Signlink.music != null) {
       if (Signlink.music.isRunning()) {
         Signlink.fadeOut();
@@ -366,6 +1816,371 @@ public class Game extends RSApplet {
         Signlink.midi = "stop";
       }
     }
+  }
+
+  public void saveMidi(boolean flag, byte abyte0[]) {
+    Signlink.midifade = flag ? 1 : 0;
+    Signlink.saveMidi(abyte0, abyte0.length);
+  } */
+
+  // ============================================================================
+  // SOUND EFFECT SYSTEM SECTION - EXTRACT TO: core.managers.SoundManager
+  // Related fields: soundEffects[], soundVolume, soundEnabled, etc.
+  // All sound effect methods should be moved to SoundManager
+  // ============================================================================
+
+  public final int[] soundDelay;
+  public final int[] soundVolume;
+
+  // ============================================================================
+  // CACHE/FILE SYSTEM SECTION - EXTRACT TO: core.managers.CacheManager
+  // Related fields: decompressors[], onDemandFetcher, fileCRC
+  // All cache manipulation, file I/O methods should be moved
+  // ============================================================================
+
+  public static String getFileNameWithoutExtension(String fileName) {
+    File tmpFile = new File(fileName);
+    tmpFile.getName();
+    int whereDot = tmpFile.getName().lastIndexOf('.');
+    if (0 < whereDot && whereDot <= tmpFile.getName().length() - 2) {
+      return tmpFile.getName().substring(0, whereDot);
+    }
+    return "";
+  }
+
+  public String indexLocation(int cacheIndex, int index) {
+    return Signlink.findcachedir()
+            + "index"
+            + cacheIndex
+            + "/"
+            + (index != -1 ? index + ".gz" : "");
+  }
+
+  public void repackCacheIndex(int cacheIndex) {
+    System.out.println("Started repacking index " + cacheIndex + ".");
+    int indexLength = new File(indexLocation(cacheIndex, -1)).listFiles().length;
+    File[] file = new File(indexLocation(cacheIndex, -1)).listFiles();
+    try {
+      for (int index = 0; index < indexLength; index++) {
+        int fileIndex = Integer.parseInt(getFileNameWithoutExtension(file[index].toString()));
+        byte[] data = fileToByteArray(cacheIndex, fileIndex);
+        if (data != null && data.length > 0) {
+          decompressors[cacheIndex].writeEntry(data.length, data, fileIndex);
+          System.out.println("Repacked " + fileIndex + ".");
+        } else {
+          System.out.println("Unable to locate index " + fileIndex + ".");
+        }
+      }
+    } catch (Exception e) {
+      System.out.println("Error packing cache index " + cacheIndex + ".");
+    }
+    System.out.println("Finished repacking " + cacheIndex + ".");
+  }
+
+  public byte[] fileToByteArray(int cacheIndex, int index) {
+    try {
+      if (indexLocation(cacheIndex, index).length() <= 0
+              || indexLocation(cacheIndex, index) == null) {
+        return null;
+      }
+      File file = new File(indexLocation(cacheIndex, index));
+      byte[] fileData = new byte[(int) file.length()];
+      FileInputStream fis = new FileInputStream(file);
+      fis.read(fileData);
+      fis.close();
+      return fileData;
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  // ============================================================================
+  // UI/MENU SYSTEM SECTION - EXTRACT TO: core.managers.UIManager
+  // Related fields: menuActionID[], menuActionText[], chatMessages[], etc.
+  // All UI rendering, menu handling, interface methods should be moved
+  // ============================================================================
+
+  // ============================================================================
+  // NETWORK/CONNECTION SECTION - EXTRACT TO: core.managers.NetworkManager
+  // Related fields: socketStream, stream, inStream, loginResponse, etc.
+  // All network communication, socket handling should be moved
+  // ============================================================================
+
+  // ============================================================================
+  // INPUT/MENU HANDLING SECTION - EXTRACT TO: core.handlers.InputHandler
+  // Related fields: menuOpen, menuActionID[], clickMode3, mouseX, mouseY, etc.
+  // All input processing, menu clicks, key handling should be moved
+  // ============================================================================
+
+  // ============================================================================
+  // WORLD/ENTITY MANAGEMENT SECTION - EXTRACT TO: core.managers.WorldManager
+  // Related fields: groundArray[][][], npcArray[], playerArray[], worldController
+  // All world state, entity management, ground items should be moved
+  // ============================================================================
+
+  // ============================================================================
+  // RENDERING/DRAWING SECTION - EXTRACT TO: core.renderers.UIRenderer
+  // Related fields: scrollBar1, scrollBar2, scrollBarColor, DrawingArea, etc.
+  // All UI drawing, scrollbar rendering, drawing utilities should be moved
+  // ============================================================================
+
+  // ============================================================================
+  // CAMERA SYSTEM SECTION - EXTRACT TO: core.renderers.CameraManager
+  // Related fields: cameraX, cameraY, cameraZ, cameraPitch, cameraYaw
+  // All camera manipulation, positioning, and rendering should be moved
+  // ============================================================================
+
+  public int xCameraPos;
+  public int zCameraPos;
+  public int yCameraPos;
+  public int yCameraCurve;
+  public int xCameraCurve;
+  public final int[] cameraShakeAmplitude;
+  public int cameraYawOffset;
+  public int cameraYawOffsetSpeed;
+  public final int[] cameraShakeSpeed;
+  public int cameraZoom;
+  public int cameraFocusX;
+  public int cameraFocusY;
+  public int cameraFocusHeight;
+  public int cameraAdjustSpeed;
+  public int cameraAdjustAcceleration;
+  public static int cameraMoveCycle;
+  public int cameraX;
+  public int cameraY;
+  public int cameraUpdateDelay;
+  public boolean cameraUpdatePending;
+  public final int[] cameraShakeCycle;
+  public int cameraTargetX;
+  public int cameraTargetY;
+  public int cameraTargetZ;
+  public int cameraMoveSpeed;
+  public int cameraMoveAcceleration;
+  public boolean isCameraLocked;
+  public final int[] cameraShakeFrequency;
+  public int cameraYOffset;
+  public int cameraYOffsetSpeed;
+  public int cameraPitch;
+  public int cameraYaw;
+  public int cameraYawAccel;
+  public int cameraPitchAccel;
+  public int cameraXOffset;
+  public int cameraXOffsetSpeed;
+
+  public void calcCameraPos() {
+    int i = cameraTargetX * 128 + 64;
+    int j = cameraTargetY * 128 + 64;
+    int k = getTileHeight(plane, j, i) - cameraTargetZ;
+    if (xCameraPos < i) {
+      xCameraPos += cameraMoveSpeed + (i - xCameraPos) * cameraMoveAcceleration / 1000;
+      if (xCameraPos > i) {
+        xCameraPos = i;
+      }
+    }
+    if (xCameraPos > i) {
+      xCameraPos -= cameraMoveSpeed + (xCameraPos - i) * cameraMoveAcceleration / 1000;
+      if (xCameraPos < i) {
+        xCameraPos = i;
+      }
+    }
+    if (zCameraPos < k) {
+      zCameraPos += cameraMoveSpeed + (k - zCameraPos) * cameraMoveAcceleration / 1000;
+      if (zCameraPos > k) {
+        zCameraPos = k;
+      }
+    }
+    if (zCameraPos > k) {
+      zCameraPos -= cameraMoveSpeed + (zCameraPos - k) * cameraMoveAcceleration / 1000;
+      if (zCameraPos < k) {
+        zCameraPos = k;
+      }
+    }
+    if (yCameraPos < j) {
+      yCameraPos += cameraMoveSpeed + (j - yCameraPos) * cameraMoveAcceleration / 1000;
+      if (yCameraPos > j) {
+        yCameraPos = j;
+      }
+    }
+    if (yCameraPos > j) {
+      yCameraPos -= cameraMoveSpeed + (yCameraPos - j) * cameraMoveAcceleration / 1000;
+      if (yCameraPos < j) {
+        yCameraPos = j;
+      }
+    }
+    i = cameraFocusX * 128 + 64;
+    j = cameraFocusY * 128 + 64;
+    k = getTileHeight(plane, j, i) - cameraFocusHeight;
+    int l = i - xCameraPos;
+    int i1 = k - zCameraPos;
+    int j1 = j - yCameraPos;
+    int k1 = (int) Math.sqrt(l * l + j1 * j1);
+    int l1 = (int) (Math.atan2(i1, k1) * 325.94900000000001D) & 0x7ff;
+    int i2 = (int) (Math.atan2(l, j1) * -325.94900000000001D) & 0x7ff;
+    if (l1 < 128) {
+      l1 = 128;
+    }
+    if (l1 > 383) {
+      l1 = 383;
+    }
+    if (yCameraCurve < l1) {
+      yCameraCurve += cameraAdjustSpeed + (l1 - yCameraCurve) * cameraAdjustAcceleration / 1000;
+      if (yCameraCurve > l1) {
+        yCameraCurve = l1;
+      }
+    }
+    if (yCameraCurve > l1) {
+      yCameraCurve -= cameraAdjustSpeed + (yCameraCurve - l1) * cameraAdjustAcceleration / 1000;
+      if (yCameraCurve < l1) {
+        yCameraCurve = l1;
+      }
+    }
+    int j2 = i2 - xCameraCurve;
+    if (j2 > 1024) {
+      j2 -= 2048;
+    }
+    if (j2 < -1024) {
+      j2 += 2048;
+    }
+    if (j2 > 0) {
+      xCameraCurve += cameraAdjustSpeed + j2 * cameraAdjustAcceleration / 1000;
+      xCameraCurve &= 0x7ff;
+    }
+    if (j2 < 0) {
+      xCameraCurve -= cameraAdjustSpeed + -j2 * cameraAdjustAcceleration / 1000;
+      xCameraCurve &= 0x7ff;
+    }
+    int k2 = i2 - xCameraCurve;
+    if (k2 > 1024) {
+      k2 -= 2048;
+    }
+    if (k2 < -1024) {
+      k2 += 2048;
+    }
+    if (k2 < 0 && j2 > 0 || k2 > 0 && j2 < 0) {
+      xCameraCurve = i2;
+    }
+  }
+
+  public void updateCameraPosition() {
+    try {
+      int j = myPlayer.x + cameraXOffset;
+      int k = myPlayer.y + cameraYOffset;
+      if (cameraX - j < -500 || cameraX - j > 500 || cameraY - k < -500 || cameraY - k > 500) {
+        cameraX = j;
+        cameraY = k;
+      }
+      if (cameraX != j) {
+        cameraX += (j - cameraX) / 16;
+      }
+      if (cameraY != k) {
+        cameraY += (k - cameraY) / 16;
+      }
+      if (super.keyArray[1] == 1) {
+        cameraYawAccel += (-24 - cameraYawAccel) / 2;
+      } else if (super.keyArray[2] == 1) {
+        cameraYawAccel += (24 - cameraYawAccel) / 2;
+      } else {
+        cameraYawAccel /= 2;
+      }
+      if (super.keyArray[3] == 1) {
+        cameraPitchAccel += (12 - cameraPitchAccel) / 2;
+      } else if (super.keyArray[4] == 1) {
+        cameraPitchAccel += (-12 - cameraPitchAccel) / 2;
+      } else {
+        cameraPitchAccel /= 2;
+      }
+      cameraYaw = cameraYaw + cameraYawAccel / 2 & 0x7ff;
+      cameraPitch += cameraPitchAccel / 2;
+      if (cameraPitch < 128) {
+        cameraPitch = 128;
+      }
+      if (cameraPitch > 383) {
+        cameraPitch = 383;
+      }
+      int l = cameraX >> 7;
+      int i1 = cameraY >> 7;
+      int j1 = getTileHeight(plane, cameraY, cameraX);
+      int k1 = 0;
+      if (l > 3 && i1 > 3 && l < 100 && i1 < 100) {
+        for (int l1 = l - 4; l1 <= l + 4; l1++) {
+          for (int k2 = i1 - 4; k2 <= i1 + 4; k2++) {
+            int l2 = plane;
+            if (l2 < 3 && (tileFlags[1][l1][k2] & 2) == 2) {
+              l2++;
+            }
+            int i3 = j1 - tileHeights[l2][l1][k2];
+            if (i3 > k1) {
+              k1 = i3;
+            }
+          }
+        }
+      }
+      cameraMoveCycle++;
+      if (cameraMoveCycle > 1512) {
+        cameraMoveCycle = 0;
+        stream.createFrame(77);
+        stream.writeWordBigEndian(0);
+        int i2 = stream.currentOffset;
+        stream.writeWordBigEndian((int) (Math.random() * 256D));
+        stream.writeWordBigEndian(101);
+        stream.writeWordBigEndian(233);
+        stream.writeWord(45092);
+        if ((int) (Math.random() * 2D) == 0) {
+          stream.writeWord(35784);
+        }
+        stream.writeWordBigEndian((int) (Math.random() * 256D));
+        stream.writeWordBigEndian(64);
+        stream.writeWordBigEndian(38);
+        stream.writeWord((int) (Math.random() * 65536D));
+        stream.writeWord((int) (Math.random() * 65536D));
+        stream.writeBytes(stream.currentOffset - i2);
+      }
+      int j2 = k1 * 192;
+      if (j2 > 0x17f00) {
+        j2 = 0x17f00;
+      }
+      if (j2 < 32768) {
+        j2 = 32768;
+      }
+      if (j2 > cameraZoom) {
+        cameraZoom += (j2 - cameraZoom) / 24;
+        return;
+      }
+      if (j2 < cameraZoom) {
+        cameraZoom += (j2 - cameraZoom) / 80;
+      }
+    } catch (Exception _ex) {
+      Signlink.reporterror(
+              "glfc_ex "
+                      + myPlayer.x
+                      + ","
+                      + myPlayer.y
+                      + ","
+                      + cameraX
+                      + ","
+                      + cameraY
+                      + ","
+                      + currentRegionX
+                      + ","
+                      + currentRegionY
+                      + ","
+                      + baseX
+                      + ","
+                      + baseY);
+      throw new RuntimeException("eek");
+    }
+  }
+
+  void mouseWheelDragged(int i, int j) {
+    if (!mouseWheelDown) return;
+    this.cameraYawAccel += i * 3;
+    this.cameraPitchAccel += (j << 1);
+  }
+
+  // Unknown method, likely used for sending text to an interface
+  public void sendFrame126(String str, int i) {
+    RSInterface.interfaceCache[i].disabledText = str;
+    if (RSInterface.interfaceCache[i].parentID == tabInterfaceIDs[tabID]) needDrawTabArea = true;
   }
 
   public boolean menuHasAddFriend(int j) {
@@ -522,19 +2337,6 @@ public class Game extends RSApplet {
     Texture.lineOffsets = chatBoxAreaOffsets;
   }
 
-  public void init() {
-    try {
-      portOff = 0;
-      setHighMem();
-      isMembers = true;
-      Signlink.storeid = 32;
-      Signlink.startpriv(InetAddress.getLocalHost());
-      initClientFrame(503, 765);
-    } catch (Exception exception) {
-      return;
-    }
-  }
-
   public void startRunnable(Runnable runnable, int i) {
     if (i > 10) {
       i = 10;
@@ -681,11 +2483,6 @@ public class Game extends RSApplet {
       }
     }
     return false;
-  }
-
-  public void saveMidi(boolean flag, byte abyte0[]) {
-    Signlink.midifade = flag ? 1 : 0;
-    Signlink.saveMidi(abyte0, abyte0.length);
   }
 
   public void constructMapRegion() {
@@ -1548,18 +3345,18 @@ public class Game extends RSApplet {
       if (config == 2) volume = 128;
       if (config == 3) volume = 64;
       if (config == 4) volume = 0;
-      if (volume != musicVolume) {
-        if (musicVolume != 0 || currentSong == -1) {
-          if (volume != 0) setVolume(volume);
+      if (volume != MusicManager.musicVolume) {
+        if (MusicManager.musicVolume != 0 || MusicManager.currentSong == -1) {
+          if (volume != 0) MusicManager.setVolume(volume);
           else {
-            stopMusic(false);
-            previousSong = 0;
+            MusicManager.stopMusic(false);
+            MusicManager.previousSong = 0;
           }
         } else {
-          playSong(volume, false, currentSong);
-          previousSong = 0; // TODO temp music
+          musicManager.playSong(volume, false, MusicManager.currentSong);
+          MusicManager.previousSong = 0; // TODO temp music
         }
-        musicVolume = volume;
+        MusicManager.musicVolume = volume;
       }
     }
     if (action == 4) {
@@ -2120,100 +3917,6 @@ public class Game extends RSApplet {
     }
   }
 
-  public void calcCameraPos() {
-    int i = cameraTargetX * 128 + 64;
-    int j = cameraTargetY * 128 + 64;
-    int k = getTileHeight(plane, j, i) - cameraTargetZ;
-    if (xCameraPos < i) {
-      xCameraPos += cameraMoveSpeed + (i - xCameraPos) * cameraMoveAcceleration / 1000;
-      if (xCameraPos > i) {
-        xCameraPos = i;
-      }
-    }
-    if (xCameraPos > i) {
-      xCameraPos -= cameraMoveSpeed + (xCameraPos - i) * cameraMoveAcceleration / 1000;
-      if (xCameraPos < i) {
-        xCameraPos = i;
-      }
-    }
-    if (zCameraPos < k) {
-      zCameraPos += cameraMoveSpeed + (k - zCameraPos) * cameraMoveAcceleration / 1000;
-      if (zCameraPos > k) {
-        zCameraPos = k;
-      }
-    }
-    if (zCameraPos > k) {
-      zCameraPos -= cameraMoveSpeed + (zCameraPos - k) * cameraMoveAcceleration / 1000;
-      if (zCameraPos < k) {
-        zCameraPos = k;
-      }
-    }
-    if (yCameraPos < j) {
-      yCameraPos += cameraMoveSpeed + (j - yCameraPos) * cameraMoveAcceleration / 1000;
-      if (yCameraPos > j) {
-        yCameraPos = j;
-      }
-    }
-    if (yCameraPos > j) {
-      yCameraPos -= cameraMoveSpeed + (yCameraPos - j) * cameraMoveAcceleration / 1000;
-      if (yCameraPos < j) {
-        yCameraPos = j;
-      }
-    }
-    i = cameraFocusX * 128 + 64;
-    j = cameraFocusY * 128 + 64;
-    k = getTileHeight(plane, j, i) - cameraFocusHeight;
-    int l = i - xCameraPos;
-    int i1 = k - zCameraPos;
-    int j1 = j - yCameraPos;
-    int k1 = (int) Math.sqrt(l * l + j1 * j1);
-    int l1 = (int) (Math.atan2(i1, k1) * 325.94900000000001D) & 0x7ff;
-    int i2 = (int) (Math.atan2(l, j1) * -325.94900000000001D) & 0x7ff;
-    if (l1 < 128) {
-      l1 = 128;
-    }
-    if (l1 > 383) {
-      l1 = 383;
-    }
-    if (yCameraCurve < l1) {
-      yCameraCurve += cameraAdjustSpeed + (l1 - yCameraCurve) * cameraAdjustAcceleration / 1000;
-      if (yCameraCurve > l1) {
-        yCameraCurve = l1;
-      }
-    }
-    if (yCameraCurve > l1) {
-      yCameraCurve -= cameraAdjustSpeed + (yCameraCurve - l1) * cameraAdjustAcceleration / 1000;
-      if (yCameraCurve < l1) {
-        yCameraCurve = l1;
-      }
-    }
-    int j2 = i2 - xCameraCurve;
-    if (j2 > 1024) {
-      j2 -= 2048;
-    }
-    if (j2 < -1024) {
-      j2 += 2048;
-    }
-    if (j2 > 0) {
-      xCameraCurve += cameraAdjustSpeed + j2 * cameraAdjustAcceleration / 1000;
-      xCameraCurve &= 0x7ff;
-    }
-    if (j2 < 0) {
-      xCameraCurve -= cameraAdjustSpeed + -j2 * cameraAdjustAcceleration / 1000;
-      xCameraCurve &= 0x7ff;
-    }
-    int k2 = i2 - xCameraCurve;
-    if (k2 > 1024) {
-      k2 -= 2048;
-    }
-    if (k2 < -1024) {
-      k2 += 2048;
-    }
-    if (k2 < 0 && j2 > 0 || k2 > 0 && j2 < 0) {
-      xCameraCurve = i2;
-    }
-  }
-
   public void drawMenu() {
     int xPos = menuOffsetX;
     int yPos = menuOffsetY;
@@ -2389,11 +4092,11 @@ public class Game extends RSApplet {
     }
 
     System.gc();
-    stopMidi();
-    currentSong = -1;
-    nextSong = -1;
-    previousSong = 0;
-    queueSong(10, musicVolume, false, 0);
+    musicManager.stopMidi();
+    MusicManager.currentSong = -1;
+    MusicManager.nextSong = -1;
+    MusicManager.previousSong = 0;
+    musicManager.queueSong(10, MusicManager.musicVolume, false, 0);
   }
 
   public void resetCharacterOptions() {
@@ -2447,20 +4150,6 @@ public class Game extends RSApplet {
       npc.setPos(myPlayer.smallX[0] + i1, myPlayer.smallY[0] + l, j1 == 1);
     }
     stream.finishBitAccess();
-  }
-
-  public void processGameLoop() {
-    if (rsAlreadyLoaded || loadingError || genericLoadingError) {
-      return;
-    }
-    loopCycle++;
-    if (!loggedIn) {
-      processLoginScreenInput();
-    } else {
-      mainGameProcessor();
-    }
-    processOnDemandQueue();
-    processMusicQueue();
   }
 
   public void addPlayersToScene(boolean flag) {
@@ -3088,10 +4777,10 @@ public class Game extends RSApplet {
         if (onDemandData.type == 1 && onDemandData.data != null) {
           AnimFrame.load(onDemandData.data);
         }
-        if (onDemandData.type == 2 && onDemandData.id == nextSong && onDemandData.data != null) {
-          musicData = new byte[onDemandData.data.length];
-          System.arraycopy(onDemandData.data, 0, musicData, 0, musicData.length);
-          fetchMusic = true;
+        if (onDemandData.type == 2 && onDemandData.id == MusicManager.nextSong && onDemandData.data != null) {
+          MusicManager.musicData = new byte[onDemandData.data.length];
+          System.arraycopy(onDemandData.data, 0, MusicManager.musicData, 0, MusicManager.musicData.length);
+          MusicManager.fetchMusic = true;
         }
         if (onDemandData.type == 3 && loadingStage == 1) {
           for (int i = 0; i < terrainData.length; i++) {
@@ -3217,360 +4906,6 @@ public class Game extends RSApplet {
         (destinationX - baseY << 7) + lastMouseY);
     if (spriteDrawX > -1 && loopCycle % 20 < 10) {
       headIconsHint[0].drawTransparentSprite(spriteDrawX - 12, spriteDrawY - 28);
-    }
-  }
-
-  public void mainGameProcessor() {
-    if (systemUpdateTimer > 1) {
-      systemUpdateTimer--;
-    }
-    if (reconnectDelay > 0) {
-      reconnectDelay--;
-    }
-    // TODO: Technically, this loop should be < 5 for authenticity, but until we reduce server
-    // inefficiencies
-    // (for example killing a bunch of cows results in client lag,
-    // likely from all the items on the ground for example), < 100 is fine.
-    // OSRS uses < 100 and there are no drawbacks from having this < 100.
-    for (int j = 0; j < 100; j++) {
-      if (!parsePacket()) {
-        break;
-      }
-    }
-
-    if (!loggedIn) {
-      return;
-    }
-    synchronized (mouseDetection.syncObject) {
-      if (flagged) {
-        if (super.clickMode3 != 0 || mouseDetection.coordsIndex >= 40) {
-          stream.createFrame(45);
-          stream.writeWordBigEndian(0);
-          int j2 = stream.currentOffset;
-          int j3 = 0;
-          for (int j4 = 0; j4 < mouseDetection.coordsIndex; j4++) {
-            if (j2 - stream.currentOffset >= 240) {
-              break;
-            }
-            j3++;
-            int l4 = mouseDetection.coordsY[j4];
-            if (l4 < 0) {
-              l4 = 0;
-            } else if (l4 > 502) {
-              l4 = 502;
-            }
-            int k5 = mouseDetection.coordsX[j4];
-            if (k5 < 0) {
-              k5 = 0;
-            } else if (k5 > 764) {
-              k5 = 764;
-            }
-            int i6 = l4 * 765 + k5;
-            if (mouseDetection.coordsY[j4] == -1 && mouseDetection.coordsX[j4] == -1) {
-              k5 = -1;
-              l4 = -1;
-              i6 = 0x7ffff;
-            }
-            if (k5 == lastMousePacketX && l4 == lastMousePacketY) {
-              if (mouseIdleTicks < 2047) {
-                mouseIdleTicks++;
-              }
-            } else {
-              int j6 = k5 - lastMousePacketX;
-              lastMousePacketX = k5;
-              int k6 = l4 - lastMousePacketY;
-              lastMousePacketY = l4;
-              if (mouseIdleTicks < 8 && j6 >= -32 && j6 <= 31 && k6 >= -32 && k6 <= 31) {
-                j6 += 32;
-                k6 += 32;
-                stream.writeWord((mouseIdleTicks << 12) + (j6 << 6) + k6);
-                mouseIdleTicks = 0;
-              } else if (mouseIdleTicks < 8) {
-                stream.writeDWordBigEndian(0x800000 + (mouseIdleTicks << 19) + i6);
-                mouseIdleTicks = 0;
-              } else {
-                stream.writeDWord(0xc0000000 + (mouseIdleTicks << 19) + i6);
-                mouseIdleTicks = 0;
-              }
-            }
-          }
-
-          stream.writeBytes(stream.currentOffset - j2);
-          if (j3 >= mouseDetection.coordsIndex) {
-            mouseDetection.coordsIndex = 0;
-          } else {
-            mouseDetection.coordsIndex -= j3;
-            for (int i5 = 0; i5 < mouseDetection.coordsIndex; i5++) {
-              mouseDetection.coordsX[i5] = mouseDetection.coordsX[i5 + j3];
-              mouseDetection.coordsY[i5] = mouseDetection.coordsY[i5 + j3];
-            }
-          }
-        }
-      } else {
-        mouseDetection.coordsIndex = 0;
-      }
-    }
-    if (super.clickMode3 != 0) {
-      long l = (super.lastClickTime - lastMouseClickTime) / 50L;
-      if (l > 4095L) {
-        l = 4095L;
-      }
-      lastMouseClickTime = super.lastClickTime;
-      int k2 = super.saveClickY;
-      if (k2 < 0) {
-        k2 = 0;
-      } else if (k2 > 502) {
-        k2 = 502;
-      }
-      int k3 = super.saveClickX;
-      if (k3 < 0) {
-        k3 = 0;
-      } else if (k3 > 764) {
-        k3 = 764;
-      }
-      int k4 = k2 * 765 + k3;
-      int j5 = 0;
-      if (super.clickMode3 == 2) {
-        j5 = 1;
-      }
-      int l5 = (int) l;
-      stream.createFrame(241);
-      stream.writeDWord((l5 << 20) + (j5 << 19) + k4);
-    }
-    if (cameraUpdateDelay > 0) {
-      cameraUpdateDelay--;
-    }
-    if (super.keyArray[1] == 1
-        || super.keyArray[2] == 1
-        || super.keyArray[3] == 1
-        || super.keyArray[4] == 1) {
-      cameraUpdatePending = true;
-    }
-    if (cameraUpdatePending && cameraUpdateDelay <= 0) {
-      cameraUpdateDelay = 20;
-      cameraUpdatePending = false;
-      stream.createFrame(86);
-      stream.writeWord(cameraPitch);
-      stream.writeShortA(cameraYaw);
-    }
-    if (super.awtFocus && !hasFocus) {
-      hasFocus = true;
-      stream.createFrame(3);
-      stream.writeWordBigEndian(1);
-    }
-    if (!super.awtFocus && hasFocus) {
-      hasFocus = false;
-      stream.createFrame(3);
-      stream.writeWordBigEndian(0);
-    }
-    loadingStages();
-    processPendingSpawns();
-    processSoundQueue();
-    connectionTimeoutCounter++;
-    if (connectionTimeoutCounter > 750) {
-      dropClient();
-    }
-    animatePlayers();
-    animateNpcs();
-    updateEntityText();
-    animationCycle++;
-    if (crossType != 0) {
-      crossIndex += 20;
-      if (crossIndex >= 400) {
-        crossType = 0;
-      }
-    }
-    if (atInventoryInterfaceType != 0) {
-      atInventoryLoopCycle++;
-      if (atInventoryLoopCycle >= 15) {
-        if (atInventoryInterfaceType == 2) {
-          needDrawTabArea = true;
-        }
-        if (atInventoryInterfaceType == 3) {
-          inputTaken = true;
-        }
-        atInventoryInterfaceType = 0;
-      }
-    }
-    if (activeInterfaceType != 0) {
-      dragCounter++;
-      if (super.mouseX > dragStartX + 5
-          || super.mouseX < dragStartX - 5
-          || super.mouseY > dragStartY + 5
-          || super.mouseY < dragStartY - 5) {
-        itemBeingDragged = true;
-      }
-      if (super.clickMode2 == 0) {
-        if (activeInterfaceType == 2) {
-          needDrawTabArea = true;
-        }
-        if (activeInterfaceType == 3) {
-          inputTaken = true;
-        }
-        activeInterfaceType = 0;
-        if (itemBeingDragged && dragCounter >= 5) {
-          lastActiveInvInterface = -1;
-          processRightClick();
-          if (lastActiveInvInterface == dragInterfaceId && mouseInvInterfaceIndex != draggedSlot) {
-            RSInterface dragInterface = RSInterface.interfaceCache[dragInterfaceId];
-            int j1 = 0;
-            if (configActionId == 1 && dragInterface.contentType == 206) {
-              j1 = 1;
-            }
-            if (dragInterface.inv[mouseInvInterfaceIndex] <= 0) {
-              j1 = 0;
-            }
-            if (dragInterface.insertItems) {
-              int l2 = draggedSlot;
-              int l3 = mouseInvInterfaceIndex;
-              dragInterface.inv[l3] = dragInterface.inv[l2];
-              dragInterface.invStackSizes[l3] = dragInterface.invStackSizes[l2];
-              dragInterface.inv[l2] = -1;
-              dragInterface.invStackSizes[l2] = 0;
-            } else if (j1 == 1) {
-              int i3 = draggedSlot;
-              for (int i4 = mouseInvInterfaceIndex; i3 != i4; ) {
-                if (i3 > i4) {
-                  dragInterface.swapInventoryItems(i3, i3 - 1);
-                  i3--;
-                } else if (i3 < i4) {
-                  dragInterface.swapInventoryItems(i3, i3 + 1);
-                  i3++;
-                }
-              }
-
-            } else {
-              dragInterface.swapInventoryItems(draggedSlot, mouseInvInterfaceIndex);
-            }
-            stream.createFrame(214);
-            stream.writeShortLEA(dragInterfaceId);
-            stream.writeByteNeg(j1);
-            stream.writeShortLEA(draggedSlot);
-            stream.writeShortLEDup(mouseInvInterfaceIndex);
-          }
-        } else if ((oneMouseButtonMode == 1 || menuHasAddFriend(menuActionRow - 1))
-            && menuActionRow > 2) {
-          determineMenuSize();
-        } else if (menuActionRow > 0) {
-          doAction(menuActionRow - 1);
-        }
-        atInventoryLoopCycle = 10;
-        super.clickMode3 = 0;
-      }
-    }
-    if (WorldController.clickedTileX != -1) {
-      int k = WorldController.clickedTileX;
-      int k1 = WorldController.clickedTileY;
-      boolean flag =
-          doWalkTo(0, 0, 0, 0, myPlayer.smallY[0], 0, 0, k1, myPlayer.smallX[0], true, k);
-      WorldController.clickedTileX = -1;
-      WorldController.clickedTileY = -1;
-      if (flag) {
-        crossX = super.saveClickX;
-        crossY = super.saveClickY;
-        crossType = 1;
-        crossIndex = 0;
-      }
-    }
-    if (super.clickMode3 == 1 && messagePrompt != null) {
-      messagePrompt = null;
-      inputTaken = true;
-      super.clickMode3 = 0;
-    }
-    if (!processMenuClick()) {
-      processMainScreenClick();
-      processTabClick();
-      processChatModeClick();
-    }
-    if (super.clickMode2 == 1 || super.clickMode3 == 1) {
-      clickCycle++;
-    }
-    if (loadingStage == 2) {
-      updateCameraPosition();
-    }
-    if (loadingStage == 2 && isCameraLocked) {
-      calcCameraPos();
-    }
-    for (int i1 = 0; i1 < 5; i1++) {
-      cameraShakeCycle[i1]++;
-    }
-
-    processInput();
-    super.idleTime++; // Idle timer nope!
-    /*if (super.idleTime > 12000) {
-    	reconnectDelay = 250;
-    	super.idleTime -= 500;
-    	stream.createFrame(202);
-    }*/
-    idleCycleCounter++;
-    if (idleCycleCounter > 500) {
-      idleCycleCounter = 0;
-      int l1 = (int) (Math.random() * 8D);
-      if ((l1 & 1) == 1) {
-        cameraXOffset += cameraXOffsetSpeed;
-      }
-      if ((l1 & 2) == 2) {
-        cameraYOffset += cameraYOffsetSpeed;
-      }
-      if ((l1 & 4) == 4) {
-        cameraYawOffset += cameraYawOffsetSpeed;
-      }
-    }
-    if (cameraXOffset < -50) {
-      cameraXOffsetSpeed = 2;
-    }
-    if (cameraXOffset > 50) {
-      cameraXOffsetSpeed = -2;
-    }
-    if (cameraYOffset < -55) {
-      cameraYOffsetSpeed = 2;
-    }
-    if (cameraYOffset > 55) {
-      cameraYOffsetSpeed = -2;
-    }
-    if (cameraYawOffset < -40) {
-      cameraYawOffsetSpeed = 1;
-    }
-    if (cameraYawOffset > 40) {
-      cameraYawOffsetSpeed = -1;
-    }
-    minimapRandomTimer++;
-    if (minimapRandomTimer > 500) {
-      minimapRandomTimer = 0;
-      int i2 = (int) (Math.random() * 8D);
-      if ((i2 & 1) == 1) {
-        minimapRotationOffset += minimapHorizontalSpeed;
-      }
-      if ((i2 & 2) == 2) {
-        minimapZoom += minimapVerticalSpeed;
-      }
-    }
-    if (minimapRotationOffset < -60) {
-      minimapHorizontalSpeed = 2;
-    }
-    if (minimapRotationOffset > 60) {
-      minimapHorizontalSpeed = -2;
-    }
-    if (minimapZoom < -20) {
-      minimapVerticalSpeed = 1;
-    }
-    if (minimapZoom > 10) {
-      minimapVerticalSpeed = -1;
-    }
-    keepAliveCounter++;
-    if (keepAliveCounter > 50) {
-      stream.createFrame(0);
-    }
-    try {
-      if (socketStream != null && stream.currentOffset > 0) {
-        socketStream.queueBytes(stream.currentOffset, stream.buffer);
-        stream.currentOffset = 0;
-        keepAliveCounter = 0;
-      }
-    } catch (IOException _ex) {
-      dropClient();
-    } catch (Exception exception) {
-      resetLogout();
     }
   }
 
@@ -5133,7 +6468,7 @@ public class Game extends RSApplet {
     } catch (Exception _ex) {
     }
     socketStream = null;
-    stopMidi();
+    musicManager.stopMidi();
     if (mouseDetection != null) {
       mouseDetection.running = false;
     }
@@ -5272,8 +6607,8 @@ public class Game extends RSApplet {
     }
     System.out.println("loop-cycle:" + loopCycle);
     System.out.println("draw-cycle:" + drawCycle);
-    System.out.println("ptype:" + pktType);
-    System.out.println("psize:" + pktSize);
+    System.out.println("ptype:" + packetType);
+    System.out.println("psize:" + packetSize);
     if (socketStream != null) {
       socketStream.printDebug();
     }
@@ -6677,11 +8012,11 @@ public class Game extends RSApplet {
         loggedIn = true;
         stream.currentOffset = 0;
         inStream.currentOffset = 0;
-        pktType = -1;
+        packetType = -1;
         lastPacketType = -1;
-        prevPktType = -1;
-        prevPktType2 = -1;
-        pktSize = 0;
+        prevPacketType = -1;
+        prevPacketType2 = -1;
+        packetSize = 0;
         connectionTimeoutCounter = 0;
         systemUpdateTimer = 0;
         reconnectDelay = 0;
@@ -6834,11 +8169,11 @@ public class Game extends RSApplet {
         loggedIn = true;
         stream.currentOffset = 0;
         inStream.currentOffset = 0;
-        pktType = -1;
+        packetType = -1;
         lastPacketType = -1;
-        prevPktType = -1;
-        prevPktType2 = -1;
-        pktSize = 0;
+        prevPacketType = -1;
+        prevPacketType2 = -1;
+        packetSize = 0;
         connectionTimeoutCounter = 0;
         systemUpdateTimer = 0;
         menuActionRow = 0;
@@ -7505,11 +8840,11 @@ public class Game extends RSApplet {
       	soundDelay[index]--;
       }*/
     }
-    if (previousSong > 0) {
-      previousSong -= 20;
-      if (previousSong < 0) previousSong = 0;
-      if (previousSong == 0 && musicVolume != 0 && currentSong != -1) {
-        playSong(musicVolume, false, currentSong);
+    if (MusicManager.previousSong > 0) {
+      MusicManager.previousSong -= 20;
+      if (MusicManager.previousSong < 0) MusicManager.previousSong = 0;
+      if (MusicManager.previousSong == 0 && MusicManager.musicVolume != 0 && MusicManager.currentSong != -1) {
+        musicManager.playSong(MusicManager.musicVolume, false, MusicManager.currentSong);
       }
     }
   }
@@ -7570,409 +8905,6 @@ public class Game extends RSApplet {
         useJaggrab = !useJaggrab;
       }
     }
-  }
-
-  void startUp() {
-    drawLoadingText(20, "Starting up");
-    //		try {
-    //			CacheDownloader.download(this, new
-    // URL("https://dl.dropboxusercontent.com/u/19852069/assets.zip"));
-    //		} catch (IOException e) {
-    //			e.printStackTrace();
-    //		}
-    if (Signlink.sunjava) {
-      super.minDelay = 5;
-    }
-    initialLoadComplete = true;
-    boolean flag = true;
-    if (!flag) {
-      genericLoadingError = true;
-      return;
-    }
-    if (Signlink.cache_dat != null) {
-      for (int i = 0; i < 5; i++) {
-        decompressors[i] =
-            new util.compression.Decompressor(Signlink.cache_dat, Signlink.cache_idx[i], i + 1);
-      }
-    }
-    try {
-      connectServer();
-      titleStreamLoader = streamLoaderForName(1, "title screen", "title", expectedCRCs[1], 25);
-      plainFont = new TextDrawingArea(false, "p11_full", titleStreamLoader);
-      boldFont = new TextDrawingArea(false, "p12_full", titleStreamLoader);
-      chatTextDrawingArea = new TextDrawingArea(false, "b12_full", titleStreamLoader);
-      TextDrawingArea smallFont = new TextDrawingArea(true, "q8_full", titleStreamLoader);
-      drawLogo();
-      loadTitleScreen();
-      // repackCacheIndex(1);
-      constructMusic();
-      StreamLoader streamLoader = streamLoaderForName(2, "config", "config", expectedCRCs[2], 30);
-      StreamLoader streamLoader_1 =
-          streamLoaderForName(3, "interface", "interface", expectedCRCs[3], 35);
-      StreamLoader streamLoader_2 =
-          streamLoaderForName(4, "2d graphics", "media", expectedCRCs[4], 40);
-      StreamLoader streamLoader_3 =
-          streamLoaderForName(6, "textures", "textures", expectedCRCs[6], 45);
-      StreamLoader streamLoader_4 =
-          streamLoaderForName(7, "chat system", "wordenc", expectedCRCs[7], 50);
-      StreamLoader streamLoader_5 =
-          streamLoaderForName(8, "sound effects", "sounds", expectedCRCs[8], 55);
-      tileFlags = new byte[4][104][104];
-      tileHeights = new int[4][105][105];
-      worldController = new WorldController(tileHeights);
-      for (int j = 0; j < 4; j++) {
-        collisionMaps[j] = new CollisionMap();
-      }
-
-      minimapImage = new Sprite(512, 512);
-      StreamLoader streamLoader_6 =
-          streamLoaderForName(5, "update list", "versionlist", expectedCRCs[5], 60);
-      drawLoadingText(60, "Connecting to update server");
-      onDemandFetcher = new OnDemandFetcher();
-      onDemandFetcher.start(streamLoader_6, this);
-      //			musics();
-      AnimFrame.init(onDemandFetcher.getAnimCount());
-      Model.init(onDemandFetcher.getVersionCount(0), onDemandFetcher);
-      if (!lowMem) {
-        queueSong(10, musicVolume, false, 0);
-        while (onDemandFetcher.getNodeCount() > 0) {
-          processOnDemandQueue();
-          try {
-            Thread.sleep(100L);
-          } catch (Exception _ex) {
-          }
-          if (onDemandFetcher.socketErrorCount > 3) {
-            loadError();
-            return;
-          }
-        }
-      }
-      drawLoadingText(65, "Requesting animations");
-      int k = onDemandFetcher.getVersionCount(1);
-      for (int i1 = 0; i1 < k; i1++) {
-        onDemandFetcher.queueRequest(1, i1);
-      }
-
-      while (onDemandFetcher.getNodeCount() > 0) {
-        int j1 = k - onDemandFetcher.getNodeCount();
-        if (j1 > 0) {
-          drawLoadingText(65, "Loading animations - " + j1 * 100 / k + "%");
-        }
-        processOnDemandQueue();
-        try {
-          Thread.sleep(100L);
-        } catch (Exception _ex) {
-        }
-        if (onDemandFetcher.socketErrorCount > 3) {
-          loadError();
-          return;
-        }
-      }
-      drawLoadingText(70, "Requesting models");
-      k = onDemandFetcher.getVersionCount(0);
-      for (int k1 = 0; k1 < k; k1++) {
-        int l1 = onDemandFetcher.getModelIndex(k1);
-        if ((l1 & 1) != 0) {
-          onDemandFetcher.queueRequest(0, k1);
-        }
-      }
-
-      k = onDemandFetcher.getNodeCount();
-      while (onDemandFetcher.getNodeCount() > 0) {
-        int i2 = k - onDemandFetcher.getNodeCount();
-        if (i2 > 0) {
-          drawLoadingText(70, "Loading models - " + i2 * 100 / k + "%");
-        }
-        processOnDemandQueue();
-        try {
-          Thread.sleep(100L);
-        } catch (Exception _ex) {
-        }
-      }
-      if (decompressors[0] != null) {
-        drawLoadingText(75, "Requesting maps");
-        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(0, 48, 47));
-        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(1, 48, 47));
-        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(0, 48, 48));
-        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(1, 48, 48));
-        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(0, 48, 49));
-        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(1, 48, 49));
-        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(0, 47, 47));
-        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(1, 47, 47));
-        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(0, 47, 48));
-        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(1, 47, 48));
-        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(0, 148, 48));
-        onDemandFetcher.queueRequest(3, onDemandFetcher.getRegionArchiveId(1, 148, 48));
-        k = onDemandFetcher.getNodeCount();
-        while (onDemandFetcher.getNodeCount() > 0) {
-          int j2 = k - onDemandFetcher.getNodeCount();
-          if (j2 > 0) {
-            drawLoadingText(75, "Loading maps - " + j2 * 100 / k + "%");
-          }
-          processOnDemandQueue();
-          try {
-            Thread.sleep(100L);
-          } catch (Exception _ex) {
-          }
-        }
-      }
-      k = onDemandFetcher.getVersionCount(0);
-      for (int k2 = 0; k2 < k; k2++) {
-        int l2 = onDemandFetcher.getModelIndex(k2);
-        byte byte0 = 0;
-        if ((l2 & 8) != 0) {
-          byte0 = 10;
-        } else if ((l2 & 0x20) != 0) {
-          byte0 = 9;
-        } else if ((l2 & 0x10) != 0) {
-          byte0 = 8;
-        } else if ((l2 & 0x40) != 0) {
-          byte0 = 7;
-        } else if ((l2 & 0x80) != 0) {
-          byte0 = 6;
-        } else if ((l2 & 2) != 0) {
-          byte0 = 5;
-        } else if ((l2 & 4) != 0) {
-          byte0 = 4;
-        }
-        if ((l2 & 1) != 0) {
-          byte0 = 3;
-        }
-        if (byte0 != 0) {
-          onDemandFetcher.validateOrQueue(byte0, 0, k2);
-        }
-      }
-
-      onDemandFetcher.requestMapFiles(isMembers);
-      if (!lowMem) {
-        int l = onDemandFetcher.getVersionCount(2);
-        for (int i3 = 1; i3 < l; i3++) {
-          if (onDemandFetcher.isMidiRequired(i3)) {
-            onDemandFetcher.validateOrQueue((byte) 1, 2, i3);
-          }
-        }
-      }
-      drawLoadingText(80, "Unpacking media");
-      invBack = new Background(streamLoader_2, "invback", 0);
-      chatBack = new Background(streamLoader_2, "chatback", 0);
-      mapBack = new Background(streamLoader_2, "mapback", 0);
-      backBase1 = new Background(streamLoader_2, "backbase1", 0);
-      backBase2 = new Background(streamLoader_2, "backbase2", 0);
-      backHmid1 = new Background(streamLoader_2, "backhmid1", 0);
-      for (int j3 = 0; j3 < 13; j3++) {
-        sideIcons[j3] = new Background(streamLoader_2, "sideicons", j3);
-      }
-
-      compass = new Sprite(streamLoader_2, "compass", 0);
-      mapEdge = new Sprite(streamLoader_2, "mapedge", 0);
-      mapEdge.crop();
-
-      multiOverlay = new Sprite(streamLoader_2, "overlay_multiway", 0);
-      try {
-        for (int k3 = 0; k3 < 100; k3++) {
-          mapScenes[k3] = new Background(streamLoader_2, "mapscene", k3);
-        }
-
-      } catch (Exception _ex) {
-      }
-      try {
-        for (int l3 = 0; l3 < 100; l3++) {
-          mapFunctions[l3] = new Sprite(streamLoader_2, "mapfunction", l3);
-        }
-
-      } catch (Exception _ex) {
-      }
-      try {
-        for (int i4 = 0; i4 < 20; i4++) {
-          hitMarks[i4] = new Sprite(streamLoader_2, "hitmarks", i4);
-        }
-
-      } catch (Exception _ex) {
-      }
-      try {
-        for (int h1 = 0; h1 < 6; h1++) {
-          headIconsHint[h1] = new Sprite(streamLoader_2, "headicons_hint", h1);
-        }
-        for (int j4 = 0; j4 < 8; j4++) {
-          headIcons[j4] = new Sprite(streamLoader_2, "headicons_prayer", j4);
-        }
-        for (int j45 = 0; j45 < 3; j45++) {
-          skullIcons[j45] = new Sprite(streamLoader_2, "headicons_pk", j45);
-        }
-      } catch (Exception _ex) {
-      }
-      mapFlag = new Sprite(streamLoader_2, "mapmarker", 0);
-      mapMarker = new Sprite(streamLoader_2, "mapmarker", 1);
-      for (int k4 = 0; k4 < 8; k4++) {
-        crosses[k4] = new Sprite(streamLoader_2, "cross", k4);
-      }
-
-      mapDotItem = new Sprite(streamLoader_2, "mapdots", 0);
-      mapDotNPC = new Sprite(streamLoader_2, "mapdots", 1);
-      mapDotPlayer = new Sprite(streamLoader_2, "mapdots", 2);
-      mapDotFriend = new Sprite(streamLoader_2, "mapdots", 3);
-      mapDotTeam = new Sprite(streamLoader_2, "mapdots", 4);
-      scrollBar1 = new Background(streamLoader_2, "scrollbar", 0);
-      scrollBar2 = new Background(streamLoader_2, "scrollbar", 1);
-      redStone1 = new Background(streamLoader_2, "redstone1", 0);
-      redStone2 = new Background(streamLoader_2, "redstone2", 0);
-      redStone3 = new Background(streamLoader_2, "redstone3", 0);
-      redStone1_2 = new Background(streamLoader_2, "redstone1", 0);
-      redStone1_2.flipHorizontal();
-      redStone2_2 = new Background(streamLoader_2, "redstone2", 0);
-      redStone2_2.flipHorizontal();
-      redStone1_3 = new Background(streamLoader_2, "redstone1", 0);
-      redStone1_3.flipVertical();
-      redStone2_3 = new Background(streamLoader_2, "redstone2", 0);
-      redStone2_3.flipVertical();
-      redStone3_2 = new Background(streamLoader_2, "redstone3", 0);
-      redStone3_2.flipVertical();
-      redStone1_4 = new Background(streamLoader_2, "redstone1", 0);
-      redStone1_4.flipHorizontal();
-      redStone1_4.flipVertical();
-      redStone2_4 = new Background(streamLoader_2, "redstone2", 0);
-      redStone2_4.flipHorizontal();
-      redStone2_4.flipVertical();
-      for (int l4 = 0; l4 < 2; l4++) {
-        modIcons[l4] = new Background(streamLoader_2, "mod_icons", l4);
-      }
-
-      Sprite sprite = new Sprite(streamLoader_2, "backleft1", 0);
-      backLeftIP1 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
-      sprite.drawSprite(0, 0);
-      sprite = new Sprite(streamLoader_2, "backleft2", 0);
-      backLeftIP2 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
-      sprite.drawSprite(0, 0);
-      sprite = new Sprite(streamLoader_2, "backright1", 0);
-      backRightIP1 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
-      sprite.drawSprite(0, 0);
-      sprite = new Sprite(streamLoader_2, "backright2", 0);
-      backRightIP2 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
-      sprite.drawSprite(0, 0);
-      sprite = new Sprite(streamLoader_2, "backtop1", 0);
-      backTopIP1 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
-      sprite.drawSprite(0, 0);
-      sprite = new Sprite(streamLoader_2, "backvmid1", 0);
-      backVmidIP1 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
-      sprite.drawSprite(0, 0);
-      sprite = new Sprite(streamLoader_2, "backvmid2", 0);
-      backVmidIP2 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
-      sprite.drawSprite(0, 0);
-      sprite = new Sprite(streamLoader_2, "backvmid3", 0);
-      backVmidIP3 = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
-      sprite.drawSprite(0, 0);
-      sprite = new Sprite(streamLoader_2, "backhmid2", 0);
-      midSubscreenBuffer = new RSImageProducer(sprite.width, sprite.height, getGameComponent());
-      sprite.drawSprite(0, 0);
-      int i5 = (int) (Math.random() * 21D) - 10;
-      int j5 = (int) (Math.random() * 21D) - 10;
-      int k5 = (int) (Math.random() * 21D) - 10;
-      int l5 = (int) (Math.random() * 41D) - 20;
-      for (int i6 = 0; i6 < 100; i6++) {
-        if (mapFunctions[i6] != null) {
-          mapFunctions[i6].adjustRgb(i5 + l5, j5 + l5, k5 + l5);
-        }
-        if (mapScenes[i6] != null) {
-          mapScenes[i6].adjustPalette(i5 + l5, j5 + l5, k5 + l5);
-        }
-      }
-
-      drawLoadingText(83, "Unpacking textures");
-      Texture.loadTextures(streamLoader_3);
-      Texture.setBrightness(0.80000000000000004D);
-      Texture.initCache();
-      drawLoadingText(86, "Unpacking config");
-      Animation.unpackConfig(streamLoader);
-      ObjectDef.unpackConfig(streamLoader);
-      FloorOverlay.unpackConfig(streamLoader);
-      ItemDef.unpackConfig(streamLoader);
-      EntityDef.unpackConfig(streamLoader);
-      IDK.unpackConfig(streamLoader);
-      SpotAnim.unpackConfig(streamLoader);
-      Varp.unpackConfig(streamLoader);
-      VarBit.unpackConfig(streamLoader);
-      ItemDef.isMembers = isMembers;
-      // if (!lowMem) {
-      drawLoadingText(90, "Unpacking sounds");
-      byte abyte0[] = streamLoader_5.getFileData("sounds.dat");
-      Stream stream = new Stream(abyte0);
-      Sounds.unpack(stream);
-      // }
-      drawLoadingText(95, "Unpacking interfaces");
-      TextDrawingArea textFonts[] = {plainFont, boldFont, chatTextDrawingArea, smallFont};
-      RSInterface.unpack(streamLoader_1, textFonts, streamLoader_2);
-      drawLoadingText(100, "Preparing game engine");
-      for (int j6 = 0; j6 < 33; j6++) {
-        int k6 = 999;
-        int i7 = 0;
-        for (int k7 = 0; k7 < 34; k7++) {
-          if (mapBack.pixels[k7 + j6 * mapBack.width] == 0) {
-            if (k6 == 999) {
-              k6 = k7;
-            }
-            continue;
-          }
-          if (k6 == 999) {
-            continue;
-          }
-          i7 = k7;
-          break;
-        }
-
-        mapBackLeft[j6] = k6;
-        mapBackWidths[j6] = i7 - k6;
-      }
-
-      for (int l6 = 5; l6 < 156; l6++) {
-        int j7 = 999;
-        int l7 = 0;
-        for (int j8 = 25; j8 < 172; j8++) {
-          if (mapBack.pixels[j8 + l6 * mapBack.width] == 0 && (j8 > 34 || l6 > 34)) {
-            if (j7 == 999) {
-              j7 = j8;
-            }
-            continue;
-          }
-          if (j7 == 999) {
-            continue;
-          }
-          l7 = j8;
-          break;
-        }
-
-        minimapLineOffset[l6 - 5] = j7 - 25;
-        minimapLineLengths[l6 - 5] = l7 - j7;
-      }
-      Texture.resize(765, 503);
-      gameScreenOffsets = Texture.lineOffsets;
-      Texture.resize(479, 96);
-      chatAreaOffsets = Texture.lineOffsets;
-      Texture.resize(190, 261);
-      tabAreaOffsets = Texture.lineOffsets;
-      Texture.resize(512, 334);
-      chatBoxAreaOffsets = Texture.lineOffsets;
-      int ai[] = new int[9];
-      for (int i8 = 0; i8 < 9; i8++) {
-        int k8 = 128 + i8 * 32 + 15;
-        int l8 = 600 + k8 * 3;
-        int i9 = Texture.sineTable[k8];
-        ai[i8] = l8 * i9 >> 16;
-      }
-
-      WorldController.buildVisibilityMap(500, 800, 512, 334, ai);
-      Censor.loadConfig(streamLoader_4);
-      mouseDetection = new MouseDetection(this);
-      startRunnable(mouseDetection, 10);
-      DynamicObject.client = this;
-      ObjectDef.clientInstance = this;
-      EntityDef.clientInstance = this;
-
-      if (myUsername != "" && myPassword != "") login(myUsername, myPassword, false);
-      return;
-    } catch (Exception exception) {
-      Signlink.reporterror("loaderror " + errorMessage + " " + loadingPercent);
-    }
-    loadingError = true;
   }
 
   public void addLocalPlayers(Stream stream, int i) {
@@ -9373,116 +10305,6 @@ public class Game extends RSApplet {
       player.loopCycleStatus = loopCycle + 300;
       player.currentHealth = stream.readUnsignedByte();
       player.maxHealth = stream.readUnsignedByteNeg();
-    }
-  }
-
-  public void updateCameraPosition() {
-    try {
-      int j = myPlayer.x + cameraXOffset;
-      int k = myPlayer.y + cameraYOffset;
-      if (cameraX - j < -500 || cameraX - j > 500 || cameraY - k < -500 || cameraY - k > 500) {
-        cameraX = j;
-        cameraY = k;
-      }
-      if (cameraX != j) {
-        cameraX += (j - cameraX) / 16;
-      }
-      if (cameraY != k) {
-        cameraY += (k - cameraY) / 16;
-      }
-      if (super.keyArray[1] == 1) {
-        cameraYawAccel += (-24 - cameraYawAccel) / 2;
-      } else if (super.keyArray[2] == 1) {
-        cameraYawAccel += (24 - cameraYawAccel) / 2;
-      } else {
-        cameraYawAccel /= 2;
-      }
-      if (super.keyArray[3] == 1) {
-        cameraPitchAccel += (12 - cameraPitchAccel) / 2;
-      } else if (super.keyArray[4] == 1) {
-        cameraPitchAccel += (-12 - cameraPitchAccel) / 2;
-      } else {
-        cameraPitchAccel /= 2;
-      }
-      cameraYaw = cameraYaw + cameraYawAccel / 2 & 0x7ff;
-      cameraPitch += cameraPitchAccel / 2;
-      if (cameraPitch < 128) {
-        cameraPitch = 128;
-      }
-      if (cameraPitch > 383) {
-        cameraPitch = 383;
-      }
-      int l = cameraX >> 7;
-      int i1 = cameraY >> 7;
-      int j1 = getTileHeight(plane, cameraY, cameraX);
-      int k1 = 0;
-      if (l > 3 && i1 > 3 && l < 100 && i1 < 100) {
-        for (int l1 = l - 4; l1 <= l + 4; l1++) {
-          for (int k2 = i1 - 4; k2 <= i1 + 4; k2++) {
-            int l2 = plane;
-            if (l2 < 3 && (tileFlags[1][l1][k2] & 2) == 2) {
-              l2++;
-            }
-            int i3 = j1 - tileHeights[l2][l1][k2];
-            if (i3 > k1) {
-              k1 = i3;
-            }
-          }
-        }
-      }
-      cameraMoveCycle++;
-      if (cameraMoveCycle > 1512) {
-        cameraMoveCycle = 0;
-        stream.createFrame(77);
-        stream.writeWordBigEndian(0);
-        int i2 = stream.currentOffset;
-        stream.writeWordBigEndian((int) (Math.random() * 256D));
-        stream.writeWordBigEndian(101);
-        stream.writeWordBigEndian(233);
-        stream.writeWord(45092);
-        if ((int) (Math.random() * 2D) == 0) {
-          stream.writeWord(35784);
-        }
-        stream.writeWordBigEndian((int) (Math.random() * 256D));
-        stream.writeWordBigEndian(64);
-        stream.writeWordBigEndian(38);
-        stream.writeWord((int) (Math.random() * 65536D));
-        stream.writeWord((int) (Math.random() * 65536D));
-        stream.writeBytes(stream.currentOffset - i2);
-      }
-      int j2 = k1 * 192;
-      if (j2 > 0x17f00) {
-        j2 = 0x17f00;
-      }
-      if (j2 < 32768) {
-        j2 = 32768;
-      }
-      if (j2 > cameraZoom) {
-        cameraZoom += (j2 - cameraZoom) / 24;
-        return;
-      }
-      if (j2 < cameraZoom) {
-        cameraZoom += (j2 - cameraZoom) / 80;
-      }
-    } catch (Exception _ex) {
-      Signlink.reporterror(
-          "glfc_ex "
-              + myPlayer.x
-              + ","
-              + myPlayer.y
-              + ","
-              + cameraX
-              + ","
-              + cameraY
-              + ","
-              + currentRegionX
-              + ","
-              + currentRegionY
-              + ","
-              + baseX
-              + ","
-              + baseY);
-      throw new RuntimeException("eek");
     }
   }
 
@@ -11446,50 +12268,50 @@ public class Game extends RSApplet {
       if (i == 0) {
         return false;
       }
-      if (pktType == -1) {
+      if (packetType == -1) {
         socketStream.flushInputStream(inStream.buffer, 1);
-        pktType = inStream.buffer[0] & 0xff;
+        packetType = inStream.buffer[0] & 0xff;
         if (encryption != null) {
-          pktType = pktType - encryption.getNextKey() & 0xff;
+          packetType = packetType - encryption.getNextKey() & 0xff;
         }
-        pktSize = SizeConstants.packetSizes[pktType];
+        packetSize = SizeConstants.packetSizes[packetType];
         i--;
       }
-      if (pktSize == -1) {
+      if (packetSize == -1) {
         if (i > 0) {
           socketStream.flushInputStream(inStream.buffer, 1);
-          pktSize = inStream.buffer[0] & 0xff;
+          packetSize = inStream.buffer[0] & 0xff;
           i--;
         } else {
           return false;
         }
       }
-      if (pktSize == -2) {
+      if (packetSize == -2) {
         if (i > 1) {
           socketStream.flushInputStream(inStream.buffer, 2);
           inStream.currentOffset = 0;
-          pktSize = inStream.readUnsignedWord();
+          packetSize = inStream.readUnsignedWord();
           i -= 2;
         } else {
           return false;
         }
       }
-      if (i < pktSize) {
+      if (i < packetSize) {
         return false;
       }
       inStream.currentOffset = 0;
-      socketStream.flushInputStream(inStream.buffer, pktSize);
+      socketStream.flushInputStream(inStream.buffer, packetSize);
       connectionTimeoutCounter = 0;
-      prevPktType2 = prevPktType;
-      prevPktType = lastPacketType;
-      lastPacketType = pktType;
-      if (pktType == 81) {
-        updatePlayers(pktSize, inStream);
+      prevPacketType2 = prevPacketType;
+      prevPacketType = lastPacketType;
+      lastPacketType = packetType;
+      if (packetType == 81) {
+        updatePlayers(packetSize, inStream);
         regionLoading = false;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 176) {
+      if (packetType == 176) {
         daysSinceRecovChange = inStream.readUnsignedByteNeg();
         unreadMessages = inStream.readShortAdd();
         membersInt = inStream.readUnsignedByte();
@@ -11512,10 +12334,10 @@ public class Game extends RSApplet {
             break;
           }
         }
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 64) {
+      if (packetType == 64) {
         mapEventX = inStream.readUnsignedByteNeg();
         mapEventY = inStream.readUnsignedByteSub();
         for (int j = mapEventX; j < mapEventX + 8; j++) {
@@ -11539,10 +12361,10 @@ public class Game extends RSApplet {
           }
         }
 
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 185) {
+      if (packetType == 185) {
         int k = inStream.readShortLEAdd();
         RSInterface.interfaceCache[k].mediaType = 3;
         if (myPlayer.desc == null) {
@@ -11556,19 +12378,19 @@ public class Game extends RSApplet {
         } else {
           RSInterface.interfaceCache[k].mediaId = (int) (0x12345678L + myPlayer.desc.type);
         }
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 107) {
+      if (packetType == 107) {
         isCameraLocked = false;
         for (int l = 0; l < 5; l++) {
           tabFlashing[l] = false;
         }
 
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 72) {
+      if (packetType == 72) {
         int i1 = inStream.readShortLE();
         RSInterface rsInterface = RSInterface.interfaceCache[i1];
         for (int k15 = 0; k15 < rsInterface.inv.length; k15++) {
@@ -11576,19 +12398,19 @@ public class Game extends RSApplet {
           rsInterface.inv[k15] = 0;
         }
 
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 214) {
-        ignoreCount = pktSize / 8;
+      if (packetType == 214) {
+        ignoreCount = packetSize / 8;
         for (int j1 = 0; j1 < ignoreCount; j1++) {
           ignoreListAsLongs[j1] = inStream.readQWord();
         }
 
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 166) {
+      if (packetType == 166) {
         isCameraLocked = true;
         cameraTargetX = inStream.readUnsignedByte();
         cameraTargetY = inStream.readUnsignedByte();
@@ -11600,10 +12422,10 @@ public class Game extends RSApplet {
           yCameraPos = cameraTargetY * 128 + 64;
           zCameraPos = getTileHeight(plane, yCameraPos, xCameraPos) - cameraTargetZ;
         }
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 134) {
+      if (packetType == 134) {
         needDrawTabArea = true;
         int skillID = inStream.readUnsignedByte();
         int experience = inStream.readIntV1();
@@ -11621,10 +12443,10 @@ public class Game extends RSApplet {
           }
         }
 
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 71) {
+      if (packetType == 71) {
         int l1 = inStream.readUnsignedWord();
         int j10 = inStream.readUnsignedByteA();
         if (l1 == 0x00ffff) {
@@ -11633,59 +12455,59 @@ public class Game extends RSApplet {
         tabInterfaceIDs[j10] = l1;
         needDrawTabArea = true;
         tabAreaAltered = true;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 74) {
+      if (packetType == 74) {
         int i2 = inStream.readShortLE();
         if (i2 == 0x00ffff) {
           i2 = -1;
         }
-        if (i2 != -1 || previousSong != 0) {
-          if (i2 != -1 && currentSong != i2 && musicVolume != 0 && previousSong == 0)
-            queueSong(10, musicVolume, false, i2);
-        } else stopMusic(false);
-        currentSong = i2;
-        pktType = -1;
+        if (i2 != -1 || MusicManager.previousSong != 0) {
+          if (i2 != -1 && MusicManager.currentSong != i2 && MusicManager.musicVolume != 0 && MusicManager.previousSong == 0)
+            musicManager.queueSong(10, MusicManager.musicVolume, false, i2);
+        } else MusicManager.stopMusic(false);
+        MusicManager.currentSong = i2;
+        packetType = -1;
         return true;
       }
-      if (pktType == 121) {
+      if (packetType == 121) {
         int i_60_ = inStream.readShortLEAdd();
         int i_61_ = inStream.readShortAdd();
         if (i_61_ == 0x00ffff) i_61_ = -1;
-        if (musicVolume != 0 && i_61_ != -1) {
-          playSong(musicVolume, false, i_60_);
-          previousSong = i_61_ * 20;
+        if (MusicManager.musicVolume != 0 && i_61_ != -1) {
+          musicManager.playSong(MusicManager.musicVolume, false, i_60_);
+          MusicManager.previousSong = i_61_ * 20;
         }
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 109) {
+      if (packetType == 109) {
         resetLogout();
-        pktType = -1;
+        packetType = -1;
         return false;
       }
-      if (pktType == 70) {
+      if (packetType == 70) {
         int k2 = inStream.readSignedWord();
         int l10 = inStream.readShortLESigned();
         int i16 = inStream.readShortLE();
         RSInterface offsetWidget = RSInterface.interfaceCache[i16];
         offsetWidget.offsetX = k2;
         offsetWidget.offsetY = l10;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 73 || pktType == 241) {
+      if (packetType == 73 || packetType == 241) {
 
         // mapReset();
         int l2 = currentRegionX;
         int i11 = currentRegionY;
-        if (pktType == 73) {
+        if (packetType == 73) {
           l2 = inStream.readShortAdd();
           i11 = inStream.readUnsignedWord();
           isDynamicRegion = false;
         }
-        if (pktType == 241) {
+        if (packetType == 241) {
           i11 = inStream.readShortAdd();
           inStream.initBitAccess();
           for (int j16 = 0; j16 < 4; j16++) {
@@ -11706,7 +12528,7 @@ public class Game extends RSApplet {
           isDynamicRegion = true;
         }
         if (currentRegionX == l2 && currentRegionY == i11 && loadingStage == 2) {
-          pktType = -1;
+          packetType = -1;
           return true;
         }
         currentRegionX = l2;
@@ -11721,7 +12543,7 @@ public class Game extends RSApplet {
         loadingStage = 1;
         loadingStartTime = System.currentTimeMillis();
         drawTextOnScreen(null, "Loading - please wait.");
-        if (pktType == 73) {
+        if (packetType == 73) {
           int k16 = 0;
           for (int i21 = (currentRegionX - 6) / 8; i21 <= (currentRegionX + 6) / 8; i21++) {
             for (int k23 = (currentRegionY - 6) / 8; k23 <= (currentRegionY + 6) / 8; k23++) {
@@ -11761,7 +12583,7 @@ public class Game extends RSApplet {
             }
           }
         }
-        if (pktType == 241) {
+        if (packetType == 241) {
           int l16 = 0;
           int ai[] = new int[676];
           for (int i24 = 0; i24 < 4; i24++) {
@@ -11886,47 +12708,47 @@ public class Game extends RSApplet {
           destY -= j21;
         }
         isCameraLocked = false;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 208) {
+      if (packetType == 208) {
         int i3 = inStream.readShortLESigned();
         if (i3 >= 0) {
           resetInterfaceAnimation(i3);
         }
         overlayInterfaceId = i3;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 99) {
+      if (packetType == 99) {
         minimapState = inStream.readUnsignedByte();
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 75) {
+      if (packetType == 75) {
         int j3 = inStream.readShortLEAdd();
         int j11 = inStream.readShortLEAdd();
         RSInterface.interfaceCache[j11].mediaType = 2;
         RSInterface.interfaceCache[j11].mediaId = j3;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 114) {
+      if (packetType == 114) {
         systemUpdateTimer = inStream.readShortLE() * 30;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 60) {
+      if (packetType == 60) {
         mapEventY = inStream.readUnsignedByte();
         mapEventX = inStream.readUnsignedByteNeg();
-        while (inStream.currentOffset < pktSize) {
+        while (inStream.currentOffset < packetSize) {
           int k3 = inStream.readUnsignedByte();
           handleMapPackets(inStream, k3);
         }
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 35) {
+      if (packetType == 35) {
         int l3 = inStream.readUnsignedByte();
         int k11 = inStream.readUnsignedByte();
         int j17 = inStream.readUnsignedByte();
@@ -11936,10 +12758,10 @@ public class Game extends RSApplet {
         cameraShakeFrequency[l3] = j17;
         cameraShakeSpeed[l3] = k21;
         cameraShakeCycle[l3] = 0;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 174) {
+      if (packetType == 174) {
         int id = inStream.readUnsignedWord();
         int type = /*inStream.readUnsignedByte()*/ 1;
         int delay = inStream.readUnsignedWord();
@@ -11949,10 +12771,10 @@ public class Game extends RSApplet {
         soundDelay[currentSound] = delay + Sounds.delays[id];
         soundVolume[currentSound] = volume;
         currentSound++;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 104) {
+      if (packetType == 104) {
         int j4 = inStream.readUnsignedByteNeg();
         int i12 = inStream.readUnsignedByteA();
         String s6 = inStream.readString();
@@ -11963,15 +12785,15 @@ public class Game extends RSApplet {
           atPlayerActions[j4 - 1] = s6;
           atPlayerArray[j4 - 1] = i12 == 0;
         }
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 78) {
+      if (packetType == 78) {
         destX = 0;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 253) {
+      if (packetType == 253) {
         String s = inStream.readString();
         if (s.endsWith(":tradereq:")) {
           String s3 = s.substring(0, s.indexOf(":"));
@@ -12046,12 +12868,12 @@ public class Game extends RSApplet {
         } else {
           pushMessage(s, 0, "");
         }
-        pktType = -1;
+        packetType = -1;
         // serverMessage(s);
 
         return true;
       }
-      if (pktType == 1) {
+      if (packetType == 1) {
         for (int k4 = 0; k4 < playerArray.length; k4++) {
           if (playerArray[k4] != null) {
             playerArray[k4].anim = -1;
@@ -12064,10 +12886,10 @@ public class Game extends RSApplet {
           }
         }
 
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 50) {
+      if (packetType == 50) {
         long l4 = inStream.readQWord();
         int i18 = inStream.readUnsignedByte();
         String s7 = TextClass.fixName(TextClass.nameForLong(l4));
@@ -12116,18 +12938,18 @@ public class Game extends RSApplet {
           }
         }
 
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 110) {
+      if (packetType == 110) {
         if (tabID == 12) {
           needDrawTabArea = true;
         }
         energy = inStream.readUnsignedByte();
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 254) {
+      if (packetType == 254) {
         hintIconState = inStream.readUnsignedByte();
         if (hintIconState == 1) {
           hintNpcIndex = inStream.readUnsignedWord();
@@ -12161,10 +12983,10 @@ public class Game extends RSApplet {
         if (hintIconState == 10) {
           selectedPlayerId = inStream.readUnsignedWord();
         }
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 248) {
+      if (packetType == 248) {
         int i5 = inStream.readShortAdd();
         int k12 = inStream.readUnsignedWord();
         if (backDialogID != -1) {
@@ -12187,7 +13009,7 @@ public class Game extends RSApplet {
         needDrawTabArea = true;
         tabAreaAltered = true;
         actionPending = false;
-        pktType = -1;
+        packetType = -1;
         if (ClientSettings.SCREENSHOTS_ENABLED
             && ClientSettings.AUTOMATIC_SCREENSHOTS_ENABLED
             && i5 == 5292) {
@@ -12203,7 +13025,7 @@ public class Game extends RSApplet {
         }
         return true;
       }
-      if (pktType == 79) {
+      if (packetType == 79) {
         int j5 = inStream.readShortLE();
         int l12 = inStream.readShortAdd();
         RSInterface configWidget = RSInterface.interfaceCache[j5];
@@ -12216,10 +13038,10 @@ public class Game extends RSApplet {
           }
           configWidget.scrollPosition = l12;
         }
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 68) {
+      if (packetType == 68) {
         for (int k5 = 0; k5 < variousSettings.length; k5++) {
           if (variousSettings[k5] != varpArray[k5]) {
             variousSettings[k5] = varpArray[k5];
@@ -12228,10 +13050,10 @@ public class Game extends RSApplet {
           }
         }
 
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 196) {
+      if (packetType == 196) {
         long l5 = inStream.readQWord();
         @SuppressWarnings("unused")
         int j18 = inStream.readDWord();
@@ -12248,7 +13070,7 @@ public class Game extends RSApplet {
         if (!flag5 && restrictedArea == 0) {
           try {
             // Direct message
-            String s9 = TextInput.decodeChatMessage(pktSize - 13, inStream);
+            String s9 = TextInput.decodeChatMessage(packetSize - 13, inStream);
             if (l21 == 2 || l21 == 3) {
               pushMessage(s9, 7, "@cr2@" + TextClass.fixName(TextClass.nameForLong(l5)));
             } else if (l21 == 1) {
@@ -12260,16 +13082,16 @@ public class Game extends RSApplet {
             Signlink.reporterror("cde1");
           }
         }
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 85) {
+      if (packetType == 85) {
         mapEventY = inStream.readUnsignedByteNeg();
         mapEventX = inStream.readUnsignedByteNeg();
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 24) {
+      if (packetType == 24) {
         flashingTabId = inStream.readUnsignedByteSub();
         if (flashingTabId == tabID) {
           if (flashingTabId == 3) {
@@ -12279,16 +13101,16 @@ public class Game extends RSApplet {
           }
           needDrawTabArea = true;
         }
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 246) {
+      if (packetType == 246) {
         int i6 = inStream.readShortLE();
         int i13 = inStream.readUnsignedWord();
         int k18 = inStream.readUnsignedWord();
         if (k18 == 0x00ffff) {
           RSInterface.interfaceCache[i6].mediaType = 0;
-          pktType = -1;
+          packetType = -1;
           return true;
         } else {
           ItemDef itemDef = ItemDef.lookup(k18);
@@ -12297,18 +13119,18 @@ public class Game extends RSApplet {
           RSInterface.interfaceCache[i6].modelRotation1 = itemDef.modelRotation1;
           RSInterface.interfaceCache[i6].modelRotation2 = itemDef.modelRotation2;
           RSInterface.interfaceCache[i6].modelZoom = itemDef.modelZoom * 100 / i13;
-          pktType = -1;
+          packetType = -1;
           return true;
         }
       }
-      if (pktType == 171) {
+      if (packetType == 171) {
         boolean flag1 = inStream.readUnsignedByte() == 1;
         int j13 = inStream.readUnsignedWord();
         RSInterface.interfaceCache[j13].hideUntilHovered = flag1;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 142) {
+      if (packetType == 142) {
         int j6 = inStream.readShortLE();
         resetInterfaceAnimation(j6);
         if (backDialogID != -1) {
@@ -12331,10 +13153,10 @@ public class Game extends RSApplet {
         needDrawTabArea = true;
         tabAreaAltered = true;
         actionPending = false;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 126) {
+      if (packetType == 126) {
         String message = inStream.readString();
         int interfaceID = inStream.readShortAdd();
         // Update current player health (fix for refresh skill not including this)
@@ -12346,27 +13168,27 @@ public class Game extends RSApplet {
         if (RSInterface.interfaceCache[interfaceID].parentID == tabInterfaceIDs[tabID]) {
           needDrawTabArea = true;
         }
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 206) {
+      if (packetType == 206) {
         publicChatMode = inStream.readUnsignedByte();
         privateChatMode = inStream.readUnsignedByte();
         tradeMode = inStream.readUnsignedByte();
         chatSettingsUpdateNeeded = true;
         inputTaken = true;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 240) {
+      if (packetType == 240) {
         if (tabID == 12) {
           needDrawTabArea = true;
         }
         weight = inStream.readSignedWord();
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 69) {
+      if (packetType == 69) {
         int k9 = inStream.readUnsignedWord();
         int k15 = inStream.readUnsignedWord();
         resetInterfaceAnimation(k15);
@@ -12385,28 +13207,28 @@ public class Game extends RSApplet {
         }
         inputDialogState = 0;
         actionPending = false;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 8) {
+      if (packetType == 8) {
         int k6 = inStream.readShortLEAdd();
         int l13 = inStream.readUnsignedWord();
         RSInterface.interfaceCache[k6].mediaType = 1;
         RSInterface.interfaceCache[k6].mediaId = l13;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 122) {
+      if (packetType == 122) {
         int l6 = inStream.readShortLEAdd();
         int i14 = inStream.readShortLEAdd();
         int i19 = i14 >> 10 & 0x1f;
         int i22 = i14 >> 5 & 0x1f;
         int l24 = i14 & 0x1f;
         RSInterface.interfaceCache[l6].textColor = (i19 << 19) + (i22 << 11) + (l24 << 3);
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 53) {
+      if (packetType == 53) {
         needDrawTabArea = true;
         int i7 = inStream.readUnsignedWord();
         RSInterface childWidget = RSInterface.interfaceCache[i7];
@@ -12425,10 +13247,10 @@ public class Game extends RSApplet {
           childWidget.invStackSizes[j25] = 0;
         }
 
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 230) {
+      if (packetType == 230) {
         int j7 = inStream.readShortAdd();
         int j14 = inStream.readUnsignedWord();
         int k19 = inStream.readUnsignedWord();
@@ -12436,16 +13258,16 @@ public class Game extends RSApplet {
         RSInterface.interfaceCache[j14].modelRotation1 = k19;
         RSInterface.interfaceCache[j14].modelRotation2 = k22;
         RSInterface.interfaceCache[j14].modelZoom = j7;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 221) {
+      if (packetType == 221) {
         interfaceMode = inStream.readUnsignedByte();
         needDrawTabArea = true;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 177) {
+      if (packetType == 177) {
         isCameraLocked = true;
         cameraFocusX = inStream.readUnsignedByte();
         cameraFocusY = inStream.readUnsignedByte();
@@ -12469,37 +13291,37 @@ public class Game extends RSApplet {
             yCameraCurve = 383;
           }
         }
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 249) {
+      if (packetType == 249) {
         friendsListStatus = inStream.readUnsignedByteA();
         localPlayerIndex = inStream.readShortLEAdd();
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 65) {
-        updateNPCs(inStream, pktSize);
-        pktType = -1;
+      if (packetType == 65) {
+        updateNPCs(inStream, packetSize);
+        packetType = -1;
         return true;
       }
-      if (pktType == 27) {
+      if (packetType == 27) {
         messagePromptRaised = false;
         inputDialogState = 1;
         amountOrNameInput = "";
         inputTaken = true;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 187) {
+      if (packetType == 187) {
         messagePromptRaised = false;
         inputDialogState = 2;
         amountOrNameInput = "";
         inputTaken = true;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 97) {
+      if (packetType == 97) {
         int l7 = inStream.readUnsignedWord();
         resetInterfaceAnimation(l7);
         if (invOverlayInterfaceID != -1) {
@@ -12535,17 +13357,17 @@ public class Game extends RSApplet {
           openInterfaceID = l7;
         }
         actionPending = false;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 218) {
+      if (packetType == 218) {
         int i8 = inStream.readShortLEAddSigned();
         dialogID = i8;
         inputTaken = true;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 87) {
+      if (packetType == 87) {
         int j8 = inStream.readShortLE();
         int l14 = inStream.readIntV1();
         varpArray[j8] = l14;
@@ -12557,10 +13379,10 @@ public class Game extends RSApplet {
             inputTaken = true;
           }
         }
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 36) {
+      if (packetType == 36) {
         int k8 = inStream.readShortLE();
         byte byte0 = inStream.readSignedByte();
         varpArray[k8] = byte0;
@@ -12572,15 +13394,15 @@ public class Game extends RSApplet {
             inputTaken = true;
           }
         }
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 61) {
+      if (packetType == 61) {
         multiCombatZone = inStream.readUnsignedByte();
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 200) {
+      if (packetType == 200) {
         int l8 = inStream.readUnsignedWord();
         int i15 = inStream.readSignedWord();
         RSInterface stackWidget = RSInterface.interfaceCache[l8];
@@ -12589,10 +13411,10 @@ public class Game extends RSApplet {
           stackWidget.animationFrame = 0;
           stackWidget.animationCycle = 0;
         }
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 219) {
+      if (packetType == 219) {
         if (invOverlayInterfaceID != -1) {
           invOverlayInterfaceID = -1;
           needDrawTabArea = true;
@@ -12613,14 +13435,14 @@ public class Game extends RSApplet {
           inputTaken = true;
         }
         actionPending = false;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 34) {
+      if (packetType == 34) {
         needDrawTabArea = true;
         int i9 = inStream.readUnsignedWord();
         RSInterface targetWidget = RSInterface.interfaceCache[i9];
-        while (inStream.currentOffset < pktSize) {
+        while (inStream.currentOffset < packetSize) {
           int j20 = inStream.readUnsignedSmart();
           int i23 = inStream.readUnsignedWord();
           int l25 = inStream.readUnsignedByte();
@@ -12632,32 +13454,32 @@ public class Game extends RSApplet {
             targetWidget.invStackSizes[j20] = l25;
           }
         }
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 105
-          || pktType == 84
-          || pktType == 147
-          || pktType == 215
-          || pktType == 4
-          || pktType == 117
-          || pktType == 156
-          || pktType == 44
-          || pktType == 160
-          || pktType == 101
-          || pktType == 151) {
-        handleMapPackets(inStream, pktType);
-        pktType = -1;
+      if (packetType == 105
+          || packetType == 84
+          || packetType == 147
+          || packetType == 215
+          || packetType == 4
+          || packetType == 117
+          || packetType == 156
+          || packetType == 44
+          || packetType == 160
+          || packetType == 101
+          || packetType == 151) {
+        handleMapPackets(inStream, packetType);
+        packetType = -1;
         return true;
       }
-      if (pktType == 106) {
+      if (packetType == 106) {
         tabID = inStream.readUnsignedByteNeg();
         needDrawTabArea = true;
         tabAreaAltered = true;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
-      if (pktType == 164) {
+      if (packetType == 164) {
         int j9 = inStream.readShortLE();
         resetInterfaceAnimation(j9);
         if (invOverlayInterfaceID != -1) {
@@ -12676,12 +13498,12 @@ public class Game extends RSApplet {
         }
         inputTaken = true;
         actionPending = false;
-        pktType = -1;
+        packetType = -1;
         return true;
       }
       String s2 =
-          "T1 - " + pktType + "," + pktSize + " - " + prevPktType + "," + prevPktType2 + " - ";
-      for (int j15 = 0; j15 < pktSize && j15 < 50; j15++) {
+          "T1 - " + packetType + "," + packetSize + " - " + prevPacketType + "," + prevPacketType2 + " - ";
+      for (int j15 = 0; j15 < packetSize && j15 < 50; j15++) {
         s2 = s2 + inStream.buffer[j15] + ",";
       }
       Signlink.reporterror(s2);
@@ -12691,19 +13513,19 @@ public class Game extends RSApplet {
     } catch (Exception exception) {
       String s2 =
           "T2 - "
-              + pktType
+              + packetType
               + ","
-              + prevPktType
+              + prevPacketType
               + ","
-              + prevPktType2
+              + prevPacketType2
               + " - "
-              + pktSize
+              + packetSize
               + ","
               + (baseX + myPlayer.smallX[0])
               + ","
               + (baseY + myPlayer.smallY[0])
               + " - ";
-      for (int j15 = 0; j15 < pktSize && j15 < 50; j15++) {
+      for (int j15 = 0; j15 < packetSize && j15 < 50; j15++) {
         s2 = s2 + inStream.buffer[j15] + ",";
       }
 
@@ -12713,8 +13535,6 @@ public class Game extends RSApplet {
     }
     return true;
   }
-
-  public static int zoom = 3;
 
   public void renderGameView() {
     waveCycle++;
@@ -12936,676 +13756,6 @@ public class Game extends RSApplet {
       fullScreenInterfaceId = -1;
     }
     if (openInterfaceID != -1) openInterfaceID = -1;
-  }
-
-  public Game() {
-    // Test if they're on 32-bit, warn them if they are
-    if (!System.getProperty("sun.arch.data.model").contains("64")) {
-      JOptionPane.showMessageDialog(
-          null,
-          "You're running 32-bit java. This will definitely cause problems.\nYou can get the right Java 8 at AdoptOpenJDK.net",
-          "You're running 32-bit Java!",
-          JOptionPane.INFORMATION_MESSAGE);
-      System.out.println("Please upgrade to 64-bit java to avoid problems! (AdoptOpenJDK.net)");
-    }
-    if (Double.parseDouble(System.getProperty("java.specification.version")) >= 1.9) {
-      JOptionPane.showMessageDialog(
-          null,
-          "You're not running Java 8. If you're using Parabot, this will cause problems!\nYou can get Java 8 from AdoptOpenJDK.net",
-          "You're not running Java 8!",
-          JOptionPane.INFORMATION_MESSAGE);
-      System.out.println("Please downgrade to Java 8 to avoid problems! (AdoptOpenJDK.net)");
-    }
-    server = ClientSettings.SERVER_IP;
-    pathDistances = new int[104][104];
-    friendsNodeIDs = new int[200];
-    groundArray = new NodeList[4][104][104];
-    flameThreadActive = false;
-    chatBuffer = new Stream(new byte[5000]);
-    npcArray = new NPC[16384];
-    npcIndices = new int[16384];
-    removedEntityIndices = new int[1000];
-    updateBuffer = Stream.create();
-    soundEffectEnabled = true;
-    openInterfaceID = -1;
-    currentExp = new int[Skills.skillsCount];
-    useJaggrab = false;
-    cameraShakeAmplitude = new int[5];
-    selectedTargetId = -1;
-    tabFlashing = new boolean[5];
-    drawFlames = false;
-    reportAbuseInput = "";
-    localPlayerIndex = -1;
-    menuOpen = false;
-    inputString = "";
-    maxPlayers = 2048;
-    myPlayerIndex = 2047;
-    playerArray = new Player[maxPlayers];
-    playerIndices = new int[maxPlayers];
-    playerUpdateIndices = new int[maxPlayers];
-    playerBuffers = new Stream[maxPlayers];
-    cameraYawOffsetSpeed = 1;
-    pathDirections = new int[104][104];
-    scrollBarLightColor = 0x766654;
-    soundPayload = new byte[16384];
-    currentStats = new int[Skills.skillsCount];
-    ignoreListAsLongs = new long[100];
-    loadingError = false;
-    scrollBarDarkColor = 0x332d25;
-    cameraShakeSpeed = new int[5];
-    occupiedTiles = new int[104][104];
-    chatTypes = new int[100];
-    chatNames = new String[100];
-    chatMessages = new String[100];
-    sideIcons = new Background[13];
-    hasFocus = true;
-    friendsListAsLongs = new long[200];
-    currentSong = -1;
-    drawingFlames = false;
-    spriteDrawX = -1;
-    spriteDrawY = -1;
-    mapBackLeft = new int[33];
-    flameLineOffsets = new int[256];
-    decompressors = new util.compression.Decompressor[5];
-    variousSettings = new int[2000];
-    scrollBarDragging = false;
-    maxDisplayedText = 50;
-    textX = new int[maxDisplayedText];
-    textY = new int[maxDisplayedText];
-    textHeight = new int[maxDisplayedText];
-    textWidth = new int[maxDisplayedText];
-    textColors = new int[maxDisplayedText];
-    textEffects = new int[maxDisplayedText];
-    textCycles = new int[maxDisplayedText];
-    overheadTexts = new String[maxDisplayedText];
-    lastPlane = -1;
-    hitMarks = new Sprite[20];
-    characterColorIndices = new int[5];
-    scrollBarColor = 0x23201b;
-    amountOrNameInput = "";
-    projectileList = new NodeList();
-    cameraUpdatePending = false;
-    overlayInterfaceId = -1;
-    cameraShakeCycle = new int[5];
-    characterDesignChanged = false;
-    mapFunctions = new Sprite[100];
-    dialogID = -1;
-    maxStats = new int[Skills.skillsCount];
-    varpArray = new int[2000];
-    isMaleCharacter = true;
-    minimapLineOffset = new int[151];
-    flashingTabId = -1;
-    graphicsObjectList = new NodeList();
-    mapBackWidths = new int[33];
-    chatScrollComponent = new RSInterface();
-    mapScenes = new Background[100];
-    scrollBarHandleColor = 0x4d4233;
-    characterStyle = new int[7];
-    minimapIconX = new int[1000];
-    minimapIconY = new int[1000];
-    regionLoading = false;
-    friendsList = new String[200];
-    inStream = Stream.create();
-    expectedCRCs = new int[9];
-    menuActionCmd2 = new int[500];
-    menuActionCmd3 = new int[500];
-    menuActionID = new int[500];
-    menuActionCmd1 = new int[500];
-    headIcons = new Sprite[20];
-    headIconsHint = new Sprite[20];
-    skullIcons = new Sprite[20];
-    tabAreaAltered = false;
-    inputPrompt = "";
-    atPlayerActions = new String[5];
-    atPlayerArray = new boolean[5];
-    dynamicRegionData = new int[4][13][13];
-    cameraYOffsetSpeed = 2;
-    minimapIconSprites = new Sprite[1000];
-    forceMapReload = false;
-    actionPending = false;
-    crosses = new Sprite[8];
-    musicEnabled = true;
-    needDrawTabArea = false;
-    loggedIn = false;
-    canMute = false;
-    isDynamicRegion = false;
-    isCameraLocked = false;
-    minimapVerticalSpeed = 1;
-    myUsername = "";
-    myPassword = "";
-    genericLoadingError = false;
-    reportAbuseInterfaceID = -1;
-    pendingSpawns = new NodeList();
-    cameraPitch = 128;
-    invOverlayInterfaceID = -1;
-    stream = Stream.create();
-    menuActionName = new String[500];
-    cameraShakeFrequency = new int[5];
-    sound = new int[50];
-    minimapHorizontalSpeed = 2;
-    chatScrollHeight = 78;
-    promptInput = "";
-    modIcons = new Background[2];
-    tabID = 3;
-    inputTaken = false;
-    songChanging = true;
-    minimapLineLengths = new int[151];
-    collisionMaps = new CollisionMap[4];
-    chatSettingsUpdateNeeded = false;
-    soundType = new int[50];
-    itemBeingDragged = false;
-    soundDelay = new int[50];
-    soundVolume = new int[50];
-    rsAlreadyLoaded = false;
-    welcomeScreenRaised = false;
-    messagePromptRaised = false;
-    loginMessage1 = "";
-    loginMessage2 = "";
-    backDialogID = -1;
-    cameraXOffsetSpeed = 2;
-    pathTileX = new int[4000];
-    pathTileY = new int[4000];
-    unusedSlotIndex = -1;
-    fileCRC = new CRC32();
-  }
-
-  public CRC32 fileCRC;
-  public static String server;
-  public int ignoreCount;
-  public long loadingStartTime;
-  public int[][] pathDistances;
-  public int[] friendsNodeIDs;
-  public NodeList[][][] groundArray;
-  public int[] flameBuffer1;
-  public int[] flameBuffer2;
-  public volatile boolean flameThreadActive;
-  public Socket jaggrabSocket;
-  public int loginScreenState;
-  public Stream chatBuffer;
-  public NPC[] npcArray;
-  public int npcCount;
-  public int[] npcIndices;
-  public int entityRemovalCount;
-  public int[] removedEntityIndices;
-  public int lastPacketType;
-  public int prevPktType;
-  public int prevPktType2;
-  public String messagePrompt;
-  public int publicChatMode;
-  public int privateChatMode;
-  public Stream updateBuffer;
-  public boolean soundEffectEnabled;
-  public static int systemUpdateCounter;
-  public int[] flameBuffer;
-  public int[] flamePaletteRed;
-  public int[] flamePaletteGreen;
-  public int[] flamePaletteBlue;
-  public static int unusedCounter;
-  public int hintIconState;
-  public int openInterfaceID;
-  public int fullScreenInterfaceId = -1;
-  public int xCameraPos;
-  public int zCameraPos;
-  public int yCameraPos;
-  public int yCameraCurve;
-  public int xCameraCurve;
-  public int myPrivilege;
-  public final int[] currentExp;
-  public static int musicId;
-  public static int soundId;
-  public Background redStone1_3;
-  public Background redStone2_3;
-  public Background redStone3_2;
-  public Background redStone1_4;
-  public Background redStone2_4;
-  public Sprite multiOverlay;
-  public Sprite mapFlag;
-  public Sprite mapMarker;
-  public boolean useJaggrab;
-  public final int[] cameraShakeAmplitude;
-  public int selectedTargetId;
-  public final boolean[] tabFlashing;
-  public int weight;
-  public MouseDetection mouseDetection;
-  public volatile boolean drawFlames;
-  public String reportAbuseInput;
-  public int localPlayerIndex;
-  public boolean menuOpen;
-  public int hoveredWidgetId;
-  public String inputString;
-  public final int maxPlayers;
-  public final int myPlayerIndex;
-  public Player[] playerArray;
-  public int playerCount;
-  public int[] playerIndices;
-  public int playerUpdateCount;
-  public int[] playerUpdateIndices;
-  public Stream[] playerBuffers;
-  public int cameraYawOffset;
-  public int cameraYawOffsetSpeed;
-  public int friendsCount;
-  public int interfaceMode;
-  public int[][] pathDirections;
-  public final int scrollBarLightColor;
-  public RSImageProducer backLeftIP1;
-  public RSImageProducer backLeftIP2;
-  public RSImageProducer backRightIP1;
-  public RSImageProducer backRightIP2;
-  public RSImageProducer backTopIP1;
-  public RSImageProducer backVmidIP1;
-  public RSImageProducer backVmidIP2;
-  public RSImageProducer backVmidIP3;
-  public RSImageProducer midSubscreenBuffer;
-  public byte[] soundPayload;
-  public int configActionId;
-  public int crossX;
-  public int crossY;
-  public int crossIndex;
-  public int crossType;
-  public int plane;
-  public final int[] currentStats;
-  public static int objectClickCounter;
-  public final long[] ignoreListAsLongs;
-  public boolean loadingError;
-  public final int scrollBarDarkColor;
-  public final int[] cameraShakeSpeed;
-  public int[][] occupiedTiles;
-  public Sprite maleIconSprite;
-  public Sprite femaleIconSprite;
-  public int selectedPlayerId;
-  public int selectedNpcId;
-  public int destinationX;
-  public int destinationY;
-  public int lastMouseX;
-  public int lastMouseY;
-  public static int abuseReportCounter;
-  public final int[] chatTypes;
-  public final String[] chatNames;
-  public final String[] chatMessages;
-  public int animationCycle;
-  public WorldController worldController;
-  public Background[] sideIcons;
-  public int menuScreenArea;
-  public int menuOffsetX;
-  public int menuOffsetY;
-  public int menuWidth;
-  public int menuHeight;
-  public long privateMessageRecipient;
-  public boolean hasFocus;
-  public long[] friendsListAsLongs;
-  public int currentSong;
-  public static int nodeID = 10;
-  public static int portOff;
-  public static boolean isMembers = true;
-  public static boolean lowMem;
-  public volatile boolean drawingFlames;
-  public int spriteDrawX;
-  public int spriteDrawY;
-  public final int[] hitmarkColors = {0xffff00, 0xff0000, 0x00ff00, 0x00ffff, 0xff00ff, 0xffffff};
-  public Background loginBoxBackground;
-  public Background loginButtonBackground;
-  public final int[] mapBackLeft;
-  public final int[] flameLineOffsets;
-  public final util.compression.Decompressor[] decompressors;
-  public int variousSettings[];
-  public boolean scrollBarDragging;
-  public final int maxDisplayedText;
-  public final int[] textX;
-  public final int[] textY;
-  public final int[] textHeight;
-  public final int[] textWidth;
-  public final int[] textColors;
-  public final int[] textEffects;
-  public final int[] textCycles;
-  public final String[] overheadTexts;
-  public int cameraZoom;
-  public int lastPlane;
-  public static int playerOptionCounter;
-  public Sprite[] hitMarks;
-  public int idleCycleCounter;
-  public int dragCounter;
-  public final int[] characterColorIndices;
-  public static boolean initialLoadComplete;
-  public int cameraFocusX;
-  public int cameraFocusY;
-  public int cameraFocusHeight;
-  public int cameraAdjustSpeed;
-  public int cameraAdjustAcceleration;
-  public ISAACRandomGen encryption;
-  public Sprite mapEdge;
-  public final int scrollBarColor;
-  public static final int[][] appearanceColorOptions = {
-    {6798, 107, 10283, 16, 4797, 7744, 5799, 4634, 33697, 22433, 2983, 54193},
-    {
-      8741, 12, 64030, 43162, 7735, 8404, 1701, 38430, 24094, 10153, 56621, 4783, 1341, 16578,
-      35003, 25239
-    },
-    {
-      25238, 8742, 12, 64030, 43162, 7735, 8404, 1701, 38430, 24094, 10153, 56621, 4783, 1341,
-      16578, 35003
-    },
-    {4626, 11146, 6439, 12, 4758, 10270},
-    {4550, 4537, 5681, 5673, 5790, 6806, 8076, 4574}
-  };
-  public String amountOrNameInput;
-  public static int cameraMoveCycle;
-  public int daysSinceLastLogin;
-  public int pktSize;
-  public int pktType;
-  public int connectionTimeoutCounter;
-  public int keepAliveCounter;
-  public int reconnectDelay;
-  public NodeList projectileList;
-  public int cameraX;
-  public int cameraY;
-  public int cameraUpdateDelay;
-  public boolean cameraUpdatePending;
-  public int overlayInterfaceId;
-  public static final int[] levelExperience;
-  public int minimapState;
-  public int mouseIdleTicks;
-  public int loadingStage;
-  public Background scrollBar1;
-  public Background scrollBar2;
-  public int lastHoveredWidgetId;
-  public Background backBase1;
-  public Background backBase2;
-  public Background backHmid1;
-  public final int[] cameraShakeCycle;
-  public boolean characterDesignChanged;
-  public Sprite[] mapFunctions;
-  public int baseX;
-  public int baseY;
-  public int prevBaseX;
-  public int prevBaseY;
-  public int loginFailures;
-  public int lastInteractionId;
-  public int flameMainColor;
-  public int flameSecondaryColor;
-  public int dialogID;
-  public final int[] maxStats;
-  public final int[] varpArray;
-  public int friendsListStatus;
-  public boolean isMaleCharacter;
-  public int hoveredTabId;
-  public String errorMessage;
-  public static int terrainLoadCycle;
-  public final int[] minimapLineOffset;
-  public StreamLoader titleStreamLoader;
-  public int flashingTabId;
-  public int multiCombatZone;
-  public NodeList graphicsObjectList;
-  public final int[] mapBackWidths;
-  public final RSInterface chatScrollComponent;
-  public Background[] mapScenes;
-  public static int drawCycle;
-  public int currentSound;
-  public final int scrollBarHandleColor;
-  public int friendsListAction;
-  public final int[] characterStyle;
-  public int mouseInvInterfaceIndex;
-  public int lastActiveInvInterface;
-  public OnDemandFetcher onDemandFetcher;
-  public int currentRegionX;
-  public int currentRegionY;
-  public int minimapIconCount;
-  public int[] minimapIconX;
-  public int[] minimapIconY;
-  public Sprite mapDotItem;
-  public Sprite mapDotNPC;
-  public Sprite mapDotPlayer;
-  public Sprite mapDotFriend;
-  public Sprite mapDotTeam;
-  public int loadingPercent;
-  public boolean regionLoading;
-  public String[] friendsList;
-  public Stream inStream;
-  public int dragInterfaceId;
-  public int draggedSlot;
-  public int activeInterfaceType;
-  public int dragStartX;
-  public int dragStartY;
-  public int chatScrollPosition;
-  public final int[] expectedCRCs;
-  public int[] menuActionCmd2;
-  public int[] menuActionCmd3;
-  public int[] menuActionID;
-  public int[] menuActionCmd1;
-  public Sprite[] headIcons;
-  public Sprite[] skullIcons;
-  public Sprite[] headIconsHint;
-  public static int mapLoadPacketCounter;
-  public int cameraTargetX;
-  public int cameraTargetY;
-  public int cameraTargetZ;
-  public int cameraMoveSpeed;
-  public int cameraMoveAcceleration;
-  public boolean tabAreaAltered;
-  public int systemUpdateTimer;
-  public RSImageProducer titleImageProducer;
-  public RSImageProducer loginLeftProducer;
-  public RSImageProducer loginRightProducer;
-  public RSImageProducer titleLeftProducer;
-  public RSImageProducer titleRightProducer;
-  public RSImageProducer titleTopLeftProducer;
-  public RSImageProducer titleTopRightProducer;
-  public RSImageProducer titleBottomLeftProducer;
-  public RSImageProducer titleBottomRightProducer;
-  public static int antiCheatPacketCounter;
-  public int membersInt;
-  public String inputPrompt;
-  public Sprite compass;
-  public RSImageProducer tabAreaIconBuffer;
-  public RSImageProducer tabAreaBackgroundBuffer;
-  public RSImageProducer mapEdgeBuffer;
-  public static Player myPlayer;
-  public final String[] atPlayerActions;
-  public final boolean[] atPlayerArray;
-  public final int[][][] dynamicRegionData;
-  public final int[] tabInterfaceIDs = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-  public int cameraYOffset;
-  public int cameraYOffsetSpeed;
-  public int menuActionRow;
-  public static int npcAttackCounter;
-  public int spellSelected;
-  public int selectedSpellId;
-  public int spellUsableOn;
-  public String spellTooltip;
-  public Sprite[] minimapIconSprites;
-  public boolean forceMapReload;
-  public static int clickPacketCounter;
-  public Background redStone1;
-  public Background redStone2;
-  public Background redStone3;
-  public Background redStone1_2;
-  public Background redStone2_2;
-  public int energy;
-  public boolean actionPending;
-  public Sprite[] crosses;
-  public boolean musicEnabled;
-  public Background[] runeBackgrounds;
-  public boolean needDrawTabArea;
-  public int unreadMessages;
-  public static int npcInteractionCounter;
-  public boolean loggedIn;
-  public boolean canMute;
-  public boolean isDynamicRegion;
-  public boolean isCameraLocked;
-  public static int loopCycle;
-  public static final String validUserPassChars =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!\"\243$%^&*()-_=+[{]};:'@#~,<.>/?\\| ";
-  public RSImageProducer textBackground;
-  public RSImageProducer chatBackground;
-  public RSImageProducer tabAreaBuffer;
-  public RSImageProducer fullScreenBackground;
-  public int daysSinceRecovChange;
-  public RSSocket socketStream;
-  public int minimapZoom;
-  public int minimapVerticalSpeed;
-  public static long lastSoundUpdate;
-  public String myUsername;
-  public String myPassword;
-  public static int itemUseCounter;
-  public boolean genericLoadingError;
-  public final int[] objectData = {
-    0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3
-  };
-  public int reportAbuseInterfaceID;
-  public NodeList pendingSpawns;
-  public int[] chatAreaOffsets;
-  public int[] tabAreaOffsets;
-  public int[] chatBoxAreaOffsets;
-  public byte[][] terrainData;
-  public int cameraPitch;
-  public int cameraYaw;
-  public int cameraYawAccel;
-  public int cameraPitchAccel;
-  public static int actionCounter;
-  public int invOverlayInterfaceID;
-  public int[] flameGradient1;
-  public int[] flameGradient2;
-  public Stream stream;
-  public int lastLoginIp;
-  public int splitpublicChat;
-  public Background invBack;
-  public Background mapBack;
-  public Background chatBack;
-  public String[] menuActionName;
-  public Sprite titleBackgroundLeft;
-  public Sprite titleBackgroundRight;
-  public final int[] cameraShakeFrequency;
-  public static final int[] additionalColorCodes = {
-    9104, 10275, 7595, 3610, 7975, 8526, 918, 38802, 24466, 10145, 58654, 5027, 1457, 16565, 34991,
-    25486
-  };
-  public static boolean flagged;
-  public final int[] sound;
-  public int flameDrawingCounter;
-  public int minimapRotationOffset;
-  public int minimapHorizontalSpeed;
-  public int chatScrollHeight;
-  public String promptInput;
-  public int clickCycle;
-  public int[][][] tileHeights;
-  public long serverSessionKey;
-  public int loginScreenCursorPos;
-  public final Background[] modIcons;
-  public long lastMouseClickTime;
-  public int tabID;
-  public int hintNpcIndex;
-  public boolean inputTaken;
-  public int inputDialogState;
-  public static int npcClickCounter;
-  public int nextSong;
-  public boolean songChanging;
-  public final int[] minimapLineLengths;
-  public CollisionMap[] collisionMaps;
-  public static int bitMasks[];
-  public boolean chatSettingsUpdateNeeded;
-  public int[] regionBaseIds;
-  public int[] terrainArchiveIds;
-  public int[] objectArchiveIds;
-  public int lastMousePacketX;
-  public int lastMousePacketY;
-  public final int pathSearchMax = 100;
-  public final int[] soundType;
-  public boolean itemBeingDragged;
-  public int atInventoryLoopCycle;
-  public int atInventoryInterface;
-  public int atInventoryIndex;
-  public int atInventoryInterfaceType;
-  public byte[][] objectMapData;
-  public int tradeMode;
-  public int chatEffectsState;
-  public final int[] soundDelay;
-  public final int[] soundVolume;
-  public int restrictedArea;
-  public final boolean rsAlreadyLoaded;
-  public int oneMouseButtonMode;
-  public int minimapRandomTimer;
-  public boolean welcomeScreenRaised;
-  public boolean messagePromptRaised;
-  public static int soundBufferOffset;
-  public byte[][][] tileFlags;
-  public int previousSong;
-  public int destX;
-  public int destY;
-  public Sprite minimapImage;
-  public int alternatePathFound;
-  public int waveCycle;
-  public String loginMessage1;
-  public String loginMessage2;
-  public int mapEventX;
-  public int mapEventY;
-  public TextDrawingArea plainFont;
-  public TextDrawingArea boldFont;
-  public TextDrawingArea chatTextDrawingArea;
-  public int flameOffset;
-  public int backDialogID;
-  public int cameraXOffset;
-  public int cameraXOffsetSpeed;
-  public int[] pathTileX;
-  public int[] pathTileY;
-  public int itemSelected;
-  public int selectedItemSlot;
-  public int selectedItemInterfaceId;
-  public int selectedItemId;
-  public String selectedItemName;
-  public static int walkPacketCounter;
-  public int unusedSlotIndex;
-  public static int tiara;
-  public static int unusedSettingValue;
-  public boolean showInfo = false;
-  public static int midiVolume = 256;
-  public static int[] midiChannels =
-      new int[] {
-        12800, 12800, 12800, 12800, 12800, 12800, 12800, 12800, 12800, 12800, 12800, 12800, 12800,
-        12800, 12800, 12800
-      };
-  public static int midiFadeCycles = 0;
-  public static MidiPlayer midiPlayer;
-  public static boolean fetchMusic = false;
-  public static int musicVolume2;
-  public static int currentMidiVolume = -1;
-  public static byte[] queuedMidiData;
-  public static int fadeVolume = 0;
-  public static int fadeStep = 0;
-  public static int queuedMidiVolume;
-  public static boolean midiLooping;
-  public static int nextSongDelay;
-  public static boolean autoPlaySong;
-  public static int queuedSongId;
-  public static int musicVolume = 0;
-  public int[] gameScreenOffsets;
-  public int currentDateOffset;
-  public int loginScreenDelay;
-  public int lastPasswordChange;
-  public int scrollPadding;
-  public int unusedRecoveryDate;
-  public int recoveryQuestionChangeDate;
-
-  static {
-    levelExperience = new int[99];
-    int i = 0;
-    for (int j = 0; j < 99; j++) {
-      int l = j + 1;
-      int i1 = (int) ((double) l + 300D * Math.pow(2D, (double) l / 7D));
-      i += i1;
-      levelExperience[j] = i / 4;
-    }
-
-    bitMasks = new int[32];
-    i = 2;
-    for (int k = 0; k < 32; k++) {
-      bitMasks[k] = i - 1;
-      i += i;
-    }
-  }
-
-  void mouseWheelDragged(int i, int j) {
-    if (!mouseWheelDown) return;
-    this.cameraYawAccel += i * 3;
-    this.cameraPitchAccel += (j << 1);
   }
 
   public void keyPressed(KeyEvent keyevent) {

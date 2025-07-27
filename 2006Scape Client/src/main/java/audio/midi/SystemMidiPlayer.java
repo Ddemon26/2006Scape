@@ -1,7 +1,8 @@
 package audio.midi;
 
 import audio.base.AbstractMidiController;
-import core.engine.Game;
+import core.managers.MusicManager;
+
 import java.io.ByteArrayInputStream;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiMessage;
@@ -50,7 +51,7 @@ public class SystemMidiPlayer extends AbstractMidiController implements Receiver
       midiSequencer.open();
       resetAllControllers(-1L);
     } catch (Exception exception) {
-      Game.closeMidiSystem();
+      MusicManager.closeMidiSystem();
     }
   }
 
