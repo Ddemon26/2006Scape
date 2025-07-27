@@ -1,9 +1,9 @@
-# audio.MidiHandler
+# audio.midi.MidiHandler
 
-Defined in [`2006Scape Client/src/main/java/audio.MidiHandler.java`](2006Scape Client/src/main/java/audio.MidiHandler.java).
+Defined in [`2006Scape Client/src/main/java/audio.midi.MidiHandler.java`](2006Scape Client/src/main/java/audio.midi.MidiHandler.java).
 
 Handles midi related functionality.
 
 ```java
-public interface audio.MidiHandler extends Runnable {
+public interface audio.midi.MidiHandler extends Runnable {
 ```

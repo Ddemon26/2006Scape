@@ -74,13 +74,13 @@ The client communicates with the [game server](../Server/Server-intro.md) using 
 
 ### Music and Sound
 Complete audio system supporting MIDI music and sound effects:
-- [`audio.MidiPlayer`](classes/audio.MidiPlayer.md) - MIDI music playback
-- [`audio.SoundPlayer`](classes/audio.SoundPlayer.md) - Sound effect management
-- [`audio.Sounds`](classes/audio.Sounds.md) - Audio asset management
+- [`audio.base.MidiPlayer`](classes/audio.base.MidiPlayer.md) - MIDI music playback
+- [`audio.sound.SoundPlayer`](classes/audio.sound.SoundPlayer.md) - Sound effect management
+- [`audio.sound.Sounds`](classes/audio.sound.Sounds.md) - Audio asset management
 
 ### Audio Components
-- [`audio.Instrument`](classes/audio.Instrument.md) - MIDI instrument handling
-- [`audio.SoundFilter`](classes/audio.SoundFilter.md) - Audio processing and effects
+- [`audio.sound.Instrument`](classes/audio.sound.Instrument.md) - MIDI instrument handling
+- [`audio.sound.SoundFilter`](classes/audio.sound.SoundFilter.md) - Audio processing and effects
 
 ## Data Management
 

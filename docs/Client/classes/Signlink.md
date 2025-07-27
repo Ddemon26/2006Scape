@@ -20,5 +20,5 @@ public static synchronized boolean wavesave(byte abyte0[], int i)
 public static synchronized boolean wavereplay()
 public static synchronized void saveMidi(byte abyte0[], int i)
 public static void reporterror(String s)
-public static audio.Midi midii = new audio.Midi();
+public static audio.midi.Midi midii = new audio.midi.Midi();
 ```

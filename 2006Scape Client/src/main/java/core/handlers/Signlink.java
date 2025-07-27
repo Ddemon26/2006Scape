@@ -1,6 +1,6 @@
 package core.handlers;
 
-import audio.Midi;
+import audio.midi.Midi;
 
 import java.applet.Applet;
 import java.io.DataInputStream;

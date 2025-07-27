@@ -1,11 +1,11 @@
-# audio.Midi
+# audio.midi.Midi
 
-Defined in [`2006Scape Client/src/main/java/audio.Midi.java`](2006Scape Client/src/main/java/audio.Midi.java).
+Defined in [`2006Scape Client/src/main/java/audio.midi.Midi.java`](2006Scape Client/src/main/java/audio.midi.Midi.java).
 
-audio.Midi file playing.  @author Primadude.
+audio.midi.Midi file playing.  @author Primadude.
 
 ```java
-public class audio.Midi implements Runnable {
+public class audio.midi.Midi implements Runnable {
 public String getMidiFileName()
 public String getMidiSaveDir()
 public void setMidiFileName(String midiFileName)

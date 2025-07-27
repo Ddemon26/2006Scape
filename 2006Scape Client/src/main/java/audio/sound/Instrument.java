@@ -1,4 +1,4 @@
-package audio;// Decompiled by Jad v1.5.8f. Copyright 2001 Pavel Kouznetsov.
+package audio.sound;// Decompiled by Jad v1.5.8f. Copyright 2001 Pavel Kouznetsov.
 // Jad home page: http://www.kpdus.com/jad.html
 // Decompiler options: packimports(3) 
 
@@ -133,13 +133,13 @@ final class Instrument {
 					l7 = length - i5;
 				}
 				for (; j7 < l7; j7++) {
-					int j8 = (int) ((long) sampleBuffer[j7 + i5] * (long) audio.SoundFilter.forwardMultiplierInt >> 16);
+					int j8 = (int) ((long) sampleBuffer[j7 + i5] * (long) SoundFilter.forwardMultiplierInt >> 16);
 					for (int k8 = 0; k8 < i5; k8++) {
-						j8 += (int) ((long) sampleBuffer[j7 + i5 - 1 - k8] * (long) audio.SoundFilter.intCoefficients[0][k8] >> 16);
+						j8 += (int) ((long) sampleBuffer[j7 + i5 - 1 - k8] * (long) SoundFilter.intCoefficients[0][k8] >> 16);
 					}
 
 					for (int j9 = 0; j9 < j7; j9++) {
-						j8 -= (int) ((long) sampleBuffer[j7 - 1 - j9] * (long) audio.SoundFilter.intCoefficients[1][j9] >> 16);
+						j8 -= (int) ((long) sampleBuffer[j7 - 1 - j9] * (long) SoundFilter.intCoefficients[1][j9] >> 16);
 					}
 
 					sampleBuffer[j7] = j8;
@@ -153,13 +153,13 @@ final class Instrument {
 						l7 = length - i5;
 					}
 					for (; j7 < l7; j7++) {
-						int l8 = (int) ((long) sampleBuffer[j7 + i5] * (long) audio.SoundFilter.forwardMultiplierInt >> 16);
+						int l8 = (int) ((long) sampleBuffer[j7 + i5] * (long) SoundFilter.forwardMultiplierInt >> 16);
 						for (int k9 = 0; k9 < i5; k9++) {
-							l8 += (int) ((long) sampleBuffer[j7 + i5 - 1 - k9] * (long) audio.SoundFilter.intCoefficients[0][k9] >> 16);
+							l8 += (int) ((long) sampleBuffer[j7 + i5 - 1 - k9] * (long) SoundFilter.intCoefficients[0][k9] >> 16);
 						}
 
 						for (int i10 = 0; i10 < i6; i10++) {
-							l8 -= (int) ((long) sampleBuffer[j7 - 1 - i10] * (long) audio.SoundFilter.intCoefficients[1][i10] >> 16);
+							l8 -= (int) ((long) sampleBuffer[j7 - 1 - i10] * (long) SoundFilter.intCoefficients[1][i10] >> 16);
 						}
 
 						sampleBuffer[j7] = l8;
@@ -176,11 +176,11 @@ final class Instrument {
 				for (; j7 < length; j7++) {
 					int i9 = 0;
 					for (int l9 = j7 + i5 - length; l9 < i5; l9++) {
-						i9 += (int) ((long) sampleBuffer[j7 + i5 - 1 - l9] * (long) audio.SoundFilter.intCoefficients[0][l9] >> 16);
+						i9 += (int) ((long) sampleBuffer[j7 + i5 - 1 - l9] * (long) SoundFilter.intCoefficients[0][l9] >> 16);
 					}
 
 					for (int j10 = 0; j10 < i6; j10++) {
-						i9 -= (int) ((long) sampleBuffer[j7 - 1 - j10] * (long) audio.SoundFilter.intCoefficients[1][j10] >> 16);
+						i9 -= (int) ((long) sampleBuffer[j7 - 1 - j10] * (long) SoundFilter.intCoefficients[1][j10] >> 16);
 					}
 
 					sampleBuffer[j7] = i9;
@@ -265,7 +265,7 @@ final class Instrument {
 		delayDecay = stream.readUnsignedSmart();
 		duration = stream.readUnsignedWord();
 		offset = stream.readUnsignedWord();
-		soundFilter = new audio.SoundFilter();
+		soundFilter = new SoundFilter();
 		filterEnvelope = new SoundEnvelope();
 		soundFilter.decode(stream, filterEnvelope);
 	}
@@ -291,7 +291,7 @@ final class Instrument {
 	private final int[] oscillatorDelay;
 	private int delayTime;
 	private int delayDecay;
-	private audio.SoundFilter soundFilter;
+	private SoundFilter soundFilter;
 	private SoundEnvelope filterEnvelope;
 	int duration;
 	int offset;

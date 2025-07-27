@@ -4,21 +4,22 @@ package core.engine;
  * THIS IS TO ALLOW LOCAL PARABOT TO CONTINUE TO WORK
  */
 
-import audio.*;
+import audio.base.MidiPlayer;
+import audio.midi.*;
+import audio.sound.*;
 import core.handlers.*;
 import core.network.*;
 import core.renderers.*;
 import core.world.*;
 import core.managers.*;
-import game.animation.AnimFrame;
-import game.animation.Animation;
+import game.animation.*;
 import game.definitions.*;
 import game.entities.*;
 import game.items.*;
-import game.mechanics.Skills;
+import game.mechanics.*;
 import game.world.*;
-import render.geometry.Model;
-import render.tiles.FloorOverlay;
+import render.geometry.*;
+import render.tiles.*;
 import util.collections.*;
 import render.core.*;
 import util.compression.*;
@@ -201,13 +202,15 @@ public class Game extends RSApplet {
        static final void stopMidiPlayback(boolean bool) {
                playMidiTrack(0, null, bool);
 	}
-	
+
 	static final boolean constructMusic() {
 		midiFadeCycles = 20;
 		try {
-                midiPlayer = (MidiPlayer) Class.forName("SystemMidiPlayer").newInstance();
+			// changed from getting the class via string, not sure why it was done like that.
+			midiPlayer = SystemMidiPlayer.class.getDeclaredConstructor().newInstance();
 		} catch (Throwable throwable) {
-		    return false;
+			System.out.println("Error creating midi player: " + throwable.getMessage());
+			return false;
 		}
 		return true;
 	}

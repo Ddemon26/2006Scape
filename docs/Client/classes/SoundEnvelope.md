@@ -1,12 +1,12 @@
-# audio.SoundEnvelope
+# audio.sound.SoundEnvelope
 
-Defined in [`2006Scape Client/src/main/java/audio.SoundEnvelope.java`](2006Scape Client/src/main/java/audio.SoundEnvelope.java).
+Defined in [`2006Scape Client/src/main/java/audio.sound.SoundEnvelope.java`](2006Scape Client/src/main/java/audio.sound.SoundEnvelope.java).
 
 Sound Envelope helper class.
 
 ```java
-final class audio.SoundEnvelope {
+final class audio.sound.SoundEnvelope {
 public void decode(core.network.Stream stream)
 public void decodeSegments(core.network.Stream stream)
-public audio.SoundEnvelope()
+public audio.sound.SoundEnvelope()
 ```

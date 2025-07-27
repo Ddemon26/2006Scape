@@ -1,10 +1,10 @@
-package audio;
+package audio.base;
 
 import core.engine.Game;
 
-abstract class AbstractMidiController extends MidiPlayer
+public abstract class AbstractMidiController extends MidiPlayer
 {
-    final void applyVolumeFade(int step, int volume, long timestamp) {
+    protected final void applyVolumeFade(int step, int volume, long timestamp) {
         volume = (int) ((double) volume * Math.pow(0.1, (double) step * 5.0E-4) + 0.5);
         if (volume != Game.midiVolume) {
             Game.midiVolume = volume;
@@ -16,9 +16,9 @@ abstract class AbstractMidiController extends MidiPlayer
         }
     }
     
-    abstract void sendShortMessage(int status, int data1, int data2, long timestamp);
+    protected abstract void sendShortMessage(int status, int data1, int data2, long timestamp);
     
-    final boolean handleControlChange(int status, int controller, int value, long timestamp) {
+    protected final boolean handleControlChange(int status, int controller, int value, long timestamp) {
         if ((status & 0xf0) == 176) {
             if (controller == 121) {
                 sendShortMessage(status, controller, value, timestamp);
@@ -44,7 +44,7 @@ abstract class AbstractMidiController extends MidiPlayer
         return false;
     }
     
-    final void resetAllControllers(long timestamp) {
+    protected final void resetAllControllers(long timestamp) {
         for (int channel = 0; channel < 16; channel++)
             sendShortMessage(channel + 176, 123, 0, timestamp);
         for (int channel = 0; channel < 16; channel++)
@@ -59,7 +59,7 @@ abstract class AbstractMidiController extends MidiPlayer
             sendShortMessage(channel + 192, 0, 0, timestamp);
     }
     
-    final void setMasterVolume(int volume, long timestamp) {
+    protected final void setMasterVolume(int volume, long timestamp) {
         Game.midiVolume = volume;
         for (int channel = 0; channel < 16; channel++)
             Game.midiChannels[channel] = 12800;

@@ -1,7 +1,7 @@
 # 🤖 RuneBot Pull Request
 
 > **PR Title format**: `[BOT] <type(scope)>: <summary>`\
-> Example: `[BOT] refactor(rename): Class29 → audio.SoundEnvelope`
+> Example: `[BOT] refactor(rename): Class29 → audio.sound.SoundEnvelope`
 
 ---
 

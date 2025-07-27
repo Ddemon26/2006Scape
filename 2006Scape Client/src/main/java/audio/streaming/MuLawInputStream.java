@@ -1,4 +1,4 @@
-package audio;
+package audio.streaming;
 
 import java.io.InputStream;
 

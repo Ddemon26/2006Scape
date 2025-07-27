@@ -1,9 +1,9 @@
-# audio.AbstractMidiController
+# audio.base.AbstractMidiController
 
-Defined in [`2006Scape Client/src/main/java/audio.AbstractMidiController.java`](2006Scape Client/src/main/java/audio.AbstractMidiController.java).
+Defined in [`2006Scape Client/src/main/java/audio.base.AbstractMidiController.java`](2006Scape Client/src/main/java/audio.base.AbstractMidiController.java).
 
-Abstract audio.Midi Controller helper class.
+Abstract audio.midi.Midi Controller helper class.
 
 ```java
-abstract class audio.AbstractMidiController extends audio.MidiPlayer
+abstract class audio.base.AbstractMidiController extends audio.base.MidiPlayer
 ```

@@ -420,9 +420,9 @@ This document lists variable or identifier renames found in the commit history.
 - aClass19_1368 -> incompleteRequestQueue
 - aClass19_1370 -> pendingRequestQueue
 
-## Runnable_Impl1 -> audio.MidiHandler
+## Runnable_Impl1 -> audio.midi.MidiHandler
 
-## InputStream_Sub1 -> audio.MuLawInputStream
+## InputStream_Sub1 -> audio.streaming.MuLawInputStream
  - anInt404 -> id
  - anInt812 -> x
  - anInt813 -> y
@@ -496,7 +496,7 @@ This document lists variable or identifier renames found in the commit history.
 
 ## Object4 -> game.items.ItemPile
 
-## Class56_Sub1_Sub2 -> audio.QueuedMidiPlayer
+## Class56_Sub1_Sub2 -> audio.midi.QueuedMidiPlayer
  - anIntArray216 -> trackTicks
  - method520 -> readDeltaTime
  - method521 -> isTrackFinished
@@ -519,7 +519,7 @@ This document lists variable or identifier renames found in the commit history.
 - method832 -> poll
 - method833 -> stopMidi
 
-## Class56_Sub1 -> audio.AbstractMidiController
+## Class56_Sub1 -> audio.base.AbstractMidiController
 
 ## render.core.Sprite
  - method343 -> initializeDrawingArea
@@ -547,14 +547,14 @@ This document lists variable or identifier renames found in the commit history.
 
 ## Class40 -> render.tiles.ShapedTile
 
-## Class56_Sub1_Sub1 -> audio.SystemMidiPlayer
+## Class56_Sub1_Sub1 -> audio.midi.SystemMidiPlayer
 - method790 -> closeMidiSystem
 - aReceiver1850 -> midiReceiver
 - aSequencer1851 -> midiSequencer
 
 ## Class47 -> core.world.CullingCluster
 
-## Class56 -> audio.MidiPlayer
+## Class56 -> audio.base.MidiPlayer
 
 ## Object3 -> game.world.TileDecoration
 
@@ -638,18 +638,18 @@ This document lists variable or identifier renames found in the commit history.
 
 ## Class43 -> render.geometry.ModelHeader
 
-## Class6 -> audio.SoundFilter
+## Class6 -> audio.sound.SoundFilter
  - class29 -> envelope
 
-## Class39 -> audio.Instrument
+## Class39 -> audio.sound.Instrument
 
-## Class29 -> audio.SoundEnvelope
+## Class29 -> audio.sound.SoundEnvelope
 
 ## Class33 -> render.geometry.VertexNormal
 
 ## DummyClass -> util.compression.CachePlaceholder
 
-## Class11 -> audio.MidiFile
+## Class11 -> audio.midi.MidiFile
  - aByteArray210 -> opcodeSizeTable
  - anIntArray212 -> trackStatus
  - anIntArray214 -> trackPositions
@@ -766,7 +766,7 @@ This document lists variable or identifier renames found in the commit history.
 - class36_1 -> secondaryFrame
 - class18 -> frameBase
 
-## audio.Sounds
+## audio.sound.Sounds
  - aClass3_Sub12_211 -> stream
 
 ## util.compression.Decompressor

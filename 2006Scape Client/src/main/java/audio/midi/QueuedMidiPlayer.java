@@ -1,8 +1,9 @@
-package audio;
+package audio.midi;
 
+import audio.base.AbstractMidiController;
 import core.engine.Game;
 
-final class QueuedMidiPlayer extends AbstractMidiController implements Runnable
+public final class QueuedMidiPlayer extends AbstractMidiController implements Runnable
 {
     private static MidiHandler midiDevice;
     private static boolean stopThread;
@@ -29,7 +30,7 @@ final class QueuedMidiPlayer extends AbstractMidiController implements Runnable
     	}
     }
     
-    final void sendShortMessage(int status, int data1, int data2, long timestamp) {
+     public final void sendShortMessage(int status, int data1, int data2, long timestamp) {
         queueMessage(status, (int) timestamp, data1, data2);
     }
     
@@ -166,7 +167,7 @@ final class QueuedMidiPlayer extends AbstractMidiController implements Runnable
     		midiFile.markTrackEnd();
     }
     
-    QueuedMidiPlayer(MidiHandler handler) {
+    public QueuedMidiPlayer(MidiHandler handler) {
                 midiDevice = handler;
                 midiDevice.initialize((byte) 96);
                 midiDevice.setActive(false);

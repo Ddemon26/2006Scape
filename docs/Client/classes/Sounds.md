@@ -1,11 +1,11 @@
-# audio.Sounds
+# audio.sound.Sounds
 
-Defined in [`2006Scape Client/src/main/java/audio.Sounds.java`](2006Scape Client/src/main/java/audio.Sounds.java).
+Defined in [`2006Scape Client/src/main/java/audio.sound.Sounds.java`](2006Scape Client/src/main/java/audio.sound.Sounds.java).
 
-audio.Sounds helper class.
+audio.sound.Sounds helper class.
 
 ```java
-final class audio.Sounds {
+final class audio.sound.Sounds {
 public static void unpack(core.network.Stream stream)
 public static core.network.Stream createSoundStream(int loops, int id)
 ```

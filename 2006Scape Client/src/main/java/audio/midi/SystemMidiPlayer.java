@@ -1,5 +1,6 @@
-package audio;
+package audio.midi;
 
+import audio.base.AbstractMidiController;
 import core.engine.Game;
 
 import java.io.ByteArrayInputStream;
@@ -12,7 +13,7 @@ import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
 
-final class SystemMidiPlayer extends AbstractMidiController implements Receiver
+ public class SystemMidiPlayer extends AbstractMidiController implements Receiver
 {
     private static Receiver midiReceiver = null;
     private static Sequencer midiSequencer = null;
@@ -44,7 +45,7 @@ final class SystemMidiPlayer extends AbstractMidiController implements Receiver
                 midiReceiver.send(midimessage, l);
     }
     
-    SystemMidiPlayer() {
+    public SystemMidiPlayer() {
 		try {
                     midiReceiver = MidiSystem.getReceiver();
                     midiSequencer = MidiSystem.getSequencer(false);
@@ -83,7 +84,7 @@ final class SystemMidiPlayer extends AbstractMidiController implements Receiver
     	}
     }
     
-    final void sendShortMessage(int status, int data1, int data2, long timestamp) {
+    public final void sendShortMessage(int status, int data1, int data2, long timestamp) {
         try {
                 ShortMessage shortmessage = new ShortMessage();
                 shortmessage.setMessage(status, data1, data2);

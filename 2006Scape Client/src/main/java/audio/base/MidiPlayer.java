@@ -1,4 +1,4 @@
-package audio;
+package audio.base;
 
 public abstract class MidiPlayer {
 

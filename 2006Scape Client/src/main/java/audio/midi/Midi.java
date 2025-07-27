@@ -1,4 +1,4 @@
-package audio;
+package audio.midi;
 
 import java.io.File;
 
@@ -10,7 +10,7 @@ import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Synthesizer;
 
 /**
- * audio.Midi file playing.
+ * audio.midi.Midi file playing.
  * 
  * @author Primadude.
  */

@@ -1,4 +1,4 @@
-package audio;
+package audio.midi;
 
 public interface MidiHandler extends Runnable {
     /**
