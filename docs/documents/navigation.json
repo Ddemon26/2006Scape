@@ -1,0 +1,386 @@
+[
+  {
+    "title": "Getting Started",
+    "items": [
+      {
+        "title": "Introduction",
+        "path": "documents/intro.md"
+      },
+      {
+        "title": "Contributing",
+        "path": "documents/contributing.md"
+      },
+      {
+        "title": "Disclaimer",
+        "path": "documents/disclaimer.md"
+      }
+    ]
+  },
+  {
+    "title": "Client Documentation",
+    "items": [
+      {
+        "title": "Client Overview",
+        "path": "documents/Client/index.md"
+      },
+      {
+        "title": "Client Introduction",
+        "path": "documents/Client/client-intro.md"
+      },
+      {
+        "title": "Core Engine",
+        "items": [
+          {
+            "title": "Game Engine",
+            "path": "documents/Client/core/engine/Game.md"
+          },
+          {
+            "title": "Settings",
+            "path": "documents/Client/core/engine/ClientSettings.md"
+          },
+          {
+            "title": "Applet Framework",
+            "path": "documents/Client/core/engine/RSApplet.md"
+          },
+          {
+            "title": "Main Frame",
+            "path": "documents/Client/core/engine/RSFrame.md"
+          }
+        ]
+      },
+      {
+        "title": "Network",
+        "items": [
+          {
+            "title": "Socket Communication",
+            "path": "documents/Client/core/network/RSSocket.md"
+          },
+          {
+            "title": "Data Streaming",
+            "path": "documents/Client/core/network/Stream.md"
+          },
+          {
+            "title": "Stream Loader",
+            "path": "documents/Client/core/network/StreamLoader.md"
+          }
+        ]
+      },
+      {
+        "title": "Rendering System",
+        "items": [
+          {
+            "title": "Drawing Area",
+            "path": "documents/Client/render/core/DrawingArea.md"
+          },
+          {
+            "title": "Sprites",
+            "path": "documents/Client/render/core/Sprite.md"
+          },
+          {
+            "title": "3D Models",
+            "path": "documents/Client/render/geometry/Model.md"
+          },
+          {
+            "title": "Ground Rendering",
+            "path": "documents/Client/render/objects/Ground.md"
+          }
+        ]
+      },
+      {
+        "title": "Game Entities",
+        "items": [
+          {
+            "title": "Entity Base",
+            "path": "documents/Client/game/entities/Entity.md"
+          },
+          {
+            "title": "Players",
+            "path": "documents/Client/game/entities/Player.md"
+          },
+          {
+            "title": "NPCs",
+            "path": "documents/Client/game/entities/NPC.md"
+          },
+          {
+            "title": "Animation System",
+            "path": "documents/Client/game/animation/Animation.md"
+          }
+        ]
+      },
+      {
+        "title": "Audio System",
+        "items": [
+          {
+            "title": "MIDI Controller",
+            "path": "documents/Client/audio/base/AbstractMidiController.md"
+          },
+          {
+            "title": "MIDI Player",
+            "path": "documents/Client/audio/base/MidiPlayer.md"
+          },
+          {
+            "title": "Sound Player",
+            "path": "documents/Client/audio/sound/SoundPlayer.md"
+          },
+          {
+            "title": "Instruments",
+            "path": "documents/Client/audio/sound/Instrument.md"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Server Documentation", 
+    "items": [
+      {
+        "title": "Server Overview",
+        "path": "documents/Server/index.md"
+      },
+      {
+        "title": "Server Introduction", 
+        "path": "documents/Server/Server-intro.md"
+      },
+      {
+        "title": "Core Engine",
+        "items": [
+          {
+            "title": "Game Engine",
+            "path": "documents/Server/com/rs2/GameEngine.md"
+          },
+          {
+            "title": "Configuration",
+            "path": "documents/Server/com/rs2/ConfigLoader.md"
+          },
+          {
+            "title": "Connection Management",
+            "path": "documents/Server/com/rs2/Connection.md"
+          },
+          {
+            "title": "Constants",
+            "path": "documents/Server/com/rs2/Constants.md"
+          }
+        ]
+      },
+      {
+        "title": "Event System",
+        "items": [
+          {
+            "title": "Event Framework",
+            "path": "documents/Server/com/rs2/event/Event.md"
+          },
+          {
+            "title": "Cycle Events",
+            "path": "documents/Server/com/rs2/event/CycleEvent.md"
+          },
+          {
+            "title": "Event Provider",
+            "path": "documents/Server/com/rs2/event/EventProvider.md"
+          },
+          {
+            "title": "Button Events",
+            "path": "documents/Server/com/rs2/event/impl/ButtonActionEvent.md"
+          },
+          {
+            "title": "Item Events",
+            "path": "documents/Server/com/rs2/event/impl/ItemFirstClickEvent.md"
+          }
+        ]
+      },
+      {
+        "title": "Game Content",
+        "items": [
+          {
+            "title": "Combat System",
+            "items": [
+              {
+                "title": "Combat Overview",
+                "path": "documents/Server/com/rs2/game/content/combat/CombatAssistant.md"
+              },
+              {
+                "title": "Magic Combat",
+                "items": [
+                  {
+                    "title": "Magic Spells",
+                    "path": "documents/Server/com/rs2/game/content/combat/magic/MagicSpells.md"
+                  },
+                  {
+                    "title": "Magic Data",
+                    "path": "documents/Server/com/rs2/game/content/combat/magic/MagicData.md"
+                  },
+                  {
+                    "title": "Teleports",
+                    "path": "documents/Server/com/rs2/game/content/combat/magic/MagicTeleports.md"
+                  }
+                ]
+              },
+              {
+                "title": "Melee Combat",
+                "items": [
+                  {
+                    "title": "Melee Data",
+                    "path": "documents/Server/com/rs2/game/content/combat/melee/MeleeData.md"
+                  },
+                  {
+                    "title": "Player Killing",
+                    "path": "documents/Server/com/rs2/game/content/combat/melee/PlayerKilling.md"
+                  }
+                ]
+              },
+              {
+                "title": "Ranged Combat",
+                "items": [
+                  {
+                    "title": "Range Data",
+                    "path": "documents/Server/com/rs2/game/content/combat/range/RangeData.md"
+                  },
+                  {
+                    "title": "Dwarf Cannon",
+                    "path": "documents/Server/com/rs2/game/content/combat/range/DwarfCannon.md"
+                  }
+                ]
+              },
+              {
+                "title": "Prayer System",
+                "items": [
+                  {
+                    "title": "Prayer Activation",
+                    "path": "documents/Server/com/rs2/game/content/combat/prayer/ActivatePrayers.md"
+                  },
+                  {
+                    "title": "Prayer Data",
+                    "path": "documents/Server/com/rs2/game/content/combat/prayer/PrayerData.md"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "title": "Skills System",
+            "items": [
+              {
+                "title": "Skill Framework",
+                "path": "documents/Server/com/rs2/game/content/skills/SkillHandler.md"
+              },
+              {
+                "title": "Agility",
+                "items": [
+                  {
+                    "title": "Agility Overview",
+                    "path": "documents/Server/com/rs2/game/content/skills/agility/Agility.md"
+                  },
+                  {
+                    "title": "Gnome Agility",
+                    "path": "documents/Server/com/rs2/game/content/skills/agility/GnomeAgility.md"
+                  },
+                  {
+                    "title": "Barbarian Agility",
+                    "path": "documents/Server/com/rs2/game/content/skills/agility/BarbarianAgility.md"
+                  }
+                ]
+              },
+              {
+                "title": "Cooking",
+                "items": [
+                  {
+                    "title": "Cooking System",
+                    "path": "documents/Server/com/rs2/game/content/skills/cooking/Cooking.md"
+                  },
+                  {
+                    "title": "Dairy Churn",
+                    "path": "documents/Server/com/rs2/game/content/skills/cooking/DairyChurn.md"
+                  }
+                ]
+              },
+              {
+                "title": "Crafting",
+                "items": [
+                  {
+                    "title": "Crafting Data",
+                    "path": "documents/Server/com/rs2/game/content/skills/crafting/CraftingData.md"
+                  },
+                  {
+                    "title": "Gem Cutting",
+                    "path": "documents/Server/com/rs2/game/content/skills/crafting/GemCutting.md"
+                  },
+                  {
+                    "title": "Glass Blowing",
+                    "path": "documents/Server/com/rs2/game/content/skills/crafting/GlassBlowing.md"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "title": "Quests",
+            "items": [
+              {
+                "title": "Quest System",
+                "path": "documents/Server/com/rs2/game/content/quests/QuestAssistant.md"
+              },
+              {
+                "title": "Cook's Assistant",
+                "path": "documents/Server/com/rs2/game/content/quests/impl/CooksAssistant.md"
+              },
+              {
+                "title": "Doric's Quest",
+                "path": "documents/Server/com/rs2/game/content/quests/impl/DoricsQuest.md"
+              },
+              {
+                "title": "Romeo & Juliet",
+                "path": "documents/Server/com/rs2/game/content/quests/impl/RomeoJuliet.md"
+              }
+            ]
+          },
+          {
+            "title": "Minigames",
+            "items": [
+              {
+                "title": "Barrows",
+                "path": "documents/Server/com/rs2/game/content/minigames/Barrows.md"
+              },
+              {
+                "title": "Castle Wars",
+                "path": "documents/Server/com/rs2/game/content/minigames/castlewars/CastleWars.md"
+              },
+              {
+                "title": "Fight Caves",
+                "path": "documents/Server/com/rs2/game/content/minigames/FightCaves.md"
+              },
+              {
+                "title": "Pest Control",
+                "path": "documents/Server/com/rs2/game/content/minigames/PestControl.md"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Network Protocol",
+        "items": [
+          {
+            "title": "Packet System",
+            "path": "documents/Server/com/rs2/net/Packet.md"
+          },
+          {
+            "title": "Protocol Decoder",
+            "path": "documents/Server/com/rs2/net/RS2ProtocolDecoder.md"
+          },
+          {
+            "title": "Connection Handler",
+            "path": "documents/Server/com/rs2/net/ConnectionHandler.md"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Parabot Integration",
+    "items": [
+      {
+        "title": "Parabot Introduction",
+        "path": "documents/Parabot/Parabot-intro.md"
+      }
+    ]
+  }
+]

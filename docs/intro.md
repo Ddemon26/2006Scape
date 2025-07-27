@@ -7,7 +7,7 @@
 ### Authenticity First
 We strive to recreate the exact mechanics, content, and feel of 2006-era RuneScape:
 - **Combat System**: Authentic melee, ranged, and magic combat with original formulas
-- **game.mechanics.Skills**: All 23 skills with period-accurate training methods and rates
+- **Skills**: All 23 skills with period-accurate training methods and rates
 - **Quests**: Complete quest implementations with original dialogue and rewards
 - **Economy**: Balanced item values and trade mechanics from the era
 
@@ -22,21 +22,21 @@ While preserving the classic gameplay, we embrace modern development standards:
 
 ### Three-Component System
 
-#### 🖥️ [core.engine.Game Server](Server/Server-intro.md)
+#### 🖥️ [Game Server](documents/Server/Server-intro.md)
 The heart of 2006Scape, handling all game logic and world simulation:
 - **Technology**: Java-based server with custom networking
 - **Features**: Complete game world, combat, skills, quests, and player management
 - **Scale**: Supports hundreds of concurrent players
 - **Extensibility**: Plugin system for custom content
 
-#### 🎮 [core.engine.Game Client](Client/client-intro.md)
+#### 🎮 [Game Client](documents/Client/client-intro.md)
 The player-facing application providing the complete game experience:
 - **Technology**: Java client with 3D rendering engine
 - **Features**: Full 3D world, user interface, audio system, and networking
 - **Compatibility**: Based on original RuneScape client architecture
 - **Performance**: Optimized for smooth gameplay on modern systems
 
-#### 🤖 [Parabot Integration](Parabot/Parabot-intro.md)
+#### 🤖 [Parabot Integration](documents/Parabot/Parabot-intro.md)
 Scripting environment for automation and testing:
 - **Purpose**: Automated testing and bot development
 - **Integration**: Seamless connection to local development servers
@@ -74,7 +74,7 @@ We prioritize correctness and maintainability over rapid feature addition:
 
 ### Community First
 The project exists to serve the RuneScape community:
-- **game.entities.Player Feedback**: Regular surveys and feedback collection
+- **Player Feedback**: Regular surveys and feedback collection
 - **Open Communication**: Transparent development process
 - **Accessibility**: Easy setup for both players and developers
 - **Education**: Detailed guides and documentation for contributors
@@ -89,12 +89,12 @@ The project exists to serve the RuneScape community:
 
 ### For Developers
 - **[Setup Guide](usage.md)**: Get the development environment running
-- **[Architecture Docs](Server/Server-intro.md)**: Understand the codebase structure
+- **[Architecture Docs](documents/Server/Server-intro.md)**: Understand the codebase structure
 - **[Contributing Guide](contributing.md)**: Learn our development workflow
-- **[API Reference](Server/classes/index.md)**: Explore the complete class documentation
+- **[API Reference](documents/Server/classes/index.md)**: Explore the complete class documentation
 
 ### For Content Creators
-- **[Parabot Scripting](Parabot/Parabot-intro.md)**: Create automation tools
+- **[Parabot Scripting](documents/Parabot/Parabot-intro.md)**: Create automation tools
 - **Custom Content**: Develop plugins and modifications
 - **Documentation**: Help improve guides and tutorials
 - **Community Events**: Organize and participate in community activities
@@ -106,7 +106,7 @@ The project exists to serve the RuneScape community:
 
 ### Evolution
 What started as a small recreation project has grown into a comprehensive game server with:
-- **Active game.entities.Player Base**: Thousands of regular players
+- **Active Player Base**: Thousands of regular players
 - **Rich Content**: Hundreds of quests, skills, and activities
 - **Stable Infrastructure**: Reliable servers and regular updates
 - **Growing Community**: Active development and player communities
@@ -122,9 +122,9 @@ We continue to evolve while staying true to our core mission:
 
 ### Server Capabilities
 - **Concurrent Players**: Supports 500+ simultaneous players
-- **core.engine.Game Mechanics**: All 23 skills, 100+ quests, complete combat system
+- **Game Mechanics**: All 23 skills, 100+ quests, complete combat system
 - **World Simulation**: Full game world with NPCs, objects, and interactions
-- **Data Persistence**: game.entities.Player progress saved across sessions
+- **Data Persistence**: Player progress saved across sessions
 
 ### Client Features
 - **3D Rendering**: Complete 3D world with authentic graphics
@@ -142,7 +142,7 @@ We continue to evolve while staying true to our core mission:
 
 Whether you're a nostalgic player wanting to relive the golden age of RuneScape, a developer interested in game server architecture, or someone passionate about preserving gaming history, 2006Scape welcomes you.
 
-**Ready to start?** Check out our [Getting Started Guide](usage.md) or jump straight into the [Server](Server/Server-intro.md) and [Client](Client/client-intro.md) documentation.
+**Ready to start?** Check out our [Getting Started Guide](usage.md) or jump straight into the [Server](documents/Server/Server-intro.md) and [Client](documents/Client/client-intro.md) documentation.
 
 **Questions?** Join our [Discord community](https://discord.gg/hZ6VfWG) where thousands of players and developers are ready to help.
 
