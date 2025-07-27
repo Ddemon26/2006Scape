@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{SITE_TITLE}}</title>
+    <title>2006Scape Documentation</title>
     <link rel="stylesheet" href="src/index.css" id="theme-css">
     <script src="https://cdn.jsdelivr.net/npm/marked@9.1.6/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js"></script>
@@ -18,56 +18,54 @@
     <header class="header-bar">
         <div class="header-content">
             <div class="logo-section">
-                <div class="logo">{{PROJECT_LOGO}}</div>
-                <span class="logo-text">{{PROJECT_LOGO_TEXT}}</span>
+                <div class="logo">🏰</div>
+                <span class="logo-text">2006Scape</span>
             </div>
 
             <nav class="header-nav">
-                <a href="#" class="nav-item">Learn</a>
+                <a href="#documents/intro.md" class="nav-item">Introduction</a>
                 <div class="nav-item dropdown">
                     <a href="#" class="dropdown-toggle">
-                        Documentation
+                        Client Documentation
                         <span class="dropdown-arrow">▼</span>
                     </a>
                     <div class="dropdown-menu">
-                        <a href="#documents/introduction.md" class="dropdown-item">Introduction</a>
-                        <a href="#documents/installation.md" class="dropdown-item">Installation</a>
-                        <a href="#documents/quick-start.md" class="dropdown-item">Quick Start</a>
+                        <a href="#documents/Client/index.md" class="dropdown-item">Client Overview</a>
+                        <a href="#documents/Client/client-intro.md" class="dropdown-item">Getting Started</a>
                         <div class="dropdown-divider"></div>
-                        <a href="#documents/api/overview.md" class="dropdown-item">API Reference</a>
-                        <a href="#documents/guides/basic-usage.md" class="dropdown-item">Guides</a>
-                        <a href="#documents/lexical.md" class="dropdown-item">Language Reference</a>
-                    </div>
-                </div>
-                <a href="#documents/downloads/index.md" class="nav-item">Downloads</a>
-                <a href="#" class="nav-item">Packages</a>
-                <div class="nav-item dropdown">
-                    <a href="#" class="dropdown-toggle">
-                        Community
-                        <span class="dropdown-arrow">▼</span>
-                    </a>
-                    <div class="dropdown-menu">
-                        <a href="#documents/community/index.md" class="dropdown-item">Community Hub</a>
-                        <a href="#documents/community/forums.md" class="dropdown-item">Discussion Forums</a>
-                        <a href="#documents/community/chat.md" class="dropdown-item">Chat & Support</a>
-                        <a href="#documents/community/events.md" class="dropdown-item">Events & Meetups</a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#documents/community/contributing.md" class="dropdown-item">Contributing</a>
+                        <a href="#documents/Client/core/engine/Game.md" class="dropdown-item">Core Engine</a>
+                        <a href="#documents/Client/core/network/RSSocket.md" class="dropdown-item">Network System</a>
+                        <a href="#documents/Client/render/core/DrawingArea.md" class="dropdown-item">Rendering</a>
+                        <a href="#documents/Client/game/entities/Player.md" class="dropdown-item">Game Entities</a>
+                        <a href="#documents/Client/audio/base/MidiPlayer.md" class="dropdown-item">Audio System</a>
                     </div>
                 </div>
                 <div class="nav-item dropdown">
                     <a href="#" class="dropdown-toggle">
-                        Resources
+                        Server Documentation
                         <span class="dropdown-arrow">▼</span>
                     </a>
                     <div class="dropdown-menu">
-                        <a href="#documents/resources/index.md" class="dropdown-item">All Resources</a>
-                        <a href="#" class="dropdown-item">Tutorials</a>
-                        <a href="#" class="dropdown-item">Tools & IDEs</a>
-                        <a href="#" class="dropdown-item">Third-party Libraries</a>
+                        <a href="#documents/Server/index.md" class="dropdown-item">Server Overview</a>
+                        <a href="#documents/Server/Server-intro.md" class="dropdown-item">Getting Started</a>
                         <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">Blog</a>
-                        <a href="#" class="dropdown-item">Newsletter</a>
+                        <a href="#documents/Server/com/rs2/GameEngine.md" class="dropdown-item">Game Engine</a>
+                        <a href="#documents/Server/com/rs2/game/content/combat/CombatAssistant.md" class="dropdown-item">Combat System</a>
+                        <a href="#documents/Server/com/rs2/game/content/skills/SkillHandler.md" class="dropdown-item">Skills System</a>
+                        <a href="#documents/Server/com/rs2/game/content/quests/QuestAssistant.md" class="dropdown-item">Quest System</a>
+                        <a href="#documents/Server/com/rs2/net/Packet.md" class="dropdown-item">Network Protocol</a>
+                    </div>
+                </div>
+                <div class="nav-item dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        Development
+                        <span class="dropdown-arrow">▼</span>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="#documents/contributing.md" class="dropdown-item">Contributing Guide</a>
+                        <a href="#documents/disclaimer.md" class="dropdown-item">Disclaimer</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#documents/Parabot/Parabot-intro.md" class="dropdown-item">Parabot Integration</a>
                     </div>
                 </div>
             </nav>
@@ -91,11 +89,10 @@
         <nav class="sidebar">
             <div class="nav-header">
                 <div class="nav-links">
-                    <a href="#" class="nav-link">Language Reference</a>
-                    <a href="#" class="nav-link">Library Reference</a>
-                    <a href="#" class="nav-link">Command-line Reference</a>
-                    <a href="#" class="nav-link">Feature Overview</a>
-                    <a href="#" class="nav-link">Articles</a>
+                    <a href="#documents/intro.md" class="nav-link">Introduction</a>
+                    <a href="#documents/Client/index.md" class="nav-link">Client Reference</a>
+                    <a href="#documents/Server/index.md" class="nav-link">Server Reference</a>
+                    <a href="#documents/contributing.md" class="nav-link">Contributing</a>
                 </div>
             </div>
 

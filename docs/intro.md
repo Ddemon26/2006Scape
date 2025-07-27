@@ -7,7 +7,7 @@
 ### Authenticity First
 We strive to recreate the exact mechanics, content, and feel of 2006-era RuneScape:
 - **Combat System**: Authentic melee, ranged, and magic combat with original formulas
-- **game.mechanics.Skills**: All 23 skills with period-accurate training methods and rates
+- **Skills**: All 23 skills with period-accurate training methods and rates
 - **Quests**: Complete quest implementations with original dialogue and rewards
 - **Economy**: Balanced item values and trade mechanics from the era
 
@@ -22,14 +22,14 @@ While preserving the classic gameplay, we embrace modern development standards:
 
 ### Three-Component System
 
-#### 🖥️ [core.engine.Game Server](documents/Server/Server-intro.md)
+#### 🖥️ [Game Server](documents/Server/Server-intro.md)
 The heart of 2006Scape, handling all game logic and world simulation:
 - **Technology**: Java-based server with custom networking
 - **Features**: Complete game world, combat, skills, quests, and player management
 - **Scale**: Supports hundreds of concurrent players
 - **Extensibility**: Plugin system for custom content
 
-#### 🎮 [core.engine.Game Client](documents/Client/client-intro.md)
+#### 🎮 [Game Client](documents/Client/client-intro.md)
 The player-facing application providing the complete game experience:
 - **Technology**: Java client with 3D rendering engine
 - **Features**: Full 3D world, user interface, audio system, and networking
@@ -74,7 +74,7 @@ We prioritize correctness and maintainability over rapid feature addition:
 
 ### Community First
 The project exists to serve the RuneScape community:
-- **game.entities.Player Feedback**: Regular surveys and feedback collection
+- **Player Feedback**: Regular surveys and feedback collection
 - **Open Communication**: Transparent development process
 - **Accessibility**: Easy setup for both players and developers
 - **Education**: Detailed guides and documentation for contributors
@@ -106,7 +106,7 @@ The project exists to serve the RuneScape community:
 
 ### Evolution
 What started as a small recreation project has grown into a comprehensive game server with:
-- **Active game.entities.Player Base**: Thousands of regular players
+- **Active Player Base**: Thousands of regular players
 - **Rich Content**: Hundreds of quests, skills, and activities
 - **Stable Infrastructure**: Reliable servers and regular updates
 - **Growing Community**: Active development and player communities
@@ -122,9 +122,9 @@ We continue to evolve while staying true to our core mission:
 
 ### Server Capabilities
 - **Concurrent Players**: Supports 500+ simultaneous players
-- **core.engine.Game Mechanics**: All 23 skills, 100+ quests, complete combat system
+- **Game Mechanics**: All 23 skills, 100+ quests, complete combat system
 - **World Simulation**: Full game world with NPCs, objects, and interactions
-- **Data Persistence**: game.entities.Player progress saved across sessions
+- **Data Persistence**: Player progress saved across sessions
 
 ### Client Features
 - **3D Rendering**: Complete 3D world with authentic graphics

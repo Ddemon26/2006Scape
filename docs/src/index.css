@@ -30,3 +30,81 @@
     --syntax-function: #6f42c1;
     --syntax-number: #005cc5;
 }
+
+/* Enhanced navigation styles for nested structure */
+.nav-subsection {
+    margin-left: 15px;
+    border-left: 1px solid var(--border-secondary);
+    padding-left: 10px;
+}
+
+.nav-section-title {
+    font-weight: bold;
+    color: var(--text-secondary);
+    display: block;
+    padding: 5px 0;
+    cursor: pointer;
+}
+
+.nav-section-title:hover {
+    color: var(--accent-primary);
+}
+
+.nav-item-depth-1 {
+    margin-left: 10px;
+}
+
+.nav-item-depth-2 {
+    margin-left: 20px;
+}
+
+.nav-item-depth-3 {
+    margin-left: 30px;
+}
+
+/* Improve navigation link styling */
+.nav a {
+    display: block;
+    padding: 3px 8px;
+    color: var(--text-primary);
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 13px;
+    transition: all 0.2s ease;
+}
+
+.nav a:hover {
+    background-color: var(--accent-lighter);
+    color: var(--accent-primary);
+}
+
+.nav a.active {
+    background-color: var(--accent-primary);
+    color: white;
+}
+
+/* Collapsible navigation sections */
+.nav-section .nav-subsection {
+    max-height: none;
+    overflow: visible;
+    transition: max-height 0.3s ease;
+}
+
+.nav-section.collapsed .nav-subsection {
+    max-height: 0;
+    overflow: hidden;
+}
+
+/* Add expand/collapse indicators */
+.nav-section-title::before {
+    content: "▼";
+    display: inline-block;
+    width: 12px;
+    font-size: 10px;
+    color: var(--text-muted);
+    transition: transform 0.2s ease;
+}
+
+.nav-section.collapsed .nav-section-title::before {
+    transform: rotate(-90deg);
+}

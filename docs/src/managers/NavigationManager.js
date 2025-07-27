@@ -115,21 +115,44 @@ class NavigationManager {
 
             const ul = document.createElement('ul');
             section.items.forEach(item => {
-                const li = document.createElement('li');
-                const a = document.createElement('a');
-                a.href = `#${item.path}`;
-                a.textContent = item.title;
-                a.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    onItemClick(item.path, a);
-                });
-                li.appendChild(a);
-                ul.appendChild(li);
+                this.renderNavItem(item, ul, onItemClick, 0);
             });
 
             sectionDiv.appendChild(ul);
             nav.appendChild(sectionDiv);
         });
+    }
+
+    renderNavItem(item, parentUl, onItemClick, depth) {
+        const li = document.createElement('li');
+        li.className = depth > 0 ? `nav-item-depth-${depth}` : 'nav-item';
+
+        if (item.path) {
+            // This is a leaf item with a path
+            const a = document.createElement('a');
+            a.href = `#${item.path}`;
+            a.textContent = item.title;
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                onItemClick(item.path, a);
+            });
+            li.appendChild(a);
+        } else if (item.items) {
+            // This is a container item with sub-items
+            const span = document.createElement('span');
+            span.textContent = item.title;
+            span.className = 'nav-section-title';
+            li.appendChild(span);
+
+            const subUl = document.createElement('ul');
+            subUl.className = 'nav-subsection';
+            item.items.forEach(subItem => {
+                this.renderNavItem(subItem, subUl, onItemClick, depth + 1);
+            });
+            li.appendChild(subUl);
+        }
+
+        parentUl.appendChild(li);
     }
 
     updateActiveItem(activeLink) {
@@ -144,9 +167,23 @@ class NavigationManager {
 
     findItemByPath(path) {
         for (const section of this.navigation) {
-            for (const item of section.items) {
-                if (item.path === path) {
-                    return { item, section };
+            const result = this.findItemInSection(section.items, path);
+            if (result) {
+                return { item: result, section };
+            }
+        }
+        return null;
+    }
+
+    findItemInSection(items, path) {
+        for (const item of items) {
+            if (item.path === path) {
+                return item;
+            }
+            if (item.items) {
+                const result = this.findItemInSection(item.items, path);
+                if (result) {
+                    return result;
                 }
             }
         }
@@ -154,9 +191,37 @@ class NavigationManager {
     }
 
     getFirstItem() {
-        return this.navigation.length > 0 && this.navigation[0].items.length > 0 
-            ? this.navigation[0].items[0] 
-            : null;
+        if (this.navigation.length === 0) {
+            return null;
+        }
+        
+        const firstSection = this.navigation[0];
+        if (firstSection.items.length === 0) {
+            return null;
+        }
+        
+        const firstItem = firstSection.items[0];
+        if (firstItem.path) {
+            return firstItem;
+        }
+        
+        // If first item has sub-items, find the first item with a path
+        return this.findFirstItemWithPath(firstItem.items);
+    }
+
+    findFirstItemWithPath(items) {
+        for (const item of items) {
+            if (item.path) {
+                return item;
+            }
+            if (item.items) {
+                const result = this.findFirstItemWithPath(item.items);
+                if (result) {
+                    return result;
+                }
+            }
+        }
+        return null;
     }
 }
 
