@@ -14,11 +14,11 @@ New to 2006Scape? Start here:
 
 2006Scape consists of three main components:
 
-### 🖥️ [Server](Server/Server-intro.md)
+### 🖥️ [Server](documents/Server/Server-intro.md)
 The game server handles all game logic, player interactions, and world simulation. Built in Java with a focus on 2006-era mechanics.
 
-- **[Server Architecture](Server/Server-intro.md)** - Core concepts and design
-- **[Server Classes](Server/classes/index.md)** - Complete API reference
+- **[Server Architecture](documents/Server/Server-intro.md)** - Core concepts and design
+- **[Server Classes](documents/Server/classes/index.md)** - Complete API reference
 - **Key Components:**
   - core.engine.Game Engine - Core server loop and event handling
   - game.entities.Player Management - Authentication, sessions, and data persistence  
@@ -26,21 +26,21 @@ The game server handles all game logic, player interactions, and world simulatio
   - game.mechanics.Skills System - All 23 skills with authentic mechanics
   - Quest System - Story-driven content and progression
 
-### 🎮 [Client](Client/client-intro.md)
+### 🎮 [Client](documents/Client/client-intro.md)
 The game client provides the user interface and renders the 3D world. Based on the original RuneScape client with modern improvements.
 
-- **[Client Architecture](Client/client-intro.md)** - Rendering and networking
-- **[Client Classes](Client/classes/index.md)** - Complete API reference
+- **[Client Architecture](documents/Client/client-intro.md)** - Rendering and networking
+- **[Client Classes](documents/Client/classes/index.md)** - Complete API reference
 - **Key Components:**
   - Rendering Engine - 3D world and UI rendering
   - Network Protocol - Server communication
   - Input Handling - Mouse and keyboard interaction
   - Audio System - Music and sound effects
 
-### 🤖 [Parabot](Parabot/Parabot-intro.md)
+### 🤖 [Parabot](documents/Parabot/Parabot-intro.md)
 Scripting client for automation and testing. Allows developers to create bots for testing game mechanics.
 
-- **[Parabot Setup](Parabot/Parabot-intro.md)** - Installation and usage
+- **[Parabot Setup](documents/Parabot/Parabot-intro.md)** - Installation and usage
 - **Scripting API** - Create custom automation scripts
 
 ## Development Resources
@@ -52,8 +52,8 @@ Scripting client for automation and testing. Allows developers to create bots fo
 ### For Developers
 - **[Development Setup](usage.md)** - Build from source
 - **[Contributing Guidelines](contributing.md)** - Code standards and workflow
-- **[Server Classes](Server/classes/index.md)** - 400+ documented server classes
-- **[Client Classes](Client/classes/index.md)** - 80+ documented client classes
+- **[Server Classes](documents/Server/classes/index.md)** - 400+ documented server classes
+- **[Client Classes](documents/Client/classes/index.md)** - 80+ documented client classes
 
 ### Community & Support
 - **[Discord Community](https://discord.gg/hZ6VfWG)** - Real-time chat and support

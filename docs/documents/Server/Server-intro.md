@@ -76,7 +76,7 @@ The server uses a custom protocol based on the original RuneScape networking:
 3. Server starts on default port 43594
 
 ### Configuration
-- [`ServerConfig.Sample.json`](../../2006Scape%20Server/ServerConfig.Sample.json) - Server configuration template
+- [`ServerConfig.Sample.json`](../../../2006Scape%20Server/ServerConfig.Sample.json) - Server configuration template
 - [`Constants`](classes/Constants.md) - core.engine.Game constants and settings
 
 ### Development
@@ -105,7 +105,7 @@ Complete documentation for all 400+ server classes is available in the [Server C
 
 ## External Resources
 
-- [Server Setup Guide](../usage.md)
-- [Contributing Guidelines](../contributing.md)
+- [Server Setup Guide](../../usage.md)
+- [Contributing Guidelines](../../contributing.md)
 - [Client Architecture](../Client/client-intro.md)
 - [Project Repository](https://github.com/2006-Scape/2006rebotted)

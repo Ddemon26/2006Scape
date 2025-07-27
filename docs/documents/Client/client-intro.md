@@ -5,7 +5,7 @@ The 2006Scape client provides the complete user interface and 3D world rendering
 ## Core Architecture
 
 ### Main Client System
-The [`Client`](classes/Client.md) class serves as the central hub, coordinating all client subsystems including rendering, networking, input handling, and game state management.
+The [`Client`](Client.md) class serves as the central hub, coordinating all client subsystems including rendering, networking, input handling, and game state management.
 
 **Key responsibilities:**
 - core.engine.Game loop and frame rendering
@@ -111,7 +111,7 @@ Complete audio system supporting MIDI music and sound effects:
 
 ### Running the Client
 1. Navigate to `2006Scape Client/src/main/java`
-2. Run the [`Client`](classes/Client.md) class
+2. Run the [`Client`](Client.md) class
 3. Client connects to localhost:43594 by default
 
 ### Development Setup
@@ -150,7 +150,7 @@ The client can be used with [Parabot](../Parabot/Parabot-intro.md) for automatio
 Complete documentation for all 80+ client classes is available in the [Client Classes](classes/index.md) reference.
 
 ### Most Important Classes
-- [`Client`](classes/Client.md) - Main client controller
+- [`Client`](Client.md) - Main client controller
 - [`core.world.WorldController`](classes/core.world.WorldController.md) - 3D world rendering
 - [`core.renderers.RSInterface`](classes/core.renderers.RSInterface.md) - User interface system
 - [`game.entities.Player`](classes/game.entities.Player.md) - game.entities.Player representation
@@ -167,8 +167,8 @@ The client works closely with the [game server](../Server/Server-intro.md):
 
 ## External Resources
 
-- [Client Setup Guide](../usage.md)
+- [Client Setup Guide](../../usage.md)
 - [Server Architecture](../Server/Server-intro.md)
 - [Parabot Integration](../Parabot/Parabot-intro.md)
-- [Contributing Guidelines](../contributing.md)
+- [Contributing Guidelines](../../contributing.md)
 - [Project Repository](https://github.com/2006-Scape/2006rebotted)

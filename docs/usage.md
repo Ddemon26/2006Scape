@@ -163,7 +163,7 @@ mvn test -Dtest=YourTestClass
 
 ## Using Parabot for Testing
 
-[Parabot](Parabot/Parabot-intro.md) is useful for automated testing:
+[Parabot](documents/Parabot/Parabot-intro.md) is useful for automated testing:
 
 ### Setup Parabot
 1. Download from [Parabot releases](https://github.com/2006-Scape/Parabot/releases)
@@ -205,8 +205,8 @@ java -jar Parabot.jar -local
 ## Next Steps
 
 ### For New Developers
-1. **Explore the Code**: Browse [Server](Server/Server-intro.md) and [Client](Client/client-intro.md) architecture
-2. **Read Documentation**: Check out our [API references](Server/classes/index.md)
+1. **Explore the Code**: Browse [Server](documents/Server/Server-intro.md) and [Client](documents/Client/client-intro.md) architecture
+2. **Read Documentation**: Check out our [API references](documents/Server/classes/index.md)
 3. **Join Community**: Connect with other developers on [Discord](https://discord.gg/hZ6VfWG)
 4. **Contribute**: See our [Contributing Guide](contributing.md)
 

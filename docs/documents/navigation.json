@@ -1,0 +1,79 @@
+[
+  {
+    "title": "Getting Started",
+    "items": [
+      {
+        "title": "Introduction",
+        "path": "documents/introduction.md"
+      },
+      {
+        "title": "Installation",
+        "path": "documents/installation.md"
+      },
+      {
+        "title": "Quick Start",
+        "path": "documents/quick-start.md"
+      }
+    ]
+  },
+  {
+    "title": "User Guide",
+    "items": [
+      {
+        "title": "Basic Usage",
+        "path": "documents/guides/basic-usage.md"
+      },
+      {
+        "title": "Configuration",
+        "path": "documents/guides/configuration.md"
+      },
+      {
+        "title": "Advanced Features",
+        "path": "documents/guides/advanced-features.md"
+      },
+      {
+        "title": "Troubleshooting",
+        "path": "documents/guides/troubleshooting.md"
+      }
+    ]
+  },
+  {
+    "title": "API Reference",
+    "items": [
+      {
+        "title": "API Overview",
+        "path": "documents/api/overview.md"
+      },
+      {
+        "title": "Authentication",
+        "path": "documents/api/authentication.md"
+      },
+      {
+        "title": "Endpoints",
+        "path": "documents/api/endpoints.md"
+      }
+    ]
+  },
+  {
+    "title": "Examples & Tutorials",
+    "items": [
+      {
+        "title": "Code Examples",
+        "path": "documents/examples/index.md"
+      }
+    ]
+  },
+  {
+    "title": "Community",
+    "items": [
+      {
+        "title": "Contributing",
+        "path": "documents/community/contributing.md"
+      },
+      {
+        "title": "Support",
+        "path": "documents/community/support.md"
+      }
+    ]
+  }
+]
