@@ -7,6 +7,21 @@ push branches and open **standard pull‑requests (PRs)** against the 2006Scape 
 > anything is unclear, **pause execution and ask the maintainer directly in the sandbox conversation** (stdout).
 > **Do NOT open Issues or clarification PRs.**
 
+## ✨ Addendum — Mandatory Rule for God‑Class Decomposition (Section 6)
+
+> **This rule is non‑negotiable and MUST be enforced by any automated agent operating on 2006Scape.**
+
+When breaking down a *god class* into smaller, single‑responsibility units, the agent **MUST NOT** alter any existing code or logic. Implementation code **MUST** be copied verbatim (line‑for‑line) into the new classes.
+
+*The only permitted edits during this operation are:*
+
+1. Changing field or method access modifiers from `private` to `public` **solely** to expose members that need to remain accessible across the newly separated classes.
+2. Moving the **unmodified** code into appropriately named, smaller classes/files that satisfy the size and
+   responsibility guidelines already specified in **Section 6 Refactor Heuristics**.
+
+Any deviation (e.g., re‑ordering logic, renaming methods, extracting smaller helper methods, or introducing additional behaviour) **MUST** cause the agent to halt and emit a **\[BOT‑QUESTION]** for human guidance.
+
+
 ---
 
 ## 0 Glossary
@@ -61,7 +76,7 @@ The agent **MAY** perform **only** the following categories:
 
 9. **Python Scripting** – The agent **MAY** use Python scripts for heavy tasks; store helper scripts and generated classes under the `python/` directory.
 
-Any other class of change **MUST** be expressly permitted by a maintainer comment containing `/allow‑bot <task>` 
+Any other class of change **MUST** be expressly permitted by a maintainer comment containing `/allow‑bot <task>`
 from the users prompt.
 
 The agent **MUST NOT**:
@@ -128,6 +143,7 @@ An automated refactor **SHOULD**:
 3. Convert duplicated literal IDs to shared enums/records.
 4. Migrate legacy collections (Vector, Hashtable) to modern ones.
 5. Preserve public API surface; mark breaking‑change PRs with ⚠️ breaking‑change in the title.
+6. Client accepts \\n for new line, but not \n for in-game interface components
 
 ---
 
@@ -143,8 +159,19 @@ The repository currently ships **no runnable test suite inside the sandbox**. Th
 
 ## 8 Security & Compliance
 
-* Do **not** download dependencies or reach external URLs; the sandbox blocks outbound traffic.
+* The agent **MAY** download JUnit-related jars required for testing (junit-4.13.2.jar,
+  hamcrest-core-1.3.jar, mockito-core-3.12.4.jar, byte-buddy-1.12.22.jar,
+  objenesis-3.2.jar) into `libs/`. All other outbound network access remains
+  disallowed.
 * The agent **MUST NOT** commit secrets or proprietary assets.
+
+---
+
+## 8.1 Binary Files Policy
+
+* The agent **MUST NOT** commit any binary files (e.g., `.jar`, `.exe`, `.dll`, `.bin`, `.class`, images, archives) to the repository.
+* If any binary files are created or downloaded (including libraries), the agent **MUST** remove them before committing.
+* Only source code and text-based files are permitted in commits.
 
 ---
 
@@ -218,9 +245,3 @@ Badly named identifiers such as `class204`, `method321`, or `anInt545` **MAY** b
 | **6 Follow‑up classes**                          | If class *B* depends on renamed class *A*, update *B's references* in the same PR, but rename *B* itself in a future PR.                                                                  |
 | **7 Review artefacts**                           | PR body **MUST** include an Old→New mapping table and the full `git diff --stat` output.                                                                                                  |
 | **8 Record mapping**                             | Append each rename entry to `rename-history.md` for project tracking. If an identifier was renamed previously, replace the prior entry with the latest name instead of adding a new line. |
-
----
-
-## 14 Custom Item Workflow (Vanilla Reskins)
-
-...(remains placeholder as before)...
