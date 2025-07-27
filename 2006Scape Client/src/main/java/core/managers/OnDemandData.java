@@ -1,18 +1,19 @@
-package core.managers;// Decompiled by Jad v1.5.8f. Copyright 2001 Pavel Kouznetsov.
+package core.managers; // Decompiled by Jad v1.5.8f. Copyright 2001 Pavel Kouznetsov.
+
 // Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) 
+// Decompiler options: packimports(3)
 
 import util.collections.NodeSub;
 
 public final class OnDemandData extends NodeSub {
 
-	public OnDemandData() {
-		incomplete = true;
-	}
+  public OnDemandData() {
+    incomplete = true;
+  }
 
-       public int type;
-       public byte[] data;
-       public int id;
-       boolean incomplete;
-       int cycleCount;
+  public int type;
+  public byte[] data;
+  public int id;
+  boolean incomplete;
+  int cycleCount;
 }

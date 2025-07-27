@@ -1,6 +1,7 @@
-package game.entities;// Decompiled by Jad v1.5.8f. Copyright 2001 Pavel Kouznetsov.
+package game.entities; // Decompiled by Jad v1.5.8f. Copyright 2001 Pavel Kouznetsov.
+
 // Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) 
+// Decompiler options: packimports(3)
 
 import render.geometry.Model;
 import render.geometry.VertexNormal;
@@ -8,31 +9,31 @@ import util.collections.NodeSub;
 
 public class Animable extends NodeSub {
 
-    public void render(
-            int rotation,
-            int pitchSin,
-            int pitchCos,
-            int yawSin,
-            int yawCos,
-            int x,
-            int z,
-            int y,
-            int uid) {
-        Model model = getRotatedModel();
-        if (model != null) {
-            modelHeight = model.modelHeight;
-            model.render(rotation, pitchSin, pitchCos, yawSin, yawCos, x, z, y, uid);
-        }
+  public void render(
+      int rotation,
+      int pitchSin,
+      int pitchCos,
+      int yawSin,
+      int yawCos,
+      int x,
+      int z,
+      int y,
+      int uid) {
+    Model model = getRotatedModel();
+    if (model != null) {
+      modelHeight = model.modelHeight;
+      model.render(rotation, pitchSin, pitchCos, yawSin, yawCos, x, z, y, uid);
     }
+  }
 
-	public Model getRotatedModel() {
-		return null;
-	}
+  public Model getRotatedModel() {
+    return null;
+  }
 
-	public Animable() {
-		modelHeight = 1000;
-	}
+  public Animable() {
+    modelHeight = 1000;
+  }
 
-    public VertexNormal[] vertexNormals;
-	public int modelHeight;
+  public VertexNormal[] vertexNormals;
+  public int modelHeight;
 }
