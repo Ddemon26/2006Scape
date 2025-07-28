@@ -335,7 +335,7 @@ public final class Signlink implements Runnable {
     threadreq = runnable;
   }
 
-  public static synchronized boolean wavesave(byte abyte0[], int i) {
+  public static synchronized boolean wavSave(byte abyte0[], int i) {
     if (i > 0x1e8480) {
       return false;
     }
@@ -351,7 +351,7 @@ public final class Signlink implements Runnable {
     }
   }
 
-  public static synchronized boolean wavereplay() {
+  public static synchronized boolean wavReplay() {
     if (saveReq != null) {
       return false;
     } else {
@@ -413,5 +413,5 @@ public final class Signlink implements Runnable {
   private static boolean waveplay;
   private static int wavepos;
   public static String wave = null;
-  public static int wavevol;
+  public static int wavVol;
 }
