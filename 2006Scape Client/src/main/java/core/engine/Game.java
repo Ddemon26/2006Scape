@@ -3346,6 +3346,37 @@ public class Game extends RSApplet {
     }
   }
 
+  public static String combatDiffColor(int i, int j) {
+    int k = i - j;
+    if (k < -9) {
+      return "@red@";
+    }
+    if (k < -6) {
+      return "@or3@";
+    }
+    if (k < -3) {
+      return "@or2@";
+    }
+    if (k < 0) {
+      return "@or1@";
+    }
+    if (k > 9) {
+      return "@gre@";
+    }
+    if (k > 6) {
+      return "@gr3@";
+    }
+    if (k > 3) {
+      return "@gr2@";
+    }
+    if (k > 0) {
+      return "@gr1@";
+    } else {
+      return "@yel@";
+    }
+  }
+
+
   // ============================================================================
 
   // ============================================================================
@@ -8840,7 +8871,7 @@ public class Game extends RSApplet {
         stream.createFrame(148);
       }
     }
-  } // This handles system updating?
+  } // This handles system updating? this should be broken down into separate responsibilities
 
   public void drawHeadIcon() {
     if (hintIconState != 2) {
@@ -13532,36 +13563,6 @@ public class Game extends RSApplet {
           }
         }
       }
-    }
-  }
-
-  public static String combatDiffColor(int i, int j) {
-    int k = i - j;
-    if (k < -9) {
-      return "@red@";
-    }
-    if (k < -6) {
-      return "@or3@";
-    }
-    if (k < -3) {
-      return "@or2@";
-    }
-    if (k < 0) {
-      return "@or1@";
-    }
-    if (k > 9) {
-      return "@gre@";
-    }
-    if (k > 6) {
-      return "@gr3@";
-    }
-    if (k > 3) {
-      return "@gr2@";
-    }
-    if (k > 0) {
-      return "@gr1@";
-    } else {
-      return "@yel@";
     }
   }
 
