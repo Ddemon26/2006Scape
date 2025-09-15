@@ -7,6 +7,7 @@ services:
     container_name: runescape-server
     ports:
       - "8080:8080"    # HTTP port
+      - "43594:43594"  # Game server port (World 1)
       - "43595:43595"  # JAGGRAB port
     environment:
       - JAVA_OPTS=-Xmx2g -Xms1g

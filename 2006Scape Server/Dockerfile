@@ -45,8 +45,8 @@ RUN chown -R gameserver:gameserver /app
 # Switch to non-root user
 USER gameserver
 
-# Expose ports (HTTP and JAGGRAB)
-EXPOSE 8080 43595
+# Expose ports (HTTP, Game Server, and JAGGRAB)
+EXPOSE 8080 43594 43595
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
