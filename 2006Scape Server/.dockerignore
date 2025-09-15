@@ -1,0 +1,47 @@
+# Build artifacts
+target/
+*.jar
+!server.jar
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Maven wrapper
+.mvn/
+
+# Docker files (don't include in context)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Documentation
+README.md
+*.md
+
+# Backup files
+*.bak
+*.orig
+
+# Testing
+test-output/

@@ -1,0 +1,38 @@
+services:
+  runescape-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: 2006scape-server:latest
+    container_name: runescape-server
+    ports:
+      - "8080:8080"    # HTTP port
+      - "43595:43595"  # JAGGRAB port
+    environment:
+      - JAVA_OPTS=-Xmx2g -Xms1g
+    volumes:
+      # Mount configuration file for easy editing
+      - ./ServerConfig.json:/app/ServerConfig.json:ro
+      # Mount data directory for persistence (read-write)
+      - ./data:/app/data
+      # Mount plugins directory (read-only)
+      - ./plugins:/app/plugins:ro
+      # Create named volume for additional logs if needed
+      - server-logs:/app/additional-logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://0.0.0.0:8080/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - runescape-network
+
+volumes:
+  server-logs:
+    driver: local
+
+networks:
+  runescape-network:
+    driver: bridge

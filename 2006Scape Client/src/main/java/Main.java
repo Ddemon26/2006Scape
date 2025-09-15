@@ -22,7 +22,8 @@ public final class Main {
           case "-dev":
           case "-local":
           case "-offline":
-            ClientSettings.SERVER_IP = "localhost";
+            ClientSettings.SERVER_IP = "http://localhost:43595";
+            //ClientSettings.SERVER_IP = "0.0.0.0";
             ClientSettings.CHECK_CRC = false;
             break;
           case "-no-crc":
