@@ -63,7 +63,10 @@ public class ClientSettings {
    * The Servers Ip You don't have to change this, the client will automatically connect to the
    * server on localhost (Assuming you're running Client and LocalGame respectively)
    */
-  public static String SERVER_IP = "server.2006scape.org";
+  //public static String SERVER_IP = "server.2006scape.org";
+  public static String SERVER_IP = "2006scape.nobeggar.com";  // Web interface
+  public static String GAME_SERVER = "2006game.nobeggar.com"; // Game server
+  public static String JAGGRAB_SERVER = "2006jag.nobeggar.com"; // JAGGRAB server
 
   /**
    * The Servers World This Determines The Port The Server Will Connect On World 1 Will Connect On

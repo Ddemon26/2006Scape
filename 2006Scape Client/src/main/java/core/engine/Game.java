@@ -4592,10 +4592,7 @@ public class Game extends RSApplet {
       socketStream =
               new RSSocket(
                       this,
-                      openSocket(
-                              (ClientSettings.SERVER_WORLD == 1)
-                                      ? 43594
-                                      : 43596 + ClientSettings.SERVER_WORLD + portOff));
+                      openGameServerSocket());
       long l = TextClass.longForName(s);
       int i = (int) (l >> 16 & 31L);
       stream.currentOffset = 0;
@@ -5530,7 +5527,7 @@ public class Game extends RSApplet {
       }
       jaggrabSocket = null;
     }
-    jaggrabSocket = openSocket(43595);
+    jaggrabSocket = openJaggrabSocket();
     jaggrabSocket.setSoTimeout(10000);
     java.io.InputStream inputstream = jaggrabSocket.getInputStream();
     OutputStream outputstream = jaggrabSocket.getOutputStream();
@@ -5546,13 +5543,33 @@ public class Game extends RSApplet {
     }
   }
 
+  public Socket openGameServerSocket() throws IOException {
+    if (Signlink.mainapp != null) {
+      return Signlink.opensocket(
+              (ClientSettings.SERVER_WORLD == 1)
+                      ? 43594
+                      : 43596 + ClientSettings.SERVER_WORLD + portOff);
+    } else {
+      // For Cloudflare tunnels, use port 80 for raw TCP connections
+      return new Socket(InetAddress.getByName(ClientSettings.GAME_SERVER), 43594);
+    }
+  }
+
+  public Socket openJaggrabSocket() throws IOException {
+    if (Signlink.mainapp != null) {
+      return Signlink.opensocket(43595);
+    } else {
+      return new Socket(InetAddress.getByName(ClientSettings.JAGGRAB_SERVER), 43595);
+    }
+  }
+
   public URL getCodeBase() {
     // if (SignLink.mainapp != null) {
     // return SignLink.mainapp.getCodeBase();
     // }
     try {
       // if (super.gameFrame != null) {
-      return new URL("http://" + server + ":" + (8080 + portOff));
+      return new URL("https://" + ClientSettings.SERVER_IP);
       // }
     } catch (Exception _ex) {
     }
