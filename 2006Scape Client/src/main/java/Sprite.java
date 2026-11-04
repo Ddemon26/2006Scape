@@ -333,23 +333,23 @@ public final class Sprite extends DrawingArea {
 		}
 	}
 
-	public void method352(int i, int j, int ai[], int k, int ai1[], int i1, int j1, int k1, int l1, int i2) {
+	public void method352(int rowCount, int j, int rowPixelCounts[], int sourceScale256, int rowStartOffsets[], int sourceCenterY, int destinationY, int destinationX, int horizontalCenteringSpan, int sourceCenterX) {
 		try {
-			int j2 = -l1 / 2;
-			int k2 = -i / 2;
+			int j2 = -horizontalCenteringSpan / 2;
+			int k2 = -rowCount / 2;
 			int l2 = (int) (Math.sin(j / 326.11000000000001D) * 65536D);
 			int i3 = (int) (Math.cos(j / 326.11000000000001D) * 65536D);
-			l2 = l2 * k >> 8;
-			i3 = i3 * k >> 8;
-			int j3 = (i2 << 16) + k2 * l2 + j2 * i3;
-			int k3 = (i1 << 16) + k2 * i3 - j2 * l2;
-			int l3 = k1 + j1 * DrawingArea.width;
-			for (j1 = 0; j1 < i; j1++) {
-				int i4 = ai1[j1];
+			l2 = l2 * sourceScale256 >> 8;
+			i3 = i3 * sourceScale256 >> 8;
+			int j3 = (sourceCenterX << 16) + k2 * l2 + j2 * i3;
+			int k3 = (sourceCenterY << 16) + k2 * i3 - j2 * l2;
+			int l3 = destinationX + destinationY * DrawingArea.width;
+			for (destinationY = 0; destinationY < rowCount; destinationY++) {
+				int i4 = rowStartOffsets[destinationY];
 				int j4 = l3 + i4;
 				int k4 = j3 + i3 * i4;
 				int l4 = k3 - l2 * i4;
-				for (k1 = -ai[j1]; k1 < 0; k1++) {
+				for (destinationX = -rowPixelCounts[destinationY]; destinationX < 0; destinationX++) {
 					if (ClientSettings.BILINEAR_MINIMAP_FILTERING) {
 						int x1 = k4 >> 16;
 						int y1 = l4 >> 16;
