@@ -429,42 +429,42 @@ public final class Sprite extends DrawingArea {
 		}
 	}
 
-	public void method354(Background background, int i, int j) {
-		j += offsetX;
-		i += offsetY;
-		int k = j + i * DrawingArea.width;
+	public void drawNonzeroThroughZeroMask(Background maskBackground, int y, int x) {
+		x += offsetX;
+		y += offsetY;
+		int k = x + y * DrawingArea.width;
 		int l = 0;
 		int i1 = height;
 		int j1 = width;
 		int k1 = DrawingArea.width - j1;
 		int l1 = 0;
-		if (i < DrawingArea.topY) {
-			int i2 = DrawingArea.topY - i;
+		if (y < DrawingArea.topY) {
+			int i2 = DrawingArea.topY - y;
 			i1 -= i2;
-			i = DrawingArea.topY;
+			y = DrawingArea.topY;
 			l += i2 * j1;
 			k += i2 * DrawingArea.width;
 		}
-		if (i + i1 > DrawingArea.bottomY) {
-			i1 -= i + i1 - DrawingArea.bottomY;
+		if (y + i1 > DrawingArea.bottomY) {
+			i1 -= y + i1 - DrawingArea.bottomY;
 		}
-		if (j < DrawingArea.topX) {
-			int j2 = DrawingArea.topX - j;
+		if (x < DrawingArea.topX) {
+			int j2 = DrawingArea.topX - x;
 			j1 -= j2;
-			j = DrawingArea.topX;
+			x = DrawingArea.topX;
 			l += j2;
 			k += j2;
 			l1 += j2;
 			k1 += j2;
 		}
-		if (j + j1 > DrawingArea.bottomX) {
-			int k2 = j + j1 - DrawingArea.bottomX;
+		if (x + j1 > DrawingArea.bottomX) {
+			int k2 = x + j1 - DrawingArea.bottomX;
 			j1 -= k2;
 			l1 += k2;
 			k1 += k2;
 		}
 		if (!(j1 <= 0 || i1 <= 0)) {
-			copyNonzeroRowsThroughZeroMask(pixels, j1, background.aByteArray1450, i1, DrawingArea.pixels, 0, k1, k, l1, l);
+			copyNonzeroRowsThroughZeroMask(pixels, j1, maskBackground.aByteArray1450, i1, DrawingArea.pixels, 0, k1, k, l1, l);
 		}
 	}
 

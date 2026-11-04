@@ -172,7 +172,7 @@ public class SpriteOffsetTest {
         else {
             Background background = new Background(archive(), "offset", 0);
             background.aByteArray1450 = mask == null ? new byte[DrawingArea.width * DrawingArea.height] : mask;
-            sprite.method354(background, y, x); // This entry point takes y before x.
+            sprite.drawNonzeroThroughZeroMask(background, y, x); // This entry point takes y before x.
         }
     }
 
