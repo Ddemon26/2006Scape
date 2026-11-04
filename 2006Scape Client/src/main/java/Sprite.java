@@ -128,58 +128,58 @@ public final class Sprite extends DrawingArea {
 		offsetY = 0;
 	}
 
-	public void drawOpaque(int i, int j) {
-		i += offsetX;
-		j += offsetY;
-		int l = i + j * DrawingArea.width;
-		int i1 = 0;
-		int j1 = height;
-		int k1 = width;
-		int l1 = DrawingArea.width - k1;
-		int i2 = 0;
-		if (j < DrawingArea.topY) {
-			int j2 = DrawingArea.topY - j;
-			j1 -= j2;
-			j = DrawingArea.topY;
-			i1 += j2 * k1;
-			l += j2 * DrawingArea.width;
+	public void drawOpaque(int destinationX, int destinationY) {
+		destinationX += offsetX;
+		destinationY += offsetY;
+		int destinationIndex = destinationX + destinationY * DrawingArea.width;
+		int sourceIndex = 0;
+		int copyHeight = height;
+		int copyWidth = width;
+		int destinationRowSkip = DrawingArea.width - copyWidth;
+		int sourceRowSkip = 0;
+		if (destinationY < DrawingArea.topY) {
+			int clippedTopRows = DrawingArea.topY - destinationY;
+			copyHeight -= clippedTopRows;
+			destinationY = DrawingArea.topY;
+			sourceIndex += clippedTopRows * copyWidth;
+			destinationIndex += clippedTopRows * DrawingArea.width;
 		}
-		if (j + j1 > DrawingArea.bottomY) {
-			j1 -= j + j1 - DrawingArea.bottomY;
+		if (destinationY + copyHeight > DrawingArea.bottomY) {
+			copyHeight -= destinationY + copyHeight - DrawingArea.bottomY;
 		}
-		if (i < DrawingArea.topX) {
-			int k2 = DrawingArea.topX - i;
-			k1 -= k2;
-			i = DrawingArea.topX;
-			i1 += k2;
-			l += k2;
-			i2 += k2;
-			l1 += k2;
+		if (destinationX < DrawingArea.topX) {
+			int clippedLeftColumns = DrawingArea.topX - destinationX;
+			copyWidth -= clippedLeftColumns;
+			destinationX = DrawingArea.topX;
+			sourceIndex += clippedLeftColumns;
+			destinationIndex += clippedLeftColumns;
+			sourceRowSkip += clippedLeftColumns;
+			destinationRowSkip += clippedLeftColumns;
 		}
-		if (i + k1 > DrawingArea.bottomX) {
-			int l2 = i + k1 - DrawingArea.bottomX;
-			k1 -= l2;
-			i2 += l2;
-			l1 += l2;
+		if (destinationX + copyWidth > DrawingArea.bottomX) {
+			int clippedRightColumns = destinationX + copyWidth - DrawingArea.bottomX;
+			copyWidth -= clippedRightColumns;
+			sourceRowSkip += clippedRightColumns;
+			destinationRowSkip += clippedRightColumns;
 		}
-		if (k1 <= 0 || j1 <= 0) {
+		if (copyWidth <= 0 || copyHeight <= 0) {
 		} else {
-			copyOpaqueRows(l, k1, j1, i2, i1, l1, pixels, DrawingArea.pixels);
+			copyOpaqueRows(destinationIndex, copyWidth, copyHeight, sourceRowSkip, sourceIndex, destinationRowSkip, pixels, DrawingArea.pixels);
 		}
 	}
 
 	private void copyOpaqueRows(int destinationIndex, int copyWidth, int rowCount, int sourceRowSkip, int sourceIndex, int destinationRowSkip, int source[], int destination[]) {
-		int l1 = -(copyWidth >> 2);
+		int negativeFourPixelBlockCount = -(copyWidth >> 2);
 		copyWidth = -(copyWidth & 3);
-		for (int i2 = -rowCount; i2 < 0; i2++) {
-			for (int j2 = l1; j2 < 0; j2++) {
+		for (int rowCounter = -rowCount; rowCounter < 0; rowCounter++) {
+			for (int fourPixelBlockCounter = negativeFourPixelBlockCount; fourPixelBlockCounter < 0; fourPixelBlockCounter++) {
 				destination[destinationIndex++] = source[sourceIndex++];
 				destination[destinationIndex++] = source[sourceIndex++];
 				destination[destinationIndex++] = source[sourceIndex++];
 				destination[destinationIndex++] = source[sourceIndex++];
 			}
 
-			for (int k2 = copyWidth; k2 < 0; k2++) {
+			for (int tailPixelCounter = copyWidth; tailPixelCounter < 0; tailPixelCounter++) {
 				destination[destinationIndex++] = source[sourceIndex++];
 			}
 

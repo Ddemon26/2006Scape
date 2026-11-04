@@ -60,6 +60,34 @@ public class SpriteOpaqueRowsTest {
     }
 
     @Test
+    public void multipleFourPixelBlocksAndEachTailRestartForEveryRow() throws Exception {
+        int[] source = new int[48];
+        Arrays.fill(source, -7);
+        // Labelled rows separated by three guard elements; source starts at index two.
+        for (int row = 0; row < 3; row++) for (int column = 0; column < 12; column++) {
+            source[2 + row * 15 + column] = (row + 1) * 100 + column + 1;
+        }
+        int[] savedSource = source.clone();
+        for (int width = 0; width <= 12; width++) for (int rows = 0; rows <= 3; rows++) {
+            int[] destination = filled(55);
+            copy(3, width, rows, 15 - width, 2, 17 - width, source, destination);
+            int[] expected = filled(55);
+            for (int row = 0; row < rows; row++) for (int column = 0; column < width; column++) {
+                expected[3 + row * 17 + column] = (row + 1) * 100 + column + 1;
+            }
+            assertArrayEquals("width=" + width + " rows=" + rows, expected, destination);
+            assertArrayEquals(savedSource, source);
+        }
+        // No spare capacity at either end, including two blocks plus a 1/2/3-pixel tail.
+        for (int width = 8; width <= 12; width++) {
+            int[] exactSource = Arrays.copyOfRange(source, 2, 2 + width);
+            int[] exactDestination = new int[width];
+            copy(0, width, 1, 0, 0, 0, exactSource, exactDestination);
+            assertArrayEquals(exactSource, exactDestination);
+        }
+    }
+
+    @Test
     public void widthAndRowCountBoundTheCopyIncludingUnrolledLoopRemainders() throws Exception {
         int[] source = {10,11,12,13,14,15,16,17,18,19,20,21};
         int[][] expected = {
