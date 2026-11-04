@@ -73,26 +73,26 @@ public final class Sprite extends DrawingArea {
 		DrawingArea.initDrawingArea(height, width, pixels);
 	}
 
-	public void method344(int i, int j, int k) {
+	public void adjustRgb(int redDelta, int greenDelta, int blueDelta) {
 		for (int i1 = 0; i1 < pixels.length; i1++) {
 			int j1 = pixels[i1];
 			if (j1 != 0) {
 				int k1 = j1 >> 16 & 0xff;
-				k1 += i;
+				k1 += redDelta;
 				if (k1 < 1) {
 					k1 = 1;
 				} else if (k1 > 255) {
 					k1 = 255;
 				}
 				int l1 = j1 >> 8 & 0xff;
-				l1 += j;
+				l1 += greenDelta;
 				if (l1 < 1) {
 					l1 = 1;
 				} else if (l1 > 255) {
 					l1 = 255;
 				}
 				int i2 = j1 & 0xff;
-				i2 += k;
+				i2 += blueDelta;
 				if (i2 < 1) {
 					i2 = 1;
 				} else if (i2 > 255) {

@@ -7287,7 +7287,7 @@ public class Game extends RSApplet {
 			int l5 = (int) (Math.random() * 41D) - 20;
 			for (int i6 = 0; i6 < 100; i6++) {
 				if (mapFunctions[i6] != null) {
-					mapFunctions[i6].method344(i5 + l5, j5 + l5, k5 + l5);
+					mapFunctions[i6].adjustRgb(i5 + l5, j5 + l5, k5 + l5);
 				}
 				if (mapScenes[i6] != null) {
 					mapScenes[i6].adjustPaletteRgb(i5 + l5, j5 + l5, k5 + l5);
