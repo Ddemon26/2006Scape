@@ -263,53 +263,53 @@ public final class Sprite extends DrawingArea {
 			l1 += l2;
 		}
 		if (!(k1 <= 0 || j1 <= 0)) {
-			method349(DrawingArea.pixels, pixels, i1, l, k1, j1, l1, i2);
+			copyNonzeroRows(DrawingArea.pixels, pixels, i1, l, k1, j1, l1, i2);
 		}
 	}
 
-	private void method349(int ai[], int ai1[], int j, int k, int l, int i1, int j1, int k1) {
+	private void copyNonzeroRows(int destination[], int source[], int sourceIndex, int destinationIndex, int copyWidth, int rowCount, int destinationRowSkip, int sourceRowSkip) {
 		int i;// was parameter
-		int l1 = -(l >> 2);
-		l = -(l & 3);
-		for (int i2 = -i1; i2 < 0; i2++) {
+		int l1 = -(copyWidth >> 2);
+		copyWidth = -(copyWidth & 3);
+		for (int i2 = -rowCount; i2 < 0; i2++) {
 			for (int j2 = l1; j2 < 0; j2++) {
-				i = ai1[j++];
+				i = source[sourceIndex++];
 				if (i != 0) {
-					ai[k++] = i;
+					destination[destinationIndex++] = i;
 				} else {
-					k++;
+					destinationIndex++;
 				}
-				i = ai1[j++];
+				i = source[sourceIndex++];
 				if (i != 0) {
-					ai[k++] = i;
+					destination[destinationIndex++] = i;
 				} else {
-					k++;
+					destinationIndex++;
 				}
-				i = ai1[j++];
+				i = source[sourceIndex++];
 				if (i != 0) {
-					ai[k++] = i;
+					destination[destinationIndex++] = i;
 				} else {
-					k++;
+					destinationIndex++;
 				}
-				i = ai1[j++];
+				i = source[sourceIndex++];
 				if (i != 0) {
-					ai[k++] = i;
+					destination[destinationIndex++] = i;
 				} else {
-					k++;
-				}
-			}
-
-			for (int k2 = l; k2 < 0; k2++) {
-				i = ai1[j++];
-				if (i != 0) {
-					ai[k++] = i;
-				} else {
-					k++;
+					destinationIndex++;
 				}
 			}
 
-			k += j1;
-			j += k1;
+			for (int k2 = copyWidth; k2 < 0; k2++) {
+				i = source[sourceIndex++];
+				if (i != 0) {
+					destination[destinationIndex++] = i;
+				} else {
+					destinationIndex++;
+				}
+			}
+
+			destinationIndex += destinationRowSkip;
+			sourceIndex += sourceRowSkip;
 		}
 
 	}
