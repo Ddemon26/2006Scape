@@ -12,39 +12,39 @@ final class TextInput {
 			int j1 = i1 >> 4 & 0xf;
 			if (k == -1) {
 				if (j1 < 13) {
-					aCharArray631[j++] = validChars[j1];
+					decodedCharacters[j++] = validChars[j1];
 				} else {
 					k = j1;
 				}
 			} else {
-				aCharArray631[j++] = validChars[(k << 4) + j1 - 195];
+				decodedCharacters[j++] = validChars[(k << 4) + j1 - 195];
 				k = -1;
 			}
 			j1 = i1 & 0xf;
 			if (k == -1) {
 				if (j1 < 13) {
-					aCharArray631[j++] = validChars[j1];
+					decodedCharacters[j++] = validChars[j1];
 				} else {
 					k = j1;
 				}
 			} else {
-				aCharArray631[j++] = validChars[(k << 4) + j1 - 195];
+				decodedCharacters[j++] = validChars[(k << 4) + j1 - 195];
 				k = -1;
 			}
 		}
 
 		boolean flag1 = true;
 		for (int k1 = 0; k1 < j; k1++) {
-			char c = aCharArray631[k1];
+			char c = decodedCharacters[k1];
 			if (flag1 && c >= 'a' && c <= 'z') {
-				aCharArray631[k1] += '\uFFE0';
+				decodedCharacters[k1] += '\uFFE0';
 				flag1 = false;
 			}
 			if (c == '.' || c == '!' || c == '?') {
 				flag1 = true;
 			}
 		}
-		return new String(aCharArray631, 0, j);
+		return new String(decodedCharacters, 0, j);
 	}
 
 	public static void encodeChatText(String s, Stream stream) {
@@ -86,17 +86,17 @@ final class TextInput {
 		}
 	}
 
-	public static String processText(String s) {
-		stream.currentOffset = 0;
-		encodeChatText(s, stream);
-		int j = stream.currentOffset;
-		stream.currentOffset = 0;
-		String s1 = decodeChatText(j, stream);
+	public static String normalizeChatText(String s) {
+		normalizationStream.currentOffset = 0;
+		encodeChatText(s, normalizationStream);
+		int j = normalizationStream.currentOffset;
+		normalizationStream.currentOffset = 0;
+		String s1 = decodeChatText(j, normalizationStream);
 		return s1;
 	}
 
-	private static final char[] aCharArray631 = new char[100];
-	private static final Stream stream = new Stream(new byte[100]);
+	private static final char[] decodedCharacters = new char[100];
+	private static final Stream normalizationStream = new Stream(new byte[100]);
 	private static final char[] validChars = {' ', 'e', 't', 'a', 'o', 'i', 'h', 'n', 's', 'r', 'd', 'l', 'u', 'm', 'w', 'c', 'y', 'f', 'g', 'p', 'b', 'v', 'k', 'x', 'j', 'q', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ', '!', '?', '.', ',', ':', ';', '(', ')', '-', '&', '*', '\\', '\'', '@', '#', '+', '=', '\243', '$', '%', '"', '[', ']'};
 
 }

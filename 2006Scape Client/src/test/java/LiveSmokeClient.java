@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.Locale;
 import javax.imageio.ImageIO;
 
 // Live diagnostic launcher using the production game, renderer, and networking.
@@ -56,6 +57,9 @@ public final class LiveSmokeClient extends Game {
                 System.out.println("COMMAND " + command);
                 if (command.equals("quit")) {
                     System.exit(0);
+                } else if (command.startsWith("locale ")) {
+                    Locale.setDefault(Locale.forLanguageTag(command.substring(7)));
+                    System.out.println("LOCALE " + Locale.getDefault().toLanguageTag());
                 } else if (command.startsWith("friend ")) {
                     addFriend(TextClass.longForName(command.substring(7)));
                 } else if (command.startsWith("public ")) {

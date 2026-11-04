@@ -4953,7 +4953,7 @@ public class Game extends RSApplet {
 						stream.writeQWord(aLong953);
 						TextInput.encodeChatText(promptInput, stream);
 						stream.writeBytes(stream.currentOffset - k);
-						promptInput = TextInput.processText(promptInput);
+						promptInput = TextInput.normalizeChatText(promptInput);
 						promptInput = Censor.doCensor(promptInput);
 						pushMessage(promptInput, 6, TextClass.fixName(TextClass.nameForLong(aLong953)));
 						if (privateChatMode == 2) {
@@ -5223,7 +5223,7 @@ public class Game extends RSApplet {
 						TextInput.encodeChatText(inputString, aStream_834);
 						stream.method441(0, aStream_834.buffer, aStream_834.currentOffset);
 						stream.writeBytes(stream.currentOffset - j3);
-						inputString = TextInput.processText(inputString);
+						inputString = TextInput.normalizeChatText(inputString);
 						inputString = Censor.doCensor(inputString);
 						myPlayer.textSpoken = inputString;
 						myPlayer.anInt1513 = j2;

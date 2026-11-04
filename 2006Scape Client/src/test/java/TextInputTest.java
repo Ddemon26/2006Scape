@@ -122,12 +122,12 @@ public class TextInputTest {
     }
 
     @Test
-    public void processTextAppliesTheCodecNormalizationAndPadding() {
-        assertEquals("Hello ", TextInput.processText("HELLO"));
-        assertEquals("E e ", TextInput.processText("e~e"));
-        assertEquals("E" + repeat('e', 79), TextInput.processText(repeat('e', 81)));
-        assertEquals("M", TextInput.processText("m"));
-        assertEquals("", TextInput.processText(""));
+    public void normalizeChatTextAppliesTheCodecNormalizationAndPadding() {
+        assertEquals("Hello ", TextInput.normalizeChatText("HELLO"));
+        assertEquals("E e ", TextInput.normalizeChatText("e~e"));
+        assertEquals("E" + repeat('e', 79), TextInput.normalizeChatText(repeat('e', 81)));
+        assertEquals("M", TextInput.normalizeChatText("m"));
+        assertEquals("", TextInput.normalizeChatText(""));
     }
 
     private static void assertEncoded(String text, int... expected) {

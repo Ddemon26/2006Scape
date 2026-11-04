@@ -63,7 +63,7 @@ public class ChatCodecLimitsTest {
     public void largestNormalEncodedMessageFitsTheSharedBuffers() {
         char[] input = new char[80];
         Arrays.fill(input, 'm');
-        String result = TextInput.processText(new String(input));
+        String result = TextInput.normalizeChatText(new String(input));
         assertEquals(80, result.length());
         assertEquals('M', result.charAt(0));
         for (int i = 1; i < result.length(); i++) assertEquals('m', result.charAt(i));
