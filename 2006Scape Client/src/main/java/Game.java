@@ -8236,7 +8236,7 @@ public class Game extends RSApplet {
 												j7 = 0;
 											}
 											// Draw item being moved
-											class30_sub2_sub1_sub1_2.drawSprite1(k5 + k6, j6 + j7);
+											class30_sub2_sub1_sub1_2.drawHalfBlended(k5 + k6, j6 + j7);
 											if (j6 + j7 < DrawingArea.topY && class9.scrollPosition > 0) {
 												int i10 = anInt945 * (DrawingArea.topY - j6 - j7) / 3;
 												if (i10 > anInt945 * 10) {
@@ -8261,7 +8261,7 @@ public class Game extends RSApplet {
 											}
 										} else if (atInventoryInterfaceType != 0 && atInventoryIndex == i3 && atInventoryInterface == component.id) {
 											// Using item? wear/unequip etc
-											class30_sub2_sub1_sub1_2.drawSprite1(k5, j6);
+											class30_sub2_sub1_sub1_2.drawHalfBlended(k5, j6);
 										} else {
 											// Draw item in inventory/equipment etc
 											class30_sub2_sub1_sub1_2.drawSprite(k5, j6);
