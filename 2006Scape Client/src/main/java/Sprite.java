@@ -228,81 +228,81 @@ public final class Sprite extends DrawingArea {
 		}
 	}
 
-	public void drawSprite(int i, int k) {
-		i += offsetX;
-		k += offsetY;
-		int l = i + k * DrawingArea.width;
-		int i1 = 0;
-		int j1 = height;
-		int k1 = width;
-		int l1 = DrawingArea.width - k1;
-		int i2 = 0;
-		if (k < DrawingArea.topY) {
-			int j2 = DrawingArea.topY - k;
-			j1 -= j2;
-			k = DrawingArea.topY;
-			i1 += j2 * k1;
-			l += j2 * DrawingArea.width;
+	public void drawSprite(int destinationX, int destinationY) {
+		destinationX += offsetX;
+		destinationY += offsetY;
+		int destinationIndex = destinationX + destinationY * DrawingArea.width;
+		int sourceIndex = 0;
+		int copyHeight = height;
+		int copyWidth = width;
+		int destinationRowSkip = DrawingArea.width - copyWidth;
+		int sourceRowSkip = 0;
+		if (destinationY < DrawingArea.topY) {
+			int clippedTopRows = DrawingArea.topY - destinationY;
+			copyHeight -= clippedTopRows;
+			destinationY = DrawingArea.topY;
+			sourceIndex += clippedTopRows * copyWidth;
+			destinationIndex += clippedTopRows * DrawingArea.width;
 		}
-		if (k + j1 > DrawingArea.bottomY) {
-			j1 -= k + j1 - DrawingArea.bottomY;
+		if (destinationY + copyHeight > DrawingArea.bottomY) {
+			copyHeight -= destinationY + copyHeight - DrawingArea.bottomY;
 		}
-		if (i < DrawingArea.topX) {
-			int k2 = DrawingArea.topX - i;
-			k1 -= k2;
-			i = DrawingArea.topX;
-			i1 += k2;
-			l += k2;
-			i2 += k2;
-			l1 += k2;
+		if (destinationX < DrawingArea.topX) {
+			int clippedLeftColumns = DrawingArea.topX - destinationX;
+			copyWidth -= clippedLeftColumns;
+			destinationX = DrawingArea.topX;
+			sourceIndex += clippedLeftColumns;
+			destinationIndex += clippedLeftColumns;
+			sourceRowSkip += clippedLeftColumns;
+			destinationRowSkip += clippedLeftColumns;
 		}
-		if (i + k1 > DrawingArea.bottomX) {
-			int l2 = i + k1 - DrawingArea.bottomX;
-			k1 -= l2;
-			i2 += l2;
-			l1 += l2;
+		if (destinationX + copyWidth > DrawingArea.bottomX) {
+			int clippedRightColumns = destinationX + copyWidth - DrawingArea.bottomX;
+			copyWidth -= clippedRightColumns;
+			sourceRowSkip += clippedRightColumns;
+			destinationRowSkip += clippedRightColumns;
 		}
-		if (!(k1 <= 0 || j1 <= 0)) {
-			copyNonzeroRows(DrawingArea.pixels, pixels, i1, l, k1, j1, l1, i2);
+		if (!(copyWidth <= 0 || copyHeight <= 0)) {
+			copyNonzeroRows(DrawingArea.pixels, pixels, sourceIndex, destinationIndex, copyWidth, copyHeight, destinationRowSkip, sourceRowSkip);
 		}
 	}
 
 	private void copyNonzeroRows(int destination[], int source[], int sourceIndex, int destinationIndex, int copyWidth, int rowCount, int destinationRowSkip, int sourceRowSkip) {
-		int i;// was parameter
-		int l1 = -(copyWidth >> 2);
+		int sourcePixel;// was parameter
+		int negativeFourPixelBlockCount = -(copyWidth >> 2);
 		copyWidth = -(copyWidth & 3);
-		for (int i2 = -rowCount; i2 < 0; i2++) {
-			for (int j2 = l1; j2 < 0; j2++) {
-				i = source[sourceIndex++];
-				if (i != 0) {
-					destination[destinationIndex++] = i;
+		for (int rowCounter = -rowCount; rowCounter < 0; rowCounter++) {
+			for (int fourPixelBlockCounter = negativeFourPixelBlockCount; fourPixelBlockCounter < 0; fourPixelBlockCounter++) {
+				sourcePixel = source[sourceIndex++];
+				if (sourcePixel != 0) {
+					destination[destinationIndex++] = sourcePixel;
 				} else {
 					destinationIndex++;
 				}
-				i = source[sourceIndex++];
-				if (i != 0) {
-					destination[destinationIndex++] = i;
+				sourcePixel = source[sourceIndex++];
+				if (sourcePixel != 0) {
+					destination[destinationIndex++] = sourcePixel;
 				} else {
 					destinationIndex++;
 				}
-				i = source[sourceIndex++];
-				if (i != 0) {
-					destination[destinationIndex++] = i;
+				sourcePixel = source[sourceIndex++];
+				if (sourcePixel != 0) {
+					destination[destinationIndex++] = sourcePixel;
 				} else {
 					destinationIndex++;
 				}
-				i = source[sourceIndex++];
-				if (i != 0) {
-					destination[destinationIndex++] = i;
+				sourcePixel = source[sourceIndex++];
+				if (sourcePixel != 0) {
+					destination[destinationIndex++] = sourcePixel;
 				} else {
 					destinationIndex++;
 				}
 			}
 
-			for (int k2 = copyWidth; k2 < 0; k2++) {
-				i = source[sourceIndex++];
-				if (i != 0) {
-					destination[destinationIndex++] = i;
+			for (int tailPixelCounter = copyWidth; tailPixelCounter < 0; tailPixelCounter++) {
+				sourcePixel = source[sourceIndex++];
+				if (sourcePixel != 0) {
+					destination[destinationIndex++] = sourcePixel;
 				} else {
 					destinationIndex++;
 				}
