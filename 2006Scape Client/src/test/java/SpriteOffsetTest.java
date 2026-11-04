@@ -156,7 +156,7 @@ public class SpriteOffsetTest {
         sprite.trimHeight = 6;
         sprite.offsetX = 2;
         sprite.offsetY = 3;
-        sprite.method345();
+        sprite.expandToCanvas();
         assertArrayEquals(new int[] {0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0,
                 0,0,1,2,0, 0,0,3,4,0, 0,0,0,0,0}, sprite.pixels);
         assertEquals(5, sprite.width);

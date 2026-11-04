@@ -7182,7 +7182,7 @@ public class Game extends RSApplet {
 
 			compass = new Sprite(streamLoader_2, "compass", 0);
 			mapEdge = new Sprite(streamLoader_2, "mapedge", 0);
-			mapEdge.method345();
+			mapEdge.expandToCanvas();
 
 			multiOverlay = new Sprite(streamLoader_2, "overlay_multiway", 0);
 			try {

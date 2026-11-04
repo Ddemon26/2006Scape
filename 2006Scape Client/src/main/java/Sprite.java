@@ -104,7 +104,7 @@ public final class Sprite extends DrawingArea {
 
 	}
 
-	public void method345() {
+	public void expandToCanvas() {
 		/*int ai[] = new int[trimWidth * trimHeight];
 		for (int j = 0; j < height; j++) {
 			System.arraycopy(pixels, j * width, ai, j + offsetY * trimWidth + offsetX, width);
