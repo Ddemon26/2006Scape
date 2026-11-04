@@ -115,29 +115,29 @@ public final class Background extends DrawingArea {
 	}
 
 	public void adjustPaletteRgb(int redDelta, int greenDelta, int blueDelta) {
-		for (int i1 = 0; i1 < anIntArray1451.length; i1++) {
-			int j1 = anIntArray1451[i1] >> 16 & 0xff;
-			j1 += redDelta;
-			if (j1 < 0) {
-				j1 = 0;
-			} else if (j1 > 255) {
-				j1 = 255;
+		for (int paletteIndex = 0; paletteIndex < anIntArray1451.length; paletteIndex++) {
+			int red = anIntArray1451[paletteIndex] >> 16 & 0xff;
+			red += redDelta;
+			if (red < 0) {
+				red = 0;
+			} else if (red > 255) {
+				red = 255;
 			}
-			int k1 = anIntArray1451[i1] >> 8 & 0xff;
-			k1 += greenDelta;
-			if (k1 < 0) {
-				k1 = 0;
-			} else if (k1 > 255) {
-				k1 = 255;
+			int green = anIntArray1451[paletteIndex] >> 8 & 0xff;
+			green += greenDelta;
+			if (green < 0) {
+				green = 0;
+			} else if (green > 255) {
+				green = 255;
 			}
-			int l1 = anIntArray1451[i1] & 0xff;
-			l1 += blueDelta;
-			if (l1 < 0) {
-				l1 = 0;
-			} else if (l1 > 255) {
-				l1 = 255;
+			int blue = anIntArray1451[paletteIndex] & 0xff;
+			blue += blueDelta;
+			if (blue < 0) {
+				blue = 0;
+			} else if (blue > 255) {
+				blue = 255;
 			}
-			anIntArray1451[i1] = (j1 << 16) + (k1 << 8) + l1;
+			anIntArray1451[paletteIndex] = (red << 16) + (green << 8) + blue;
 		}
 	}
 

@@ -89,6 +89,32 @@ public class SpriteRgbTest {
         assertArrayEquals(new int[] {0x123456, 0x010101}, s.pixels);
     }
 
+
+    @Test
+    public void storedPixelTraversalAndChannelBasisAreIndependentOfGeometry() {
+        int[][] deltas = {{1,0,0}, {0,1,0}, {0,0,1}};
+        int[][] expected = {
+            {0,0x133456,0x020101,0xff0101,0x133456,0x010101},
+            {0,0x123556,0x010201,0xff0201,0x123556,0x010101},
+            {0,0x123457,0x010102,0xff0102,0x123457,0x010101}};
+        for (int channel = 0; channel < deltas.length; channel++) {
+            Sprite s = new Sprite(2, 3);
+            s.pixels = new int[] {0,0x123456,0x010101,0xff0101,0x123456,0xff000000};
+            int[] storage = s.pixels;
+            s.adjustRgb(deltas[channel][0], deltas[channel][1], deltas[channel][2]);
+            assertSame(storage, s.pixels);
+            assertArrayEquals(expected[channel], s.pixels);
+            assertEquals(2, s.width); assertEquals(3, s.height);
+        }
+        // Traversal follows storage length, including empty storage, not declared geometry.
+        Sprite s = new Sprite(2, 3);
+        s.pixels = new int[] {0x123456};
+        s.adjustRgb(1,0,0);
+        assertArrayEquals(new int[] {0x133456}, s.pixels);
+        s.pixels = new int[0]; s.adjustRgb(1,2,3);
+        assertEquals(0, s.pixels.length);
+    }
+
     private static Sprite image(int... colors) {
         Sprite s = new Sprite(colors.length, 1);
         System.arraycopy(colors, 0, s.pixels, 0, colors.length);

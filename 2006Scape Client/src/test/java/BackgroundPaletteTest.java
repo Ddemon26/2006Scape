@@ -80,6 +80,26 @@ public class BackgroundPaletteTest {
         assertArrayEquals(new int[] {0xff0000, 0x000001, 0x0000ff, 0x000020, 0x000030}, image.anIntArray1451);
     }
 
+
+    @Test
+    public void paletteTraversalIncludesUnusedZeroAndRepeatedEntries() {
+        int[][] deltas = {{1,0,0}, {0,1,0}, {0,0,1}};
+        int[][] expected = {
+            {0x010000,0x133456,0x020101,0x133456,0x010000},
+            {0x000100,0x123556,0x010201,0x123556,0x000100},
+            {0x000001,0x123457,0x010102,0x123457,0x000001}};
+        for (int channel = 0; channel < deltas.length; channel++) {
+            Background b = image();
+            System.arraycopy(new int[] {0,0x123456,0x010101,0x123456,0xff000000}, 0, b.anIntArray1451, 0, 5);
+            b.aByteArray1450 = new byte[] {1,1,1,1};
+            int[] storage = b.anIntArray1451;
+            b.adjustPaletteRgb(deltas[channel][0], deltas[channel][1], deltas[channel][2]);
+            assertSame(storage, b.anIntArray1451);
+            assertArrayEquals(expected[channel], b.anIntArray1451);
+            assertArrayEquals(new byte[] {1,1,1,1}, b.aByteArray1450);
+        }
+    }
+
     private static Background image(int... colors) {
         // Independently generated pass-005 archive: 5x6 canvas, 2x2 at (2,3), five-entry RGB palette.
         Background image = new Background(new StreamLoader(Base64.getDecoder().decode(

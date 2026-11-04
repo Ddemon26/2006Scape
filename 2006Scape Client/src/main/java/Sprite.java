@@ -74,31 +74,31 @@ public final class Sprite extends DrawingArea {
 	}
 
 	public void adjustRgb(int redDelta, int greenDelta, int blueDelta) {
-		for (int i1 = 0; i1 < pixels.length; i1++) {
-			int j1 = pixels[i1];
-			if (j1 != 0) {
-				int k1 = j1 >> 16 & 0xff;
-				k1 += redDelta;
-				if (k1 < 1) {
-					k1 = 1;
-				} else if (k1 > 255) {
-					k1 = 255;
+		for (int pixelIndex = 0; pixelIndex < pixels.length; pixelIndex++) {
+			int sourcePixel = pixels[pixelIndex];
+			if (sourcePixel != 0) {
+				int red = sourcePixel >> 16 & 0xff;
+				red += redDelta;
+				if (red < 1) {
+					red = 1;
+				} else if (red > 255) {
+					red = 255;
 				}
-				int l1 = j1 >> 8 & 0xff;
-				l1 += greenDelta;
-				if (l1 < 1) {
-					l1 = 1;
-				} else if (l1 > 255) {
-					l1 = 255;
+				int green = sourcePixel >> 8 & 0xff;
+				green += greenDelta;
+				if (green < 1) {
+					green = 1;
+				} else if (green > 255) {
+					green = 255;
 				}
-				int i2 = j1 & 0xff;
-				i2 += blueDelta;
-				if (i2 < 1) {
-					i2 = 1;
-				} else if (i2 > 255) {
-					i2 = 255;
+				int blue = sourcePixel & 0xff;
+				blue += blueDelta;
+				if (blue < 1) {
+					blue = 1;
+				} else if (blue > 255) {
+					blue = 255;
 				}
-				pixels[i1] = (k1 << 16) + (l1 << 8) + i2;
+				pixels[pixelIndex] = (red << 16) + (green << 8) + blue;
 			}
 		}
 
