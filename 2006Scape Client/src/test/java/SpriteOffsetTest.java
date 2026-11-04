@@ -167,7 +167,7 @@ public class SpriteOffsetTest {
 
     private static void draw(Sprite sprite, int mode, int x, int y, byte[] mask) {
         if (mode == 0) sprite.drawSprite(x, y);
-        else if (mode == 1) sprite.method346(x, y);
+        else if (mode == 1) sprite.drawOpaque(x, y);
         else if (mode == 2) sprite.drawSprite1(x, y);
         else {
             Background background = new Background(archive(), "offset", 0);

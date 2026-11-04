@@ -128,7 +128,7 @@ public final class Sprite extends DrawingArea {
 		offsetY = 0;
 	}
 
-	public void method346(int i, int j) {
+	public void drawOpaque(int i, int j) {
 		i += offsetX;
 		j += offsetY;
 		int l = i + j * DrawingArea.width;
