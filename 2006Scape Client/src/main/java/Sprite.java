@@ -8,7 +8,7 @@ public final class Sprite extends DrawingArea {
 		pixels = new int[i * j];
 		width = trimWidth = i;
 		height = trimHeight = j;
-		anInt1442 = anInt1443 = 0;
+		offsetX = offsetY = 0;
 	}
 
 	public Sprite(byte abyte0[]) {
@@ -44,8 +44,8 @@ public final class Sprite extends DrawingArea {
 			stream_1.currentOffset++;
 		}
 
-		anInt1442 = stream_1.readUnsignedByte();
-		anInt1443 = stream_1.readUnsignedByte();
+		offsetX = stream_1.readUnsignedByte();
+		offsetY = stream_1.readUnsignedByte();
 		width = stream_1.readUnsignedWord();
 		height = stream_1.readUnsignedWord();
 		int i1 = stream_1.readUnsignedByte();
@@ -107,30 +107,30 @@ public final class Sprite extends DrawingArea {
 	public void method345() {
 		/*int ai[] = new int[trimWidth * trimHeight];
 		for (int j = 0; j < height; j++) {
-			System.arraycopy(pixels, j * width, ai, j + anInt1443 * trimWidth + anInt1442, width);
+			System.arraycopy(pixels, j * width, ai, j + offsetY * trimWidth + offsetX, width);
 		}
 
 		pixels = ai;
 		width = trimWidth;
 		height = trimHeight;
-		anInt1442 = 0;
-		anInt1443 = 0;*/
+		offsetX = 0;
+		offsetY = 0;*/
 		int ai[] = new int[trimWidth * trimHeight];
 		for (int j = 0; j < height; j++) {
 			for (int k = 0; k < width; k++)
-				ai[(j + anInt1443) * trimWidth + (k + anInt1442)] = pixels[j
+				ai[(j + offsetY) * trimWidth + (k + offsetX)] = pixels[j
 						* width + k];
 		}
 		pixels = ai;
 		width = trimWidth;
 		height = trimHeight;
-		anInt1442 = 0;
-		anInt1443 = 0;
+		offsetX = 0;
+		offsetY = 0;
 	}
 
 	public void method346(int i, int j) {
-		i += anInt1442;
-		j += anInt1443;
+		i += offsetX;
+		j += offsetY;
 		int l = i + j * DrawingArea.width;
 		int i1 = 0;
 		int j1 = height;
@@ -190,8 +190,8 @@ public final class Sprite extends DrawingArea {
 
 	public void drawSprite1(int i, int j) {
 		int k = 128;// was parameter
-		i += anInt1442;
-		j += anInt1443;
+		i += offsetX;
+		j += offsetY;
 		int i1 = i + j * DrawingArea.width;
 		int j1 = 0;
 		int k1 = height;
@@ -229,8 +229,8 @@ public final class Sprite extends DrawingArea {
 	}
 
 	public void drawSprite(int i, int k) {
-		i += anInt1442;
-		k += anInt1443;
+		i += offsetX;
+		k += offsetY;
 		int l = i + k * DrawingArea.width;
 		int i1 = 0;
 		int j1 = height;
@@ -430,8 +430,8 @@ public final class Sprite extends DrawingArea {
 	}
 
 	public void method354(Background background, int i, int j) {
-		j += anInt1442;
-		i += anInt1443;
+		j += offsetX;
+		i += offsetY;
 		int k = j + i * DrawingArea.width;
 		int l = 0;
 		int i1 = height;
@@ -517,8 +517,8 @@ public final class Sprite extends DrawingArea {
 	public int pixels[];
 	public int width;
 	public int height;
-	int anInt1442;
-	int anInt1443;
+	int offsetX;
+	int offsetY;
 	public int trimWidth;
 	public int trimHeight;
 }

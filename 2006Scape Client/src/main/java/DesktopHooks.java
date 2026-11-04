@@ -41,8 +41,8 @@ public final class DesktopHooks {
             }
             sprite.trimWidth = sprite.width;
             sprite.trimHeight = sprite.height;
-            sprite.anInt1442 = 0;
-            sprite.anInt1443 = 0;
+            sprite.offsetX = 0;
+            sprite.offsetY = 0;
             sprite.pixels = new int[sprite.width * sprite.height];
             PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0, sprite.width, sprite.height, sprite.pixels, 0, sprite.width);
             pixelgrabber.grabPixels();
