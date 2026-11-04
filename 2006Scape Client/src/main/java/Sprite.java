@@ -164,27 +164,27 @@ public final class Sprite extends DrawingArea {
 		}
 		if (k1 <= 0 || j1 <= 0) {
 		} else {
-			method347(l, k1, j1, i2, i1, l1, pixels, DrawingArea.pixels);
+			copyOpaqueRows(l, k1, j1, i2, i1, l1, pixels, DrawingArea.pixels);
 		}
 	}
 
-	private void method347(int i, int j, int k, int l, int i1, int k1, int ai[], int ai1[]) {
-		int l1 = -(j >> 2);
-		j = -(j & 3);
-		for (int i2 = -k; i2 < 0; i2++) {
+	private void copyOpaqueRows(int destinationIndex, int copyWidth, int rowCount, int sourceRowSkip, int sourceIndex, int destinationRowSkip, int source[], int destination[]) {
+		int l1 = -(copyWidth >> 2);
+		copyWidth = -(copyWidth & 3);
+		for (int i2 = -rowCount; i2 < 0; i2++) {
 			for (int j2 = l1; j2 < 0; j2++) {
-				ai1[i++] = ai[i1++];
-				ai1[i++] = ai[i1++];
-				ai1[i++] = ai[i1++];
-				ai1[i++] = ai[i1++];
+				destination[destinationIndex++] = source[sourceIndex++];
+				destination[destinationIndex++] = source[sourceIndex++];
+				destination[destinationIndex++] = source[sourceIndex++];
+				destination[destinationIndex++] = source[sourceIndex++];
 			}
 
-			for (int k2 = j; k2 < 0; k2++) {
-				ai1[i++] = ai[i1++];
+			for (int k2 = copyWidth; k2 < 0; k2++) {
+				destination[destinationIndex++] = source[sourceIndex++];
 			}
 
-			i += k1;
-			i1 += l;
+			destinationIndex += destinationRowSkip;
+			sourceIndex += sourceRowSkip;
 		}
 	}
 
