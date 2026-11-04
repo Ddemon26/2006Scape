@@ -35,7 +35,7 @@ public class SpriteScanlineMaskTest {
             ClientSettings.BILINEAR_MINIMAP_FILTERING = filtering;
             for (int rows = 0; rows <= 4; rows++) {
                 int[] raster = target();
-                sprite.method352(rows, 0, new int[] {1,1,1,1,1}, 256,
+                sprite.drawRotatedScanlines(rows, 0, new int[] {1,1,1,1,1}, 256,
                         new int[] {0,0,0,0,0}, 8, 3, 4, 6, 8);
                 int[] expected = filled();
                 // Integer, zero-angle geometry: the center lies at source (8,8).
@@ -52,7 +52,7 @@ public class SpriteScanlineMaskTest {
             ClientSettings.BILINEAR_MINIMAP_FILTERING = filtering;
             for (int count : new int[] {0,1,2,3,7}) {
                 int[] raster = target();
-                sprite.method352(1, 0, new int[] {count}, 256,
+                sprite.drawRotatedScanlines(1, 0, new int[] {count}, 256,
                         new int[] {0}, 8, 3, 4, 6, 8);
                 int[] expected = filled();
                 for (int col = 0; col < count; col++) expected[4 + col + 3 * 16] = sprite.pixels[5 + col + 8 * 20];
@@ -71,7 +71,7 @@ public class SpriteScanlineMaskTest {
             for (int offset : new int[] {0,1,3,-1}) {
                 int[] offsets = {offset};
                 int[] raster = target();
-                sprite.method352(1, 0, counts, 256, offsets, 8, 3, 4, 6, 8);
+                sprite.drawRotatedScanlines(1, 0, counts, 256, offsets, 8, 3, 4, 6, 8);
                 int[] expected = filled();
                 expected[4 + offset + 3 * 16] = source[5 + offset + 8 * 20];
                 expected[5 + offset + 3 * 16] = source[6 + offset + 8 * 20];
@@ -88,7 +88,7 @@ public class SpriteScanlineMaskTest {
         for (boolean filtering : new boolean[] {false, true}) {
             ClientSettings.BILINEAR_MINIMAP_FILTERING = filtering;
             int[] raster = target();
-            sprite.method352(3, 0, new int[] {2,0,3,999}, 256,
+            sprite.drawRotatedScanlines(3, 0, new int[] {2,0,3,999}, 256,
                     new int[] {0,4,1,999}, 8, 3, 4, 6, 8);
             int[] expected = filled();
             expected[4 + 3 * 16] = sprite.pixels[5 + 7 * 20];
@@ -109,7 +109,7 @@ public class SpriteScanlineMaskTest {
             ClientSettings.BILINEAR_MINIMAP_FILTERING = filtering;
             int[] raster = target();
             DrawingArea.setDrawingArea(1, 0, 1, 0);
-            sprite.method352(1, 0, new int[] {2}, 256, new int[] {0}, 8, 3, 4, 6, 8);
+            sprite.drawRotatedScanlines(1, 0, new int[] {2}, 256, new int[] {0}, 8, 3, 4, 6, 8);
             int[] expected = filled();
             expected[4 + 3 * 16] = 0;
             expected[5 + 3 * 16] = sprite.pixels[6 + 8 * 20];

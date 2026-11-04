@@ -42,7 +42,7 @@ public class SpriteHorizontalCenteringTest {
             ClientSettings.BILINEAR_MINIMAP_FILTERING = filtering;
             for (int[] c : cases) {
                 int[] raster = target(8, 7), expected = filled(8, 7);
-                sprite.method352(3, 0, counts, 256, offsets, 8, 2, 3, c[0], 100);
+                sprite.drawRotatedScanlines(3, 0, counts, 256, offsets, 8, 2, 3, c[0], 100);
                 for (int col = 0; col < 3; col++)
                     expected[3 + col + 2 * 8] = source[100 + c[1] + col + 7 * 256];
                 for (int col = 1; col < 3; col++)
@@ -63,7 +63,7 @@ public class SpriteHorizontalCenteringTest {
             ClientSettings.BILINEAR_MINIMAP_FILTERING = filtering;
             for (int[] c : cases) {
                 int[] raster = target(80, 3), expected = filled(80, 3);
-                sprite.method352(1, 0, new int[] {1}, 256, new int[] {c[1]},
+                sprite.drawRotatedScanlines(1, 0, new int[] {1}, 256, new int[] {c[1]},
                         8, 1, 2, c[0], 16);
                 expected[2 + c[1] + 80] = sprite.pixels[16 + 8 * 32];
                 assertArrayEquals(expected, raster);
@@ -83,7 +83,7 @@ public class SpriteHorizontalCenteringTest {
             for (int scale : new int[] {-512,-256,-128,0,128,256,384,512}) {
                 for (int[] c : cases) {
                     int[] raster = target(8, 7), expected = filled(8, 7);
-                    sprite.method352(3, 0, new int[] {3,0,2}, scale,
+                    sprite.drawRotatedScanlines(3, 0, new int[] {3,0,2}, scale,
                             new int[] {0,1,1}, 16, 2, 3, c[0], 32);
                     for (int row = 0; row < 3; row++) for (int col = 0; col < 3; col++) {
                         if (row == 1 || (row == 2 && col == 0)) continue;
@@ -106,10 +106,10 @@ public class SpriteHorizontalCenteringTest {
             for (int angle : new int[] {-512,0,137,512,1024,2047}) {
                 for (int scale : new int[] {-256,0,128,256,384}) {
                     int[] reference = target(8, 7);
-                    sprite.method352(3, angle, new int[] {3,0,2}, scale,
+                    sprite.drawRotatedScanlines(3, angle, new int[] {3,0,2}, scale,
                             new int[] {0,1,1}, 40, 2, 3, 3, 40);
                     int[] raster = target(8, 7);
-                    sprite.method352(3, angle, new int[] {3,0,2}, scale,
+                    sprite.drawRotatedScanlines(3, angle, new int[] {3,0,2}, scale,
                             new int[] {1,2,2}, 40, 2, 2, 5, 40);
                     assertArrayEquals(reference, raster);
                 }

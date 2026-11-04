@@ -37,7 +37,7 @@ public class SpriteSourceScaleTest {
             for (int scale : scales()) {
                 int[] raster = target(260, 3), expected = filled(260, 3);
                 // A 256-pixel displacement amplifies one input unit to one source pixel.
-                sprite.method352(1, 0, new int[] {1}, scale, new int[] {256},
+                sprite.drawRotatedScanlines(1, 0, new int[] {1}, scale, new int[] {256},
                         2, 1, 0, 0, 600);
                 expected[256 + 260] = source[600 + scale + 2 * 1200];
                 assertArrayEquals(expected, raster);
@@ -56,7 +56,7 @@ public class SpriteSourceScaleTest {
             for (int scale : scales()) {
                 int[] raster = target(3, 513), expected = filled(3, 513);
                 // With 513 rows the final row is 256 steps below the source center.
-                sprite.method352(513, 0, counts, scale, offsets, 600, 0, 1, 0, 2);
+                sprite.drawRotatedScanlines(513, 0, counts, scale, offsets, 600, 0, 1, 0, 2);
                 expected[1 + 512 * 3] = source[2 + (600 + scale) * 5];
                 assertArrayEquals(expected, raster);
                 assertArrayEquals(originalCounts, counts);
@@ -76,7 +76,7 @@ public class SpriteSourceScaleTest {
             ClientSettings.BILINEAR_MINIMAP_FILTERING = filtering;
             for (int scale : new int[] {-512,-256,-128,0,128,256,384,512}) {
                 int[] raster = target(8, 7), expected = filled(8, 7);
-                sprite.method352(3, 0, new int[] {3,0,2}, scale, new int[] {0,1,1},
+                sprite.drawRotatedScanlines(3, 0, new int[] {3,0,2}, scale, new int[] {0,1,1},
                         16, 2, 3, 3, 16);
                 for (int row = 0; row < 3; row++) for (int col = 0; col < 3; col++) {
                     if (row == 1 || (row == 2 && col == 0)) continue;
@@ -97,7 +97,7 @@ public class SpriteSourceScaleTest {
             ClientSettings.BILINEAR_MINIMAP_FILTERING = filtering;
             for (int angle : new int[] {-512,0,512,1024,2047}) {
                 int[] raster = target(8, 7), expected = filled(8, 7);
-                sprite.method352(3, angle, new int[] {3,0,2}, 0, new int[] {0,1,1},
+                sprite.drawRotatedScanlines(3, angle, new int[] {3,0,2}, 0, new int[] {0,1,1},
                         16, 2, 3, 3, 16);
                 for (int col = 0; col < 3; col++) expected[3 + col + 2 * 8] = sprite.pixels[16 + 16 * 40];
                 for (int col = 1; col < 3; col++) expected[3 + col + 4 * 8] = sprite.pixels[16 + 16 * 40];

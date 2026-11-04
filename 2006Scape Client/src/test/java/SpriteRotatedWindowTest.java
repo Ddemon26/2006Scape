@@ -9,9 +9,11 @@ public class SpriteRotatedWindowTest {
     private static final int FILL = 0x204060;
     private int[] savedPixels;
     private int[] saved;
+    private boolean savedFiltering;
 
     @Before public void saveDrawingArea() {
         savedPixels = DrawingArea.pixels;
+        savedFiltering = ClientSettings.BILINEAR_MINIMAP_FILTERING;
         saved = new int[] {DrawingArea.width, DrawingArea.height, DrawingArea.topX,
                 DrawingArea.topY, DrawingArea.bottomX, DrawingArea.bottomY,
                 DrawingArea.centerX, DrawingArea.centerY, DrawingArea.anInt1387};
@@ -24,6 +26,7 @@ public class SpriteRotatedWindowTest {
         DrawingArea.bottomX = saved[4]; DrawingArea.bottomY = saved[5];
         DrawingArea.centerX = saved[6]; DrawingArea.centerY = saved[7];
         DrawingArea.anInt1387 = saved[8];
+        ClientSettings.BILINEAR_MINIMAP_FILTERING = savedFiltering;
     }
 
     @Test public void coordinatesPlaceFixedTwentyPixelWindowInDestinationPixels() {
@@ -82,6 +85,100 @@ public class SpriteRotatedWindowTest {
             int[] raster = target();
             DrawingArea.setDrawingArea(1, 0, 1, 0);
             sprite.drawRotatedNonzero20x20(2, 0, 3);
+            assertArrayEquals(expected, raster);
+        }
+    }
+
+    @Test public void encodedAnglesRotateHorizontalAndVerticalSamplingDirections() {
+        Sprite sprite = numberedSprite();
+        ClientSettings.BILINEAR_MINIMAP_FILTERING = false;
+        // Independent lattice landmarks four pixels right/below the center.
+        // 256 is just below 45 degrees; 512 is just below 90 degrees.
+        int[][] cases = {{0,20,16,16,20}, {256,18,13,18,18},
+                {-256,18,18,13,18}, {512,16,12,19,16},
+                {-512,16,19,12,16}, {1024,12,15,16,12}, {2048,19,16,15,19}};
+        for (int[] c : cases) for (int probe = 0; probe < 3; probe++) {
+            int[] counts = new int[9], offsets = new int[9];
+            int row = probe == 2 ? 8 : 4;
+            counts[row] = 1; offsets[row] = probe == 1 ? 4 : 0;
+            int sx = probe == 0 ? 16 : c[probe == 1 ? 1 : 3];
+            int sy = probe == 0 ? 16 : c[probe == 1 ? 2 : 4];
+            int[] expected = filled(), raster = target();
+            expected[3 + offsets[row] + (2 + row) * 32] = sprite.pixels[sx + sy * 40];
+            sprite.drawRotatedScanlines(9, c[0], counts, 256, offsets, 16, 2, 3, 0, 16);
+            assertArrayEquals("angle=" + c[0] + " probe=" + probe, expected, raster);
+        }
+    }
+
+    @Test public void encodedAngleCalibrationMatchesRadiansBut2048IsNotAnExactTurn() {
+        Sprite sprite = numberedSprite();
+        int[] counts = new int[20], offsets = new int[20]; Arrays.fill(counts, 20);
+        ClientSettings.BILINEAR_MINIMAP_FILTERING = false;
+        for (int angle : new int[] {-2048,-512,-1,0,1,137,256,512,1024,2047,2048}) {
+            int[] radians = target();
+            sprite.drawRotatedNonzero20x20(2, angle / 326.11D, 3);
+            int[] encoded = target();
+            sprite.drawRotatedScanlines(20, angle, counts, 256, offsets, 15, 2, 3, 20, 15);
+            assertArrayEquals("angle=" + angle, radians, encoded);
+        }
+        int[] zero = target();
+        sprite.drawRotatedScanlines(20, 0, counts, 256, offsets, 15, 2, 3, 20, 15);
+        int[] turn = target();
+        sprite.drawRotatedScanlines(20, 2048, counts, 256, offsets, 15, 2, 3, 20, 15);
+        org.junit.Assert.assertFalse(Arrays.equals(zero, turn));
+        int[] ninety = target();
+        sprite.drawRotatedScanlines(20, 90, counts, 256, offsets, 15, 2, 3, 20, 15);
+        int[] quarter = target();
+        sprite.drawRotatedNonzero20x20(2, Math.PI / 2, 3);
+        org.junit.Assert.assertFalse(Arrays.equals(ninety, quarter));
+    }
+
+    @Test public void bilinearCornerContributionsUseFractionalSamplePositionWithoutAlpha() {
+        // Gray 128 at one corner at a time: observable area contributions,
+        // explicitly tabulated independently of the renderer's integer arithmetic.
+        int[][] cases = {{0,128,0,0,0}, {1,127,0,0,0}, {64,72,24,24,8},
+                {128,32,32,32,32}, {192,8,24,24,72}, {255,0,0,0,127}};
+        for (int[] c : cases) for (int corner = 0; corner < 4; corner++) {
+            Sprite sprite = new Sprite(40, 40);
+            sprite.pixels[16 + corner % 2 + (16 + corner / 2) * 40] = 0x808080;
+            int[] source = sprite.pixels.clone();
+            for (boolean filtering : new boolean[] {false,true}) {
+                ClientSettings.BILINEAR_MINIMAP_FILTERING = filtering;
+                int value = filtering ? c[corner + 1] : corner == 0 ? 128 : 0;
+                int[] expected = filled(), raster = target();
+                expected[4 + 4 * 32] = value * 0x010101;
+                sprite.drawRotatedScanlines(3, 0, new int[] {0,0,1}, c[0], new int[] {0,0,1},
+                        16, 2, 3, 0, 16);
+                assertArrayEquals(expected, raster);
+            }
+            assertArrayEquals(source, sprite.pixels);
+        }
+    }
+
+    @Test public void fractionalSamplesUseEightBitsOfFractionAndSixteenBitCoordinateSteps() {
+        Sprite sprite = new Sprite(40, 40);
+        for (int y = 0; y < 40; y++) for (int x = 0; x < 40; x++)
+            sprite.pixels[x + y * 40] = x == 17 ? 0x800000 : 0;
+        // At zero angle scale=1 moves 1/256 pixel: one target step gives zero
+        // channel units, two give one, and 256 select the next source pixel.
+        ClientSettings.BILINEAR_MINIMAP_FILTERING = true;
+        for (int[] c : new int[][] {{0,0}, {1,0}, {2,1}, {64,32}, {128,64}, {255,127}, {256,128}}) {
+            int[] raster = new int[260 * 3], expected = new int[raster.length];
+            Arrays.fill(raster, FILL); Arrays.fill(expected, FILL);
+            DrawingArea.initDrawingArea(3, 260, raster);
+            sprite.drawRotatedScanlines(1, 0, new int[] {1}, 1, new int[] {c[0]}, 16, 1, 0, 0, 16);
+            expected[c[0] + 260] = c[1] << 16;
+            assertArrayEquals(expected, raster);
+        }
+        // A sub-1/256 coordinate fraction is discarded before color weighting.
+        // sin(1 / 326.11) is between .0030 and .0031: at unit scale a single
+        // vertical step moves X less than 1/256; two steps cross that boundary.
+        for (int[] c : new int[][] {{1,0}, {2,0}, {3,1}}) {
+            int rows = c[0] * 2 + 1;
+            int[] counts = new int[rows], offsets = new int[rows]; counts[rows - 1] = 1;
+            int[] expected = filled(), raster = target();
+            expected[3 + (2 + rows - 1) * 32] = c[1] << 16;
+            sprite.drawRotatedScanlines(rows, 1, counts, 256, offsets, 16, 2, 3, 0, 16);
             assertArrayEquals(expected, raster);
         }
     }

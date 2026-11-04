@@ -9480,7 +9480,7 @@ public class Game extends RSApplet {
 				}
 			}
 
-			compass.method352(33, minimapInt1, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
+			compass.drawRotatedScanlines(33, minimapInt1, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
 			aRSImageProducer_1165.initDrawingArea();
 			Texture.lineOffsets = chatBoxAreaOffsets;
 			return;
@@ -9488,8 +9488,8 @@ public class Game extends RSApplet {
 		int i = minimapInt1 + minimapInt2 & 0x7ff;
 		int j = 48 + myPlayer.x / 32;
 		int l2 = 464 - myPlayer.y / 32;
-		aClass30_Sub2_Sub1_Sub1_1263.method352(151, i, anIntArray1229, 256 + minimapInt3, anIntArray1052, l2, 5, 25, 146, j);
-		compass.method352(33, minimapInt1, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
+		aClass30_Sub2_Sub1_Sub1_1263.drawRotatedScanlines(151, i, anIntArray1229, 256 + minimapInt3, anIntArray1052, l2, 5, 25, 146, j);
+		compass.drawRotatedScanlines(33, minimapInt1, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
 		// Minimap icons (shops, quest etc)
 		for (int j5 = 0; j5 < anInt1071; j5++) {
 			int k = anIntArray1072[j5] * 4 + 2 - myPlayer.x / 32;

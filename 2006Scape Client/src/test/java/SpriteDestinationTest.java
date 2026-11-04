@@ -53,12 +53,12 @@ public class SpriteDestinationTest {
             for (int angle : new int[] {0,512,1024,2047})
                 for (int scale : new int[] {0,128,256,384}) {
                     int[] reference = target(16);
-                    sprite.method352(3, angle, new int[] {3,3,3}, scale,
+                    sprite.drawRotatedScanlines(3, angle, new int[] {3,3,3}, scale,
                             new int[] {0,0,0}, 16, 0, 0, 3, 16);
                     // Translate each axis independently, keeping every source input fixed.
                     for (int[] point : new int[][] {{1,0},{13,0},{0,1},{0,13}}) {
                         int[] raster = target(16), expected = filled(16);
-                        sprite.method352(3, angle, new int[] {3,3,3}, scale,
+                        sprite.drawRotatedScanlines(3, angle, new int[] {3,3,3}, scale,
                                 new int[] {0,0,0}, 16, point[1], point[0], 3, 16);
                         for (int row = 0; row < 3; row++) for (int col = 0; col < 3; col++)
                             expected[point[0]+col+(point[1]+row)*16] = reference[col+row*16];
@@ -79,7 +79,7 @@ public class SpriteDestinationTest {
             DrawingArea.setDrawingArea(1, 0, 1, 0);
             // A nonzero mask offset places the sample after the destination anchor.
             // The final physical pixel is outside the configured clip rectangle.
-            sprite.method352(1, 0, new int[] {1}, 256,
+            sprite.drawRotatedScanlines(1, 0, new int[] {1}, 256,
                     new int[] {3}, 16, 15, 15, 0, 16);
             expected[18+15*19] = sprite.pixels[19+16*40];
             assertArrayEquals(expected, raster);
@@ -90,7 +90,7 @@ public class SpriteDestinationTest {
         Sprite sprite = numberedSprite();
         int[] source = sprite.pixels.clone();
         int[] raster = target(width), expected = filled(width);
-        sprite.method352(3, 0, new int[] {3,0,2}, 256,
+        sprite.drawRotatedScanlines(3, 0, new int[] {3,0,2}, 256,
                 new int[] {0,3,1}, 16, y, x, 3, 16);
         for (int col = 0; col < 3; col++) expected[x+col+y*width] = source[15+col+15*40];
         for (int col = 1; col < 3; col++) expected[x+col+(y+2)*width] = source[15+col+17*40];

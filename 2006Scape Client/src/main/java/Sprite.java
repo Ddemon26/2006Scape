@@ -333,96 +333,96 @@ public final class Sprite extends DrawingArea {
 		}
 	}
 
-	public void method352(int rowCount, int j, int rowPixelCounts[], int sourceScale256, int rowStartOffsets[], int sourceCenterY, int destinationY, int destinationX, int horizontalCenteringSpan, int sourceCenterX) {
+	public void drawRotatedScanlines(int rowCount, int angleUnits, int rowPixelCounts[], int sourceScale256, int rowStartOffsets[], int sourceCenterY, int destinationY, int destinationX, int horizontalCenteringSpan, int sourceCenterX) {
 		try {
-			int j2 = -horizontalCenteringSpan / 2;
-			int k2 = -rowCount / 2;
-			int l2 = (int) (Math.sin(j / 326.11000000000001D) * 65536D);
-			int i3 = (int) (Math.cos(j / 326.11000000000001D) * 65536D);
-			l2 = l2 * sourceScale256 >> 8;
-			i3 = i3 * sourceScale256 >> 8;
-			int j3 = (sourceCenterX << 16) + k2 * l2 + j2 * i3;
-			int k3 = (sourceCenterY << 16) + k2 * i3 - j2 * l2;
-			int l3 = destinationX + destinationY * DrawingArea.width;
+			int centeredColumnOffset = -horizontalCenteringSpan / 2;
+			int centeredRowOffset = -rowCount / 2;
+			int sineStep16 = (int) (Math.sin(angleUnits / 326.11000000000001D) * 65536D);
+			int cosineStep16 = (int) (Math.cos(angleUnits / 326.11000000000001D) * 65536D);
+			sineStep16 = sineStep16 * sourceScale256 >> 8;
+			cosineStep16 = cosineStep16 * sourceScale256 >> 8;
+			int rowSourceX16 = (sourceCenterX << 16) + centeredRowOffset * sineStep16 + centeredColumnOffset * cosineStep16;
+			int rowSourceY16 = (sourceCenterY << 16) + centeredRowOffset * cosineStep16 - centeredColumnOffset * sineStep16;
+			int destinationRowIndex = destinationX + destinationY * DrawingArea.width;
 			for (destinationY = 0; destinationY < rowCount; destinationY++) {
-				int i4 = rowStartOffsets[destinationY];
-				int j4 = l3 + i4;
-				int k4 = j3 + i3 * i4;
-				int l4 = k3 - l2 * i4;
+				int rowStartColumn = rowStartOffsets[destinationY];
+				int destinationIndex = destinationRowIndex + rowStartColumn;
+				int sourceX16 = rowSourceX16 + cosineStep16 * rowStartColumn;
+				int sourceY16 = rowSourceY16 - sineStep16 * rowStartColumn;
 				for (destinationX = -rowPixelCounts[destinationY]; destinationX < 0; destinationX++) {
 					if (ClientSettings.BILINEAR_MINIMAP_FILTERING) {
-						int x1 = k4 >> 16;
-						int y1 = l4 >> 16;
-						int x2 = x1 + 1;
-						int y2 = y1 + 1;
-						int sampleColor1 = pixels[x1 + y1 * width];
-						int sampleColor2 = pixels[x2 + y1 * width];
-						int sampleColor3 = pixels[x1 + y2 * width];
-						int sampleColor4 = pixels[x2 + y2 * width];
-						int x1Distance = (k4 >> 8) - (x1 << 8);
-						int y1Distance = (l4 >> 8) - (y1 << 8);
-						int x2Distance = (x2 << 8) - (k4 >> 8);
-						int y2Distance = (y2 << 8) - (l4 >> 8);
-						int sampleAlpha1 = x2Distance * y2Distance;
-						int sampleAlpha2 = x1Distance * y2Distance;
-						int sampleAlpha3 = x2Distance * y1Distance;
-						int sampleAlpha4 = x1Distance * y1Distance;
-						int red = (sampleColor1 >> 16 & 0xff) * sampleAlpha1 + (sampleColor2 >> 16 & 0xff) * sampleAlpha2 + (sampleColor3 >> 16 & 0xff) * sampleAlpha3 + (sampleColor4 >> 16 & 0xff) * sampleAlpha4 & 0xff0000;
-						int green = (sampleColor1 >> 8 & 0xff) * sampleAlpha1 + (sampleColor2 >> 8 & 0xff) * sampleAlpha2 + (sampleColor3 >> 8 & 0xff) * sampleAlpha3 + (sampleColor4 >> 8 & 0xff) * sampleAlpha4 >> 8 & 0xff00;
-						int blue = (sampleColor1 & 0xff) * sampleAlpha1 + (sampleColor2 & 0xff) * sampleAlpha2 + (sampleColor3 & 0xff) * sampleAlpha3 + (sampleColor4 & 0xff) * sampleAlpha4 >> 16;
-						DrawingArea.pixels[j4++] = red | green | blue;
+						int sourceLeft = sourceX16 >> 16;
+						int sourceTop = sourceY16 >> 16;
+						int sourceRight = sourceLeft + 1;
+						int sourceBottom = sourceTop + 1;
+						int topLeftColor = pixels[sourceLeft + sourceTop * width];
+						int topRightColor = pixels[sourceRight + sourceTop * width];
+						int bottomLeftColor = pixels[sourceLeft + sourceBottom * width];
+						int bottomRightColor = pixels[sourceRight + sourceBottom * width];
+						int xFraction256 = (sourceX16 >> 8) - (sourceLeft << 8);
+						int yFraction256 = (sourceY16 >> 8) - (sourceTop << 8);
+						int inverseXFraction256 = (sourceRight << 8) - (sourceX16 >> 8);
+						int inverseYFraction256 = (sourceBottom << 8) - (sourceY16 >> 8);
+						int topLeftWeight65536 = inverseXFraction256 * inverseYFraction256;
+						int topRightWeight65536 = xFraction256 * inverseYFraction256;
+						int bottomLeftWeight65536 = inverseXFraction256 * yFraction256;
+						int bottomRightWeight65536 = xFraction256 * yFraction256;
+						int red = (topLeftColor >> 16 & 0xff) * topLeftWeight65536 + (topRightColor >> 16 & 0xff) * topRightWeight65536 + (bottomLeftColor >> 16 & 0xff) * bottomLeftWeight65536 + (bottomRightColor >> 16 & 0xff) * bottomRightWeight65536 & 0xff0000;
+						int green = (topLeftColor >> 8 & 0xff) * topLeftWeight65536 + (topRightColor >> 8 & 0xff) * topRightWeight65536 + (bottomLeftColor >> 8 & 0xff) * bottomLeftWeight65536 + (bottomRightColor >> 8 & 0xff) * bottomRightWeight65536 >> 8 & 0xff00;
+						int blue = (topLeftColor & 0xff) * topLeftWeight65536 + (topRightColor & 0xff) * topRightWeight65536 + (bottomLeftColor & 0xff) * bottomLeftWeight65536 + (bottomRightColor & 0xff) * bottomRightWeight65536 >> 16;
+						DrawingArea.pixels[destinationIndex++] = red | green | blue;
 					} else {
-						DrawingArea.pixels[j4++] = pixels[(k4 >> 16) + (l4 >> 16) * width];
+						DrawingArea.pixels[destinationIndex++] = pixels[(sourceX16 >> 16) + (sourceY16 >> 16) * width];
 					}
-					k4 += i3;
-					l4 -= l2;
+					sourceX16 += cosineStep16;
+					sourceY16 -= sineStep16;
 				}
 
-				j3 += l2;
-				k3 += i3;
-				l3 += DrawingArea.width;
+				rowSourceX16 += sineStep16;
+				rowSourceY16 += cosineStep16;
+				destinationRowIndex += DrawingArea.width;
 			}
 
 		} catch (Exception _ex) {
 		}
 	}
 
-	public void drawRotatedNonzero20x20(int y, double angleRadians, int x) {
+	public void drawRotatedNonzero20x20(int destinationY, double angleRadians, int destinationX) {
 		// all of the following were parameters
-		int j = 15;
-		int k = 20;
-		int l = 15;
-		int j1 = 256;
-		int k1 = 20;
+		int sourceCenterY = 15;
+		int columnCount = 20;
+		int sourceCenterX = 15;
+		int sourceScale256 = 256;
+		int rowCount = 20;
 		// all of the previous were parameters
 		try {
-			int i2 = -k / 2;
-			int j2 = -k1 / 2;
-			int k2 = (int) (Math.sin(angleRadians) * 65536D);
-			int l2 = (int) (Math.cos(angleRadians) * 65536D);
-			k2 = k2 * j1 >> 8;
-			l2 = l2 * j1 >> 8;
-			int i3 = (l << 16) + j2 * k2 + i2 * l2;
-			int j3 = (j << 16) + j2 * l2 - i2 * k2;
-			int k3 = x + y * DrawingArea.width;
-			for (y = 0; y < k1; y++) {
-				int l3 = k3;
-				int i4 = i3;
-				int j4 = j3;
-				for (x = -k; x < 0; x++) {
-					int k4 = pixels[(i4 >> 16) + (j4 >> 16) * width];
-					if (k4 != 0) {
-						DrawingArea.pixels[l3++] = k4;
+			int centeredColumnOffset = -columnCount / 2;
+			int centeredRowOffset = -rowCount / 2;
+			int sineStep16 = (int) (Math.sin(angleRadians) * 65536D);
+			int cosineStep16 = (int) (Math.cos(angleRadians) * 65536D);
+			sineStep16 = sineStep16 * sourceScale256 >> 8;
+			cosineStep16 = cosineStep16 * sourceScale256 >> 8;
+			int rowSourceX16 = (sourceCenterX << 16) + centeredRowOffset * sineStep16 + centeredColumnOffset * cosineStep16;
+			int rowSourceY16 = (sourceCenterY << 16) + centeredRowOffset * cosineStep16 - centeredColumnOffset * sineStep16;
+			int destinationRowIndex = destinationX + destinationY * DrawingArea.width;
+			for (destinationY = 0; destinationY < rowCount; destinationY++) {
+				int destinationIndex = destinationRowIndex;
+				int sourceX16 = rowSourceX16;
+				int sourceY16 = rowSourceY16;
+				for (destinationX = -columnCount; destinationX < 0; destinationX++) {
+					int sampleColor = pixels[(sourceX16 >> 16) + (sourceY16 >> 16) * width];
+					if (sampleColor != 0) {
+						DrawingArea.pixels[destinationIndex++] = sampleColor;
 					} else {
-						l3++;
+						destinationIndex++;
 					}
-					i4 += l2;
-					j4 -= k2;
+					sourceX16 += cosineStep16;
+					sourceY16 -= sineStep16;
 				}
 
-				i3 += k2;
-				j3 += l2;
-				k3 += DrawingArea.width;
+				rowSourceX16 += sineStep16;
+				rowSourceY16 += cosineStep16;
+				destinationRowIndex += DrawingArea.width;
 			}
 
 		} catch (Exception _ex) {

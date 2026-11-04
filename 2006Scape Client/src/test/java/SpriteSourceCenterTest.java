@@ -57,7 +57,7 @@ public class SpriteSourceCenterTest {
             // Independently move one source axis, holding all destination inputs fixed.
             for (int[] center : new int[][] {{8,8},{7,8},{10,8},{8,7},{8,10}}) {
                 int[] raster = target();
-                sprite.method352(3, 0, new int[] {3,3,3}, 256,
+                sprite.drawRotatedScanlines(3, 0, new int[] {3,3,3}, 256,
                         new int[] {0,0,0}, center[1], 3, 4, 3, center[0]);
                 int[] expected = filled();
                 for (int row = 0; row < 3; row++) for (int col = 0; col < 3; col++)
@@ -76,7 +76,7 @@ public class SpriteSourceCenterTest {
             sprite.offsetX = 3; sprite.offsetY = 4;
             sprite.trimWidth = 40; sprite.trimHeight = 50;
             int[] raster = target();
-            sprite.method352(1, 512, new int[] {1}, 384, new int[] {0}, 9, 3, 4, 0, 8);
+            sprite.drawRotatedScanlines(1, 512, new int[] {1}, 384, new int[] {0}, 9, 3, 4, 0, 8);
             int[] expected = filled(); expected[4 + 3 * 16] = sprite.pixels[8 + 9 * 20];
             assertArrayEquals(expected, raster);
         }
@@ -86,7 +86,7 @@ public class SpriteSourceCenterTest {
         Sprite sprite = numberedSprite();
         int[] raster = target();
         // A single sample at the transform origin removes angle/scale from the oracle.
-        sprite.method352(1, angle, new int[] {1}, scale, new int[] {0}, cy, 3, 4, 0, cx);
+        sprite.drawRotatedScanlines(1, angle, new int[] {1}, scale, new int[] {0}, cy, 3, 4, 0, cx);
         int[] expected = filled(); expected[4 + 3 * 16] = sprite.pixels[cx + cy * 20];
         assertArrayEquals(expected, raster);
     }
