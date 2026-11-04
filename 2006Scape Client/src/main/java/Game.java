@@ -8501,8 +8501,8 @@ public class Game extends RSApplet {
 			for (int j2 = 0; j2 < background.anInt1453; j2++) {
 				for (int l2 = 0; l2 < background.anInt1452; l2++) {
 					if (background.aByteArray1450[l1++] != 0) {
-						int i3 = l2 + 16 + background.anInt1454;
-						int j3 = j2 + 16 + background.anInt1455;
+						int i3 = l2 + 16 + background.offsetX;
+						int j3 = j2 + 16 + background.offsetY;
 						int k3 = i3 + (j3 << 7);
 						anIntArray1190[k3] = 0;
 					}

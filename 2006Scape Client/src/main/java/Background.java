@@ -22,8 +22,8 @@ public final class Background extends DrawingArea {
 			stream_1.currentOffset++;
 		}
 
-		anInt1454 = stream_1.readUnsignedByte();
-		anInt1455 = stream_1.readUnsignedByte();
+		offsetX = stream_1.readUnsignedByte();
+		offsetY = stream_1.readUnsignedByte();
 		anInt1452 = stream_1.readUnsignedWord();
 		anInt1453 = stream_1.readUnsignedWord();
 		int i1 = stream_1.readUnsignedByte();
@@ -54,7 +54,7 @@ public final class Background extends DrawingArea {
 		int i = 0;
 		for (int j = 0; j < anInt1453; j++) {
 			for (int k = 0; k < anInt1452; k++) {
-				abyte0[(k + anInt1454 >> 1) + (j + anInt1455 >> 1) * anInt1456] = aByteArray1450[i++];
+				abyte0[(k + offsetX >> 1) + (j + offsetY >> 1) * anInt1456] = aByteArray1450[i++];
 			}
 
 		}
@@ -62,8 +62,8 @@ public final class Background extends DrawingArea {
 		aByteArray1450 = abyte0;
 		anInt1452 = anInt1456;
 		anInt1453 = anInt1457;
-		anInt1454 = 0;
-		anInt1455 = 0;
+		offsetX = 0;
+		offsetY = 0;
 	}
 
 	public void method357() {
@@ -74,7 +74,7 @@ public final class Background extends DrawingArea {
 		int i = 0;
 		for (int j = 0; j < anInt1453; j++) {
 			for (int k = 0; k < anInt1452; k++) {
-				abyte0[k + anInt1454 + (j + anInt1455) * anInt1456] = aByteArray1450[i++];
+				abyte0[k + offsetX + (j + offsetY) * anInt1456] = aByteArray1450[i++];
 			}
 
 		}
@@ -82,8 +82,8 @@ public final class Background extends DrawingArea {
 		aByteArray1450 = abyte0;
 		anInt1452 = anInt1456;
 		anInt1453 = anInt1457;
-		anInt1454 = 0;
-		anInt1455 = 0;
+		offsetX = 0;
+		offsetY = 0;
 	}
 
 	public void method358() {
@@ -97,7 +97,7 @@ public final class Background extends DrawingArea {
 		}
 
 		aByteArray1450 = abyte0;
-		anInt1454 = anInt1456 - anInt1452 - anInt1454;
+		offsetX = anInt1456 - anInt1452 - offsetX;
 	}
 
 	public void method359() {
@@ -111,7 +111,7 @@ public final class Background extends DrawingArea {
 		}
 
 		aByteArray1450 = abyte0;
-		anInt1455 = anInt1457 - anInt1453 - anInt1455;
+		offsetY = anInt1457 - anInt1453 - offsetY;
 	}
 
 	public void method360(int i, int j, int k) {
@@ -142,8 +142,8 @@ public final class Background extends DrawingArea {
 	}
 
 	public void method361(int i, int k) {
-		i += anInt1454;
-		k += anInt1455;
+		i += offsetX;
+		k += offsetY;
 		int l = i + k * DrawingArea.width;
 		int i1 = 0;
 		int j1 = anInt1453;
@@ -230,8 +230,8 @@ public final class Background extends DrawingArea {
 	public final int[] anIntArray1451;
 	public int anInt1452;
 	public int anInt1453;
-	public int anInt1454;
-	public int anInt1455;
+	public int offsetX;
+	public int offsetY;
 	public int anInt1456;
 	private int anInt1457;
 }
