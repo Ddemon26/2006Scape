@@ -464,52 +464,52 @@ public final class Sprite extends DrawingArea {
 			k1 += k2;
 		}
 		if (!(j1 <= 0 || i1 <= 0)) {
-			method355(pixels, j1, background.aByteArray1450, i1, DrawingArea.pixels, 0, k1, k, l1, l);
+			copyNonzeroRowsThroughZeroMask(pixels, j1, background.aByteArray1450, i1, DrawingArea.pixels, 0, k1, k, l1, l);
 		}
 	}
 
-	private void method355(int ai[], int i, byte abyte0[], int j, int ai1[], int k, int l, int i1, int j1, int k1) {
-		int l1 = -(i >> 2);
-		i = -(i & 3);
-		for (int j2 = -j; j2 < 0; j2++) {
+	private void copyNonzeroRowsThroughZeroMask(int source[], int copyWidth, byte mask[], int rowCount, int destination[], int k, int destinationRowSkip, int destinationIndex, int sourceRowSkip, int sourceIndex) {
+		int l1 = -(copyWidth >> 2);
+		copyWidth = -(copyWidth & 3);
+		for (int j2 = -rowCount; j2 < 0; j2++) {
 			for (int k2 = l1; k2 < 0; k2++) {
-				k = ai[k1++];
-				if (k != 0 && abyte0[i1] == 0) {
-					ai1[i1++] = k;
+				k = source[sourceIndex++];
+				if (k != 0 && mask[destinationIndex] == 0) {
+					destination[destinationIndex++] = k;
 				} else {
-					i1++;
+					destinationIndex++;
 				}
-				k = ai[k1++];
-				if (k != 0 && abyte0[i1] == 0) {
-					ai1[i1++] = k;
+				k = source[sourceIndex++];
+				if (k != 0 && mask[destinationIndex] == 0) {
+					destination[destinationIndex++] = k;
 				} else {
-					i1++;
+					destinationIndex++;
 				}
-				k = ai[k1++];
-				if (k != 0 && abyte0[i1] == 0) {
-					ai1[i1++] = k;
+				k = source[sourceIndex++];
+				if (k != 0 && mask[destinationIndex] == 0) {
+					destination[destinationIndex++] = k;
 				} else {
-					i1++;
+					destinationIndex++;
 				}
-				k = ai[k1++];
-				if (k != 0 && abyte0[i1] == 0) {
-					ai1[i1++] = k;
+				k = source[sourceIndex++];
+				if (k != 0 && mask[destinationIndex] == 0) {
+					destination[destinationIndex++] = k;
 				} else {
-					i1++;
-				}
-			}
-
-			for (int l2 = i; l2 < 0; l2++) {
-				k = ai[k1++];
-				if (k != 0 && abyte0[i1] == 0) {
-					ai1[i1++] = k;
-				} else {
-					i1++;
+					destinationIndex++;
 				}
 			}
 
-			i1 += l;
-			k1 += j1;
+			for (int l2 = copyWidth; l2 < 0; l2++) {
+				k = source[sourceIndex++];
+				if (k != 0 && mask[destinationIndex] == 0) {
+					destination[destinationIndex++] = k;
+				} else {
+					destinationIndex++;
+				}
+			}
+
+			destinationIndex += destinationRowSkip;
+			sourceIndex += sourceRowSkip;
 		}
 
 	}
