@@ -5924,7 +5924,7 @@ public class Game extends RSApplet {
 			double d = Math.atan2((double) l1, (double) i2);
 			int j2 = (int) (Math.sin(d) * 63D);
 			int k2 = (int) (Math.cos(d) * 57D);
-			mapEdge.method353(83 - k2 - 20, d, 94 + j2 + 4 - 10);
+			mapEdge.drawRotatedNonzero20x20(83 - k2 - 20, d, 94 + j2 + 4 - 10);
 		} else {
 			markMinimap(sprite, x, y);
 		}

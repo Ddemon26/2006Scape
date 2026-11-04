@@ -387,7 +387,7 @@ public final class Sprite extends DrawingArea {
 		}
 	}
 
-	public void method353(int i, double d, int l1) {
+	public void drawRotatedNonzero20x20(int y, double angleRadians, int x) {
 		// all of the following were parameters
 		int j = 15;
 		int k = 20;
@@ -398,18 +398,18 @@ public final class Sprite extends DrawingArea {
 		try {
 			int i2 = -k / 2;
 			int j2 = -k1 / 2;
-			int k2 = (int) (Math.sin(d) * 65536D);
-			int l2 = (int) (Math.cos(d) * 65536D);
+			int k2 = (int) (Math.sin(angleRadians) * 65536D);
+			int l2 = (int) (Math.cos(angleRadians) * 65536D);
 			k2 = k2 * j1 >> 8;
 			l2 = l2 * j1 >> 8;
 			int i3 = (l << 16) + j2 * k2 + i2 * l2;
 			int j3 = (j << 16) + j2 * l2 - i2 * k2;
-			int k3 = l1 + i * DrawingArea.width;
-			for (i = 0; i < k1; i++) {
+			int k3 = x + y * DrawingArea.width;
+			for (y = 0; y < k1; y++) {
 				int l3 = k3;
 				int i4 = i3;
 				int j4 = j3;
-				for (l1 = -k; l1 < 0; l1++) {
+				for (x = -k; x < 0; x++) {
 					int k4 = pixels[(i4 >> 16) + (j4 >> 16) * width];
 					if (k4 != 0) {
 						DrawingArea.pixels[l3++] = k4;
