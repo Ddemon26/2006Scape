@@ -69,7 +69,7 @@ public final class Sprite extends DrawingArea {
 		}
 	}
 
-	public void method343() {
+	public void setAsDrawingArea() {
 		DrawingArea.initDrawingArea(height, width, pixels);
 	}
 

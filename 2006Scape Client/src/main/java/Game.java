@@ -885,7 +885,7 @@ public class Game extends RSApplet {
 
 		int j1 = (238 + (int) (Math.random() * 20D) - 10 << 16) + (238 + (int) (Math.random() * 20D) - 10 << 8) + 238 + (int) (Math.random() * 20D) - 10;
 		int l1 = 238 + (int) (Math.random() * 20D) - 10 << 16;
-		aClass30_Sub2_Sub1_Sub1_1263.method343();
+		aClass30_Sub2_Sub1_Sub1_1263.setAsDrawingArea();
 		for (int i2 = 1; i2 < 103; i2++) {
 			for (int j2 = 1; j2 < 103; j2++) {
 				if ((byteGroundArray[i][j2][i2] & 0x18) == 0) {
