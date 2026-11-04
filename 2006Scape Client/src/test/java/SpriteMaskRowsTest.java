@@ -114,4 +114,52 @@ public class SpriteMaskRowsTest {
         copy(new int[0], 0, new byte[0], 3, new int[0], 0, 0, 0, 0);
         copy(new int[0], 9, new byte[0], 0, new int[0], 0, 0, 0, 0);
     }
+
+    @Test public void multipleBlocksAndEveryTailResetAcrossMaskedStridedRows() throws Exception {
+        int[] source = new int[48]; Arrays.fill(source, -7);
+        for (int row = 0; row < 3; row++) for (int col = 0; col < 12; col++)
+            source[2 + row * 15 + col] = (row + col) % 3 == 0 ? 0 : (row + 1) * 100 + col + 1;
+        int[] unchanged = source.clone();
+        byte[] mask = new byte[60];
+        for (int i = 0; i < mask.length; i++) mask[i] = (byte) (i % 5 == 0 ? -128 : 0);
+        byte[] unchangedMask = mask.clone();
+        for (int width = 0; width <= 12; width++) for (int rows = 0; rows <= 3; rows++) {
+            int[] actual = filled(60), expected = filled(60);
+            for (int row = 0; row < rows; row++) for (int col = 0; col < width; col++) {
+                int index = 3 + row * 17 + col;
+                if ((row + col) % 3 != 0 && index % 5 != 0)
+                    expected[index] = (row + 1) * 100 + col + 1;
+            }
+            copy(source, width, mask, rows, actual, 17 - width, 3, 15 - width, 2);
+            assertArrayEquals("width=" + width + " rows=" + rows, expected, actual);
+            assertArrayEquals(unchanged, source); assertArrayEquals(unchangedMask, mask);
+        }
+        for (int width = 8; width <= 12; width++) {
+            int[] input = new int[width * 3], expected = filled(width * 3);
+            byte[] gates = new byte[input.length];
+            for (int i = 0; i < input.length; i++) {
+                input[i] = i % 4 == 0 ? 0 : i + 100;
+                gates[i] = (byte) (i % 5 == 0 ? 1 : 0);
+                if (i % 4 != 0 && i % 5 != 0) expected[i] = i + 100;
+            }
+            int[] actual = filled(input.length);
+            copy(input, width, gates, 3, actual, 0, 0, 0, 0);
+            assertArrayEquals(expected, actual);
+        }
+    }
+
+    @Test public void everySignedByteGateBlocksExceptZeroAndIncomingScratchIsIgnored() throws Exception {
+        Method method = Sprite.class.getDeclaredMethod("copyNonzeroRowsThroughZeroMask", int[].class,
+                int.class, byte[].class, int.class, int[].class, int.class,
+                int.class, int.class, int.class, int.class);
+        method.setAccessible(true);
+        for (int incoming : new int[] {0, -1, 0x76543210}) for (int gate = -128; gate <= 127; gate++) {
+            int[] input = {0, 0x01000000, -1, 0x7f123456, 0, 13, 0, 15, 16, 0, 18, 19};
+            byte[] mask = new byte[12]; Arrays.fill(mask, (byte) gate);
+            int[] actual = filled(12), expected = filled(12);
+            if (gate == 0) for (int i = 0; i < input.length; i++) if (input[i] != 0) expected[i] = input[i];
+            method.invoke(new Sprite(0, 0), input, 12, mask, 1, actual, incoming, 0, 0, 0, 0);
+            assertArrayEquals("incoming=" + incoming + " gate=" + gate, expected, actual);
+        }
+    }
 }

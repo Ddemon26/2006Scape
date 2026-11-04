@@ -429,80 +429,80 @@ public final class Sprite extends DrawingArea {
 		}
 	}
 
-	public void drawNonzeroThroughZeroMask(Background maskBackground, int y, int x) {
-		x += offsetX;
-		y += offsetY;
-		int k = x + y * DrawingArea.width;
-		int l = 0;
-		int i1 = height;
-		int j1 = width;
-		int k1 = DrawingArea.width - j1;
-		int l1 = 0;
-		if (y < DrawingArea.topY) {
-			int i2 = DrawingArea.topY - y;
-			i1 -= i2;
-			y = DrawingArea.topY;
-			l += i2 * j1;
-			k += i2 * DrawingArea.width;
+	public void drawNonzeroThroughZeroMask(Background maskBackground, int destinationY, int destinationX) {
+		destinationX += offsetX;
+		destinationY += offsetY;
+		int destinationIndex = destinationX + destinationY * DrawingArea.width;
+		int sourceIndex = 0;
+		int copyHeight = height;
+		int copyWidth = width;
+		int destinationRowSkip = DrawingArea.width - copyWidth;
+		int sourceRowSkip = 0;
+		if (destinationY < DrawingArea.topY) {
+			int clippedTopRows = DrawingArea.topY - destinationY;
+			copyHeight -= clippedTopRows;
+			destinationY = DrawingArea.topY;
+			sourceIndex += clippedTopRows * copyWidth;
+			destinationIndex += clippedTopRows * DrawingArea.width;
 		}
-		if (y + i1 > DrawingArea.bottomY) {
-			i1 -= y + i1 - DrawingArea.bottomY;
+		if (destinationY + copyHeight > DrawingArea.bottomY) {
+			copyHeight -= destinationY + copyHeight - DrawingArea.bottomY;
 		}
-		if (x < DrawingArea.topX) {
-			int j2 = DrawingArea.topX - x;
-			j1 -= j2;
-			x = DrawingArea.topX;
-			l += j2;
-			k += j2;
-			l1 += j2;
-			k1 += j2;
+		if (destinationX < DrawingArea.topX) {
+			int clippedLeftColumns = DrawingArea.topX - destinationX;
+			copyWidth -= clippedLeftColumns;
+			destinationX = DrawingArea.topX;
+			sourceIndex += clippedLeftColumns;
+			destinationIndex += clippedLeftColumns;
+			sourceRowSkip += clippedLeftColumns;
+			destinationRowSkip += clippedLeftColumns;
 		}
-		if (x + j1 > DrawingArea.bottomX) {
-			int k2 = x + j1 - DrawingArea.bottomX;
-			j1 -= k2;
-			l1 += k2;
-			k1 += k2;
+		if (destinationX + copyWidth > DrawingArea.bottomX) {
+			int clippedRightColumns = destinationX + copyWidth - DrawingArea.bottomX;
+			copyWidth -= clippedRightColumns;
+			sourceRowSkip += clippedRightColumns;
+			destinationRowSkip += clippedRightColumns;
 		}
-		if (!(j1 <= 0 || i1 <= 0)) {
-			copyNonzeroRowsThroughZeroMask(pixels, j1, maskBackground.aByteArray1450, i1, DrawingArea.pixels, 0, k1, k, l1, l);
+		if (!(copyWidth <= 0 || copyHeight <= 0)) {
+			copyNonzeroRowsThroughZeroMask(pixels, copyWidth, maskBackground.aByteArray1450, copyHeight, DrawingArea.pixels, 0, destinationRowSkip, destinationIndex, sourceRowSkip, sourceIndex);
 		}
 	}
 
-	private void copyNonzeroRowsThroughZeroMask(int source[], int copyWidth, byte mask[], int rowCount, int destination[], int k, int destinationRowSkip, int destinationIndex, int sourceRowSkip, int sourceIndex) {
-		int l1 = -(copyWidth >> 2);
+	private void copyNonzeroRowsThroughZeroMask(int source[], int copyWidth, byte mask[], int rowCount, int destination[], int sourcePixel, int destinationRowSkip, int destinationIndex, int sourceRowSkip, int sourceIndex) {
+		int negativeFourPixelBlockCount = -(copyWidth >> 2);
 		copyWidth = -(copyWidth & 3);
-		for (int j2 = -rowCount; j2 < 0; j2++) {
-			for (int k2 = l1; k2 < 0; k2++) {
-				k = source[sourceIndex++];
-				if (k != 0 && mask[destinationIndex] == 0) {
-					destination[destinationIndex++] = k;
+		for (int rowCounter = -rowCount; rowCounter < 0; rowCounter++) {
+			for (int fourPixelBlockCounter = negativeFourPixelBlockCount; fourPixelBlockCounter < 0; fourPixelBlockCounter++) {
+				sourcePixel = source[sourceIndex++];
+				if (sourcePixel != 0 && mask[destinationIndex] == 0) {
+					destination[destinationIndex++] = sourcePixel;
 				} else {
 					destinationIndex++;
 				}
-				k = source[sourceIndex++];
-				if (k != 0 && mask[destinationIndex] == 0) {
-					destination[destinationIndex++] = k;
+				sourcePixel = source[sourceIndex++];
+				if (sourcePixel != 0 && mask[destinationIndex] == 0) {
+					destination[destinationIndex++] = sourcePixel;
 				} else {
 					destinationIndex++;
 				}
-				k = source[sourceIndex++];
-				if (k != 0 && mask[destinationIndex] == 0) {
-					destination[destinationIndex++] = k;
+				sourcePixel = source[sourceIndex++];
+				if (sourcePixel != 0 && mask[destinationIndex] == 0) {
+					destination[destinationIndex++] = sourcePixel;
 				} else {
 					destinationIndex++;
 				}
-				k = source[sourceIndex++];
-				if (k != 0 && mask[destinationIndex] == 0) {
-					destination[destinationIndex++] = k;
+				sourcePixel = source[sourceIndex++];
+				if (sourcePixel != 0 && mask[destinationIndex] == 0) {
+					destination[destinationIndex++] = sourcePixel;
 				} else {
 					destinationIndex++;
 				}
 			}
 
-			for (int l2 = copyWidth; l2 < 0; l2++) {
-				k = source[sourceIndex++];
-				if (k != 0 && mask[destinationIndex] == 0) {
-					destination[destinationIndex++] = k;
+			for (int tailPixelCounter = copyWidth; tailPixelCounter < 0; tailPixelCounter++) {
+				sourcePixel = source[sourceIndex++];
+				if (sourcePixel != 0 && mask[destinationIndex] == 0) {
+					destination[destinationIndex++] = sourcePixel;
 				} else {
 					destinationIndex++;
 				}
