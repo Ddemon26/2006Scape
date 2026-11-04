@@ -137,7 +137,7 @@ public class BackgroundOffsetTest {
         Background original = new Background(archive(), "small", 0);
         original.method357();
         Background mirrored = new Background(archive(), "small", 0);
-        mirrored.method358();
+        mirrored.flipHorizontally();
         assertEquals(1, mirrored.offsetX); // canvas 5 - width 2 - offset 2
         assertEquals(3, mirrored.offsetY);
         assertArrayEquals(new byte[] {2, 1, 4, 3}, mirrored.aByteArray1450);
@@ -154,7 +154,7 @@ public class BackgroundOffsetTest {
         Background original = new Background(archive(), "small", 0);
         original.method357();
         Background mirrored = new Background(archive(), "small", 0);
-        mirrored.method359();
+        mirrored.flipVertically();
         assertEquals(2, mirrored.offsetX);
         assertEquals(1, mirrored.offsetY); // canvas 6 - height 2 - offset 3
         assertArrayEquals(new byte[] {3, 4, 1, 2}, mirrored.aByteArray1450);

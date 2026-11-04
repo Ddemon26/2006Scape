@@ -86,7 +86,7 @@ public final class Background extends DrawingArea {
 		offsetY = 0;
 	}
 
-	public void method358() {
+	public void flipHorizontally() {
 		byte abyte0[] = new byte[anInt1452 * anInt1453];
 		int j = 0;
 		for (int k = 0; k < anInt1453; k++) {
@@ -100,7 +100,7 @@ public final class Background extends DrawingArea {
 		offsetX = anInt1456 - anInt1452 - offsetX;
 	}
 
-	public void method359() {
+	public void flipVertically() {
 		byte abyte0[] = new byte[anInt1452 * anInt1453];
 		int i = 0;
 		for (int j = anInt1453 - 1; j >= 0; j--) {

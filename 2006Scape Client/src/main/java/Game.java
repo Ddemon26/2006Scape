@@ -7235,21 +7235,21 @@ public class Game extends RSApplet {
 			redStone2 = new Background(streamLoader_2, "redstone2", 0);
 			redStone3 = new Background(streamLoader_2, "redstone3", 0);
 			redStone1_2 = new Background(streamLoader_2, "redstone1", 0);
-			redStone1_2.method358();
+			redStone1_2.flipHorizontally();
 			redStone2_2 = new Background(streamLoader_2, "redstone2", 0);
-			redStone2_2.method358();
+			redStone2_2.flipHorizontally();
 			redStone1_3 = new Background(streamLoader_2, "redstone1", 0);
-			redStone1_3.method359();
+			redStone1_3.flipVertically();
 			redStone2_3 = new Background(streamLoader_2, "redstone2", 0);
-			redStone2_3.method359();
+			redStone2_3.flipVertically();
 			redStone3_2 = new Background(streamLoader_2, "redstone3", 0);
-			redStone3_2.method359();
+			redStone3_2.flipVertically();
 			redStone1_4 = new Background(streamLoader_2, "redstone1", 0);
-			redStone1_4.method358();
-			redStone1_4.method359();
+			redStone1_4.flipHorizontally();
+			redStone1_4.flipVertically();
 			redStone2_4 = new Background(streamLoader_2, "redstone2", 0);
-			redStone2_4.method358();
-			redStone2_4.method359();
+			redStone2_4.flipHorizontally();
+			redStone2_4.flipVertically();
 			for (int l4 = 0; l4 < 2; l4++) {
 				modIcons[l4] = new Background(streamLoader_2, "mod_icons", l4);
 			}
