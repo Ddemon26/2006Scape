@@ -224,7 +224,7 @@ public final class Sprite extends DrawingArea {
 			i2 += i3;
 		}
 		if (!(l1 <= 0 || k1 <= 0)) {
-			method351(j1, l1, DrawingArea.pixels, pixels, j2, k1, i2, k, i1);
+			blendNonzeroRows(j1, l1, DrawingArea.pixels, pixels, j2, k1, i2, k, i1);
 		}
 	}
 
@@ -314,22 +314,22 @@ public final class Sprite extends DrawingArea {
 
 	}
 
-	private void method351(int i, int j, int ai[], int ai1[], int l, int i1, int j1, int k1, int l1) {
+	private void blendNonzeroRows(int sourceIndex, int copyWidth, int destination[], int source[], int sourceRowSkip, int rowCount, int destinationRowSkip, int sourceWeight256, int destinationIndex) {
 		int k;// was parameter
-		int j2 = 256 - k1;
-		for (int k2 = -i1; k2 < 0; k2++) {
-			for (int l2 = -j; l2 < 0; l2++) {
-				k = ai1[i++];
+		int destinationWeight256 = 256 - sourceWeight256;
+		for (int k2 = -rowCount; k2 < 0; k2++) {
+			for (int l2 = -copyWidth; l2 < 0; l2++) {
+				k = source[sourceIndex++];
 				if (k != 0) {
-					int i3 = ai[l1];
-					ai[l1++] = ((k & 0xff00ff) * k1 + (i3 & 0xff00ff) * j2 & 0xff00ff00) + ((k & 0xff00) * k1 + (i3 & 0xff00) * j2 & 0xff0000) >> 8;
+					int i3 = destination[destinationIndex];
+					destination[destinationIndex++] = ((k & 0xff00ff) * sourceWeight256 + (i3 & 0xff00ff) * destinationWeight256 & 0xff00ff00) + ((k & 0xff00) * sourceWeight256 + (i3 & 0xff00) * destinationWeight256 & 0xff0000) >> 8;
 				} else {
-					l1++;
+					destinationIndex++;
 				}
 			}
 
-			l1 += j1;
-			i += l;
+			destinationIndex += destinationRowSkip;
+			sourceIndex += sourceRowSkip;
 		}
 	}
 
