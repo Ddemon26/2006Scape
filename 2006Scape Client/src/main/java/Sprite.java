@@ -188,43 +188,43 @@ public final class Sprite extends DrawingArea {
 		}
 	}
 
-	public void drawHalfBlended(int x, int y) {
-		int k = 128;// was parameter
-		x += offsetX;
-		y += offsetY;
-		int i1 = x + y * DrawingArea.width;
-		int j1 = 0;
-		int k1 = height;
-		int l1 = width;
-		int i2 = DrawingArea.width - l1;
-		int j2 = 0;
-		if (y < DrawingArea.topY) {
-			int k2 = DrawingArea.topY - y;
-			k1 -= k2;
-			y = DrawingArea.topY;
-			j1 += k2 * l1;
-			i1 += k2 * DrawingArea.width;
+	public void drawHalfBlended(int destinationX, int destinationY) {
+		int sourceWeight256 = 128;// was parameter
+		destinationX += offsetX;
+		destinationY += offsetY;
+		int destinationIndex = destinationX + destinationY * DrawingArea.width;
+		int sourceIndex = 0;
+		int copyHeight = height;
+		int copyWidth = width;
+		int destinationRowSkip = DrawingArea.width - copyWidth;
+		int sourceRowSkip = 0;
+		if (destinationY < DrawingArea.topY) {
+			int clippedTopRows = DrawingArea.topY - destinationY;
+			copyHeight -= clippedTopRows;
+			destinationY = DrawingArea.topY;
+			sourceIndex += clippedTopRows * copyWidth;
+			destinationIndex += clippedTopRows * DrawingArea.width;
 		}
-		if (y + k1 > DrawingArea.bottomY) {
-			k1 -= y + k1 - DrawingArea.bottomY;
+		if (destinationY + copyHeight > DrawingArea.bottomY) {
+			copyHeight -= destinationY + copyHeight - DrawingArea.bottomY;
 		}
-		if (x < DrawingArea.topX) {
-			int l2 = DrawingArea.topX - x;
-			l1 -= l2;
-			x = DrawingArea.topX;
-			j1 += l2;
-			i1 += l2;
-			j2 += l2;
-			i2 += l2;
+		if (destinationX < DrawingArea.topX) {
+			int clippedLeftColumns = DrawingArea.topX - destinationX;
+			copyWidth -= clippedLeftColumns;
+			destinationX = DrawingArea.topX;
+			sourceIndex += clippedLeftColumns;
+			destinationIndex += clippedLeftColumns;
+			sourceRowSkip += clippedLeftColumns;
+			destinationRowSkip += clippedLeftColumns;
 		}
-		if (x + l1 > DrawingArea.bottomX) {
-			int i3 = x + l1 - DrawingArea.bottomX;
-			l1 -= i3;
-			j2 += i3;
-			i2 += i3;
+		if (destinationX + copyWidth > DrawingArea.bottomX) {
+			int clippedRightColumns = destinationX + copyWidth - DrawingArea.bottomX;
+			copyWidth -= clippedRightColumns;
+			sourceRowSkip += clippedRightColumns;
+			destinationRowSkip += clippedRightColumns;
 		}
-		if (!(l1 <= 0 || k1 <= 0)) {
-			blendNonzeroRows(j1, l1, DrawingArea.pixels, pixels, j2, k1, i2, k, i1);
+		if (!(copyWidth <= 0 || copyHeight <= 0)) {
+			blendNonzeroRows(sourceIndex, copyWidth, DrawingArea.pixels, pixels, sourceRowSkip, copyHeight, destinationRowSkip, sourceWeight256, destinationIndex);
 		}
 	}
 
@@ -315,14 +315,14 @@ public final class Sprite extends DrawingArea {
 	}
 
 	private void blendNonzeroRows(int sourceIndex, int copyWidth, int destination[], int source[], int sourceRowSkip, int rowCount, int destinationRowSkip, int sourceWeight256, int destinationIndex) {
-		int k;// was parameter
+		int sourcePixel;// was parameter
 		int destinationWeight256 = 256 - sourceWeight256;
-		for (int k2 = -rowCount; k2 < 0; k2++) {
-			for (int l2 = -copyWidth; l2 < 0; l2++) {
-				k = source[sourceIndex++];
-				if (k != 0) {
-					int i3 = destination[destinationIndex];
-					destination[destinationIndex++] = ((k & 0xff00ff) * sourceWeight256 + (i3 & 0xff00ff) * destinationWeight256 & 0xff00ff00) + ((k & 0xff00) * sourceWeight256 + (i3 & 0xff00) * destinationWeight256 & 0xff0000) >> 8;
+		for (int rowCounter = -rowCount; rowCounter < 0; rowCounter++) {
+			for (int columnCounter = -copyWidth; columnCounter < 0; columnCounter++) {
+				sourcePixel = source[sourceIndex++];
+				if (sourcePixel != 0) {
+					int destinationPixel = destination[destinationIndex];
+					destination[destinationIndex++] = ((sourcePixel & 0xff00ff) * sourceWeight256 + (destinationPixel & 0xff00ff) * destinationWeight256 & 0xff00ff00) + ((sourcePixel & 0xff00) * sourceWeight256 + (destinationPixel & 0xff00) * destinationWeight256 & 0xff0000) >> 8;
 				} else {
 					destinationIndex++;
 				}

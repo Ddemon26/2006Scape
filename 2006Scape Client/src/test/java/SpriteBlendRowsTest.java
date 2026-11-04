@@ -97,4 +97,49 @@ public class SpriteBlendRowsTest {
         blend(0, 2, destination, new int[] {2,4,6,8}, 0, 2, 1, 128, 0);
         assertArrayEquals(new int[] {4,5,7,6,7,7}, destination);
     }
+
+    @Test public void mixedPixelsResetEachRowAndReadEachDestinationAtEveryWeight() throws Exception {
+        int[] colors = {0, 0x804020, 0xff000000, 0x010305, 0xff0000, -1};
+        int[] source = filled(48, 0x765432);
+        for (int row = 0; row < 3; row++) for (int col = 0; col < 12; col++)
+            source[2 + row * 15 + col] = colors[(row + col) % colors.length];
+        int[] unchanged = source.clone();
+        for (int weight : new int[] {0, 1, 64, 128, 192, 255, 256}) {
+            for (int width = 0; width <= 12; width++) for (int rows = 0; rows <= 3; rows++) {
+                int[] actual = new int[60];
+                for (int i = 0; i < actual.length; i++)
+                    actual[i] = i % 2 == 0 ? 0x7f204060 : 0xff804020;
+                int[] expected = actual.clone();
+                for (int row = 0; row < rows; row++) for (int col = 0; col < width; col++) {
+                    int color = colors[(row + col) % colors.length];
+                    int index = 3 + row * 17 + col;
+                    if (color != 0) expected[index] = channelAverage(color, expected[index], weight);
+                }
+                blend(2, width, actual, source, 15 - width, rows, 17 - width, weight, 3);
+                assertArrayEquals("weight=" + weight + " width=" + width + " rows=" + rows, expected, actual);
+                assertArrayEquals(unchanged, source);
+            }
+        }
+        // Exact-end arrays distinguish row/column counts from inclusive end indices.
+        for (int width = 1; width <= 12; width++) {
+            int[] input = new int[width * 3], expected = new int[width * 3];
+            for (int i = 0; i < input.length; i++) {
+                input[i] = i % 4 == 0 ? 0 : 2 * (i + 1);
+                expected[i] = i % 4 == 0 ? 9 : i + 1;
+            }
+            int[] actual = filled(input.length, 9);
+            // Source weight 256 copies the low RGB value with the existing signed packing.
+            for (int i = 0; i < input.length; i++) if (input[i] != 0) expected[i] = input[i];
+            blend(0, width, actual, input, 0, 3, 0, 256, 0);
+            assertArrayEquals(expected, actual);
+        }
+    }
+
+    private static int channelAverage(int source, int destination, int weight) {
+        int red = ((source >>> 16 & 255) * weight + (destination >>> 16 & 255) * (256 - weight)) / 256;
+        int green = ((source >>> 8 & 255) * weight + (destination >>> 8 & 255) * (256 - weight)) / 256;
+        int blue = ((source & 255) * weight + (destination & 255) * (256 - weight)) / 256;
+        // The renderer sign-extends the packed low 24 bits; this is not ARGB alpha.
+        return ((red * 65536 + green * 256 + blue) << 8) >> 8;
+    }
 }
