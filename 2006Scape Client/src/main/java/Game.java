@@ -7290,7 +7290,7 @@ public class Game extends RSApplet {
 					mapFunctions[i6].method344(i5 + l5, j5 + l5, k5 + l5);
 				}
 				if (mapScenes[i6] != null) {
-					mapScenes[i6].method360(i5 + l5, j5 + l5, k5 + l5);
+					mapScenes[i6].adjustPaletteRgb(i5 + l5, j5 + l5, k5 + l5);
 				}
 			}
 

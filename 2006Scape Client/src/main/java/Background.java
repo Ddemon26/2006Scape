@@ -114,24 +114,24 @@ public final class Background extends DrawingArea {
 		offsetY = anInt1457 - anInt1453 - offsetY;
 	}
 
-	public void method360(int i, int j, int k) {
+	public void adjustPaletteRgb(int redDelta, int greenDelta, int blueDelta) {
 		for (int i1 = 0; i1 < anIntArray1451.length; i1++) {
 			int j1 = anIntArray1451[i1] >> 16 & 0xff;
-			j1 += i;
+			j1 += redDelta;
 			if (j1 < 0) {
 				j1 = 0;
 			} else if (j1 > 255) {
 				j1 = 255;
 			}
 			int k1 = anIntArray1451[i1] >> 8 & 0xff;
-			k1 += j;
+			k1 += greenDelta;
 			if (k1 < 0) {
 				k1 = 0;
 			} else if (k1 > 255) {
 				k1 = 255;
 			}
 			int l1 = anIntArray1451[i1] & 0xff;
-			l1 += k;
+			l1 += blueDelta;
 			if (l1 < 0) {
 				l1 = 0;
 			} else if (l1 > 255) {
