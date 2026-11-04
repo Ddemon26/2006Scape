@@ -115,13 +115,13 @@ public final class Sprite extends DrawingArea {
 		height = trimHeight;
 		offsetX = 0;
 		offsetY = 0;*/
-		int ai[] = new int[trimWidth * trimHeight];
-		for (int j = 0; j < height; j++) {
-			for (int k = 0; k < width; k++)
-				ai[(j + offsetY) * trimWidth + (k + offsetX)] = pixels[j
-						* width + k];
+		int canvasPixels[] = new int[trimWidth * trimHeight];
+		for (int sourceY = 0; sourceY < height; sourceY++) {
+			for (int sourceX = 0; sourceX < width; sourceX++)
+				canvasPixels[(sourceY + offsetY) * trimWidth + (sourceX + offsetX)] = pixels[sourceY
+						* width + sourceX];
 		}
-		pixels = ai;
+		pixels = canvasPixels;
 		width = trimWidth;
 		height = trimHeight;
 		offsetX = 0;

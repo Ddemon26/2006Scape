@@ -47,39 +47,39 @@ public final class Background extends DrawingArea {
 		}
 	}
 
-	public void method356() {
+	public void reduceToHalfCanvas() {
 		anInt1456 /= 2;
 		anInt1457 /= 2;
-		byte abyte0[] = new byte[anInt1456 * anInt1457];
-		int i = 0;
-		for (int j = 0; j < anInt1453; j++) {
-			for (int k = 0; k < anInt1452; k++) {
-				abyte0[(k + offsetX >> 1) + (j + offsetY >> 1) * anInt1456] = aByteArray1450[i++];
+		byte canvasIndices[] = new byte[anInt1456 * anInt1457];
+		int sourceIndex = 0;
+		for (int sourceY = 0; sourceY < anInt1453; sourceY++) {
+			for (int sourceX = 0; sourceX < anInt1452; sourceX++) {
+				canvasIndices[(sourceX + offsetX >> 1) + (sourceY + offsetY >> 1) * anInt1456] = aByteArray1450[sourceIndex++];
 			}
 
 		}
 
-		aByteArray1450 = abyte0;
+		aByteArray1450 = canvasIndices;
 		anInt1452 = anInt1456;
 		anInt1453 = anInt1457;
 		offsetX = 0;
 		offsetY = 0;
 	}
 
-	public void method357() {
+	public void expandToCanvas() {
 		if (anInt1452 == anInt1456 && anInt1453 == anInt1457) {
 			return;
 		}
-		byte abyte0[] = new byte[anInt1456 * anInt1457];
-		int i = 0;
-		for (int j = 0; j < anInt1453; j++) {
-			for (int k = 0; k < anInt1452; k++) {
-				abyte0[k + offsetX + (j + offsetY) * anInt1456] = aByteArray1450[i++];
+		byte canvasIndices[] = new byte[anInt1456 * anInt1457];
+		int sourceIndex = 0;
+		for (int sourceY = 0; sourceY < anInt1453; sourceY++) {
+			for (int sourceX = 0; sourceX < anInt1452; sourceX++) {
+				canvasIndices[sourceX + offsetX + (sourceY + offsetY) * anInt1456] = aByteArray1450[sourceIndex++];
 			}
 
 		}
 
-		aByteArray1450 = abyte0;
+		aByteArray1450 = canvasIndices;
 		anInt1452 = anInt1456;
 		anInt1453 = anInt1457;
 		offsetX = 0;

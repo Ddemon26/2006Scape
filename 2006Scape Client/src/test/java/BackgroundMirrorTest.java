@@ -40,14 +40,14 @@ public class BackgroundMirrorTest {
         horizontal.offsetX = 0;
         horizontal.flipHorizontally();
         assertEquals(2, horizontal.offsetX);
-        horizontal.method357();
+        horizontal.expandToCanvas();
         assertArrayEquals(new byte[] {
                 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0,
                 0,0,2,1,0, 0,0,-1,4,3, 0,0,0,0,0}, horizontal.aByteArray1450);
 
         Background vertical = asymmetric();
         vertical.flipVertically();
-        vertical.method357();
+        vertical.expandToCanvas();
         assertArrayEquals(new byte[] {
                 0,0,0,0,0, 0,3,4,-1,0, 0,0,1,2,0,
                 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0}, vertical.aByteArray1450);
@@ -118,7 +118,7 @@ public class BackgroundMirrorTest {
     @Test
     public void fullCanvasMirrorsKeepZeroOffsetsAndByteValues() {
         Background image = asymmetric();
-        image.method357();
+        image.expandToCanvas();
         image.flipHorizontally();
         image.flipVertically();
         assertDimensions(image, 5, 6, 5);

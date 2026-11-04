@@ -69,9 +69,9 @@ final class Texture extends DrawingArea {
 			try {
 				aBackgroundArray1474s[j] = new Background(streamLoader, String.valueOf(j), 0);
 				if (lowMem && aBackgroundArray1474s[j].anInt1456 == 128) {
-					aBackgroundArray1474s[j].method356();
+					aBackgroundArray1474s[j].reduceToHalfCanvas();
 				} else {
-					aBackgroundArray1474s[j].method357();
+					aBackgroundArray1474s[j].expandToCanvas();
 				}
 				anInt1473++;
 			} catch (Exception _ex) {

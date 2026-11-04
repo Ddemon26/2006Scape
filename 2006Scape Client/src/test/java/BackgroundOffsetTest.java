@@ -103,7 +103,7 @@ public class BackgroundOffsetTest {
         Background background = new Background(archive(), "small", 0);
         assertEquals(2, background.offsetX);
         assertEquals(3, background.offsetY);
-        background.method357();
+        background.expandToCanvas();
         assertArrayEquals(new byte[] {0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0,
                 0,0,1,2,0, 0,0,3,4,0, 0,0,0,0,0}, background.aByteArray1450);
         assertEquals(5, background.anInt1452);
@@ -114,7 +114,7 @@ public class BackgroundOffsetTest {
         Background fullSize = new Background(archive(), "small", 0);
         fullSize.anInt1452 = 5;
         fullSize.anInt1453 = 6;
-        fullSize.method357(); // Already canvas-sized: returns before touching offsets.
+        fullSize.expandToCanvas(); // Already canvas-sized: returns before touching offsets.
         assertEquals(2, fullSize.offsetX);
         assertEquals(3, fullSize.offsetY);
     }
@@ -122,7 +122,7 @@ public class BackgroundOffsetTest {
     @Test
     public void halfScaleExpansionHalvesOffsetPositionsAndResetsThem() {
         Background background = new Background(archive(), "small", 0);
-        background.method356();
+        background.reduceToHalfCanvas();
         // Source (k,j) lands at ((k + 2) >> 1, (j + 3) >> 1) in a 2x3 canvas; later writes win.
         assertArrayEquals(new byte[] {0,0, 0,2, 0,4}, background.aByteArray1450);
         assertEquals(2, background.anInt1452);
@@ -135,13 +135,13 @@ public class BackgroundOffsetTest {
     @Test
     public void horizontalMirrorReflectsOnlyTheHorizontalOffsetWithinCanvas() {
         Background original = new Background(archive(), "small", 0);
-        original.method357();
+        original.expandToCanvas();
         Background mirrored = new Background(archive(), "small", 0);
         mirrored.flipHorizontally();
         assertEquals(1, mirrored.offsetX); // canvas 5 - width 2 - offset 2
         assertEquals(3, mirrored.offsetY);
         assertArrayEquals(new byte[] {2, 1, 4, 3}, mirrored.aByteArray1450);
-        mirrored.method357();
+        mirrored.expandToCanvas();
         for (int y = 0; y < 6; y++) {
             for (int x = 0; x < 5; x++) {
                 assertEquals(original.aByteArray1450[y * 5 + 4 - x], mirrored.aByteArray1450[y * 5 + x]);
@@ -152,13 +152,13 @@ public class BackgroundOffsetTest {
     @Test
     public void verticalMirrorReflectsOnlyTheVerticalOffsetWithinCanvas() {
         Background original = new Background(archive(), "small", 0);
-        original.method357();
+        original.expandToCanvas();
         Background mirrored = new Background(archive(), "small", 0);
         mirrored.flipVertically();
         assertEquals(2, mirrored.offsetX);
         assertEquals(1, mirrored.offsetY); // canvas 6 - height 2 - offset 3
         assertArrayEquals(new byte[] {3, 4, 1, 2}, mirrored.aByteArray1450);
-        mirrored.method357();
+        mirrored.expandToCanvas();
         for (int y = 0; y < 6; y++) {
             for (int x = 0; x < 5; x++) {
                 assertEquals(original.aByteArray1450[(5 - y) * 5 + x], mirrored.aByteArray1450[y * 5 + x]);
@@ -194,6 +194,106 @@ public class BackgroundOffsetTest {
             }
         }
         assertTrue("smoothed random flame field should be nonzero away from the mask", nonzero > 0);
+    }
+
+    @Test
+    public void fullAndHalfCanvasRemappingPreserveIndicesAndChooseLastRowMajorWriter() throws Exception {
+        for (int width = 0; width <= 4; width++) for (int height = 0; height <= 4; height++)
+            for (int x = 0; x <= 3; x++) for (int y = 0; y <= 3; y++) {
+                Background full = canvasFixture(width, height, x, y, 8, 8);
+                Background half = canvasFixture(width, height, x, y, 8, 8);
+                byte[] source = full.aByteArray1450, halfSource = half.aByteArray1450;
+                byte[] unchanged = source.clone();
+                int[] palette = full.anIntArray1451, halfPalette = half.anIntArray1451;
+                byte[] expanded = new byte[64], reduced = new byte[16];
+                for (int dy = 0; dy < 8; dy++) for (int dx = 0; dx < 8; dx++)
+                    if (dx >= x && dx < x + width && dy >= y && dy < y + height)
+                        expanded[dy * 8 + dx] = source[(dy - y) * width + dx - x];
+                // Inverse block oracle: the bottommost, then rightmost intersecting source pixel wins.
+                // Zero indices also overwrite; this is neither averaging nor "last nonzero" sampling.
+                for (int dy = 0; dy < 4; dy++) for (int dx = 0; dx < 4; dx++) {
+                    int right = Math.min(dx * 2 + 1, x + width - 1);
+                    int bottom = Math.min(dy * 2 + 1, y + height - 1);
+                    if (width > 0 && height > 0 && right >= Math.max(dx * 2, x)
+                            && bottom >= Math.max(dy * 2, y))
+                        reduced[dy * 4 + dx] = source[(bottom - y) * width + right - x];
+                }
+                full.expandToCanvas(); half.reduceToHalfCanvas();
+                assertArrayEquals(expanded, full.aByteArray1450);
+                assertArrayEquals(reduced, half.aByteArray1450);
+                assertArrayEquals(unchanged, source); assertArrayEquals(unchanged, halfSource);
+                org.junit.Assert.assertNotSame(source, full.aByteArray1450);
+                org.junit.Assert.assertNotSame(halfSource, half.aByteArray1450);
+                org.junit.Assert.assertSame(palette, full.anIntArray1451);
+                org.junit.Assert.assertSame(halfPalette, half.anIntArray1451);
+                assertEquals(8, full.anInt1452); assertEquals(8, full.anInt1453);
+                assertEquals(8, full.anInt1456); assertEquals(8, canvasHeight(full));
+                assertEquals(4, half.anInt1452); assertEquals(4, half.anInt1453);
+                assertEquals(4, half.anInt1456); assertEquals(4, canvasHeight(half));
+                assertEquals(0, full.offsetX); assertEquals(0, full.offsetY);
+                assertEquals(0, half.offsetX); assertEquals(0, half.offsetY);
+            }
+    }
+
+    @Test
+    public void fullCanvasEarlyReturnRequiresBothDimensionsAndKeepsArrayAndOffsets() throws Exception {
+        Background full = canvasFixture(8, 8, 2, 3, 8, 8);
+        byte[] source = full.aByteArray1450;
+        full.expandToCanvas();
+        org.junit.Assert.assertSame(source, full.aByteArray1450);
+        assertEquals(2, full.offsetX); assertEquals(3, full.offsetY);
+        for (int[] size : new int[][] {{8, 3}, {3, 8}, {0, 0}}) {
+            Background partial = canvasFixture(size[0], size[1], 0, 0, 8, 8);
+            byte[] before = partial.aByteArray1450;
+            partial.expandToCanvas();
+            org.junit.Assert.assertNotSame(before, partial.aByteArray1450);
+            assertEquals(64, partial.aByteArray1450.length);
+            assertEquals(8, partial.anInt1452); assertEquals(8, partial.anInt1453);
+        }
+        Background empty = canvasFixture(0, 0, 0, 0, 0, 0);
+        byte[] before = empty.aByteArray1450;
+        empty.expandToCanvas();
+        org.junit.Assert.assertSame(before, empty.aByteArray1450);
+        empty.reduceToHalfCanvas();
+        org.junit.Assert.assertNotSame(before, empty.aByteArray1450);
+        assertEquals(0, empty.aByteArray1450.length);
+    }
+
+    @Test
+    public void halfCanvasTruncatesOddDimensionsAndPreservesExistingEdgeFailure() throws Exception {
+        Background valid = canvasFixture(2, 2, 2, 2, 5, 7);
+        valid.aByteArray1450 = new byte[] {1, -128, -1, 0};
+        valid.reduceToHalfCanvas();
+        assertArrayEquals(new byte[6], valid.aByteArray1450); // last zero overwrites all three nonzero indices
+        assertEquals(2, valid.anInt1456); assertEquals(3, canvasHeight(valid));
+        Background edge = canvasFixture(1, 1, 4, 6, 5, 7);
+        byte[] before = edge.aByteArray1450;
+        try { edge.reduceToHalfCanvas(); org.junit.Assert.fail("odd outer edge exceeds truncated half canvas"); }
+        catch (ArrayIndexOutOfBoundsException expected) {
+            org.junit.Assert.assertSame(before, edge.aByteArray1450);
+            assertEquals(2, edge.anInt1456); assertEquals(3, canvasHeight(edge));
+            assertEquals(1, edge.anInt1452); assertEquals(1, edge.anInt1453);
+            assertEquals(4, edge.offsetX); assertEquals(6, edge.offsetY);
+        }
+    }
+
+    private static int canvasHeight(Background background) throws Exception {
+        Field field = Background.class.getDeclaredField("anInt1457"); field.setAccessible(true);
+        return field.getInt(background);
+    }
+
+    private static Background canvasFixture(int width, int height, int x, int y,
+            int canvasWidth, int canvasHeight) throws Exception {
+        Background background = new Background(archive(), "small", 0);
+        background.anInt1452 = width; background.anInt1453 = height;
+        background.anInt1456 = canvasWidth;
+        Field field = Background.class.getDeclaredField("anInt1457"); field.setAccessible(true);
+        field.setInt(background, canvasHeight);
+        background.offsetX = x; background.offsetY = y;
+        background.aByteArray1450 = new byte[width * height];
+        for (int i = 0; i < background.aByteArray1450.length; i++)
+            background.aByteArray1450[i] = i % 4 == 3 ? 0 : (byte) (i % 2 == 0 ? i + 1 : 128 + i);
+        return background;
     }
 
     private static Background single(int x, int y) {
