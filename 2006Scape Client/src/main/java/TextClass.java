@@ -46,7 +46,7 @@ final class TextClass {
 		throw new RuntimeException();
 	}
 
-	public static long method585(String s) {
+	public static long hashSpriteName(String s) {
 		s = s.toUpperCase();
 		long l = 0L;
 		for (int i = 0; i < s.length(); i++) {
