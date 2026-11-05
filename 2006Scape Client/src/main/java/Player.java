@@ -23,13 +23,13 @@ public final class Player extends Entity {
 			Model model_2 = spotAnim.getModel();
 			if (model_2 != null) {
 				Model model_3 = new Model(true, Class36.method532(super.anInt1521), false, model_2);
-				model_3.method475(0, -super.anInt1524, 0);
+				model_3.translate(0, -super.anInt1524, 0);
 				model_3.buildAnimationGroups();
 				model_3.method470(spotAnim.aAnimation_407.anIntArray353[super.anInt1521]);
 				model_3.faceGroups = null;
 				model_3.vertexGroups = null;
 				if (spotAnim.anInt410 != 128 || spotAnim.anInt411 != 128) {
-					model_3.method478(spotAnim.anInt410, spotAnim.anInt410, spotAnim.anInt411);
+					model_3.scale(spotAnim.anInt410, spotAnim.anInt410, spotAnim.anInt411);
 				}
 				model_3.method479(64 + spotAnim.anInt413, 850 + spotAnim.anInt414, -30, -50, -30, true);
 				Model aclass30_sub2_sub4_sub6_1s[] = {model, model_3};
@@ -42,30 +42,30 @@ public final class Player extends Entity {
 			}
 			if (Game.loopCycle >= anInt1707 && Game.loopCycle < anInt1708) {
 				Model model_1 = aModel_1714;
-				model_1.method475(anInt1711 - super.x, anInt1712 - anInt1709, anInt1713 - super.y);
+				model_1.translate(anInt1711 - super.x, anInt1712 - anInt1709, anInt1713 - super.y);
 				if (super.turnDirection == 512) {
-					model_1.method473();
-					model_1.method473();
-					model_1.method473();
+					model_1.rotateYQuarterTurn();
+					model_1.rotateYQuarterTurn();
+					model_1.rotateYQuarterTurn();
 				} else if (super.turnDirection == 1024) {
-					model_1.method473();
-					model_1.method473();
+					model_1.rotateYQuarterTurn();
+					model_1.rotateYQuarterTurn();
 				} else if (super.turnDirection == 1536) {
-					model_1.method473();
+					model_1.rotateYQuarterTurn();
 				}
 				Model aclass30_sub2_sub4_sub6s[] = {model, model_1};
 				model = new Model(aclass30_sub2_sub4_sub6s);
 				if (super.turnDirection == 512) {
-					model_1.method473();
+					model_1.rotateYQuarterTurn();
 				} else if (super.turnDirection == 1024) {
-					model_1.method473();
-					model_1.method473();
+					model_1.rotateYQuarterTurn();
+					model_1.rotateYQuarterTurn();
 				} else if (super.turnDirection == 1536) {
-					model_1.method473();
-					model_1.method473();
-					model_1.method473();
+					model_1.rotateYQuarterTurn();
+					model_1.rotateYQuarterTurn();
+					model_1.rotateYQuarterTurn();
 				}
-				model_1.method475(super.x - anInt1711, anInt1709 - anInt1712, super.y - anInt1713);
+				model_1.translate(super.x - anInt1711, anInt1709 - anInt1712, super.y - anInt1713);
 			}
 		}
 		model.aBoolean1659 = true;

@@ -168,7 +168,7 @@ public final class EntityDef {
 			model_1.method470(k);
 		}
 		if (anInt91 != 128 || anInt86 != 128) {
-			model_1.method478(anInt91, anInt91, anInt86);
+			model_1.scale(anInt91, anInt91, anInt86);
 		}
 		model_1.method466();
 		model_1.faceGroups = null;

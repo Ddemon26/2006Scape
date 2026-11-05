@@ -1069,30 +1069,30 @@ public final class Model extends Animable {
 		}
 	}
 
-	public void method473() {
-		for (int j = 0; j < anInt1626; j++) {
-			int k = anIntArray1627[j];
-			anIntArray1627[j] = anIntArray1629[j];
-			anIntArray1629[j] = -k;
+	public void rotateYQuarterTurn() {
+		for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
+			int originalX = anIntArray1627[vertexIndex];
+			anIntArray1627[vertexIndex] = anIntArray1629[vertexIndex];
+			anIntArray1629[vertexIndex] = -originalX;
 		}
 
 	}
 
-	public void method474(int i) {
-		int k = modelIntArray1[i];
-		int l = modelIntArray2[i];
-		for (int i1 = 0; i1 < anInt1626; i1++) {
-			int j1 = anIntArray1628[i1] * l - anIntArray1629[i1] * k >> 16;
-			anIntArray1629[i1] = anIntArray1628[i1] * k + anIntArray1629[i1] * l >> 16;
-			anIntArray1628[i1] = j1;
+	public void rotateX(int angle2048) {
+		int sine16 = modelIntArray1[angle2048];
+		int cosine16 = modelIntArray2[angle2048];
+		for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
+			int rotatedY = anIntArray1628[vertexIndex] * cosine16 - anIntArray1629[vertexIndex] * sine16 >> 16;
+			anIntArray1629[vertexIndex] = anIntArray1628[vertexIndex] * sine16 + anIntArray1629[vertexIndex] * cosine16 >> 16;
+			anIntArray1628[vertexIndex] = rotatedY;
 		}
 	}
 
-	public void method475(int i, int j, int l) {
-		for (int i1 = 0; i1 < anInt1626; i1++) {
-			anIntArray1627[i1] += i;
-			anIntArray1628[i1] += j;
-			anIntArray1629[i1] += l;
+	public void translate(int deltaX, int deltaY, int deltaZ) {
+		for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
+			anIntArray1627[vertexIndex] += deltaX;
+			anIntArray1628[vertexIndex] += deltaY;
+			anIntArray1629[vertexIndex] += deltaZ;
 		}
 
 	}
@@ -1106,23 +1106,23 @@ public final class Model extends Animable {
 
 	}
 
-	public void method477() {
-		for (int j = 0; j < anInt1626; j++) {
-			anIntArray1629[j] = -anIntArray1629[j];
+	public void reflectZAndReverseWinding() {
+		for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
+			anIntArray1629[vertexIndex] = -anIntArray1629[vertexIndex];
 		}
 
-		for (int k = 0; k < anInt1630; k++) {
-			int l = anIntArray1631[k];
-			anIntArray1631[k] = anIntArray1633[k];
-			anIntArray1633[k] = l;
+		for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
+			int originalFirstVertex = anIntArray1631[faceIndex];
+			anIntArray1631[faceIndex] = anIntArray1633[faceIndex];
+			anIntArray1633[faceIndex] = originalFirstVertex;
 		}
 	}
 
-	public void method478(int i, int j, int l) {
-		for (int i1 = 0; i1 < anInt1626; i1++) {
-			anIntArray1627[i1] = anIntArray1627[i1] * i / 128;
-			anIntArray1628[i1] = anIntArray1628[i1] * l / 128;
-			anIntArray1629[i1] = anIntArray1629[i1] * j / 128;
+	public void scale(int scaleX128, int scaleZ128, int scaleY128) {
+		for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
+			anIntArray1627[vertexIndex] = anIntArray1627[vertexIndex] * scaleX128 / 128;
+			anIntArray1628[vertexIndex] = anIntArray1628[vertexIndex] * scaleY128 / 128;
+			anIntArray1629[vertexIndex] = anIntArray1629[vertexIndex] * scaleZ128 / 128;
 		}
 
 	}

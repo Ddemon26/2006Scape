@@ -30,20 +30,20 @@ final class Animable_Sub3 extends Animable {
             model_1.vertexGroups = null;
         }
         if (aSpotAnim_1568.anInt410 != 128 || aSpotAnim_1568.anInt411 != 128) {
-            model_1.method478(aSpotAnim_1568.anInt410, aSpotAnim_1568.anInt410, aSpotAnim_1568.anInt411);
+            model_1.scale(aSpotAnim_1568.anInt410, aSpotAnim_1568.anInt410, aSpotAnim_1568.anInt411);
         }
         if (aSpotAnim_1568.anInt412 != 0) {
             if (aSpotAnim_1568.anInt412 == 90) {
-                model_1.method473();
+                model_1.rotateYQuarterTurn();
             }
             if (aSpotAnim_1568.anInt412 == 180) {
-                model_1.method473();
-                model_1.method473();
+                model_1.rotateYQuarterTurn();
+                model_1.rotateYQuarterTurn();
             }
             if (aSpotAnim_1568.anInt412 == 270) {
-                model_1.method473();
-                model_1.method473();
-                model_1.method473();
+                model_1.rotateYQuarterTurn();
+                model_1.rotateYQuarterTurn();
+                model_1.rotateYQuarterTurn();
             }
         }
         model_1.method479(64 + aSpotAnim_1568.anInt413, 850 + aSpotAnim_1568.anInt414, -30, -50, -30, true);

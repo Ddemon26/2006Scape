@@ -126,10 +126,10 @@ public final class ItemDef {
 			}
 		}
 		if (i == 0 && aByte205 != 0) {
-			model.method475(0, aByte205, 0);
+			model.translate(0, aByte205, 0);
 		}
 		if (i == 1 && aByte154 != 0) {
-			model.method475(0, aByte154, 0);
+			model.translate(0, aByte154, 0);
 		}
 		if (modifiedModelColors != null) {
 			for (int i1 = 0; i1 < modifiedModelColors.length; i1++) {
@@ -2210,7 +2210,7 @@ public final class ItemDef {
 			return null;
 		}
 		if (anInt167 != 128 || anInt192 != 128 || anInt191 != 128) {
-			model.method478(anInt167, anInt191, anInt192);
+			model.scale(anInt167, anInt191, anInt192);
 		}
 		if (modifiedModelColors != null) {
 			for (int l = 0; l < modifiedModelColors.length; l++) {

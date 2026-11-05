@@ -210,7 +210,7 @@ public final class ObjectDef {
 						return null;
 					}
 					if (flag1) {
-						model.method477();
+						model.reflectZAndReverseWinding();
 					}
 					mruNodes1.removeFromCache(model, l2);
 				}
@@ -252,7 +252,7 @@ public final class ObjectDef {
 					return null;
 				}
 				if (flag3) {
-					model.method477();
+					model.reflectZAndReverseWinding();
 				}
 				mruNodes1.removeFromCache(model, j2);
 			}
@@ -269,7 +269,7 @@ public final class ObjectDef {
 			model_3.vertexGroups = null;
 		}
 		while (l-- > 0) {
-			model_3.method473();
+			model_3.rotateYQuarterTurn();
 		}
 		if (modifiedModelColors != null) {
 			for (int k2 = 0; k2 < modifiedModelColors.length; k2++) {
@@ -278,10 +278,10 @@ public final class ObjectDef {
 
 		}
 		if (flag) {
-			model_3.method478(anInt748, anInt740, anInt772);
+			model_3.scale(anInt748, anInt740, anInt772);
 		}
 		if (flag2) {
-			model_3.method475(anInt738, anInt745, anInt783);
+			model_3.translate(anInt738, anInt745, anInt783);
 		}
 		model_3.method479(64 + aByte737, 768 + aByte742 * 5, -50, -10, -50, !aBoolean769);
 		if (anInt760 == 1) {
