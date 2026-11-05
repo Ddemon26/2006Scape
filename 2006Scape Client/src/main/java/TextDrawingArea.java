@@ -13,8 +13,8 @@ public final class TextDrawingArea extends DrawingArea {
 		anIntArray1494 = new int[256];
 		anIntArray1495 = new int[256];
 		glyphAdvancePixels = new int[256];
-		aRandom1498 = new Random();
-		aBoolean1499 = false;
+		jitterRandom = new Random();
+		strikeThroughEnabled = false;
 		Stream stream = new Stream(streamLoader.getDataForName(s + ".dat"));
 		Stream stream_1 = new Stream(streamLoader.getDataForName("index.dat"));
 		stream_1.currentOffset = stream.readUnsignedWord() + 4;
@@ -84,11 +84,11 @@ public final class TextDrawingArea extends DrawingArea {
 	}
 
 	public void textCenterShadow(int _color, int _x, String s, int _y, boolean _shadow) {
-		textLeftShadow(_shadow, _x - measureTaggedTextWidth(s) / 2, _color, s, _y);
+		drawTaggedText(_shadow, _x - measureTaggedTextWidth(s) / 2, _color, s, _y);
 	}
 
 	public void textRightShadow(boolean _shadow, int _x, int _color, String s, int _y) {
-		textLeftShadow(_shadow, _x - measureTaggedTextWidth(s), _color, s, _y);
+		drawTaggedText(_shadow, _x - measureTaggedTextWidth(s), _color, s, _y);
 	}
 
 	public int measureTaggedTextWidth(String text) {
@@ -184,126 +184,126 @@ public final class TextDrawingArea extends DrawingArea {
 
 	}
 
-	public void textLeftShadow(boolean _shadow, int _x, int _color, String s, int _y) {
-		aBoolean1499 = false;
-		int l = _x;
-		if (s == null) {
+	public void drawTaggedText(boolean shadow, int x, int color, String text, int baselineY) {
+		strikeThroughEnabled = false;
+		int startX = x;
+		if (text == null) {
 			return;
 		}
-		_y -= anInt1497;
-		for (int i1 = 0; i1 < s.length(); i1++) {
-			if (s.charAt(i1) == '@' && i1 + 4 < s.length() && s.charAt(i1 + 4) == '@') {
-				int j1 = getColorByName(s.substring(i1 + 1, i1 + 4));
-				if (j1 != -1) {
-					_color = j1;
+		baselineY -= anInt1497;
+		for (int characterIndex = 0; characterIndex < text.length(); characterIndex++) {
+			if (text.charAt(characterIndex) == '@' && characterIndex + 4 < text.length() && text.charAt(characterIndex + 4) == '@') {
+				int tagColor = applyTextTag(text.substring(characterIndex + 1, characterIndex + 4));
+				if (tagColor != -1) {
+					color = tagColor;
 				}
-				i1 += 4;
+				characterIndex += 4;
 			} else {
-				char c = s.charAt(i1);
-				if (c != ' ') {
-					if (_shadow) {
-						drawGlyphMask(aByteArrayArray1491[c], _x + anIntArray1494[c] + 1, _y + anIntArray1495[c] + 1, anIntArray1492[c], anIntArray1493[c], 0);
+				char character = text.charAt(characterIndex);
+				if (character != ' ') {
+					if (shadow) {
+						drawGlyphMask(aByteArrayArray1491[character], x + anIntArray1494[character] + 1, baselineY + anIntArray1495[character] + 1, anIntArray1492[character], anIntArray1493[character], 0);
 					}
 					try {
-					drawGlyphMask(aByteArrayArray1491[c], _x + anIntArray1494[c], _y + anIntArray1495[c], anIntArray1492[c], anIntArray1493[c], _color);
-					} catch (Exception e) {
+					drawGlyphMask(aByteArrayArray1491[character], x + anIntArray1494[character], baselineY + anIntArray1495[character], anIntArray1492[character], anIntArray1493[character], color);
+					} catch (Exception glyphFailure) {
 						
 					}
 				}
-				_x += glyphAdvancePixels[c];
+				x += glyphAdvancePixels[character];
 			}
 		}
-		if (aBoolean1499) {
-			DrawingArea.drawHorizontalLine(_y + (int) (anInt1497 * 0.69999999999999996D), 0x800000, _x - l, l);
+		if (strikeThroughEnabled) {
+			DrawingArea.drawHorizontalLine(baselineY + (int) (anInt1497 * 0.69999999999999996D), 0x800000, x - startX, startX);
 		}
 	}
 
-	public void method390(int i, int j, String s, int k, int i1) {
-		if (s == null) {
+	public void drawSeededJitterText(int x, int color, String text, int seed, int baselineY) {
+		if (text == null) {
 			return;
 		}
-		aRandom1498.setSeed(k);
-		int j1 = 192 + (aRandom1498.nextInt() & 0x1f);
-		i1 -= anInt1497;
-		for (int k1 = 0; k1 < s.length(); k1++) {
-			if (s.charAt(k1) == '@' && k1 + 4 < s.length() && s.charAt(k1 + 4) == '@') {
-				int l1 = getColorByName(s.substring(k1 + 1, k1 + 4));
-				if (l1 != -1) {
-					j = l1;
+		jitterRandom.setSeed(seed);
+		int opacity256 = 192 + (jitterRandom.nextInt() & 0x1f);
+		baselineY -= anInt1497;
+		for (int characterIndex = 0; characterIndex < text.length(); characterIndex++) {
+			if (text.charAt(characterIndex) == '@' && characterIndex + 4 < text.length() && text.charAt(characterIndex + 4) == '@') {
+				int tagColor = applyTextTag(text.substring(characterIndex + 1, characterIndex + 4));
+				if (tagColor != -1) {
+					color = tagColor;
 				}
-				k1 += 4;
+				characterIndex += 4;
 			} else {
-				char c = s.charAt(k1);
-				if (c != ' ') {
-					drawBlendedGlyphMask(192, i + anIntArray1494[c] + 1, aByteArrayArray1491[c], anIntArray1492[c], i1 + anIntArray1495[c] + 1, anIntArray1493[c], 0);
-					drawBlendedGlyphMask(j1, i + anIntArray1494[c], aByteArrayArray1491[c], anIntArray1492[c], i1 + anIntArray1495[c], anIntArray1493[c], j);
+				char character = text.charAt(characterIndex);
+				if (character != ' ') {
+					drawBlendedGlyphMask(192, x + anIntArray1494[character] + 1, aByteArrayArray1491[character], anIntArray1492[character], baselineY + anIntArray1495[character] + 1, anIntArray1493[character], 0);
+					drawBlendedGlyphMask(opacity256, x + anIntArray1494[character], aByteArrayArray1491[character], anIntArray1492[character], baselineY + anIntArray1495[character], anIntArray1493[character], color);
 				}
-				i += glyphAdvancePixels[c];
-				if ((aRandom1498.nextInt() & 3) == 0) {
-					i++;
+				x += glyphAdvancePixels[character];
+				if ((jitterRandom.nextInt() & 3) == 0) {
+					x++;
 				}
 			}
 		}
 
 	}
 
-	private int getColorByName(String s) {
-		if (s.equals("red")) {
+	private int applyTextTag(String tag) {
+		if (tag.equals("red")) {
 			return 0xff0000;
 		}
-		if (s.equals("gre")) {
+		if (tag.equals("gre")) {
 			return 65280;
 		}
-		if (s.equals("blu")) {
+		if (tag.equals("blu")) {
 			return 255;
 		}
-		if (s.equals("yel")) {
+		if (tag.equals("yel")) {
 			return 0xffff00;
 		}
-		if (s.equals("cya")) {
+		if (tag.equals("cya")) {
 			return 65535;
 		}
-		if (s.equals("mag")) {
+		if (tag.equals("mag")) {
 			return 0xff00ff;
 		}
-		if (s.equals("whi")) {
+		if (tag.equals("whi")) {
 			return 0xffffff;
 		}
-		if (s.equals("bla")) {
+		if (tag.equals("bla")) {
 			return 0;
 		}
-		if (s.equals("lre")) {
+		if (tag.equals("lre")) {
 			return 0xff9040;
 		}
-		if (s.equals("dre")) {
+		if (tag.equals("dre")) {
 			return 0x800000;
 		}
-		if (s.equals("dbl")) {
+		if (tag.equals("dbl")) {
 			return 128;
 		}
-		if (s.equals("or1")) {
+		if (tag.equals("or1")) {
 			return 0xffb000;
 		}
-		if (s.equals("or2")) {
+		if (tag.equals("or2")) {
 			return 0xff7000;
 		}
-		if (s.equals("or3")) {
+		if (tag.equals("or3")) {
 			return 0xff3000;
 		}
-		if (s.equals("gr1")) {
+		if (tag.equals("gr1")) {
 			return 0xc0ff00;
 		}
-		if (s.equals("gr2")) {
+		if (tag.equals("gr2")) {
 			return 0x80ff00;
 		}
-		if (s.equals("gr3")) {
+		if (tag.equals("gr3")) {
 			return 0x40ff00;
 		}
-		if (s.equals("str")) {
-			aBoolean1499 = true;
+		if (tag.equals("str")) {
+			strikeThroughEnabled = true;
 		}
-		if (s.equals("end")) {
-			aBoolean1499 = false;
+		if (tag.equals("end")) {
+			strikeThroughEnabled = false;
 		}
 		return -1;
 	}
@@ -446,6 +446,6 @@ public final class TextDrawingArea extends DrawingArea {
 	private final int[] anIntArray1495;
 	private final int[] glyphAdvancePixels;
 	public int anInt1497;
-	private final Random aRandom1498;
-	private boolean aBoolean1499;
+	private final Random jitterRandom;
+	private boolean strikeThroughEnabled;
 }

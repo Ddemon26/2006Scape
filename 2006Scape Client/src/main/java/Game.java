@@ -406,7 +406,7 @@ public class Game extends RSApplet {
 					if (l == 0) {
 						if (i1 > 0 && i1 < 110) {
 							try {
-							textDrawingArea.textLeftShadow(false, 4, 0, chatMessages[k], i1);
+							textDrawingArea.drawTaggedText(false, 4, 0, chatMessages[k], i1);
 							} catch (Exception e) {
 								
 							}
@@ -2092,7 +2092,7 @@ public class Game extends RSApplet {
 			if (mX > xPos && mX < xPos + menuW && mY > yPosItem - 13 && mY < yPosItem + 3) {
 				colorItem = 0xffff00;
 			}
-			chatTextDrawingArea.textLeftShadow(true, xPos + 3, colorItem, menuActionName[rowItem], yPosItem);
+			chatTextDrawingArea.drawTaggedText(true, xPos + 3, colorItem, menuActionName[rowItem], yPosItem);
 		}
 
 	}
@@ -8398,7 +8398,7 @@ public class Game extends RSApplet {
 						if (component.aBoolean223) {
 							textDrawingArea.textCenterShadow(i4, k2 + component.width / 2, s1, l6, component.aBoolean268);
 						} else {
-							textDrawingArea.textLeftShadow(component.aBoolean268, k2, i4, s1, l6);
+							textDrawingArea.drawTaggedText(component.aBoolean268, k2, i4, s1, l6);
 						}
 					}
 
@@ -8454,7 +8454,7 @@ public class Game extends RSApplet {
 								if (component.aBoolean223) {
 									textDrawingArea_1.textCenterShadow(component.textColor, i9 + component.width / 2, s2, k9, component.aBoolean268);
 								} else {
-									textDrawingArea_1.textLeftShadow(component.aBoolean268, i9, component.textColor, s2, k9);
+									textDrawingArea_1.drawTaggedText(component.aBoolean268, i9, component.textColor, s2, k9);
 								}
 							}
 							k4++;
@@ -8892,7 +8892,7 @@ public class Game extends RSApplet {
 			debugY += 3;
 			
 			// Draw items
-			chatTextDrawingArea.textLeftShadow(true, debugX + 4, RSColors.WHITE, "System update in:", debugY += 15);
+			chatTextDrawingArea.drawTaggedText(true, debugX + 4, RSColors.WHITE, "System update in:", debugY += 15);
 			chatTextDrawingArea.textRightShadow(true, debugX + debugWidth - 4, RSColors.YELLOW, message, debugY);
 
 			// Not sure what this is for
@@ -9465,7 +9465,7 @@ public class Game extends RSApplet {
 		if (menuActionRow > 2) {
 			s = s + "@whi@ / " + (menuActionRow - 2) + " more options";
 		}
-		chatTextDrawingArea.method390(4, 0xffffff, s, loopCycle / 1000, 15);
+		chatTextDrawingArea.drawSeededJitterText(4, 0xffffff, s, loopCycle / 1000, 15);
 	}
 
 	public void drawMinimap() {
@@ -9919,9 +9919,9 @@ public class Game extends RSApplet {
 				chatTextDrawingArea.textCenterShadow(0xffff00, c / 2, loginMessage2, j - 7, true);
 				j += 30;
 			}
-			chatTextDrawingArea.textLeftShadow(true, c / 2 - 90, 0xffffff, "Username: " + myUsername + (loginScreenCursorPos == 0 & loopCycle % 40 < 20 ? "@yel@|" : ""), j);
+			chatTextDrawingArea.drawTaggedText(true, c / 2 - 90, 0xffffff, "Username: " + myUsername + (loginScreenCursorPos == 0 & loopCycle % 40 < 20 ? "@yel@|" : ""), j);
 			j += 15;
-			chatTextDrawingArea.textLeftShadow(true, c / 2 - 88, 0xffffff, "Password: " + TextClass.passwordAsterisks(myPassword) + (loginScreenCursorPos == 1 & loopCycle % 40 < 20 ? "@yel@|" : ""), j);
+			chatTextDrawingArea.drawTaggedText(true, c / 2 - 88, 0xffffff, "Password: " + TextClass.passwordAsterisks(myPassword) + (loginScreenCursorPos == 1 & loopCycle % 40 < 20 ? "@yel@|" : ""), j);
 			j += 15;
 			if (!flag) {
 				int i1 = c / 2 - 80;
@@ -11924,15 +11924,15 @@ public class Game extends RSApplet {
 			// Draw items
 			Runtime runtime = Runtime.getRuntime();
 			int memKB = (int) ((runtime.totalMemory() - runtime.freeMemory()) / 1024L);
-			chatTextDrawingArea.textLeftShadow(true, debugX + 4, RSColors.WHITE, "Memory:", debugY += 15);
+			chatTextDrawingArea.drawTaggedText(true, debugX + 4, RSColors.WHITE, "Memory:", debugY += 15);
 			chatTextDrawingArea.textRightShadow(true, debugX + debugWidth - 4, RSColors.YELLOW, (memKB / 1024) + "mb", debugY);
-			chatTextDrawingArea.textLeftShadow(true, debugX + 4, RSColors.WHITE, "Mouse:", debugY += 15);
+			chatTextDrawingArea.drawTaggedText(true, debugX + 4, RSColors.WHITE, "Mouse:", debugY += 15);
 			chatTextDrawingArea.textRightShadow(true, debugX + debugWidth - 4, RSColors.YELLOW, super.mouseX + ", " + super.mouseY, debugY);
-			chatTextDrawingArea.textLeftShadow(true, debugX + 4, RSColors.WHITE, "Coords:", debugY += 15);
+			chatTextDrawingArea.drawTaggedText(true, debugX + 4, RSColors.WHITE, "Coords:", debugY += 15);
 			chatTextDrawingArea.textRightShadow(true, debugX + debugWidth - 4, RSColors.YELLOW, (myPlayer.smallX[0] + baseX) + ", " + (myPlayer.smallY[0] + baseY), debugY);
-			chatTextDrawingArea.textLeftShadow(true, debugX + 4, RSColors.WHITE, "Interface:", debugY += 15);
+			chatTextDrawingArea.drawTaggedText(true, debugX + 4, RSColors.WHITE, "Interface:", debugY += 15);
 			chatTextDrawingArea.textRightShadow(true, debugX + debugWidth - 4, RSColors.YELLOW, "" + openInterfaceID, debugY);
-			chatTextDrawingArea.textLeftShadow(true, debugX + 4, RSColors.WHITE, "Zoom level:", debugY += 15);
+			chatTextDrawingArea.drawTaggedText(true, debugX + 4, RSColors.WHITE, "Zoom level:", debugY += 15);
 			chatTextDrawingArea.textRightShadow(true, debugX + debugWidth - 4, RSColors.YELLOW, "" + zoom, debugY);
 		}
 		
@@ -11960,9 +11960,9 @@ public class Game extends RSApplet {
 			long expPerHour = (long) ((expGained * 3600000D) / (System.currentTimeMillis() - customSettingShowExperiencePerHourStart));
 
 			// Draw items
-			chatTextDrawingArea.textLeftShadow(true, debugX + 4, RSColors.WHITE, "Exp per hour:", debugY += 15);
+			chatTextDrawingArea.drawTaggedText(true, debugX + 4, RSColors.WHITE, "Exp per hour:", debugY += 15);
 			chatTextDrawingArea.textRightShadow(true, debugX + debugWidth - 4, RSColors.YELLOW, intToShortLetter((int) expPerHour), debugY);
-			chatTextDrawingArea.textLeftShadow(true, debugX + 4, RSColors.WHITE, "Levels gained:", debugY += 15);
+			chatTextDrawingArea.drawTaggedText(true, debugX + 4, RSColors.WHITE, "Levels gained:", debugY += 15);
 			chatTextDrawingArea.textRightShadow(true, debugX + debugWidth - 4, RSColors.YELLOW, "" + (calculateTotalLevels() - customSettingShowExperiencePerHourStartLevels), debugY);
 		}
 

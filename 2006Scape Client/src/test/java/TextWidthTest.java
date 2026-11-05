@@ -87,7 +87,7 @@ public class TextWidthTest {
     }
     @Test public void measuringTagsDoesNotToggleRendererStrikeState() throws Exception {
         TextDrawingArea font=font(false);
-        Field field=TextDrawingArea.class.getDeclaredField("aBoolean1499"); field.setAccessible(true);
+        Field field=TextDrawingArea.class.getDeclaredField("strikeThroughEnabled"); field.setAccessible(true);
         font.measureTaggedTextWidth("@str@A"); assertFalse(field.getBoolean(font));
         field.setBoolean(font,true); font.measureTaggedTextWidth("@end@A"); assertTrue(field.getBoolean(font));
         assertEquals(5,font.measureTaggedTextWidth("A"));
