@@ -155,7 +155,7 @@ public final class Model extends Animable {
 		anIntArray1644 = new int[anInt1642];
 		anIntArray1645 = new int[anInt1642];
 		if (class21.anInt376 >= 0) {
-			anIntArray1655 = new int[anInt1626];
+			vertexGroupIds = new int[anInt1626];
 		}
 		if (class21.anInt380 >= 0) {
 			anIntArray1637 = new int[anInt1630];
@@ -169,7 +169,7 @@ public final class Model extends Animable {
 			anIntArray1639 = new int[anInt1630];
 		}
 		if (class21.anInt383 >= 0) {
-			anIntArray1656 = new int[anInt1630];
+			faceGroupIds = new int[anInt1630];
 		}
 		anIntArray1640 = new int[anInt1630];
 		Stream stream = new Stream(class21.aByteArray368);
@@ -205,8 +205,8 @@ public final class Model extends Animable {
 			k = anIntArray1627[j1];
 			l = anIntArray1628[j1];
 			i1 = anIntArray1629[j1];
-			if (anIntArray1655 != null) {
-				anIntArray1655[j1] = stream_4.readUnsignedByte();
+			if (vertexGroupIds != null) {
+				vertexGroupIds[j1] = stream_4.readUnsignedByte();
 			}
 		}
 
@@ -226,8 +226,8 @@ public final class Model extends Animable {
 			if (anIntArray1639 != null) {
 				anIntArray1639[l1] = stream_3.readUnsignedByte();
 			}
-			if (anIntArray1656 != null) {
-				anIntArray1656[l1] = stream_4.readUnsignedByte();
+			if (faceGroupIds != null) {
+				faceGroupIds[l1] = stream_4.readUnsignedByte();
 			}
 		}
 
@@ -315,14 +315,14 @@ public final class Model extends Animable {
 					}
 				}
 				flag2 |= model.anIntArray1639 != null;
-				flag3 |= model.anIntArray1656 != null;
+				flag3 |= model.faceGroupIds != null;
 			}
 		}
 
 		anIntArray1627 = new int[anInt1626];
 		anIntArray1628 = new int[anInt1626];
 		anIntArray1629 = new int[anInt1626];
-		anIntArray1655 = new int[anInt1626];
+		vertexGroupIds = new int[anInt1626];
 		anIntArray1631 = new int[anInt1630];
 		anIntArray1632 = new int[anInt1630];
 		anIntArray1633 = new int[anInt1630];
@@ -339,7 +339,7 @@ public final class Model extends Animable {
 			anIntArray1639 = new int[anInt1630];
 		}
 		if (flag3) {
-			anIntArray1656 = new int[anInt1630];
+			faceGroupIds = new int[anInt1630];
 		}
 		anIntArray1640 = new int[anInt1630];
 		anInt1626 = 0;
@@ -375,8 +375,8 @@ public final class Model extends Animable {
 							anIntArray1639[anInt1630] = model_1.anIntArray1639[j1];
 						}
 					}
-					if (flag3 && model_1.anIntArray1656 != null) {
-						anIntArray1656[anInt1630] = model_1.anIntArray1656[j1];
+					if (flag3 && model_1.faceGroupIds != null) {
+						faceGroupIds[anInt1630] = model_1.faceGroupIds[j1];
 					}
 					anIntArray1640[anInt1630] = model_1.anIntArray1640[j1];
 					anIntArray1631[anInt1630] = method465(model_1, model_1.anIntArray1631[j1]);
@@ -563,8 +563,8 @@ public final class Model extends Animable {
 
 			}
 		}
-		anIntArray1655 = model.anIntArray1655;
-		anIntArray1656 = model.anIntArray1656;
+		vertexGroupIds = model.vertexGroupIds;
+		faceGroupIds = model.faceGroupIds;
 		anIntArray1637 = model.anIntArray1637;
 		anIntArray1631 = model.anIntArray1631;
 		anIntArray1632 = model.anIntArray1632;
@@ -687,8 +687,8 @@ public final class Model extends Animable {
 		anIntArray1640 = model.anIntArray1640;
 		anIntArray1638 = model.anIntArray1638;
 		anInt1641 = model.anInt1641;
-		anIntArrayArray1658 = model.anIntArrayArray1658;
-		anIntArrayArray1657 = model.anIntArrayArray1657;
+		faceGroups = model.faceGroups;
+		vertexGroups = model.vertexGroups;
 		anIntArray1631 = model.anIntArray1631;
 		anIntArray1632 = model.anIntArray1632;
 		anIntArray1633 = model.anIntArray1633;
@@ -717,8 +717,8 @@ public final class Model extends Animable {
 			anIntArray1627[anInt1626] = k;
 			anIntArray1628[anInt1626] = l;
 			anIntArray1629[anInt1626] = i1;
-			if (model.anIntArray1655 != null) {
-				anIntArray1655[anInt1626] = model.anIntArray1655[i];
+			if (model.vertexGroupIds != null) {
+				vertexGroupIds[anInt1626] = model.vertexGroupIds[i];
 			}
 			j = anInt1626++;
 		}
@@ -807,59 +807,59 @@ public final class Model extends Animable {
 		anInt1652 = anInt1653 + (int) Math.sqrt(anInt1650 * anInt1650 + anInt1651 * anInt1651);
 	}
 
-	public void method469() {
-		if (anIntArray1655 != null) {
-			int ai[] = new int[256];
-			int j = 0;
-			for (int l = 0; l < anInt1626; l++) {
-				int j1 = anIntArray1655[l];
-				ai[j1]++;
-				if (j1 > j) {
-					j = j1;
+	public void buildAnimationGroups() {
+		if (vertexGroupIds != null) {
+			int vertexGroupCounts[] = new int[256];
+			int maxVertexGroupId = 0;
+			for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
+				int vertexGroupId = vertexGroupIds[vertexIndex];
+				vertexGroupCounts[vertexGroupId]++;
+				if (vertexGroupId > maxVertexGroupId) {
+					maxVertexGroupId = vertexGroupId;
 				}
 			}
 
-			anIntArrayArray1657 = new int[j + 1][];
-			for (int k1 = 0; k1 <= j; k1++) {
-				anIntArrayArray1657[k1] = new int[ai[k1]];
-				ai[k1] = 0;
+			vertexGroups = new int[maxVertexGroupId + 1][];
+			for (int vertexGroupId = 0; vertexGroupId <= maxVertexGroupId; vertexGroupId++) {
+				vertexGroups[vertexGroupId] = new int[vertexGroupCounts[vertexGroupId]];
+				vertexGroupCounts[vertexGroupId] = 0;
 			}
 
-			for (int j2 = 0; j2 < anInt1626; j2++) {
-				int l2 = anIntArray1655[j2];
-				anIntArrayArray1657[l2][ai[l2]++] = j2;
+			for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
+				int vertexGroupId = vertexGroupIds[vertexIndex];
+				vertexGroups[vertexGroupId][vertexGroupCounts[vertexGroupId]++] = vertexIndex;
 			}
 
-			anIntArray1655 = null;
+			vertexGroupIds = null;
 		}
-		if (anIntArray1656 != null) {
-			int ai1[] = new int[256];
-			int k = 0;
-			for (int i1 = 0; i1 < anInt1630; i1++) {
-				int l1 = anIntArray1656[i1];
-				ai1[l1]++;
-				if (l1 > k) {
-					k = l1;
+		if (faceGroupIds != null) {
+			int faceGroupCounts[] = new int[256];
+			int maxFaceGroupId = 0;
+			for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
+				int faceGroupId = faceGroupIds[faceIndex];
+				faceGroupCounts[faceGroupId]++;
+				if (faceGroupId > maxFaceGroupId) {
+					maxFaceGroupId = faceGroupId;
 				}
 			}
 
-			anIntArrayArray1658 = new int[k + 1][];
-			for (int i2 = 0; i2 <= k; i2++) {
-				anIntArrayArray1658[i2] = new int[ai1[i2]];
-				ai1[i2] = 0;
+			faceGroups = new int[maxFaceGroupId + 1][];
+			for (int faceGroupId = 0; faceGroupId <= maxFaceGroupId; faceGroupId++) {
+				faceGroups[faceGroupId] = new int[faceGroupCounts[faceGroupId]];
+				faceGroupCounts[faceGroupId] = 0;
 			}
 
-			for (int k2 = 0; k2 < anInt1630; k2++) {
-				int i3 = anIntArray1656[k2];
-				anIntArrayArray1658[i3][ai1[i3]++] = k2;
+			for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
+				int faceGroupId = faceGroupIds[faceIndex];
+				faceGroups[faceGroupId][faceGroupCounts[faceGroupId]++] = faceIndex;
 			}
 
-			anIntArray1656 = null;
+			faceGroupIds = null;
 		}
 	}
 
 	public void method470(int i) {
-		if (anIntArrayArray1657 == null) {
+		if (vertexGroups == null) {
 			return;
 		}
 		if (i == -1) {
@@ -939,8 +939,8 @@ public final class Model extends Animable {
 			anInt1683 = 0;
 			for (int k2 = 0; k2 < i1; k2++) {
 				int l3 = ai[k2];
-				if (l3 < anIntArrayArray1657.length) {
-					int ai5[] = anIntArrayArray1657[l3];
+				if (l3 < vertexGroups.length) {
+					int ai5[] = vertexGroups[l3];
 					for (int j6 : ai5) {
 						anInt1681 += anIntArray1627[j6];
 						anInt1682 += anIntArray1628[j6];
@@ -966,8 +966,8 @@ public final class Model extends Animable {
 		if (i == 1) {
 			for (int k1 = 0; k1 < i1; k1++) {
 				int l2 = ai[k1];
-				if (l2 < anIntArrayArray1657.length) {
-					int ai1[] = anIntArrayArray1657[l2];
+				if (l2 < vertexGroups.length) {
+					int ai1[] = vertexGroups[l2];
 					for (int element : ai1) {
 						int j5 = element;
 						anIntArray1627[j5] += j;
@@ -983,8 +983,8 @@ public final class Model extends Animable {
 		if (i == 2) {
 			for (int l1 = 0; l1 < i1; l1++) {
 				int i3 = ai[l1];
-				if (i3 < anIntArrayArray1657.length) {
-					int ai2[] = anIntArrayArray1657[i3];
+				if (i3 < vertexGroups.length) {
+					int ai2[] = vertexGroups[i3];
 					for (int element : ai2) {
 						int k5 = element;
 						anIntArray1627[k5] -= anInt1681;
@@ -1027,8 +1027,8 @@ public final class Model extends Animable {
 		if (i == 3) {
 			for (int i2 = 0; i2 < i1; i2++) {
 				int j3 = ai[i2];
-				if (j3 < anIntArrayArray1657.length) {
-					int ai3[] = anIntArrayArray1657[j3];
+				if (j3 < vertexGroups.length) {
+					int ai3[] = vertexGroups[j3];
 					for (int element : ai3) {
 						int l5 = element;
 						anIntArray1627[l5] -= anInt1681;
@@ -1047,11 +1047,11 @@ public final class Model extends Animable {
 
 			return;
 		}
-		if (i == 5 && anIntArrayArray1658 != null && anIntArray1639 != null) {
+		if (i == 5 && faceGroups != null && anIntArray1639 != null) {
 			for (int j2 = 0; j2 < i1; j2++) {
 				int k3 = ai[j2];
-				if (k3 < anIntArrayArray1658.length) {
-					int ai4[] = anIntArrayArray1658[k3];
+				if (k3 < faceGroups.length) {
+					int ai4[] = faceGroups[k3];
 					for (int element : ai4) {
 						int i6 = element;
 						anIntArray1639[i6] += j * 8;
@@ -1243,8 +1243,8 @@ public final class Model extends Animable {
 
 		super.aClass33Array1425 = null;
 		aClass33Array1660 = null;
-		anIntArray1655 = null;
-		anIntArray1656 = null;
+		vertexGroupIds = null;
+		faceGroupIds = null;
 		if (anIntArray1637 != null) {
 			for (int l1 = 0; l1 < anInt1630; l1++) {
 				if ((anIntArray1637[l1] & 2) == 2) {
@@ -1850,10 +1850,10 @@ public final class Model extends Animable {
 	private int anInt1652;
 	private int anInt1653;
 	public int anInt1654;
-	private int[] anIntArray1655;
-	private int[] anIntArray1656;
-	public int anIntArrayArray1657[][];
-	public int anIntArrayArray1658[][];
+	private int[] vertexGroupIds;
+	private int[] faceGroupIds;
+	public int vertexGroups[][];
+	public int faceGroups[][];
 	public boolean aBoolean1659;
 	Class33 aClass33Array1660[];
 	private static Class21[] aClass21Array1661;

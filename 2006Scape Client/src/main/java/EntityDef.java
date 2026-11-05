@@ -156,7 +156,7 @@ public final class EntityDef {
 				}
 
 			}
-			model.method469();
+			model.buildAnimationGroups();
 			model.method479(64 + anInt85, 850 + anInt92, -30, -50, -30, true);
 			mruNodes.removeFromCache(model, type);
 		}
@@ -171,8 +171,8 @@ public final class EntityDef {
 			model_1.method478(anInt91, anInt91, anInt86);
 		}
 		model_1.method466();
-		model_1.anIntArrayArray1658 = null;
-		model_1.anIntArrayArray1657 = null;
+		model_1.faceGroups = null;
+		model_1.vertexGroups = null;
 		if (aByte68 == 1) {
 			model_1.aBoolean1659 = true;
 		}

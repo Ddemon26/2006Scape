@@ -306,7 +306,7 @@ public final class RSInterface {
 		}
 		Model model_1 = new Model(true, Class36.method532(k) & Class36.method532(j), false, model);
 		if (k != -1 || j != -1) {
-			model_1.method469();
+			model_1.buildAnimationGroups();
 		}
 		if (k != -1) {
 			model_1.method470(k);

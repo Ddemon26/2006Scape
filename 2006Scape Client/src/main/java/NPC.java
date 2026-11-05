@@ -37,10 +37,10 @@ public final class NPC extends Entity {
 				int j = spotAnim.aAnimation_407.anIntArray353[super.anInt1521];
 				Model model_2 = new Model(true, Class36.method532(j), false, model_1);
 				model_2.method475(0, -super.anInt1524, 0);
-				model_2.method469();
+				model_2.buildAnimationGroups();
 				model_2.method470(j);
-				model_2.anIntArrayArray1658 = null;
-				model_2.anIntArrayArray1657 = null;
+				model_2.faceGroups = null;
+				model_2.vertexGroups = null;
 				if (spotAnim.anInt410 != 128 || spotAnim.anInt411 != 128) {
 					model_2.method478(spotAnim.anInt410, spotAnim.anInt410, spotAnim.anInt411);
 				}

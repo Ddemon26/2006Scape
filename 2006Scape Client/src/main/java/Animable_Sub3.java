@@ -24,10 +24,10 @@ final class Animable_Sub3 extends Animable {
         int   j       = aSpotAnim_1568.aAnimation_407.anIntArray353[anInt1569];
         Model model_1 = new Model(true, Class36.method532(j), false, model);
         if (!aBoolean1567) {
-            model_1.method469();
+            model_1.buildAnimationGroups();
             model_1.method470(j);
-            model_1.anIntArrayArray1658 = null;
-            model_1.anIntArrayArray1657 = null;
+            model_1.faceGroups = null;
+            model_1.vertexGroups = null;
         }
         if (aSpotAnim_1568.anInt410 != 128 || aSpotAnim_1568.anInt411 != 128) {
             model_1.method478(aSpotAnim_1568.anInt410, aSpotAnim_1568.anInt410, aSpotAnim_1568.anInt411);
