@@ -6,8 +6,8 @@ final class StreamLoader {
 
 	public StreamLoader(byte encodedArchive[]) {
 		Stream header = new Stream(encodedArchive);
-		int unpackedArchiveSize = header.read3Bytes();
-		int packedArchiveSize = header.read3Bytes();
+		int unpackedArchiveSize = header.readUnsignedMediumBigEndian();
+		int packedArchiveSize = header.readUnsignedMediumBigEndian();
 		if (packedArchiveSize != unpackedArchiveSize) {
 			byte unpackedData[] = new byte[unpackedArchiveSize];
 			Class13.method225(unpackedData, unpackedArchiveSize, encodedArchive, packedArchiveSize, 6);
@@ -26,8 +26,8 @@ final class StreamLoader {
 		int entryOffset = header.currentOffset + entryCount * 10;
 		for (int entryIndex = 0; entryIndex < entryCount; entryIndex++) {
 			entryNameHashes[entryIndex] = header.readIntBigEndian();
-			entryUnpackedSizes[entryIndex] = header.read3Bytes();
-			entryPackedSizes[entryIndex] = header.read3Bytes();
+			entryUnpackedSizes[entryIndex] = header.readUnsignedMediumBigEndian();
+			entryPackedSizes[entryIndex] = header.readUnsignedMediumBigEndian();
 			entryOffsets[entryIndex] = entryOffset;
 			entryOffset += entryPackedSizes[entryIndex];
 		}

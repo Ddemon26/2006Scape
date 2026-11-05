@@ -33,7 +33,7 @@ public final class Flo {
 			if (i == 0) {
 				return;
 			} else if (i == 1) {
-				anInt390 = stream.read3Bytes();
+				anInt390 = stream.readUnsignedMediumBigEndian();
 				Calendar date = new GregorianCalendar();
 				if (ClientSettings.SNOW_FLOOR_FORCE_ENABLED || (ClientSettings.SNOW_FLOOR_ENABLED && (date.get(Calendar.MONTH) + 1) == Integer.parseInt(ClientSettings.SNOW_MONTH.substring(1)))) {
 					anInt390 = 0xffffff;
@@ -51,7 +51,7 @@ public final class Flo {
 				int k = anInt395;
 				int l = anInt396;
 				int i1 = anInt397;
-				int j1 = stream.read3Bytes();
+				int j1 = stream.readUnsignedMediumBigEndian();
 				method262(j1);
 				anInt394 = j;
 				anInt395 = k;

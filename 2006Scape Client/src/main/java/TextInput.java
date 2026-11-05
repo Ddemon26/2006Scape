@@ -71,18 +71,18 @@ final class TextInput {
 				if (characterCode < 13) {
 					pendingNibble = characterCode;
 				} else {
-					output.writeWordBigEndian(characterCode);
+					output.writeByte(characterCode);
 				}
 			} else if (characterCode < 13) {
-				output.writeWordBigEndian((pendingNibble << 4) + characterCode);
+				output.writeByte((pendingNibble << 4) + characterCode);
 				pendingNibble = -1;
 			} else {
-				output.writeWordBigEndian((pendingNibble << 4) + (characterCode >> 4));
+				output.writeByte((pendingNibble << 4) + (characterCode >> 4));
 				pendingNibble = characterCode & 0xf;
 			}
 		}
 		if (pendingNibble != -1) {
-			output.writeWordBigEndian(pendingNibble << 4);
+			output.writeByte(pendingNibble << 4);
 		}
 	}
 

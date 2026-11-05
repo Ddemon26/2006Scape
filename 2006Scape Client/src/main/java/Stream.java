@@ -37,8 +37,8 @@ public final class Stream extends NodeSub {
 		buffer[currentOffset++] = (byte) (opcode + encryption.getNextKey());
 	}
 
-	public void writeWordBigEndian(int i) {
-		buffer[currentOffset++] = (byte) i;
+	public void writeByte(int value) {
+		buffer[currentOffset++] = (byte) value;
 	}
 
 	public void writeShortBigEndian(int value) {
@@ -51,10 +51,10 @@ public final class Stream extends NodeSub {
 		buffer[currentOffset++] = (byte) (value >> 8);
 	}
 
-	public void writeDWordBigEndian(int i) {
-		buffer[currentOffset++] = (byte) (i >> 16);
-		buffer[currentOffset++] = (byte) (i >> 8);
-		buffer[currentOffset++] = (byte) i;
+	public void writeMediumBigEndian(int value) {
+		buffer[currentOffset++] = (byte) (value >> 16);
+		buffer[currentOffset++] = (byte) (value >> 8);
+		buffer[currentOffset++] = (byte) value;
 	}
 
 	public void writeIntBigEndian(int value) {
@@ -127,7 +127,7 @@ public final class Stream extends NodeSub {
 		return value;
 	}
 
-	public int read3Bytes() {
+	public int readUnsignedMediumBigEndian() {
 		currentOffset += 3;
 		return ((buffer[currentOffset - 3] & 0xff) << 16) + ((buffer[currentOffset - 2] & 0xff) << 8) + (buffer[currentOffset - 1] & 0xff);
 	}
@@ -219,7 +219,7 @@ public final class Stream extends NodeSub {
 		BigInteger ciphertext = plaintext.modPow(ClientSettings.RSA_EXPONENT, ClientSettings.RSA_MODULUS);
 		byte ciphertextBytes[] = ciphertext.toByteArray();
 		currentOffset = 0;
-		writeWordBigEndian(ciphertextBytes.length);
+		writeByte(ciphertextBytes.length);
 		writeBytes(ciphertextBytes, ciphertextBytes.length, 0);
 	}
 	

@@ -32,7 +32,7 @@ public final class Sprite extends DrawingArea {
 		int paletteSize = indexData.readUnsignedByte();
 		int paletteRgb[] = new int[paletteSize];
 		for (int paletteEntry = 0; paletteEntry < paletteSize - 1; paletteEntry++) {
-			paletteRgb[paletteEntry + 1] = indexData.read3Bytes();
+			paletteRgb[paletteEntry + 1] = indexData.readUnsignedMediumBigEndian();
 			if (paletteRgb[paletteEntry + 1] == 0) {
 				paletteRgb[paletteEntry + 1] = 1;
 			}

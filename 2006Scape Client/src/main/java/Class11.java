@@ -155,7 +155,7 @@ final class Class11
 		return 1;
 	    }
 	    if (i_11_ == 81) {
-		int i_13_ = aClass3_Sub12_211.read3Bytes();
+		int i_13_ = aClass3_Sub12_211.readUnsignedMediumBigEndian();
 		i_12_ -= 3;
 		int i_14_ = anIntArray216[i];
 		aLong215 += (long) i_14_ * (long) (anInt218 - i_13_);

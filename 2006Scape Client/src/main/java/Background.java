@@ -13,7 +13,7 @@ public final class Background extends DrawingArea {
 		int paletteSize = indexData.readUnsignedByte();
 		paletteRgb = new int[paletteSize];
 		for (int paletteEntry = 0; paletteEntry < paletteSize - 1; paletteEntry++) {
-			paletteRgb[paletteEntry + 1] = indexData.read3Bytes();
+			paletteRgb[paletteEntry + 1] = indexData.readUnsignedMediumBigEndian();
 		}
 
 		for (int skippedImage = 0; skippedImage < imageIndex; skippedImage++) {

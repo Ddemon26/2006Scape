@@ -86,14 +86,14 @@ public class StreamPacketFramingTest {
         Stream stream = at(new byte[400],0);
         stream.encryption = singleKey(1);
         stream.writeEncryptedOpcode(4);
-        stream.writeWordBigEndian(0); // reserved cell
+        stream.writeByte(0); // reserved cell
         int start = stream.currentOffset;
         stream.writeBytes(new byte[] {12,34,56},3,0);
         stream.backpatchBytePayloadLength(stream.currentOffset - start);
         assertArrayEquals(new byte[] {5,3,12,34,56},Arrays.copyOf(stream.buffer,stream.currentOffset));
         stream.encryption = singleKey(2);
         stream.writeEncryptedOpcode(126);
-        stream.writeWordBigEndian(0);
+        stream.writeByte(0);
         start = stream.currentOffset;
         stream.backpatchBytePayloadLength(stream.currentOffset - start); // zero payload still patches reserved byte
         assertArrayEquals(new byte[] {5,3,12,34,56,-128,0},Arrays.copyOf(stream.buffer,stream.currentOffset));
