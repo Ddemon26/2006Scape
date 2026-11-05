@@ -224,31 +224,31 @@ public final class Stream extends NodeSub {
 	}
 	
 
-	public void method424(int i) {
-		buffer[currentOffset++] = (byte) -i;
+	public void writeNegatedByte(int value) {
+		buffer[currentOffset++] = (byte) -value;
 	}
 
-	public void method425(int j) {
-		buffer[currentOffset++] = (byte) (128 - j);
+	public void writeByte128MinusValue(int value) {
+		buffer[currentOffset++] = (byte) (128 - value);
 	}
 
 	public int readUnsignedByteA() {
 		return buffer[currentOffset++] - 128 & 0xff;
 	}
 
-	public int method427() {
+	public int readUnsignedNegatedByte() {
 		return -buffer[currentOffset++] & 0xff;
 	}
 
-	public int method428() {
+	public int readUnsignedByte128MinusValue() {
 		return 128 - buffer[currentOffset++] & 0xff;
 	}
 
-	public byte method429() {
+	public byte readSignedNegatedByte() {
 		return (byte) -buffer[currentOffset++];
 	}
 
-	public byte method430() {
+	public byte readSignedByte128MinusValue() {
 		return (byte) (128 - buffer[currentOffset++]);
 	}
 

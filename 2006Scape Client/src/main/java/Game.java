@@ -3203,7 +3203,7 @@ public class Game extends RSApplet {
 						}
 						stream.createFrame(214);
 						stream.method433(anInt1084);
-						stream.method424(j1);
+						stream.writeNegatedByte(j1);
 						stream.method433(anInt1085);
 						stream.method431(mouseInvInterfaceIndex);
 					}
@@ -5217,8 +5217,8 @@ public class Game extends RSApplet {
 						stream.createFrame(4);
 						stream.writeWordBigEndian(0);
 						int j3 = stream.currentOffset;
-						stream.method425(i3);
-						stream.method425(j2);
+						stream.writeByte128MinusValue(i3);
+						stream.writeByte128MinusValue(j2);
 						aStream_834.currentOffset = 0;
 						TextInput.encodeChatText(inputString, aStream_834);
 						stream.writeReversedBytesAdd128(0, aStream_834.buffer, aStream_834.currentOffset);
@@ -6542,7 +6542,7 @@ public class Game extends RSApplet {
 			}
 
 			stream.method431(i7 + baseY);
-			stream.method424(super.keyArray[5] != 1 ? 0 : 1);
+			stream.writeNegatedByte(super.keyArray[5] != 1 ? 0 : 1);
 			return true;
 		}
 		return i != 1;
@@ -6600,7 +6600,7 @@ public class Game extends RSApplet {
 			}
 			if ((l & 8) != 0) {
 				int j1 = stream.readUnsignedByteA();
-				int j2 = stream.method427();
+				int j2 = stream.readUnsignedNegatedByte();
 				npc.updateHitData(j2, j1, loopCycle);
 				npc.loopCycleStatus = loopCycle + 300;
 				npc.currentHealth = stream.readUnsignedByteA();
@@ -6631,12 +6631,12 @@ public class Game extends RSApplet {
 				npc.textCycle = 100;
 			}
 			if ((l & 0x40) != 0) {
-				int l1 = stream.method427();
-				int k2 = stream.method428();
+				int l1 = stream.readUnsignedNegatedByte();
+				int k2 = stream.readUnsignedByte128MinusValue();
 				npc.updateHitData(k2, l1, loopCycle);
 				npc.loopCycleStatus = loopCycle + 300;
-				npc.currentHealth = stream.method428();
-				npc.maxHealth = stream.method427();
+				npc.currentHealth = stream.readUnsignedByte128MinusValue();
+				npc.maxHealth = stream.readUnsignedNegatedByte();
 			}
 			if ((l & 2) != 0) {
 				npc.desc = EntityDef.forID(stream.method436());
@@ -8515,13 +8515,13 @@ public class Game extends RSApplet {
 
 	public void method107(int i, int j, Stream stream, Player player) {
 		if ((i & 0x400) != 0) {
-			player.anInt1543 = stream.method428();
-			player.anInt1545 = stream.method428();
-			player.anInt1544 = stream.method428();
-			player.anInt1546 = stream.method428();
+			player.anInt1543 = stream.readUnsignedByte128MinusValue();
+			player.anInt1545 = stream.readUnsignedByte128MinusValue();
+			player.anInt1544 = stream.readUnsignedByte128MinusValue();
+			player.anInt1546 = stream.readUnsignedByte128MinusValue();
 			player.anInt1547 = stream.method436() + loopCycle;
 			player.anInt1548 = stream.method435() + loopCycle;
-			player.anInt1549 = stream.method428();
+			player.anInt1549 = stream.readUnsignedByte128MinusValue();
 			player.method446();
 		}
 		if ((i & 0x100) != 0) {
@@ -8545,7 +8545,7 @@ public class Game extends RSApplet {
 				l = -1;
 			}
 			//processSound(l, 1, player, null);
-			int i2 = stream.method427();
+			int i2 = stream.readUnsignedNegatedByte();
 			if (l == player.anim && l != -1) {
 				int i3 = Animation.anims[l].anInt365;
 				if (i3 == 1) {
@@ -8581,7 +8581,7 @@ public class Game extends RSApplet {
 		if ((i & 0x80) != 0) {
 			int i1 = stream.method434();
 			int j2 = stream.readUnsignedByte();
-			int j3 = stream.method427();
+			int j3 = stream.readUnsignedNegatedByte();
 			int k3 = stream.currentOffset;
 			if (player.name != null && player.visible) {
 				long l3 = TextClass.encodeBase37Name(player.name);
@@ -8632,7 +8632,7 @@ public class Game extends RSApplet {
 			}
 		}
 		if ((i & 0x10) != 0) {
-			int j1 = stream.method427();
+			int j1 = stream.readUnsignedNegatedByte();
 			byte abyte0[] = new byte[j1];
 			Stream stream_1 = new Stream(abyte0);
 			stream.readBytes(j1, 0, abyte0);
@@ -8648,16 +8648,16 @@ public class Game extends RSApplet {
 			int k2 = stream.readUnsignedByteA();
 			player.updateHitData(k2, k1, loopCycle);
 			player.loopCycleStatus = loopCycle + 300;
-			player.currentHealth = stream.method427();
+			player.currentHealth = stream.readUnsignedNegatedByte();
 			player.maxHealth = stream.readUnsignedByte();
 		}
 		if ((i & 0x200) != 0) {
 			int l1 = stream.readUnsignedByte();
-			int l2 = stream.method428();
+			int l2 = stream.readUnsignedByte128MinusValue();
 			player.updateHitData(l2, l1, loopCycle);
 			player.loopCycleStatus = loopCycle + 300;
 			player.currentHealth = stream.readUnsignedByte();
-			player.maxHealth = stream.method427();
+			player.maxHealth = stream.readUnsignedNegatedByte();
 		}
 	}
 
@@ -10037,7 +10037,7 @@ public class Game extends RSApplet {
 		}
 		if (j == 215) {
 			int i1 = stream.method435();
-			int l3 = stream.method428();
+			int l3 = stream.readUnsignedByte128MinusValue();
 			int k6 = anInt1268 + (l3 >> 4 & 7);
 			int j9 = anInt1269 + (l3 & 7);
 			int i12 = stream.method435();
@@ -10079,10 +10079,10 @@ public class Game extends RSApplet {
 			return;
 		}
 		if (j == 160) {
-			int k1 = stream.method428();
+			int k1 = stream.readUnsignedByte128MinusValue();
 			int j4 = anInt1268 + (k1 >> 4 & 7);
 			int i7 = anInt1269 + (k1 & 7);
-			int l9 = stream.method428();
+			int l9 = stream.readUnsignedByte128MinusValue();
 			int j12 = l9 >> 2;
 			int k14 = l9 & 3;
 			int j16 = anIntArray1177[j12];
@@ -10129,21 +10129,21 @@ public class Game extends RSApplet {
 			return;
 		}
 		if (j == 147) {
-			int l1 = stream.method428();
+			int l1 = stream.readUnsignedByte128MinusValue();
 			int k4 = anInt1268 + (l1 >> 4 & 7);
 			int j7 = anInt1269 + (l1 & 7);
 			int i10 = stream.readUnsignedWord();
-			byte byte0 = stream.method430();
+			byte byte0 = stream.readSignedByte128MinusValue();
 			int l14 = stream.method434();
-			byte byte1 = stream.method429();
+			byte byte1 = stream.readSignedNegatedByte();
 			int k17 = stream.readUnsignedWord();
-			int k18 = stream.method428();
+			int k18 = stream.readUnsignedByte128MinusValue();
 			int j19 = k18 >> 2;
 			int i20 = k18 & 3;
 			int l20 = anIntArray1177[j19];
 			byte byte2 = stream.readSignedByte();
 			int l21 = stream.readUnsignedWord();
-			byte byte3 = stream.method429();
+			byte byte3 = stream.readSignedNegatedByte();
 			Player player;
 			if (i10 == unknownInt10) {
 				player = myPlayer;
@@ -10189,7 +10189,7 @@ public class Game extends RSApplet {
 			}
 		}
 		if (j == 101) {
-			int l2 = stream.method427();
+			int l2 = stream.readUnsignedNegatedByte();
 			int k5 = l2 >> 2;
 			int j8 = l2 & 3;
 			int i11 = anIntArray1177[k5];
@@ -10207,7 +10207,7 @@ public class Game extends RSApplet {
 			int l4 = anInt1268 + (i2 >> 4 & 7);
 			int k7 = anInt1269 + (i2 & 7);
 			int j10 = stream.method434();
-			int k12 = stream.method428();
+			int k12 = stream.readUnsignedByte128MinusValue();
 			int i15 = k12 >> 2;
 			int k16 = k12 & 3;
 			int l17 = anIntArray1177[i15];
@@ -10632,7 +10632,7 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 176) {
-				daysSinceRecovChange = inStream.method427();
+				daysSinceRecovChange = inStream.readUnsignedNegatedByte();
 				unreadMessages = inStream.method435();
 				membersInt = inStream.readUnsignedByte();
 				anInt1193 = inStream.method440();
@@ -10659,8 +10659,8 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 64) {
-				anInt1268 = inStream.method427();
-				anInt1269 = inStream.method428();
+				anInt1268 = inStream.readUnsignedNegatedByte();
+				anInt1269 = inStream.readUnsignedByte128MinusValue();
 				for (int j = anInt1268; j < anInt1268 + 8; j++) {
 					for (int l9 = anInt1269; l9 < anInt1269 + 8; l9++) {
 						if (groundArray[plane][j][l9] != null) {
@@ -11051,7 +11051,7 @@ public class Game extends RSApplet {
 			}
 			if (pktType == 60) {
 				anInt1269 = inStream.readUnsignedByte();
-				anInt1268 = inStream.method427();
+				anInt1268 = inStream.readUnsignedNegatedByte();
 				while (inStream.currentOffset < pktSize) {
 					int k3 = inStream.readUnsignedByte();
 					method137(inStream, k3);
@@ -11086,7 +11086,7 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 104) {
-				int j4 = inStream.method427();
+				int j4 = inStream.readUnsignedNegatedByte();
 				int i12 = inStream.readUnsignedByteA();
 				String s6 = inStream.readLfTerminatedString();
 				if (j4 >= 1 && j4 <= 5) {
@@ -11395,13 +11395,13 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 85) {
-				anInt1269 = inStream.method427();
-				anInt1268 = inStream.method427();
+				anInt1269 = inStream.readUnsignedNegatedByte();
+				anInt1268 = inStream.readUnsignedNegatedByte();
 				pktType = -1;
 				return true;
 			}
 			if (pktType == 24) {
-				anInt1054 = inStream.method428();
+				anInt1054 = inStream.readUnsignedByte128MinusValue();
 				if (anInt1054 == tabID) {
 					if (anInt1054 == 3) {
 						tabID = 1;
@@ -11777,7 +11777,7 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 106) {
-				tabID = inStream.method427();
+				tabID = inStream.readUnsignedNegatedByte();
 				needDrawTabArea = true;
 				tabAreaAltered = true;
 				pktType = -1;
