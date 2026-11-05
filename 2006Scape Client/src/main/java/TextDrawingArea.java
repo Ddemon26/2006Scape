@@ -126,7 +126,7 @@ public final class TextDrawingArea extends DrawingArea {
 		for (int i1 = 0; i1 < s.length(); i1++) {
 			char c = s.charAt(i1);
 			if (c != ' ') {
-				method392(aByteArrayArray1491[c], l + anIntArray1494[c], j + anIntArray1495[c], anIntArray1492[c], anIntArray1493[c], i);
+				drawGlyphMask(aByteArrayArray1491[c], l + anIntArray1494[c], j + anIntArray1495[c], anIntArray1492[c], anIntArray1493[c], i);
 			}
 			l += glyphAdvancePixels[c];
 		}
@@ -141,7 +141,7 @@ public final class TextDrawingArea extends DrawingArea {
 		for (int characterIndex = 0; characterIndex < text.length(); characterIndex++) {
 			char character = text.charAt(characterIndex);
 			if (character != ' ') {
-				method392(aByteArrayArray1491[character], centerX + anIntArray1494[character], baselineY + anIntArray1495[character] + (int) (Math.sin(characterIndex / 2D + phase / 5D) * 5D), anIntArray1492[character], anIntArray1493[character], color);
+				drawGlyphMask(aByteArrayArray1491[character], centerX + anIntArray1494[character], baselineY + anIntArray1495[character] + (int) (Math.sin(characterIndex / 2D + phase / 5D) * 5D), anIntArray1492[character], anIntArray1493[character], color);
 			}
 			centerX += glyphAdvancePixels[character];
 		}
@@ -157,7 +157,7 @@ public final class TextDrawingArea extends DrawingArea {
 		for (int characterIndex = 0; characterIndex < text.length(); characterIndex++) {
 			char character = text.charAt(characterIndex);
 			if (character != ' ') {
-				method392(aByteArrayArray1491[character], centerX + anIntArray1494[character] + (int) (Math.sin(characterIndex / 5D + phase / 5D) * 5D), baselineY + anIntArray1495[character] + (int) (Math.sin(characterIndex / 3D + phase / 5D) * 5D), anIntArray1492[character], anIntArray1493[character], color);
+				drawGlyphMask(aByteArrayArray1491[character], centerX + anIntArray1494[character] + (int) (Math.sin(characterIndex / 5D + phase / 5D) * 5D), baselineY + anIntArray1495[character] + (int) (Math.sin(characterIndex / 3D + phase / 5D) * 5D), anIntArray1492[character], anIntArray1493[character], color);
 			}
 			centerX += glyphAdvancePixels[character];
 		}
@@ -177,7 +177,7 @@ public final class TextDrawingArea extends DrawingArea {
 		for (int characterIndex = 0; characterIndex < text.length(); characterIndex++) {
 			char character = text.charAt(characterIndex);
 			if (character != ' ') {
-				method392(aByteArrayArray1491[character], centerX + anIntArray1494[character], baselineY + anIntArray1495[character] + (int) (Math.sin(characterIndex / 1.5D + phase) * amplitudePixels), anIntArray1492[character], anIntArray1493[character], color);
+				drawGlyphMask(aByteArrayArray1491[character], centerX + anIntArray1494[character], baselineY + anIntArray1495[character] + (int) (Math.sin(characterIndex / 1.5D + phase) * amplitudePixels), anIntArray1492[character], anIntArray1493[character], color);
 			}
 			centerX += glyphAdvancePixels[character];
 		}
@@ -202,10 +202,10 @@ public final class TextDrawingArea extends DrawingArea {
 				char c = s.charAt(i1);
 				if (c != ' ') {
 					if (_shadow) {
-						method392(aByteArrayArray1491[c], _x + anIntArray1494[c] + 1, _y + anIntArray1495[c] + 1, anIntArray1492[c], anIntArray1493[c], 0);
+						drawGlyphMask(aByteArrayArray1491[c], _x + anIntArray1494[c] + 1, _y + anIntArray1495[c] + 1, anIntArray1492[c], anIntArray1493[c], 0);
 					}
 					try {
-					method392(aByteArrayArray1491[c], _x + anIntArray1494[c], _y + anIntArray1495[c], anIntArray1492[c], anIntArray1493[c], _color);
+					drawGlyphMask(aByteArrayArray1491[c], _x + anIntArray1494[c], _y + anIntArray1495[c], anIntArray1492[c], anIntArray1493[c], _color);
 					} catch (Exception e) {
 						
 					}
@@ -235,8 +235,8 @@ public final class TextDrawingArea extends DrawingArea {
 			} else {
 				char c = s.charAt(k1);
 				if (c != ' ') {
-					method394(192, i + anIntArray1494[c] + 1, aByteArrayArray1491[c], anIntArray1492[c], i1 + anIntArray1495[c] + 1, anIntArray1493[c], 0);
-					method394(j1, i + anIntArray1494[c], aByteArrayArray1491[c], anIntArray1492[c], i1 + anIntArray1495[c], anIntArray1493[c], j);
+					drawBlendedGlyphMask(192, i + anIntArray1494[c] + 1, aByteArrayArray1491[c], anIntArray1492[c], i1 + anIntArray1495[c] + 1, anIntArray1493[c], 0);
+					drawBlendedGlyphMask(j1, i + anIntArray1494[c], aByteArrayArray1491[c], anIntArray1492[c], i1 + anIntArray1495[c], anIntArray1493[c], j);
 				}
 				i += glyphAdvancePixels[c];
 				if ((aRandom1498.nextInt() & 3) == 0) {
@@ -308,133 +308,133 @@ public final class TextDrawingArea extends DrawingArea {
 		return -1;
 	}
 
-	private void method392(byte abyte0[], int i, int j, int k, int l, int i1) {
-		int j1 = i + j * DrawingArea.width;
-		int k1 = DrawingArea.width - k;
-		int l1 = 0;
-		int i2 = 0;
-		if (j < DrawingArea.topY) {
-			int j2 = DrawingArea.topY - j;
-			l -= j2;
-			j = DrawingArea.topY;
-			i2 += j2 * k;
-			j1 += j2 * DrawingArea.width;
+	private void drawGlyphMask(byte mask[], int x, int y, int glyphWidth, int glyphHeight, int color) {
+		int destinationIndex = x + y * DrawingArea.width;
+		int destinationRowSkip = DrawingArea.width - glyphWidth;
+		int sourceRowSkip = 0;
+		int sourceIndex = 0;
+		if (y < DrawingArea.topY) {
+			int clippedTopRows = DrawingArea.topY - y;
+			glyphHeight -= clippedTopRows;
+			y = DrawingArea.topY;
+			sourceIndex += clippedTopRows * glyphWidth;
+			destinationIndex += clippedTopRows * DrawingArea.width;
 		}
-		if (j + l >= DrawingArea.bottomY) {
-			l -= j + l - DrawingArea.bottomY + 1;
+		if (y + glyphHeight >= DrawingArea.bottomY) {
+			glyphHeight -= y + glyphHeight - DrawingArea.bottomY + 1;
 		}
-		if (i < DrawingArea.topX) {
-			int k2 = DrawingArea.topX - i;
-			k -= k2;
-			i = DrawingArea.topX;
-			i2 += k2;
-			j1 += k2;
-			l1 += k2;
-			k1 += k2;
+		if (x < DrawingArea.topX) {
+			int clippedLeftColumns = DrawingArea.topX - x;
+			glyphWidth -= clippedLeftColumns;
+			x = DrawingArea.topX;
+			sourceIndex += clippedLeftColumns;
+			destinationIndex += clippedLeftColumns;
+			sourceRowSkip += clippedLeftColumns;
+			destinationRowSkip += clippedLeftColumns;
 		}
-		if (i + k >= DrawingArea.bottomX) {
-			int l2 = i + k - DrawingArea.bottomX + 1;
-			k -= l2;
-			l1 += l2;
-			k1 += l2;
+		if (x + glyphWidth >= DrawingArea.bottomX) {
+			int clippedRightColumns = x + glyphWidth - DrawingArea.bottomX + 1;
+			glyphWidth -= clippedRightColumns;
+			sourceRowSkip += clippedRightColumns;
+			destinationRowSkip += clippedRightColumns;
 		}
-		if (!(k <= 0 || l <= 0)) {
-			method393(DrawingArea.pixels, abyte0, i1, i2, j1, k, l, k1, l1);
+		if (!(glyphWidth <= 0 || glyphHeight <= 0)) {
+			copyGlyphMaskRows(DrawingArea.pixels, mask, color, sourceIndex, destinationIndex, glyphWidth, glyphHeight, destinationRowSkip, sourceRowSkip);
 		}
 	}
 
-	private void method393(int ai[], byte abyte0[], int i, int j, int k, int l, int i1, int j1, int k1) {
-		int l1 = -(l >> 2);
-		l = -(l & 3);
-		for (int i2 = -i1; i2 < 0; i2++) {
-			for (int j2 = l1; j2 < 0; j2++) {
-				if (abyte0[j++] != 0) {
-					ai[k++] = i;
+	private void copyGlyphMaskRows(int destinationPixels[], byte mask[], int color, int sourceIndex, int destinationIndex, int glyphWidth, int glyphHeight, int destinationRowSkip, int sourceRowSkip) {
+		int negativeGroupCount = -(glyphWidth >> 2);
+		glyphWidth = -(glyphWidth & 3);
+		for (int rowCounter = -glyphHeight; rowCounter < 0; rowCounter++) {
+			for (int groupCounter = negativeGroupCount; groupCounter < 0; groupCounter++) {
+				if (mask[sourceIndex++] != 0) {
+					destinationPixels[destinationIndex++] = color;
 				} else {
-					k++;
+					destinationIndex++;
 				}
-				if (abyte0[j++] != 0) {
-					ai[k++] = i;
+				if (mask[sourceIndex++] != 0) {
+					destinationPixels[destinationIndex++] = color;
 				} else {
-					k++;
+					destinationIndex++;
 				}
-				if (abyte0[j++] != 0) {
-					ai[k++] = i;
+				if (mask[sourceIndex++] != 0) {
+					destinationPixels[destinationIndex++] = color;
 				} else {
-					k++;
+					destinationIndex++;
 				}
-				if (abyte0[j++] != 0) {
-					ai[k++] = i;
+				if (mask[sourceIndex++] != 0) {
+					destinationPixels[destinationIndex++] = color;
 				} else {
-					k++;
-				}
-			}
-
-			for (int k2 = l; k2 < 0; k2++) {
-				if (abyte0[j++] != 0) {
-					ai[k++] = i;
-				} else {
-					k++;
+					destinationIndex++;
 				}
 			}
 
-			k += j1;
-			j += k1;
+			for (int remainderCounter = glyphWidth; remainderCounter < 0; remainderCounter++) {
+				if (mask[sourceIndex++] != 0) {
+					destinationPixels[destinationIndex++] = color;
+				} else {
+					destinationIndex++;
+				}
+			}
+
+			destinationIndex += destinationRowSkip;
+			sourceIndex += sourceRowSkip;
 		}
 
 	}
 
-	private void method394(int i, int j, byte abyte0[], int k, int l, int i1, int j1) {
-		int k1 = j + l * DrawingArea.width;
-		int l1 = DrawingArea.width - k;
-		int i2 = 0;
-		int j2 = 0;
-		if (l < DrawingArea.topY) {
-			int k2 = DrawingArea.topY - l;
-			i1 -= k2;
-			l = DrawingArea.topY;
-			j2 += k2 * k;
-			k1 += k2 * DrawingArea.width;
+	private void drawBlendedGlyphMask(int opacity256, int x, byte mask[], int glyphWidth, int y, int glyphHeight, int color) {
+		int destinationIndex = x + y * DrawingArea.width;
+		int destinationRowSkip = DrawingArea.width - glyphWidth;
+		int sourceRowSkip = 0;
+		int sourceIndex = 0;
+		if (y < DrawingArea.topY) {
+			int clippedTopRows = DrawingArea.topY - y;
+			glyphHeight -= clippedTopRows;
+			y = DrawingArea.topY;
+			sourceIndex += clippedTopRows * glyphWidth;
+			destinationIndex += clippedTopRows * DrawingArea.width;
 		}
-		if (l + i1 >= DrawingArea.bottomY) {
-			i1 -= l + i1 - DrawingArea.bottomY + 1;
+		if (y + glyphHeight >= DrawingArea.bottomY) {
+			glyphHeight -= y + glyphHeight - DrawingArea.bottomY + 1;
 		}
-		if (j < DrawingArea.topX) {
-			int l2 = DrawingArea.topX - j;
-			k -= l2;
-			j = DrawingArea.topX;
-			j2 += l2;
-			k1 += l2;
-			i2 += l2;
-			l1 += l2;
+		if (x < DrawingArea.topX) {
+			int clippedLeftColumns = DrawingArea.topX - x;
+			glyphWidth -= clippedLeftColumns;
+			x = DrawingArea.topX;
+			sourceIndex += clippedLeftColumns;
+			destinationIndex += clippedLeftColumns;
+			sourceRowSkip += clippedLeftColumns;
+			destinationRowSkip += clippedLeftColumns;
 		}
-		if (j + k >= DrawingArea.bottomX) {
-			int i3 = j + k - DrawingArea.bottomX + 1;
-			k -= i3;
-			i2 += i3;
-			l1 += i3;
+		if (x + glyphWidth >= DrawingArea.bottomX) {
+			int clippedRightColumns = x + glyphWidth - DrawingArea.bottomX + 1;
+			glyphWidth -= clippedRightColumns;
+			sourceRowSkip += clippedRightColumns;
+			destinationRowSkip += clippedRightColumns;
 		}
-		if (k <= 0 || i1 <= 0) {
+		if (glyphWidth <= 0 || glyphHeight <= 0) {
 			return;
 		}
-		method395(abyte0, i1, k1, DrawingArea.pixels, j2, k, i2, l1, j1, i);
+		blendGlyphMaskRows(mask, glyphHeight, destinationIndex, DrawingArea.pixels, sourceIndex, glyphWidth, sourceRowSkip, destinationRowSkip, color, opacity256);
 	}
 
-	private void method395(byte abyte0[], int i, int j, int ai[], int l, int i1, int j1, int k1, int l1, int i2) {
-		l1 = ((l1 & 0xff00ff) * i2 & 0xff00ff00) + ((l1 & 0xff00) * i2 & 0xff0000) >> 8;
-		i2 = 256 - i2;
-		for (int j2 = -i; j2 < 0; j2++) {
-			for (int k2 = -i1; k2 < 0; k2++) {
-				if (abyte0[l++] != 0) {
-					int l2 = ai[j];
-					ai[j++] = (((l2 & 0xff00ff) * i2 & 0xff00ff00) + ((l2 & 0xff00) * i2 & 0xff0000) >> 8) + l1;
+	private void blendGlyphMaskRows(byte mask[], int glyphHeight, int destinationIndex, int destinationPixels[], int sourceIndex, int glyphWidth, int sourceRowSkip, int destinationRowSkip, int color, int opacity256) {
+		color = ((color & 0xff00ff) * opacity256 & 0xff00ff00) + ((color & 0xff00) * opacity256 & 0xff0000) >> 8;
+		opacity256 = 256 - opacity256;
+		for (int rowCounter = -glyphHeight; rowCounter < 0; rowCounter++) {
+			for (int columnCounter = -glyphWidth; columnCounter < 0; columnCounter++) {
+				if (mask[sourceIndex++] != 0) {
+					int destinationColor = destinationPixels[destinationIndex];
+					destinationPixels[destinationIndex++] = (((destinationColor & 0xff00ff) * opacity256 & 0xff00ff00) + ((destinationColor & 0xff00) * opacity256 & 0xff0000) >> 8) + color;
 				} else {
-					j++;
+					destinationIndex++;
 				}
 			}
 
-			j += k1;
-			l += j1;
+			destinationIndex += destinationRowSkip;
+			sourceIndex += sourceRowSkip;
 		}
 
 	}
