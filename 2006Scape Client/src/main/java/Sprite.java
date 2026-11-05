@@ -26,9 +26,9 @@ public final class Sprite extends DrawingArea {
 	public Sprite(StreamLoader streamLoader, String imageName, int imageIndex) {
 		Stream pixelData = new Stream(streamLoader.getDataForName(imageName + ".dat"));
 		Stream indexData = new Stream(streamLoader.getDataForName("index.dat"));
-		indexData.currentOffset = pixelData.readUnsignedWord();
-		trimWidth = indexData.readUnsignedWord();
-		trimHeight = indexData.readUnsignedWord();
+		indexData.currentOffset = pixelData.readUnsignedShortBigEndian();
+		trimWidth = indexData.readUnsignedShortBigEndian();
+		trimHeight = indexData.readUnsignedShortBigEndian();
 		int paletteSize = indexData.readUnsignedByte();
 		int paletteRgb[] = new int[paletteSize];
 		for (int paletteEntry = 0; paletteEntry < paletteSize - 1; paletteEntry++) {
@@ -40,14 +40,14 @@ public final class Sprite extends DrawingArea {
 
 		for (int skippedImage = 0; skippedImage < imageIndex; skippedImage++) {
 			indexData.currentOffset += 2;
-			pixelData.currentOffset += indexData.readUnsignedWord() * indexData.readUnsignedWord();
+			pixelData.currentOffset += indexData.readUnsignedShortBigEndian() * indexData.readUnsignedShortBigEndian();
 			indexData.currentOffset++;
 		}
 
 		offsetX = indexData.readUnsignedByte();
 		offsetY = indexData.readUnsignedByte();
-		width = indexData.readUnsignedWord();
-		height = indexData.readUnsignedWord();
+		width = indexData.readUnsignedShortBigEndian();
+		height = indexData.readUnsignedShortBigEndian();
 		int storageOrder = indexData.readUnsignedByte();
 		int pixelCount = width * height;
 		pixels = new int[pixelCount];

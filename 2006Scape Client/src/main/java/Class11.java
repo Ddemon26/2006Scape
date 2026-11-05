@@ -74,8 +74,8 @@ final class Class11
     final void method525(byte[] is) {
 	aClass3_Sub12_211.buffer = is;
 	aClass3_Sub12_211.currentOffset = 10;
-	int i = aClass3_Sub12_211.readUnsignedWord();
-	anInt213 = aClass3_Sub12_211.readUnsignedWord();
+	int i = aClass3_Sub12_211.readUnsignedShortBigEndian();
+	anInt213 = aClass3_Sub12_211.readUnsignedShortBigEndian();
 	anInt218 = 500000;
 	anIntArray217 = new int[i];
 	int i_4_ = 0;

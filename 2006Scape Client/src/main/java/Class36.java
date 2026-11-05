@@ -16,10 +16,10 @@ public final class Class36 {
 	public static void method529(byte abyte0[]) {
 		Stream stream = new Stream(abyte0);
 		stream.currentOffset = abyte0.length - 8;
-		int i = stream.readUnsignedWord();
-		int j = stream.readUnsignedWord();
-		int k = stream.readUnsignedWord();
-		int l = stream.readUnsignedWord();
+		int i = stream.readUnsignedShortBigEndian();
+		int j = stream.readUnsignedShortBigEndian();
+		int k = stream.readUnsignedShortBigEndian();
+		int l = stream.readUnsignedShortBigEndian();
 		int i1 = 0;
 		Stream stream_1 = new Stream(abyte0);
 		stream_1.currentOffset = i1;
@@ -36,13 +36,13 @@ public final class Class36 {
 		Stream stream_5 = new Stream(abyte0);
 		stream_5.currentOffset = i1;
 		Class18 class18 = new Class18(stream_5);
-		int k1 = stream_1.readUnsignedWord();
+		int k1 = stream_1.readUnsignedShortBigEndian();
 		int ai[] = new int[500];
 		int ai1[] = new int[500];
 		int ai2[] = new int[500];
 		int ai3[] = new int[500];
 		for (int l1 = 0; l1 < k1; l1++) {
-			int i2 = stream_1.readUnsignedWord();
+			int i2 = stream_1.readUnsignedShortBigEndian();
 			Class36 class36 = aClass36Array635[i2] = new Class36();
 			class36.anInt636 = stream_4.readUnsignedByte();
 			class36.aClass18_637 = class18;

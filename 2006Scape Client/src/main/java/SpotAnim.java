@@ -6,7 +6,7 @@ public final class SpotAnim {
 
 	public static void unpackConfig(StreamLoader streamLoader) {
 		Stream stream = new Stream(streamLoader.getDataForName("spotanim.dat"));
-		int length = stream.readUnsignedWord();
+		int length = stream.readUnsignedShortBigEndian();
 		if (cache == null) {
 			cache = new SpotAnim[length];
 		}
@@ -27,26 +27,26 @@ public final class SpotAnim {
 				return;
 			}
 			if (i == 1) {
-				anInt405 = stream.readUnsignedWord();
+				anInt405 = stream.readUnsignedShortBigEndian();
 			} else if (i == 2) {
-				anInt406 = stream.readUnsignedWord();
+				anInt406 = stream.readUnsignedShortBigEndian();
 				if (Animation.anims != null) {
 					aAnimation_407 = Animation.anims[anInt406];
 				}
 			} else if (i == 4) {
-				anInt410 = stream.readUnsignedWord();
+				anInt410 = stream.readUnsignedShortBigEndian();
 			} else if (i == 5) {
-				anInt411 = stream.readUnsignedWord();
+				anInt411 = stream.readUnsignedShortBigEndian();
 			} else if (i == 6) {
-				anInt412 = stream.readUnsignedWord();
+				anInt412 = stream.readUnsignedShortBigEndian();
 			} else if (i == 7) {
 				anInt413 = stream.readUnsignedByte();
 			} else if (i == 8) {
 				anInt414 = stream.readUnsignedByte();
 			} else if (i >= 40 && i < 50) {
-				anIntArray408[i - 40] = stream.readUnsignedWord();
+				anIntArray408[i - 40] = stream.readUnsignedShortBigEndian();
 			} else if (i >= 50 && i < 60) {
-				anIntArray409[i - 50] = stream.readUnsignedWord();
+				anIntArray409[i - 50] = stream.readUnsignedShortBigEndian();
 			} else {
 				System.out.println("Error unrecognised spotanim config code: " + i);
 			}

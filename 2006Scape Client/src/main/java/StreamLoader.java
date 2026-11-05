@@ -18,7 +18,7 @@ final class StreamLoader {
 			archiveData = encodedArchive;
 			archiveDecompressed = false;
 		}
-		entryCount = header.readUnsignedWord();
+		entryCount = header.readUnsignedShortBigEndian();
 		entryNameHashes = new int[entryCount];
 		entryUnpackedSizes = new int[entryCount];
 		entryPackedSizes = new int[entryCount];

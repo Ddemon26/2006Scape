@@ -7,9 +7,9 @@ public final class Background extends DrawingArea {
 	public Background(StreamLoader streamLoader, String imageName, int imageIndex) {
 		Stream pixelData = new Stream(streamLoader.getDataForName(imageName + ".dat"));
 		Stream indexData = new Stream(streamLoader.getDataForName("index.dat"));
-		indexData.currentOffset = pixelData.readUnsignedWord();
-		canvasWidth = indexData.readUnsignedWord();
-		canvasHeight = indexData.readUnsignedWord();
+		indexData.currentOffset = pixelData.readUnsignedShortBigEndian();
+		canvasWidth = indexData.readUnsignedShortBigEndian();
+		canvasHeight = indexData.readUnsignedShortBigEndian();
 		int paletteSize = indexData.readUnsignedByte();
 		paletteRgb = new int[paletteSize];
 		for (int paletteEntry = 0; paletteEntry < paletteSize - 1; paletteEntry++) {
@@ -18,14 +18,14 @@ public final class Background extends DrawingArea {
 
 		for (int skippedImage = 0; skippedImage < imageIndex; skippedImage++) {
 			indexData.currentOffset += 2;
-			pixelData.currentOffset += indexData.readUnsignedWord() * indexData.readUnsignedWord();
+			pixelData.currentOffset += indexData.readUnsignedShortBigEndian() * indexData.readUnsignedShortBigEndian();
 			indexData.currentOffset++;
 		}
 
 		offsetX = indexData.readUnsignedByte();
 		offsetY = indexData.readUnsignedByte();
-		imageWidth = indexData.readUnsignedWord();
-		imageHeight = indexData.readUnsignedWord();
+		imageWidth = indexData.readUnsignedShortBigEndian();
+		imageHeight = indexData.readUnsignedShortBigEndian();
 		int storageOrder = indexData.readUnsignedByte();
 		int pixelCount = imageWidth * imageHeight;
 		paletteIndices = new byte[pixelCount];

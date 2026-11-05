@@ -41,14 +41,14 @@ public final class Stream extends NodeSub {
 		buffer[currentOffset++] = (byte) i;
 	}
 
-	public void writeWord(int i) {
-		buffer[currentOffset++] = (byte) (i >> 8);
-		buffer[currentOffset++] = (byte) i;
+	public void writeShortBigEndian(int value) {
+		buffer[currentOffset++] = (byte) (value >> 8);
+		buffer[currentOffset++] = (byte) value;
 	}
 
-	public void method400(int i) {
-		buffer[currentOffset++] = (byte) i;
-		buffer[currentOffset++] = (byte) (i >> 8);
+	public void writeWaveShortLittleEndian(int value) {
+		buffer[currentOffset++] = (byte) value;
+		buffer[currentOffset++] = (byte) (value >> 8);
 	}
 
 	public void writeDWordBigEndian(int i) {
@@ -113,18 +113,18 @@ public final class Stream extends NodeSub {
 		return buffer[currentOffset++];
 	}
 
-	public int readUnsignedWord() {
+	public int readUnsignedShortBigEndian() {
 		currentOffset += 2;
 		return ((buffer[currentOffset - 2] & 0xff) << 8) + (buffer[currentOffset - 1] & 0xff);
 	}
 
-	public int readSignedWord() {
+	public int readSignedShortBigEndian() {
 		currentOffset += 2;
-		int i = ((buffer[currentOffset - 2] & 0xff) << 8) + (buffer[currentOffset - 1] & 0xff);
-		if (i > 32767) {
-			i -= 0x10000;
+		int value = ((buffer[currentOffset - 2] & 0xff) << 8) + (buffer[currentOffset - 1] & 0xff);
+		if (value > 32767) {
+			value -= 0x10000;
 		}
-		return i;
+		return value;
 	}
 
 	public int read3Bytes() {
@@ -197,7 +197,7 @@ public final class Stream extends NodeSub {
 		if (firstByte < 128) {
 			return readUnsignedByte() - 64;
 		} else {
-			return readUnsignedWord() - 49152;
+			return readUnsignedShortBigEndian() - 49152;
 		}
 	}
 
@@ -206,7 +206,7 @@ public final class Stream extends NodeSub {
 		if (firstByte < 128) {
 			return readUnsignedByte();
 		} else {
-			return readUnsignedWord() - 32768;
+			return readUnsignedShortBigEndian() - 32768;
 		}
 	}
 
@@ -252,9 +252,9 @@ public final class Stream extends NodeSub {
 		return (byte) (128 - buffer[currentOffset++]);
 	}
 
-	public void method431(int i) {
-		buffer[currentOffset++] = (byte) i;
-		buffer[currentOffset++] = (byte) (i >> 8);
+	public void writeShortLittleEndian(int value) {
+		buffer[currentOffset++] = (byte) value;
+		buffer[currentOffset++] = (byte) (value >> 8);
 	}
 
 	public void method432(int j) {
@@ -267,7 +267,7 @@ public final class Stream extends NodeSub {
 		buffer[currentOffset++] = (byte) (j >> 8);
 	}
 
-	public int method434() {
+	public int readUnsignedShortLittleEndian() {
 		currentOffset += 2;
 		return ((buffer[currentOffset - 1] & 0xff) << 8) + (buffer[currentOffset - 2] & 0xff);
 	}
@@ -282,13 +282,13 @@ public final class Stream extends NodeSub {
 		return ((buffer[currentOffset - 1] & 0xff) << 8) + (buffer[currentOffset - 2] - 128 & 0xff);
 	}
 
-	public int method437() {
+	public int readSignedShortLittleEndian() {
 		currentOffset += 2;
-		int j = ((buffer[currentOffset - 1] & 0xff) << 8) + (buffer[currentOffset - 2] & 0xff);
-		if (j > 32767) {
-			j -= 0x10000;
+		int value = ((buffer[currentOffset - 1] & 0xff) << 8) + (buffer[currentOffset - 2] & 0xff);
+		if (value > 32767) {
+			value -= 0x10000;
 		}
-		return j;
+		return value;
 	}
 
 	public int method438() {

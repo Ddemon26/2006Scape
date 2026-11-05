@@ -51,7 +51,7 @@ final class Censor {
 	private static void readFragmentsEnc(Stream stream) {
 		anIntArray620 = new int[stream.readIntBigEndian()];
 		for (int i = 0; i < anIntArray620.length; i++) {
-			anIntArray620[i] = stream.readUnsignedWord();
+			anIntArray620[i] = stream.readUnsignedShortBigEndian();
 		}
 	}
 

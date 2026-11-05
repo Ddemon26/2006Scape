@@ -139,7 +139,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			versions[i] = new int[j];
 			fileStatus[i] = new byte[j];
 			for (int l = 0; l < j; l++) {
-				versions[i][l] = stream.readUnsignedWord();
+				versions[i][l] = stream.readUnsignedShortBigEndian();
 			}
 
 		}
@@ -175,9 +175,9 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		mapIndices3 = new int[j1];
 		mapIndices4 = new int[j1];
 		for (int i2 = 0; i2 < j1; i2++) {
-			mapIndices1[i2] = stream2.readUnsignedWord();
-			mapIndices2[i2] = stream2.readUnsignedWord();
-			mapIndices3[i2] = stream2.readUnsignedWord();
+			mapIndices1[i2] = stream2.readUnsignedShortBigEndian();
+			mapIndices2[i2] = stream2.readUnsignedShortBigEndian();
+			mapIndices3[i2] = stream2.readUnsignedShortBigEndian();
 			mapIndices4[i2] = stream2.readUnsignedByte();
 		}
 
@@ -186,7 +186,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		j1 = abyte2.length / 2;
 		anIntArray1360 = new int[j1];
 		for (int j2 = 0; j2 < j1; j2++) {
-			anIntArray1360[j2] = stream2.readUnsignedWord();
+			anIntArray1360[j2] = stream2.readUnsignedShortBigEndian();
 		}
 
 		abyte2 = streamLoader.getDataForName("midi_index");

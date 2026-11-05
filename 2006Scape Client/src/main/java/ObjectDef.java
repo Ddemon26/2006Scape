@@ -88,12 +88,12 @@ public final class ObjectDef {
 	public static void unpackConfig(StreamLoader streamLoader) {
 		stream = new Stream(streamLoader.getDataForName("loc.dat"));
 		Stream stream = new Stream(streamLoader.getDataForName("loc.idx"));
-		totalObjects = stream.readUnsignedWord();
+		totalObjects = stream.readUnsignedShortBigEndian();
 		streamIndices = new int[totalObjects];
 		int i = 2;
 		for (int j = 0; j < totalObjects; j++) {
 			streamIndices[j] = i;
-			i += stream.readUnsignedWord();
+			i += stream.readUnsignedShortBigEndian();
 		}
 
 		cache = new ObjectDef[20];
@@ -307,7 +307,7 @@ public final class ObjectDef {
 							anIntArray776 = new int[k];
 							anIntArray773 = new int[k];
 							for (int k1 = 0; k1 < k; k1++) {
-								anIntArray773[k1] = stream.readUnsignedWord();
+								anIntArray773[k1] = stream.readUnsignedShortBigEndian();
 								anIntArray776[k1] = stream.readUnsignedByte();
 							}
 
@@ -326,7 +326,7 @@ public final class ObjectDef {
 							anIntArray776 = null;
 							anIntArray773 = new int[l];
 							for (int l1 = 0; l1 < l; l1++) {
-								anIntArray773[l1] = stream.readUnsignedWord();
+								anIntArray773[l1] = stream.readUnsignedShortBigEndian();
 							}
 
 						} else {
@@ -353,7 +353,7 @@ public final class ObjectDef {
 				} else if (j == 23) {
 					aBoolean764 = true;
 				} else if (j == 24) {
-					anInt781 = stream.readUnsignedWord();
+					anInt781 = stream.readUnsignedShortBigEndian();
 					if (anInt781 == 65535) {
 						anInt781 = -1;
 					}
@@ -376,32 +376,32 @@ public final class ObjectDef {
 					modifiedModelColors = new int[i1];
 					originalModelColors = new int[i1];
 					for (int i2 = 0; i2 < i1; i2++) {
-						modifiedModelColors[i2] = stream.readUnsignedWord();
-						originalModelColors[i2] = stream.readUnsignedWord();
+						modifiedModelColors[i2] = stream.readUnsignedShortBigEndian();
+						originalModelColors[i2] = stream.readUnsignedShortBigEndian();
 					}
 
 				} else if (j == 60) {
-					anInt746 = stream.readUnsignedWord();
+					anInt746 = stream.readUnsignedShortBigEndian();
 				} else if (j == 62) {
 					aBoolean751 = true;
 				} else if (j == 64) {
 					aBoolean779 = false;
 				} else if (j == 65) {
-					anInt748 = stream.readUnsignedWord();
+					anInt748 = stream.readUnsignedShortBigEndian();
 				} else if (j == 66) {
-					anInt772 = stream.readUnsignedWord();
+					anInt772 = stream.readUnsignedShortBigEndian();
 				} else if (j == 67) {
-					anInt740 = stream.readUnsignedWord();
+					anInt740 = stream.readUnsignedShortBigEndian();
 				} else if (j == 68) {
-					anInt758 = stream.readUnsignedWord();
+					anInt758 = stream.readUnsignedShortBigEndian();
 				} else if (j == 69) {
 					anInt768 = stream.readUnsignedByte();
 				} else if (j == 70) {
-					anInt738 = stream.readSignedWord();
+					anInt738 = stream.readSignedShortBigEndian();
 				} else if (j == 71) {
-					anInt745 = stream.readSignedWord();
+					anInt745 = stream.readSignedShortBigEndian();
 				} else if (j == 72) {
-					anInt783 = stream.readSignedWord();
+					anInt783 = stream.readSignedShortBigEndian();
 				} else if (j == 73) {
 					aBoolean736 = true;
 				} else if (j == 74) {
@@ -414,18 +414,18 @@ public final class ObjectDef {
 				}
 				continue label0;
 			} while (j != 77);
-			anInt774 = stream.readUnsignedWord();
+			anInt774 = stream.readUnsignedShortBigEndian();
 			if (anInt774 == 65535) {
 				anInt774 = -1;
 			}
-			anInt749 = stream.readUnsignedWord();
+			anInt749 = stream.readUnsignedShortBigEndian();
 			if (anInt749 == 65535) {
 				anInt749 = -1;
 			}
 			int j1 = stream.readUnsignedByte();
 			childrenIDs = new int[j1 + 1];
 			for (int j2 = 0; j2 <= j1; j2++) {
-				childrenIDs[j2] = stream.readUnsignedWord();
+				childrenIDs[j2] = stream.readUnsignedShortBigEndian();
 				if (childrenIDs[j2] == 65535) {
 					childrenIDs[j2] = -1;
 				}

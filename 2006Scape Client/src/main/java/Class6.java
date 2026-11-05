@@ -261,8 +261,8 @@ final class Class6 {
 
 		anInt109 = stream.readUnsignedSmart();
 		anInt110 = stream.readUnsignedSmart();
-		anInt113 = stream.readUnsignedWord();
-		anInt114 = stream.readUnsignedWord();
+		anInt113 = stream.readUnsignedShortBigEndian();
+		anInt114 = stream.readUnsignedShortBigEndian();
 		aClass39_111 = new Class39();
 		aClass29_112 = new Class29();
 		aClass39_111.method545(stream, aClass29_112);

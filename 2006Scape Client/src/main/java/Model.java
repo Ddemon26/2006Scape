@@ -44,18 +44,18 @@ public final class Model extends Animable {
 		stream.currentOffset = abyte0.length - 18;
 		Class21 class21_1 = aClass21Array1661[j] = new Class21();
 		class21_1.aByteArray368 = abyte0;
-		class21_1.anInt369 = stream.readUnsignedWord();
-		class21_1.anInt370 = stream.readUnsignedWord();
+		class21_1.anInt369 = stream.readUnsignedShortBigEndian();
+		class21_1.anInt370 = stream.readUnsignedShortBigEndian();
 		class21_1.anInt371 = stream.readUnsignedByte();
 		int k = stream.readUnsignedByte();
 		int l = stream.readUnsignedByte();
 		int i1 = stream.readUnsignedByte();
 		int j1 = stream.readUnsignedByte();
 		int k1 = stream.readUnsignedByte();
-		int l1 = stream.readUnsignedWord();
-		int i2 = stream.readUnsignedWord();
-		int j2 = stream.readUnsignedWord();
-		int k2 = stream.readUnsignedWord();
+		int l1 = stream.readUnsignedShortBigEndian();
+		int i2 = stream.readUnsignedShortBigEndian();
+		int j2 = stream.readUnsignedShortBigEndian();
+		int k2 = stream.readUnsignedShortBigEndian();
 		int l2 = 0;
 		class21_1.anInt372 = l2;
 		l2 += class21_1.anInt369;
@@ -216,7 +216,7 @@ public final class Model extends Animable {
 		stream_3.currentOffset = class21.anInt382;
 		stream_4.currentOffset = class21.anInt383;
 		for (int l1 = 0; l1 < anInt1630; l1++) {
-			anIntArray1640[l1] = stream.readUnsignedWord();
+			anIntArray1640[l1] = stream.readUnsignedShortBigEndian();
 			if (anIntArray1637 != null) {
 				anIntArray1637[l1] = stream_1.readUnsignedByte();
 			}
@@ -280,9 +280,9 @@ public final class Model extends Animable {
 
 		stream.currentOffset = class21.anInt384;
 		for (int j4 = 0; j4 < anInt1642; j4++) {
-			anIntArray1643[j4] = stream.readUnsignedWord();
-			anIntArray1644[j4] = stream.readUnsignedWord();
-			anIntArray1645[j4] = stream.readUnsignedWord();
+			anIntArray1643[j4] = stream.readUnsignedShortBigEndian();
+			anIntArray1644[j4] = stream.readUnsignedShortBigEndian();
+			anIntArray1645[j4] = stream.readUnsignedShortBigEndian();
 		}
 
 	}

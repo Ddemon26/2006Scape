@@ -13,22 +13,22 @@ public final class RSInterface {
 		spriteCache = new LruCache(50000);
 		Stream stream = new Stream(streamLoader.getDataForName("data"));
 		int i = -1;
-		int j = stream.readUnsignedWord();
+		int j = stream.readUnsignedShortBigEndian();
 		interfaceCache = new RSInterface[j];
 		while (stream.currentOffset < stream.buffer.length) {
-			int k = stream.readUnsignedWord();
+			int k = stream.readUnsignedShortBigEndian();
 			if (k == 65535) {
-				i = stream.readUnsignedWord();
-				k = stream.readUnsignedWord();
+				i = stream.readUnsignedShortBigEndian();
+				k = stream.readUnsignedShortBigEndian();
 			}
 			RSInterface rsInterface = interfaceCache[k] = new RSInterface();
 			rsInterface.id = k;
 			rsInterface.parentID = i;
 			rsInterface.type = stream.readUnsignedByte();
 			rsInterface.atActionType = stream.readUnsignedByte();
-			rsInterface.anInt214 = stream.readUnsignedWord();
-			rsInterface.width = stream.readUnsignedWord();
-			rsInterface.height = stream.readUnsignedWord();
+			rsInterface.anInt214 = stream.readUnsignedShortBigEndian();
+			rsInterface.width = stream.readUnsignedShortBigEndian();
+			rsInterface.height = stream.readUnsignedShortBigEndian();
 			rsInterface.aByte254 = (byte) stream.readUnsignedByte();
 			rsInterface.anInt230 = stream.readUnsignedByte();
 			if (rsInterface.anInt230 != 0) {
@@ -42,7 +42,7 @@ public final class RSInterface {
 				rsInterface.anIntArray212 = new int[i1];
 				for (int j1 = 0; j1 < i1; j1++) {
 					rsInterface.anIntArray245[j1] = stream.readUnsignedByte();
-					rsInterface.anIntArray212[j1] = stream.readUnsignedWord();
+					rsInterface.anIntArray212[j1] = stream.readUnsignedShortBigEndian();
 				}
 
 			}
@@ -50,31 +50,31 @@ public final class RSInterface {
 			if (k1 > 0) {
 				rsInterface.valueIndexArray = new int[k1][];
 				for (int l1 = 0; l1 < k1; l1++) {
-					int i3 = stream.readUnsignedWord();
+					int i3 = stream.readUnsignedShortBigEndian();
 					rsInterface.valueIndexArray[l1] = new int[i3];
 					for (int l4 = 0; l4 < i3; l4++) {
-						rsInterface.valueIndexArray[l1][l4] = stream.readUnsignedWord();
+						rsInterface.valueIndexArray[l1][l4] = stream.readUnsignedShortBigEndian();
 					}
 
 				}
 
 			}
 			if (rsInterface.type == 0) {
-				rsInterface.scrollMax = stream.readUnsignedWord();
+				rsInterface.scrollMax = stream.readUnsignedShortBigEndian();
 				rsInterface.aBoolean266 = stream.readUnsignedByte() == 1;
-				int i2 = stream.readUnsignedWord();
+				int i2 = stream.readUnsignedShortBigEndian();
 				rsInterface.children = new int[i2];
 				rsInterface.childX = new int[i2];
 				rsInterface.childY = new int[i2];
 				for (int j3 = 0; j3 < i2; j3++) {
-					rsInterface.children[j3] = stream.readUnsignedWord();
-					rsInterface.childX[j3] = stream.readSignedWord();
-					rsInterface.childY[j3] = stream.readSignedWord();
+					rsInterface.children[j3] = stream.readUnsignedShortBigEndian();
+					rsInterface.childX[j3] = stream.readSignedShortBigEndian();
+					rsInterface.childY[j3] = stream.readSignedShortBigEndian();
 				}
 
 			}
 			if (rsInterface.type == 1) {
-				stream.readUnsignedWord();
+				stream.readUnsignedShortBigEndian();
 				stream.readUnsignedByte();
 			}
 			if (rsInterface.type == 2) {
@@ -92,8 +92,8 @@ public final class RSInterface {
 				for (int j2 = 0; j2 < 20; j2++) {
 					int k3 = stream.readUnsignedByte();
 					if (k3 == 1) {
-						rsInterface.spritesX[j2] = stream.readSignedWord();
-						rsInterface.spritesY[j2] = stream.readSignedWord();
+						rsInterface.spritesX[j2] = stream.readSignedShortBigEndian();
+						rsInterface.spritesY[j2] = stream.readSignedShortBigEndian();
 						String s1 = stream.readLfTerminatedString();
 						if (streamLoader_1 != null && s1.length() > 0) {
 							int i5 = s1.lastIndexOf(",");
@@ -176,9 +176,9 @@ public final class RSInterface {
 				} else {
 					rsInterface.anInt258 = -1;
 				}
-				rsInterface.anInt269 = stream.readUnsignedWord();
-				rsInterface.anInt270 = stream.readUnsignedWord();
-				rsInterface.anInt271 = stream.readUnsignedWord();
+				rsInterface.anInt269 = stream.readUnsignedShortBigEndian();
+				rsInterface.anInt270 = stream.readUnsignedShortBigEndian();
+				rsInterface.anInt271 = stream.readUnsignedShortBigEndian();
 			}
 			if (rsInterface.type == 7) {
 				rsInterface.inv = new int[rsInterface.width * rsInterface.height];
@@ -190,8 +190,8 @@ public final class RSInterface {
 				}
 				rsInterface.aBoolean268 = stream.readUnsignedByte() == 1;
 				rsInterface.textColor = stream.readIntBigEndian();
-				rsInterface.invSpritePadX = stream.readSignedWord();
-				rsInterface.invSpritePadY = stream.readSignedWord();
+				rsInterface.invSpritePadX = stream.readSignedShortBigEndian();
+				rsInterface.invSpritePadY = stream.readSignedShortBigEndian();
 				rsInterface.isInventoryInterface = stream.readUnsignedByte() == 1;
 				rsInterface.actions = new String[5];
 				for (int k4 = 0; k4 < 5; k4++) {
@@ -205,7 +205,7 @@ public final class RSInterface {
 			if (rsInterface.atActionType == 2 || rsInterface.type == 2) {
 				rsInterface.selectedActionName = stream.readLfTerminatedString();
 				rsInterface.spellName = stream.readLfTerminatedString();
-				rsInterface.spellUsableOn = stream.readUnsignedWord();
+				rsInterface.spellUsableOn = stream.readUnsignedShortBigEndian();
 			}
 			if (rsInterface.type == 8) {
 				rsInterface.disabledText = stream.readLfTerminatedString();

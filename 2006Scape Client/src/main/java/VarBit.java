@@ -6,7 +6,7 @@ public final class VarBit {
 
 	public static void unpackConfig(StreamLoader streamLoader) {
 		Stream stream = new Stream(streamLoader.getDataForName("varbit.dat"));
-		int cacheSize = stream.readUnsignedWord();
+		int cacheSize = stream.readUnsignedShortBigEndian();
 		if (cache == null) {
 			cache = new VarBit[cacheSize];
 		}
@@ -32,7 +32,7 @@ public final class VarBit {
 				return;
 			}
 			if (j == 1) {
-				anInt648 = stream.readUnsignedWord();
+				anInt648 = stream.readUnsignedShortBigEndian();
 				anInt649 = stream.readUnsignedByte();
 				anInt650 = stream.readUnsignedByte();
 			} else if (j == 10) {

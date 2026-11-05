@@ -13,7 +13,7 @@ final class Sounds {
 		aStream_328 = new Stream(aByteArray327);
 		Class6.method166();
 		do {
-			int j = stream.readUnsignedWord();
+			int j = stream.readUnsignedShortBigEndian();
 			if (j == 65535) {
 				return;
 			}
@@ -41,8 +41,8 @@ final class Sounds {
 				aClass6Array329[i].method169(stream);
 			}
 		}
-		anInt330 = stream.readUnsignedWord();
-		anInt331 = stream.readUnsignedWord();
+		anInt330 = stream.readUnsignedShortBigEndian();
+		anInt331 = stream.readUnsignedShortBigEndian();
 	}
 
 	private int method243() {
@@ -80,12 +80,12 @@ final class Sounds {
 		aStream_328.writeIntBigEndian(0x57415645);
 		aStream_328.writeIntBigEndian(0x666d7420);
 		aStream_328.writeIntLittleEndian(16);
-		aStream_328.method400(1);
-		aStream_328.method400(1);
+		aStream_328.writeWaveShortLittleEndian(1);
+		aStream_328.writeWaveShortLittleEndian(1);
 		aStream_328.writeIntLittleEndian(22050);
 		aStream_328.writeIntLittleEndian(22050);
-		aStream_328.method400(1);
-		aStream_328.method400(8);
+		aStream_328.writeWaveShortLittleEndian(1);
+		aStream_328.writeWaveShortLittleEndian(8);
 		aStream_328.writeIntBigEndian(0x64617461);
 		aStream_328.writeIntLittleEndian(k);
 		aStream_328.currentOffset += k;

@@ -6,7 +6,7 @@ public final class Animation {
 
 	public static void unpackConfig(StreamLoader streamLoader) {
 		Stream stream = new Stream(streamLoader.getDataForName("seq.dat"));
-		int length = stream.readUnsignedWord();
+		int length = stream.readUnsignedShortBigEndian();
 		if (anims == null) {
 			anims = new Animation[length];
 		}
@@ -44,16 +44,16 @@ public final class Animation {
 				anIntArray354 = new int[anInt352];
 				anIntArray355 = new int[anInt352];
 				for (int j = 0; j < anInt352; j++) {
-					anIntArray353[j] = stream.readUnsignedWord();
-					anIntArray354[j] = stream.readUnsignedWord();
+					anIntArray353[j] = stream.readUnsignedShortBigEndian();
+					anIntArray354[j] = stream.readUnsignedShortBigEndian();
 					if (anIntArray354[j] == 65535) {
 						anIntArray354[j] = -1;
 					}
-					anIntArray355[j] = stream.readUnsignedWord();
+					anIntArray355[j] = stream.readUnsignedShortBigEndian();
 				}
 
 			} else if (i == 2) {
-				anInt356 = stream.readUnsignedWord();
+				anInt356 = stream.readUnsignedShortBigEndian();
 			} else if (i == 3) {
 				int k = stream.readUnsignedByte();
 				anIntArray357 = new int[k + 1];
@@ -67,9 +67,9 @@ public final class Animation {
 			} else if (i == 5) {
 				anInt359 = stream.readUnsignedByte();
 			} else if (i == 6) {
-				anInt360 = stream.readUnsignedWord();
+				anInt360 = stream.readUnsignedShortBigEndian();
 			} else if (i == 7) {
-				anInt361 = stream.readUnsignedWord();
+				anInt361 = stream.readUnsignedShortBigEndian();
 			} else if (i == 8) {
 				anInt362 = stream.readUnsignedByte();
 			} else if (i == 9) {

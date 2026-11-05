@@ -17,7 +17,7 @@ public final class TextDrawingArea extends DrawingArea {
 		strikeThroughEnabled = false;
 		Stream dataStream = new Stream(fontArchive.getDataForName(fontName + ".dat"));
 		Stream indexStream = new Stream(fontArchive.getDataForName("index.dat"));
-		indexStream.currentOffset = dataStream.readUnsignedWord() + 4;
+		indexStream.currentOffset = dataStream.readUnsignedShortBigEndian() + 4;
 		int indexHeaderCount = indexStream.readUnsignedByte();
 		if (indexHeaderCount > 0) {
 			indexStream.currentOffset += 3 * (indexHeaderCount - 1);
@@ -25,8 +25,8 @@ public final class TextDrawingArea extends DrawingArea {
 		for (int characterCode = 0; characterCode < 256; characterCode++) {
 			glyphXOffsetPixels[characterCode] = indexStream.readUnsignedByte();
 			glyphYOffsetPixels[characterCode] = indexStream.readUnsignedByte();
-			int glyphWidth = glyphWidthPixels[characterCode] = indexStream.readUnsignedWord();
-			int glyphHeight = glyphHeightPixels[characterCode] = indexStream.readUnsignedWord();
+			int glyphWidth = glyphWidthPixels[characterCode] = indexStream.readUnsignedShortBigEndian();
+			int glyphHeight = glyphHeightPixels[characterCode] = indexStream.readUnsignedShortBigEndian();
 			int storageOrder = indexStream.readUnsignedByte();
 			int pixelCount = glyphWidth * glyphHeight;
 			glyphMasks[characterCode] = new byte[pixelCount];

@@ -66,13 +66,13 @@ final class Class39 {
 		anIntArray665[0] = i >> 4;
 		anIntArray665[1] = i & 0xf;
 		if (i != 0) {
-			anIntArray668[0] = stream.readUnsignedWord();
-			anIntArray668[1] = stream.readUnsignedWord();
+			anIntArray668[0] = stream.readUnsignedShortBigEndian();
+			anIntArray668[1] = stream.readUnsignedShortBigEndian();
 			int j = stream.readUnsignedByte();
 			for (int k = 0; k < 2; k++) {
 				for (int l = 0; l < anIntArray665[k]; l++) {
-					anIntArrayArrayArray666[k][0][l] = stream.readUnsignedWord();
-					anIntArrayArrayArray667[k][0][l] = stream.readUnsignedWord();
+					anIntArrayArrayArray666[k][0][l] = stream.readUnsignedShortBigEndian();
+					anIntArrayArrayArray667[k][0][l] = stream.readUnsignedShortBigEndian();
 				}
 
 			}
@@ -80,8 +80,8 @@ final class Class39 {
 			for (int i1 = 0; i1 < 2; i1++) {
 				for (int j1 = 0; j1 < anIntArray665[i1]; j1++) {
 					if ((j & 1 << i1 * 4 << j1) != 0) {
-						anIntArrayArrayArray666[i1][1][j1] = stream.readUnsignedWord();
-						anIntArrayArrayArray667[i1][1][j1] = stream.readUnsignedWord();
+						anIntArrayArrayArray666[i1][1][j1] = stream.readUnsignedShortBigEndian();
+						anIntArrayArrayArray667[i1][1][j1] = stream.readUnsignedShortBigEndian();
 					} else {
 						anIntArrayArrayArray666[i1][1][j1] = anIntArrayArrayArray666[i1][0][j1];
 						anIntArrayArrayArray667[i1][1][j1] = anIntArrayArrayArray667[i1][0][j1];
