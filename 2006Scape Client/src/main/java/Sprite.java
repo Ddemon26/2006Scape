@@ -23,45 +23,45 @@ public final class Sprite extends DrawingArea {
 		}
 	}
 
-	public Sprite(StreamLoader streamLoader, String s, int i) {
-		Stream stream = new Stream(streamLoader.getDataForName(s + ".dat"));
-		Stream stream_1 = new Stream(streamLoader.getDataForName("index.dat"));
-		stream_1.currentOffset = stream.readUnsignedWord();
-		trimWidth = stream_1.readUnsignedWord();
-		trimHeight = stream_1.readUnsignedWord();
-		int j = stream_1.readUnsignedByte();
-		int ai[] = new int[j];
-		for (int k = 0; k < j - 1; k++) {
-			ai[k + 1] = stream_1.read3Bytes();
-			if (ai[k + 1] == 0) {
-				ai[k + 1] = 1;
+	public Sprite(StreamLoader streamLoader, String imageName, int imageIndex) {
+		Stream pixelData = new Stream(streamLoader.getDataForName(imageName + ".dat"));
+		Stream indexData = new Stream(streamLoader.getDataForName("index.dat"));
+		indexData.currentOffset = pixelData.readUnsignedWord();
+		trimWidth = indexData.readUnsignedWord();
+		trimHeight = indexData.readUnsignedWord();
+		int paletteSize = indexData.readUnsignedByte();
+		int paletteRgb[] = new int[paletteSize];
+		for (int paletteEntry = 0; paletteEntry < paletteSize - 1; paletteEntry++) {
+			paletteRgb[paletteEntry + 1] = indexData.read3Bytes();
+			if (paletteRgb[paletteEntry + 1] == 0) {
+				paletteRgb[paletteEntry + 1] = 1;
 			}
 		}
 
-		for (int l = 0; l < i; l++) {
-			stream_1.currentOffset += 2;
-			stream.currentOffset += stream_1.readUnsignedWord() * stream_1.readUnsignedWord();
-			stream_1.currentOffset++;
+		for (int skippedImage = 0; skippedImage < imageIndex; skippedImage++) {
+			indexData.currentOffset += 2;
+			pixelData.currentOffset += indexData.readUnsignedWord() * indexData.readUnsignedWord();
+			indexData.currentOffset++;
 		}
 
-		offsetX = stream_1.readUnsignedByte();
-		offsetY = stream_1.readUnsignedByte();
-		width = stream_1.readUnsignedWord();
-		height = stream_1.readUnsignedWord();
-		int i1 = stream_1.readUnsignedByte();
-		int j1 = width * height;
-		pixels = new int[j1];
-		if (i1 == 0) {
-			for (int k1 = 0; k1 < j1; k1++) {
-				pixels[k1] = ai[stream.readUnsignedByte()];
+		offsetX = indexData.readUnsignedByte();
+		offsetY = indexData.readUnsignedByte();
+		width = indexData.readUnsignedWord();
+		height = indexData.readUnsignedWord();
+		int storageOrder = indexData.readUnsignedByte();
+		int pixelCount = width * height;
+		pixels = new int[pixelCount];
+		if (storageOrder == 0) {
+			for (int pixelIndex = 0; pixelIndex < pixelCount; pixelIndex++) {
+				pixels[pixelIndex] = paletteRgb[pixelData.readUnsignedByte()];
 			}
 
 			return;
 		}
-		if (i1 == 1) {
-			for (int l1 = 0; l1 < width; l1++) {
-				for (int i2 = 0; i2 < height; i2++) {
-					pixels[l1 + i2 * width] = ai[stream.readUnsignedByte()];
+		if (storageOrder == 1) {
+			for (int imageX = 0; imageX < width; imageX++) {
+				for (int imageY = 0; imageY < height; imageY++) {
+					pixels[imageX + imageY * width] = paletteRgb[pixelData.readUnsignedByte()];
 				}
 
 			}
