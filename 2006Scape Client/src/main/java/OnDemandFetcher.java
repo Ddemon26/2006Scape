@@ -101,8 +101,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 					;
 				}
 				if (expectedSize + completedSize >= abyte0.length && current != null) {
-					if (clientInstance.decompressors[0] != null) {
-						clientInstance.decompressors[current.dataType + 1].method234(abyte0.length, abyte0, current.ID);
+					if (clientInstance.cacheStores[0] != null) {
+						clientInstance.cacheStores[current.dataType + 1].writeFile(abyte0.length, abyte0, current.ID);
 					}
 					if (!current.incomplete && current.dataType == 3) {
 						current.incomplete = true;
@@ -311,7 +311,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			while (running) {
 				onDemandCycle++;
 				int i = 20;
-				if (anInt1332 == 0 && clientInstance.decompressors[0] != null) {
+				if (anInt1332 == 0 && clientInstance.cacheStores[0] != null) {
 					i = 50;
 				}
 				try {
@@ -374,7 +374,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 					loopCycle = 0;
 					statusString = "";
 				}
-				if (clientInstance.loggedIn && socket != null && outputStream != null && (anInt1332 > 0 || clientInstance.decompressors[0] == null)) {
+				if (clientInstance.loggedIn && socket != null && outputStream != null && (anInt1332 > 0 || clientInstance.cacheStores[0] == null)) {
 					writeLoopCycle++;
 					if (writeLoopCycle > 500) {
 						writeLoopCycle = 0;
@@ -396,7 +396,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	}
 
 	public void method560(int i, int j) {
-		if (clientInstance.decompressors[0] == null) {
+		if (clientInstance.cacheStores[0] == null) {
 			return;
 		}
 		if (versions[j][i] == 0) {
@@ -473,13 +473,13 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	}
 
 	public void method563(byte byte0, int i, int j) {
-		if (clientInstance.decompressors[0] == null) {
+		if (clientInstance.cacheStores[0] == null) {
 			return;
 		}
 		if (versions[i][j] == 0) {
 			return;
 		}
-		byte abyte0[] = clientInstance.decompressors[i + 1].decompress(j);
+		byte abyte0[] = clientInstance.cacheStores[i + 1].readFile(j);
 		if (crcMatches(versions[i][j], crcs[i][j], abyte0)) {
 			return;
 		}
@@ -540,8 +540,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		while (onDemandData != null) {
 			waiting = true;
 			byte abyte0[] = null;
-			if (clientInstance.decompressors[0] != null) {
-				abyte0 = clientInstance.decompressors[onDemandData.dataType + 1].decompress(onDemandData.ID);
+			if (clientInstance.cacheStores[0] != null) {
+				abyte0 = clientInstance.cacheStores[onDemandData.dataType + 1].readFile(onDemandData.ID);
 			}
 			if (!crcMatches(versions[onDemandData.dataType][onDemandData.ID], crcs[onDemandData.dataType][onDemandData.ID], abyte0)) {
 				abyte0 = null;

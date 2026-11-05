@@ -91,7 +91,7 @@ public class Game extends RSApplet {
 				int fileIndex = Integer.parseInt(getFileNameWithoutExtension(file[index].toString()));
 				byte[] data = fileToByteArray(cacheIndex, fileIndex);
 				if(data != null && data.length > 0) {
-					decompressors[cacheIndex].method234(data.length, data, fileIndex);
+					cacheStores[cacheIndex].writeFile(data.length, data, fileIndex);
 					System.out.println("Repacked " + fileIndex + ".");
 				} else {
 					System.out.println("Unable to locate index " + fileIndex + ".");
@@ -123,7 +123,7 @@ public class Game extends RSApplet {
 		for(int MusicIndex = 0; MusicIndex < 3536; MusicIndex++) {
 			byte[] abyte0 = GetMusic(MusicIndex);
 				if (abyte0 != null && abyte0.length > 0) {
-					decompressors[3].method234(abyte0.length, abyte0, MusicIndex);
+					cacheStores[3].writeFile(abyte0.length, abyte0, MusicIndex);
 				}
 			}
 		}
@@ -2707,7 +2707,7 @@ public class Game extends RSApplet {
 		if (loadingStage == 1) {
 			int j = method54();
 			if (j != 0 && System.currentTimeMillis() - aLong824 > 0x57e40L) {
-				Signlink.reporterror(myUsername + " glcfb " + aLong1215 + "," + j + "," + lowMem + "," + decompressors[0] + "," + onDemandFetcher.getNodeCount() + "," + plane + "," + anInt1069 + "," + anInt1070);
+				Signlink.reporterror(myUsername + " glcfb " + aLong1215 + "," + j + "," + lowMem + "," + cacheStores[0] + "," + onDemandFetcher.getNodeCount() + "," + plane + "," + anInt1069 + "," + anInt1070);
 				aLong824 = System.currentTimeMillis();
 			}
 		}
@@ -3449,8 +3449,8 @@ public class Game extends RSApplet {
 		byte abyte0[] = null;
 		int l = 5;
 		try {
-			if (decompressors[0] != null) {
-				abyte0 = decompressors[0].decompress(i);
+			if (cacheStores[0] != null) {
+				abyte0 = cacheStores[0].readFile(i);
 			}
 		} catch (Exception _ex) {
 		}
@@ -3500,11 +3500,11 @@ public class Game extends RSApplet {
 				}
 				datainputstream.close();
 				try {
-					if (decompressors[0] != null) {
-						decompressors[0].method234(abyte0.length, abyte0, i);
+					if (cacheStores[0] != null) {
+						cacheStores[0].writeFile(abyte0.length, abyte0, i);
 					}
 				} catch (Exception _ex) {
-					decompressors[0] = null;
+					cacheStores[0] = null;
 				}
 
 				if(abyte0 != null && ClientSettings.CHECK_CRC)
@@ -7010,7 +7010,7 @@ public class Game extends RSApplet {
 		}
 		if (Signlink.cache_dat != null) {
 			for (int i = 0; i < 5; i++) {
-				decompressors[i] = new Decompressor(Signlink.cache_dat, Signlink.cache_idx[i], i + 1);
+				cacheStores[i] = new CacheStore(Signlink.cache_dat, Signlink.cache_idx[i], i + 1);
 			}
 
 		}
@@ -7105,7 +7105,7 @@ public class Game extends RSApplet {
 				} catch (Exception _ex) {
 				}
 			}
-			if (decompressors[0] != null) {
+			if (cacheStores[0] != null) {
 				drawLoadingText(75, "Requesting maps");
 				onDemandFetcher.method558(3, onDemandFetcher.method562(0, 48, 47));
 				onDemandFetcher.method558(3, onDemandFetcher.method562(1, 48, 47));
@@ -12052,7 +12052,7 @@ public class Game extends RSApplet {
 		spriteDrawY = -1;
 		anIntArray968 = new int[33];
 		anIntArray969 = new int[256];
-		decompressors = new Decompressor[5];
+		cacheStores = new CacheStore[5];
 		variousSettings = new int[2000];
 		aBoolean972 = false;
 		anInt975 = 50;
@@ -12291,7 +12291,7 @@ public class Game extends RSApplet {
 	public Background aBackground_967;
 	public final int[] anIntArray968;
 	public final int[] anIntArray969;
-	final Decompressor[] decompressors;
+	final CacheStore[] cacheStores;
 	public int variousSettings[];
 	public boolean aBoolean972;
 	public final int anInt975;
