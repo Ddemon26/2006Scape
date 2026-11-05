@@ -87,30 +87,30 @@ public final class Background extends DrawingArea {
 	}
 
 	public void flipHorizontally() {
-		byte abyte0[] = new byte[anInt1452 * anInt1453];
-		int j = 0;
-		for (int k = 0; k < anInt1453; k++) {
-			for (int l = anInt1452 - 1; l >= 0; l--) {
-				abyte0[j++] = aByteArray1450[l + k * anInt1452];
+		byte mirroredIndices[] = new byte[anInt1452 * anInt1453];
+		int destinationIndex = 0;
+		for (int sourceY = 0; sourceY < anInt1453; sourceY++) {
+			for (int sourceX = anInt1452 - 1; sourceX >= 0; sourceX--) {
+				mirroredIndices[destinationIndex++] = aByteArray1450[sourceX + sourceY * anInt1452];
 			}
 
 		}
 
-		aByteArray1450 = abyte0;
+		aByteArray1450 = mirroredIndices;
 		offsetX = anInt1456 - anInt1452 - offsetX;
 	}
 
 	public void flipVertically() {
-		byte abyte0[] = new byte[anInt1452 * anInt1453];
-		int i = 0;
-		for (int j = anInt1453 - 1; j >= 0; j--) {
-			for (int k = 0; k < anInt1452; k++) {
-				abyte0[i++] = aByteArray1450[k + j * anInt1452];
+		byte mirroredIndices[] = new byte[anInt1452 * anInt1453];
+		int destinationIndex = 0;
+		for (int sourceY = anInt1453 - 1; sourceY >= 0; sourceY--) {
+			for (int sourceX = 0; sourceX < anInt1452; sourceX++) {
+				mirroredIndices[destinationIndex++] = aByteArray1450[sourceX + sourceY * anInt1452];
 			}
 
 		}
 
-		aByteArray1450 = abyte0;
+		aByteArray1450 = mirroredIndices;
 		offsetY = anInt1457 - anInt1453 - offsetY;
 	}
 

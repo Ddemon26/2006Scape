@@ -129,6 +129,67 @@ public class BackgroundMirrorTest {
                 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0}, image.aByteArray1450);
     }
 
+    @Test
+    public void mirrorLoopsFollowIndependentAxesForRectanglesAndEmptyDimensions() throws Exception {
+        // Independent destination-coordinate oracle: each output asks for its reflected source.
+        // Unequal axes, every edge placement, and empty/one-pixel axes expose stride/counter mixups.
+        for (int width = 0; width <= 12; width++) {
+            for (int height = 0; height <= 6; height++) {
+                for (int offsetX : new int[] {0, 4}) {
+                    for (int offsetY : new int[] {0, 5}) {
+                        for (boolean horizontal : new boolean[] {true, false}) {
+                            assertCoordinateMirror(width, height, offsetX, offsetY, horizontal);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    public void mirrorLoopsPreserveEverySignedByteIncludingTransparentZero() throws Exception {
+        // 272 cells include all 256 byte values, with repeats crossing row boundaries.
+        assertCoordinateMirror(17, 16, 0, 5, true);
+        assertCoordinateMirror(17, 16, 4, 0, false);
+    }
+
+    private static void assertCoordinateMirror(int width, int height, int offsetX, int offsetY,
+            boolean horizontal) throws Exception {
+        Background image = asymmetric();
+        image.anInt1452 = width;
+        image.anInt1453 = height;
+        image.anInt1456 = width + 4;
+        java.lang.reflect.Field canvasHeight = Background.class.getDeclaredField("anInt1457");
+        canvasHeight.setAccessible(true);
+        canvasHeight.setInt(image, height + 5);
+        image.offsetX = offsetX;
+        image.offsetY = offsetY;
+        byte[] source = new byte[width * height];
+        for (int index = 0; index < source.length; index++) source[index] = (byte) index;
+        image.aByteArray1450 = source;
+        byte[] unchanged = source.clone();
+        int[] palette = image.anIntArray1451;
+        int[] colors = palette.clone();
+        byte[] expected = new byte[source.length];
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int sourceX = horizontal ? width - 1 - x : x;
+                int sourceY = horizontal ? y : height - 1 - y;
+                expected[y * width + x] = source[sourceY * width + sourceX];
+            }
+        }
+        if (horizontal) image.flipHorizontally(); else image.flipVertically();
+        assertArrayEquals(expected, image.aByteArray1450);
+        org.junit.Assert.assertNotSame(source, image.aByteArray1450);
+        assertArrayEquals(unchanged, source);
+        assertEquals(horizontal ? 4 - offsetX : offsetX, image.offsetX);
+        assertEquals(horizontal ? offsetY : 5 - offsetY, image.offsetY);
+        assertDimensions(image, width, height, width + 4);
+        assertEquals(height + 5, canvasHeight.getInt(image));
+        assertSame(palette, image.anIntArray1451);
+        assertArrayEquals(colors, palette);
+    }
+
     private static Background asymmetric() {
         // Same independently generated archive as BackgroundOffsetTest: "small" canvas 5x6.
         Background image = new Background(new StreamLoader(Base64.getDecoder().decode(
