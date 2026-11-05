@@ -12,7 +12,7 @@ public final class TextDrawingArea extends DrawingArea {
 		anIntArray1493 = new int[256];
 		anIntArray1494 = new int[256];
 		anIntArray1495 = new int[256];
-		anIntArray1496 = new int[256];
+		glyphAdvancePixels = new int[256];
 		aRandom1498 = new Random();
 		aBoolean1499 = false;
 		Stream stream = new Stream(streamLoader.getDataForName(s + ".dat"));
@@ -48,14 +48,14 @@ public final class TextDrawingArea extends DrawingArea {
 				anInt1497 = j1;
 			}
 			anIntArray1494[l] = 1;
-			anIntArray1496[l] = i1 + 2;
+			glyphAdvancePixels[l] = i1 + 2;
 			int k2 = 0;
 			for (int i3 = j1 / 7; i3 < j1; i3++) {
 				k2 += aByteArrayArray1491[l][i3 * i1];
 			}
 
 			if (k2 <= j1 / 7) {
-				anIntArray1496[l]--;
+				glyphAdvancePixels[l]--;
 				anIntArray1494[l] = 0;
 			}
 			k2 = 0;
@@ -64,58 +64,58 @@ public final class TextDrawingArea extends DrawingArea {
 			}
 
 			if (k2 <= j1 / 7) {
-				anIntArray1496[l]--;
+				glyphAdvancePixels[l]--;
 			}
 		}
 
 		if (flag) {
-			anIntArray1496[32] = anIntArray1496[73];
+			glyphAdvancePixels[32] = glyphAdvancePixels[73];
 		} else {
-			anIntArray1496[32] = anIntArray1496[105];
+			glyphAdvancePixels[32] = glyphAdvancePixels[105];
 		}
 	}
 
 	public void textRight(int i, String s, int k, int l) {
-		textLeft(i, s, k, l - method384(s));
+		textLeft(i, s, k, l - measureLiteralTextWidth(s));
 	}
 
 	public void textCenter(int i, String s, int k, int l) {
-		textLeft(i, s, k, l - method384(s) / 2);
+		textLeft(i, s, k, l - measureLiteralTextWidth(s) / 2);
 	}
 
 	public void textCenterShadow(int _color, int _x, String s, int _y, boolean _shadow) {
-		textLeftShadow(_shadow, _x - getTextWidth(s) / 2, _color, s, _y);
+		textLeftShadow(_shadow, _x - measureTaggedTextWidth(s) / 2, _color, s, _y);
 	}
 
 	public void textRightShadow(boolean _shadow, int _x, int _color, String s, int _y) {
-		textLeftShadow(_shadow, _x - getTextWidth(s), _color, s, _y);
+		textLeftShadow(_shadow, _x - measureTaggedTextWidth(s), _color, s, _y);
 	}
 
-	public int getTextWidth(String s) {
-		if (s == null) {
+	public int measureTaggedTextWidth(String text) {
+		if (text == null) {
 			return 0;
 		}
-		int j = 0;
-		for (int k = 0; k < s.length(); k++) {
-			if (s.charAt(k) == '@' && k + 4 < s.length() && s.charAt(k + 4) == '@') {
-				k += 4;
+		int widthPixels = 0;
+		for (int characterIndex = 0; characterIndex < text.length(); characterIndex++) {
+			if (text.charAt(characterIndex) == '@' && characterIndex + 4 < text.length() && text.charAt(characterIndex + 4) == '@') {
+				characterIndex += 4;
 			} else {
-				j += anIntArray1496[s.charAt(k)];
+				widthPixels += glyphAdvancePixels[text.charAt(characterIndex)];
 			}
 		}
 
-		return j;
+		return widthPixels;
 	}
 
-	public int method384(String s) {
-		if (s == null) {
+	public int measureLiteralTextWidth(String text) {
+		if (text == null) {
 			return 0;
 		}
-		int j = 0;
-		for (int k = 0; k < s.length(); k++) {
-			j += anIntArray1496[s.charAt(k)];
+		int widthPixels = 0;
+		for (int characterIndex = 0; characterIndex < text.length(); characterIndex++) {
+			widthPixels += glyphAdvancePixels[text.charAt(characterIndex)];
 		}
-		return j;
+		return widthPixels;
 	}
 
 	public void textLeft(int i, String s, int j, int l) {
@@ -128,7 +128,7 @@ public final class TextDrawingArea extends DrawingArea {
 			if (c != ' ') {
 				method392(aByteArrayArray1491[c], l + anIntArray1494[c], j + anIntArray1495[c], anIntArray1492[c], anIntArray1493[c], i);
 			}
-			l += anIntArray1496[c];
+			l += glyphAdvancePixels[c];
 		}
 	}
 
@@ -136,14 +136,14 @@ public final class TextDrawingArea extends DrawingArea {
 		if (s == null) {
 			return;
 		}
-		j -= method384(s) / 2;
+		j -= measureLiteralTextWidth(s) / 2;
 		l -= anInt1497;
 		for (int i1 = 0; i1 < s.length(); i1++) {
 			char c = s.charAt(i1);
 			if (c != ' ') {
 				method392(aByteArrayArray1491[c], j + anIntArray1494[c], l + anIntArray1495[c] + (int) (Math.sin(i1 / 2D + k / 5D) * 5D), anIntArray1492[c], anIntArray1493[c], i);
 			}
-			j += anIntArray1496[c];
+			j += glyphAdvancePixels[c];
 		}
 
 	}
@@ -152,14 +152,14 @@ public final class TextDrawingArea extends DrawingArea {
 		if (s == null) {
 			return;
 		}
-		i -= method384(s) / 2;
+		i -= measureLiteralTextWidth(s) / 2;
 		k -= anInt1497;
 		for (int i1 = 0; i1 < s.length(); i1++) {
 			char c = s.charAt(i1);
 			if (c != ' ') {
 				method392(aByteArrayArray1491[c], i + anIntArray1494[c] + (int) (Math.sin(i1 / 5D + j / 5D) * 5D), k + anIntArray1495[c] + (int) (Math.sin(i1 / 3D + j / 5D) * 5D), anIntArray1492[c], anIntArray1493[c], l);
 			}
-			i += anIntArray1496[c];
+			i += glyphAdvancePixels[c];
 		}
 
 	}
@@ -172,14 +172,14 @@ public final class TextDrawingArea extends DrawingArea {
 		if (d < 0.0D) {
 			d = 0.0D;
 		}
-		l -= method384(s) / 2;
+		l -= measureLiteralTextWidth(s) / 2;
 		k -= anInt1497;
 		for (int k1 = 0; k1 < s.length(); k1++) {
 			char c = s.charAt(k1);
 			if (c != ' ') {
 				method392(aByteArrayArray1491[c], l + anIntArray1494[c], k + anIntArray1495[c] + (int) (Math.sin(k1 / 1.5D + j) * d), anIntArray1492[c], anIntArray1493[c], i1);
 			}
-			l += anIntArray1496[c];
+			l += glyphAdvancePixels[c];
 		}
 
 	}
@@ -210,7 +210,7 @@ public final class TextDrawingArea extends DrawingArea {
 						
 					}
 				}
-				_x += anIntArray1496[c];
+				_x += glyphAdvancePixels[c];
 			}
 		}
 		if (aBoolean1499) {
@@ -238,7 +238,7 @@ public final class TextDrawingArea extends DrawingArea {
 					method394(192, i + anIntArray1494[c] + 1, aByteArrayArray1491[c], anIntArray1492[c], i1 + anIntArray1495[c] + 1, anIntArray1493[c], 0);
 					method394(j1, i + anIntArray1494[c], aByteArrayArray1491[c], anIntArray1492[c], i1 + anIntArray1495[c], anIntArray1493[c], j);
 				}
-				i += anIntArray1496[c];
+				i += glyphAdvancePixels[c];
 				if ((aRandom1498.nextInt() & 3) == 0) {
 					i++;
 				}
@@ -444,7 +444,7 @@ public final class TextDrawingArea extends DrawingArea {
 	private final int[] anIntArray1493;
 	private final int[] anIntArray1494;
 	private final int[] anIntArray1495;
-	private final int[] anIntArray1496;
+	private final int[] glyphAdvancePixels;
 	public int anInt1497;
 	private final Random aRandom1498;
 	private boolean aBoolean1499;

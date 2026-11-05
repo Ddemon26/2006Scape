@@ -425,7 +425,7 @@ public class Game extends RSApplet {
 								j1 += 14;
 							}
 							textDrawingArea.textLeft(0, s1 + ":", i1, j1);
-							j1 += textDrawingArea.getTextWidth(s1) + 8;
+							j1 += textDrawingArea.measureTaggedTextWidth(s1) + 8;
 							textDrawingArea.textLeft(255, chatMessages[k], i1, j1);
 						}
 						j++;
@@ -434,7 +434,7 @@ public class Game extends RSApplet {
 						if (i1 > 0 && i1 < 110) {
 							int k1 = 4;
 							textDrawingArea.textLeft(0, "From", i1, k1);
-							k1 += textDrawingArea.getTextWidth("From ");
+							k1 += textDrawingArea.measureTaggedTextWidth("From ");
 							if (byte0 == 1) {
 								modIcons[0].drawNonzeroIndexed(k1, i1 - 12);
 								k1 += 14;
@@ -444,7 +444,7 @@ public class Game extends RSApplet {
 								k1 += 14;
 							}
 							textDrawingArea.textLeft(0, s1 + ":", i1, k1);
-							k1 += textDrawingArea.getTextWidth(s1) + 8;
+							k1 += textDrawingArea.measureTaggedTextWidth(s1) + 8;
 							textDrawingArea.textLeft(0x800000, chatMessages[k], i1, k1);
 						}
 						j++;
@@ -464,7 +464,7 @@ public class Game extends RSApplet {
 					if (l == 6 && splitpublicChat == 0 && privateChatMode < 2) {
 						if (i1 > 0 && i1 < 110) {
 							textDrawingArea.textLeft(0, "To " + s1 + ":", i1, 4);
-							textDrawingArea.textLeft(0x800000, chatMessages[k], i1, 12 + textDrawingArea.getTextWidth("To " + s1));
+							textDrawingArea.textLeft(0x800000, chatMessages[k], i1, 12 + textDrawingArea.measureTaggedTextWidth("To " + s1));
 						}
 						j++;
 					}
@@ -490,7 +490,7 @@ public class Game extends RSApplet {
 				s = TextClass.formatDisplayName(myUsername);
 			}
 			textDrawingArea.textLeft(0, s + ":", 90, 4);
-			textDrawingArea.textLeft(255, inputString + "*", 90, 6 + textDrawingArea.getTextWidth(s + ": "));
+			textDrawingArea.textLeft(255, inputString + "*", 90, 6 + textDrawingArea.measureTaggedTextWidth(s + ": "));
 			DrawingArea.drawHorizontalLine(77, 0, 479, 0);
 		}
 		if (menuOpen && menuScreenArea == 2) {
@@ -1503,7 +1503,7 @@ public class Game extends RSApplet {
 									text += formatter.format(item.amount) + " x ";
 								}
 								text += itemDef.name + " (" +  intToShortLetter(totalValue) + " gp)";
-								aTextDrawingArea_1270.textLeft(color, text, spriteDrawY - offset, spriteDrawX - (aTextDrawingArea_1270.getTextWidth(text) / 2));
+								aTextDrawingArea_1270.textLeft(color, text, spriteDrawY - offset, spriteDrawX - (aTextDrawingArea_1270.measureTaggedTextWidth(text) / 2));
 								offset += 10;
 							}
 						}
@@ -1591,7 +1591,7 @@ public class Game extends RSApplet {
 				if (((Entity) obj).textSpoken != null && (j >= playerCount || publicChatMode == 0 || publicChatMode == 3 || publicChatMode == 1 && isFriendOrSelf(((Player) obj).name))) {
 					npcScreenPos(((Entity) obj), ((Entity) obj).height);
 					if (spriteDrawX > -1 && anInt974 < anInt975) {
-						anIntArray979[anInt974] = chatTextDrawingArea.method384(((Entity) obj).textSpoken) / 2;
+						anIntArray979[anInt974] = chatTextDrawingArea.measureLiteralTextWidth(((Entity) obj).textSpoken) / 2;
 						anIntArray978[anInt974] = chatTextDrawingArea.anInt1497;
 						anIntArray976[anInt974] = spriteDrawX;
 						anIntArray977[anInt974] = spriteDrawY;
@@ -1730,7 +1730,7 @@ public class Game extends RSApplet {
 						chatTextDrawingArea.method388(150 - anIntArray982[k], s, anInt1265, spriteDrawY, spriteDrawX, i3);
 					}
 					if (anIntArray981[k] == 4) {
-						int i4 = chatTextDrawingArea.method384(s);
+						int i4 = chatTextDrawingArea.measureLiteralTextWidth(s);
 						int k4 = (150 - anIntArray982[k]) * (i4 + 100) / 150;
 						DrawingArea.setClip(334, spriteDrawX - 50, spriteDrawX + 50, 0);
 						chatTextDrawingArea.textLeft(0, s, spriteDrawY + 1, spriteDrawX + 50 - k4);
@@ -5604,7 +5604,7 @@ public class Game extends RSApplet {
 					int k1 = 4;
 					textDrawingArea.textLeft(0, "From", l, k1);
 					textDrawingArea.textLeft(0x00ffff, "From", l - 1, k1);
-					k1 += textDrawingArea.getTextWidth("From ");
+					k1 += textDrawingArea.measureTaggedTextWidth("From ");
 					if (byte1 == 1) {
 						modIcons[0].drawNonzeroIndexed(k1, l - 12);
 						k1 += 14;
@@ -8875,7 +8875,7 @@ public class Game extends RSApplet {
 
 			// Draw the menu
 			int debugItems = 1;
-			int debugWidth = chatTextDrawingArea.getTextWidth("System update in: 00:00") + 10; //140;
+			int debugWidth = chatTextDrawingArea.measureTaggedTextWidth("System update in: 00:00") + 10; //140;
 			int debugHeight = 25 + (debugItems * 15);
 			int debugX = 511 - debugWidth;
 			int debugY = 334 - debugHeight;
@@ -8991,9 +8991,9 @@ public class Game extends RSApplet {
 		if (ClientSettings.ANDROID && (menuActionRow == 0 || (menuActionRow == 1 && menuActionID[0] == 1107))) {
 			return;
 		}
-		int i = chatTextDrawingArea.getTextWidth("Choose Option");
+		int i = chatTextDrawingArea.measureTaggedTextWidth("Choose Option");
 		for (int j = 0; j < menuActionRow; j++) {
-			int k = chatTextDrawingArea.getTextWidth(menuActionName[j]);
+			int k = chatTextDrawingArea.measureTaggedTextWidth(menuActionName[j]);
 			if (k > i) {
 				i = k;
 			}
@@ -9645,7 +9645,7 @@ public class Game extends RSApplet {
 				if ((k == 3 || k == 7) && (k == 7 || privateChatMode == 0 || privateChatMode == 1 && isFriendOrSelf(s))) {
 					int l = 329 - i * 13;
 					if (super.mouseX > 4 && super.mouseY - 4 > l - 10 && super.mouseY - 4 <= l + 3) {
-						int i1 = aTextDrawingArea_1271.getTextWidth("From:  " + s + chatMessages[j]) + 25;
+						int i1 = aTextDrawingArea_1271.measureTaggedTextWidth("From:  " + s + chatMessages[j]) + 25;
 						if (i1 > 450) {
 							i1 = 450;
 						}
@@ -11916,7 +11916,7 @@ public class Game extends RSApplet {
 			DrawingArea.fillBlendedRectangle(fill2, debugY + 1, debugWidth - 2, 16, opacity, debugX + 1);
 			DrawingArea.drawRectangleOutline(debugY + 18, debugHeight - 19, fill2, debugX + 1, debugWidth - 2);
 			chatTextDrawingArea.textLeft(RSColors.WHITE_DARKER, "Debug Info", debugY += 14, debugX + 3);
-			chatTextDrawingArea.textLeft(super.fps > 40 ? RSColors.YELLOW : super.fps > 25 ? RSColors.ORANGE : RSColors.RED, super.fps + "fps", debugY, debugX + debugWidth - chatTextDrawingArea.getTextWidth(super.fps + "fps") - 3);
+			chatTextDrawingArea.textLeft(super.fps > 40 ? RSColors.YELLOW : super.fps > 25 ? RSColors.ORANGE : RSColors.RED, super.fps + "fps", debugY, debugX + debugWidth - chatTextDrawingArea.measureTaggedTextWidth(super.fps + "fps") - 3);
 
 			// Bump Y value
 			debugY += 3;
