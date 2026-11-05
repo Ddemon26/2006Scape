@@ -88,7 +88,7 @@ public class TextAlignmentTest {
             clear();draw(kind,"AB",anchor,y,true);int[] p=blank();ab(p,start,y,kind>=3,COLOR);
             assertArrayEquals("kind="+kind+" start="+start+" baseline="+y,p,DrawingArea.pixels);
         }
-        DrawingArea.resetClip();font.anInt1497+=3;
+        DrawingArea.resetClip();font.maxAsciiGlyphHeightPixels+=3;
         for(int kind=0;kind<5;kind++) {
             clear();draw(kind,"AB",80,18,false);int[] p=blank();
             ab(p,kind==1||kind==4?67:kind==2||kind==3?74:80,15,false,COLOR);

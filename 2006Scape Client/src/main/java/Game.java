@@ -1592,7 +1592,7 @@ public class Game extends RSApplet {
 					npcScreenPos(((Entity) obj), ((Entity) obj).height);
 					if (spriteDrawX > -1 && anInt974 < anInt975) {
 						anIntArray979[anInt974] = chatTextDrawingArea.measureLiteralTextWidth(((Entity) obj).textSpoken) / 2;
-						anIntArray978[anInt974] = chatTextDrawingArea.anInt1497;
+						anIntArray978[anInt974] = chatTextDrawingArea.maxAsciiGlyphHeightPixels;
 						anIntArray976[anInt974] = spriteDrawX;
 						anIntArray977[anInt974] = spriteDrawY;
 						anIntArray980[anInt974] = ((Entity) obj).anInt1513;
@@ -1745,7 +1745,7 @@ public class Game extends RSApplet {
 						} else if (j4 > 125) {
 							l4 = j4 - 125;
 						}
-						DrawingArea.setClip(spriteDrawY + 5, 0, 512, spriteDrawY - chatTextDrawingArea.anInt1497 - 1);
+						DrawingArea.setClip(spriteDrawY + 5, 0, 512, spriteDrawY - chatTextDrawingArea.maxAsciiGlyphHeightPixels - 1);
 						chatTextDrawingArea.drawCenteredLiteralText(0, s, spriteDrawY + 1 + l4, spriteDrawX);
 						chatTextDrawingArea.drawCenteredLiteralText(i3, s, spriteDrawY + l4, spriteDrawX);
 						DrawingArea.resetClip();
@@ -8348,7 +8348,7 @@ public class Game extends RSApplet {
 							i4 = 0xffffff;
 						}
 					}
-					for (int l6 = l2 + textDrawingArea.anInt1497; s.length() > 0; l6 += textDrawingArea.anInt1497) {
+					for (int l6 = l2 + textDrawingArea.maxAsciiGlyphHeightPixels; s.length() > 0; l6 += textDrawingArea.maxAsciiGlyphHeightPixels) {
 						if (s.indexOf("%") != -1) {
 							do {
 								int k7 = s.indexOf("%1");

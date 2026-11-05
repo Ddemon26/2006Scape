@@ -118,7 +118,7 @@ public class TaggedTextTest {
         }
     }
     @Test public void foregroundFailureIsCaughtOnlyInSolidTaggedRenderer() throws Exception {
-        byte[][] masks=(byte[][])field("aByteArrayArray1491").get(font);masks['A']=null;
+        byte[][] masks=(byte[][])field("glyphMasks").get(font);masks['A']=null;
         font.drawTaggedText(false,4,0x123456,"AB",18);
         int[] p=blank();glyph(p,9,18,6,0x123456,256);assertArrayEquals(p,DrawingArea.pixels);
         try{font.drawTaggedText(true,4,0,"A",18);fail();}catch(NullPointerException expected){}

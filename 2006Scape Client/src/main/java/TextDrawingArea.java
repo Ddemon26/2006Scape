@@ -6,69 +6,69 @@ import java.util.Random;
 
 public final class TextDrawingArea extends DrawingArea {
 
-	public TextDrawingArea(boolean flag, String s, StreamLoader streamLoader) {
-		aByteArrayArray1491 = new byte[256][];
-		anIntArray1492 = new int[256];
-		anIntArray1493 = new int[256];
-		anIntArray1494 = new int[256];
-		anIntArray1495 = new int[256];
+	public TextDrawingArea(boolean useCapitalIForSpaceAdvance, String fontName, StreamLoader fontArchive) {
+		glyphMasks = new byte[256][];
+		glyphWidthPixels = new int[256];
+		glyphHeightPixels = new int[256];
+		glyphXOffsetPixels = new int[256];
+		glyphYOffsetPixels = new int[256];
 		glyphAdvancePixels = new int[256];
 		jitterRandom = new Random();
 		strikeThroughEnabled = false;
-		Stream stream = new Stream(streamLoader.getDataForName(s + ".dat"));
-		Stream stream_1 = new Stream(streamLoader.getDataForName("index.dat"));
-		stream_1.currentOffset = stream.readUnsignedWord() + 4;
-		int k = stream_1.readUnsignedByte();
-		if (k > 0) {
-			stream_1.currentOffset += 3 * (k - 1);
+		Stream dataStream = new Stream(fontArchive.getDataForName(fontName + ".dat"));
+		Stream indexStream = new Stream(fontArchive.getDataForName("index.dat"));
+		indexStream.currentOffset = dataStream.readUnsignedWord() + 4;
+		int indexHeaderCount = indexStream.readUnsignedByte();
+		if (indexHeaderCount > 0) {
+			indexStream.currentOffset += 3 * (indexHeaderCount - 1);
 		}
-		for (int l = 0; l < 256; l++) {
-			anIntArray1494[l] = stream_1.readUnsignedByte();
-			anIntArray1495[l] = stream_1.readUnsignedByte();
-			int i1 = anIntArray1492[l] = stream_1.readUnsignedWord();
-			int j1 = anIntArray1493[l] = stream_1.readUnsignedWord();
-			int k1 = stream_1.readUnsignedByte();
-			int l1 = i1 * j1;
-			aByteArrayArray1491[l] = new byte[l1];
-			if (k1 == 0) {
-				for (int i2 = 0; i2 < l1; i2++) {
-					aByteArrayArray1491[l][i2] = stream.readSignedByte();
+		for (int characterCode = 0; characterCode < 256; characterCode++) {
+			glyphXOffsetPixels[characterCode] = indexStream.readUnsignedByte();
+			glyphYOffsetPixels[characterCode] = indexStream.readUnsignedByte();
+			int glyphWidth = glyphWidthPixels[characterCode] = indexStream.readUnsignedWord();
+			int glyphHeight = glyphHeightPixels[characterCode] = indexStream.readUnsignedWord();
+			int storageOrder = indexStream.readUnsignedByte();
+			int pixelCount = glyphWidth * glyphHeight;
+			glyphMasks[characterCode] = new byte[pixelCount];
+			if (storageOrder == 0) {
+				for (int pixelIndex = 0; pixelIndex < pixelCount; pixelIndex++) {
+					glyphMasks[characterCode][pixelIndex] = dataStream.readSignedByte();
 				}
 
-			} else if (k1 == 1) {
-				for (int j2 = 0; j2 < i1; j2++) {
-					for (int l2 = 0; l2 < j1; l2++) {
-						aByteArrayArray1491[l][j2 + l2 * i1] = stream.readSignedByte();
+			} else if (storageOrder == 1) {
+				for (int column = 0; column < glyphWidth; column++) {
+					for (int row = 0; row < glyphHeight; row++) {
+						glyphMasks[characterCode][column + row * glyphWidth] = dataStream.readSignedByte();
 					}
 
 				}
 
 			}
-			if (j1 > anInt1497 && l < 128) {
-				anInt1497 = j1;
+			if (glyphHeight > maxAsciiGlyphHeightPixels && characterCode < 128) {
+				maxAsciiGlyphHeightPixels = glyphHeight;
 			}
-			anIntArray1494[l] = 1;
-			glyphAdvancePixels[l] = i1 + 2;
-			int k2 = 0;
-			for (int i3 = j1 / 7; i3 < j1; i3++) {
-				k2 += aByteArrayArray1491[l][i3 * i1];
-			}
-
-			if (k2 <= j1 / 7) {
-				glyphAdvancePixels[l]--;
-				anIntArray1494[l] = 0;
-			}
-			k2 = 0;
-			for (int j3 = j1 / 7; j3 < j1; j3++) {
-				k2 += aByteArrayArray1491[l][i1 - 1 + j3 * i1];
+			glyphXOffsetPixels[characterCode] = 1;
+			glyphAdvancePixels[characterCode] = glyphWidth + 2;
+			int sampledEdgeSum = 0;
+			for (int leftEdgeRow = glyphHeight / 7; leftEdgeRow < glyphHeight; leftEdgeRow++) {
+				sampledEdgeSum += glyphMasks[characterCode][leftEdgeRow * glyphWidth];
 			}
 
-			if (k2 <= j1 / 7) {
-				glyphAdvancePixels[l]--;
+			if (sampledEdgeSum <= glyphHeight / 7) {
+				glyphAdvancePixels[characterCode]--;
+				glyphXOffsetPixels[characterCode] = 0;
+			}
+			sampledEdgeSum = 0;
+			for (int rightEdgeRow = glyphHeight / 7; rightEdgeRow < glyphHeight; rightEdgeRow++) {
+				sampledEdgeSum += glyphMasks[characterCode][glyphWidth - 1 + rightEdgeRow * glyphWidth];
+			}
+
+			if (sampledEdgeSum <= glyphHeight / 7) {
+				glyphAdvancePixels[characterCode]--;
 			}
 		}
 
-		if (flag) {
+		if (useCapitalIForSpaceAdvance) {
 			glyphAdvancePixels[32] = glyphAdvancePixels[73];
 		} else {
 			glyphAdvancePixels[32] = glyphAdvancePixels[105];
@@ -122,11 +122,11 @@ public final class TextDrawingArea extends DrawingArea {
 		if (text == null) {
 			return;
 		}
-		baselineY -= anInt1497;
+		baselineY -= maxAsciiGlyphHeightPixels;
 		for (int characterIndex = 0; characterIndex < text.length(); characterIndex++) {
 			char character = text.charAt(characterIndex);
 			if (character != ' ') {
-				drawGlyphMask(aByteArrayArray1491[character], x + anIntArray1494[character], baselineY + anIntArray1495[character], anIntArray1492[character], anIntArray1493[character], color);
+				drawGlyphMask(glyphMasks[character], x + glyphXOffsetPixels[character], baselineY + glyphYOffsetPixels[character], glyphWidthPixels[character], glyphHeightPixels[character], color);
 			}
 			x += glyphAdvancePixels[character];
 		}
@@ -137,11 +137,11 @@ public final class TextDrawingArea extends DrawingArea {
 			return;
 		}
 		centerX -= measureLiteralTextWidth(text) / 2;
-		baselineY -= anInt1497;
+		baselineY -= maxAsciiGlyphHeightPixels;
 		for (int characterIndex = 0; characterIndex < text.length(); characterIndex++) {
 			char character = text.charAt(characterIndex);
 			if (character != ' ') {
-				drawGlyphMask(aByteArrayArray1491[character], centerX + anIntArray1494[character], baselineY + anIntArray1495[character] + (int) (Math.sin(characterIndex / 2D + phase / 5D) * 5D), anIntArray1492[character], anIntArray1493[character], color);
+				drawGlyphMask(glyphMasks[character], centerX + glyphXOffsetPixels[character], baselineY + glyphYOffsetPixels[character] + (int) (Math.sin(characterIndex / 2D + phase / 5D) * 5D), glyphWidthPixels[character], glyphHeightPixels[character], color);
 			}
 			centerX += glyphAdvancePixels[character];
 		}
@@ -153,11 +153,11 @@ public final class TextDrawingArea extends DrawingArea {
 			return;
 		}
 		centerX -= measureLiteralTextWidth(text) / 2;
-		baselineY -= anInt1497;
+		baselineY -= maxAsciiGlyphHeightPixels;
 		for (int characterIndex = 0; characterIndex < text.length(); characterIndex++) {
 			char character = text.charAt(characterIndex);
 			if (character != ' ') {
-				drawGlyphMask(aByteArrayArray1491[character], centerX + anIntArray1494[character] + (int) (Math.sin(characterIndex / 5D + phase / 5D) * 5D), baselineY + anIntArray1495[character] + (int) (Math.sin(characterIndex / 3D + phase / 5D) * 5D), anIntArray1492[character], anIntArray1493[character], color);
+				drawGlyphMask(glyphMasks[character], centerX + glyphXOffsetPixels[character] + (int) (Math.sin(characterIndex / 5D + phase / 5D) * 5D), baselineY + glyphYOffsetPixels[character] + (int) (Math.sin(characterIndex / 3D + phase / 5D) * 5D), glyphWidthPixels[character], glyphHeightPixels[character], color);
 			}
 			centerX += glyphAdvancePixels[character];
 		}
@@ -173,11 +173,11 @@ public final class TextDrawingArea extends DrawingArea {
 			amplitudePixels = 0.0D;
 		}
 		centerX -= measureLiteralTextWidth(text) / 2;
-		baselineY -= anInt1497;
+		baselineY -= maxAsciiGlyphHeightPixels;
 		for (int characterIndex = 0; characterIndex < text.length(); characterIndex++) {
 			char character = text.charAt(characterIndex);
 			if (character != ' ') {
-				drawGlyphMask(aByteArrayArray1491[character], centerX + anIntArray1494[character], baselineY + anIntArray1495[character] + (int) (Math.sin(characterIndex / 1.5D + phase) * amplitudePixels), anIntArray1492[character], anIntArray1493[character], color);
+				drawGlyphMask(glyphMasks[character], centerX + glyphXOffsetPixels[character], baselineY + glyphYOffsetPixels[character] + (int) (Math.sin(characterIndex / 1.5D + phase) * amplitudePixels), glyphWidthPixels[character], glyphHeightPixels[character], color);
 			}
 			centerX += glyphAdvancePixels[character];
 		}
@@ -190,7 +190,7 @@ public final class TextDrawingArea extends DrawingArea {
 		if (text == null) {
 			return;
 		}
-		baselineY -= anInt1497;
+		baselineY -= maxAsciiGlyphHeightPixels;
 		for (int characterIndex = 0; characterIndex < text.length(); characterIndex++) {
 			if (text.charAt(characterIndex) == '@' && characterIndex + 4 < text.length() && text.charAt(characterIndex + 4) == '@') {
 				int tagColor = applyTextTag(text.substring(characterIndex + 1, characterIndex + 4));
@@ -202,10 +202,10 @@ public final class TextDrawingArea extends DrawingArea {
 				char character = text.charAt(characterIndex);
 				if (character != ' ') {
 					if (shadow) {
-						drawGlyphMask(aByteArrayArray1491[character], x + anIntArray1494[character] + 1, baselineY + anIntArray1495[character] + 1, anIntArray1492[character], anIntArray1493[character], 0);
+						drawGlyphMask(glyphMasks[character], x + glyphXOffsetPixels[character] + 1, baselineY + glyphYOffsetPixels[character] + 1, glyphWidthPixels[character], glyphHeightPixels[character], 0);
 					}
 					try {
-					drawGlyphMask(aByteArrayArray1491[character], x + anIntArray1494[character], baselineY + anIntArray1495[character], anIntArray1492[character], anIntArray1493[character], color);
+					drawGlyphMask(glyphMasks[character], x + glyphXOffsetPixels[character], baselineY + glyphYOffsetPixels[character], glyphWidthPixels[character], glyphHeightPixels[character], color);
 					} catch (Exception glyphFailure) {
 						
 					}
@@ -214,7 +214,7 @@ public final class TextDrawingArea extends DrawingArea {
 			}
 		}
 		if (strikeThroughEnabled) {
-			DrawingArea.drawHorizontalLine(baselineY + (int) (anInt1497 * 0.69999999999999996D), 0x800000, x - startX, startX);
+			DrawingArea.drawHorizontalLine(baselineY + (int) (maxAsciiGlyphHeightPixels * 0.69999999999999996D), 0x800000, x - startX, startX);
 		}
 	}
 
@@ -224,7 +224,7 @@ public final class TextDrawingArea extends DrawingArea {
 		}
 		jitterRandom.setSeed(seed);
 		int opacity256 = 192 + (jitterRandom.nextInt() & 0x1f);
-		baselineY -= anInt1497;
+		baselineY -= maxAsciiGlyphHeightPixels;
 		for (int characterIndex = 0; characterIndex < text.length(); characterIndex++) {
 			if (text.charAt(characterIndex) == '@' && characterIndex + 4 < text.length() && text.charAt(characterIndex + 4) == '@') {
 				int tagColor = applyTextTag(text.substring(characterIndex + 1, characterIndex + 4));
@@ -235,8 +235,8 @@ public final class TextDrawingArea extends DrawingArea {
 			} else {
 				char character = text.charAt(characterIndex);
 				if (character != ' ') {
-					drawBlendedGlyphMask(192, x + anIntArray1494[character] + 1, aByteArrayArray1491[character], anIntArray1492[character], baselineY + anIntArray1495[character] + 1, anIntArray1493[character], 0);
-					drawBlendedGlyphMask(opacity256, x + anIntArray1494[character], aByteArrayArray1491[character], anIntArray1492[character], baselineY + anIntArray1495[character], anIntArray1493[character], color);
+					drawBlendedGlyphMask(192, x + glyphXOffsetPixels[character] + 1, glyphMasks[character], glyphWidthPixels[character], baselineY + glyphYOffsetPixels[character] + 1, glyphHeightPixels[character], 0);
+					drawBlendedGlyphMask(opacity256, x + glyphXOffsetPixels[character], glyphMasks[character], glyphWidthPixels[character], baselineY + glyphYOffsetPixels[character], glyphHeightPixels[character], color);
 				}
 				x += glyphAdvancePixels[character];
 				if ((jitterRandom.nextInt() & 3) == 0) {
@@ -439,13 +439,13 @@ public final class TextDrawingArea extends DrawingArea {
 
 	}
 
-	private final byte[][] aByteArrayArray1491;
-	private final int[] anIntArray1492;
-	private final int[] anIntArray1493;
-	private final int[] anIntArray1494;
-	private final int[] anIntArray1495;
+	private final byte[][] glyphMasks;
+	private final int[] glyphWidthPixels;
+	private final int[] glyphHeightPixels;
+	private final int[] glyphXOffsetPixels;
+	private final int[] glyphYOffsetPixels;
 	private final int[] glyphAdvancePixels;
-	public int anInt1497;
+	public int maxAsciiGlyphHeightPixels;
 	private final Random jitterRandom;
 	private boolean strikeThroughEnabled;
 }
