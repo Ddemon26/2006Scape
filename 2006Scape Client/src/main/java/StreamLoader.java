@@ -4,66 +4,66 @@
 
 final class StreamLoader {
 
-	public StreamLoader(byte abyte0[]) {
-		Stream stream = new Stream(abyte0);
-		int i = stream.read3Bytes();
-		int j = stream.read3Bytes();
-		if (j != i) {
-			byte abyte1[] = new byte[i];
-			Class13.method225(abyte1, i, abyte0, j, 6);
-			aByteArray726 = abyte1;
-			stream = new Stream(aByteArray726);
-			aBoolean732 = true;
+	public StreamLoader(byte encodedArchive[]) {
+		Stream header = new Stream(encodedArchive);
+		int unpackedArchiveSize = header.read3Bytes();
+		int packedArchiveSize = header.read3Bytes();
+		if (packedArchiveSize != unpackedArchiveSize) {
+			byte unpackedData[] = new byte[unpackedArchiveSize];
+			Class13.method225(unpackedData, unpackedArchiveSize, encodedArchive, packedArchiveSize, 6);
+			archiveData = unpackedData;
+			header = new Stream(archiveData);
+			archiveDecompressed = true;
 		} else {
-			aByteArray726 = abyte0;
-			aBoolean732 = false;
+			archiveData = encodedArchive;
+			archiveDecompressed = false;
 		}
-		dataSize = stream.readUnsignedWord();
-		anIntArray728 = new int[dataSize];
-		anIntArray729 = new int[dataSize];
-		anIntArray730 = new int[dataSize];
-		anIntArray731 = new int[dataSize];
-		int k = stream.currentOffset + dataSize * 10;
-		for (int l = 0; l < dataSize; l++) {
-			anIntArray728[l] = stream.readDWord();
-			anIntArray729[l] = stream.read3Bytes();
-			anIntArray730[l] = stream.read3Bytes();
-			anIntArray731[l] = k;
-			k += anIntArray730[l];
+		entryCount = header.readUnsignedWord();
+		entryNameHashes = new int[entryCount];
+		entryUnpackedSizes = new int[entryCount];
+		entryPackedSizes = new int[entryCount];
+		entryOffsets = new int[entryCount];
+		int entryOffset = header.currentOffset + entryCount * 10;
+		for (int entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+			entryNameHashes[entryIndex] = header.readDWord();
+			entryUnpackedSizes[entryIndex] = header.read3Bytes();
+			entryPackedSizes[entryIndex] = header.read3Bytes();
+			entryOffsets[entryIndex] = entryOffset;
+			entryOffset += entryPackedSizes[entryIndex];
 		}
 	}
 
-	public byte[] getDataForName(String s) {
-		byte abyte0[] = null; // was a parameter
-		int i = 0;
-		s = s.toUpperCase();
-		for (int j = 0; j < s.length(); j++) {
-			i = i * 61 + s.charAt(j) - 32;
+	public byte[] getDataForName(String entryName) {
+		byte entryData[] = null; // was a parameter
+		int nameHash = 0;
+		entryName = entryName.toUpperCase();
+		for (int characterIndex = 0; characterIndex < entryName.length(); characterIndex++) {
+			nameHash = nameHash * 61 + entryName.charAt(characterIndex) - 32;
 		}
 
-		for (int k = 0; k < dataSize; k++) {
-			if (anIntArray728[k] == i) {
-				if (abyte0 == null) {
-					abyte0 = new byte[anIntArray729[k]];
+		for (int entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+			if (entryNameHashes[entryIndex] == nameHash) {
+				if (entryData == null) {
+					entryData = new byte[entryUnpackedSizes[entryIndex]];
 				}
-				if (!aBoolean732) {
-					Class13.method225(abyte0, anIntArray729[k], aByteArray726, anIntArray730[k], anIntArray731[k]);
+				if (!archiveDecompressed) {
+					Class13.method225(entryData, entryUnpackedSizes[entryIndex], archiveData, entryPackedSizes[entryIndex], entryOffsets[entryIndex]);
 				} else {
-					System.arraycopy(aByteArray726, anIntArray731[k], abyte0, 0, anIntArray729[k]);
+					System.arraycopy(archiveData, entryOffsets[entryIndex], entryData, 0, entryUnpackedSizes[entryIndex]);
 
 				}
-				return abyte0;
+				return entryData;
 			}
 		}
 
 		return null;
 	}
 
-	private final byte[] aByteArray726;
-	private final int dataSize;
-	private final int[] anIntArray728;
-	private final int[] anIntArray729;
-	private final int[] anIntArray730;
-	private final int[] anIntArray731;
-	private final boolean aBoolean732;
+	private final byte[] archiveData;
+	private final int entryCount;
+	private final int[] entryNameHashes;
+	private final int[] entryUnpackedSizes;
+	private final int[] entryPackedSizes;
+	private final int[] entryOffsets;
+	private final boolean archiveDecompressed;
 }
