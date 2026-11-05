@@ -4,22 +4,22 @@
 
 public final class Sprite extends DrawingArea {
 
-	public Sprite(int i, int j) {
-		pixels = new int[i * j];
-		width = trimWidth = i;
-		height = trimHeight = j;
+	public Sprite(int imageWidth, int imageHeight) {
+		pixels = new int[imageWidth * imageHeight];
+		width = trimWidth = imageWidth;
+		height = trimHeight = imageHeight;
 		offsetX = offsetY = 0;
 	}
 
-	public Sprite(byte abyte0[]) {
-		this(abyte0, null);
+	public Sprite(byte encodedImageBytes[]) {
+		this(encodedImageBytes, null);
 	}
 
-	public Sprite(byte abyte0[], Object component) {
+	public Sprite(byte encodedImageBytes[], Object component) {
 		if (ClientSettings.ANDROID) {
-			AndroidHooks.decodeImage(this, abyte0);
+			AndroidHooks.decodeImage(this, encodedImageBytes);
 		} else {
-			DesktopHooks.decodeImage(this, abyte0, component);
+			DesktopHooks.decodeImage(this, encodedImageBytes, component);
 		}
 	}
 

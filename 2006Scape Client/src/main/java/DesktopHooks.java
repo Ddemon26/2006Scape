@@ -21,21 +21,21 @@ public final class DesktopHooks {
 
     private DesktopHooks() {}
 
-    public static void decodeImage(Sprite sprite, byte[] abyte0, Object component) {
+    public static void decodeImage(Sprite sprite, byte[] encodedImageBytes, Object component) {
         try {
-            Component comp = (component instanceof Component) ? (Component) component : null;
-            Image image = Toolkit.getDefaultToolkit().createImage(abyte0);
-            if (comp != null) {
-                MediaTracker mediatracker = new MediaTracker(comp);
-                mediatracker.addImage(image, 0);
-                mediatracker.waitForAll();
-                sprite.width = image.getWidth(comp);
-                sprite.height = image.getHeight(comp);
+            Component imageComponent = (component instanceof Component) ? (Component) component : null;
+            Image image = Toolkit.getDefaultToolkit().createImage(encodedImageBytes);
+            if (imageComponent != null) {
+                MediaTracker imageTracker = new MediaTracker(imageComponent);
+                imageTracker.addImage(image, 0);
+                imageTracker.waitForAll();
+                sprite.width = image.getWidth(imageComponent);
+                sprite.height = image.getHeight(imageComponent);
             } else {
                 Canvas canvas = new Canvas();
-                MediaTracker mediatracker = new MediaTracker(canvas);
-                mediatracker.addImage(image, 0);
-                mediatracker.waitForAll();
+                MediaTracker imageTracker = new MediaTracker(canvas);
+                imageTracker.addImage(image, 0);
+                imageTracker.waitForAll();
                 sprite.width = image.getWidth(canvas);
                 sprite.height = image.getHeight(canvas);
             }
@@ -44,9 +44,9 @@ public final class DesktopHooks {
             sprite.offsetX = 0;
             sprite.offsetY = 0;
             sprite.pixels = new int[sprite.width * sprite.height];
-            PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0, sprite.width, sprite.height, sprite.pixels, 0, sprite.width);
-            pixelgrabber.grabPixels();
-        } catch (Exception _ex) {
+            PixelGrabber pixelGrabber = new PixelGrabber(image, 0, 0, sprite.width, sprite.height, sprite.pixels, 0, sprite.width);
+            pixelGrabber.grabPixels();
+        } catch (Exception decodeFailure) {
             System.out.println("Error converting jpg");
         }
     }

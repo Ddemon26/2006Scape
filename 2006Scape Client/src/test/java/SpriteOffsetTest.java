@@ -71,6 +71,90 @@ public class SpriteOffsetTest {
         assertEquals(0xff0000, blank.pixels[5] & 0xffffff);
     }
 
+
+    // PNG is independently serialized with Python struct/zlib, not AWT/ImageIO.
+    static byte[] encodedArgbFixture() {
+        return Base64.getDecoder().decode("iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAYAAAC09K7GAAAAMElEQVR4nGNgYGD4DwJCJmH/BZWMGRhc0joaGJmYGVefff+P4T8QghUwgBkOQFY9ABPxFdFHVYLQAAAAAElFTkSuQmCC");
+    }
+
+    static int[] expectedArgbFixture() {
+        return new int[] {0xff000000, 0xffffffff, 0xff123456, 0x00112233,
+                0x80446688, 0x01010203, 0xfeabcdef, 0xff00ff00,
+                0xff0000ff, 0xffff0000, 0x40000000, 0x7fffffff};
+    }
+
+    @Test
+    public void blankConstructorUsesIndependentPixelDimensionsAndZeroStorage() {
+        for (int width = 0; width <= 5; width++) {
+            for (int height = 0; height <= 4; height++) {
+                Sprite sprite = new Sprite(width, height);
+                assertEquals(width, sprite.width);
+                assertEquals(height, sprite.height);
+                assertEquals(width, sprite.trimWidth);
+                assertEquals(height, sprite.trimHeight);
+                assertEquals(0, sprite.offsetX);
+                assertEquals(0, sprite.offsetY);
+                assertArrayEquals(new int[width * height], sprite.pixels);
+            }
+        }
+        Sprite first = new Sprite(2, 3), second = new Sprite(2, 3);
+        first.pixels[5] = 99;
+        assertEquals(0, second.pixels[5]);
+    }
+
+    @Test
+    public void encodedImageConstructorsPreserveArgbAndRowMajorCoordinates() {
+        assertDecodedArgb(new Sprite(encodedArgbFixture()));
+        assertDecodedArgb(new Sprite(encodedArgbFixture(), null));
+        assertDecodedArgb(new Sprite(encodedArgbFixture(), new Object()));
+        assertDecodedArgb(new Sprite(encodedArgbFixture(), new java.awt.Canvas()));
+        // An image is encoded data, not an archive palette or one byte per pixel.
+        assertEquals(0xff000000, new Sprite(encodedArgbFixture()).pixels[0]);
+        assertEquals(0x00112233, new Sprite(encodedArgbFixture()).pixels[3]);
+    }
+
+    @Test
+    public void desktopDecoderReplacesTargetStorageAndResetsCanvasAndOffsets() {
+        for (Object component : new Object[] {null, new Object(), new java.awt.Canvas()}) {
+            Sprite target = new Sprite(1, 7), untouched = new Sprite(2, 2);
+            int[] oldPixels = target.pixels;
+            target.trimWidth = 101; target.trimHeight = 102;
+            target.offsetX = 8; target.offsetY = 9;
+            DesktopHooks.decodeImage(target, encodedArgbFixture(), component);
+            assertDecodedArgb(target);
+            org.junit.Assert.assertNotSame(oldPixels, target.pixels);
+            assertEquals(2, untouched.width);
+            assertArrayEquals(new int[4], untouched.pixels);
+        }
+    }
+
+    @Test
+    public void desktopNullImageFailureIsCaughtWithoutResettingTarget() throws Exception {
+        Sprite target = new Sprite(2, 3);
+        target.offsetX = 8; target.offsetY = 9;
+        target.pixels[5] = 123;
+        int[] pixels = target.pixels;
+        java.io.PrintStream previous = System.out;
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try {
+            System.setOut(new java.io.PrintStream(output, true, "UTF-8"));
+            DesktopHooks.decodeImage(target, null, new java.awt.Canvas());
+        } finally { System.setOut(previous); }
+        assertEquals("Error converting jpg" + System.lineSeparator(), output.toString("UTF-8"));
+        org.junit.Assert.assertSame(pixels, target.pixels);
+        assertEquals(2, target.width); assertEquals(3, target.height);
+        assertEquals(2, target.trimWidth); assertEquals(3, target.trimHeight);
+        assertEquals(8, target.offsetX); assertEquals(9, target.offsetY);
+        assertEquals(123, target.pixels[5]);
+    }
+
+    private static void assertDecodedArgb(Sprite sprite) {
+        assertEquals(4, sprite.width); assertEquals(3, sprite.height);
+        assertEquals(4, sprite.trimWidth); assertEquals(3, sprite.trimHeight);
+        assertEquals(0, sprite.offsetX); assertEquals(0, sprite.offsetY);
+        assertArrayEquals(expectedArgbFixture(), sprite.pixels);
+    }
+
     @Test
     public void archiveStoresUnsignedHorizontalThenVerticalPixelOffsets() {
         Sprite first = new Sprite(archive(), "offset", 0);
