@@ -193,9 +193,9 @@ public final class EntityDef {
 				}
 
 			} else if (i == 2) {
-				name = stream.readString();
+				name = stream.readLfTerminatedString();
 			} else if (i == 3) {
-				description = stream.readBytes();
+				description = stream.readLfTerminatedBytes();
 			} else if (i == 12) {
 				aByte68 = stream.readSignedByte();
 			} else if (i == 13) {
@@ -211,7 +211,7 @@ public final class EntityDef {
 				if (actions == null) {
 					actions = new String[5];
 				}
-				actions[i - 30] = stream.readString();
+				actions[i - 30] = stream.readLfTerminatedString();
 				if (actions[i - 30].equalsIgnoreCase("hidden")) {
 					actions[i - 30] = null;
 				}

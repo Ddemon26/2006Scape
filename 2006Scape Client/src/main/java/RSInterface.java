@@ -94,7 +94,7 @@ public final class RSInterface {
 					if (k3 == 1) {
 						rsInterface.spritesX[j2] = stream.readSignedWord();
 						rsInterface.spritesY[j2] = stream.readSignedWord();
-						String s1 = stream.readString();
+						String s1 = stream.readLfTerminatedString();
 						if (streamLoader_1 != null && s1.length() > 0) {
 							int i5 = s1.lastIndexOf(",");
 							rsInterface.sprites[j2] = loadCachedSprite(Integer.parseInt(s1.substring(i5 + 1)), streamLoader_1, s1.substring(0, i5));
@@ -104,7 +104,7 @@ public final class RSInterface {
 
 				rsInterface.actions = new String[5];
 				for (int l3 = 0; l3 < 5; l3++) {
-					rsInterface.actions[l3] = stream.readString();
+					rsInterface.actions[l3] = stream.readLfTerminatedString();
 					if (rsInterface.actions[l3].length() == 0) {
 						rsInterface.actions[l3] = null;
 					}
@@ -130,8 +130,8 @@ public final class RSInterface {
 				rsInterface.aBoolean268 = stream.readUnsignedByte() == 1;
 			}
 			if (rsInterface.type == 4) {
-				rsInterface.disabledText = stream.readString().replaceAll("RuneScape", ClientSettings.SERVER_NAME);
-				rsInterface.enabledText = stream.readString();
+				rsInterface.disabledText = stream.readLfTerminatedString().replaceAll("RuneScape", ClientSettings.SERVER_NAME);
+				rsInterface.enabledText = stream.readLfTerminatedString();
 			}
 			if (rsInterface.type == 1 || rsInterface.type == 3 || rsInterface.type == 4) {
 				rsInterface.textColor = stream.readDWord();
@@ -142,12 +142,12 @@ public final class RSInterface {
 				rsInterface.anInt239 = stream.readDWord();
 			}
 			if (rsInterface.type == 5) {
-				String s = stream.readString();
+				String s = stream.readLfTerminatedString();
 				if (streamLoader_1 != null && s.length() > 0) {
 					int i4 = s.lastIndexOf(",");
 					rsInterface.sprite1 = loadCachedSprite(Integer.parseInt(s.substring(i4 + 1)), streamLoader_1, s.substring(0, i4));
 				}
-				s = stream.readString();
+				s = stream.readLfTerminatedString();
 				if (streamLoader_1 != null && s.length() > 0) {
 					int j4 = s.lastIndexOf(",");
 					rsInterface.sprite2 = loadCachedSprite(Integer.parseInt(s.substring(j4 + 1)), streamLoader_1, s.substring(0, j4));
@@ -195,7 +195,7 @@ public final class RSInterface {
 				rsInterface.isInventoryInterface = stream.readUnsignedByte() == 1;
 				rsInterface.actions = new String[5];
 				for (int k4 = 0; k4 < 5; k4++) {
-					rsInterface.actions[k4] = stream.readString();
+					rsInterface.actions[k4] = stream.readLfTerminatedString();
 					if (rsInterface.actions[k4].length() == 0) {
 						rsInterface.actions[k4] = null;
 					}
@@ -203,15 +203,15 @@ public final class RSInterface {
 
 			}
 			if (rsInterface.atActionType == 2 || rsInterface.type == 2) {
-				rsInterface.selectedActionName = stream.readString();
-				rsInterface.spellName = stream.readString();
+				rsInterface.selectedActionName = stream.readLfTerminatedString();
+				rsInterface.spellName = stream.readLfTerminatedString();
 				rsInterface.spellUsableOn = stream.readUnsignedWord();
 			}
 			if (rsInterface.type == 8) {
-				rsInterface.disabledText = stream.readString();
+				rsInterface.disabledText = stream.readLfTerminatedString();
 			}
 			if (rsInterface.atActionType == 1 || rsInterface.atActionType == 4 || rsInterface.atActionType == 5 || rsInterface.atActionType == 6) {
-				rsInterface.tooltip = stream.readString();
+				rsInterface.tooltip = stream.readLfTerminatedString();
 				if (rsInterface.tooltip.length() == 0) {
 					if (rsInterface.atActionType == 1) {
 						rsInterface.tooltip = "Ok";

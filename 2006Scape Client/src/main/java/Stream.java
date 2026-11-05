@@ -87,10 +87,10 @@ public final class Stream extends NodeSub {
 		}
 	}
 
-	public void writeString(String s) {
-		// s.getBytes(0, s.length(), buffer, currentOffset); //deprecated
-		System.arraycopy(s.getBytes(), 0, buffer, currentOffset, s.length());
-		currentOffset += s.length();
+	public void writeLfTerminatedString(String text) {
+		// text.getBytes(0, text.length(), buffer, currentOffset); //deprecated
+		System.arraycopy(text.getBytes(), 0, buffer, currentOffset, text.length());
+		currentOffset += text.length();
 		buffer[currentOffset++] = 10;
 	}
 
@@ -143,22 +143,22 @@ public final class Stream extends NodeSub {
 		return (l << 32) + l1;
 	}
 
-	public String readString() {
-		int i = currentOffset;
+	public String readLfTerminatedString() {
+		int payloadStart = currentOffset;
 		while (buffer[currentOffset++] != 10) {
 			;
 		}
-		return new String(buffer, i, currentOffset - i - 1);
+		return new String(buffer, payloadStart, currentOffset - payloadStart - 1);
 	}
 
-	public byte[] readBytes() {
-		int i = currentOffset;
+	public byte[] readLfTerminatedBytes() {
+		int payloadStart = currentOffset;
 		while (buffer[currentOffset++] != 10) {
 			;
 		}
-		byte abyte0[] = new byte[currentOffset - i - 1];
-		System.arraycopy(buffer, i, abyte0, i - i, currentOffset - 1 - i);
-		return abyte0;
+		byte payloadBytes[] = new byte[currentOffset - payloadStart - 1];
+		System.arraycopy(buffer, payloadStart, payloadBytes, payloadStart - payloadStart, currentOffset - 1 - payloadStart);
+		return payloadBytes;
 	}
 
 	public void readBytes(int length, int destinationOffset, byte destination[]) {

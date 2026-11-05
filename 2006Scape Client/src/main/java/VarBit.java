@@ -36,7 +36,7 @@ public final class VarBit {
 				anInt649 = stream.readUnsignedByte();
 				anInt650 = stream.readUnsignedByte();
 			} else if (j == 10) {
-				stream.readString();
+				stream.readLfTerminatedString();
 			} else if (j == 2) {
 				aBoolean651 = true;
 			} else if (j == 3) {

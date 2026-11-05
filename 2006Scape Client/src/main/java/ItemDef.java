@@ -2259,9 +2259,9 @@ public final class ItemDef {
 			if (i == 1) {
 				modelID = stream.readUnsignedWord();
 			} else if (i == 2) {
-				name = stream.readString();
+				name = stream.readLfTerminatedString();
 			} else if (i == 3) {
-				description = stream.readBytes();
+				description = stream.readLfTerminatedBytes();
 			} else if (i == 4) {
 				modelZoom = stream.readUnsignedWord();
 			} else if (i == 5) {
@@ -2300,7 +2300,7 @@ public final class ItemDef {
 				if (groundActions == null) {
 					groundActions = new String[5];
 				}
-				groundActions[i - 30] = stream.readString();
+				groundActions[i - 30] = stream.readLfTerminatedString();
 				if (groundActions[i - 30].equalsIgnoreCase("hidden")) {
 					groundActions[i - 30] = null;
 				}
@@ -2308,7 +2308,7 @@ public final class ItemDef {
 				if (actions == null) {
 					actions = new String[5];
 				}
-				actions[i - 35] = stream.readString();
+				actions[i - 35] = stream.readLfTerminatedString();
 			} else if (i == 40) {
 				int j = stream.readUnsignedByte();
 				modifiedModelColors = new int[j];

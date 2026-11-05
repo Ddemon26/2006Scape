@@ -316,9 +316,9 @@ public final class ObjectDef {
 						}
 					}
 				} else if (j == 2) {
-					name = stream.readString();
+					name = stream.readLfTerminatedString();
 				} else if (j == 3) {
-					description = stream.readBytes();
+					description = stream.readLfTerminatedBytes();
 				} else if (j == 5) {
 					int l = stream.readUnsignedByte();
 					if (l > 0) {
@@ -367,7 +367,7 @@ public final class ObjectDef {
 					if (actions == null) {
 						actions = new String[5];
 					}
-					actions[j - 30] = stream.readString();
+					actions[j - 30] = stream.readLfTerminatedString();
 					if (actions[j - 30].equalsIgnoreCase("hidden")) {
 						actions[j - 30] = null;
 					}

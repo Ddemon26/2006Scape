@@ -45,7 +45,7 @@ public final class Flo {
 			} else if (i == 5) {
 				aBoolean393 = false;
 			} else if (i == 6) {
-				stream.readString();
+				stream.readLfTerminatedString();
 			} else if (i == 7) {
 				int j = anInt394;
 				int k = anInt395;

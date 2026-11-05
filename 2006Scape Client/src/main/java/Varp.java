@@ -46,7 +46,7 @@ public final class Varp {
 			} else if (j == 8) {
 				aBoolean713 = true;
 			} else if (j == 10) {
-				stream.readString();
+				stream.readLfTerminatedString();
 			} else if (j == 11) {
 				aBoolean713 = true;
 			} else if (j == 12) {

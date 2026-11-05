@@ -5155,7 +5155,7 @@ public class Game extends RSApplet {
 					if (inputString.startsWith("::")) {
 						stream.createFrame(103);
 						stream.writeWordBigEndian(inputString.length() - 1);
-						stream.writeString(inputString.substring(2));
+						stream.writeLfTerminatedString(inputString.substring(2));
 					} else {
 						String s = inputString.toLowerCase();
 						int j2 = 0;
@@ -6053,8 +6053,8 @@ public class Game extends RSApplet {
 				stream.writeDWord(ai[2]);
 				stream.writeDWord(ai[3]);
 				stream.writeDWord(ClientSettings.UID);
-				stream.writeString(s);
-				stream.writeString(s1);
+				stream.writeLfTerminatedString(s);
+				stream.writeLfTerminatedString(s1);
 				stream.encryptRsaBlock();
 				aStream_847.currentOffset = 0;
 				if (flag) {
@@ -6627,7 +6627,7 @@ public class Game extends RSApplet {
 				}
 			}
 			if ((l & 1) != 0) {
-				npc.textSpoken = stream.readString();
+				npc.textSpoken = stream.readLfTerminatedString();
 				npc.textCycle = 100;
 			}
 			if ((l & 0x40) != 0) {
@@ -8567,7 +8567,7 @@ public class Game extends RSApplet {
 			}
 		}
 		if ((i & 4) != 0) {
-			player.textSpoken = stream.readString();
+			player.textSpoken = stream.readLfTerminatedString();
 			if (player.textSpoken.charAt(0) == '~') {
 				player.textSpoken = player.textSpoken.substring(1);
 				pushMessage(player.textSpoken, 2, player.name);
@@ -11088,7 +11088,7 @@ public class Game extends RSApplet {
 			if (pktType == 104) {
 				int j4 = inStream.method427();
 				int i12 = inStream.readUnsignedByteA();
-				String s6 = inStream.readString();
+				String s6 = inStream.readLfTerminatedString();
 				if (j4 >= 1 && j4 <= 5) {
 					if (s6.equalsIgnoreCase("null")) {
 						s6 = null;
@@ -11105,7 +11105,7 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 253) {
-				String s = inStream.readString();
+				String s = inStream.readLfTerminatedString();
 				if (s.endsWith(":tradereq:")) {
 					String s3 = s.substring(0, s.indexOf(":"));
 					long l17 = TextClass.encodeBase37Name(s3);
@@ -11466,7 +11466,7 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 126) {
-				String message = inStream.readString();
+				String message = inStream.readLfTerminatedString();
 				int interfaceID = inStream.method435();
 				// Update current player health (fix for refresh skill not including this)
 				if (interfaceID == 4016) {
