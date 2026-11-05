@@ -1718,16 +1718,16 @@ public class Game extends RSApplet {
 						chatTextDrawingArea.textCenter(i3, s, spriteDrawY, spriteDrawX);
 					}
 					if (anIntArray981[k] == 1) {
-						chatTextDrawingArea.method386(0, s, spriteDrawX, anInt1265, spriteDrawY + 1);
-						chatTextDrawingArea.method386(i3, s, spriteDrawX, anInt1265, spriteDrawY);
+						chatTextDrawingArea.drawCenteredVerticalWave(0, s, spriteDrawX, anInt1265, spriteDrawY + 1);
+						chatTextDrawingArea.drawCenteredVerticalWave(i3, s, spriteDrawX, anInt1265, spriteDrawY);
 					}
 					if (anIntArray981[k] == 2) {
-						chatTextDrawingArea.method387(spriteDrawX, s, anInt1265, spriteDrawY + 1, 0);
-						chatTextDrawingArea.method387(spriteDrawX, s, anInt1265, spriteDrawY, i3);
+						chatTextDrawingArea.drawCenteredWave(spriteDrawX, s, anInt1265, spriteDrawY + 1, 0);
+						chatTextDrawingArea.drawCenteredWave(spriteDrawX, s, anInt1265, spriteDrawY, i3);
 					}
 					if (anIntArray981[k] == 3) {
-						chatTextDrawingArea.method388(150 - anIntArray982[k], s, anInt1265, spriteDrawY + 1, spriteDrawX, 0);
-						chatTextDrawingArea.method388(150 - anIntArray982[k], s, anInt1265, spriteDrawY, spriteDrawX, i3);
+						chatTextDrawingArea.drawCenteredShake(150 - anIntArray982[k], s, anInt1265, spriteDrawY + 1, spriteDrawX, 0);
+						chatTextDrawingArea.drawCenteredShake(150 - anIntArray982[k], s, anInt1265, spriteDrawY, spriteDrawX, i3);
 					}
 					if (anIntArray981[k] == 4) {
 						int i4 = chatTextDrawingArea.measureLiteralTextWidth(s);

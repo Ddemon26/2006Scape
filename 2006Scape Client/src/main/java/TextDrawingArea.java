@@ -132,54 +132,54 @@ public final class TextDrawingArea extends DrawingArea {
 		}
 	}
 
-	public void method386(int i, String s, int j, int k, int l) {
-		if (s == null) {
+	public void drawCenteredVerticalWave(int color, String text, int centerX, int phase, int baselineY) {
+		if (text == null) {
 			return;
 		}
-		j -= measureLiteralTextWidth(s) / 2;
-		l -= anInt1497;
-		for (int i1 = 0; i1 < s.length(); i1++) {
-			char c = s.charAt(i1);
-			if (c != ' ') {
-				method392(aByteArrayArray1491[c], j + anIntArray1494[c], l + anIntArray1495[c] + (int) (Math.sin(i1 / 2D + k / 5D) * 5D), anIntArray1492[c], anIntArray1493[c], i);
+		centerX -= measureLiteralTextWidth(text) / 2;
+		baselineY -= anInt1497;
+		for (int characterIndex = 0; characterIndex < text.length(); characterIndex++) {
+			char character = text.charAt(characterIndex);
+			if (character != ' ') {
+				method392(aByteArrayArray1491[character], centerX + anIntArray1494[character], baselineY + anIntArray1495[character] + (int) (Math.sin(characterIndex / 2D + phase / 5D) * 5D), anIntArray1492[character], anIntArray1493[character], color);
 			}
-			j += glyphAdvancePixels[c];
+			centerX += glyphAdvancePixels[character];
 		}
 
 	}
 
-	public void method387(int i, String s, int j, int k, int l) {
-		if (s == null) {
+	public void drawCenteredWave(int centerX, String text, int phase, int baselineY, int color) {
+		if (text == null) {
 			return;
 		}
-		i -= measureLiteralTextWidth(s) / 2;
-		k -= anInt1497;
-		for (int i1 = 0; i1 < s.length(); i1++) {
-			char c = s.charAt(i1);
-			if (c != ' ') {
-				method392(aByteArrayArray1491[c], i + anIntArray1494[c] + (int) (Math.sin(i1 / 5D + j / 5D) * 5D), k + anIntArray1495[c] + (int) (Math.sin(i1 / 3D + j / 5D) * 5D), anIntArray1492[c], anIntArray1493[c], l);
+		centerX -= measureLiteralTextWidth(text) / 2;
+		baselineY -= anInt1497;
+		for (int characterIndex = 0; characterIndex < text.length(); characterIndex++) {
+			char character = text.charAt(characterIndex);
+			if (character != ' ') {
+				method392(aByteArrayArray1491[character], centerX + anIntArray1494[character] + (int) (Math.sin(characterIndex / 5D + phase / 5D) * 5D), baselineY + anIntArray1495[character] + (int) (Math.sin(characterIndex / 3D + phase / 5D) * 5D), anIntArray1492[character], anIntArray1493[character], color);
 			}
-			i += glyphAdvancePixels[c];
+			centerX += glyphAdvancePixels[character];
 		}
 
 	}
 
-	public void method388(int i, String s, int j, int k, int l, int i1) {
-		if (s == null) {
+	public void drawCenteredShake(int effectAge, String text, int phase, int baselineY, int centerX, int color) {
+		if (text == null) {
 			return;
 		}
-		double d = 7D - i / 8D;
-		if (d < 0.0D) {
-			d = 0.0D;
+		double amplitudePixels = 7D - effectAge / 8D;
+		if (amplitudePixels < 0.0D) {
+			amplitudePixels = 0.0D;
 		}
-		l -= measureLiteralTextWidth(s) / 2;
-		k -= anInt1497;
-		for (int k1 = 0; k1 < s.length(); k1++) {
-			char c = s.charAt(k1);
-			if (c != ' ') {
-				method392(aByteArrayArray1491[c], l + anIntArray1494[c], k + anIntArray1495[c] + (int) (Math.sin(k1 / 1.5D + j) * d), anIntArray1492[c], anIntArray1493[c], i1);
+		centerX -= measureLiteralTextWidth(text) / 2;
+		baselineY -= anInt1497;
+		for (int characterIndex = 0; characterIndex < text.length(); characterIndex++) {
+			char character = text.charAt(characterIndex);
+			if (character != ' ') {
+				method392(aByteArrayArray1491[character], centerX + anIntArray1494[character], baselineY + anIntArray1495[character] + (int) (Math.sin(characterIndex / 1.5D + phase) * amplitudePixels), anIntArray1492[character], anIntArray1493[character], color);
 			}
-			l += glyphAdvancePixels[c];
+			centerX += glyphAdvancePixels[character];
 		}
 
 	}
