@@ -15,7 +15,7 @@ public class SpriteMaskedDrawingTest {
         savedPixels = DrawingArea.pixels;
         saved = new int[] {DrawingArea.width, DrawingArea.height, DrawingArea.topX,
                 DrawingArea.topY, DrawingArea.bottomX, DrawingArea.bottomY,
-                DrawingArea.centerX, DrawingArea.centerY, DrawingArea.anInt1387};
+                DrawingArea.scanlineRightLimit, DrawingArea.clipRightHalf, DrawingArea.clipBottomHalf};
     }
 
     @After public void restoreDrawingArea() {
@@ -23,8 +23,8 @@ public class SpriteMaskedDrawingTest {
         DrawingArea.width = saved[0]; DrawingArea.height = saved[1];
         DrawingArea.topX = saved[2]; DrawingArea.topY = saved[3];
         DrawingArea.bottomX = saved[4]; DrawingArea.bottomY = saved[5];
-        DrawingArea.centerX = saved[6]; DrawingArea.centerY = saved[7];
-        DrawingArea.anInt1387 = saved[8];
+        DrawingArea.scanlineRightLimit = saved[6]; DrawingArea.clipRightHalf = saved[7];
+        DrawingArea.clipBottomHalf = saved[8];
     }
 
     @Test public void firstCoordinateIsVerticalAndSecondIsHorizontalInTargetPixels() {
@@ -98,13 +98,13 @@ public class SpriteMaskedDrawingTest {
         Background mask = mask(25);
         mask.paletteIndices[13] = 1;
         int[] raster = target(5, 5);
-        DrawingArea.setDrawingArea(4, 2, 4, 2);
+        DrawingArea.setClip(4, 2, 4, 2);
         sprite.drawNonzeroThroughZeroMask(mask, 0, 0);
         int[] expected = filled(25);
         expected[12] = 5; expected[17] = 8; expected[18] = 9;
         assertArrayEquals(expected, raster);
         raster = target(5, 5);
-        DrawingArea.setDrawingArea(3, 0, 3, 0);
+        DrawingArea.setClip(3, 0, 3, 0);
         sprite.drawNonzeroThroughZeroMask(mask, 0, 0);
         expected = filled(25);
         expected[6] = 1; expected[7] = 2; expected[11] = 4; expected[12] = 5;
@@ -125,7 +125,7 @@ public class SpriteMaskedDrawingTest {
         int[] raster = target(4, 3);
         new Sprite(0, 2).drawNonzeroThroughZeroMask(mask, 0, 0);
         new Sprite(2, 0).drawNonzeroThroughZeroMask(mask, 0, 0);
-        DrawingArea.setDrawingArea(1, 1, 1, 1);
+        DrawingArea.setClip(1, 1, 1, 1);
         sprite.drawNonzeroThroughZeroMask(mask, 1, 1);
         assertArrayEquals(filled(12), raster);
     }
@@ -147,7 +147,7 @@ public class SpriteMaskedDrawingTest {
 
     private static int[] target(int width, int height) {
         int[] raster = filled(width * height);
-        DrawingArea.initDrawingArea(height, width, raster);
+        DrawingArea.bindRaster(height, width, raster);
         return raster;
     }
 
@@ -177,7 +177,7 @@ public class SpriteMaskedDrawingTest {
         };
         for (int[] c : cases) {
             int[] actual = target(10, 7);
-            DrawingArea.setDrawingArea(6, 2, 8, 2);
+            DrawingArea.setClip(6, 2, 8, 2);
             sprite.drawNonzeroThroughZeroMask(gate, c[1], c[0]);
             int[] expected = new int[70]; Arrays.fill(expected, FILL);
             for (int row = 0; row < c[5]; row++) for (int column = 0; column < c[4]; column++) {
@@ -199,7 +199,7 @@ public class SpriteMaskedDrawingTest {
         // Exactly touching each clip edge has no intersection; one-pixel intersections above do.
         for (int[] point : new int[][] {{-4,2}, {8,2}, {2,-2}, {2,6}}) {
             int[] actual = target(10, 7);
-            DrawingArea.setDrawingArea(6, 2, 8, 2);
+            DrawingArea.setClip(6, 2, 8, 2);
             sprite.drawNonzeroThroughZeroMask(gate, point[1], point[0]);
             int[] expected = new int[70]; Arrays.fill(expected, FILL);
             assertArrayEquals(expected, actual);
@@ -216,11 +216,11 @@ public class SpriteMaskedDrawingTest {
             for (int[] point : new int[][] {{-2,-1}, {0,0}, {3,3}, {7,5}}) {
                 sprite.offsetX = 0; sprite.offsetY = 0;
                 int[] expected = target(10, 7);
-                DrawingArea.setDrawingArea(6, 1, 9, 1);
+                DrawingArea.setClip(6, 1, 9, 1);
                 sprite.drawNonzeroThroughZeroMask(gate, point[1] + offset[1], point[0] + offset[0]);
                 sprite.offsetX = offset[0]; sprite.offsetY = offset[1];
                 int[] actual = target(10, 7);
-                DrawingArea.setDrawingArea(6, 1, 9, 1);
+                DrawingArea.setClip(6, 1, 9, 1);
                 sprite.drawNonzeroThroughZeroMask(gate, point[1], point[0]);
                 assertArrayEquals(expected, actual);
                 assertEquals(offset[0], sprite.offsetX); assertEquals(offset[1], sprite.offsetY);

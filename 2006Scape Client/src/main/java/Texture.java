@@ -685,8 +685,8 @@ final class Texture extends DrawingArea {
 				} else {
 					l1 = 0;
 				}
-				if (i1 > DrawingArea.centerX) {
-					i1 = DrawingArea.centerX;
+				if (i1 > DrawingArea.scanlineRightLimit) {
+					i1 = DrawingArea.scanlineRightLimit;
 				}
 				if (l < 0) {
 					j1 -= l * l1;
@@ -780,8 +780,8 @@ final class Texture extends DrawingArea {
 		}
 		int i2 = (k1 - j1) / (i1 - l);
 		if (aBoolean1462) {
-			if (i1 > DrawingArea.centerX) {
-				i1 = DrawingArea.centerX;
+			if (i1 > DrawingArea.scanlineRightLimit) {
+				i1 = DrawingArea.scanlineRightLimit;
 			}
 			if (l < 0) {
 				j1 -= l * i2;
@@ -1132,8 +1132,8 @@ final class Texture extends DrawingArea {
 	private static void method377(int ai[], int i, int j, int l, int i1) {
 		int k;// was parameter
 		if (aBoolean1462) {
-			if (i1 > DrawingArea.centerX) {
-				i1 = DrawingArea.centerX;
+			if (i1 > DrawingArea.scanlineRightLimit) {
+				i1 = DrawingArea.scanlineRightLimit;
 			}
 			if (l < 0) {
 				l = 0;
@@ -1716,8 +1716,8 @@ final class Texture extends DrawingArea {
 		int k3;
 		if (aBoolean1462) {
 			j3 = (k1 - j1) / (i1 - l);
-			if (i1 > DrawingArea.centerX) {
-				i1 = DrawingArea.centerX;
+			if (i1 > DrawingArea.scanlineRightLimit) {
+				i1 = DrawingArea.scanlineRightLimit;
 			}
 			if (l < 0) {
 				j1 -= l * j3;

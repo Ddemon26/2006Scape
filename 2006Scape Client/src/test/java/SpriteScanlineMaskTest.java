@@ -15,7 +15,7 @@ public class SpriteScanlineMaskTest {
         savedPixels = DrawingArea.pixels;
         saved = new int[] {DrawingArea.width, DrawingArea.height, DrawingArea.topX,
                 DrawingArea.topY, DrawingArea.bottomX, DrawingArea.bottomY,
-                DrawingArea.centerX, DrawingArea.centerY, DrawingArea.anInt1387};
+                DrawingArea.scanlineRightLimit, DrawingArea.clipRightHalf, DrawingArea.clipBottomHalf};
         savedFiltering = ClientSettings.BILINEAR_MINIMAP_FILTERING;
     }
 
@@ -24,8 +24,8 @@ public class SpriteScanlineMaskTest {
         DrawingArea.width = saved[0]; DrawingArea.height = saved[1];
         DrawingArea.topX = saved[2]; DrawingArea.topY = saved[3];
         DrawingArea.bottomX = saved[4]; DrawingArea.bottomY = saved[5];
-        DrawingArea.centerX = saved[6]; DrawingArea.centerY = saved[7];
-        DrawingArea.anInt1387 = saved[8];
+        DrawingArea.scanlineRightLimit = saved[6]; DrawingArea.clipRightHalf = saved[7];
+        DrawingArea.clipBottomHalf = saved[8];
         ClientSettings.BILINEAR_MINIMAP_FILTERING = savedFiltering;
     }
 
@@ -108,7 +108,7 @@ public class SpriteScanlineMaskTest {
         for (boolean filtering : new boolean[] {false, true}) {
             ClientSettings.BILINEAR_MINIMAP_FILTERING = filtering;
             int[] raster = target();
-            DrawingArea.setDrawingArea(1, 0, 1, 0);
+            DrawingArea.setClip(1, 0, 1, 0);
             sprite.drawRotatedScanlines(1, 0, new int[] {2}, 256, new int[] {0}, 8, 3, 4, 6, 8);
             int[] expected = filled();
             expected[4 + 3 * 16] = 0;
@@ -123,7 +123,7 @@ public class SpriteScanlineMaskTest {
         return sprite;
     }
     private static int[] target() {
-        int[] raster = filled(); DrawingArea.initDrawingArea(16, 16, raster); return raster;
+        int[] raster = filled(); DrawingArea.bindRaster(16, 16, raster); return raster;
     }
     private static int[] filled() {
         int[] raster = new int[16 * 16]; Arrays.fill(raster, FILL); return raster;

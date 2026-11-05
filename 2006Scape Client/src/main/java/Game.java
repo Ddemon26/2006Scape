@@ -366,7 +366,7 @@ public class Game extends RSApplet {
 	}
 
 	public void drawChatArea() {
-		aRSImageProducer_1166.initDrawingArea();
+		aRSImageProducer_1166.setAsDrawingArea();
 		Texture.lineOffsets = chatAreaOffsets;
 		chatBack.drawNonzeroIndexed(0, 0);
 		if (messagePromptRaised) {
@@ -388,7 +388,7 @@ public class Game extends RSApplet {
 		} else {
 			TextDrawingArea textDrawingArea = aTextDrawingArea_1271;
 			int j = 0;
-			DrawingArea.setDrawingArea(77, 0, 463, 0);
+			DrawingArea.setClip(77, 0, 463, 0);
 			for (int k = 0; k < 100; k++) {
 				if (chatMessages[k] != null) {
 					int l = chatTypes[k];
@@ -477,7 +477,7 @@ public class Game extends RSApplet {
 				}
 			}
 
-			DrawingArea.defaultDrawingAreaSize();
+			DrawingArea.resetClip();
 			anInt1211 = j * 14 + 7;
 			if (anInt1211 < 78) {
 				anInt1211 = 78;
@@ -497,7 +497,7 @@ public class Game extends RSApplet {
 			drawMenu();
 		}
 		aRSImageProducer_1166.drawGraphics(357, super.graphics, 17);
-		aRSImageProducer_1165.initDrawingArea();
+		aRSImageProducer_1165.setAsDrawingArea();
 		Texture.lineOffsets = chatBoxAreaOffsets;
 	}
 
@@ -775,7 +775,7 @@ public class Game extends RSApplet {
 			stream.createFrame(0);
 			objectManager.method171(aClass11Array1230, worldController);
 			if(aRSImageProducer_1165 != null) {
-				aRSImageProducer_1165.initDrawingArea();
+				aRSImageProducer_1165.setAsDrawingArea();
 				Texture.lineOffsets = chatBoxAreaOffsets;
 			}
 			stream.createFrame(0);
@@ -898,7 +898,7 @@ public class Game extends RSApplet {
 
 		}
 		if(aRSImageProducer_1165 != null) {
-			aRSImageProducer_1165.initDrawingArea();
+			aRSImageProducer_1165.setAsDrawingArea();
 			Texture.lineOffsets = chatBoxAreaOffsets;
 		}
 		anInt1071 = 0;
@@ -1732,10 +1732,10 @@ public class Game extends RSApplet {
 					if (anIntArray981[k] == 4) {
 						int i4 = chatTextDrawingArea.method384(s);
 						int k4 = (150 - anIntArray982[k]) * (i4 + 100) / 150;
-						DrawingArea.setDrawingArea(334, spriteDrawX - 50, spriteDrawX + 50, 0);
+						DrawingArea.setClip(334, spriteDrawX - 50, spriteDrawX + 50, 0);
 						chatTextDrawingArea.textLeft(0, s, spriteDrawY + 1, spriteDrawX + 50 - k4);
 						chatTextDrawingArea.textLeft(i3, s, spriteDrawY, spriteDrawX + 50 - k4);
-						DrawingArea.defaultDrawingAreaSize();
+						DrawingArea.resetClip();
 					}
 					if (anIntArray981[k] == 5) {
 						int j4 = 150 - anIntArray982[k];
@@ -1745,10 +1745,10 @@ public class Game extends RSApplet {
 						} else if (j4 > 125) {
 							l4 = j4 - 125;
 						}
-						DrawingArea.setDrawingArea(spriteDrawY + 5, 0, 512, spriteDrawY - chatTextDrawingArea.anInt1497 - 1);
+						DrawingArea.setClip(spriteDrawY + 5, 0, 512, spriteDrawY - chatTextDrawingArea.anInt1497 - 1);
 						chatTextDrawingArea.textCenter(0, s, spriteDrawY + 1 + l4, spriteDrawX);
 						chatTextDrawingArea.textCenter(i3, s, spriteDrawY + l4, spriteDrawX);
-						DrawingArea.defaultDrawingAreaSize();
+						DrawingArea.resetClip();
 					}
 				} else {
 					chatTextDrawingArea.textCenter(0, s, spriteDrawY + 1, spriteDrawX);
@@ -1807,7 +1807,7 @@ public class Game extends RSApplet {
 	}
 
 	public void drawTabArea() {
-		aRSImageProducer_1163.initDrawingArea();
+		aRSImageProducer_1163.setAsDrawingArea();
 		Texture.lineOffsets = tabAreaOffsets;
 		invBack.drawNonzeroIndexed(0, 0);
 		if (invOverlayInterfaceID == -1) {
@@ -1854,7 +1854,7 @@ public class Game extends RSApplet {
 			drawMenu();
 		}
 		aRSImageProducer_1163.drawGraphics(205, super.graphics, 553);
-		aRSImageProducer_1165.initDrawingArea();
+		aRSImageProducer_1165.setAsDrawingArea();
 		Texture.lineOffsets = chatBoxAreaOffsets;
 	}
 
@@ -2789,23 +2789,23 @@ public class Game extends RSApplet {
 	public void drawLogo() {
 		byte abyte0[] = titleStreamLoader.getDataForName("title.dat");
 		Sprite sprite = new Sprite(abyte0, this);
-		aRSImageProducer_1110.initDrawingArea();
+		aRSImageProducer_1110.setAsDrawingArea();
 		sprite.drawOpaque(0, 0);
-		aRSImageProducer_1111.initDrawingArea();
+		aRSImageProducer_1111.setAsDrawingArea();
 		sprite.drawOpaque(-637, 0);
-		aRSImageProducer_1107.initDrawingArea();
+		aRSImageProducer_1107.setAsDrawingArea();
 		sprite.drawOpaque(-128, 0);
-		aRSImageProducer_1108.initDrawingArea();
+		aRSImageProducer_1108.setAsDrawingArea();
 		sprite.drawOpaque(-202, -371);
-		aRSImageProducer_1109.initDrawingArea();
+		aRSImageProducer_1109.setAsDrawingArea();
 		sprite.drawOpaque(-202, -171);
-		aRSImageProducer_1112.initDrawingArea();
+		aRSImageProducer_1112.setAsDrawingArea();
 		sprite.drawOpaque(0, -265);
-		aRSImageProducer_1113.initDrawingArea();
+		aRSImageProducer_1113.setAsDrawingArea();
 		sprite.drawOpaque(-562, -265);
-		aRSImageProducer_1114.initDrawingArea();
+		aRSImageProducer_1114.setAsDrawingArea();
 		sprite.drawOpaque(-128, -171);
-		aRSImageProducer_1115.initDrawingArea();
+		aRSImageProducer_1115.setAsDrawingArea();
 		sprite.drawOpaque(-562, -171);
 		int ai[] = new int[sprite.width];
 		for (int j = 0; j < sprite.height; j++) {
@@ -2817,26 +2817,26 @@ public class Game extends RSApplet {
 
 		}
 
-		aRSImageProducer_1110.initDrawingArea();
+		aRSImageProducer_1110.setAsDrawingArea();
 		sprite.drawOpaque(382, 0);
-		aRSImageProducer_1111.initDrawingArea();
+		aRSImageProducer_1111.setAsDrawingArea();
 		sprite.drawOpaque(-255, 0);
-		aRSImageProducer_1107.initDrawingArea();
+		aRSImageProducer_1107.setAsDrawingArea();
 		sprite.drawOpaque(254, 0);
-		aRSImageProducer_1108.initDrawingArea();
+		aRSImageProducer_1108.setAsDrawingArea();
 		sprite.drawOpaque(180, -371);
-		aRSImageProducer_1109.initDrawingArea();
+		aRSImageProducer_1109.setAsDrawingArea();
 		sprite.drawOpaque(180, -171);
-		aRSImageProducer_1112.initDrawingArea();
+		aRSImageProducer_1112.setAsDrawingArea();
 		sprite.drawOpaque(382, -265);
-		aRSImageProducer_1113.initDrawingArea();
+		aRSImageProducer_1113.setAsDrawingArea();
 		sprite.drawOpaque(-180, -265);
-		aRSImageProducer_1114.initDrawingArea();
+		aRSImageProducer_1114.setAsDrawingArea();
 		sprite.drawOpaque(254, -171);
-		aRSImageProducer_1115.initDrawingArea();
+		aRSImageProducer_1115.setAsDrawingArea();
 		sprite.drawOpaque(-180, -171);
 		sprite = new Sprite(titleStreamLoader, "logo", 0);
-		aRSImageProducer_1107.initDrawingArea();
+		aRSImageProducer_1107.setAsDrawingArea();
 		sprite.drawSprite(382 - sprite.width / 2 - 128, 18);
 		sprite = null;
 		System.gc();
@@ -3351,7 +3351,7 @@ public class Game extends RSApplet {
 			super.drawLoadingText(i, s);
 			return;
 		}
-		aRSImageProducer_1109.initDrawingArea();
+		aRSImageProducer_1109.setAsDrawingArea();
 		char c = '\u0168';
 		char c1 = '\310';
 		byte byte1 = 20;
@@ -3609,7 +3609,7 @@ public class Game extends RSApplet {
 	
 	public void drawTextOnScreen(String s, String s1) {
 		if (aRSImageProducer_1165 != null) {
-			aRSImageProducer_1165.initDrawingArea();
+			aRSImageProducer_1165.setAsDrawingArea();
 			Texture.lineOffsets = chatBoxAreaOffsets;
 			int j = 151;
 			if (s != null)
@@ -3625,7 +3625,7 @@ public class Game extends RSApplet {
 			return;
 		}
 		if (super.fullGameScreen != null) {
-			super.fullGameScreen.initDrawingArea();
+			super.fullGameScreen.setAsDrawingArea();
 			Texture.lineOffsets = gameScreenOffsets;
 			int k = 251;
 			char c = '\u012C';
@@ -5834,23 +5834,23 @@ public class Game extends RSApplet {
 		aRSImageProducer_1124 = null;
 		aRSImageProducer_1125 = null;
 		aRSImageProducer_1110 = new RSImageProducer(128, 265, getGameComponent());
-		DrawingArea.setAllPixelsToZero();
+		DrawingArea.clearRaster();
 		aRSImageProducer_1111 = new RSImageProducer(128, 265, getGameComponent());
-		DrawingArea.setAllPixelsToZero();
+		DrawingArea.clearRaster();
 		aRSImageProducer_1107 = new RSImageProducer(509, 171, getGameComponent());
-		DrawingArea.setAllPixelsToZero();
+		DrawingArea.clearRaster();
 		aRSImageProducer_1108 = new RSImageProducer(360, 132, getGameComponent());
-		DrawingArea.setAllPixelsToZero();
+		DrawingArea.clearRaster();
 		aRSImageProducer_1109 = new RSImageProducer(360, 200, getGameComponent());
-		DrawingArea.setAllPixelsToZero();
+		DrawingArea.clearRaster();
 		aRSImageProducer_1112 = new RSImageProducer(202, 238, getGameComponent());
-		DrawingArea.setAllPixelsToZero();
+		DrawingArea.clearRaster();
 		aRSImageProducer_1113 = new RSImageProducer(203, 238, getGameComponent());
-		DrawingArea.setAllPixelsToZero();
+		DrawingArea.clearRaster();
 		aRSImageProducer_1114 = new RSImageProducer(74, 94, getGameComponent());
-		DrawingArea.setAllPixelsToZero();
+		DrawingArea.clearRaster();
 		aRSImageProducer_1115 = new RSImageProducer(75, 94, getGameComponent());
-		DrawingArea.setAllPixelsToZero();
+		DrawingArea.clearRaster();
 		if (titleStreamLoader != null) {
 			drawLogo();
 			loadTitleScreen();
@@ -5897,16 +5897,16 @@ public class Game extends RSApplet {
 		aRSImageProducer_1115 = null;
 		aRSImageProducer_1166 = new RSImageProducer(479, 96, getGameComponent());
 		aRSImageProducer_1164 = new RSImageProducer(172, 156, getGameComponent());
-		DrawingArea.setAllPixelsToZero();
+		DrawingArea.clearRaster();
 		mapBack.drawNonzeroIndexed(0, 0);
 		aRSImageProducer_1163 = new RSImageProducer(190, 261, getGameComponent());
 		aRSImageProducer_1165 = new RSImageProducer(512, 334, getGameComponent());
-		DrawingArea.setAllPixelsToZero();
+		DrawingArea.clearRaster();
 		aRSImageProducer_1123 = new RSImageProducer(496, 50, getGameComponent());
 		aRSImageProducer_1124 = new RSImageProducer(269, 37, getGameComponent());
 		aRSImageProducer_1125 = new RSImageProducer(249, 45, getGameComponent());
 		welcomeScreenRaised = true;
-		aRSImageProducer_1165.initDrawingArea();
+		aRSImageProducer_1165.setAsDrawingArea();
 		Texture.lineOffsets = chatBoxAreaOffsets;
 		// SignLink.midii.fadeOut();
 	}
@@ -7845,9 +7845,9 @@ public class Game extends RSApplet {
 					method119(anInt945, fullScreenInterfaceId);
 				anInt945 = 0;
 				resetAllImageProducers();
-				super.fullGameScreen.initDrawingArea();
+				super.fullGameScreen.setAsDrawingArea();
 				Texture.lineOffsets = gameScreenOffsets;
-				DrawingArea.setAllPixelsToZero();
+				DrawingArea.clearRaster();
 				welcomeScreenRaised = true;
 				if (openInterfaceID != -1) {
 					RSInterface class13_1 = RSInterface.interfaceCache[openInterfaceID];
@@ -7974,7 +7974,7 @@ public class Game extends RSApplet {
 				stream.writeWordBigEndian(tabID);
 			}
 			tabAreaAltered = false;
-			aRSImageProducer_1125.initDrawingArea();
+			aRSImageProducer_1125.setAsDrawingArea();
 			backHmid1.drawNonzeroIndexed(0, 0);
 			if (invOverlayInterfaceID == -1) {
 				if (tabInterfaceIDs[tabID] != -1) {
@@ -8023,7 +8023,7 @@ public class Game extends RSApplet {
 				}
 			}
 			aRSImageProducer_1125.drawGraphics(160, super.graphics, 516);
-			aRSImageProducer_1124.initDrawingArea();
+			aRSImageProducer_1124.setAsDrawingArea();
 			backBase2.drawNonzeroIndexed(0, 0);
 			if (invOverlayInterfaceID == -1) {
 				if (tabInterfaceIDs[tabID] != -1) {
@@ -8072,12 +8072,12 @@ public class Game extends RSApplet {
 				}
 			}
 			aRSImageProducer_1124.drawGraphics(466, super.graphics, 496);
-			aRSImageProducer_1165.initDrawingArea();
+			aRSImageProducer_1165.setAsDrawingArea();
 			Texture.lineOffsets = chatBoxAreaOffsets;
 		}
 		if (aBoolean1233) {
 			aBoolean1233 = false;
-			aRSImageProducer_1123.initDrawingArea();
+			aRSImageProducer_1123.setAsDrawingArea();
 			backBase1.drawNonzeroIndexed(0, 0);
 			aTextDrawingArea_1271.textCenterShadow(0xffffff, 55, "Public chat", 28, true);
 			if (publicChatMode == 0) {
@@ -8114,7 +8114,7 @@ public class Game extends RSApplet {
 			}
 			aTextDrawingArea_1271.textCenterShadow(0xffffff, 458, "Report abuse", 33, true);
 			aRSImageProducer_1123.drawGraphics(453, super.graphics, 0);
-			aRSImageProducer_1165.initDrawingArea();
+			aRSImageProducer_1165.setAsDrawingArea();
 			Texture.lineOffsets = chatBoxAreaOffsets;
 		}
 		anInt945 = 0;
@@ -8178,7 +8178,7 @@ public class Game extends RSApplet {
 		int j1 = DrawingArea.topY;
 		int k1 = DrawingArea.bottomX;
 		int l1 = DrawingArea.bottomY;
-		DrawingArea.setDrawingArea(l + class9.height, k, k + class9.width, l);
+		DrawingArea.setClip(l + class9.height, k, k + class9.width, l);
 		int i2 = class9.children.length;
 		for (int j2 = 0; j2 < i2; j2++) {
 			int k2 = class9.childX[j2] + k;
@@ -8468,7 +8468,7 @@ public class Game extends RSApplet {
 			}
 		}
 
-		DrawingArea.setDrawingArea(l1, i1, k1, j1);
+		DrawingArea.setClip(l1, i1, k1, j1);
 	}
 
 	public void randomizeBackground(Background background) {
@@ -9469,7 +9469,7 @@ public class Game extends RSApplet {
 	}
 
 	public void drawMinimap() {
-		aRSImageProducer_1164.initDrawingArea();
+		aRSImageProducer_1164.setAsDrawingArea();
 		if (anInt1021 == 2) {
 			byte abyte0[] = mapBack.paletteIndices;
 			int ai[] = DrawingArea.pixels;
@@ -9481,7 +9481,7 @@ public class Game extends RSApplet {
 			}
 
 			compass.drawRotatedScanlines(33, minimapInt1, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
-			aRSImageProducer_1165.initDrawingArea();
+			aRSImageProducer_1165.setAsDrawingArea();
 			Texture.lineOffsets = chatBoxAreaOffsets;
 			return;
 		}
@@ -9584,7 +9584,7 @@ public class Game extends RSApplet {
 		}
 		// Draw player square on mini map
 		DrawingArea.fillRectangle(3, 78, 0xffffff, 3, 97);
-		aRSImageProducer_1165.initDrawingArea();
+		aRSImageProducer_1165.setAsDrawingArea();
 		Texture.lineOffsets = chatBoxAreaOffsets;
 	}
 
@@ -9891,7 +9891,7 @@ public class Game extends RSApplet {
 
 	public void drawLoginScreen(boolean flag) {
 		resetImageProducers();
-		aRSImageProducer_1109.initDrawingArea();
+		aRSImageProducer_1109.setAsDrawingArea();
 		aBackground_966.drawNonzeroIndexed(0, 0);
 		char c = '\u0168';
 		char c1 = '\310';
@@ -11891,7 +11891,7 @@ public class Game extends RSApplet {
 		Model.anInt1687 = 0;
 		Model.anInt1685 = super.mouseX - 4;
 		Model.anInt1686 = super.mouseY - 4;
-		DrawingArea.setAllPixelsToZero();
+		DrawingArea.clearRaster();
 		if(graphicsEnabled){
 			worldController.method313(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
 			worldController.clearObj5Cache();

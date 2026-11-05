@@ -25,11 +25,11 @@ final class RSImageProducer implements ImageProducer, ImageObserver {
 		component.prepareImage(anImage320, this);
 		method239();
 		component.prepareImage(anImage320, this);
-		initDrawingArea();
+		setAsDrawingArea();
 	}
 
-	public void initDrawingArea() {
-		DrawingArea.initDrawingArea(anInt317, anInt316, anIntArray315);
+	public void setAsDrawingArea() {
+		DrawingArea.bindRaster(anInt317, anInt316, anIntArray315);
 	}
 
 	public void drawGraphics(int i, Graphics g, int k) {

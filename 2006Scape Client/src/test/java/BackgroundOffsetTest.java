@@ -24,9 +24,9 @@ public class BackgroundOffsetTest {
         previousTopY = DrawingArea.topY;
         previousBottomX = DrawingArea.bottomX;
         previousBottomY = DrawingArea.bottomY;
-        previousCenterX = DrawingArea.centerX;
-        previousCenterY = DrawingArea.centerY;
-        previous1387 = DrawingArea.anInt1387;
+        previousCenterX = DrawingArea.scanlineRightLimit;
+        previousCenterY = DrawingArea.clipRightHalf;
+        previous1387 = DrawingArea.clipBottomHalf;
     }
 
     @After
@@ -38,9 +38,9 @@ public class BackgroundOffsetTest {
         DrawingArea.topY = previousTopY;
         DrawingArea.bottomX = previousBottomX;
         DrawingArea.bottomY = previousBottomY;
-        DrawingArea.centerX = previousCenterX;
-        DrawingArea.centerY = previousCenterY;
-        DrawingArea.anInt1387 = previous1387;
+        DrawingArea.scanlineRightLimit = previousCenterX;
+        DrawingArea.clipRightHalf = previousCenterY;
+        DrawingArea.clipBottomHalf = previous1387;
     }
 
     @Test
@@ -284,7 +284,7 @@ public class BackgroundOffsetTest {
         int[][] clips = {{0,0,18,16}, {3,2,14,12}, {5,4,5,10}, {5,4,12,4}};
         for (int[] clip : clips) for (int y = -8; y <= 17; y++) for (int x = -10; x <= 19; x++) {
             int[] actual = raster(18, 16, FILL), expected = actual.clone();
-            DrawingArea.setDrawingArea(clip[3], clip[0], clip[2], clip[1]);
+            DrawingArea.setClip(clip[3], clip[0], clip[2], clip[1]);
             indexedDrawOracle(expected, 18, background, x, y, clip);
             background.drawNonzeroIndexed(x, y);
             assertArrayEquals("clip=" + Arrays.toString(clip) + " x=" + x + " y=" + y, expected, actual);
@@ -300,7 +300,7 @@ public class BackgroundOffsetTest {
         for (int x : new int[] {-5,-1,0,2,7}) for (int y : new int[] {-4,0,3,8}) {
             background.offsetX = x; background.offsetY = y;
             int[] actual = raster(18, 16, FILL), expected = actual.clone();
-            DrawingArea.setDrawingArea(12,3,14,2);
+            DrawingArea.setClip(12,3,14,2);
             indexedDrawOracle(expected, 18, background, 1, 1, clip);
             background.drawNonzeroIndexed(1, 1);
             assertArrayEquals(expected, actual);
@@ -517,7 +517,7 @@ public class BackgroundOffsetTest {
 
     private static int[] raster(int width, int height, int fill) {
         int[] pixels = filled(width * height, fill);
-        DrawingArea.initDrawingArea(height, width, pixels);
+        DrawingArea.bindRaster(height, width, pixels);
         return pixels;
     }
 

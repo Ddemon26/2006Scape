@@ -70,7 +70,7 @@ public final class Sprite extends DrawingArea {
 	}
 
 	public void setAsDrawingArea() {
-		DrawingArea.initDrawingArea(height, width, pixels);
+		DrawingArea.bindRaster(height, width, pixels);
 	}
 
 	public void adjustRgb(int redDelta, int greenDelta, int blueDelta) {

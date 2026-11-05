@@ -27,9 +27,9 @@ public class SpriteOffsetTest {
         previousTopY = DrawingArea.topY;
         previousBottomX = DrawingArea.bottomX;
         previousBottomY = DrawingArea.bottomY;
-        previousCenterX = DrawingArea.centerX;
-        previousCenterY = DrawingArea.centerY;
-        previous1387 = DrawingArea.anInt1387;
+        previousCenterX = DrawingArea.scanlineRightLimit;
+        previousCenterY = DrawingArea.clipRightHalf;
+        previous1387 = DrawingArea.clipBottomHalf;
         previousLocale = Locale.getDefault();
         previousAndroid = ClientSettings.ANDROID;
         Locale.setDefault(Locale.ENGLISH);
@@ -45,9 +45,9 @@ public class SpriteOffsetTest {
         DrawingArea.topY = previousTopY;
         DrawingArea.bottomX = previousBottomX;
         DrawingArea.bottomY = previousBottomY;
-        DrawingArea.centerX = previousCenterX;
-        DrawingArea.centerY = previousCenterY;
-        DrawingArea.anInt1387 = previous1387;
+        DrawingArea.scanlineRightLimit = previousCenterX;
+        DrawingArea.clipRightHalf = previousCenterY;
+        DrawingArea.clipBottomHalf = previous1387;
         Locale.setDefault(previousLocale);
         ClientSettings.ANDROID = previousAndroid;
     }
@@ -384,7 +384,7 @@ public class SpriteOffsetTest {
     private static int[] raster(int width, int height, int fill) {
         int[] pixels = new int[width * height];
         Arrays.fill(pixels, fill);
-        DrawingArea.initDrawingArea(height, width, pixels);
+        DrawingArea.bindRaster(height, width, pixels);
         return pixels;
     }
 

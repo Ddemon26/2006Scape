@@ -18,7 +18,7 @@ public class DrawingPrimitivesTest {
         savedPixels = DrawingArea.pixels;
         savedState = new int[] {DrawingArea.width, DrawingArea.height, DrawingArea.topX,
                 DrawingArea.topY, DrawingArea.bottomX, DrawingArea.bottomY,
-                DrawingArea.centerX, DrawingArea.centerY, DrawingArea.anInt1387};
+                DrawingArea.scanlineRightLimit, DrawingArea.clipRightHalf, DrawingArea.clipBottomHalf};
         savedViewport = ClientSettings.FULL_512PX_VIEWPORT;
     }
 
@@ -27,16 +27,16 @@ public class DrawingPrimitivesTest {
         DrawingArea.width = savedState[0]; DrawingArea.height = savedState[1];
         DrawingArea.topX = savedState[2]; DrawingArea.topY = savedState[3];
         DrawingArea.bottomX = savedState[4]; DrawingArea.bottomY = savedState[5];
-        DrawingArea.centerX = savedState[6]; DrawingArea.centerY = savedState[7];
-        DrawingArea.anInt1387 = savedState[8];
+        DrawingArea.scanlineRightLimit = savedState[6]; DrawingArea.clipRightHalf = savedState[7];
+        DrawingArea.clipBottomHalf = savedState[8];
         ClientSettings.FULL_512PX_VIEWPORT = savedViewport;
     }
 
     private int[] target() {
         int[] raster = new int[W * H + 7];
         for (int i = 0; i < raster.length; i++) raster[i] = 0xa5000000 | (i * 7919 & 0xffffff);
-        DrawingArea.initDrawingArea(H, W, raster);
-        DrawingArea.setDrawingArea(BOTTOM, LEFT, RIGHT, TOP);
+        DrawingArea.bindRaster(H, W, raster);
+        DrawingArea.setClip(BOTTOM, LEFT, RIGHT, TOP);
         return raster.clone();
     }
 
@@ -119,7 +119,7 @@ public class DrawingPrimitivesTest {
                     DrawingArea.fillBlendedRectangle(color, r[1], r[2], r[3], alpha, r[0]);
                     expect(expected, 0, r[0], r[1], r[2], r[3], color, alpha);
                 }
-        DrawingArea.initDrawingArea(1, 3, new int[] {0, 0x010101, 0xa5123456});
+        DrawingArea.bindRaster(1, 3, new int[] {0, 0x010101, 0xa5123456});
         DrawingArea.fillBlendedRectangle(0xffffff, 0, 1, 1, 127, 0);
         DrawingArea.fillBlendedRectangle(0xffffff, 0, 1, 1, 128, 1);
         DrawingArea.fillBlendedRectangle(0xffffff, 0, 1, 1, 0, 2);
@@ -193,7 +193,7 @@ public class DrawingPrimitivesTest {
             expect(expected, 0, 0, 1, 14, 12, 0x123456, 128);
             for (int[] clip : new int[][] {{4,3,4,8}, {2,5,10,5}}) {
                 expected = target();
-                DrawingArea.setDrawingArea(clip[3], clip[0], clip[2], clip[1]);
+                DrawingArea.setClip(clip[3], clip[0], clip[2], clip[1]);
                 DrawingArea.fillRectangle(12, 0, 0xff00ff, 13, 0);
                 DrawingArea.fillBlendedRectangle(0xffffff, 0, 13, 12, 128, 0);
                 DrawingArea.drawRectangleOutline(1, 9, 0x123456, 1, 10);

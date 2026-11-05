@@ -13,8 +13,8 @@ public class SpriteOpaqueDrawingTest {
     public void saveDrawingArea() {
         savedPixels = DrawingArea.pixels;
         savedBounds = new int[] {DrawingArea.width, DrawingArea.height, DrawingArea.topX,
-                DrawingArea.topY, DrawingArea.bottomX, DrawingArea.bottomY, DrawingArea.centerX,
-                DrawingArea.centerY, DrawingArea.anInt1387};
+                DrawingArea.topY, DrawingArea.bottomX, DrawingArea.bottomY, DrawingArea.scanlineRightLimit,
+                DrawingArea.clipRightHalf, DrawingArea.clipBottomHalf};
     }
 
     @After
@@ -23,8 +23,8 @@ public class SpriteOpaqueDrawingTest {
         DrawingArea.width = savedBounds[0]; DrawingArea.height = savedBounds[1];
         DrawingArea.topX = savedBounds[2]; DrawingArea.topY = savedBounds[3];
         DrawingArea.bottomX = savedBounds[4]; DrawingArea.bottomY = savedBounds[5];
-        DrawingArea.centerX = savedBounds[6]; DrawingArea.centerY = savedBounds[7];
-        DrawingArea.anInt1387 = savedBounds[8];
+        DrawingArea.scanlineRightLimit = savedBounds[6]; DrawingArea.clipRightHalf = savedBounds[7];
+        DrawingArea.clipBottomHalf = savedBounds[8];
     }
 
     @Test
@@ -60,7 +60,7 @@ public class SpriteOpaqueDrawingTest {
         Sprite sprite = new Sprite(4, 3);
         sprite.pixels = new int[] {1,2,3,4, 5,0,7,8, 9,10,11,12};
         int[] actual = raster(5, 5);
-        DrawingArea.setDrawingArea(3, 1, 3, 1); // x in [1,3), y in [1,3).
+        DrawingArea.setClip(3, 1, 3, 1); // x in [1,3), y in [1,3).
         sprite.drawOpaque(0, 0);
         assertArrayEquals(new int[] {9,9,9,9,9, 9,0,7,9,9, 9,10,11,9,9,
                 9,9,9,9,9, 9,9,9,9,9}, actual);
@@ -110,7 +110,7 @@ public class SpriteOpaqueDrawingTest {
         };
         for (int[] c : cases) {
             int[] actual = raster(10, 7);
-            DrawingArea.setDrawingArea(6, 2, 8, 2);
+            DrawingArea.setClip(6, 2, 8, 2);
             sprite.drawOpaque(c[0], c[1]);
             int[] expected = new int[70]; Arrays.fill(expected, 9);
             for (int row = 0; row < c[5]; row++) for (int column = 0; column < c[4]; column++) {
@@ -128,7 +128,7 @@ public class SpriteOpaqueDrawingTest {
         // Exactly touching each clip edge has no intersection; one-pixel intersections above do.
         for (int[] point : new int[][] {{-4,2}, {8,2}, {2,-2}, {2,6}}) {
             int[] actual = raster(10, 7);
-            DrawingArea.setDrawingArea(6, 2, 8, 2);
+            DrawingArea.setClip(6, 2, 8, 2);
             sprite.drawOpaque(point[0], point[1]);
             int[] expected = new int[70]; Arrays.fill(expected, 9);
             assertArrayEquals(expected, actual);
@@ -143,11 +143,11 @@ public class SpriteOpaqueDrawingTest {
             for (int[] point : new int[][] {{-2,-1}, {0,0}, {3,3}, {7,5}}) {
                 sprite.offsetX = 0; sprite.offsetY = 0;
                 int[] expected = raster(10, 7);
-                DrawingArea.setDrawingArea(6, 1, 9, 1);
+                DrawingArea.setClip(6, 1, 9, 1);
                 sprite.drawOpaque(point[0] + offset[0], point[1] + offset[1]);
                 sprite.offsetX = offset[0]; sprite.offsetY = offset[1];
                 int[] actual = raster(10, 7);
-                DrawingArea.setDrawingArea(6, 1, 9, 1);
+                DrawingArea.setClip(6, 1, 9, 1);
                 sprite.drawOpaque(point[0], point[1]);
                 assertArrayEquals(expected, actual);
                 assertEquals(offset[0], sprite.offsetX); assertEquals(offset[1], sprite.offsetY);
@@ -157,7 +157,7 @@ public class SpriteOpaqueDrawingTest {
 
     private static int[] raster(int width, int height) {
         int[] raster = new int[width * height]; Arrays.fill(raster, 9);
-        DrawingArea.initDrawingArea(height, width, raster);
+        DrawingArea.bindRaster(height, width, raster);
         return raster;
     }
 }

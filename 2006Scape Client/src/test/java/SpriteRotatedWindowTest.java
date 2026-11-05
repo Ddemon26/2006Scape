@@ -16,7 +16,7 @@ public class SpriteRotatedWindowTest {
         savedFiltering = ClientSettings.BILINEAR_MINIMAP_FILTERING;
         saved = new int[] {DrawingArea.width, DrawingArea.height, DrawingArea.topX,
                 DrawingArea.topY, DrawingArea.bottomX, DrawingArea.bottomY,
-                DrawingArea.centerX, DrawingArea.centerY, DrawingArea.anInt1387};
+                DrawingArea.scanlineRightLimit, DrawingArea.clipRightHalf, DrawingArea.clipBottomHalf};
     }
 
     @After public void restoreDrawingArea() {
@@ -24,8 +24,8 @@ public class SpriteRotatedWindowTest {
         DrawingArea.width = saved[0]; DrawingArea.height = saved[1];
         DrawingArea.topX = saved[2]; DrawingArea.topY = saved[3];
         DrawingArea.bottomX = saved[4]; DrawingArea.bottomY = saved[5];
-        DrawingArea.centerX = saved[6]; DrawingArea.centerY = saved[7];
-        DrawingArea.anInt1387 = saved[8];
+        DrawingArea.scanlineRightLimit = saved[6]; DrawingArea.clipRightHalf = saved[7];
+        DrawingArea.clipBottomHalf = saved[8];
         ClientSettings.BILINEAR_MINIMAP_FILTERING = savedFiltering;
     }
 
@@ -83,7 +83,7 @@ public class SpriteRotatedWindowTest {
             sprite.offsetX = offset[0]; sprite.offsetY = offset[1];
             sprite.trimWidth = 70; sprite.trimHeight = 90;
             int[] raster = target();
-            DrawingArea.setDrawingArea(1, 0, 1, 0);
+            DrawingArea.setClip(1, 0, 1, 0);
             sprite.drawRotatedNonzero20x20(2, 0, 3);
             assertArrayEquals(expected, raster);
         }
@@ -165,7 +165,7 @@ public class SpriteRotatedWindowTest {
         for (int[] c : new int[][] {{0,0}, {1,0}, {2,1}, {64,32}, {128,64}, {255,127}, {256,128}}) {
             int[] raster = new int[260 * 3], expected = new int[raster.length];
             Arrays.fill(raster, FILL); Arrays.fill(expected, FILL);
-            DrawingArea.initDrawingArea(3, 260, raster);
+            DrawingArea.bindRaster(3, 260, raster);
             sprite.drawRotatedScanlines(1, 0, new int[] {1}, 1, new int[] {c[0]}, 16, 1, 0, 0, 16);
             expected[c[0] + 260] = c[1] << 16;
             assertArrayEquals(expected, raster);
@@ -207,7 +207,7 @@ public class SpriteRotatedWindowTest {
 
     private static int[] target() {
         int[] raster = filled();
-        DrawingArea.initDrawingArea(32, 32, raster);
+        DrawingArea.bindRaster(32, 32, raster);
         return raster;
     }
 

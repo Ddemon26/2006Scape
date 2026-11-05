@@ -4,56 +4,56 @@
 
 public class DrawingArea extends NodeSub {
 
-	public static void initDrawingArea(int i, int j, int ai[]) {
-		pixels = ai;
-		width = j;
-		height = i;
-		setDrawingArea(i, 0, j, 0);
+	public static void bindRaster(int rasterHeight, int rasterWidth, int rasterPixels[]) {
+		pixels = rasterPixels;
+		width = rasterWidth;
+		height = rasterHeight;
+		setClip(rasterHeight, 0, rasterWidth, 0);
 	}
 
-	public static void defaultDrawingAreaSize() {
+	public static void resetClip() {
 		topX = 0;
 		topY = 0;
 		bottomX = width;
 		bottomY = height;
 		if (ClientSettings.FULL_512PX_VIEWPORT) {
-			centerX = bottomX;
+			scanlineRightLimit = bottomX;
 		} else {
-			centerX = bottomX - 1;
+			scanlineRightLimit = bottomX - 1;
 		}
-		centerY = bottomX / 2;
+		clipRightHalf = bottomX / 2;
 	}
 
-	public static void setDrawingArea(int i, int j, int k, int l) {
-		if (j < 0) {
-			j = 0;
+	public static void setClip(int bottom, int left, int right, int top) {
+		if (left < 0) {
+			left = 0;
 		}
-		if (l < 0) {
-			l = 0;
+		if (top < 0) {
+			top = 0;
 		}
-		if (k > width) {
-			k = width;
+		if (right > width) {
+			right = width;
 		}
-		if (i > height) {
-			i = height;
+		if (bottom > height) {
+			bottom = height;
 		}
-		topX = j;
-		topY = l;
-		bottomX = k;
-		bottomY = i;
+		topX = left;
+		topY = top;
+		bottomX = right;
+		bottomY = bottom;
 		if (ClientSettings.FULL_512PX_VIEWPORT) {
-			centerX = bottomX;
+			scanlineRightLimit = bottomX;
 		} else {
-			centerX = bottomX - 1;
+			scanlineRightLimit = bottomX - 1;
 		}
-		centerY = bottomX / 2;
-		anInt1387 = bottomY / 2;
+		clipRightHalf = bottomX / 2;
+		clipBottomHalf = bottomY / 2;
 	}
 
-	public static void setAllPixelsToZero() {
-		int i = width * height;
-		for (int j = 0; j < i; j++) {
-			pixels[j] = 0;
+	public static void clearRaster() {
+		int pixelCount = width * height;
+		for (int pixelIndex = 0; pixelIndex < pixelCount; pixelIndex++) {
+			pixels[pixelIndex] = 0;
 		}
 
 	}
@@ -234,8 +234,8 @@ public class DrawingArea extends NodeSub {
 	public static int bottomY;
 	public static int topX;
 	public static int bottomX;
-	public static int centerX;
-	public static int centerY;
-	public static int anInt1387;
+	public static int scanlineRightLimit;
+	public static int clipRightHalf;
+	public static int clipBottomHalf;
 
 }

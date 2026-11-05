@@ -57,7 +57,7 @@ public class SpriteRgbTest {
         s.offsetX = 2; s.offsetY = 3; s.trimWidth = 9; s.trimHeight = 8;
         int[] pixels = s.pixels;
         int[] target = {0x556677};
-        DrawingArea.initDrawingArea(1, 1, target);
+        DrawingArea.bindRaster(1, 1, target);
         s.adjustRgb(3, -2, 5);
         assertSame(pixels, s.pixels);
         assertArrayEquals(new int[] {0, 0x15325b, 0xaecbf4, 0xfffdff}, pixels);

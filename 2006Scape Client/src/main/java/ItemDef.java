@@ -2102,7 +2102,7 @@ public final class ItemDef {
 		int i3 = DrawingArea.topY;
 		int j3 = DrawingArea.bottomY;
 		Texture.aBoolean1464 = false;
-		DrawingArea.initDrawingArea(32, 32, sprite2.pixels);
+		DrawingArea.bindRaster(32, 32, sprite2.pixels);
 		DrawingArea.fillRectangle(32, 0, 0, 32, 0);
 		Texture.method364();
 		int k3 = itemDef.modelZoom;
@@ -2173,8 +2173,8 @@ public final class ItemDef {
 		if (k == 0) {
 			mruNodes1.removeFromCache(sprite2, i);
 		}
-		DrawingArea.initDrawingArea(j2, i2, ai1);
-		DrawingArea.setDrawingArea(j3, k2, l2, i3);
+		DrawingArea.bindRaster(j2, i2, ai1);
+		DrawingArea.setClip(j3, k2, l2, i3);
 		Texture.textureInt1 = k1;
 		Texture.textureInt2 = l1;
 		Texture.lineOffsets = ai;

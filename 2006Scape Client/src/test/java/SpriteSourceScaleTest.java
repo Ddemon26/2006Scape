@@ -15,7 +15,7 @@ public class SpriteSourceScaleTest {
         savedPixels = DrawingArea.pixels;
         saved = new int[] {DrawingArea.width, DrawingArea.height, DrawingArea.topX,
                 DrawingArea.topY, DrawingArea.bottomX, DrawingArea.bottomY,
-                DrawingArea.centerX, DrawingArea.centerY, DrawingArea.anInt1387};
+                DrawingArea.scanlineRightLimit, DrawingArea.clipRightHalf, DrawingArea.clipBottomHalf};
         savedFiltering = ClientSettings.BILINEAR_MINIMAP_FILTERING;
     }
 
@@ -24,8 +24,8 @@ public class SpriteSourceScaleTest {
         DrawingArea.width = saved[0]; DrawingArea.height = saved[1];
         DrawingArea.topX = saved[2]; DrawingArea.topY = saved[3];
         DrawingArea.bottomX = saved[4]; DrawingArea.bottomY = saved[5];
-        DrawingArea.centerX = saved[6]; DrawingArea.centerY = saved[7];
-        DrawingArea.anInt1387 = saved[8];
+        DrawingArea.scanlineRightLimit = saved[6]; DrawingArea.clipRightHalf = saved[7];
+        DrawingArea.clipBottomHalf = saved[8];
         ClientSettings.BILINEAR_MINIMAP_FILTERING = savedFiltering;
     }
 
@@ -113,7 +113,7 @@ public class SpriteSourceScaleTest {
         return sprite;
     }
     private static int[] target(int width, int height) {
-        int[] raster = filled(width, height); DrawingArea.initDrawingArea(height, width, raster); return raster;
+        int[] raster = filled(width, height); DrawingArea.bindRaster(height, width, raster); return raster;
     }
     private static int[] filled(int width, int height) {
         int[] raster = new int[width * height]; Arrays.fill(raster, FILL); return raster;

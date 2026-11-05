@@ -13,7 +13,7 @@ public class SpriteHalfBlendTest {
         savedPixels = DrawingArea.pixels;
         saved = new int[] {DrawingArea.width, DrawingArea.height, DrawingArea.topX,
                 DrawingArea.topY, DrawingArea.bottomX, DrawingArea.bottomY,
-                DrawingArea.centerX, DrawingArea.centerY, DrawingArea.anInt1387};
+                DrawingArea.scanlineRightLimit, DrawingArea.clipRightHalf, DrawingArea.clipBottomHalf};
     }
 
     @After public void restoreDrawingArea() {
@@ -21,14 +21,14 @@ public class SpriteHalfBlendTest {
         DrawingArea.width = saved[0]; DrawingArea.height = saved[1];
         DrawingArea.topX = saved[2]; DrawingArea.topY = saved[3];
         DrawingArea.bottomX = saved[4]; DrawingArea.bottomY = saved[5];
-        DrawingArea.centerX = saved[6]; DrawingArea.centerY = saved[7];
-        DrawingArea.anInt1387 = saved[8];
+        DrawingArea.scanlineRightLimit = saved[6]; DrawingArea.clipRightHalf = saved[7];
+        DrawingArea.clipBottomHalf = saved[8];
     }
 
     private static int[] target(int width, int height, int color) {
         int[] result = new int[width * height];
         Arrays.fill(result, color);
-        DrawingArea.initDrawingArea(height, width, result);
+        DrawingArea.bindRaster(height, width, result);
         return result;
     }
 
@@ -79,14 +79,14 @@ public class SpriteHalfBlendTest {
         sprite.offsetX = 1; sprite.offsetY = 1;
         sprite.pixels = new int[] {2, 4, 6, 8, 10, 12, 14, 16, 18};
         int[] raster = target(5, 5, 0);
-        DrawingArea.setDrawingArea(4, 2, 4, 2);
+        DrawingArea.setClip(4, 2, 4, 2);
         sprite.drawHalfBlended(0, 0);
         int[] expected = new int[25];
         expected[12] = 5; expected[13] = 6;
         expected[17] = 8; expected[18] = 9;
         assertArrayEquals(expected, raster);
         raster = target(5, 5, 0);
-        DrawingArea.setDrawingArea(3, 0, 3, 0);
+        DrawingArea.setClip(3, 0, 3, 0);
         sprite.drawHalfBlended(0, 0);
         expected = new int[25];
         expected[6] = 1; expected[7] = 2;
@@ -129,7 +129,7 @@ public class SpriteHalfBlendTest {
         };
         for (int[] c : cases) {
             int[] actual = target(10, 7, 0x7f000000);
-            DrawingArea.setDrawingArea(6, 2, 8, 2);
+            DrawingArea.setClip(6, 2, 8, 2);
             sprite.drawHalfBlended(c[0], c[1]);
             int[] expected = new int[70]; Arrays.fill(expected, 0x7f000000);
             for (int row = 0; row < c[5]; row++) for (int column = 0; column < c[4]; column++) {
@@ -149,7 +149,7 @@ public class SpriteHalfBlendTest {
         // Exactly touching each clip edge has no intersection; one-pixel intersections above do.
         for (int[] point : new int[][] {{-4,2}, {8,2}, {2,-2}, {2,6}}) {
             int[] actual = target(10, 7, 0x7f000000);
-            DrawingArea.setDrawingArea(6, 2, 8, 2);
+            DrawingArea.setClip(6, 2, 8, 2);
             sprite.drawHalfBlended(point[0], point[1]);
             int[] expected = new int[70]; Arrays.fill(expected, 0x7f000000);
             assertArrayEquals(expected, actual);
@@ -164,11 +164,11 @@ public class SpriteHalfBlendTest {
             for (int[] point : new int[][] {{-2,-1}, {0,0}, {3,3}, {7,5}}) {
                 sprite.offsetX = 0; sprite.offsetY = 0;
                 int[] expected = target(10, 7, 0x7f000000);
-                DrawingArea.setDrawingArea(6, 1, 9, 1);
+                DrawingArea.setClip(6, 1, 9, 1);
                 sprite.drawHalfBlended(point[0] + offset[0], point[1] + offset[1]);
                 sprite.offsetX = offset[0]; sprite.offsetY = offset[1];
                 int[] actual = target(10, 7, 0x7f000000);
-                DrawingArea.setDrawingArea(6, 1, 9, 1);
+                DrawingArea.setClip(6, 1, 9, 1);
                 sprite.drawHalfBlended(point[0], point[1]);
                 assertArrayEquals(expected, actual);
                 assertEquals(offset[0], sprite.offsetX); assertEquals(offset[1], sprite.offsetY);

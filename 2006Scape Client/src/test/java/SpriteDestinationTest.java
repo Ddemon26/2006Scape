@@ -15,7 +15,7 @@ public class SpriteDestinationTest {
         savedPixels = DrawingArea.pixels;
         saved = new int[] {DrawingArea.width, DrawingArea.height, DrawingArea.topX,
                 DrawingArea.topY, DrawingArea.bottomX, DrawingArea.bottomY,
-                DrawingArea.centerX, DrawingArea.centerY, DrawingArea.anInt1387};
+                DrawingArea.scanlineRightLimit, DrawingArea.clipRightHalf, DrawingArea.clipBottomHalf};
         savedFiltering = ClientSettings.BILINEAR_MINIMAP_FILTERING;
     }
 
@@ -24,8 +24,8 @@ public class SpriteDestinationTest {
         DrawingArea.width = saved[0]; DrawingArea.height = saved[1];
         DrawingArea.topX = saved[2]; DrawingArea.topY = saved[3];
         DrawingArea.bottomX = saved[4]; DrawingArea.bottomY = saved[5];
-        DrawingArea.centerX = saved[6]; DrawingArea.centerY = saved[7];
-        DrawingArea.anInt1387 = saved[8];
+        DrawingArea.scanlineRightLimit = saved[6]; DrawingArea.clipRightHalf = saved[7];
+        DrawingArea.clipBottomHalf = saved[8];
         ClientSettings.BILINEAR_MINIMAP_FILTERING = savedFiltering;
     }
 
@@ -76,7 +76,7 @@ public class SpriteDestinationTest {
         for (boolean filtering : new boolean[] {false, true}) {
             ClientSettings.BILINEAR_MINIMAP_FILTERING = filtering;
             int[] raster = target(19), expected = filled(19);
-            DrawingArea.setDrawingArea(1, 0, 1, 0);
+            DrawingArea.setClip(1, 0, 1, 0);
             // A nonzero mask offset places the sample after the destination anchor.
             // The final physical pixel is outside the configured clip rectangle.
             sprite.drawRotatedScanlines(1, 0, new int[] {1}, 256,
@@ -104,7 +104,7 @@ public class SpriteDestinationTest {
         return sprite;
     }
     private static int[] target(int width) {
-        int[] raster = filled(width); DrawingArea.initDrawingArea(16, width, raster); return raster;
+        int[] raster = filled(width); DrawingArea.bindRaster(16, width, raster); return raster;
     }
     private static int[] filled(int width) {
         int[] raster = new int[width * 16]; Arrays.fill(raster, FILL); return raster;
