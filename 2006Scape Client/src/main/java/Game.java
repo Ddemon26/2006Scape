@@ -368,7 +368,7 @@ public class Game extends RSApplet {
 	public void drawChatArea() {
 		aRSImageProducer_1166.initDrawingArea();
 		Texture.lineOffsets = chatAreaOffsets;
-		chatBack.method361(0, 0);
+		chatBack.drawNonzeroIndexed(0, 0);
 		if (messagePromptRaised) {
 			chatTextDrawingArea.textCenter(0, aString1121, 40, 239);
 			chatTextDrawingArea.textCenter(128, promptInput + "*", 60, 239);
@@ -417,11 +417,11 @@ public class Game extends RSApplet {
 						if (i1 > 0 && i1 < 110) {
 							int j1 = 4;
 							if (byte0 == 1) {
-								modIcons[0].method361(j1, i1 - 12);
+								modIcons[0].drawNonzeroIndexed(j1, i1 - 12);
 								j1 += 14;
 							}
 							if (byte0 == 2) {
-								modIcons[1].method361(j1, i1 - 12);
+								modIcons[1].drawNonzeroIndexed(j1, i1 - 12);
 								j1 += 14;
 							}
 							textDrawingArea.textLeft(0, s1 + ":", i1, j1);
@@ -436,11 +436,11 @@ public class Game extends RSApplet {
 							textDrawingArea.textLeft(0, "From", i1, k1);
 							k1 += textDrawingArea.getTextWidth("From ");
 							if (byte0 == 1) {
-								modIcons[0].method361(k1, i1 - 12);
+								modIcons[0].drawNonzeroIndexed(k1, i1 - 12);
 								k1 += 14;
 							}
 							if (byte0 == 2) {
-								modIcons[1].method361(k1, i1 - 12);
+								modIcons[1].drawNonzeroIndexed(k1, i1 - 12);
 								k1 += 14;
 							}
 							textDrawingArea.textLeft(0, s1 + ":", i1, k1);
@@ -1265,8 +1265,8 @@ public class Game extends RSApplet {
 	}
 
 	public void drawScrollThumb(int j, int k, int l, int i1, int j1) {
-		scrollBar1.method361(i1, l);
-		scrollBar2.method361(i1, l + j - 16);
+		scrollBar1.drawNonzeroIndexed(i1, l);
+		scrollBar2.drawNonzeroIndexed(i1, l + j - 16);
 		DrawingArea.fillArea(j - 32, l + 16, anInt1002, 16, i1);
 		int k1 = (j - 32) * j / j1;
 		if (k1 < 8) {
@@ -1550,7 +1550,7 @@ public class Game extends RSApplet {
 						if (player.privelage >= 1) {
 							npcScreenPos(((Entity) obj), ((Entity) obj).height + 15);
 							int icon = Math.max(0, Math.min(1, player.privelage - 1));
-							modIcons[icon].method361( spriteDrawX - player.name.length() * 3 - 16, spriteDrawY - 7);
+							modIcons[icon].drawNonzeroIndexed( spriteDrawX - player.name.length() * 3 - 16, spriteDrawY - 7);
 						}
 					}
 					if (player.headIcon >= 0) {
@@ -1809,7 +1809,7 @@ public class Game extends RSApplet {
 	public void drawTabArea() {
 		aRSImageProducer_1163.initDrawingArea();
 		Texture.lineOffsets = tabAreaOffsets;
-		invBack.method361(0, 0);
+		invBack.drawNonzeroIndexed(0, 0);
 		if (invOverlayInterfaceID == -1) {
 			if (tabInterfaceIDs[tabID] != -1) {
 				if (tabID == 7 && ClientSettings.CUSTOM_SETTINGS_TAB) {
@@ -2488,7 +2488,7 @@ public class Game extends RSApplet {
 				if (background_2 != null) {
 					int i6 = (class46_2.anInt744 * 4 - background_2.anInt1452) / 2;
 					int j6 = (class46_2.anInt761 * 4 - background_2.anInt1453) / 2;
-					background_2.method361(48 + l * 4 + i6, 48 + (104 - i - class46_2.anInt761) * 4 + j6);
+					background_2.drawNonzeroIndexed(48 + l * 4 + i6, 48 + (104 - i - class46_2.anInt761) * 4 + j6);
 				}
 			} else {
 				if (i3 == 0 || i3 == 2) {
@@ -2562,7 +2562,7 @@ public class Game extends RSApplet {
 				if (background_1 != null) {
 					int j5 = (class46_1.anInt744 * 4 - background_1.anInt1452) / 2;
 					int k5 = (class46_1.anInt761 * 4 - background_1.anInt1453) / 2;
-					background_1.method361(48 + l * 4 + j5, 48 + (104 - i - class46_1.anInt761) * 4 + k5);
+					background_1.drawNonzeroIndexed(48 + l * 4 + j5, 48 + (104 - i - class46_1.anInt761) * 4 + k5);
 				}
 			} else if (j3 == 9) {
 				int l4 = 0xeeeeee;
@@ -2593,7 +2593,7 @@ public class Game extends RSApplet {
 				if (background != null) {
 					int i4 = (class46.anInt744 * 4 - background.anInt1452) / 2;
 					int j4 = (class46.anInt761 * 4 - background.anInt1453) / 2;
-					background.method361(48 + l * 4 + i4, 48 + (104 - i - class46.anInt761) * 4 + j4);
+					background.drawNonzeroIndexed(48 + l * 4 + i4, 48 + (104 - i - class46.anInt761) * 4 + j4);
 				}
 			}
 		}
@@ -5606,11 +5606,11 @@ public class Game extends RSApplet {
 					textDrawingArea.textLeft(0x00ffff, "From", l - 1, k1);
 					k1 += textDrawingArea.getTextWidth("From ");
 					if (byte1 == 1) {
-						modIcons[0].method361(k1, l - 12);
+						modIcons[0].drawNonzeroIndexed(k1, l - 12);
 						k1 += 14;
 					}
 					if (byte1 == 2) {
-						modIcons[1].method361(k1, l - 12);
+						modIcons[1].drawNonzeroIndexed(k1, l - 12);
 						k1 += 14;
 					}
 					textDrawingArea.textLeft(0, s + ": " + chatMessages[j], l, k1);
@@ -5898,7 +5898,7 @@ public class Game extends RSApplet {
 		aRSImageProducer_1166 = new RSImageProducer(479, 96, getGameComponent());
 		aRSImageProducer_1164 = new RSImageProducer(172, 156, getGameComponent());
 		DrawingArea.setAllPixelsToZero();
-		mapBack.method361(0, 0);
+		mapBack.drawNonzeroIndexed(0, 0);
 		aRSImageProducer_1163 = new RSImageProducer(190, 261, getGameComponent());
 		aRSImageProducer_1165 = new RSImageProducer(512, 334, getGameComponent());
 		DrawingArea.setAllPixelsToZero();
@@ -7975,100 +7975,100 @@ public class Game extends RSApplet {
 			}
 			tabAreaAltered = false;
 			aRSImageProducer_1125.initDrawingArea();
-			backHmid1.method361(0, 0);
+			backHmid1.drawNonzeroIndexed(0, 0);
 			if (invOverlayInterfaceID == -1) {
 				if (tabInterfaceIDs[tabID] != -1) {
 					if (tabID == 0) {
-						redStone1.method361(22, 10);
+						redStone1.drawNonzeroIndexed(22, 10);
 					}
 					if (tabID == 1) {
-						redStone2.method361(54, 8);
+						redStone2.drawNonzeroIndexed(54, 8);
 					}
 					if (tabID == 2) {
-						redStone2.method361(82, 8);
+						redStone2.drawNonzeroIndexed(82, 8);
 					}
 					if (tabID == 3) {
-						redStone3.method361(110, 8);
+						redStone3.drawNonzeroIndexed(110, 8);
 					}
 					if (tabID == 4) {
-						redStone2_2.method361(153, 8);
+						redStone2_2.drawNonzeroIndexed(153, 8);
 					}
 					if (tabID == 5) {
-						redStone2_2.method361(181, 8);
+						redStone2_2.drawNonzeroIndexed(181, 8);
 					}
 					if (tabID == 6) {
-						redStone1_2.method361(209, 9);
+						redStone1_2.drawNonzeroIndexed(209, 9);
 					}
 				}
 				if (tabInterfaceIDs[0] != -1 && (anInt1054 != 0 || loopCycle % 20 < 10)) {
-					sideIcons[0].method361(29, 13);
+					sideIcons[0].drawNonzeroIndexed(29, 13);
 				}
 				if (tabInterfaceIDs[1] != -1 && (anInt1054 != 1 || loopCycle % 20 < 10)) {
-					sideIcons[1].method361(53, 11);
+					sideIcons[1].drawNonzeroIndexed(53, 11);
 				}
 				if (tabInterfaceIDs[2] != -1 && (anInt1054 != 2 || loopCycle % 20 < 10)) {
-					sideIcons[2].method361(82, 11);
+					sideIcons[2].drawNonzeroIndexed(82, 11);
 				}
 				if (tabInterfaceIDs[3] != -1 && (anInt1054 != 3 || loopCycle % 20 < 10)) {
-					sideIcons[3].method361(115, 12);
+					sideIcons[3].drawNonzeroIndexed(115, 12);
 				}
 				if (tabInterfaceIDs[4] != -1 && (anInt1054 != 4 || loopCycle % 20 < 10)) {
-					sideIcons[4].method361(153, 13);
+					sideIcons[4].drawNonzeroIndexed(153, 13);
 				}
 				if (tabInterfaceIDs[5] != -1 && (anInt1054 != 5 || loopCycle % 20 < 10)) {
-					sideIcons[5].method361(180, 11);
+					sideIcons[5].drawNonzeroIndexed(180, 11);
 				}
 				if (tabInterfaceIDs[6] != -1 && (anInt1054 != 6 || loopCycle % 20 < 10)) {
-					sideIcons[6].method361(208, 13);
+					sideIcons[6].drawNonzeroIndexed(208, 13);
 				}
 			}
 			aRSImageProducer_1125.drawGraphics(160, super.graphics, 516);
 			aRSImageProducer_1124.initDrawingArea();
-			backBase2.method361(0, 0);
+			backBase2.drawNonzeroIndexed(0, 0);
 			if (invOverlayInterfaceID == -1) {
 				if (tabInterfaceIDs[tabID] != -1) {
 					if (tabID == 7 && ClientSettings.CUSTOM_SETTINGS_TAB) {
-						redStone1_3.method361(42, 0);
+						redStone1_3.drawNonzeroIndexed(42, 0);
 					}
 					if (tabID == 8) {
-						redStone2_3.method361(74, 0);
+						redStone2_3.drawNonzeroIndexed(74, 0);
 					}
 					if (tabID == 9) {
-						redStone2_3.method361(102, 0);
+						redStone2_3.drawNonzeroIndexed(102, 0);
 					}
 					if (tabID == 10) {
-						redStone3_2.method361(130, 1);
+						redStone3_2.drawNonzeroIndexed(130, 1);
 					}
 					if (tabID == 11) {
-						redStone2_4.method361(173, 0);
+						redStone2_4.drawNonzeroIndexed(173, 0);
 					}
 					if (tabID == 12) {
-						redStone2_4.method361(201, 0);
+						redStone2_4.drawNonzeroIndexed(201, 0);
 					}
 					if (tabID == 13) {
-						redStone1_4.method361(229, 0);
+						redStone1_4.drawNonzeroIndexed(229, 0);
 					}
 				}
 				if (tabInterfaceIDs[7] != -1 && (anInt1054 != 7 || loopCycle % 20 < 10) && ClientSettings.CUSTOM_SETTINGS_TAB) {
-					sideIcons[10].method361(47, 2);
+					sideIcons[10].drawNonzeroIndexed(47, 2);
 				}
 				if (tabInterfaceIDs[8] != -1 && (anInt1054 != 8 || loopCycle % 20 < 10)) {
-					sideIcons[7].method361(74, 2);
+					sideIcons[7].drawNonzeroIndexed(74, 2);
 				}
 				if (tabInterfaceIDs[9] != -1 && (anInt1054 != 9 || loopCycle % 20 < 10)) {
-					sideIcons[8].method361(102, 3);
+					sideIcons[8].drawNonzeroIndexed(102, 3);
 				}
 				if (tabInterfaceIDs[10] != -1 && (anInt1054 != 10 || loopCycle % 20 < 10)) {
-					sideIcons[9].method361(137, 4);
+					sideIcons[9].drawNonzeroIndexed(137, 4);
 				}
 				if (tabInterfaceIDs[11] != -1 && (anInt1054 != 11 || loopCycle % 20 < 10)) {
-					sideIcons[10].method361(174, 2);
+					sideIcons[10].drawNonzeroIndexed(174, 2);
 				}
 				if (tabInterfaceIDs[12] != -1 && (anInt1054 != 12 || loopCycle % 20 < 10)) {
-					sideIcons[11].method361(201, 2);
+					sideIcons[11].drawNonzeroIndexed(201, 2);
 				}
 				if (tabInterfaceIDs[13] != -1 && (anInt1054 != 13 || loopCycle % 20 < 10)) {
-					sideIcons[12].method361(226, 2);
+					sideIcons[12].drawNonzeroIndexed(226, 2);
 				}
 			}
 			aRSImageProducer_1124.drawGraphics(466, super.graphics, 496);
@@ -8078,7 +8078,7 @@ public class Game extends RSApplet {
 		if (aBoolean1233) {
 			aBoolean1233 = false;
 			aRSImageProducer_1123.initDrawingArea();
-			backBase1.method361(0, 0);
+			backBase1.drawNonzeroIndexed(0, 0);
 			aTextDrawingArea_1271.textCenterShadow(0xffffff, 55, "Public chat", 28, true);
 			if (publicChatMode == 0) {
 				aTextDrawingArea_1271.textCenterShadow(0x00ff00, 55, "On", 41, true);
@@ -9892,7 +9892,7 @@ public class Game extends RSApplet {
 	public void drawLoginScreen(boolean flag) {
 		resetImageProducers();
 		aRSImageProducer_1109.initDrawingArea();
-		aBackground_966.method361(0, 0);
+		aBackground_966.drawNonzeroIndexed(0, 0);
 		char c = '\u0168';
 		char c1 = '\310';
 		if (loginScreenState == 0) {
@@ -9903,10 +9903,10 @@ public class Game extends RSApplet {
 			i += 30;
 			int l = c / 2 - 80;
 			int k1 = c1 / 2 + 20;
-			aBackground_967.method361(l - 73, k1 - 20);
+			aBackground_967.drawNonzeroIndexed(l - 73, k1 - 20);
 			chatTextDrawingArea.textCenterShadow(0xffffff, l, "New User", k1 + 5, true);
 			l = c / 2 + 80;
-			aBackground_967.method361(l - 73, k1 - 20);
+			aBackground_967.drawNonzeroIndexed(l - 73, k1 - 20);
 			chatTextDrawingArea.textCenterShadow(0xffffff, l, "Existing User", k1 + 5, true);
 		}
 		if (loginScreenState == 2) {
@@ -9926,10 +9926,10 @@ public class Game extends RSApplet {
 			if (!flag) {
 				int i1 = c / 2 - 80;
 				int l1 = c1 / 2 + 50;
-				aBackground_967.method361(i1 - 73, l1 - 20);
+				aBackground_967.drawNonzeroIndexed(i1 - 73, l1 - 20);
 				chatTextDrawingArea.textCenterShadow(0xffffff, i1, "Login", l1 + 5, true);
 				i1 = c / 2 + 80;
-				aBackground_967.method361(i1 - 73, l1 - 20);
+				aBackground_967.drawNonzeroIndexed(i1 - 73, l1 - 20);
 				chatTextDrawingArea.textCenterShadow(0xffffff, i1, "Cancel", l1 + 5, true);
 			}
 		}
@@ -9946,7 +9946,7 @@ public class Game extends RSApplet {
 			k += 15;
 			int j1 = c / 2;
 			int i2 = c1 / 2 + 50;
-			aBackground_967.method361(j1 - 73, i2 - 20);
+			aBackground_967.drawNonzeroIndexed(j1 - 73, i2 - 20);
 			chatTextDrawingArea.textCenterShadow(0xffffff, j1, "Cancel", i2 + 5, true);
 		}
 		aRSImageProducer_1109.drawGraphics(171, super.graphics, 202);

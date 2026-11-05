@@ -141,87 +141,87 @@ public final class Background extends DrawingArea {
 		}
 	}
 
-	public void method361(int i, int k) {
-		i += offsetX;
-		k += offsetY;
-		int l = i + k * DrawingArea.width;
-		int i1 = 0;
-		int j1 = anInt1453;
-		int k1 = anInt1452;
-		int l1 = DrawingArea.width - k1;
-		int i2 = 0;
-		if (k < DrawingArea.topY) {
-			int j2 = DrawingArea.topY - k;
-			j1 -= j2;
-			k = DrawingArea.topY;
-			i1 += j2 * k1;
-			l += j2 * DrawingArea.width;
+	public void drawNonzeroIndexed(int destinationX, int destinationY) {
+		destinationX += offsetX;
+		destinationY += offsetY;
+		int destinationIndex = destinationX + destinationY * DrawingArea.width;
+		int sourceIndex = 0;
+		int visibleHeight = anInt1453;
+		int visibleWidth = anInt1452;
+		int destinationRowSkip = DrawingArea.width - visibleWidth;
+		int sourceRowSkip = 0;
+		if (destinationY < DrawingArea.topY) {
+			int clippedTopRows = DrawingArea.topY - destinationY;
+			visibleHeight -= clippedTopRows;
+			destinationY = DrawingArea.topY;
+			sourceIndex += clippedTopRows * visibleWidth;
+			destinationIndex += clippedTopRows * DrawingArea.width;
 		}
-		if (k + j1 > DrawingArea.bottomY) {
-			j1 -= k + j1 - DrawingArea.bottomY;
+		if (destinationY + visibleHeight > DrawingArea.bottomY) {
+			visibleHeight -= destinationY + visibleHeight - DrawingArea.bottomY;
 		}
-		if (i < DrawingArea.topX) {
-			int k2 = DrawingArea.topX - i;
-			k1 -= k2;
-			i = DrawingArea.topX;
-			i1 += k2;
-			l += k2;
-			i2 += k2;
-			l1 += k2;
+		if (destinationX < DrawingArea.topX) {
+			int clippedLeftColumns = DrawingArea.topX - destinationX;
+			visibleWidth -= clippedLeftColumns;
+			destinationX = DrawingArea.topX;
+			sourceIndex += clippedLeftColumns;
+			destinationIndex += clippedLeftColumns;
+			sourceRowSkip += clippedLeftColumns;
+			destinationRowSkip += clippedLeftColumns;
 		}
-		if (i + k1 > DrawingArea.bottomX) {
-			int l2 = i + k1 - DrawingArea.bottomX;
-			k1 -= l2;
-			i2 += l2;
-			l1 += l2;
+		if (destinationX + visibleWidth > DrawingArea.bottomX) {
+			int clippedRightColumns = destinationX + visibleWidth - DrawingArea.bottomX;
+			visibleWidth -= clippedRightColumns;
+			sourceRowSkip += clippedRightColumns;
+			destinationRowSkip += clippedRightColumns;
 		}
-		if (!(k1 <= 0 || j1 <= 0)) {
-			method362(j1, DrawingArea.pixels, aByteArray1450, l1, l, k1, i1, anIntArray1451, i2);
+		if (!(visibleWidth <= 0 || visibleHeight <= 0)) {
+			copyNonzeroIndexedRows(visibleHeight, DrawingArea.pixels, aByteArray1450, destinationRowSkip, destinationIndex, visibleWidth, sourceIndex, anIntArray1451, sourceRowSkip);
 		}
 	}
 
-	private void method362(int i, int ai[], byte abyte0[], int j, int k, int l, int i1, int ai1[], int j1) {
-		int k1 = -(l >> 2);
-		l = -(l & 3);
-		for (int l1 = -i; l1 < 0; l1++) {
-			for (int i2 = k1; i2 < 0; i2++) {
-				byte byte1 = abyte0[i1++];
-				if (byte1 != 0) {
-					ai[k++] = ai1[byte1 & 0xff];
+	private void copyNonzeroIndexedRows(int rows, int destination[], byte sourceIndices[], int destinationRowSkip, int destinationIndex, int width, int sourceIndex, int palette[], int sourceRowSkip) {
+		int negativeBlocksOfFour = -(width >> 2);
+		width = -(width & 3);
+		for (int negativeRow = -rows; negativeRow < 0; negativeRow++) {
+			for (int negativeBlock = negativeBlocksOfFour; negativeBlock < 0; negativeBlock++) {
+				byte paletteIndex = sourceIndices[sourceIndex++];
+				if (paletteIndex != 0) {
+					destination[destinationIndex++] = palette[paletteIndex & 0xff];
 				} else {
-					k++;
+					destinationIndex++;
 				}
-				byte1 = abyte0[i1++];
-				if (byte1 != 0) {
-					ai[k++] = ai1[byte1 & 0xff];
+				paletteIndex = sourceIndices[sourceIndex++];
+				if (paletteIndex != 0) {
+					destination[destinationIndex++] = palette[paletteIndex & 0xff];
 				} else {
-					k++;
+					destinationIndex++;
 				}
-				byte1 = abyte0[i1++];
-				if (byte1 != 0) {
-					ai[k++] = ai1[byte1 & 0xff];
+				paletteIndex = sourceIndices[sourceIndex++];
+				if (paletteIndex != 0) {
+					destination[destinationIndex++] = palette[paletteIndex & 0xff];
 				} else {
-					k++;
+					destinationIndex++;
 				}
-				byte1 = abyte0[i1++];
-				if (byte1 != 0) {
-					ai[k++] = ai1[byte1 & 0xff];
+				paletteIndex = sourceIndices[sourceIndex++];
+				if (paletteIndex != 0) {
+					destination[destinationIndex++] = palette[paletteIndex & 0xff];
 				} else {
-					k++;
-				}
-			}
-
-			for (int j2 = l; j2 < 0; j2++) {
-				byte byte2 = abyte0[i1++];
-				if (byte2 != 0) {
-					ai[k++] = ai1[byte2 & 0xff];
-				} else {
-					k++;
+					destinationIndex++;
 				}
 			}
 
-			k += j;
-			i1 += j1;
+			for (int negativeTailColumn = width; negativeTailColumn < 0; negativeTailColumn++) {
+				byte tailPaletteIndex = sourceIndices[sourceIndex++];
+				if (tailPaletteIndex != 0) {
+					destination[destinationIndex++] = palette[tailPaletteIndex & 0xff];
+				} else {
+					destinationIndex++;
+				}
+			}
+
+			destinationIndex += destinationRowSkip;
+			sourceIndex += sourceRowSkip;
 		}
 
 	}

@@ -53,7 +53,7 @@ public class BackgroundOffsetTest {
         assertEquals(260, first.anInt1456);
         assertArrayEquals(new byte[] {1, 0, 2, 1, 0, 2}, first.aByteArray1450);
         int[] actual = raster(6, 7, FILL);
-        first.method361(0, 0);
+        first.drawNonzeroIndexed(0, 0);
         int[] expected = filled(42, FILL);
         expected[3 * 6 + 2] = RED;   // (2,3)
         expected[4 * 6 + 2] = GREEN; // (2,4)
@@ -65,7 +65,7 @@ public class BackgroundOffsetTest {
         assertEquals(255, second.offsetX);
         assertEquals(254, second.offsetY);
         int[] large = raster(260, 258, 0);
-        second.method361(0, 0);
+        second.drawNonzeroIndexed(0, 0);
         int[] largeExpected = new int[260 * 258];
         largeExpected[66295] = GREEN; // Pixel (255,254): unsigned bytes, x before y.
         assertArrayEquals(largeExpected, large);
@@ -76,7 +76,7 @@ public class BackgroundOffsetTest {
         for (int[] offset : new int[][] {{0, 0}, {1, 0}, {0, 2}, {1, 2}}) {
             Background background = single(offset[0], offset[1]);
             int[] actual = raster(7, 7, FILL);
-            background.method361(2, 1);
+            background.drawNonzeroIndexed(2, 1);
             int[] expected = filled(49, FILL);
             expected[(1 + offset[1]) * 7 + 2 + offset[0]] = RED;
             assertArrayEquals(Arrays.toString(offset), expected, actual);
@@ -89,7 +89,7 @@ public class BackgroundOffsetTest {
         int[][] positions = {{0,0}, {4,0}, {0,4}, {4,4}, {-1,0}, {5,0}, {0,-1}, {0,5}};
         for (int[] position : positions) {
             int[] actual = raster(5, 5, 0);
-            background.method361(position[0] - 2, position[1] - 3);
+            background.drawNonzeroIndexed(position[0] - 2, position[1] - 3);
             int[] expected = new int[25];
             if (position[0] >= 0 && position[0] < 5 && position[1] >= 0 && position[1] < 5) {
                 expected[position[1] * 5 + position[0]] = RED;
@@ -275,6 +275,107 @@ public class BackgroundOffsetTest {
             assertEquals(1, edge.anInt1452); assertEquals(1, edge.anInt1453);
             assertEquals(4, edge.offsetX); assertEquals(6, edge.offsetY);
         }
+    }
+
+
+    @Test
+    public void indexedDrawClipsEveryEdgeAndCornerBeforePaletteLookup() throws Exception {
+        Background background = drawingFixture(9, 7);
+        int[][] clips = {{0,0,18,16}, {3,2,14,12}, {5,4,5,10}, {5,4,12,4}};
+        for (int[] clip : clips) for (int y = -8; y <= 17; y++) for (int x = -10; x <= 19; x++) {
+            int[] actual = raster(18, 16, FILL), expected = actual.clone();
+            DrawingArea.setDrawingArea(clip[3], clip[0], clip[2], clip[1]);
+            indexedDrawOracle(expected, 18, background, x, y, clip);
+            background.drawNonzeroIndexed(x, y);
+            assertArrayEquals("clip=" + Arrays.toString(clip) + " x=" + x + " y=" + y, expected, actual);
+        }
+    }
+
+    @Test
+    public void indexedDrawOffsetsAreSignedPixelTranslationsAndInputsAreReadOnly() throws Exception {
+        Background background = drawingFixture(9, 7);
+        byte[] indices = background.aByteArray1450, savedIndices = indices.clone();
+        int[] palette = background.anIntArray1451, savedPalette = palette.clone();
+        int[] clip = {3,2,14,12};
+        for (int x : new int[] {-5,-1,0,2,7}) for (int y : new int[] {-4,0,3,8}) {
+            background.offsetX = x; background.offsetY = y;
+            int[] actual = raster(18, 16, FILL), expected = actual.clone();
+            DrawingArea.setDrawingArea(12,3,14,2);
+            indexedDrawOracle(expected, 18, background, 1, 1, clip);
+            background.drawNonzeroIndexed(1, 1);
+            assertArrayEquals(expected, actual);
+            org.junit.Assert.assertSame(indices, background.aByteArray1450);
+            org.junit.Assert.assertSame(palette, background.anIntArray1451);
+            assertArrayEquals(savedIndices, indices); assertArrayEquals(savedPalette, palette);
+            assertEquals(x, background.offsetX); assertEquals(y, background.offsetY);
+            assertEquals(9, background.anInt1452); assertEquals(7, background.anInt1453);
+        }
+    }
+
+    @Test
+    public void indexedDrawUsesUnsignedIndicesAndOnlyIndexZeroIsTransparent() throws Exception {
+        Background background = drawingFixture(16, 16);
+        for (int i = 0; i < 256; i++) background.aByteArray1450[i] = (byte) i;
+        int[] actual = raster(18, 18, FILL), expected = actual.clone();
+        indexedDrawOracle(expected,18,background,1,1,new int[] {0,0,18,18});
+        background.drawNonzeroIndexed(1,1);
+        assertArrayEquals(expected, actual);
+        assertEquals(FILL, actual[19]); // index zero, despite its nonzero palette value
+        assertEquals(0, actual[20]); // nonzero index one copies a zero color
+        assertEquals(background.anIntArray1451[128], actual[9 * 18 + 1]);
+        assertEquals(background.anIntArray1451[255], actual[16 * 18 + 16]);
+    }
+
+    @Test
+    public void indexedRowCopyUsesIndependentStartsSkipsBlocksAndTails() throws Exception {
+        java.lang.reflect.Method copy = Background.class.getDeclaredMethod("copyNonzeroIndexedRows", int.class,
+                int[].class, byte[].class, int.class, int.class, int.class, int.class, int[].class, int.class);
+        copy.setAccessible(true);
+        Background background = drawingFixture(1,1);
+        for (int width = 0; width <= 12; width++) for (int rows = 0; rows <= 4; rows++)
+            for (int sourceSkip : new int[] {0,3}) for (int destinationSkip : new int[] {0,5}) {
+                int sourceStart=2, destinationStart=7;
+                byte[] source = new byte[sourceStart + rows * (width + sourceSkip) + 3];
+                for (int i=0;i<source.length;i++) source[i] = i%5==0 ? 0 : (byte)(i*43);
+                byte[] unchanged=source.clone(); int[] palette=background.anIntArray1451.clone();
+                int[] actual=filled(destinationStart + rows*(width+destinationSkip)+3,FILL), expected=actual.clone();
+                for(int y=0;y<rows;y++) for(int x=0;x<width;x++) {
+                    int index=source[sourceStart+y*(width+sourceSkip)+x]&255;
+                    if(index!=0) expected[destinationStart+y*(width+destinationSkip)+x]=palette[index];
+                }
+                copy.invoke(background, rows, actual, source, destinationSkip, destinationStart,
+                        width, sourceStart, palette, sourceSkip);
+                assertArrayEquals(expected,actual); assertArrayEquals(unchanged,source);
+                assertArrayEquals(background.anIntArray1451,palette);
+            }
+        for(int width=0;width<=12;width++) {
+            byte[] source=new byte[width]; Arrays.fill(source,(byte)255);
+            int[] actual=new int[width], expected=filled(width,background.anIntArray1451[255]);
+            copy.invoke(background,1,actual,source,0,0,width,0,background.anIntArray1451,0);
+            assertArrayEquals(expected,actual); // exact array ends, including zero width
+        }
+    }
+
+    private static Background drawingFixture(int width,int height) throws Exception {
+        Background background=canvasFixture(width,height,0,0,width,height);
+        int[] palette=new int[256];
+        for(int i=0;i<256;i++) palette[i]=0x80000000 | i*0x010305;
+        palette[0]=0x123456; palette[1]=0;
+        Field field=Background.class.getDeclaredField("anIntArray1451"); field.setAccessible(true);
+        field.set(background,palette);
+        for(int i=0;i<background.aByteArray1450.length;i++)
+            background.aByteArray1450[i]=i%5==0?0:(byte)(i*43);
+        return background;
+    }
+
+    private static void indexedDrawOracle(int[] raster,int width,Background background,int x,int y,int[] clip) {
+        for(int sourceY=0;sourceY<background.anInt1453;sourceY++)
+            for(int sourceX=0;sourceX<background.anInt1452;sourceX++) {
+                int dx=x+background.offsetX+sourceX, dy=y+background.offsetY+sourceY;
+                int index=background.aByteArray1450[sourceY*background.anInt1452+sourceX]&255;
+                if(index!=0 && dx>=clip[0] && dx<clip[2] && dy>=clip[1] && dy<clip[3])
+                    raster[dy*width+dx]=background.anIntArray1451[index];
+            }
     }
 
     private static int canvasHeight(Background background) throws Exception {
