@@ -139,7 +139,7 @@ public final class LiveSmokeClient extends Game {
 
     private void writeImage(String name, RSImageProducer producer, int width, int height) throws Exception {
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        image.setRGB(0, 0, width, height, producer.anIntArray315, 0, width);
+        image.setRGB(0, 0, width, height, producer.pixels, 0, width);
         ImageIO.write(image, "png", new File(output, name));
     }
 }
