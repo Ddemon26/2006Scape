@@ -6055,7 +6055,7 @@ public class Game extends RSApplet {
 				stream.writeDWord(ClientSettings.UID);
 				stream.writeString(s);
 				stream.writeString(s1);
-				stream.doKeys();
+				stream.encryptRsaBlock();
 				aStream_847.currentOffset = 0;
 				if (flag) {
 					aStream_847.writeWordBigEndian(18);

@@ -210,17 +210,17 @@ public final class Stream extends NodeSub {
 		}
 	}
 
-	public void doKeys() {
-		int i = currentOffset;
+	public void encryptRsaBlock() {
+		int plaintextLength = currentOffset;
 		currentOffset = 0;
-		byte abyte0[] = new byte[i];
-		readBytes(i, 0, abyte0);
-		BigInteger biginteger2 = new BigInteger(abyte0);
-		BigInteger biginteger3 = biginteger2.modPow(ClientSettings.RSA_EXPONENT, ClientSettings.RSA_MODULUS);
-		byte abyte1[] = biginteger3.toByteArray();
+		byte plaintextBytes[] = new byte[plaintextLength];
+		readBytes(plaintextLength, 0, plaintextBytes);
+		BigInteger plaintext = new BigInteger(plaintextBytes);
+		BigInteger ciphertext = plaintext.modPow(ClientSettings.RSA_EXPONENT, ClientSettings.RSA_MODULUS);
+		byte ciphertextBytes[] = ciphertext.toByteArray();
 		currentOffset = 0;
-		writeWordBigEndian(abyte1.length);
-		writeBytes(abyte1, abyte1.length, 0);
+		writeWordBigEndian(ciphertextBytes.length);
+		writeBytes(ciphertextBytes, ciphertextBytes.length, 0);
 	}
 	
 
