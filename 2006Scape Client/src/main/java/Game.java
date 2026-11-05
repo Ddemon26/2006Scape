@@ -3005,32 +3005,32 @@ public class Game extends RSApplet {
 		if (!loggedIn) {
 			return;
 		}
-		synchronized (mouseDetection.syncObject) {
+		synchronized (mouseDetection.sampleLock) {
 			if (flagged) {
-				if (super.clickMode3 != 0 || mouseDetection.coordsIndex >= 40) {
+				if (super.clickMode3 != 0 || mouseDetection.sampleCount >= 40) {
 					stream.createFrame(45);
 					stream.writeWordBigEndian(0);
 					int j2 = stream.currentOffset;
 					int j3 = 0;
-					for (int j4 = 0; j4 < mouseDetection.coordsIndex; j4++) {
+					for (int j4 = 0; j4 < mouseDetection.sampleCount; j4++) {
 						if (j2 - stream.currentOffset >= 240) {
 							break;
 						}
 						j3++;
-						int l4 = mouseDetection.coordsY[j4];
+						int l4 = mouseDetection.sampledMouseYs[j4];
 						if (l4 < 0) {
 							l4 = 0;
 						} else if (l4 > 502) {
 							l4 = 502;
 						}
-						int k5 = mouseDetection.coordsX[j4];
+						int k5 = mouseDetection.sampledMouseXs[j4];
 						if (k5 < 0) {
 							k5 = 0;
 						} else if (k5 > 764) {
 							k5 = 764;
 						}
 						int i6 = l4 * 765 + k5;
-						if (mouseDetection.coordsY[j4] == -1 && mouseDetection.coordsX[j4] == -1) {
+						if (mouseDetection.sampledMouseYs[j4] == -1 && mouseDetection.sampledMouseXs[j4] == -1) {
 							k5 = -1;
 							l4 = -1;
 							i6 = 0x7ffff;
@@ -3060,19 +3060,19 @@ public class Game extends RSApplet {
 					}
 
 					stream.writeBytes(stream.currentOffset - j2);
-					if (j3 >= mouseDetection.coordsIndex) {
-						mouseDetection.coordsIndex = 0;
+					if (j3 >= mouseDetection.sampleCount) {
+						mouseDetection.sampleCount = 0;
 					} else {
-						mouseDetection.coordsIndex -= j3;
-						for (int i5 = 0; i5 < mouseDetection.coordsIndex; i5++) {
-							mouseDetection.coordsX[i5] = mouseDetection.coordsX[i5 + j3];
-							mouseDetection.coordsY[i5] = mouseDetection.coordsY[i5 + j3];
+						mouseDetection.sampleCount -= j3;
+						for (int i5 = 0; i5 < mouseDetection.sampleCount; i5++) {
+							mouseDetection.sampledMouseXs[i5] = mouseDetection.sampledMouseXs[i5 + j3];
+							mouseDetection.sampledMouseYs[i5] = mouseDetection.sampledMouseYs[i5 + j3];
 						}
 
 					}
 				}
 			} else {
-				mouseDetection.coordsIndex = 0;
+				mouseDetection.sampleCount = 0;
 			}
 		}
 		if (super.clickMode3 != 0) {
@@ -6093,7 +6093,7 @@ public class Game extends RSApplet {
 				flagged = socketStream.read() == 1;
 				aLong1220 = 0L;
 				anInt1022 = 0;
-				mouseDetection.coordsIndex = 0;
+				mouseDetection.sampleCount = 0;
 				super.awtFocus = true;
 				aBoolean954 = true;
 				loggedIn = true;

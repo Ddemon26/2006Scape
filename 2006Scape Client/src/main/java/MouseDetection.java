@@ -7,32 +7,32 @@ final class MouseDetection implements Runnable {
 	@Override
 	public void run() {
 		while (running) {
-			synchronized (syncObject) {
-				if (coordsIndex < 500) {
-					coordsX[coordsIndex] = clientInstance.mouseX;
-					coordsY[coordsIndex] = clientInstance.mouseY;
-					coordsIndex++;
+			synchronized (sampleLock) {
+				if (sampleCount < 500) {
+					sampledMouseXs[sampleCount] = clientInstance.mouseX;
+					sampledMouseYs[sampleCount] = clientInstance.mouseY;
+					sampleCount++;
 				}
 			}
 			try {
 				Thread.sleep(50L);
-			} catch (Exception _ex) {
+			} catch (Exception sleepFailure) {
 			}
 		}
 	}
 
-	public MouseDetection(Game client1) {
-		syncObject = new Object();
-		coordsY = new int[500];
+	public MouseDetection(Game client) {
+		sampleLock = new Object();
+		sampledMouseYs = new int[500];
 		running = true;
-		coordsX = new int[500];
-		clientInstance = client1;
+		sampledMouseXs = new int[500];
+		clientInstance = client;
 	}
 
 	private Game clientInstance;
-	public final Object syncObject;
-	public final int[] coordsY;
+	public final Object sampleLock;
+	public final int[] sampledMouseYs;
 	public boolean running;
-	public final int[] coordsX;
-	public int coordsIndex;
+	public final int[] sampledMouseXs;
+	public int sampleCount;
 }
