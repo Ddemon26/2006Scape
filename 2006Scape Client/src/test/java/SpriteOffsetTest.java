@@ -171,7 +171,7 @@ public class SpriteOffsetTest {
         else if (mode == 2) sprite.drawHalfBlended(x, y);
         else {
             Background background = new Background(archive(), "offset", 0);
-            background.aByteArray1450 = mask == null ? new byte[DrawingArea.width * DrawingArea.height] : mask;
+            background.paletteIndices = mask == null ? new byte[DrawingArea.width * DrawingArea.height] : mask;
             sprite.drawNonzeroThroughZeroMask(background, y, x); // This entry point takes y before x.
         }
     }

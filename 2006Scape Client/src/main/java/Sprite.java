@@ -464,7 +464,7 @@ public final class Sprite extends DrawingArea {
 			destinationRowSkip += clippedRightColumns;
 		}
 		if (!(copyWidth <= 0 || copyHeight <= 0)) {
-			copyNonzeroRowsThroughZeroMask(pixels, copyWidth, maskBackground.aByteArray1450, copyHeight, DrawingArea.pixels, 0, destinationRowSkip, destinationIndex, sourceRowSkip, sourceIndex);
+			copyNonzeroRowsThroughZeroMask(pixels, copyWidth, maskBackground.paletteIndices, copyHeight, DrawingArea.pixels, 0, destinationRowSkip, destinationIndex, sourceRowSkip, sourceIndex);
 		}
 	}
 

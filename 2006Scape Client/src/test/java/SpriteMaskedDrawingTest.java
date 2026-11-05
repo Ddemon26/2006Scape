@@ -58,16 +58,16 @@ public class SpriteMaskedDrawingTest {
     @Test public void copiesExactNonzeroIntegersOnlyAtZeroDestinationMaskBytes() {
         Sprite sprite = sprite(7, 1, 0, 0x01000000, -1, 0x7f123456, 5, 6, 7);
         Background mask = mask(7);
-        mask.aByteArray1450 = new byte[] {0, 0, 0, 0, 1, -1, -128};
-        byte[] originalMask = mask.aByteArray1450.clone();
+        mask.paletteIndices = new byte[] {0, 0, 0, 0, 1, -1, -128};
+        byte[] originalMask = mask.paletteIndices.clone();
         int[] originalSource = sprite.pixels.clone();
         int[] raster = target(7, 1);
         sprite.drawNonzeroThroughZeroMask(mask, 0, 0);
         assertArrayEquals(new int[] {FILL, 0x01000000, -1, 0x7f123456, FILL, FILL, FILL}, raster);
         assertArrayEquals(originalSource, sprite.pixels);
-        assertArrayEquals(originalMask, mask.aByteArray1450);
+        assertArrayEquals(originalMask, mask.paletteIndices);
         // Change only the mask: previously allowed pixels block and blocked pixels copy.
-        mask.aByteArray1450 = new byte[] {1, 1, -1, 127, 0, 0, 0};
+        mask.paletteIndices = new byte[] {1, 1, -1, 127, 0, 0, 0};
         raster = target(7, 1);
         sprite.drawNonzeroThroughZeroMask(mask, 0, 0);
         assertArrayEquals(new int[] {FILL, FILL, FILL, FILL, 5, 6, 7}, raster);
@@ -76,16 +76,16 @@ public class SpriteMaskedDrawingTest {
     @Test public void maskUsesTargetIndicesAndIgnoresBackgroundPlacementAndPalette() {
         Sprite sprite = sprite(2, 1, 11, 22);
         Background mask = mask(12);
-        mask.aByteArray1450[0] = 1; // Source-local index would block the wrong pixel.
-        mask.aByteArray1450[6] = -1;
+        mask.paletteIndices[0] = 1; // Source-local index would block the wrong pixel.
+        mask.paletteIndices[6] = -1;
         int[] raster = target(4, 3);
         sprite.drawNonzeroThroughZeroMask(mask, 1, 1);
         int[] expected = filled(12); expected[5] = 11;
         assertArrayEquals(expected, raster);
         mask.offsetX = 99; mask.offsetY = 88;
-        mask.anInt1452 = 1; mask.anInt1453 = 1;
-        mask.anInt1456 = 2;
-        Arrays.fill(mask.anIntArray1451, 0xffffff);
+        mask.imageWidth = 1; mask.imageHeight = 1;
+        mask.canvasWidth = 2;
+        Arrays.fill(mask.paletteRgb, 0xffffff);
         raster = target(4, 3);
         sprite.drawNonzeroThroughZeroMask(mask, 1, 1);
         assertArrayEquals(expected, raster);
@@ -96,7 +96,7 @@ public class SpriteMaskedDrawingTest {
         Sprite sprite = sprite(3, 3, 1,2,3, 4,5,6, 7,8,9);
         sprite.offsetX = 1; sprite.offsetY = 1;
         Background mask = mask(25);
-        mask.aByteArray1450[13] = 1;
+        mask.paletteIndices[13] = 1;
         int[] raster = target(5, 5);
         DrawingArea.setDrawingArea(4, 2, 4, 2);
         sprite.drawNonzeroThroughZeroMask(mask, 0, 0);
@@ -141,7 +141,7 @@ public class SpriteMaskedDrawingTest {
         StreamLoader archive = new StreamLoader(Base64.getDecoder().decode(
                 "AABgAABtMUFZJlNZKILEYgAADWtV/6QQICAAAAJAABAKAQAAQAAAgAGgAFCgAxGmmjQaaII2kD0j1FlFbrbt36ul5XDigcNmqcEMRoi5Aby3NEoQNwoUk2ZqFPSM/KkamMVmYitWIIP4u5IpwoSBRBYjEA=="));
         Background background = new Background(archive, "small", 0);
-        background.aByteArray1450 = new byte[size];
+        background.paletteIndices = new byte[size];
         return background;
     }
 
@@ -161,8 +161,8 @@ public class SpriteMaskedDrawingTest {
                 301,302,0,304,305,0, 401,0,403,404,0,406};
         int[] source = sprite.pixels.clone();
         Background gate = mask(70);
-        for (int i = 0; i < 70; i++) gate.aByteArray1450[i] = (byte) (i % 5 == 0 ? -128 : 0);
-        byte[] unchangedMask = gate.aByteArray1450.clone();
+        for (int i = 0; i < 70; i++) gate.paletteIndices[i] = (byte) (i % 5 == 0 ? -128 : 0);
+        byte[] unchangedMask = gate.paletteIndices.clone();
         // x, y, first visible source column/row, visible columns/rows, target x/y.
         // Each pair changes only placement along one axis against [2,8) x [2,6).
         int[][] cases = {
@@ -190,7 +190,7 @@ public class SpriteMaskedDrawingTest {
             }
             assertArrayEquals("placement=" + c[0] + "," + c[1], expected, actual);
             assertArrayEquals(source, sprite.pixels);
-            assertArrayEquals(unchangedMask, gate.aByteArray1450);
+            assertArrayEquals(unchangedMask, gate.paletteIndices);
             assertArrayEquals(new int[] {6,4,6,4,0,0}, new int[] {sprite.width,
                     sprite.height,sprite.trimWidth,sprite.trimHeight,sprite.offsetX,sprite.offsetY});
             assertEquals(2, DrawingArea.topX); assertEquals(2, DrawingArea.topY);
@@ -211,7 +211,7 @@ public class SpriteMaskedDrawingTest {
         Sprite sprite = new Sprite(6, 4);
         for (int i = 0; i < sprite.pixels.length; i++) sprite.pixels[i] = i % 3 == 0 ? 0 : i + 1;
         Background gate = mask(70);
-        for (int i = 0; i < 70; i++) gate.aByteArray1450[i] = (byte) (i % 4 == 1 ? 127 : 0);
+        for (int i = 0; i < 70; i++) gate.paletteIndices[i] = (byte) (i % 4 == 1 ? 127 : 0);
         for (int[] offset : new int[][] {{0,0}, {2,0}, {0,1}, {2,1}, {-2,-1}}) {
             for (int[] point : new int[][] {{-2,-1}, {0,0}, {3,3}, {7,5}}) {
                 sprite.offsetX = 0; sprite.offsetY = 0;

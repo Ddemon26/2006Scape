@@ -1862,57 +1862,57 @@ public class Game extends RSApplet {
 		if (!lowMem) {
 			if (Texture.anIntArray1480[17] >= j) {
 				Background background = Texture.aBackgroundArray1474s[17];
-				int k = background.anInt1452 * background.anInt1453 - 1;
-				int j1 = background.anInt1452 * anInt945 * 2;
-				byte abyte0[] = background.aByteArray1450;
+				int k = background.imageWidth * background.imageHeight - 1;
+				int j1 = background.imageWidth * anInt945 * 2;
+				byte abyte0[] = background.paletteIndices;
 				byte abyte3[] = aByteArray912;
 				for (int i2 = 0; i2 <= k; i2++) {
 					abyte3[i2] = abyte0[i2 - j1 & k];
 				}
 
-				background.aByteArray1450 = abyte3;
+				background.paletteIndices = abyte3;
 				aByteArray912 = abyte0;
 				Texture.method370(17);
 			}
 			if (Texture.anIntArray1480[24] >= j) {
 				Background background_1 = Texture.aBackgroundArray1474s[24];
-				int l = background_1.anInt1452 * background_1.anInt1453 - 1;
-				int k1 = background_1.anInt1452 * anInt945 * 2;
-				byte abyte1[] = background_1.aByteArray1450;
+				int l = background_1.imageWidth * background_1.imageHeight - 1;
+				int k1 = background_1.imageWidth * anInt945 * 2;
+				byte abyte1[] = background_1.paletteIndices;
 				byte abyte4[] = aByteArray912;
 				for (int j2 = 0; j2 <= l; j2++) {
 					abyte4[j2] = abyte1[j2 - k1 & l];
 				}
 
-				background_1.aByteArray1450 = abyte4;
+				background_1.paletteIndices = abyte4;
 				aByteArray912 = abyte1;
 				Texture.method370(24);
 			}
 			if (Texture.anIntArray1480[34] >= j) {
 				Background background_2 = Texture.aBackgroundArray1474s[34];
-				int i1 = background_2.anInt1452 * background_2.anInt1453 - 1;
-				int l1 = background_2.anInt1452 * anInt945 * 2;
-				byte abyte2[] = background_2.aByteArray1450;
+				int i1 = background_2.imageWidth * background_2.imageHeight - 1;
+				int l1 = background_2.imageWidth * anInt945 * 2;
+				byte abyte2[] = background_2.paletteIndices;
 				byte abyte5[] = aByteArray912;
 				for (int k2 = 0; k2 <= i1; k2++) {
 					abyte5[k2] = abyte2[k2 - l1 & i1];
 				}
 
-				background_2.aByteArray1450 = abyte5;
+				background_2.paletteIndices = abyte5;
 				aByteArray912 = abyte2;
 				Texture.method370(34);
 			}
 			if (Texture.anIntArray1480[40] >= j) {
 				Background background_2 = Texture.aBackgroundArray1474s[40];
-				int i1 = background_2.anInt1452 * background_2.anInt1453 - 1;
-				int l1 = background_2.anInt1452 * anInt945 * 2;
-				byte abyte2[] = background_2.aByteArray1450;
+				int i1 = background_2.imageWidth * background_2.imageHeight - 1;
+				int l1 = background_2.imageWidth * anInt945 * 2;
+				byte abyte2[] = background_2.paletteIndices;
 				byte abyte5[] = aByteArray912;
 				for (int k2 = 0; k2 <= i1; k2++) {
 					abyte5[k2] = abyte2[k2 - l1 & i1];
 				}
 
-				background_2.aByteArray1450 = abyte5;
+				background_2.paletteIndices = abyte5;
 				aByteArray912 = abyte2;
 				Texture.method370(40);
 			}
@@ -2486,8 +2486,8 @@ public class Game extends RSApplet {
 			if (class46_2.anInt758 != -1) {
 				Background background_2 = mapScenes[class46_2.anInt758];
 				if (background_2 != null) {
-					int i6 = (class46_2.anInt744 * 4 - background_2.anInt1452) / 2;
-					int j6 = (class46_2.anInt761 * 4 - background_2.anInt1453) / 2;
+					int i6 = (class46_2.anInt744 * 4 - background_2.imageWidth) / 2;
+					int j6 = (class46_2.anInt761 * 4 - background_2.imageHeight) / 2;
 					background_2.drawNonzeroIndexed(48 + l * 4 + i6, 48 + (104 - i - class46_2.anInt761) * 4 + j6);
 				}
 			} else {
@@ -2560,8 +2560,8 @@ public class Game extends RSApplet {
 			if (class46_1.anInt758 != -1) {
 				Background background_1 = mapScenes[class46_1.anInt758];
 				if (background_1 != null) {
-					int j5 = (class46_1.anInt744 * 4 - background_1.anInt1452) / 2;
-					int k5 = (class46_1.anInt761 * 4 - background_1.anInt1453) / 2;
+					int j5 = (class46_1.anInt744 * 4 - background_1.imageWidth) / 2;
+					int k5 = (class46_1.anInt761 * 4 - background_1.imageHeight) / 2;
 					background_1.drawNonzeroIndexed(48 + l * 4 + j5, 48 + (104 - i - class46_1.anInt761) * 4 + k5);
 				}
 			} else if (j3 == 9) {
@@ -2591,8 +2591,8 @@ public class Game extends RSApplet {
 			if (class46.anInt758 != -1) {
 				Background background = mapScenes[class46.anInt758];
 				if (background != null) {
-					int i4 = (class46.anInt744 * 4 - background.anInt1452) / 2;
-					int j4 = (class46.anInt761 * 4 - background.anInt1453) / 2;
+					int i4 = (class46.anInt744 * 4 - background.imageWidth) / 2;
+					int j4 = (class46.anInt761 * 4 - background.imageHeight) / 2;
 					background.drawNonzeroIndexed(48 + l * 4 + i4, 48 + (104 - i - class46.anInt761) * 4 + j4);
 				}
 			}
@@ -7323,7 +7323,7 @@ public class Game extends RSApplet {
 				int k6 = 999;
 				int i7 = 0;
 				for (int k7 = 0; k7 < 34; k7++) {
-					if (mapBack.aByteArray1450[k7 + j6 * mapBack.anInt1452] == 0) {
+					if (mapBack.paletteIndices[k7 + j6 * mapBack.imageWidth] == 0) {
 						if (k6 == 999) {
 							k6 = k7;
 						}
@@ -7344,7 +7344,7 @@ public class Game extends RSApplet {
 				int j7 = 999;
 				int l7 = 0;
 				for (int j8 = 25; j8 < 172; j8++) {
-					if (mapBack.aByteArray1450[j8 + l6 * mapBack.anInt1452] == 0 && (j8 > 34 || l6 > 34)) {
+					if (mapBack.paletteIndices[j8 + l6 * mapBack.imageWidth] == 0 && (j8 > 34 || l6 > 34)) {
 						if (j7 == 999) {
 							j7 = j8;
 						}
@@ -8498,9 +8498,9 @@ public class Game extends RSApplet {
 
 		if (background != null) {
 			int l1 = 0;
-			for (int j2 = 0; j2 < background.anInt1453; j2++) {
-				for (int l2 = 0; l2 < background.anInt1452; l2++) {
-					if (background.aByteArray1450[l1++] != 0) {
+			for (int j2 = 0; j2 < background.imageHeight; j2++) {
+				for (int l2 = 0; l2 < background.imageWidth; l2++) {
+					if (background.paletteIndices[l1++] != 0) {
 						int i3 = l2 + 16 + background.offsetX;
 						int j3 = j2 + 16 + background.offsetY;
 						int k3 = i3 + (j3 << 7);
@@ -9471,7 +9471,7 @@ public class Game extends RSApplet {
 	public void drawMinimap() {
 		aRSImageProducer_1164.initDrawingArea();
 		if (anInt1021 == 2) {
-			byte abyte0[] = mapBack.aByteArray1450;
+			byte abyte0[] = mapBack.paletteIndices;
 			int ai[] = DrawingArea.pixels;
 			int k2 = abyte0.length;
 			for (int i5 = 0; i5 < k2; i5++) {

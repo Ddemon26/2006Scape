@@ -4,42 +4,42 @@
 
 public final class Background extends DrawingArea {
 
-	public Background(StreamLoader streamLoader, String s, int i) {
-		Stream stream = new Stream(streamLoader.getDataForName(s + ".dat"));
-		Stream stream_1 = new Stream(streamLoader.getDataForName("index.dat"));
-		stream_1.currentOffset = stream.readUnsignedWord();
-		anInt1456 = stream_1.readUnsignedWord();
-		anInt1457 = stream_1.readUnsignedWord();
-		int j = stream_1.readUnsignedByte();
-		anIntArray1451 = new int[j];
-		for (int k = 0; k < j - 1; k++) {
-			anIntArray1451[k + 1] = stream_1.read3Bytes();
+	public Background(StreamLoader streamLoader, String imageName, int imageIndex) {
+		Stream pixelData = new Stream(streamLoader.getDataForName(imageName + ".dat"));
+		Stream indexData = new Stream(streamLoader.getDataForName("index.dat"));
+		indexData.currentOffset = pixelData.readUnsignedWord();
+		canvasWidth = indexData.readUnsignedWord();
+		canvasHeight = indexData.readUnsignedWord();
+		int paletteSize = indexData.readUnsignedByte();
+		paletteRgb = new int[paletteSize];
+		for (int paletteEntry = 0; paletteEntry < paletteSize - 1; paletteEntry++) {
+			paletteRgb[paletteEntry + 1] = indexData.read3Bytes();
 		}
 
-		for (int l = 0; l < i; l++) {
-			stream_1.currentOffset += 2;
-			stream.currentOffset += stream_1.readUnsignedWord() * stream_1.readUnsignedWord();
-			stream_1.currentOffset++;
+		for (int skippedImage = 0; skippedImage < imageIndex; skippedImage++) {
+			indexData.currentOffset += 2;
+			pixelData.currentOffset += indexData.readUnsignedWord() * indexData.readUnsignedWord();
+			indexData.currentOffset++;
 		}
 
-		offsetX = stream_1.readUnsignedByte();
-		offsetY = stream_1.readUnsignedByte();
-		anInt1452 = stream_1.readUnsignedWord();
-		anInt1453 = stream_1.readUnsignedWord();
-		int i1 = stream_1.readUnsignedByte();
-		int j1 = anInt1452 * anInt1453;
-		aByteArray1450 = new byte[j1];
-		if (i1 == 0) {
-			for (int k1 = 0; k1 < j1; k1++) {
-				aByteArray1450[k1] = stream.readSignedByte();
+		offsetX = indexData.readUnsignedByte();
+		offsetY = indexData.readUnsignedByte();
+		imageWidth = indexData.readUnsignedWord();
+		imageHeight = indexData.readUnsignedWord();
+		int storageOrder = indexData.readUnsignedByte();
+		int pixelCount = imageWidth * imageHeight;
+		paletteIndices = new byte[pixelCount];
+		if (storageOrder == 0) {
+			for (int pixelIndex = 0; pixelIndex < pixelCount; pixelIndex++) {
+				paletteIndices[pixelIndex] = pixelData.readSignedByte();
 			}
 
 			return;
 		}
-		if (i1 == 1) {
-			for (int l1 = 0; l1 < anInt1452; l1++) {
-				for (int i2 = 0; i2 < anInt1453; i2++) {
-					aByteArray1450[l1 + i2 * anInt1452] = stream.readSignedByte();
+		if (storageOrder == 1) {
+			for (int imageX = 0; imageX < imageWidth; imageX++) {
+				for (int imageY = 0; imageY < imageHeight; imageY++) {
+					paletteIndices[imageX + imageY * imageWidth] = pixelData.readSignedByte();
 				}
 
 			}
@@ -48,96 +48,96 @@ public final class Background extends DrawingArea {
 	}
 
 	public void reduceToHalfCanvas() {
-		anInt1456 /= 2;
-		anInt1457 /= 2;
-		byte canvasIndices[] = new byte[anInt1456 * anInt1457];
+		canvasWidth /= 2;
+		canvasHeight /= 2;
+		byte canvasIndices[] = new byte[canvasWidth * canvasHeight];
 		int sourceIndex = 0;
-		for (int sourceY = 0; sourceY < anInt1453; sourceY++) {
-			for (int sourceX = 0; sourceX < anInt1452; sourceX++) {
-				canvasIndices[(sourceX + offsetX >> 1) + (sourceY + offsetY >> 1) * anInt1456] = aByteArray1450[sourceIndex++];
+		for (int sourceY = 0; sourceY < imageHeight; sourceY++) {
+			for (int sourceX = 0; sourceX < imageWidth; sourceX++) {
+				canvasIndices[(sourceX + offsetX >> 1) + (sourceY + offsetY >> 1) * canvasWidth] = paletteIndices[sourceIndex++];
 			}
 
 		}
 
-		aByteArray1450 = canvasIndices;
-		anInt1452 = anInt1456;
-		anInt1453 = anInt1457;
+		paletteIndices = canvasIndices;
+		imageWidth = canvasWidth;
+		imageHeight = canvasHeight;
 		offsetX = 0;
 		offsetY = 0;
 	}
 
 	public void expandToCanvas() {
-		if (anInt1452 == anInt1456 && anInt1453 == anInt1457) {
+		if (imageWidth == canvasWidth && imageHeight == canvasHeight) {
 			return;
 		}
-		byte canvasIndices[] = new byte[anInt1456 * anInt1457];
+		byte canvasIndices[] = new byte[canvasWidth * canvasHeight];
 		int sourceIndex = 0;
-		for (int sourceY = 0; sourceY < anInt1453; sourceY++) {
-			for (int sourceX = 0; sourceX < anInt1452; sourceX++) {
-				canvasIndices[sourceX + offsetX + (sourceY + offsetY) * anInt1456] = aByteArray1450[sourceIndex++];
+		for (int sourceY = 0; sourceY < imageHeight; sourceY++) {
+			for (int sourceX = 0; sourceX < imageWidth; sourceX++) {
+				canvasIndices[sourceX + offsetX + (sourceY + offsetY) * canvasWidth] = paletteIndices[sourceIndex++];
 			}
 
 		}
 
-		aByteArray1450 = canvasIndices;
-		anInt1452 = anInt1456;
-		anInt1453 = anInt1457;
+		paletteIndices = canvasIndices;
+		imageWidth = canvasWidth;
+		imageHeight = canvasHeight;
 		offsetX = 0;
 		offsetY = 0;
 	}
 
 	public void flipHorizontally() {
-		byte mirroredIndices[] = new byte[anInt1452 * anInt1453];
+		byte mirroredIndices[] = new byte[imageWidth * imageHeight];
 		int destinationIndex = 0;
-		for (int sourceY = 0; sourceY < anInt1453; sourceY++) {
-			for (int sourceX = anInt1452 - 1; sourceX >= 0; sourceX--) {
-				mirroredIndices[destinationIndex++] = aByteArray1450[sourceX + sourceY * anInt1452];
+		for (int sourceY = 0; sourceY < imageHeight; sourceY++) {
+			for (int sourceX = imageWidth - 1; sourceX >= 0; sourceX--) {
+				mirroredIndices[destinationIndex++] = paletteIndices[sourceX + sourceY * imageWidth];
 			}
 
 		}
 
-		aByteArray1450 = mirroredIndices;
-		offsetX = anInt1456 - anInt1452 - offsetX;
+		paletteIndices = mirroredIndices;
+		offsetX = canvasWidth - imageWidth - offsetX;
 	}
 
 	public void flipVertically() {
-		byte mirroredIndices[] = new byte[anInt1452 * anInt1453];
+		byte mirroredIndices[] = new byte[imageWidth * imageHeight];
 		int destinationIndex = 0;
-		for (int sourceY = anInt1453 - 1; sourceY >= 0; sourceY--) {
-			for (int sourceX = 0; sourceX < anInt1452; sourceX++) {
-				mirroredIndices[destinationIndex++] = aByteArray1450[sourceX + sourceY * anInt1452];
+		for (int sourceY = imageHeight - 1; sourceY >= 0; sourceY--) {
+			for (int sourceX = 0; sourceX < imageWidth; sourceX++) {
+				mirroredIndices[destinationIndex++] = paletteIndices[sourceX + sourceY * imageWidth];
 			}
 
 		}
 
-		aByteArray1450 = mirroredIndices;
-		offsetY = anInt1457 - anInt1453 - offsetY;
+		paletteIndices = mirroredIndices;
+		offsetY = canvasHeight - imageHeight - offsetY;
 	}
 
 	public void adjustPaletteRgb(int redDelta, int greenDelta, int blueDelta) {
-		for (int paletteIndex = 0; paletteIndex < anIntArray1451.length; paletteIndex++) {
-			int red = anIntArray1451[paletteIndex] >> 16 & 0xff;
+		for (int paletteIndex = 0; paletteIndex < paletteRgb.length; paletteIndex++) {
+			int red = paletteRgb[paletteIndex] >> 16 & 0xff;
 			red += redDelta;
 			if (red < 0) {
 				red = 0;
 			} else if (red > 255) {
 				red = 255;
 			}
-			int green = anIntArray1451[paletteIndex] >> 8 & 0xff;
+			int green = paletteRgb[paletteIndex] >> 8 & 0xff;
 			green += greenDelta;
 			if (green < 0) {
 				green = 0;
 			} else if (green > 255) {
 				green = 255;
 			}
-			int blue = anIntArray1451[paletteIndex] & 0xff;
+			int blue = paletteRgb[paletteIndex] & 0xff;
 			blue += blueDelta;
 			if (blue < 0) {
 				blue = 0;
 			} else if (blue > 255) {
 				blue = 255;
 			}
-			anIntArray1451[paletteIndex] = (red << 16) + (green << 8) + blue;
+			paletteRgb[paletteIndex] = (red << 16) + (green << 8) + blue;
 		}
 	}
 
@@ -146,8 +146,8 @@ public final class Background extends DrawingArea {
 		destinationY += offsetY;
 		int destinationIndex = destinationX + destinationY * DrawingArea.width;
 		int sourceIndex = 0;
-		int visibleHeight = anInt1453;
-		int visibleWidth = anInt1452;
+		int visibleHeight = imageHeight;
+		int visibleWidth = imageWidth;
 		int destinationRowSkip = DrawingArea.width - visibleWidth;
 		int sourceRowSkip = 0;
 		if (destinationY < DrawingArea.topY) {
@@ -176,7 +176,7 @@ public final class Background extends DrawingArea {
 			destinationRowSkip += clippedRightColumns;
 		}
 		if (!(visibleWidth <= 0 || visibleHeight <= 0)) {
-			copyNonzeroIndexedRows(visibleHeight, DrawingArea.pixels, aByteArray1450, destinationRowSkip, destinationIndex, visibleWidth, sourceIndex, anIntArray1451, sourceRowSkip);
+			copyNonzeroIndexedRows(visibleHeight, DrawingArea.pixels, paletteIndices, destinationRowSkip, destinationIndex, visibleWidth, sourceIndex, paletteRgb, sourceRowSkip);
 		}
 	}
 
@@ -226,12 +226,12 @@ public final class Background extends DrawingArea {
 
 	}
 
-	public byte aByteArray1450[];
-	public final int[] anIntArray1451;
-	public int anInt1452;
-	public int anInt1453;
+	public byte paletteIndices[];
+	public final int[] paletteRgb;
+	public int imageWidth;
+	public int imageHeight;
 	public int offsetX;
 	public int offsetY;
-	public int anInt1456;
-	private int anInt1457;
+	public int canvasWidth;
+	private int canvasHeight;
 }
