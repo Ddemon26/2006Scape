@@ -73,8 +73,8 @@ final class Animable_Sub4 extends Animable {
 		anInt1595 = (int) (Math.atan2(aDouble1574, aDouble1575) * 325.94900000000001D) + 1024 & 0x7ff;
 		anInt1596 = (int) (Math.atan2(aDouble1577, aDouble1576) * 325.94900000000001D) & 0x7ff;
 		if (aSpotAnim_1592.aAnimation_407 != null) {
-			for (anInt1594 += i; anInt1594 > aSpotAnim_1592.aAnimation_407.method258(anInt1593);) {
-				anInt1594 -= aSpotAnim_1592.aAnimation_407.method258(anInt1593) + 1;
+			for (anInt1594 += i; anInt1594 > aSpotAnim_1592.aAnimation_407.getFrameDelay(anInt1593);) {
+				anInt1594 -= aSpotAnim_1592.aAnimation_407.getFrameDelay(anInt1593) + 1;
 				anInt1593++;
 				if (anInt1593 >= aSpotAnim_1592.aAnimation_407.anInt352) {
 					anInt1593 = 0;

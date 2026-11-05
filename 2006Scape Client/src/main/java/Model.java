@@ -865,7 +865,7 @@ public final class Model extends Animable {
 		if (i == -1) {
 			return;
 		}
-		Class36 class36 = Class36.method531(i);
+		Class36 class36 = Class36.getFrame(i);
 		if (class36 == null) {
 			return;
 		}
@@ -888,11 +888,11 @@ public final class Model extends Animable {
 			method470(k);
 			return;
 		}
-		Class36 class36 = Class36.method531(k);
+		Class36 class36 = Class36.getFrame(k);
 		if (class36 == null) {
 			return;
 		}
-		Class36 class36_1 = Class36.method531(j);
+		Class36 class36_1 = Class36.getFrame(j);
 		if (class36_1 == null) {
 			method470(k);
 			return;

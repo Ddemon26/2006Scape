@@ -12,8 +12,8 @@ final class Animable_Sub5 extends Animable {
 			if (k > 100 && aAnimation_1607.anInt356 > 0) {
 				k = 100;
 			}
-			while (k > aAnimation_1607.method258(anInt1599)) {
-				k -= aAnimation_1607.method258(anInt1599);
+			while (k > aAnimation_1607.getFrameDelay(anInt1599)) {
+				k -= aAnimation_1607.getFrameDelay(anInt1599);
 				anInt1599++;
 				if (anInt1599 < aAnimation_1607.anInt352) {
 					continue;
@@ -76,7 +76,7 @@ final class Animable_Sub5 extends Animable {
 			anInt1608 = Game.loopCycle;
 			if (flag && aAnimation_1607.anInt356 != -1) {
 				anInt1599 = (int) (Math.random() * aAnimation_1607.anInt352);
-				anInt1608 -= (int) (Math.random() * aAnimation_1607.method258(anInt1599));
+				anInt1608 -= (int) (Math.random() * aAnimation_1607.getFrameDelay(anInt1599));
 			}
 		}
 		ObjectDef class46 = ObjectDef.forID(anInt1610);

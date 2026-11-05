@@ -5,7 +5,7 @@
 public final class Class36 {
 
 	public static void method528(int i) {
-		aClass36Array635 = new Class36[i + 1];
+		loadedFrames = new Class36[i + 1];
 		aBooleanArray643 = new boolean[i + 1];
 		for (int j = 0; j < i + 1; j++) {
 			aBooleanArray643[j] = true;
@@ -43,8 +43,8 @@ public final class Class36 {
 		int ai3[] = new int[500];
 		for (int l1 = 0; l1 < k1; l1++) {
 			int i2 = stream_1.readUnsignedShortBigEndian();
-			Class36 class36 = aClass36Array635[i2] = new Class36();
-			class36.anInt636 = stream_4.readUnsignedByte();
+			Class36 class36 = loadedFrames[i2] = new Class36();
+			class36.frameDelay = stream_4.readUnsignedByte();
 			class36.aClass18_637 = class18;
 			int j2 = stream_1.readUnsignedByte();
 			int k2 = -1;
@@ -111,14 +111,14 @@ public final class Class36 {
 	}
 
 	public static void nullLoader() {
-		aClass36Array635 = null;
+		loadedFrames = null;
 	}
 
-	public static Class36 method531(int j) {
-		if (aClass36Array635 == null) {
+	public static Class36 getFrame(int frameId) {
+		if (loadedFrames == null) {
 			return null;
 		} else {
-			return aClass36Array635[j];
+			return loadedFrames[frameId];
 		}
 	}
 
@@ -129,8 +129,8 @@ public final class Class36 {
 	private Class36() {
 	}
 
-	private static Class36[] aClass36Array635;
-	public int anInt636;
+	private static Class36[] loadedFrames;
+	public int frameDelay;
 	public Class18 aClass18_637;
 	public int anInt638;
 	public int anIntArray639[];

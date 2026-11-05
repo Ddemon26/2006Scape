@@ -51,8 +51,8 @@ final class Animable_Sub3 extends Animable {
     }
 
     public void method454(int i) {
-        for (anInt1570 += i; anInt1570 > aSpotAnim_1568.aAnimation_407.method258(anInt1569); ) {
-            anInt1570 -= aSpotAnim_1568.aAnimation_407.method258(anInt1569) + 1;
+        for (anInt1570 += i; anInt1570 > aSpotAnim_1568.aAnimation_407.getFrameDelay(anInt1569); ) {
+            anInt1570 -= aSpotAnim_1568.aAnimation_407.getFrameDelay(anInt1569) + 1;
             anInt1569++;
             if (anInt1569 >= aSpotAnim_1568.aAnimation_407.anInt352 && (anInt1569 < 0 || anInt1569 >= aSpotAnim_1568.aAnimation_407.anInt352)) {
                 anInt1569 = 0;

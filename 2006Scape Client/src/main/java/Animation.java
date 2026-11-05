@@ -18,18 +18,18 @@ public final class Animation {
 		}
 	}
 
-	public int method258(int i) {
-		int j = anIntArray355[i];
-		if (j == 0) {
-			Class36 class36 = Class36.method531(anIntArray353[i]);
-			if (class36 != null) {
-				j = anIntArray355[i] = class36.anInt636;
+	public int getFrameDelay(int frameIndex) {
+		int delay = frameDelays[frameIndex];
+		if (delay == 0) {
+			Class36 frame = Class36.getFrame(anIntArray353[frameIndex]);
+			if (frame != null) {
+				delay = frameDelays[frameIndex] = frame.frameDelay;
 			}
 		}
-		if (j == 0) {
-			j = 1;
+		if (delay == 0) {
+			delay = 1;
 		}
-		return j;
+		return delay;
 	}
 
 	private void readValues(Stream stream) {
@@ -42,14 +42,14 @@ public final class Animation {
 				anInt352 = stream.readUnsignedByte();
 				anIntArray353 = new int[anInt352];
 				anIntArray354 = new int[anInt352];
-				anIntArray355 = new int[anInt352];
+				frameDelays = new int[anInt352];
 				for (int j = 0; j < anInt352; j++) {
 					anIntArray353[j] = stream.readUnsignedShortBigEndian();
 					anIntArray354[j] = stream.readUnsignedShortBigEndian();
 					if (anIntArray354[j] == 65535) {
 						anIntArray354[j] = -1;
 					}
-					anIntArray355[j] = stream.readUnsignedShortBigEndian();
+					frameDelays[j] = stream.readUnsignedShortBigEndian();
 				}
 
 			} else if (i == 2) {
@@ -90,8 +90,8 @@ public final class Animation {
 			anIntArray353[0] = -1;
 			anIntArray354 = new int[1];
 			anIntArray354[0] = -1;
-			anIntArray355 = new int[1];
-			anIntArray355[0] = -1;
+			frameDelays = new int[1];
+			frameDelays[0] = -1;
 		}
 		if (anInt363 == -1) {
 			if (anIntArray357 != null) {
@@ -125,7 +125,7 @@ public final class Animation {
 	public int anInt352;
 	public int anIntArray353[];
 	public int anIntArray354[];
-	private int[] anIntArray355;
+	private int[] frameDelays;
 	public int anInt356;
 	public int anIntArray357[];
 	public boolean aBoolean358;
