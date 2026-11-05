@@ -189,15 +189,15 @@ public final class Model extends Animable {
 			int k1 = stream.readUnsignedByte();
 			int i2 = 0;
 			if ((k1 & 1) != 0) {
-				i2 = stream_1.method421();
+				i2 = stream_1.readSignedSmart();
 			}
 			int k2 = 0;
 			if ((k1 & 2) != 0) {
-				k2 = stream_2.method421();
+				k2 = stream_2.readSignedSmart();
 			}
 			int i3 = 0;
 			if ((k1 & 4) != 0) {
-				i3 = stream_3.method421();
+				i3 = stream_3.readSignedSmart();
 			}
 			anIntArray1627[j1] = k + i2;
 			anIntArray1628[j1] = l + k2;
@@ -240,11 +240,11 @@ public final class Model extends Animable {
 		for (int l3 = 0; l3 < anInt1630; l3++) {
 			int i4 = stream_1.readUnsignedByte();
 			if (i4 == 1) {
-				j2 = stream.method421() + k3;
+				j2 = stream.readSignedSmart() + k3;
 				k3 = j2;
-				l2 = stream.method421() + k3;
+				l2 = stream.readSignedSmart() + k3;
 				k3 = l2;
-				j3 = stream.method421() + k3;
+				j3 = stream.readSignedSmart() + k3;
 				k3 = j3;
 				anIntArray1631[l3] = j2;
 				anIntArray1632[l3] = l2;
@@ -252,7 +252,7 @@ public final class Model extends Animable {
 			}
 			if (i4 == 2) {
 				l2 = j3;
-				j3 = stream.method421() + k3;
+				j3 = stream.readSignedSmart() + k3;
 				k3 = j3;
 				anIntArray1631[l3] = j2;
 				anIntArray1632[l3] = l2;
@@ -260,7 +260,7 @@ public final class Model extends Animable {
 			}
 			if (i4 == 3) {
 				j2 = j3;
-				j3 = stream.method421() + k3;
+				j3 = stream.readSignedSmart() + k3;
 				k3 = j3;
 				anIntArray1631[l3] = j2;
 				anIntArray1632[l3] = l2;
@@ -270,7 +270,7 @@ public final class Model extends Animable {
 				int k4 = j2;
 				j2 = l2;
 				l2 = k4;
-				j3 = stream.method421() + k3;
+				j3 = stream.readSignedSmart() + k3;
 				k3 = j3;
 				anIntArray1631[l3] = j2;
 				anIntArray1632[l3] = l2;

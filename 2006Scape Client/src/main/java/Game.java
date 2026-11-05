@@ -11757,7 +11757,7 @@ public class Game extends RSApplet {
 				int i9 = inStream.readUnsignedWord();
 				RSInterface class9_2 = RSInterface.interfaceCache[i9];
 				while (inStream.currentOffset < pktSize) {
-					int j20 = inStream.method422();
+					int j20 = inStream.readUnsignedSmart();
 					int i23 = inStream.readUnsignedWord();
 					int l25 = inStream.readUnsignedByte();
 					if (l25 == 255) {

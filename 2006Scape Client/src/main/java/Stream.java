@@ -192,18 +192,18 @@ public final class Stream extends NodeSub {
 		currentOffset = (bitOffset + 7) / 8;
 	}
 
-	public int method421() {
-		int i = buffer[currentOffset] & 0xff;
-		if (i < 128) {
+	public int readSignedSmart() {
+		int firstByte = buffer[currentOffset] & 0xff;
+		if (firstByte < 128) {
 			return readUnsignedByte() - 64;
 		} else {
 			return readUnsignedWord() - 49152;
 		}
 	}
 
-	public int method422() {
-		int i = buffer[currentOffset] & 0xff;
-		if (i < 128) {
+	public int readUnsignedSmart() {
+		int firstByte = buffer[currentOffset] & 0xff;
+		if (firstByte < 128) {
 			return readUnsignedByte();
 		} else {
 			return readUnsignedWord() - 32768;
