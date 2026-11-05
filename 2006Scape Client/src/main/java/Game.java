@@ -1777,7 +1777,7 @@ public class Game extends RSApplet {
 				}
 
 				stream.createFrame(215);
-				stream.writeQWord(l);
+				stream.writeLongBigEndian(l);
 				break;
 			}
 		} catch (RuntimeException runtimeexception) {
@@ -2133,7 +2133,7 @@ public class Game extends RSApplet {
 				friendsCount++;
 				needDrawTabArea = true;
 				stream.createFrame(188);
-				stream.writeQWord(l);
+				stream.writeLongBigEndian(l);
 				return;
 			}
 		} catch (RuntimeException runtimeexception) {
@@ -2448,7 +2448,7 @@ public class Game extends RSApplet {
 			closeOpenInterfaces();
 			if (reportAbuseInput.length() > 0) {
 				stream.createFrame(218);
-				stream.writeQWord(TextClass.encodeBase37Name(reportAbuseInput));
+				stream.writeLongBigEndian(TextClass.encodeBase37Name(reportAbuseInput));
 				stream.writeWordBigEndian(j - 601);
 				stream.writeWordBigEndian(canMute ? 1 : 0);
 			}
@@ -4950,7 +4950,7 @@ public class Game extends RSApplet {
 						stream.createFrame(126);
 						stream.writeWordBigEndian(0);
 						int k = stream.currentOffset;
-						stream.writeQWord(aLong953);
+						stream.writeLongBigEndian(aLong953);
 						TextInput.encodeChatText(promptInput, stream);
 						stream.writeBytes(stream.currentOffset - k);
 						promptInput = TextInput.normalizeChatText(promptInput);
@@ -5028,7 +5028,7 @@ public class Game extends RSApplet {
 				if (j == 13 || j == 10) {
 					if (amountOrNameInput.length() > 0) {
 						stream.createFrame(60);
-						stream.writeQWord(TextClass.encodeBase37Name(amountOrNameInput));
+						stream.writeLongBigEndian(TextClass.encodeBase37Name(amountOrNameInput));
 					}
 					inputDialogState = 0;
 					inputTaken = true;
@@ -6040,7 +6040,7 @@ public class Game extends RSApplet {
 			if (k == 0) {
 				socketStream.flushInputStream(inStream.buffer, 8);
 				inStream.currentOffset = 0;
-				aLong1215 = inStream.readQWord();
+				aLong1215 = inStream.readLongBigEndian();
 				int ai[] = new int[4];
 				ai[0] = (int) (Math.random() * 99999999D);
 				ai[1] = (int) (Math.random() * 99999999D);
@@ -8930,7 +8930,7 @@ public class Game extends RSApplet {
 			ignoreListAsLongs[ignoreCount++] = l;
 			needDrawTabArea = true;
 			stream.createFrame(133);
-			stream.writeQWord(l);
+			stream.writeLongBigEndian(l);
 			return;
 		} catch (RuntimeException runtimeexception) {
 			Signlink.reporterror("45688, " + l + ", " + 4 + ", " + runtimeexception.toString());
@@ -9294,7 +9294,7 @@ public class Game extends RSApplet {
 					System.arraycopy(ignoreListAsLongs, j + 1, ignoreListAsLongs, j, ignoreCount - j);
 
 					stream.createFrame(74);
-					stream.writeQWord(l);
+					stream.writeLongBigEndian(l);
 					return;
 				}
 			}
@@ -10714,7 +10714,7 @@ public class Game extends RSApplet {
 			if (pktType == 214) {
 				ignoreCount = pktSize / 8;
 				for (int j1 = 0; j1 < ignoreCount; j1++) {
-					ignoreListAsLongs[j1] = inStream.readQWord();
+					ignoreListAsLongs[j1] = inStream.readLongBigEndian();
 				}
 
 				pktType = -1;
@@ -11201,7 +11201,7 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 50) {
-				long l4 = inStream.readQWord();
+				long l4 = inStream.readLongBigEndian();
 				int i18 = inStream.readUnsignedByte();
 				String s7 = TextClass.formatDisplayName(TextClass.decodeBase37Name(l4));
 				for (int k24 = 0; k24 < friendsCount; k24++) {
@@ -11362,7 +11362,7 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 196) {
-				long l5 = inStream.readQWord();
+				long l5 = inStream.readLongBigEndian();
 				@SuppressWarnings("unused")
 				int j18 = inStream.readIntBigEndian();
 				int l21 = inStream.readUnsignedByte();

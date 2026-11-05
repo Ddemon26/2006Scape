@@ -71,18 +71,18 @@ public final class Stream extends NodeSub {
 		buffer[currentOffset++] = (byte) (value >> 24);
 	}
 
-	public void writeQWord(long l) {
+	public void writeLongBigEndian(long value) {
 		try {
-			buffer[currentOffset++] = (byte) (int) (l >> 56);
-			buffer[currentOffset++] = (byte) (int) (l >> 48);
-			buffer[currentOffset++] = (byte) (int) (l >> 40);
-			buffer[currentOffset++] = (byte) (int) (l >> 32);
-			buffer[currentOffset++] = (byte) (int) (l >> 24);
-			buffer[currentOffset++] = (byte) (int) (l >> 16);
-			buffer[currentOffset++] = (byte) (int) (l >> 8);
-			buffer[currentOffset++] = (byte) (int) l;
-		} catch (RuntimeException runtimeexception) {
-			Signlink.reporterror("14395, " + 5 + ", " + l + ", " + runtimeexception.toString());
+			buffer[currentOffset++] = (byte) (int) (value >> 56);
+			buffer[currentOffset++] = (byte) (int) (value >> 48);
+			buffer[currentOffset++] = (byte) (int) (value >> 40);
+			buffer[currentOffset++] = (byte) (int) (value >> 32);
+			buffer[currentOffset++] = (byte) (int) (value >> 24);
+			buffer[currentOffset++] = (byte) (int) (value >> 16);
+			buffer[currentOffset++] = (byte) (int) (value >> 8);
+			buffer[currentOffset++] = (byte) (int) value;
+		} catch (RuntimeException failure) {
+			Signlink.reporterror("14395, " + 5 + ", " + value + ", " + failure.toString());
 			throw new RuntimeException();
 		}
 	}
@@ -137,10 +137,10 @@ public final class Stream extends NodeSub {
 		return ((buffer[currentOffset - 4] & 0xff) << 24) + ((buffer[currentOffset - 3] & 0xff) << 16) + ((buffer[currentOffset - 2] & 0xff) << 8) + (buffer[currentOffset - 1] & 0xff);
 	}
 
-	public long readQWord() {
-		long l = readIntBigEndian() & 0xffffffffL;
-		long l1 = readIntBigEndian() & 0xffffffffL;
-		return (l << 32) + l1;
+	public long readLongBigEndian() {
+		long highUnsignedInt = readIntBigEndian() & 0xffffffffL;
+		long lowUnsignedInt = readIntBigEndian() & 0xffffffffL;
+		return (highUnsignedInt << 32) + lowUnsignedInt;
 	}
 
 	public String readLfTerminatedString() {
