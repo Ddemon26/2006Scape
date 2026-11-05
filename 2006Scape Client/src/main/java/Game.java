@@ -6599,11 +6599,11 @@ public class Game extends RSApplet {
 				}
 			}
 			if ((l & 8) != 0) {
-				int j1 = stream.readUnsignedByteA();
+				int j1 = stream.readUnsignedByteSubtract128();
 				int j2 = stream.readUnsignedNegatedByte();
 				npc.updateHitData(j2, j1, loopCycle);
 				npc.loopCycleStatus = loopCycle + 300;
-				npc.currentHealth = stream.readUnsignedByteA();
+				npc.currentHealth = stream.readUnsignedByteSubtract128();
 				npc.maxHealth = stream.readUnsignedByte();
 			}
 			if ((l & 0x80) != 0) {
@@ -8645,7 +8645,7 @@ public class Game extends RSApplet {
 		}
 		if ((i & 0x20) != 0) {
 			int k1 = stream.readUnsignedByte();
-			int k2 = stream.readUnsignedByteA();
+			int k2 = stream.readUnsignedByteSubtract128();
 			player.updateHitData(k2, k1, loopCycle);
 			player.loopCycleStatus = loopCycle + 300;
 			player.currentHealth = stream.readUnsignedNegatedByte();
@@ -10055,7 +10055,7 @@ public class Game extends RSApplet {
 			return;
 		}
 		if (j == 156) {
-			int j1 = stream.readUnsignedByteA();
+			int j1 = stream.readUnsignedByteSubtract128();
 			int i4 = anInt1268 + (j1 >> 4 & 7);
 			int l6 = anInt1269 + (j1 & 7);
 			int k9 = stream.readUnsignedShortBigEndian();
@@ -10203,7 +10203,7 @@ public class Game extends RSApplet {
 			return;
 		}
 		if (j == 151) {
-			int i2 = stream.method426();
+			int i2 = stream.readUnsignedByteSubtract128Duplicate();
 			int l4 = anInt1268 + (i2 >> 4 & 7);
 			int k7 = anInt1269 + (i2 & 7);
 			int j10 = stream.readUnsignedShortLittleEndian();
@@ -10758,7 +10758,7 @@ public class Game extends RSApplet {
 			}
 			if (pktType == 71) {
 				int l1 = inStream.readUnsignedShortBigEndian();
-				int j10 = inStream.readUnsignedByteA();
+				int j10 = inStream.readUnsignedByteSubtract128();
 				if (l1 == 0x00ffff) {
 					l1 = -1;
 				}
@@ -11087,7 +11087,7 @@ public class Game extends RSApplet {
 			}
 			if (pktType == 104) {
 				int j4 = inStream.readUnsignedNegatedByte();
-				int i12 = inStream.readUnsignedByteA();
+				int i12 = inStream.readUnsignedByteSubtract128();
 				String s6 = inStream.readLfTerminatedString();
 				if (j4 >= 1 && j4 <= 5) {
 					if (s6.equalsIgnoreCase("null")) {
@@ -11605,7 +11605,7 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 249) {
-				anInt1046 = inStream.readUnsignedByteA();
+				anInt1046 = inStream.readUnsignedByteSubtract128();
 				unknownInt10 = inStream.readUnsignedShortLittleEndianSubtract128();
 				pktType = -1;
 				return true;

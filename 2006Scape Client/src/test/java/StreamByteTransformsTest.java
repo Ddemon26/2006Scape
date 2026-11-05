@@ -139,4 +139,51 @@ public class StreamByteTransformsTest {
             assertNull(stream.buffer);
         }
     }
+    private int subtract128(int kind, Stream stream) {
+        return kind == 0 ? stream.readUnsignedByteSubtract128() : stream.readUnsignedByteSubtract128Duplicate();
+    }
+
+    @Test public void subtract128ReadersMapEveryWireByteWithoutChangingOtherState() {
+        for (int wire = 0; wire < 256; wire++) for (int start : new int[]{0,1,7}) {
+            for (int kind = 0; kind < 2; kind++) {
+                byte[] bytes = new byte[9]; Arrays.fill(bytes, (byte) 91); bytes[start] = (byte) wire;
+                byte[] before = bytes.clone(); Stream stream = at(bytes, start);
+                ISAACRandomGen keys = new ISAACRandomGen(new int[]{17,8,3,29});
+                ISAACRandomGen reference = new ISAACRandomGen(new int[]{17,8,3,29}); stream.encryption = keys;
+                // On the unsigned byte domain, XOR flips the high bit: independent oracle.
+                assertEquals(wire ^ 128, subtract128(kind, stream));
+                assertEquals(start + 1, stream.currentOffset); assertEquals(37, stream.bitOffset);
+                assertSame(bytes, stream.buffer); assertArrayEquals(before, bytes);
+                assertSame(keys, stream.encryption); assertEquals(reference.getNextKey(), keys.getNextKey());
+            }
+        }
+    }
+
+    @Test public void subtract128VectorsExcludePlainSignedNegatedAnd128MinusReads() {
+        int[] wire = {0,1,127,128,129,255}, values = {128,129,255,0,1,127};
+        for (int kind = 0; kind < 2; kind++) {
+            Stream stream = at(new byte[]{91,0,1,127,-128,-127,-1}, 1);
+            for (int value : values) assertEquals(value, subtract128(kind, stream));
+            assertEquals(7, stream.currentOffset); assertEquals(37, stream.bitOffset);
+            for (int i = 0; i < wire.length; i++) {
+                assertEquals(values[i], subtract128(kind, at(new byte[]{(byte) wire[i]}, 0)));
+            }
+        }
+    }
+
+    @Test public void subtract128FailuresPreservePostincrementAndUnchangedBuffer() {
+        for (int kind = 0; kind < 2; kind++) {
+            for (int start : new int[]{-1,0,1,2,Integer.MAX_VALUE,Integer.MIN_VALUE}) {
+                byte[] bytes = start == 0 ? new byte[0] : new byte[]{11};
+                Stream stream = at(bytes, start); byte[] before = bytes.clone();
+                try { subtract128(kind, stream); fail("invalid cursor"); }
+                catch (ArrayIndexOutOfBoundsException expected) { }
+                assertEquals(start + 1, stream.currentOffset); assertEquals(37, stream.bitOffset);
+                assertSame(bytes, stream.buffer); assertArrayEquals(before, bytes);
+            }
+            Stream stream = at(null, 4);
+            try { subtract128(kind, stream); fail("null buffer"); } catch (NullPointerException expected) { }
+            assertEquals(5, stream.currentOffset); assertEquals(37, stream.bitOffset); assertNull(stream.buffer);
+        }
+    }
 }

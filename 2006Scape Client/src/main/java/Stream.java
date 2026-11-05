@@ -24,7 +24,7 @@ public final class Stream extends NodeSub {
 		return stream_1;
 	}
 	
-	public int method426() {
+	public int readUnsignedByteSubtract128Duplicate() {
 		return buffer[currentOffset++] - 128 & 0xff;
 	}	
 
@@ -232,7 +232,7 @@ public final class Stream extends NodeSub {
 		buffer[currentOffset++] = (byte) (128 - value);
 	}
 
-	public int readUnsignedByteA() {
+	public int readUnsignedByteSubtract128() {
 		return buffer[currentOffset++] - 128 & 0xff;
 	}
 
