@@ -132,6 +132,67 @@ public class InterfaceSpriteCacheTest {
         assertSame(b0, load(256, null, "a"));
     }
 
+
+    @Test
+    public void everyPrintablePrefixMatchesAnIndependentWeightedPolynomial() {
+        java.math.BigInteger modulus = java.math.BigInteger.ONE.shiftLeft(56).subtract(java.math.BigInteger.ONE);
+        java.math.BigInteger base = java.math.BigInteger.valueOf(61);
+        for (String input : new String[] {"", " aB9_.dat", "\u00dfi\u0131", repeat('Z', 100),
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 !?.dat"}) {
+            for (int length = 0; length <= input.length(); length++) {
+                String prefix = input.substring(0, length);
+                String uppercase = prefix.toUpperCase(Locale.ENGLISH);
+                java.math.BigInteger polynomial = java.math.BigInteger.ZERO;
+                // Sum positional weights at arbitrary precision; no production folding loop.
+                for (int position = 0; position < uppercase.length(); position++) {
+                    polynomial = polynomial.add(base.pow(uppercase.length() - position - 1)
+                            .multiply(java.math.BigInteger.valueOf(uppercase.charAt(position) - 32)));
+                }
+                assertEquals("prefix=" + prefix, polynomial.mod(modulus).longValue(),
+                        TextClass.hashSpriteName(prefix));
+            }
+        }
+    }
+
+    @Test
+    public void signedIndexIsAddedToTheKeyWithoutMaskingOrRangeValidation() throws Exception {
+        int[] indices = {Integer.MIN_VALUE, -257, -256, -1, 0, 1, 255, 256, Integer.MAX_VALUE};
+        long[] keys = {-2147475200L, 8191L, 8192L, 8447L, 8448L, 8449L, 8703L, 8704L, 2147492095L};
+        MRUNodes cache = (MRUNodes) cacheField.get(null);
+        for (int n = 0; n < indices.length; n++) {
+            Sprite marker = new Sprite(1, 1);
+            marker.pixels[0] = n + 1;
+            cache.removeFromCache(marker, keys[n]);
+            assertSame("signed index=" + indices[n], marker, load(indices[n], null, "a"));
+        }
+        // Negative-index counterpart to the existing a,256 / b,0 alias.
+        assertSame(load(0, null, "a"), load(-256, null, "b"));
+    }
+
+    @Test
+    public void suppliedArchiveControlsMissesButIsIgnoredOnAHit() throws Exception {
+        StreamLoader redFirst = archive();
+        StreamLoader blueFirst = new StreamLoader(Base64.getDecoder().decode("AABBAABWMUFZJlNZlEXzAAAADeXU/IAALiAAAAEAAIACAQACBAAAoABUQjTTIyYQSnqUPU0Gh6jciywvN7mONqE1ZcJHrEsGiKHyVVxFSlWRfF3JFOFCQlEXzAA="));
+        Sprite first = load(0, redFirst, "a");
+        assertArrayEquals(new int[] {0xff0000}, first.pixels);
+        assertSame(first, load(0, blueFirst, "a"));
+        cacheField.set(null, new MRUNodes(20));
+        Sprite second = load(0, blueFirst, "a");
+        assertNotSame(first, second);
+        assertArrayEquals(new int[] {0x0000ff}, second.pixels);
+        assertSame(second, load(0, redFirst, "a"));
+    }
+
+    @Test
+    public void outOfArchiveIndexFailureDoesNotPoisonLaterValidLoads() throws Exception {
+        assertNull(load(2, archive(), "a"));
+        assertNull(((MRUNodes) cacheField.get(null)).insertFromCache(8450L));
+        Sprite valid = load(1, archive(), "a");
+        assertArrayEquals(new int[] {0x0000ff}, valid.pixels);
+        assertSame(valid, load(1, null, "a"));
+        assertNull(load(2, archive(), "a"));
+    }
+
     private Sprite load(int index, StreamLoader archive, String name) throws Exception {
         return (Sprite) loader.invoke(null, index, archive, name);
     }

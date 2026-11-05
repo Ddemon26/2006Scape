@@ -46,14 +46,14 @@ final class TextClass {
 		throw new RuntimeException();
 	}
 
-	public static long hashSpriteName(String s) {
-		s = s.toUpperCase();
-		long l = 0L;
-		for (int i = 0; i < s.length(); i++) {
-			l = l * 61L + s.charAt(i) - 32L;
-			l = l + (l >> 56) & 0xffffffffffffffL;
+	public static long hashSpriteName(String spriteName) {
+		spriteName = spriteName.toUpperCase();
+		long nameHash = 0L;
+		for (int characterIndex = 0; characterIndex < spriteName.length(); characterIndex++) {
+			nameHash = nameHash * 61L + spriteName.charAt(characterIndex) - 32L;
+			nameHash = nameHash + (nameHash >> 56) & 0xffffffffffffffL;
 		}
-		return l;
+		return nameHash;
 	}
 
 	public static String method586(int i) {

@@ -256,16 +256,16 @@ public final class RSInterface {
 		return model;
 	}
 
-	private static Sprite loadCachedSprite(int i, StreamLoader streamLoader, String s) {
-		long l = (TextClass.hashSpriteName(s) << 8) + i;
-		Sprite sprite = (Sprite) spriteCache.insertFromCache(l);
+	private static Sprite loadCachedSprite(int spriteIndex, StreamLoader streamLoader, String spriteName) {
+		long cacheKey = (TextClass.hashSpriteName(spriteName) << 8) + spriteIndex;
+		Sprite sprite = (Sprite) spriteCache.insertFromCache(cacheKey);
 		if (sprite != null) {
 			return sprite;
 		}
 		try {
-			sprite = new Sprite(streamLoader, s, i);
-			spriteCache.removeFromCache(sprite, l);
-		} catch (Exception _ex) {
+			sprite = new Sprite(streamLoader, spriteName, spriteIndex);
+			spriteCache.removeFromCache(sprite, cacheKey);
+		} catch (Exception loadFailure) {
 			return null;
 		}
 		return sprite;
