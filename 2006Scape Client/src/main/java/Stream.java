@@ -257,14 +257,14 @@ public final class Stream extends NodeSub {
 		buffer[currentOffset++] = (byte) (value >> 8);
 	}
 
-	public void method432(int j) {
-		buffer[currentOffset++] = (byte) (j >> 8);
-		buffer[currentOffset++] = (byte) (j + 128);
+	public void writeShortBigEndianAdd128(int value) {
+		buffer[currentOffset++] = (byte) (value >> 8);
+		buffer[currentOffset++] = (byte) (value + 128);
 	}
 
-	public void method433(int j) {
-		buffer[currentOffset++] = (byte) (j + 128);
-		buffer[currentOffset++] = (byte) (j >> 8);
+	public void writeShortLittleEndianAdd128(int value) {
+		buffer[currentOffset++] = (byte) (value + 128);
+		buffer[currentOffset++] = (byte) (value >> 8);
 	}
 
 	public int readUnsignedShortLittleEndian() {
@@ -272,12 +272,12 @@ public final class Stream extends NodeSub {
 		return ((buffer[currentOffset - 1] & 0xff) << 8) + (buffer[currentOffset - 2] & 0xff);
 	}
 
-	public int method435() {
+	public int readUnsignedShortBigEndianSubtract128() {
 		currentOffset += 2;
 		return ((buffer[currentOffset - 2] & 0xff) << 8) + (buffer[currentOffset - 1] - 128 & 0xff);
 	}
 
-	public int method436() {
+	public int readUnsignedShortLittleEndianSubtract128() {
 		currentOffset += 2;
 		return ((buffer[currentOffset - 1] & 0xff) << 8) + (buffer[currentOffset - 2] - 128 & 0xff);
 	}
@@ -291,13 +291,13 @@ public final class Stream extends NodeSub {
 		return value;
 	}
 
-	public int method438() {
+	public int readSignedShortLittleEndianSubtract128() {
 		currentOffset += 2;
-		int j = ((buffer[currentOffset - 1] & 0xff) << 8) + (buffer[currentOffset - 2] - 128 & 0xff);
-		if (j > 32767) {
-			j -= 0x10000;
+		int value = ((buffer[currentOffset - 1] & 0xff) << 8) + (buffer[currentOffset - 2] - 128 & 0xff);
+		if (value > 32767) {
+			value -= 0x10000;
 		}
-		return j;
+		return value;
 	}
 
 	public int readIntOrder3412() {
