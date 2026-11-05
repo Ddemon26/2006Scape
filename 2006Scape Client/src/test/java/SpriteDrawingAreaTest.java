@@ -70,12 +70,12 @@ public class SpriteDrawingAreaTest {
         sprite.offsetX = 20;
         sprite.offsetY = 30;
         sprite.setAsDrawingArea();
-        DrawingArea.fillArea(1, 1, 0xabcdef, 1, 2);
+        DrawingArea.fillRectangle(1, 1, 0xabcdef, 1, 2);
         assertArrayEquals(new int[] {0, 0, 0, 0, 0, 0xabcdef}, sprite.pixels);
         sprite.pixels[0] = 0x123456;
         assertEquals(0x123456, DrawingArea.pixels[0]);
-        DrawingArea.fillArea(1, 2, 0xff0000, 1, 0); // one row beyond bottom
-        DrawingArea.fillArea(1, 0, 0xff0000, 1, 3); // one column beyond right
+        DrawingArea.fillRectangle(1, 2, 0xff0000, 1, 0); // one row beyond bottom
+        DrawingArea.fillRectangle(1, 0, 0xff0000, 1, 3); // one column beyond right
         assertArrayEquals(new int[] {0x123456, 0, 0, 0, 0, 0xabcdef}, sprite.pixels);
     }
 
@@ -84,15 +84,15 @@ public class SpriteDrawingAreaTest {
         Sprite first = new Sprite(3, 2);
         Sprite second = new Sprite(2, 3);
         first.setAsDrawingArea();
-        DrawingArea.fillArea(1, 0, 7, 1, 0);
+        DrawingArea.fillRectangle(1, 0, 7, 1, 0);
         second.setAsDrawingArea();
-        DrawingArea.fillArea(1, 2, 9, 1, 1);
+        DrawingArea.fillRectangle(1, 2, 9, 1, 1);
         assertArrayEquals(new int[] {7, 0, 0, 0, 0, 0}, first.pixels);
         assertArrayEquals(new int[] {0, 0, 0, 0, 0, 9}, second.pixels);
         DrawingArea.setDrawingArea(2, 1, 2, 1);
         first.setAsDrawingArea();
         assertBounds(3, 2);
-        DrawingArea.fillArea(1, 0, 11, 1, 0);
+        DrawingArea.fillRectangle(1, 0, 11, 1, 0);
         assertEquals(11, first.pixels[0]);
         assertEquals(0, second.pixels[0]);
     }
