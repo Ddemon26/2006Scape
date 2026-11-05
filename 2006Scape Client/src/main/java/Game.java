@@ -487,7 +487,7 @@ public class Game extends RSApplet {
 			if (myPlayer != null && myPlayer.name != null) {
 				s = myPlayer.name;
 			} else {
-				s = TextClass.fixName(myUsername);
+				s = TextClass.formatDisplayName(myUsername);
 			}
 			textDrawingArea.textLeft(0, s + ":", 90, 4);
 			textDrawingArea.textLeft(255, inputString + "*", 90, 6 + textDrawingArea.getTextWidth(s + ": "));
@@ -2110,7 +2110,7 @@ public class Game extends RSApplet {
 				pushMessage("Your friendlist is full. Max of 100 for free users, and 200 for members", 0, "");
 				return;
 			}
-			String s = TextClass.fixName(TextClass.nameForLong(l));
+			String s = TextClass.formatDisplayName(TextClass.decodeBase37Name(l));
 			for (int i = 0; i < friendsCount; i++) {
 				if (friendsListAsLongs[i] == l) {
 					pushMessage(s + " is already on your friend list", 0, "");
@@ -2448,7 +2448,7 @@ public class Game extends RSApplet {
 			closeOpenInterfaces();
 			if (reportAbuseInput.length() > 0) {
 				stream.createFrame(218);
-				stream.writeQWord(TextClass.longForName(reportAbuseInput));
+				stream.writeQWord(TextClass.encodeBase37Name(reportAbuseInput));
 				stream.writeWordBigEndian(j - 601);
 				stream.writeWordBigEndian(canMute ? 1 : 0);
 			}
@@ -3844,7 +3844,7 @@ public class Game extends RSApplet {
 			String s = menuActionName[i];
 			int k1 = s.indexOf("@whi@");
 			if (k1 != -1) {
-				long l3 = TextClass.longForName(s.substring(k1 + 5).trim());
+				long l3 = TextClass.encodeBase37Name(s.substring(k1 + 5).trim());
 				if (l == 337) {
 					addFriend(l3);
 				}
@@ -3897,7 +3897,7 @@ public class Game extends RSApplet {
 			if (l1 != -1) {
 				// Accept trade/duel from player
 				s1 = s1.substring(l1 + 5).trim();
-				String s7 = TextClass.fixName(TextClass.nameForLong(TextClass.longForName(s1)));
+				String s7 = TextClass.formatDisplayName(TextClass.decodeBase37Name(TextClass.encodeBase37Name(s1)));
 				boolean flag9 = false;
 				for (int j3 = 0; j3 < playerCount; j3++) {
 					Player class30_sub2_sub4_sub1_sub2_7 = playerArray[playerIndices[j3]];
@@ -4335,7 +4335,7 @@ public class Game extends RSApplet {
 			String s3 = menuActionName[i];
 			int k2 = s3.indexOf("@whi@");
 			if (k2 != -1) {
-				long l4 = TextClass.longForName(s3.substring(k2 + 5).trim());
+				long l4 = TextClass.encodeBase37Name(s3.substring(k2 + 5).trim());
 				int k3 = -1;
 				for (int i4 = 0; i4 < friendsCount; i4++) {
 					if (friendsListAsLongs[i4] != l4) {
@@ -4939,11 +4939,11 @@ public class Game extends RSApplet {
 						AndroidHooks.hideKeyboard();
 					}
 					if (friendsListAction == 1) {
-						long l = TextClass.longForName(promptInput);
+						long l = TextClass.encodeBase37Name(promptInput);
 						addFriend(l);
 					}
 					if (friendsListAction == 2 && friendsCount > 0) {
-						long l1 = TextClass.longForName(promptInput);
+						long l1 = TextClass.encodeBase37Name(promptInput);
 						delFriend(l1);
 					}
 					if (friendsListAction == 3 && promptInput.length() > 0) {
@@ -4955,7 +4955,7 @@ public class Game extends RSApplet {
 						stream.writeBytes(stream.currentOffset - k);
 						promptInput = TextInput.normalizeChatText(promptInput);
 						promptInput = Censor.doCensor(promptInput);
-						pushMessage(promptInput, 6, TextClass.fixName(TextClass.nameForLong(aLong953)));
+						pushMessage(promptInput, 6, TextClass.formatDisplayName(TextClass.decodeBase37Name(aLong953)));
 						if (privateChatMode == 2) {
 							privateChatMode = 1;
 							aBoolean1233 = true;
@@ -4966,11 +4966,11 @@ public class Game extends RSApplet {
 						}
 					}
 					if (friendsListAction == 4 && ignoreCount < 100) {
-						long l2 = TextClass.longForName(promptInput);
+						long l2 = TextClass.encodeBase37Name(promptInput);
 						addIgnore(l2);
 					}
 					if (friendsListAction == 5 && ignoreCount > 0) {
-						long l3 = TextClass.longForName(promptInput);
+						long l3 = TextClass.encodeBase37Name(promptInput);
 						delIgnore(l3);
 					}
 				}
@@ -5028,7 +5028,7 @@ public class Game extends RSApplet {
 				if (j == 13 || j == 10) {
 					if (amountOrNameInput.length() > 0) {
 						stream.createFrame(60);
-						stream.writeQWord(TextClass.longForName(amountOrNameInput));
+						stream.writeQWord(TextClass.encodeBase37Name(amountOrNameInput));
 					}
 					inputDialogState = 0;
 					inputTaken = true;
@@ -5425,7 +5425,7 @@ public class Game extends RSApplet {
 				class9.atActionType = 0;
 				return;
 			} else {
-				class9.disabledText = TextClass.fixName(TextClass.nameForLong(ignoreListAsLongs[j]));
+				class9.disabledText = TextClass.formatDisplayName(TextClass.decodeBase37Name(ignoreListAsLongs[j]));
 				class9.atActionType = 1;
 				return;
 			}
@@ -6025,7 +6025,7 @@ public class Game extends RSApplet {
 				drawLoginScreen(true);
 			}
 			socketStream = new RSSocket(this, openSocket((ClientSettings.SERVER_WORLD == 1) ? 43594 : 43596 + ClientSettings.SERVER_WORLD + portOff));
-			long l = TextClass.longForName(s);
+			long l = TextClass.encodeBase37Name(s);
 			int i = (int) (l >> 16 & 31L);
 			stream.currentOffset = 0;
 			stream.writeWordBigEndian(14);
@@ -8584,7 +8584,7 @@ public class Game extends RSApplet {
 			int j3 = stream.method427();
 			int k3 = stream.currentOffset;
 			if (player.name != null && player.visible) {
-				long l3 = TextClass.longForName(player.name);
+				long l3 = TextClass.encodeBase37Name(player.name);
 				boolean flag = false;
 				if (j2 <= 1) {
 					for (int i4 = 0; i4 < ignoreCount; i4++) {
@@ -8913,7 +8913,7 @@ public class Game extends RSApplet {
 				pushMessage("Your ignore list is full. Max of 100 hit", 0, "");
 				return;
 			}
-			String s = TextClass.fixName(TextClass.nameForLong(l));
+			String s = TextClass.formatDisplayName(TextClass.decodeBase37Name(l));
 			for (int j = 0; j < ignoreCount; j++) {
 				if (ignoreListAsLongs[j] == l) {
 					pushMessage(s + " is already on your ignore list", 0, "");
@@ -9530,7 +9530,7 @@ public class Game extends RSApplet {
 				int l3 = player.y / 32 - myPlayer.y / 32;
 				boolean flag1 = false;
 				boolean flag2 = false;
-				long l6 = TextClass.longForName(player.name);
+				long l6 = TextClass.encodeBase37Name(player.name);
 
 				if (myPlayer.team != 0 && player.team != 0 && myPlayer.team == player.team || player.combatLevel == 0) {
 					flag1 = true;
@@ -11108,7 +11108,7 @@ public class Game extends RSApplet {
 				String s = inStream.readString();
 				if (s.endsWith(":tradereq:")) {
 					String s3 = s.substring(0, s.indexOf(":"));
-					long l17 = TextClass.longForName(s3);
+					long l17 = TextClass.encodeBase37Name(s3);
 					boolean flag2 = false;
 					for (int j27 = 0; j27 < ignoreCount; j27++) {
 						if (ignoreListAsLongs[j27] != l17) {
@@ -11123,7 +11123,7 @@ public class Game extends RSApplet {
 					}
 				} else if (s.endsWith(":duelreq:")) {
 					String s4 = s.substring(0, s.indexOf(":"));
-					long l18 = TextClass.longForName(s4);
+					long l18 = TextClass.encodeBase37Name(s4);
 					boolean flag3 = false;
 					for (int k27 = 0; k27 < ignoreCount; k27++) {
 						if (ignoreListAsLongs[k27] != l18) {
@@ -11138,7 +11138,7 @@ public class Game extends RSApplet {
 					}
 				} else if (s.endsWith(":chalreq:")) {
 					String s5 = s.substring(0, s.indexOf(":"));
-					long l19 = TextClass.longForName(s5);
+					long l19 = TextClass.encodeBase37Name(s5);
 					boolean flag4 = false;
 					for (int l27 = 0; l27 < ignoreCount; l27++) {
 						if (ignoreListAsLongs[l27] != l19) {
@@ -11203,7 +11203,7 @@ public class Game extends RSApplet {
 			if (pktType == 50) {
 				long l4 = inStream.readQWord();
 				int i18 = inStream.readUnsignedByte();
-				String s7 = TextClass.fixName(TextClass.nameForLong(l4));
+				String s7 = TextClass.formatDisplayName(TextClass.decodeBase37Name(l4));
 				for (int k24 = 0; k24 < friendsCount; k24++) {
 					if (l4 != friendsListAsLongs[k24]) {
 						continue;
@@ -11381,11 +11381,11 @@ public class Game extends RSApplet {
 						// Direct message
 						String s9 = TextInput.decodeChatText(pktSize - 13, inStream);
 						if (l21 == 2 || l21 == 3) {
-							pushMessage(s9, 7, "@cr2@" + TextClass.fixName(TextClass.nameForLong(l5)));
+							pushMessage(s9, 7, "@cr2@" + TextClass.formatDisplayName(TextClass.decodeBase37Name(l5)));
 						} else if (l21 == 1) {
-							pushMessage(s9, 7, "@cr1@" + TextClass.fixName(TextClass.nameForLong(l5)));
+							pushMessage(s9, 7, "@cr1@" + TextClass.formatDisplayName(TextClass.decodeBase37Name(l5)));
 						} else {
-							pushMessage(s9, 3, TextClass.fixName(TextClass.nameForLong(l5)));
+							pushMessage(s9, 3, TextClass.formatDisplayName(TextClass.decodeBase37Name(l5)));
 						}
 					} catch (Exception exception1) {
 						Signlink.reporterror("cde1");

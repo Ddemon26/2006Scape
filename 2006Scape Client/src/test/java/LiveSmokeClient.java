@@ -61,14 +61,14 @@ public final class LiveSmokeClient extends Game {
                     Locale.setDefault(Locale.forLanguageTag(command.substring(7)));
                     System.out.println("LOCALE " + Locale.getDefault().toLanguageTag());
                 } else if (command.startsWith("friend ")) {
-                    addFriend(TextClass.longForName(command.substring(7)));
+                    addFriend(TextClass.encodeBase37Name(command.substring(7)));
                 } else if (command.startsWith("public ")) {
                     messagePromptRaised = false;
                     inputString = "";
                     type(command.substring(7));
                 } else if (command.startsWith("private ")) {
                     int separator = command.indexOf('|', 8);
-                    aLong953 = TextClass.longForName(command.substring(8, separator));
+                    aLong953 = TextClass.encodeBase37Name(command.substring(8, separator));
                     friendsListAction = 3;
                     messagePromptRaised = true;
                     promptInput = "";

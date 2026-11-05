@@ -4,44 +4,44 @@
 
 final class TextClass {
 
-	public static long longForName(String s) {
-		long l = 0L;
-		for (int i = 0; i < s.length() && i < 12; i++) {
-			char c = s.charAt(i);
-			l *= 37L;
-			if (c >= 'A' && c <= 'Z') {
-				l += 1 + c - 65;
-			} else if (c >= 'a' && c <= 'z') {
-				l += 1 + c - 97;
-			} else if (c >= '0' && c <= '9') {
-				l += 27 + c - 48;
+	public static long encodeBase37Name(String name) {
+		long encodedName = 0L;
+		for (int characterIndex = 0; characterIndex < name.length() && characterIndex < 12; characterIndex++) {
+			char character = name.charAt(characterIndex);
+			encodedName *= 37L;
+			if (character >= 'A' && character <= 'Z') {
+				encodedName += 1 + character - 65;
+			} else if (character >= 'a' && character <= 'z') {
+				encodedName += 1 + character - 97;
+			} else if (character >= '0' && character <= '9') {
+				encodedName += 27 + character - 48;
 			}
 		}
 
-		for (; l % 37L == 0L && l != 0L; l /= 37L) {
+		for (; encodedName % 37L == 0L && encodedName != 0L; encodedName /= 37L) {
 			;
 		}
-		return l;
+		return encodedName;
 	}
 
-	public static String nameForLong(long l) {
+	public static String decodeBase37Name(long encodedName) {
 		try {
-			if (l <= 0L || l >= 0x5b5b57f8a98a5dd1L) {
+			if (encodedName <= 0L || encodedName >= 0x5b5b57f8a98a5dd1L) {
 				return "invalid_name";
 			}
-			if (l % 37L == 0L) {
+			if (encodedName % 37L == 0L) {
 				return "invalid_name";
 			}
-			int i = 0;
-			char ac[] = new char[12];
-			while (l != 0L) {
-				long l1 = l;
-				l /= 37L;
-				ac[11 - i++] = validChars[(int) (l1 - l * 37L)];
+			int decodedLength = 0;
+			char characters[] = new char[12];
+			while (encodedName != 0L) {
+				long valueBeforeDivision = encodedName;
+				encodedName /= 37L;
+				characters[11 - decodedLength++] = base37Digits[(int) (valueBeforeDivision - encodedName * 37L)];
 			}
-			return new String(ac, 12 - i, i);
-		} catch (RuntimeException runtimeexception) {
-			Signlink.reporterror("81570, " + l + ", " + (byte) -99 + ", " + runtimeexception.toString());
+			return new String(characters, 12 - decodedLength, decodedLength);
+		} catch (RuntimeException decodeFailure) {
+			Signlink.reporterror("81570, " + encodedName + ", " + (byte) -99 + ", " + decodeFailure.toString());
 		}
 		throw new RuntimeException();
 	}
@@ -60,24 +60,24 @@ final class TextClass {
 		return (i >> 24 & 0xff) + "." + (i >> 16 & 0xff) + "." + (i >> 8 & 0xff) + "." + (i & 0xff);
 	}
 
-	public static String fixName(String s) {
-		if (s.length() > 0) {
-			char ac[] = s.toCharArray();
-			for (int j = 0; j < ac.length; j++) {
-				if (ac[j] == '_') {
-					ac[j] = ' ';
-					if (j + 1 < ac.length && ac[j + 1] >= 'a' && ac[j + 1] <= 'z') {
-						ac[j + 1] = (char) (ac[j + 1] + 65 - 97);
+	public static String formatDisplayName(String name) {
+		if (name.length() > 0) {
+			char characters[] = name.toCharArray();
+			for (int characterIndex = 0; characterIndex < characters.length; characterIndex++) {
+				if (characters[characterIndex] == '_') {
+					characters[characterIndex] = ' ';
+					if (characterIndex + 1 < characters.length && characters[characterIndex + 1] >= 'a' && characters[characterIndex + 1] <= 'z') {
+						characters[characterIndex + 1] = (char) (characters[characterIndex + 1] + 65 - 97);
 					}
 				}
 			}
 
-			if (ac[0] >= 'a' && ac[0] <= 'z') {
-				ac[0] = (char) (ac[0] + 65 - 97);
+			if (characters[0] >= 'a' && characters[0] <= 'z') {
+				characters[0] = (char) (characters[0] + 65 - 97);
 			}
-			return new String(ac);
+			return new String(characters);
 		} else {
-			return s;
+			return name;
 		}
 	}
 
@@ -89,6 +89,6 @@ final class TextClass {
 		return stringbuffer.toString();
 	}
 
-	private static final char[] validChars = {'_', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+	private static final char[] base37Digits = {'_', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 }
