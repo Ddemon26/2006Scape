@@ -75,20 +75,20 @@ public final class TextDrawingArea extends DrawingArea {
 		}
 	}
 
-	public void textRight(int i, String s, int k, int l) {
-		textLeft(i, s, k, l - measureLiteralTextWidth(s));
+	public void drawRightAlignedLiteralText(int color, String text, int baselineY, int rightX) {
+		drawLiteralText(color, text, baselineY, rightX - measureLiteralTextWidth(text));
 	}
 
-	public void textCenter(int i, String s, int k, int l) {
-		textLeft(i, s, k, l - measureLiteralTextWidth(s) / 2);
+	public void drawCenteredLiteralText(int color, String text, int baselineY, int centerX) {
+		drawLiteralText(color, text, baselineY, centerX - measureLiteralTextWidth(text) / 2);
 	}
 
-	public void textCenterShadow(int _color, int _x, String s, int _y, boolean _shadow) {
-		drawTaggedText(_shadow, _x - measureTaggedTextWidth(s) / 2, _color, s, _y);
+	public void drawCenteredTaggedText(int color, int centerX, String text, int baselineY, boolean shadow) {
+		drawTaggedText(shadow, centerX - measureTaggedTextWidth(text) / 2, color, text, baselineY);
 	}
 
-	public void textRightShadow(boolean _shadow, int _x, int _color, String s, int _y) {
-		drawTaggedText(_shadow, _x - measureTaggedTextWidth(s), _color, s, _y);
+	public void drawRightAlignedTaggedText(boolean shadow, int rightX, int color, String text, int baselineY) {
+		drawTaggedText(shadow, rightX - measureTaggedTextWidth(text), color, text, baselineY);
 	}
 
 	public int measureTaggedTextWidth(String text) {
@@ -118,17 +118,17 @@ public final class TextDrawingArea extends DrawingArea {
 		return widthPixels;
 	}
 
-	public void textLeft(int i, String s, int j, int l) {
-		if (s == null) {
+	public void drawLiteralText(int color, String text, int baselineY, int x) {
+		if (text == null) {
 			return;
 		}
-		j -= anInt1497;
-		for (int i1 = 0; i1 < s.length(); i1++) {
-			char c = s.charAt(i1);
-			if (c != ' ') {
-				drawGlyphMask(aByteArrayArray1491[c], l + anIntArray1494[c], j + anIntArray1495[c], anIntArray1492[c], anIntArray1493[c], i);
+		baselineY -= anInt1497;
+		for (int characterIndex = 0; characterIndex < text.length(); characterIndex++) {
+			char character = text.charAt(characterIndex);
+			if (character != ' ') {
+				drawGlyphMask(aByteArrayArray1491[character], x + anIntArray1494[character], baselineY + anIntArray1495[character], anIntArray1492[character], anIntArray1493[character], color);
 			}
-			l += glyphAdvancePixels[c];
+			x += glyphAdvancePixels[character];
 		}
 	}
 

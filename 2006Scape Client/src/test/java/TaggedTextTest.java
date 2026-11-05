@@ -58,7 +58,7 @@ public class TaggedTextTest {
         int[] p=blank();glyph(p,4,18,3,0x123456,256);glyph(p,9,18,6,0xff0000,256);glyph(p,17,18,3,0xff0000,256);
         assertArrayEquals(p,DrawingArea.pixels);
         for(String text:new String[]{"@","@red","@re@","@reds@","A@@red","red@"}) {
-            clear();font.textLeft(0x123456,text,18,4);int[] literal=DrawingArea.pixels.clone();
+            clear();font.drawLiteralText(0x123456,text,18,4);int[] literal=DrawingArea.pixels.clone();
             clear();font.drawTaggedText(false,4,0x123456,text,18);assertArrayEquals(text,literal,DrawingArea.pixels);
         }
     }

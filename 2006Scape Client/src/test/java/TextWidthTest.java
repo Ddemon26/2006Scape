@@ -27,7 +27,7 @@ public class TextWidthTest {
             DrawingArea.clipRightHalf, DrawingArea.clipBottomHalf};
         try {
             int[] pixels = new int[40*20]; DrawingArea.bindRaster(20, 40, pixels);
-            font.textLeft(0x123456, "AA", 10, 2);
+            font.drawLiteralText(0x123456, "AA", 10, 2);
             // Each A has ink columns 3..5 then 8..10: origins differ by 5px.
             for (int x=0; x<40; x++) assertEquals("x="+x,
                 (x>=3 && x<=5 || x>=8 && x<=10) ? 0x123456 : 0, pixels[3*40+x]);
