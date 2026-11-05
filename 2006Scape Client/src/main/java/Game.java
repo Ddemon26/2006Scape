@@ -2242,8 +2242,8 @@ public class Game extends RSApplet {
 	}
 
 	public void method46(int i, Stream stream) {
-		while (stream.bitPosition + 21 < i * 8) {
-			int k = stream.readBits(14);
+		while (stream.bitOffset + 21 < i * 8) {
+			int k = stream.readBitsMsbFirst(14);
 			if (k == 16383) {
 				break;
 			}
@@ -2253,17 +2253,17 @@ public class Game extends RSApplet {
 			NPC npc = npcArray[k];
 			npcIndices[npcCount++] = k;
 			npc.anInt1537 = loopCycle;
-			int l = stream.readBits(5);
+			int l = stream.readBitsMsbFirst(5);
 			if (l > 15) {
 				l -= 32;
 			}
-			int i1 = stream.readBits(5);
+			int i1 = stream.readBitsMsbFirst(5);
 			if (i1 > 15) {
 				i1 -= 32;
 			}
-			int j1 = stream.readBits(1);
-			npc.desc = EntityDef.forID(stream.readBits(ClientSettings.NPC_BITS));
-			int k1 = stream.readBits(1);
+			int j1 = stream.readBitsMsbFirst(1);
+			npc.desc = EntityDef.forID(stream.readBitsMsbFirst(ClientSettings.NPC_BITS));
+			int k1 = stream.readBitsMsbFirst(1);
 			if (k1 == 1) {
 				anIntArray894[anInt893++] = k;
 			}
@@ -2276,7 +2276,7 @@ public class Game extends RSApplet {
 			npc.anInt1511 = npc.desc.anInt77;
 			npc.setPos(myPlayer.smallX[0] + i1, myPlayer.smallY[0] + l, j1 == 1);
 		}
-		stream.finishBitAccess();
+		stream.finishBitReading();
 	}
 
 	public void processGameLoop() {
@@ -7399,8 +7399,8 @@ public class Game extends RSApplet {
 	}
 
 	public void method91(Stream stream, int i) {
-		while (stream.bitPosition + 10 < i * 8) {
-			int j = stream.readBits(11);
+		while (stream.bitOffset + 10 < i * 8) {
+			int j = stream.readBitsMsbFirst(11);
 			if (j == 2047) {
 				break;
 			}
@@ -7413,22 +7413,22 @@ public class Game extends RSApplet {
 			playerIndices[playerCount++] = j;
 			Player player = playerArray[j];
 			player.anInt1537 = loopCycle;
-			int k = stream.readBits(1);
+			int k = stream.readBitsMsbFirst(1);
 			if (k == 1) {
 				anIntArray894[anInt893++] = j;
 			}
-			int l = stream.readBits(1);
-			int i1 = stream.readBits(5);
+			int l = stream.readBitsMsbFirst(1);
+			int i1 = stream.readBitsMsbFirst(5);
 			if (i1 > 15) {
 				i1 -= 32;
 			}
-			int j1 = stream.readBits(5);
+			int j1 = stream.readBitsMsbFirst(5);
 			if (j1 > 15) {
 				j1 -= 32;
 			}
 			player.setPos(myPlayer.smallX[0] + j1, myPlayer.smallY[0] + i1, l == 1);
 		}
-		stream.finishBitAccess();
+		stream.finishBitReading();
 	}
 
 	public void processMainScreenClick() {
@@ -9066,31 +9066,31 @@ public class Game extends RSApplet {
 	}
 
 	public void method117(Stream stream) {
-		stream.initBitAccess();
-		int j = stream.readBits(1);
+		stream.beginBitReading();
+		int j = stream.readBitsMsbFirst(1);
 		if (j == 0) {
 			return;
 		}
-		int k = stream.readBits(2);
+		int k = stream.readBitsMsbFirst(2);
 		if (k == 0) {
 			anIntArray894[anInt893++] = myPlayerIndex;
 			return;
 		}
 		if (k == 1) {
-			int l = stream.readBits(3);
+			int l = stream.readBitsMsbFirst(3);
 			myPlayer.moveInDir(false, l);
-			int k1 = stream.readBits(1);
+			int k1 = stream.readBitsMsbFirst(1);
 			if (k1 == 1) {
 				anIntArray894[anInt893++] = myPlayerIndex;
 			}
 			return;
 		}
 		if (k == 2) {
-			int i1 = stream.readBits(3);
+			int i1 = stream.readBitsMsbFirst(3);
 			myPlayer.moveInDir(true, i1);
-			int l1 = stream.readBits(3);
+			int l1 = stream.readBitsMsbFirst(3);
 			myPlayer.moveInDir(true, l1);
-			int j2 = stream.readBits(1);
+			int j2 = stream.readBitsMsbFirst(1);
 			if (j2 == 1) {
 				anIntArray894[anInt893++] = myPlayerIndex;
 			}
@@ -9101,17 +9101,17 @@ public class Game extends RSApplet {
 			if (debugPlanes) {
 				System.out.println("plane is " + plane);
 			}
-			plane = stream.readBits(2);
+			plane = stream.readBitsMsbFirst(2);
 			if (debugPlanes) {
 				System.out.println("plane is now " + plane);
 			}
-			int j1 = stream.readBits(1);
-			int i2 = stream.readBits(1);
+			int j1 = stream.readBitsMsbFirst(1);
+			int i2 = stream.readBitsMsbFirst(1);
 			if (i2 == 1) {
 				anIntArray894[anInt893++] = myPlayerIndex;
 			}
-			int k2 = stream.readBits(7);
-			int l2 = stream.readBits(7);
+			int k2 = stream.readBitsMsbFirst(7);
+			int l2 = stream.readBitsMsbFirst(7);
 			myPlayer.setPos(l2, k2, j1 == 1);
 			//Handle plane changes, higher planes need the roof drawing checks disabled, and we need to manually update ObjectManager's anInt131 (plane) then manually call method22 to let the ObjectManaegr know we're on a different plane. This makes plane changes draw properly. Coords for testing this: lumb: 3207 3227 and varrock: 3209, 3392 and gnome agil: 2474, 3427 
 			ObjectManager.hideRoofs = ClientSettings.HIDE_ROOFS;
@@ -9837,7 +9837,7 @@ public class Game extends RSApplet {
 	}
 
 	public void method134(Stream stream) {
-		int j = stream.readBits(8);
+		int j = stream.readBitsMsbFirst(8);
 		if (j < playerCount) {
 			for (int k = j; k < playerCount; k++) {
 				anIntArray840[anInt839++] = playerIndices[k];
@@ -9852,12 +9852,12 @@ public class Game extends RSApplet {
 		for (int l = 0; l < j; l++) {
 			int i1 = playerIndices[l];
 			Player player = playerArray[i1];
-			int j1 = stream.readBits(1);
+			int j1 = stream.readBitsMsbFirst(1);
 			if (j1 == 0) {
 				playerIndices[playerCount++] = i1;
 				player.anInt1537 = loopCycle;
 			} else {
-				int k1 = stream.readBits(2);
+				int k1 = stream.readBitsMsbFirst(2);
 				if (k1 == 0) {
 					playerIndices[playerCount++] = i1;
 					player.anInt1537 = loopCycle;
@@ -9865,20 +9865,20 @@ public class Game extends RSApplet {
 				} else if (k1 == 1) {
 					playerIndices[playerCount++] = i1;
 					player.anInt1537 = loopCycle;
-					int l1 = stream.readBits(3);
+					int l1 = stream.readBitsMsbFirst(3);
 					player.moveInDir(false, l1);
-					int j2 = stream.readBits(1);
+					int j2 = stream.readBitsMsbFirst(1);
 					if (j2 == 1) {
 						anIntArray894[anInt893++] = i1;
 					}
 				} else if (k1 == 2) {
 					playerIndices[playerCount++] = i1;
 					player.anInt1537 = loopCycle;
-					int i2 = stream.readBits(3);
+					int i2 = stream.readBitsMsbFirst(3);
 					player.moveInDir(true, i2);
-					int k2 = stream.readBits(3);
+					int k2 = stream.readBitsMsbFirst(3);
 					player.moveInDir(true, k2);
-					int l2 = stream.readBits(1);
+					int l2 = stream.readBitsMsbFirst(1);
 					if (l2 == 1) {
 						anIntArray894[anInt893++] = i1;
 					}
@@ -10285,8 +10285,8 @@ public class Game extends RSApplet {
 	}
 
 	public void method139(Stream stream) {
-		stream.initBitAccess();
-		int k = stream.readBits(8);
+		stream.beginBitReading();
+		int k = stream.readBitsMsbFirst(8);
 		if (k < npcCount) {
 			for (int l = k; l < npcCount; l++) {
 				anIntArray840[anInt839++] = npcIndices[l];
@@ -10301,12 +10301,12 @@ public class Game extends RSApplet {
 		for (int i1 = 0; i1 < k; i1++) {
 			int j1 = npcIndices[i1];
 			NPC npc = npcArray[j1];
-			int k1 = stream.readBits(1);
+			int k1 = stream.readBitsMsbFirst(1);
 			if (k1 == 0) {
 				npcIndices[npcCount++] = j1;
 				npc.anInt1537 = loopCycle;
 			} else {
-				int l1 = stream.readBits(2);
+				int l1 = stream.readBitsMsbFirst(2);
 				if (l1 == 0) {
 					npcIndices[npcCount++] = j1;
 					npc.anInt1537 = loopCycle;
@@ -10314,20 +10314,20 @@ public class Game extends RSApplet {
 				} else if (l1 == 1) {
 					npcIndices[npcCount++] = j1;
 					npc.anInt1537 = loopCycle;
-					int i2 = stream.readBits(3);
+					int i2 = stream.readBitsMsbFirst(3);
 					npc.moveInDir(false, i2);
-					int k2 = stream.readBits(1);
+					int k2 = stream.readBitsMsbFirst(1);
 					if (k2 == 1) {
 						anIntArray894[anInt893++] = j1;
 					}
 				} else if (l1 == 2) {
 					npcIndices[npcCount++] = j1;
 					npc.anInt1537 = loopCycle;
-					int j2 = stream.readBits(3);
+					int j2 = stream.readBitsMsbFirst(3);
 					npc.moveInDir(true, j2);
-					int l2 = stream.readBits(3);
+					int l2 = stream.readBitsMsbFirst(3);
 					npc.moveInDir(true, l2);
-					int i3 = stream.readBits(1);
+					int i3 = stream.readBitsMsbFirst(1);
 					if (i3 == 1) {
 						anIntArray894[anInt893++] = j1;
 					}
@@ -10821,13 +10821,13 @@ public class Game extends RSApplet {
 				}
 				if (pktType == 241) {
 					i11 = inStream.method435();
-					inStream.initBitAccess();
+					inStream.beginBitReading();
 					for (int j16 = 0; j16 < 4; j16++) {
 						for (int l20 = 0; l20 < 13; l20++) {
 							for (int j23 = 0; j23 < 13; j23++) {
-								int i26 = inStream.readBits(1);
+								int i26 = inStream.readBitsMsbFirst(1);
 								if (i26 == 1) {
-									anIntArrayArrayArray1129[j16][l20][j23] = inStream.readBits(26);
+									anIntArrayArrayArray1129[j16][l20][j23] = inStream.readBitsMsbFirst(26);
 								} else {
 									anIntArrayArrayArray1129[j16][l20][j23] = -1;
 								}
@@ -10837,7 +10837,7 @@ public class Game extends RSApplet {
 
 					}
 
-					inStream.finishBitAccess();
+					inStream.finishBitReading();
 					l2 = inStream.readUnsignedWord();
 					aBoolean1159 = true;
 				}

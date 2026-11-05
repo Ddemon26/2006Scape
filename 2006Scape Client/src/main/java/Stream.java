@@ -167,29 +167,29 @@ public final class Stream extends NodeSub {
 		}
 	}
 
-	public void initBitAccess() {
-		bitPosition = currentOffset * 8;
+	public void beginBitReading() {
+		bitOffset = currentOffset * 8;
 	}
 
-	public int readBits(int i) {
-		int k = bitPosition >> 3;
-		int l = 8 - (bitPosition & 7);
-		int i1 = 0;
-		bitPosition += i;
-		for (; i > l; l = 8) {
-			i1 += (buffer[k++] & anIntArray1409[l]) << i - l;
-			i -= l;
+	public int readBitsMsbFirst(int remainingBits) {
+		int byteIndex = bitOffset >> 3;
+		int bitsInByte = 8 - (bitOffset & 7);
+		int value = 0;
+		bitOffset += remainingBits;
+		for (; remainingBits > bitsInByte; bitsInByte = 8) {
+			value += (buffer[byteIndex++] & lowBitMasks[bitsInByte]) << remainingBits - bitsInByte;
+			remainingBits -= bitsInByte;
 		}
-		if (i == l) {
-			i1 += buffer[k] & anIntArray1409[l];
+		if (remainingBits == bitsInByte) {
+			value += buffer[byteIndex] & lowBitMasks[bitsInByte];
 		} else {
-			i1 += buffer[k] >> l - i & anIntArray1409[i];
+			value += buffer[byteIndex] >> bitsInByte - remainingBits & lowBitMasks[remainingBits];
 		}
-		return i1;
+		return value;
 	}
 
-	public void finishBitAccess() {
-		currentOffset = (bitPosition + 7) / 8;
+	public void finishBitReading() {
+		currentOffset = (bitOffset + 7) / 8;
 	}
 
 	public int method421() {
@@ -326,8 +326,8 @@ public final class Stream extends NodeSub {
 
 	public byte buffer[];
 	public int currentOffset;
-	public int bitPosition;
-	private static final int[] anIntArray1409 = {0, 1, 3, 7, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191, 16383, 32767, 65535, 0x1ffff, 0x3ffff, 0x7ffff, 0xfffff, 0x1fffff, 0x3fffff, 0x7fffff, 0xffffff, 0x1ffffff, 0x3ffffff, 0x7ffffff, 0xfffffff, 0x1fffffff, 0x3fffffff, 0x7fffffff, -1};
+	public int bitOffset;
+	private static final int[] lowBitMasks = {0, 1, 3, 7, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191, 16383, 32767, 65535, 0x1ffff, 0x3ffff, 0x7ffff, 0xfffff, 0x1fffff, 0x3fffff, 0x7fffff, 0xffffff, 0x1ffffff, 0x3ffffff, 0x7ffffff, 0xfffffff, 0x1fffffff, 0x3fffffff, 0x7fffffff, -1};
 	public ISAACRandomGen encryption;
 	private static int anInt1412;
 	private static final NodeList nodeList = new NodeList();
