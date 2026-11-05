@@ -680,11 +680,11 @@ final class WorldController {
 			Class33 class33_1 = model.aClass33Array1660[j1];
 			if (class33_1.anInt605 != 0) {
 				int i2 = model.anIntArray1628[j1] - j;
-				if (i2 <= model_1.anInt1651) {
+				if (i2 <= model_1.maxY) {
 					int j2 = model.anIntArray1627[j1] - i;
-					if (j2 >= model_1.anInt1646 && j2 <= model_1.anInt1647) {
+					if (j2 >= model_1.minX && j2 <= model_1.maxX) {
 						int k2 = model.anIntArray1629[j1] - k;
-						if (k2 >= model_1.anInt1649 && k2 <= model_1.anInt1648) {
+						if (k2 >= model_1.minZ && k2 <= model_1.maxZ) {
 							for (int l2 = 0; l2 < i1; l2++) {
 								Class33 class33_2 = model_1.aClass33Array1425[l2];
 								Class33 class33_3 = model_1.aClass33Array1660[l2];

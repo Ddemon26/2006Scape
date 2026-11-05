@@ -146,7 +146,7 @@ public final class ObjectDef {
 				model.anIntArray1628[i2] += j3 - l1;
 			}
 
-			model.method467();
+			model.recalculateYBounds();
 		}
 		return model;
 	}

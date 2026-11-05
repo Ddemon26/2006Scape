@@ -273,7 +273,7 @@ public final class Player extends Entity {
 		} else if (k != -1) {
 			model_2.method470(k);
 		}
-		model_2.method466();
+		model_2.calculateBounds();
 		model_2.faceGroups = null;
 		model_2.vertexGroups = null;
 		return model_2;

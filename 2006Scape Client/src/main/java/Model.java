@@ -519,7 +519,7 @@ public final class Model extends Animable {
 			}
 		}
 
-		method466();
+		calculateBounds();
 	}
 
 	public Model(boolean flag, boolean flag1, boolean flag2, Model model) {
@@ -638,14 +638,14 @@ public final class Model extends Animable {
 		anIntArray1644 = model.anIntArray1644;
 		anIntArray1645 = model.anIntArray1645;
 		super.modelHeight = model.modelHeight;
-		anInt1651 = model.anInt1651;
-		anInt1650 = model.anInt1650;
-		anInt1653 = model.anInt1653;
-		anInt1652 = model.anInt1652;
-		anInt1646 = model.anInt1646;
-		anInt1648 = model.anInt1648;
-		anInt1649 = model.anInt1649;
-		anInt1647 = model.anInt1647;
+		maxY = model.maxY;
+		radiusXZ = model.radiusXZ;
+		depthBucketOffset = model.depthBucketOffset;
+		depthBucketCount = model.depthBucketCount;
+		minX = model.minX;
+		maxZ = model.maxZ;
+		minZ = model.minZ;
+		maxX = model.maxX;
 	}
 
 	public void method464(Model model, boolean flag) {
@@ -725,86 +725,86 @@ public final class Model extends Animable {
 		return j;
 	}
 
-	public void method466() {
+	public void calculateBounds() {
 		super.modelHeight = 0;
-		anInt1650 = 0;
-		anInt1651 = 0;
-		for (int i = 0; i < anInt1626; i++) {
-			int j = anIntArray1627[i];
-			int k = anIntArray1628[i];
-			int l = anIntArray1629[i];
-			if (-k > super.modelHeight) {
-				super.modelHeight = -k;
+		radiusXZ = 0;
+		maxY = 0;
+		for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
+			int vertexX = anIntArray1627[vertexIndex];
+			int vertexY = anIntArray1628[vertexIndex];
+			int vertexZ = anIntArray1629[vertexIndex];
+			if (-vertexY > super.modelHeight) {
+				super.modelHeight = -vertexY;
 			}
-			if (k > anInt1651) {
-				anInt1651 = k;
+			if (vertexY > maxY) {
+				maxY = vertexY;
 			}
-			int i1 = j * j + l * l;
-			if (i1 > anInt1650) {
-				anInt1650 = i1;
+			int radiusSquaredXZ = vertexX * vertexX + vertexZ * vertexZ;
+			if (radiusSquaredXZ > radiusXZ) {
+				radiusXZ = radiusSquaredXZ;
 			}
 		}
-		anInt1650 = (int) (Math.sqrt(anInt1650) + 0.98999999999999999D);
-		anInt1653 = (int) (Math.sqrt(anInt1650 * anInt1650 + super.modelHeight * super.modelHeight) + 0.98999999999999999D);
-		anInt1652 = anInt1653 + (int) (Math.sqrt(anInt1650 * anInt1650 + anInt1651 * anInt1651) + 0.98999999999999999D);
+		radiusXZ = (int) (Math.sqrt(radiusXZ) + 0.98999999999999999D);
+		depthBucketOffset = (int) (Math.sqrt(radiusXZ * radiusXZ + super.modelHeight * super.modelHeight) + 0.98999999999999999D);
+		depthBucketCount = depthBucketOffset + (int) (Math.sqrt(radiusXZ * radiusXZ + maxY * maxY) + 0.98999999999999999D);
 	}
 
-	public void method467() {
+	public void recalculateYBounds() {
 		super.modelHeight = 0;
-		anInt1651 = 0;
-		for (int i = 0; i < anInt1626; i++) {
-			int j = anIntArray1628[i];
-			if (-j > super.modelHeight) {
-				super.modelHeight = -j;
+		maxY = 0;
+		for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
+			int vertexY = anIntArray1628[vertexIndex];
+			if (-vertexY > super.modelHeight) {
+				super.modelHeight = -vertexY;
 			}
-			if (j > anInt1651) {
-				anInt1651 = j;
+			if (vertexY > maxY) {
+				maxY = vertexY;
 			}
 		}
 
-		anInt1653 = (int) (Math.sqrt(anInt1650 * anInt1650 + super.modelHeight * super.modelHeight) + 0.98999999999999999D);
-		anInt1652 = anInt1653 + (int) (Math.sqrt(anInt1650 * anInt1650 + anInt1651 * anInt1651) + 0.98999999999999999D);
+		depthBucketOffset = (int) (Math.sqrt(radiusXZ * radiusXZ + super.modelHeight * super.modelHeight) + 0.98999999999999999D);
+		depthBucketCount = depthBucketOffset + (int) (Math.sqrt(radiusXZ * radiusXZ + maxY * maxY) + 0.98999999999999999D);
 	}
 
-	private void method468() {
+	private void calculateBoundsWithExtents() {
 		super.modelHeight = 0;
-		anInt1650 = 0;
-		anInt1651 = 0;
-		anInt1646 = 0xf423f;
-		anInt1647 = 0xfff0bdc1;
-		anInt1648 = 0xfffe7961;
-		anInt1649 = 0x1869f;
-		for (int j = 0; j < anInt1626; j++) {
-			int k = anIntArray1627[j];
-			int l = anIntArray1628[j];
-			int i1 = anIntArray1629[j];
-			if (k < anInt1646) {
-				anInt1646 = k;
+		radiusXZ = 0;
+		maxY = 0;
+		minX = 0xf423f;
+		maxX = 0xfff0bdc1;
+		maxZ = 0xfffe7961;
+		minZ = 0x1869f;
+		for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
+			int vertexX = anIntArray1627[vertexIndex];
+			int vertexY = anIntArray1628[vertexIndex];
+			int vertexZ = anIntArray1629[vertexIndex];
+			if (vertexX < minX) {
+				minX = vertexX;
 			}
-			if (k > anInt1647) {
-				anInt1647 = k;
+			if (vertexX > maxX) {
+				maxX = vertexX;
 			}
-			if (i1 < anInt1649) {
-				anInt1649 = i1;
+			if (vertexZ < minZ) {
+				minZ = vertexZ;
 			}
-			if (i1 > anInt1648) {
-				anInt1648 = i1;
+			if (vertexZ > maxZ) {
+				maxZ = vertexZ;
 			}
-			if (-l > super.modelHeight) {
-				super.modelHeight = -l;
+			if (-vertexY > super.modelHeight) {
+				super.modelHeight = -vertexY;
 			}
-			if (l > anInt1651) {
-				anInt1651 = l;
+			if (vertexY > maxY) {
+				maxY = vertexY;
 			}
-			int j1 = k * k + i1 * i1;
-			if (j1 > anInt1650) {
-				anInt1650 = j1;
+			int radiusSquaredXZ = vertexX * vertexX + vertexZ * vertexZ;
+			if (radiusSquaredXZ > radiusXZ) {
+				radiusXZ = radiusSquaredXZ;
 			}
 		}
 
-		anInt1650 = (int) Math.sqrt(anInt1650);
-		anInt1653 = (int) Math.sqrt(anInt1650 * anInt1650 + super.modelHeight * super.modelHeight);
-		anInt1652 = anInt1653 + (int) Math.sqrt(anInt1650 * anInt1650 + anInt1651 * anInt1651);
+		radiusXZ = (int) Math.sqrt(radiusXZ);
+		depthBucketOffset = (int) Math.sqrt(radiusXZ * radiusXZ + super.modelHeight * super.modelHeight);
+		depthBucketCount = depthBucketOffset + (int) Math.sqrt(radiusXZ * radiusXZ + maxY * maxY);
 	}
 
 	public void buildAnimationGroups() {
@@ -1204,9 +1204,9 @@ public final class Model extends Animable {
 
 		}
 		if (flag) {
-			method466();
+			calculateBounds();
 		} else {
-			method468();
+			calculateBoundsWithExtents();
 		}
 	}
 
@@ -1333,7 +1333,7 @@ public final class Model extends Animable {
 	public void method443(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2) {
 		int j2 = l1 * i1 - j1 * l >> 16;
 		int k2 = k1 * j + j2 * k >> 16;
-		int l2 = anInt1650 * k >> 16;
+		int l2 = radiusXZ * k >> 16;
 		int i3 = k2 + l2;
 		// Check distance of model to camera for rendering (default 3500)
 		int distance = WorldController.drawDistance * 256;
@@ -1342,16 +1342,16 @@ public final class Model extends Animable {
 			return;
 		}
 		int j3 = l1 * l + j1 * i1 >> 16;
-		int k3 = j3 - anInt1650 << 9;
+		int k3 = j3 - radiusXZ << 9;
 		if (k3 / i3 >= DrawingArea.clipRightHalf) {
 			return;
 		}
-		int l3 = j3 + anInt1650 << 9;
+		int l3 = j3 + radiusXZ << 9;
 		if (l3 / i3 <= -DrawingArea.clipRightHalf) {
 			return;
 		}
 		int i4 = k1 * k - j2 * j >> 16;
-		int j4 = anInt1650 * j >> 16;
+		int j4 = radiusXZ * j >> 16;
 		int k4 = i4 + j4 << 9;
 		if (k4 / i3 <= -DrawingArea.clipBottomHalf) {
 			return;
@@ -1444,7 +1444,7 @@ public final class Model extends Animable {
 	}
 
 	private void method483(boolean flag, boolean flag1, int i) {
-		for (int j = 0; j < anInt1652; j++) {
+		for (int j = 0; j < depthBucketCount; j++) {
 			anIntArray1671[j] = 0;
 		}
 
@@ -1458,7 +1458,7 @@ public final class Model extends Animable {
 				int k4 = anIntArray1665[j2];
 				if (flag && (i3 == -5000 || l3 == -5000 || k4 == -5000)) {
 					aBooleanArray1664[k] = true;
-					int j5 = (anIntArray1667[l] + anIntArray1667[k1] + anIntArray1667[j2]) / 3 + anInt1653;
+					int j5 = (anIntArray1667[l] + anIntArray1667[k1] + anIntArray1667[j2]) / 3 + depthBucketOffset;
 					anIntArrayArray1672[j5][anIntArray1671[j5]++] = k;
 				} else {
 					if (flag1 && method486(anInt1685, anInt1686, anIntArray1666[l], anIntArray1666[k1], anIntArray1666[j2], i3, l3, k4)) {
@@ -1468,7 +1468,7 @@ public final class Model extends Animable {
 					if ((i3 - l3) * (anIntArray1666[j2] - anIntArray1666[k1]) - (anIntArray1666[l] - anIntArray1666[k1]) * (k4 - l3) > 0) {
 						aBooleanArray1664[k] = false;
 						aBooleanArray1663[k] = i3 < 0 || l3 < 0 || k4 < 0 || i3 > DrawingArea.scanlineRightLimit || l3 > DrawingArea.scanlineRightLimit || k4 > DrawingArea.scanlineRightLimit;
-						int k5 = (anIntArray1667[l] + anIntArray1667[k1] + anIntArray1667[j2]) / 3 + anInt1653;
+						int k5 = (anIntArray1667[l] + anIntArray1667[k1] + anIntArray1667[j2]) / 3 + depthBucketOffset;
 						anIntArrayArray1672[k5][anIntArray1671[k5]++] = k;
 					}
 				}
@@ -1476,7 +1476,7 @@ public final class Model extends Animable {
 		}
 
 		if (anIntArray1638 == null) {
-			for (int i1 = anInt1652 - 1; i1 >= 0; i1--) {
+			for (int i1 = depthBucketCount - 1; i1 >= 0; i1--) {
 				int l1 = anIntArray1671[i1];
 				if (l1 > 0) {
 					int ai[] = anIntArrayArray1672[i1];
@@ -1494,7 +1494,7 @@ public final class Model extends Animable {
 			anIntArray1677[j1] = 0;
 		}
 
-		for (int i2 = anInt1652 - 1; i2 >= 0; i2--) {
+		for (int i2 = depthBucketCount - 1; i2 >= 0; i2--) {
 			int k2 = anIntArray1671[i2];
 			if (k2 > 0) {
 				int ai1[] = anIntArrayArray1672[i2];
@@ -1841,14 +1841,14 @@ public final class Model extends Animable {
 	private int[] anIntArray1643;
 	private int[] anIntArray1644;
 	private int[] anIntArray1645;
-	public int anInt1646;
-	public int anInt1647;
-	public int anInt1648;
-	public int anInt1649;
-	public int anInt1650;
-	public int anInt1651;
-	private int anInt1652;
-	private int anInt1653;
+	public int minX;
+	public int maxX;
+	public int maxZ;
+	public int minZ;
+	public int radiusXZ;
+	public int maxY;
+	private int depthBucketCount;
+	private int depthBucketOffset;
 	public int anInt1654;
 	private int[] vertexGroupIds;
 	private int[] faceGroupIds;
