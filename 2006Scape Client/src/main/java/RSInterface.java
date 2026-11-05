@@ -134,12 +134,12 @@ public final class RSInterface {
 				rsInterface.enabledText = stream.readLfTerminatedString();
 			}
 			if (rsInterface.type == 1 || rsInterface.type == 3 || rsInterface.type == 4) {
-				rsInterface.textColor = stream.readDWord();
+				rsInterface.textColor = stream.readIntBigEndian();
 			}
 			if (rsInterface.type == 3 || rsInterface.type == 4) {
-				rsInterface.anInt219 = stream.readDWord();
-				rsInterface.anInt216 = stream.readDWord();
-				rsInterface.anInt239 = stream.readDWord();
+				rsInterface.anInt219 = stream.readIntBigEndian();
+				rsInterface.anInt216 = stream.readIntBigEndian();
+				rsInterface.anInt239 = stream.readIntBigEndian();
 			}
 			if (rsInterface.type == 5) {
 				String s = stream.readLfTerminatedString();
@@ -189,7 +189,7 @@ public final class RSInterface {
 					rsInterface.textDrawingAreas = textDrawingAreas[l2];
 				}
 				rsInterface.aBoolean268 = stream.readUnsignedByte() == 1;
-				rsInterface.textColor = stream.readDWord();
+				rsInterface.textColor = stream.readIntBigEndian();
 				rsInterface.invSpritePadX = stream.readSignedWord();
 				rsInterface.invSpritePadY = stream.readSignedWord();
 				rsInterface.isInventoryInterface = stream.readUnsignedByte() == 1;

@@ -79,7 +79,7 @@ public final class Animation {
 			} else if (i == 11) {
 				anInt365 = stream.readUnsignedByte();
 			} else if (i == 12) {
-				stream.readDWord();
+				stream.readIntBigEndian();
 			} else {
 				System.out.println("Error unrecognised seq config code: " + i);
 			}

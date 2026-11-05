@@ -2283,7 +2283,7 @@ public final class ItemDef {
 			} else if (i == 11) {
 				stackable = true;
 			} else if (i == 12) {
-				value = stream.readDWord();
+				value = stream.readIntBigEndian();
 			} else if (i == 16) {
 				membersObject = true;
 			} else if (i == 23) {

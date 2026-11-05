@@ -40,9 +40,9 @@ public final class VarBit {
 			} else if (j == 2) {
 				aBoolean651 = true;
 			} else if (j == 3) {
-				stream.readDWord();
+				stream.readIntBigEndian();
 			} else if (j == 4) {
-				stream.readDWord();
+				stream.readIntBigEndian();
 			} else {
 				System.out.println("Error unrecognised config code: " + j);
 			}

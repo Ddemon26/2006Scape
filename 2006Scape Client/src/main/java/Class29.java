@@ -6,8 +6,8 @@ final class Class29 {
 
 	public void method325(Stream stream) {
 		anInt540 = stream.readUnsignedByte();
-		anInt538 = stream.readDWord();
-		anInt539 = stream.readDWord();
+		anInt538 = stream.readIntBigEndian();
+		anInt539 = stream.readIntBigEndian();
 		method326(stream);
 	}
 

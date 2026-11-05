@@ -20,7 +20,7 @@ final class Censor {
 	}
 
 	private static void readTldList(Stream stream) {
-		int i = stream.readDWord();
+		int i = stream.readIntBigEndian();
 		aCharArrayArray624 = new char[i][];
 		anIntArray625 = new int[i];
 		for (int j = 0; j < i; j++) {
@@ -36,20 +36,20 @@ final class Censor {
 	}
 
 	private static void readBadEnc(Stream stream) {
-		int j = stream.readDWord();
+		int j = stream.readIntBigEndian();
 		aCharArrayArray621 = new char[j][];
 		aByteArrayArrayArray622 = new byte[j][][];
 		method493(stream, aCharArrayArray621, aByteArrayArrayArray622);
 	}
 
 	private static void readDomainEnc(Stream stream) {
-		int i = stream.readDWord();
+		int i = stream.readIntBigEndian();
 		aCharArrayArray623 = new char[i][];
 		method494(aCharArrayArray623, stream);
 	}
 
 	private static void readFragmentsEnc(Stream stream) {
-		anIntArray620 = new int[stream.readDWord()];
+		anIntArray620 = new int[stream.readIntBigEndian()];
 		for (int i = 0; i < anIntArray620.length; i++) {
 			anIntArray620[i] = stream.readUnsignedWord();
 		}

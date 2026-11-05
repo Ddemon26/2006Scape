@@ -809,7 +809,7 @@ public class Game extends RSApplet {
 		ObjectDef.mruNodes1.clear();
 		if (super.gameFrame != null) {
 			stream.createFrame(210);
-			stream.writeDWord(0x3f008edd);
+			stream.writeIntBigEndian(0x3f008edd);
 		}
 		if (lowMem && Signlink.cache_dat != null) {
 			int j = onDemandFetcher.getVersionCount(0);
@@ -3053,7 +3053,7 @@ public class Game extends RSApplet {
 								stream.writeDWordBigEndian(0x800000 + (anInt1022 << 19) + i6);
 								anInt1022 = 0;
 							} else {
-								stream.writeDWord(0xc0000000 + (anInt1022 << 19) + i6);
+								stream.writeIntBigEndian(0xc0000000 + (anInt1022 << 19) + i6);
 								anInt1022 = 0;
 							}
 						}
@@ -3100,7 +3100,7 @@ public class Game extends RSApplet {
 			}
 			int l5 = (int) l;
 			stream.createFrame(241);
-			stream.writeDWord((l5 << 20) + (j5 << 19) + k4);
+			stream.writeIntBigEndian((l5 << 20) + (j5 << 19) + k4);
 		}
 		if (anInt1016 > 0) {
 			anInt1016--;
@@ -5000,7 +5000,7 @@ public class Game extends RSApplet {
 							int amount = 0;
 							amount = Integer.parseInt(amountOrNameInput);
 							stream.createFrame(208);
-							stream.writeDWord(amount);
+							stream.writeIntBigEndian(amount);
 						}
 						inputDialogState = 0;
 						inputTaken = true;
@@ -6048,11 +6048,11 @@ public class Game extends RSApplet {
 				ai[3] = (int) aLong1215;
 				stream.currentOffset = 0;
 				stream.writeWordBigEndian(10);
-				stream.writeDWord(ai[0]);
-				stream.writeDWord(ai[1]);
-				stream.writeDWord(ai[2]);
-				stream.writeDWord(ai[3]);
-				stream.writeDWord(ClientSettings.UID);
+				stream.writeIntBigEndian(ai[0]);
+				stream.writeIntBigEndian(ai[1]);
+				stream.writeIntBigEndian(ai[2]);
+				stream.writeIntBigEndian(ai[3]);
+				stream.writeIntBigEndian(ClientSettings.UID);
 				stream.writeLfTerminatedString(s);
 				stream.writeLfTerminatedString(s1);
 				stream.encryptRsaBlock();
@@ -6067,7 +6067,7 @@ public class Game extends RSApplet {
 				aStream_847.writeWord(1);
 				aStream_847.writeWordBigEndian(lowMem ? 1 : 0);
 				for (int l1 = 0; l1 < 9; l1++) {
-					aStream_847.writeDWord(expectedCRCs[l1]);
+					aStream_847.writeIntBigEndian(expectedCRCs[l1]);
 				}
 
 				aStream_847.writeBytes(stream.buffer, stream.currentOffset, 0);
@@ -6517,7 +6517,7 @@ public class Game extends RSApplet {
 			anInt1288 += k4;
 			if (anInt1288 >= 92) {
 				stream.createFrame(36);
-				stream.writeDWord(0);
+				stream.writeIntBigEndian(0);
 				anInt1288 = 0;
 			}
 			if (i == 0) {
@@ -6608,7 +6608,7 @@ public class Game extends RSApplet {
 			}
 			if ((l & 0x80) != 0) {
 				npc.anInt1520 = stream.readUnsignedWord();
-				int k1 = stream.readDWord();
+				int k1 = stream.readIntBigEndian();
 				npc.anInt1524 = k1 >> 16;
 				npc.anInt1523 = loopCycle + (k1 & 0xffff);
 				npc.anInt1521 = 0;
@@ -6932,9 +6932,9 @@ public class Game extends RSApplet {
 				datainputstream.readFully(class30_sub2_sub2.buffer, 0, 40);
 				datainputstream.close();
 				for(int i1 = 0; i1 < 9; i1++)
-					expectedCRCs[i1] = class30_sub2_sub2.readDWord();
+					expectedCRCs[i1] = class30_sub2_sub2.readIntBigEndian();
 
-				int j1 = class30_sub2_sub2.readDWord();
+				int j1 = class30_sub2_sub2.readIntBigEndian();
 				int k1 = 1234;
 				for(int l1 = 0; l1 < 9; l1++)
 					k1 = (k1 << 1) + expectedCRCs[l1];
@@ -8526,7 +8526,7 @@ public class Game extends RSApplet {
 		}
 		if ((i & 0x100) != 0) {
 			player.anInt1520 = stream.method434();
-			int k = stream.readDWord();
+			int k = stream.readIntBigEndian();
 			player.anInt1524 = k >> 16;
 			player.anInt1523 = loopCycle + (k & 0xffff);
 			player.anInt1521 = 0;
@@ -10635,7 +10635,7 @@ public class Game extends RSApplet {
 				daysSinceRecovChange = inStream.readUnsignedNegatedByte();
 				unreadMessages = inStream.method435();
 				membersInt = inStream.readUnsignedByte();
-				anInt1193 = inStream.method440();
+				anInt1193 = inStream.readIntOrder2143();
 				daysSinceLastLogin = inStream.readUnsignedWord();
 				if (anInt1193 != 0 && openInterfaceID == -1) {
 					Signlink.dnslookup(TextClass.method586(anInt1193));
@@ -10738,7 +10738,7 @@ public class Game extends RSApplet {
 			if (pktType == 134) {
 				needDrawTabArea = true;
 				int skillID = inStream.readUnsignedByte();
-				int experience = inStream.method439();
+				int experience = inStream.readIntOrder3412();
 				int level = inStream.readUnsignedByte();
 				currentExp[skillID] = experience;
 				currentStats[skillID] = level;
@@ -11364,7 +11364,7 @@ public class Game extends RSApplet {
 			if (pktType == 196) {
 				long l5 = inStream.readQWord();
 				@SuppressWarnings("unused")
-				int j18 = inStream.readDWord();
+				int j18 = inStream.readIntBigEndian();
 				int l21 = inStream.readUnsignedByte();
 				boolean flag5 = false;
 				if (l21 <= 1) {
@@ -11546,7 +11546,7 @@ public class Game extends RSApplet {
 				for (int j22 = 0; j22 < j19; j22++) {
 					int i25 = inStream.readUnsignedByte();
 					if (i25 == 255) {
-						i25 = inStream.method440();
+						i25 = inStream.readIntOrder2143();
 					}
 					class9_1.inv[j22] = inStream.method436();
 					class9_1.invStackSizes[j22] = i25;
@@ -11683,7 +11683,7 @@ public class Game extends RSApplet {
 			}
 			if (pktType == 87) {
 				int j8 = inStream.method434();
-				int l14 = inStream.method439();
+				int l14 = inStream.readIntOrder3412();
 				anIntArray1045[j8] = l14;
 				if (variousSettings[j8] != l14) {
 					variousSettings[j8] = l14;
@@ -11761,7 +11761,7 @@ public class Game extends RSApplet {
 					int i23 = inStream.readUnsignedWord();
 					int l25 = inStream.readUnsignedByte();
 					if (l25 == 255) {
-						l25 = inStream.readDWord();
+						l25 = inStream.readIntBigEndian();
 					}
 					if (j20 >= 0 && j20 < class9_2.inv.length) {
 						class9_2.inv[j20] = i23;

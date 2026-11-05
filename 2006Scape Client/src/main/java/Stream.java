@@ -57,18 +57,18 @@ public final class Stream extends NodeSub {
 		buffer[currentOffset++] = (byte) i;
 	}
 
-	public void writeDWord(int i) {
-		buffer[currentOffset++] = (byte) (i >> 24);
-		buffer[currentOffset++] = (byte) (i >> 16);
-		buffer[currentOffset++] = (byte) (i >> 8);
-		buffer[currentOffset++] = (byte) i;
+	public void writeIntBigEndian(int value) {
+		buffer[currentOffset++] = (byte) (value >> 24);
+		buffer[currentOffset++] = (byte) (value >> 16);
+		buffer[currentOffset++] = (byte) (value >> 8);
+		buffer[currentOffset++] = (byte) value;
 	}
 
-	public void method403(int j) {
-		buffer[currentOffset++] = (byte) j;
-		buffer[currentOffset++] = (byte) (j >> 8);
-		buffer[currentOffset++] = (byte) (j >> 16);
-		buffer[currentOffset++] = (byte) (j >> 24);
+	public void writeIntLittleEndian(int value) {
+		buffer[currentOffset++] = (byte) value;
+		buffer[currentOffset++] = (byte) (value >> 8);
+		buffer[currentOffset++] = (byte) (value >> 16);
+		buffer[currentOffset++] = (byte) (value >> 24);
 	}
 
 	public void writeQWord(long l) {
@@ -132,14 +132,14 @@ public final class Stream extends NodeSub {
 		return ((buffer[currentOffset - 3] & 0xff) << 16) + ((buffer[currentOffset - 2] & 0xff) << 8) + (buffer[currentOffset - 1] & 0xff);
 	}
 
-	public int readDWord() {
+	public int readIntBigEndian() {
 		currentOffset += 4;
 		return ((buffer[currentOffset - 4] & 0xff) << 24) + ((buffer[currentOffset - 3] & 0xff) << 16) + ((buffer[currentOffset - 2] & 0xff) << 8) + (buffer[currentOffset - 1] & 0xff);
 	}
 
 	public long readQWord() {
-		long l = readDWord() & 0xffffffffL;
-		long l1 = readDWord() & 0xffffffffL;
+		long l = readIntBigEndian() & 0xffffffffL;
+		long l1 = readIntBigEndian() & 0xffffffffL;
 		return (l << 32) + l1;
 	}
 
@@ -300,12 +300,12 @@ public final class Stream extends NodeSub {
 		return j;
 	}
 
-	public int method439() {
+	public int readIntOrder3412() {
 		currentOffset += 4;
 		return ((buffer[currentOffset - 2] & 0xff) << 24) + ((buffer[currentOffset - 1] & 0xff) << 16) + ((buffer[currentOffset - 4] & 0xff) << 8) + (buffer[currentOffset - 3] & 0xff);
 	}
 
-	public int method440() {
+	public int readIntOrder2143() {
 		currentOffset += 4;
 		return ((buffer[currentOffset - 3] & 0xff) << 24) + ((buffer[currentOffset - 4] & 0xff) << 16) + ((buffer[currentOffset - 1] & 0xff) << 8) + (buffer[currentOffset - 2] & 0xff);
 	}

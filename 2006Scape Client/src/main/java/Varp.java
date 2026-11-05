@@ -42,7 +42,7 @@ public final class Varp {
 				anInt709 = stream.readUnsignedWord();
 			} else if (j == 6) {
 			} else if (j == 7) {
-				stream.readDWord();
+				stream.readIntBigEndian();
 			} else if (j == 8) {
 				aBoolean713 = true;
 			} else if (j == 10) {
@@ -50,7 +50,7 @@ public final class Varp {
 			} else if (j == 11) {
 				aBoolean713 = true;
 			} else if (j == 12) {
-				stream.readDWord();
+				stream.readIntBigEndian();
 			} else if (j == 13) {
 			} else {
 				System.out.println("Error unrecognised config code: " + j);

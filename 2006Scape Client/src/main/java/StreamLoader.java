@@ -25,7 +25,7 @@ final class StreamLoader {
 		entryOffsets = new int[entryCount];
 		int entryOffset = header.currentOffset + entryCount * 10;
 		for (int entryIndex = 0; entryIndex < entryCount; entryIndex++) {
-			entryNameHashes[entryIndex] = header.readDWord();
+			entryNameHashes[entryIndex] = header.readIntBigEndian();
 			entryUnpackedSizes[entryIndex] = header.read3Bytes();
 			entryPackedSizes[entryIndex] = header.read3Bytes();
 			entryOffsets[entryIndex] = entryOffset;

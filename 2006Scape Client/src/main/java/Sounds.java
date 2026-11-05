@@ -75,19 +75,19 @@ final class Sounds {
 	private Stream method244(int i) {
 		int k = method245(i);
 		aStream_328.currentOffset = 0;
-		aStream_328.writeDWord(0x52494646);
-		aStream_328.method403(36 + k);
-		aStream_328.writeDWord(0x57415645);
-		aStream_328.writeDWord(0x666d7420);
-		aStream_328.method403(16);
+		aStream_328.writeIntBigEndian(0x52494646);
+		aStream_328.writeIntLittleEndian(36 + k);
+		aStream_328.writeIntBigEndian(0x57415645);
+		aStream_328.writeIntBigEndian(0x666d7420);
+		aStream_328.writeIntLittleEndian(16);
 		aStream_328.method400(1);
 		aStream_328.method400(1);
-		aStream_328.method403(22050);
-		aStream_328.method403(22050);
+		aStream_328.writeIntLittleEndian(22050);
+		aStream_328.writeIntLittleEndian(22050);
 		aStream_328.method400(1);
 		aStream_328.method400(8);
-		aStream_328.writeDWord(0x64617461);
-		aStream_328.method403(k);
+		aStream_328.writeIntBigEndian(0x64617461);
+		aStream_328.writeIntLittleEndian(k);
 		aStream_328.currentOffset += k;
 		return aStream_328;
 	}

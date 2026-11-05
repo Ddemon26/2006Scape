@@ -80,8 +80,8 @@ final class Class11
 	anIntArray217 = new int[i];
 	int i_4_ = 0;
 	while (i_4_ < i) {
-	    int i_5_ = aClass3_Sub12_211.readDWord();
-	    int i_6_ = aClass3_Sub12_211.readDWord();
+	    int i_5_ = aClass3_Sub12_211.readIntBigEndian();
+	    int i_6_ = aClass3_Sub12_211.readIntBigEndian();
 	    if (i_5_ == 1297379947) {
 		anIntArray217[i_4_]
 		    = aClass3_Sub12_211.currentOffset;
