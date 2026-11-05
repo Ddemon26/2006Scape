@@ -1050,7 +1050,7 @@ final class WorldController {
 		do {
 			Ground class30_sub3_1;
 			do {
-				class30_sub3_1 = (Ground) aClass19_477.popHead();
+				class30_sub3_1 = (Ground) aClass19_477.popTail();
 				if (class30_sub3_1 == null) {
 					return;
 				}

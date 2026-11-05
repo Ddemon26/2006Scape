@@ -5,24 +5,24 @@
 final class NodeSubList {
 
 	public NodeSubList() {
-		head = new NodeSub();
-		head.prevNodeSub = head;
-		head.nextNodeSub = head;
+		sentinel = new NodeSub();
+		sentinel.prevNodeSub = sentinel;
+		sentinel.nextNodeSub = sentinel;
 	}
 
 	public void insertHead(NodeSub nodeSub) {
 		if (nodeSub.nextNodeSub != null) {
 			nodeSub.unlinkSub();
 		}
-		nodeSub.nextNodeSub = head.nextNodeSub;
-		nodeSub.prevNodeSub = head;
+		nodeSub.nextNodeSub = sentinel.nextNodeSub;
+		nodeSub.prevNodeSub = sentinel;
 		nodeSub.nextNodeSub.prevNodeSub = nodeSub;
 		nodeSub.prevNodeSub.nextNodeSub = nodeSub;
 	}
 
 	public NodeSub popTail() {
-		NodeSub nodeSub = head.prevNodeSub;
-		if (nodeSub == head) {
+		NodeSub nodeSub = sentinel.prevNodeSub;
+		if (nodeSub == sentinel) {
 			return null;
 		} else {
 			nodeSub.unlinkSub();
@@ -30,37 +30,37 @@ final class NodeSubList {
 		}
 	}
 
-	public NodeSub reverseGetFirst() {
-		NodeSub nodeSub = head.prevNodeSub;
-		if (nodeSub == head) {
-			current = null;
+	public NodeSub firstFromTail() {
+		NodeSub nodeSub = sentinel.prevNodeSub;
+		if (nodeSub == sentinel) {
+			traversalNext = null;
 			return null;
 		} else {
-			current = nodeSub.prevNodeSub;
+			traversalNext = nodeSub.prevNodeSub;
 			return nodeSub;
 		}
 	}
 
-	public NodeSub reverseGetNext() {
-		NodeSub nodeSub = current;
-		if (nodeSub == head) {
-			current = null;
+	public NodeSub nextTowardHead() {
+		NodeSub nodeSub = traversalNext;
+		if (nodeSub == sentinel) {
+			traversalNext = null;
 			return null;
 		} else {
-			current = nodeSub.prevNodeSub;
+			traversalNext = nodeSub.prevNodeSub;
 			return nodeSub;
 		}
 	}
 
 	public int getNodeCount() {
-		int i = 0;
-		for (NodeSub nodeSub = head.prevNodeSub; nodeSub != head; nodeSub = nodeSub.prevNodeSub) {
-			i++;
+		int nodeCount = 0;
+		for (NodeSub nodeSub = sentinel.prevNodeSub; nodeSub != sentinel; nodeSub = nodeSub.prevNodeSub) {
+			nodeCount++;
 		}
 
-		return i;
+		return nodeCount;
 	}
 
-	private final NodeSub head;
-	private NodeSub current;
+	private final NodeSub sentinel;
+	private NodeSub traversalNext;
 }

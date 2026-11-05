@@ -52,7 +52,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				int l1 = ((ioBuffer[3] & 0xff) << 8) + (ioBuffer[4] & 0xff);
 				int i2 = ioBuffer[5] & 0xff;
 				current = null;
-				for (OnDemandData onDemandData = (OnDemandData) requested.reverseGetFirst(); onDemandData != null; onDemandData = (OnDemandData) requested.reverseGetNext()) {
+				for (OnDemandData onDemandData = (OnDemandData) requested.firstFromTail(); onDemandData != null; onDemandData = (OnDemandData) requested.nextTowardHead()) {
 					if (onDemandData.dataType == l && onDemandData.ID == j1) {
 						current = onDemandData;
 					}
@@ -284,7 +284,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			return;
 		}
 		synchronized (nodeSubList) {
-			for (OnDemandData onDemandData = (OnDemandData) nodeSubList.reverseGetFirst(); onDemandData != null; onDemandData = (OnDemandData) nodeSubList.reverseGetNext()) {
+			for (OnDemandData onDemandData = (OnDemandData) nodeSubList.firstFromTail(); onDemandData != null; onDemandData = (OnDemandData) nodeSubList.nextTowardHead()) {
 				if (onDemandData.dataType == i && onDemandData.ID == j) {
 					return;
 				}
@@ -336,7 +336,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				}
 
 				boolean flag = false;
-				for (OnDemandData onDemandData = (OnDemandData) requested.reverseGetFirst(); onDemandData != null; onDemandData = (OnDemandData) requested.reverseGetNext()) {
+				for (OnDemandData onDemandData = (OnDemandData) requested.firstFromTail(); onDemandData != null; onDemandData = (OnDemandData) requested.nextTowardHead()) {
 					if (onDemandData.incomplete) {
 						flag = true;
 						onDemandData.loopCycle++;
@@ -348,7 +348,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				}
 
 				if (!flag) {
-					for (OnDemandData onDemandData_1 = (OnDemandData) requested.reverseGetFirst(); onDemandData_1 != null; onDemandData_1 = (OnDemandData) requested.reverseGetNext()) {
+					for (OnDemandData onDemandData_1 = (OnDemandData) requested.firstFromTail(); onDemandData_1 != null; onDemandData_1 = (OnDemandData) requested.nextTowardHead()) {
 						flag = true;
 						onDemandData_1.loopCycle++;
 						if (onDemandData_1.loopCycle > 50) {
@@ -420,7 +420,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	public OnDemandData getNextNode() {
 		OnDemandData onDemandData;
 		synchronized (aClass19_1358) {
-			onDemandData = (OnDemandData) aClass19_1358.popHead();
+			onDemandData = (OnDemandData) aClass19_1358.popTail();
 		}
 		if (onDemandData == null) {
 			return null;
@@ -502,7 +502,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	private void handleFailed() {
 		uncompletedCount = 0;
 		completedCount = 0;
-		for (OnDemandData onDemandData = (OnDemandData) requested.reverseGetFirst(); onDemandData != null; onDemandData = (OnDemandData) requested.reverseGetNext()) {
+		for (OnDemandData onDemandData = (OnDemandData) requested.firstFromTail(); onDemandData != null; onDemandData = (OnDemandData) requested.nextTowardHead()) {
 			if (onDemandData.incomplete) {
 				uncompletedCount++;
 			} else {
@@ -511,7 +511,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		}
 
 		while (uncompletedCount < 10) {
-			OnDemandData onDemandData_1 = (OnDemandData) aClass19_1368.popHead();
+			OnDemandData onDemandData_1 = (OnDemandData) aClass19_1368.popTail();
 			if (onDemandData_1 == null) {
 				break;
 			}
@@ -535,7 +535,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	private void checkReceived() {
 		OnDemandData onDemandData;
 		synchronized (aClass19_1370) {
-			onDemandData = (OnDemandData) aClass19_1370.popHead();
+			onDemandData = (OnDemandData) aClass19_1370.popTail();
 		}
 		while (onDemandData != null) {
 			waiting = true;
@@ -555,7 +555,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 						aClass19_1358.insertHead(onDemandData);
 					}
 				}
-				onDemandData = (OnDemandData) aClass19_1370.popHead();
+				onDemandData = (OnDemandData) aClass19_1370.popTail();
 			}
 		}
 	}
@@ -567,7 +567,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			}
 			OnDemandData onDemandData;
 			synchronized (aClass19_1344) {
-				onDemandData = (OnDemandData) aClass19_1344.popHead();
+				onDemandData = (OnDemandData) aClass19_1344.popTail();
 			}
 			while (onDemandData != null) {
 				if (fileStatus[onDemandData.dataType][onDemandData.ID] != 0) {
@@ -585,7 +585,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 					}
 				}
 				synchronized (aClass19_1344) {
-					onDemandData = (OnDemandData) aClass19_1344.popHead();
+					onDemandData = (OnDemandData) aClass19_1344.popTail();
 				}
 			}
 			for (int j = 0; j < 4; j++) {

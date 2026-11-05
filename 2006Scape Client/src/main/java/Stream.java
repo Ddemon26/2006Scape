@@ -11,7 +11,7 @@ public final class Stream extends NodeSub {
 			Stream stream = null;
 			if (anInt1412 > 0) {
 				anInt1412--;
-				stream = (Stream) nodeList.popHead();
+				stream = (Stream) nodeList.popTail();
 			}
 			if (stream != null) {
 				stream.currentOffset = 0;

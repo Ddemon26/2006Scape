@@ -952,7 +952,7 @@ public class Game extends RSApplet {
 		}
 		long k = Long.MIN_VALUE;
 		Object obj = null;
-		for (Item item = (Item) class19.reverseGetFirst(); item != null; item = (Item) class19.reverseGetNext()) {
+		for (Item item = (Item) class19.firstFromTail(); item != null; item = (Item) class19.nextTowardHead()) {
 			ItemDef itemDef = ItemDef.forID(item.ID);
 			long l = itemDef.value;
 			if (itemDef.stackable) {
@@ -969,7 +969,7 @@ public class Game extends RSApplet {
 		class19.insertTail(((Node) obj));
 		Object obj1 = null;
 		Object obj2 = null;
-		for (Item class30_sub2_sub4_sub2_1 = (Item) class19.reverseGetFirst(); class30_sub2_sub4_sub2_1 != null; class30_sub2_sub4_sub2_1 = (Item) class19.reverseGetNext()) {
+		for (Item class30_sub2_sub4_sub2_1 = (Item) class19.firstFromTail(); class30_sub2_sub4_sub2_1 != null; class30_sub2_sub4_sub2_1 = (Item) class19.nextTowardHead()) {
 			if (class30_sub2_sub4_sub2_1.ID != ((Item) obj).ID && obj1 == null) {
 				obj1 = class30_sub2_sub4_sub2_1;
 			}
@@ -1480,7 +1480,7 @@ public class Game extends RSApplet {
 					NodeList class19 = groundArray[plane][k5][l5];
 					if (class19 != null) {
 						int offset = 5;
-						for (Item item = (Item) class19.reverseGetFirst(); item != null; item = (Item) class19.reverseGetNext()) {
+						for (Item item = (Item) class19.firstFromTail(); item != null; item = (Item) class19.nextTowardHead()) {
 							ItemDef itemDef = ItemDef.forID(item.ID);
 							long totalValue = Math.max(1, item.amount) * Math.max(1, itemDef.value);
 							totalValue = totalValue > 0 ? totalValue : Integer.MAX_VALUE;
@@ -2756,7 +2756,7 @@ public class Game extends RSApplet {
 	}
 
 	public void method55() {
-		for (Animable_Sub4 class30_sub2_sub4_sub4 = (Animable_Sub4) aClass19_1013.reverseGetFirst(); class30_sub2_sub4_sub4 != null; class30_sub2_sub4_sub4 = (Animable_Sub4) aClass19_1013.reverseGetNext()) {
+		for (Animable_Sub4 class30_sub2_sub4_sub4 = (Animable_Sub4) aClass19_1013.firstFromTail(); class30_sub2_sub4_sub4 != null; class30_sub2_sub4_sub4 = (Animable_Sub4) aClass19_1013.nextTowardHead()) {
 			if (class30_sub2_sub4_sub4.anInt1597 != plane || loopCycle > class30_sub2_sub4_sub4.anInt1572) {
 				class30_sub2_sub4_sub4.unlink();
 			} else if (loopCycle >= class30_sub2_sub4_sub4.anInt1571) {
@@ -3331,8 +3331,8 @@ public class Game extends RSApplet {
 	}
 
 	public void method63() {
-		Class30_Sub1 class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetFirst();
-		for (; class30_sub1 != null; class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetNext()) {
+		Class30_Sub1 class30_sub1 = (Class30_Sub1) aClass19_1179.firstFromTail();
+		for (; class30_sub1 != null; class30_sub1 = (Class30_Sub1) aClass19_1179.nextTowardHead()) {
 			if (class30_sub1.anInt1294 == -1) {
 				class30_sub1.anInt1302 = 0;
 				method89(class30_sub1);
@@ -4647,7 +4647,7 @@ public class Game extends RSApplet {
 			if (k1 == 3) {
 				NodeList class19 = groundArray[plane][i1][j1];
 				if (class19 != null) {
-					for (Item item = (Item) class19.getFirst(); item != null; item = (Item) class19.getNext()) {
+					for (Item item = (Item) class19.firstFromHead(); item != null; item = (Item) class19.nextTowardTail()) {
 						ItemDef itemDef = ItemDef.forID(item.ID);
 						if (itemSelected == 1) {
 							menuActionName[menuActionRow] = "Use " + selectedItemName + " with @lre@" + itemDef.name;
@@ -8151,8 +8151,8 @@ public class Game extends RSApplet {
 	}
 
 	public void method104() {
-		Animable_Sub3 class30_sub2_sub4_sub3 = (Animable_Sub3) aClass19_1056.reverseGetFirst();
-		for (; class30_sub2_sub4_sub3 != null; class30_sub2_sub4_sub3 = (Animable_Sub3) aClass19_1056.reverseGetNext()) {
+		Animable_Sub3 class30_sub2_sub4_sub3 = (Animable_Sub3) aClass19_1056.firstFromTail();
+		for (; class30_sub2_sub4_sub3 != null; class30_sub2_sub4_sub3 = (Animable_Sub3) aClass19_1056.nextTowardHead()) {
 			if (class30_sub2_sub4_sub3.anInt1560 != plane || class30_sub2_sub4_sub3.aBoolean1567) {
 				class30_sub2_sub4_sub3.unlink();
 			} else if (loopCycle >= class30_sub2_sub4_sub3.anInt1564) {
@@ -8956,7 +8956,7 @@ public class Game extends RSApplet {
 
 	public void method115() {
 		if (loadingStage == 2) {
-			for (Class30_Sub1 class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetFirst(); class30_sub1 != null; class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetNext()) {
+			for (Class30_Sub1 class30_sub1 = (Class30_Sub1) aClass19_1179.firstFromTail(); class30_sub1 != null; class30_sub1 = (Class30_Sub1) aClass19_1179.nextTowardHead()) {
 				if (class30_sub1.anInt1294 > 0) {
 					class30_sub1.anInt1294--;
 				}
@@ -9680,7 +9680,7 @@ public class Game extends RSApplet {
 
 	public void method130(int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2) {
 		Class30_Sub1 class30_sub1 = null;
-		for (Class30_Sub1 class30_sub1_1 = (Class30_Sub1) aClass19_1179.reverseGetFirst(); class30_sub1_1 != null; class30_sub1_1 = (Class30_Sub1) aClass19_1179.reverseGetNext()) {
+		for (Class30_Sub1 class30_sub1_1 = (Class30_Sub1) aClass19_1179.firstFromTail(); class30_sub1_1 != null; class30_sub1_1 = (Class30_Sub1) aClass19_1179.nextTowardHead()) {
 			if (class30_sub1_1.anInt1295 != l1 || class30_sub1_1.anInt1297 != i2 || class30_sub1_1.anInt1298 != j1 || class30_sub1_1.anInt1296 != i1) {
 				continue;
 			}
@@ -10007,7 +10007,7 @@ public class Game extends RSApplet {
 			if (j3 >= 0 && i6 >= 0 && j3 < 104 && i6 < 104) {
 				NodeList class19_1 = groundArray[plane][j3][i6];
 				if (class19_1 != null) {
-					for (Item class30_sub2_sub4_sub2_3 = (Item) class19_1.reverseGetFirst(); class30_sub2_sub4_sub2_3 != null; class30_sub2_sub4_sub2_3 = (Item) class19_1.reverseGetNext()) {
+					for (Item class30_sub2_sub4_sub2_3 = (Item) class19_1.firstFromTail(); class30_sub2_sub4_sub2_3 != null; class30_sub2_sub4_sub2_3 = (Item) class19_1.nextTowardHead()) {
 						if (class30_sub2_sub4_sub2_3.ID != (l8 & 0x7fff) || class30_sub2_sub4_sub2_3.amount != k11) {
 							continue;
 						}
@@ -10062,7 +10062,7 @@ public class Game extends RSApplet {
 			if (i4 >= 0 && l6 >= 0 && i4 < 104 && l6 < 104) {
 				NodeList class19 = groundArray[plane][i4][l6];
 				if (class19 != null) {
-					for (Item item = (Item) class19.reverseGetFirst(); item != null; item = (Item) class19.reverseGetNext()) {
+					for (Item item = (Item) class19.firstFromTail(); item != null; item = (Item) class19.nextTowardHead()) {
 						if (item.ID != (k9 & 0x7fff)) {
 							continue;
 						}
@@ -10070,7 +10070,7 @@ public class Game extends RSApplet {
 						break;
 					}
 
-					if (class19.reverseGetFirst() == null) {
+					if (class19.firstFromTail() == null) {
 						groundArray[plane][i4][l6] = null;
 					}
 					spawnGroundItem(i4, l6);
@@ -10671,7 +10671,7 @@ public class Game extends RSApplet {
 
 				}
 
-				for (Class30_Sub1 class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetFirst(); class30_sub1 != null; class30_sub1 = (Class30_Sub1) aClass19_1179.reverseGetNext()) {
+				for (Class30_Sub1 class30_sub1 = (Class30_Sub1) aClass19_1179.firstFromTail(); class30_sub1 != null; class30_sub1 = (Class30_Sub1) aClass19_1179.nextTowardHead()) {
 					if (class30_sub1.anInt1297 >= anInt1268 && class30_sub1.anInt1297 < anInt1268 + 8 && class30_sub1.anInt1298 >= anInt1269 && class30_sub1.anInt1298 < anInt1269 + 8 && class30_sub1.anInt1295 == plane) {
 						class30_sub1.anInt1294 = 0;
 					}
@@ -11006,7 +11006,7 @@ public class Game extends RSApplet {
 
 				}
 
-				for (Class30_Sub1 class30_sub1_1 = (Class30_Sub1) aClass19_1179.reverseGetFirst(); class30_sub1_1 != null; class30_sub1_1 = (Class30_Sub1) aClass19_1179.reverseGetNext()) {
+				for (Class30_Sub1 class30_sub1_1 = (Class30_Sub1) aClass19_1179.firstFromTail(); class30_sub1_1 != null; class30_sub1_1 = (Class30_Sub1) aClass19_1179.nextTowardHead()) {
 					class30_sub1_1.anInt1297 -= i17;
 					class30_sub1_1.anInt1298 -= j21;
 					if (class30_sub1_1.anInt1297 < 0 || class30_sub1_1.anInt1298 < 0 || class30_sub1_1.anInt1297 >= 104 || class30_sub1_1.anInt1298 >= 104) {
