@@ -1097,10 +1097,10 @@ public final class Model extends Animable {
 
 	}
 
-	public void method476(int i, int j) {
-		for (int k = 0; k < anInt1630; k++) {
-			if (anIntArray1640[k] == i) {
-				anIntArray1640[k] = j;
+	public void recolor(int sourceValue, int replacementValue) {
+		for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
+			if (anIntArray1640[faceIndex] == sourceValue) {
+				anIntArray1640[faceIndex] = replacementValue;
 			}
 		}
 
@@ -1185,7 +1185,7 @@ public final class Model extends Animable {
 				class33_2.anInt605++;
 			} else {
 				int l5 = i + (k * l4 + l * i5 + i1 * j5) / (k1 + k1 / 2);
-				anIntArray1634[i2] = method481(anIntArray1640[i2], l5, anIntArray1637[i2]);
+				anIntArray1634[i2] = calculateFaceShade(anIntArray1640[i2], l5, anIntArray1637[i2]);
 			}
 		}
 
@@ -1219,25 +1219,25 @@ public final class Model extends Animable {
 				int i3 = anIntArray1640[j1];
 				Class33 class33 = super.aClass33Array1425[k1];
 				int k2 = i + (k * class33.anInt602 + l * class33.anInt603 + i1 * class33.anInt604) / (j * class33.anInt605);
-				anIntArray1634[j1] = method481(i3, k2, 0);
+				anIntArray1634[j1] = calculateFaceShade(i3, k2, 0);
 				class33 = super.aClass33Array1425[i2];
 				k2 = i + (k * class33.anInt602 + l * class33.anInt603 + i1 * class33.anInt604) / (j * class33.anInt605);
-				anIntArray1635[j1] = method481(i3, k2, 0);
+				anIntArray1635[j1] = calculateFaceShade(i3, k2, 0);
 				class33 = super.aClass33Array1425[j2];
 				k2 = i + (k * class33.anInt602 + l * class33.anInt603 + i1 * class33.anInt604) / (j * class33.anInt605);
-				anIntArray1636[j1] = method481(i3, k2, 0);
+				anIntArray1636[j1] = calculateFaceShade(i3, k2, 0);
 			} else if ((anIntArray1637[j1] & 1) == 0) {
 				int j3 = anIntArray1640[j1];
 				int k3 = anIntArray1637[j1];
 				Class33 class33_1 = super.aClass33Array1425[k1];
 				int l2 = i + (k * class33_1.anInt602 + l * class33_1.anInt603 + i1 * class33_1.anInt604) / (j * class33_1.anInt605);
-				anIntArray1634[j1] = method481(j3, l2, k3);
+				anIntArray1634[j1] = calculateFaceShade(j3, l2, k3);
 				class33_1 = super.aClass33Array1425[i2];
 				l2 = i + (k * class33_1.anInt602 + l * class33_1.anInt603 + i1 * class33_1.anInt604) / (j * class33_1.anInt605);
-				anIntArray1635[j1] = method481(j3, l2, k3);
+				anIntArray1635[j1] = calculateFaceShade(j3, l2, k3);
 				class33_1 = super.aClass33Array1425[j2];
 				l2 = i + (k * class33_1.anInt602 + l * class33_1.anInt603 + i1 * class33_1.anInt604) / (j * class33_1.anInt605);
-				anIntArray1636[j1] = method481(j3, l2, k3);
+				anIntArray1636[j1] = calculateFaceShade(j3, l2, k3);
 			}
 		}
 
@@ -1256,23 +1256,23 @@ public final class Model extends Animable {
 		anIntArray1640 = null;
 	}
 
-	private static int method481(int i, int j, int k) {
-		if ((k & 2) == 2) {
-			if (j < 0) {
-				j = 0;
-			} else if (j > 127) {
-				j = 127;
+	private static int calculateFaceShade(int colorValue, int lightIntensity, int faceRenderFlags) {
+		if ((faceRenderFlags & 2) == 2) {
+			if (lightIntensity < 0) {
+				lightIntensity = 0;
+			} else if (lightIntensity > 127) {
+				lightIntensity = 127;
 			}
-			j = 127 - j;
-			return j;
+			lightIntensity = 127 - lightIntensity;
+			return lightIntensity;
 		}
-		j = j * (i & 0x7f) >> 7;
-		if (j < 2) {
-			j = 2;
-		} else if (j > 126) {
-			j = 126;
+		lightIntensity = lightIntensity * (colorValue & 0x7f) >> 7;
+		if (lightIntensity < 2) {
+			lightIntensity = 2;
+		} else if (lightIntensity > 126) {
+			lightIntensity = 126;
 		}
-		return (i & 0xff80) + j;
+		return (colorValue & 0xff80) + lightIntensity;
 	}
 
 	public void method482(int j, int k, int l, int i1, int j1, int k1) {

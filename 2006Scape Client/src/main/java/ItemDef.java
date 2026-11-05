@@ -68,7 +68,7 @@ public final class ItemDef {
 		}
 		if (modifiedModelColors != null) {
 			for (int i1 = 0; i1 < modifiedModelColors.length; i1++) {
-				model.method476(modifiedModelColors[i1], originalModelColors[i1]);
+				model.recolor(modifiedModelColors[i1], originalModelColors[i1]);
 			}
 
 		}
@@ -133,7 +133,7 @@ public final class ItemDef {
 		}
 		if (modifiedModelColors != null) {
 			for (int i1 = 0; i1 < modifiedModelColors.length; i1++) {
-				model.method476(modifiedModelColors[i1], originalModelColors[i1]);
+				model.recolor(modifiedModelColors[i1], originalModelColors[i1]);
 			}
 
 		}
@@ -2214,7 +2214,7 @@ public final class ItemDef {
 		}
 		if (modifiedModelColors != null) {
 			for (int l = 0; l < modifiedModelColors.length; l++) {
-				model.method476(modifiedModelColors[l], originalModelColors[l]);
+				model.recolor(modifiedModelColors[l], originalModelColors[l]);
 			}
 
 		}
@@ -2243,7 +2243,7 @@ public final class ItemDef {
 		}
 		if (modifiedModelColors != null) {
 			for (int l = 0; l < modifiedModelColors.length; l++) {
-				model.method476(modifiedModelColors[l], originalModelColors[l]);
+				model.recolor(modifiedModelColors[l], originalModelColors[l]);
 			}
 
 		}

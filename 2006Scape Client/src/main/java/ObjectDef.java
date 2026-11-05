@@ -273,7 +273,7 @@ public final class ObjectDef {
 		}
 		if (modifiedModelColors != null) {
 			for (int k2 = 0; k2 < modifiedModelColors.length; k2++) {
-				model_3.method476(modifiedModelColors[k2], originalModelColors[k2]);
+				model_3.recolor(modifiedModelColors[k2], originalModelColors[k2]);
 			}
 
 		}

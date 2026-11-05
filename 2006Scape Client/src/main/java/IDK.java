@@ -80,7 +80,7 @@ public final class IDK {
 			if (anIntArray659[j] == 0) {
 				break;
 			}
-			model.method476(anIntArray659[j], anIntArray660[j]);
+			model.recolor(anIntArray659[j], anIntArray660[j]);
 		}
 
 		return model;
@@ -111,7 +111,7 @@ public final class IDK {
 			if (anIntArray659[l] == 0) {
 				break;
 			}
-			model.method476(anIntArray659[l], anIntArray660[l]);
+			model.recolor(anIntArray659[l], anIntArray660[l]);
 		}
 
 		return model;

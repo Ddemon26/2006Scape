@@ -64,7 +64,7 @@ public final class SpotAnim {
 		}
 		for (int i = 0; i < 6; i++) {
 			if (anIntArray408[0] != 0) {
-				model.method476(anIntArray408[i], anIntArray409[i]);
+				model.recolor(anIntArray408[i], anIntArray409[i]);
 			}
 		}
 

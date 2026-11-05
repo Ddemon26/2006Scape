@@ -5461,9 +5461,9 @@ public class Game extends RSApplet {
 				Model model = new Model(i2, aclass30_sub2_sub4_sub6s);
 				for (int l2 = 0; l2 < 5; l2++) {
 					if (anIntArray990[l2] != 0) {
-						model.method476(anIntArrayArray1003[l2][0], anIntArrayArray1003[l2][anIntArray990[l2]]);
+						model.recolor(anIntArrayArray1003[l2][0], anIntArrayArray1003[l2][anIntArray990[l2]]);
 						if (l2 == 1) {
-							model.method476(anIntArray1204[0], anIntArray1204[anIntArray990[l2]]);
+							model.recolor(anIntArray1204[0], anIntArray1204[anIntArray990[l2]]);
 						}
 					}
 				}
