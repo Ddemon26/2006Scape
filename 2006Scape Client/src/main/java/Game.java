@@ -12011,7 +12011,7 @@ public class Game extends RSApplet {
 		npcArray = new NPC[16384];
 		npcIndices = new int[16384];
 		anIntArray840 = new int[1000];
-		aStream_847 = Stream.create();
+		aStream_847 = Stream.acquire();
 		aBoolean848 = true;
 		openInterfaceID = -1;
 		currentExp = new int[Skills.skillsCount];
@@ -12091,7 +12091,7 @@ public class Game extends RSApplet {
 		anIntArray1073 = new int[1000];
 		aBoolean1080 = false;
 		friendsList = new String[200];
-		inStream = Stream.create();
+		inStream = Stream.acquire();
 		expectedCRCs = new int[9];
 		menuActionCmd2 = new int[500];
 		menuActionCmd3 = new int[500];
@@ -12124,7 +12124,7 @@ public class Game extends RSApplet {
 		aClass19_1179 = new NodeList();
 		anInt1184 = 128;
 		invOverlayInterfaceID = -1;
-		stream = Stream.create();
+		stream = Stream.acquire();
 		menuActionName = new String[500];
 		anIntArray1203 = new int[5];
 		sound = new int[50];

@@ -6,30 +6,30 @@ import java.math.BigInteger;
 
 public final class Stream extends NodeSub {
 
-	public static Stream create() {
-		synchronized (nodeList) {
-			Stream stream = null;
-			if (anInt1412 > 0) {
-				anInt1412--;
-				stream = (Stream) nodeList.popTail();
+	public static Stream acquire() {
+		synchronized (pooledStreams) {
+			Stream pooledStream = null;
+			if (pooledStreamCount > 0) {
+				pooledStreamCount--;
+				pooledStream = (Stream) pooledStreams.popTail();
 			}
-			if (stream != null) {
-				stream.currentOffset = 0;
-				return stream;
+			if (pooledStream != null) {
+				pooledStream.currentOffset = 0;
+				return pooledStream;
 			}
 		}
-		Stream stream_1 = new Stream(null);
-		stream_1.currentOffset = 0;
-		stream_1.buffer = new byte[5000];
-		return stream_1;
+		Stream newStream = new Stream(null);
+		newStream.currentOffset = 0;
+		newStream.buffer = new byte[5000];
+		return newStream;
 	}
 	
 	public int readUnsignedByteSubtract128Duplicate() {
 		return buffer[currentOffset++] - 128 & 0xff;
 	}	
 
-	public Stream(byte abyte0[]) {
-		buffer = abyte0;
+	public Stream(byte initialBuffer[]) {
+		buffer = initialBuffer;
 		currentOffset = 0;
 	}
 
@@ -329,8 +329,8 @@ public final class Stream extends NodeSub {
 	public int bitOffset;
 	private static final int[] lowBitMasks = {0, 1, 3, 7, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191, 16383, 32767, 65535, 0x1ffff, 0x3ffff, 0x7ffff, 0xfffff, 0x1fffff, 0x3fffff, 0x7fffff, 0xffffff, 0x1ffffff, 0x3ffffff, 0x7ffffff, 0xfffffff, 0x1fffffff, 0x3fffffff, 0x7fffffff, -1};
 	public ISAACRandomGen encryption;
-	private static int anInt1412;
-	private static final NodeList nodeList = new NodeList();
+	private static int pooledStreamCount;
+	private static final NodeList pooledStreams = new NodeList();
 
 	// removed useless static initializer
 }
