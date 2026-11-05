@@ -672,7 +672,7 @@ public class Game extends RSApplet {
 
 			ObjectManager objectManager = new ObjectManager(byteGroundArray, intGroundArray);
 			int k2 = aByteArrayArray1183.length;
-			stream.createFrame(0);
+			stream.writeEncryptedOpcode(0);
 			if (!aBoolean1159) {
 				for (int i3 = 0; i3 < k2; i3++) {
 					int i4 = (anIntArray1234[i3] >> 8) * 64 - baseX;
@@ -695,10 +695,10 @@ public class Game extends RSApplet {
 				anInt1097++;
 				if (anInt1097 > 160) {
 					anInt1097 = 0;
-					stream.createFrame(238);
+					stream.writeEncryptedOpcode(238);
 					stream.writeWordBigEndian(96);
 				}
-				stream.createFrame(0);
+				stream.writeEncryptedOpcode(0);
 				for (int i6 = 0; i6 < k2; i6++) {
 					byte abyte1[] = aByteArrayArray1247[i6];
 					if (abyte1 != null) {
@@ -745,7 +745,7 @@ public class Game extends RSApplet {
 
 				}
 
-				stream.createFrame(0);
+				stream.writeEncryptedOpcode(0);
 				for (int l6 = 0; l6 < 4; l6++) {
 					for (int j8 = 0; j8 < 13; j8++) {
 						for (int j9 = 0; j9 < 13; j9++) {
@@ -772,13 +772,13 @@ public class Game extends RSApplet {
 				}
 
 			}
-			stream.createFrame(0);
+			stream.writeEncryptedOpcode(0);
 			objectManager.method171(aClass11Array1230, worldController);
 			if(aRSImageProducer_1165 != null) {
 				aRSImageProducer_1165.setAsDrawingArea();
 				Texture.lineOffsets = chatBoxAreaOffsets;
 			}
-			stream.createFrame(0);
+			stream.writeEncryptedOpcode(0);
 			int k3 = ObjectManager.anInt145;
 			if (k3 > plane) {
 				k3 = plane;
@@ -801,14 +801,14 @@ public class Game extends RSApplet {
 			anInt1051++;
 			if (anInt1051 > 98) {
 				anInt1051 = 0;
-				stream.createFrame(150);
+				stream.writeEncryptedOpcode(150);
 			}
 			method63();
 		} catch (Exception exception) {
 		}
 		ObjectDef.mruNodes1.clear();
 		if (super.gameFrame != null) {
-			stream.createFrame(210);
+			stream.writeEncryptedOpcode(210);
 			stream.writeIntBigEndian(0x3f008edd);
 		}
 		if (lowMem && Signlink.cache_dat != null) {
@@ -1317,7 +1317,7 @@ public class Game extends RSApplet {
 				publicChatMode = (publicChatMode + 1) % 4;
 				aBoolean1233 = true;
 				inputTaken = true;
-				stream.createFrame(95);
+				stream.writeEncryptedOpcode(95);
 				stream.writeWordBigEndian(publicChatMode);
 				stream.writeWordBigEndian(privateChatMode);
 				stream.writeWordBigEndian(tradeMode);
@@ -1326,7 +1326,7 @@ public class Game extends RSApplet {
 				privateChatMode = (privateChatMode + 1) % 3;
 				aBoolean1233 = true;
 				inputTaken = true;
-				stream.createFrame(95);
+				stream.writeEncryptedOpcode(95);
 				stream.writeWordBigEndian(publicChatMode);
 				stream.writeWordBigEndian(privateChatMode);
 				stream.writeWordBigEndian(tradeMode);
@@ -1335,7 +1335,7 @@ public class Game extends RSApplet {
 				tradeMode = (tradeMode + 1) % 3;
 				aBoolean1233 = true;
 				inputTaken = true;
-				stream.createFrame(95);
+				stream.writeEncryptedOpcode(95);
 				stream.writeWordBigEndian(publicChatMode);
 				stream.writeWordBigEndian(privateChatMode);
 				stream.writeWordBigEndian(tradeMode);
@@ -1360,7 +1360,7 @@ public class Game extends RSApplet {
 			anInt940++;
 			if (anInt940 > 1386) {
 				anInt940 = 0;
-				stream.createFrame(165);
+				stream.writeEncryptedOpcode(165);
 				stream.writeWordBigEndian(0);
 				int j = stream.currentOffset;
 				stream.writeWordBigEndian(139);
@@ -1377,7 +1377,7 @@ public class Game extends RSApplet {
 				if ((int) (Math.random() * 2D) == 0) {
 					stream.writeWordBigEndian(21);
 				}
-				stream.writeBytes(stream.currentOffset - j);
+				stream.backpatchBytePayloadLength(stream.currentOffset - j);
 			}
 		}
 	}
@@ -1776,7 +1776,7 @@ public class Game extends RSApplet {
 					friendsListAsLongs[j] = friendsListAsLongs[j + 1];
 				}
 
-				stream.createFrame(215);
+				stream.writeEncryptedOpcode(215);
 				stream.writeLongBigEndian(l);
 				break;
 			}
@@ -2132,7 +2132,7 @@ public class Game extends RSApplet {
 				friendsNodeIDs[friendsCount] = 0;
 				friendsCount++;
 				needDrawTabArea = true;
-				stream.createFrame(188);
+				stream.writeEncryptedOpcode(188);
 				stream.writeLongBigEndian(l);
 				return;
 			}
@@ -2429,7 +2429,7 @@ public class Game extends RSApplet {
 			method45();
 		}
 		if (j == 326) {
-			stream.createFrame(101);
+			stream.writeEncryptedOpcode(101);
 			stream.writeWordBigEndian(aBoolean1047 ? 0 : 1);
 			for (int i1 = 0; i1 < 7; i1++) {
 				stream.writeWordBigEndian(anIntArray1065[i1]);
@@ -2447,7 +2447,7 @@ public class Game extends RSApplet {
 		if (j >= 601 && j <= 612) {
 			closeOpenInterfaces();
 			if (reportAbuseInput.length() > 0) {
-				stream.createFrame(218);
+				stream.writeEncryptedOpcode(218);
 				stream.writeLongBigEndian(TextClass.encodeBase37Name(reportAbuseInput));
 				stream.writeWordBigEndian(j - 601);
 				stream.writeWordBigEndian(canMute ? 1 : 0);
@@ -2750,7 +2750,7 @@ public class Game extends RSApplet {
 			loadingStage = 2;
 			ObjectManager.anInt131 = plane;
 			method22();
-			stream.createFrame(121);
+			stream.writeEncryptedOpcode(121);
 			return 0;
 		}
 	}
@@ -3008,7 +3008,7 @@ public class Game extends RSApplet {
 		synchronized (mouseDetection.sampleLock) {
 			if (flagged) {
 				if (super.clickMode3 != 0 || mouseDetection.sampleCount >= 40) {
-					stream.createFrame(45);
+					stream.writeEncryptedOpcode(45);
 					stream.writeWordBigEndian(0);
 					int j2 = stream.currentOffset;
 					int j3 = 0;
@@ -3059,7 +3059,7 @@ public class Game extends RSApplet {
 						}
 					}
 
-					stream.writeBytes(stream.currentOffset - j2);
+					stream.backpatchBytePayloadLength(stream.currentOffset - j2);
 					if (j3 >= mouseDetection.sampleCount) {
 						mouseDetection.sampleCount = 0;
 					} else {
@@ -3099,7 +3099,7 @@ public class Game extends RSApplet {
 				j5 = 1;
 			}
 			int l5 = (int) l;
-			stream.createFrame(241);
+			stream.writeEncryptedOpcode(241);
 			stream.writeIntBigEndian((l5 << 20) + (j5 << 19) + k4);
 		}
 		if (anInt1016 > 0) {
@@ -3111,18 +3111,18 @@ public class Game extends RSApplet {
 		if (aBoolean1017 && anInt1016 <= 0) {
 			anInt1016 = 20;
 			aBoolean1017 = false;
-			stream.createFrame(86);
+			stream.writeEncryptedOpcode(86);
 			stream.writeWord(anInt1184);
 			stream.method432(minimapInt1);
 		}
 		if (super.awtFocus && !aBoolean954) {
 			aBoolean954 = true;
-			stream.createFrame(3);
+			stream.writeEncryptedOpcode(3);
 			stream.writeWordBigEndian(1);
 		}
 		if (!super.awtFocus && aBoolean954) {
 			aBoolean954 = false;
-			stream.createFrame(3);
+			stream.writeEncryptedOpcode(3);
 			stream.writeWordBigEndian(0);
 		}
 		loadingStages();
@@ -3201,7 +3201,7 @@ public class Game extends RSApplet {
 						} else {
 							class9.swapInventoryItems(anInt1085, mouseInvInterfaceIndex);
 						}
-						stream.createFrame(214);
+						stream.writeEncryptedOpcode(214);
 						stream.method433(anInt1084);
 						stream.writeNegatedByte(j1);
 						stream.method433(anInt1085);
@@ -3256,7 +3256,7 @@ public class Game extends RSApplet {
 		/*if (super.idleTime > 12000) {
 			anInt1011 = 250;
 			super.idleTime -= 500;
-			stream.createFrame(202);
+			stream.writeEncryptedOpcode(202);
 		}*/
 		anInt988++;
 		if (anInt988 > 500) {
@@ -3315,7 +3315,7 @@ public class Game extends RSApplet {
 		}
 		anInt1010++;
 		if (anInt1010 > 50) {
-			stream.createFrame(0);
+			stream.writeEncryptedOpcode(0);
 		}
 		try {
 			if (socketStream != null && stream.currentOffset > 0) {
@@ -3684,7 +3684,7 @@ public class Game extends RSApplet {
 				crossY = super.saveClickY;
 				crossType = 2;
 				crossIndex = 0;
-				stream.createFrame(57);
+				stream.writeEncryptedOpcode(57);
 				stream.method432(anInt1285);
 				stream.method432(i1);
 				stream.method431(anInt1283);
@@ -3700,13 +3700,13 @@ public class Game extends RSApplet {
 			crossY = super.saveClickY;
 			crossType = 2;
 			crossIndex = 0;
-			stream.createFrame(236);
+			stream.writeEncryptedOpcode(236);
 			stream.method431(k + baseY);
 			stream.writeWord(i1);
 			stream.method431(j + baseX);
 		}
 		if (l == 62 && method66(i1, k, j)) {
-			stream.createFrame(192);
+			stream.writeEncryptedOpcode(192);
 			stream.writeWord(anInt1284);
 			stream.method431(i1 >> 14 & 0x7fff);
 			stream.method433(k + baseY);
@@ -3723,7 +3723,7 @@ public class Game extends RSApplet {
 			crossY = super.saveClickY;
 			crossType = 2;
 			crossIndex = 0;
-			stream.createFrame(25);
+			stream.writeEncryptedOpcode(25);
 			stream.method431(anInt1284);
 			stream.method432(anInt1285);
 			stream.writeWord(i1);
@@ -3732,7 +3732,7 @@ public class Game extends RSApplet {
 			stream.writeWord(j + baseX);
 		}
 		if (l == 74) {
-			stream.createFrame(122);
+			stream.writeEncryptedOpcode(122);
 			stream.method433(k);
 			stream.method432(j);
 			stream.method431(i1);
@@ -3754,7 +3754,7 @@ public class Game extends RSApplet {
 				flag8 = promptUserForInput(class9);
 			}
 			if (flag8) {
-				stream.createFrame(185);
+				stream.writeEncryptedOpcode(185);
 				stream.writeWord(k);
 			}
 		}
@@ -3768,10 +3768,10 @@ public class Game extends RSApplet {
 				crossIndex = 0;
 				anInt1188 += i1;
 				if (anInt1188 >= 90) {
-					stream.createFrame(136);
+					stream.writeEncryptedOpcode(136);
 					anInt1188 = 0;
 				}
-				stream.createFrame(128);
+				stream.writeEncryptedOpcode(128);
 				stream.writeWord(i1);
 			}
 		}
@@ -3783,7 +3783,7 @@ public class Game extends RSApplet {
 				crossY = super.saveClickY;
 				crossType = 2;
 				crossIndex = 0;
-				stream.createFrame(155);
+				stream.writeEncryptedOpcode(155);
 				stream.method431(i1);
 			}
 		}
@@ -3795,7 +3795,7 @@ public class Game extends RSApplet {
 				crossY = super.saveClickY;
 				crossType = 2;
 				crossIndex = 0;
-				stream.createFrame(153);
+				stream.writeEncryptedOpcode(153);
 				stream.method431(i1);
 			}
 		}
@@ -3809,23 +3809,23 @@ public class Game extends RSApplet {
 		if (l == 1062) { //Fifth click
 			anInt924 += baseX;
 			if (anInt924 >= 113) {
-				stream.createFrame(183);
+				stream.writeEncryptedOpcode(183);
 				stream.writeDWordBigEndian(0xe63271);
 				anInt924 = 0;
 			}
 			method66(i1, k, j);
-			stream.createFrame(228);
+			stream.writeEncryptedOpcode(228);
 			stream.method432(i1 >> 14 & 0x7fff);
 			stream.method432(k + baseY);
 			stream.writeWord(j + baseX);
 		}
 		if (l == 679 && !aBoolean1149) {
-			stream.createFrame(40);
+			stream.writeEncryptedOpcode(40);
 			stream.writeWord(k);
 			aBoolean1149 = true;
 		}
 		if (l == 431) {
-			stream.createFrame(129);
+			stream.writeEncryptedOpcode(129);
 			stream.method432(j);
 			stream.writeWord(k);
 			stream.method432(i1);
@@ -3860,7 +3860,7 @@ public class Game extends RSApplet {
 			}
 		}
 		if (l == 53) {
-			stream.createFrame(135);
+			stream.writeEncryptedOpcode(135);
 			stream.method431(j);
 			stream.method432(k);
 			stream.method431(i1);
@@ -3876,7 +3876,7 @@ public class Game extends RSApplet {
 			}
 		}
 		if (l == 539) {
-			stream.createFrame(16);
+			stream.writeEncryptedOpcode(16);
 			stream.method432(i1);
 			stream.method433(j);
 			stream.method433(k);
@@ -3906,16 +3906,16 @@ public class Game extends RSApplet {
 					}
 					doWalkTo(2, 0, 1, 0, myPlayer.smallY[0], 1, 0, class30_sub2_sub4_sub1_sub2_7.smallY[0], myPlayer.smallX[0], false, class30_sub2_sub4_sub1_sub2_7.smallX[0]);
 					if (l == 484) {
-						stream.createFrame(139);
+						stream.writeEncryptedOpcode(139);
 						stream.method431(playerIndices[j3]);
 					}
 					if (l == 6) {
 						anInt1188 += i1;
 						if (anInt1188 >= 90) {
-							stream.createFrame(136);
+							stream.writeEncryptedOpcode(136);
 							anInt1188 = 0;
 						}
-						stream.createFrame(128);
+						stream.writeEncryptedOpcode(128);
 						stream.writeWord(playerIndices[j3]);
 					}
 					flag9 = true;
@@ -3928,7 +3928,7 @@ public class Game extends RSApplet {
 			}
 		}
 		if (l == 870) {
-			stream.createFrame(53);
+			stream.writeEncryptedOpcode(53);
 			stream.writeWord(j);
 			stream.method432(anInt1283);
 			stream.method433(i1);
@@ -3947,7 +3947,7 @@ public class Game extends RSApplet {
 			}
 		}
 		if (l == 847) {
-			stream.createFrame(87);
+			stream.writeEncryptedOpcode(87);
 			stream.method432(i1);
 			stream.writeWord(k);
 			stream.method432(j);
@@ -3986,7 +3986,7 @@ public class Game extends RSApplet {
 			return;
 		}
 		if (l == 78) {
-			stream.createFrame(117);
+			stream.writeEncryptedOpcode(117);
 			stream.method433(k);
 			stream.method433(i1);
 			stream.method431(j);
@@ -4011,11 +4011,11 @@ public class Game extends RSApplet {
 				crossIndex = 0;
 				anInt986 += i1;
 				if (anInt986 >= 54) {
-					stream.createFrame(189);
+					stream.writeEncryptedOpcode(189);
 					stream.writeWordBigEndian(234);
 					anInt986 = 0;
 				}
-				stream.createFrame(73);
+				stream.writeEncryptedOpcode(73);
 				stream.method431(i1);
 			}
 		}
@@ -4028,13 +4028,13 @@ public class Game extends RSApplet {
 			crossY = super.saveClickY;
 			crossType = 2;
 			crossIndex = 0;
-			stream.createFrame(79);
+			stream.writeEncryptedOpcode(79);
 			stream.method431(k + baseY);
 			stream.writeWord(i1);
 			stream.method432(j + baseX);
 		}
 		if (l == 632) {
-			stream.createFrame(145);
+			stream.writeEncryptedOpcode(145);
 			stream.method432(k);
 			stream.method432(j);
 			stream.method432(i1);
@@ -4050,7 +4050,7 @@ public class Game extends RSApplet {
 			}
 		}
 		if (l == 493) {
-			stream.createFrame(75);
+			stream.writeEncryptedOpcode(75);
 			stream.method433(k);
 			stream.method431(j);
 			stream.method432(i1);
@@ -4074,7 +4074,7 @@ public class Game extends RSApplet {
 			crossY = super.saveClickY;
 			crossType = 2;
 			crossIndex = 0;
-			stream.createFrame(156);
+			stream.writeEncryptedOpcode(156);
 			stream.method432(j + baseX);
 			stream.method431(k + baseY);
 			stream.method433(i1);
@@ -4088,14 +4088,14 @@ public class Game extends RSApplet {
 			crossY = super.saveClickY;
 			crossType = 2;
 			crossIndex = 0;
-			stream.createFrame(181);
+			stream.writeEncryptedOpcode(181);
 			stream.method431(k + baseY);
 			stream.writeWord(i1);
 			stream.method431(j + baseX);
 			stream.method432(anInt1137);
 		}
 		if (l == 646) {
-			stream.createFrame(185);
+			stream.writeEncryptedOpcode(185);
 			stream.writeWord(k);
 			RSInterface class9_2 = RSInterface.interfaceCache[k];
 			if (class9_2.valueIndexArray != null && class9_2.valueIndexArray[0][0] == 5) {
@@ -4117,11 +4117,11 @@ public class Game extends RSApplet {
 				crossIndex = 0;
 				anInt1226 += i1;
 				if (anInt1226 >= 85) {
-					stream.createFrame(230);
+					stream.writeEncryptedOpcode(230);
 					stream.writeWordBigEndian(239);
 					anInt1226 = 0;
 				}
-				stream.createFrame(17);
+				stream.writeEncryptedOpcode(17);
 				stream.method433(i1);
 			}
 		}
@@ -4135,11 +4135,11 @@ public class Game extends RSApplet {
 				crossIndex = 0;
 				anInt1134++;
 				if (anInt1134 >= 96) {
-					stream.createFrame(152);
+					stream.writeEncryptedOpcode(152);
 					stream.writeWordBigEndian(88);
 					anInt1134 = 0;
 				}
-				stream.createFrame(21);
+				stream.writeEncryptedOpcode(21);
 				stream.writeWord(i1);
 			}
 		}
@@ -4151,7 +4151,7 @@ public class Game extends RSApplet {
 				crossY = super.saveClickY;
 				crossType = 2;
 				crossIndex = 0;
-				stream.createFrame(131);
+				stream.writeEncryptedOpcode(131);
 				stream.method433(i1);
 				stream.method432(anInt1137);
 			}
@@ -4179,7 +4179,7 @@ public class Game extends RSApplet {
 		}
 		if (l == 900) {
 			method66(i1, k, j);
-			stream.createFrame(252);
+			stream.writeEncryptedOpcode(252);
 			stream.method433(i1 >> 14 & 0x7fff);
 			stream.method431(k + baseY);
 			stream.method432(j + baseX);
@@ -4192,7 +4192,7 @@ public class Game extends RSApplet {
 				crossY = super.saveClickY;
 				crossType = 2;
 				crossIndex = 0;
-				stream.createFrame(72);
+				stream.writeEncryptedOpcode(72);
 				stream.method432(i1);
 			}
 		}
@@ -4204,7 +4204,7 @@ public class Game extends RSApplet {
 				crossY = super.saveClickY;
 				crossType = 2;
 				crossIndex = 0;
-				stream.createFrame(249);
+				stream.writeEncryptedOpcode(249);
 				stream.method432(i1);
 				stream.method431(anInt1137);
 			}
@@ -4217,7 +4217,7 @@ public class Game extends RSApplet {
 				crossY = super.saveClickY;
 				crossType = 2;
 				crossIndex = 0;
-				stream.createFrame(39);
+				stream.writeEncryptedOpcode(39);
 				stream.method431(i1);
 			}
 		}
@@ -4229,12 +4229,12 @@ public class Game extends RSApplet {
 				crossY = super.saveClickY;
 				crossType = 2;
 				crossIndex = 0;
-				stream.createFrame(139);
+				stream.writeEncryptedOpcode(139);
 				stream.method431(i1);
 			}
 		}
 		if (l == 956 && method66(i1, k, j)) {
-			stream.createFrame(35);
+			stream.writeEncryptedOpcode(35);
 			stream.method431(j + baseX);
 			stream.method432(anInt1137);
 			stream.method432(k + baseY);
@@ -4249,7 +4249,7 @@ public class Game extends RSApplet {
 			crossY = super.saveClickY;
 			crossType = 2;
 			crossIndex = 0;
-			stream.createFrame(23);
+			stream.writeEncryptedOpcode(23);
 			stream.method431(k + baseY);
 			stream.method431(i1);
 			stream.method431(j + baseX);
@@ -4259,11 +4259,11 @@ public class Game extends RSApplet {
 				anInt1175++;
 			}
 			if (anInt1175 >= 59) {
-				stream.createFrame(200);
+				stream.writeEncryptedOpcode(200);
 				stream.writeWord(25501);
 				anInt1175 = 0;
 			}
-			stream.createFrame(43);
+			stream.writeEncryptedOpcode(43);
 			stream.method431(k);
 			stream.method432(i1);
 			stream.method432(j);
@@ -4279,7 +4279,7 @@ public class Game extends RSApplet {
 			}
 		}
 		if (l == 543) {
-			stream.createFrame(237);
+			stream.writeEncryptedOpcode(237);
 			stream.writeWord(j);
 			stream.method432(i1);
 			stream.writeWord(k);
@@ -4324,7 +4324,7 @@ public class Game extends RSApplet {
 				crossY = super.saveClickY;
 				crossType = 2;
 				crossIndex = 0;
-				stream.createFrame(14);
+				stream.writeEncryptedOpcode(14);
 				// stream.method432(anInt1284);
 				stream.writeWord(i1);
 				// stream.writeWord(anInt1285);
@@ -4362,7 +4362,7 @@ public class Game extends RSApplet {
 			}
 		}
 		if (l == 454) {
-			stream.createFrame(41);
+			stream.writeEncryptedOpcode(41);
 			stream.writeWord(i1);
 			stream.method432(j);
 			stream.method432(k);
@@ -4389,31 +4389,31 @@ public class Game extends RSApplet {
 					anInt1155++;
 				}
 				if (anInt1155 >= 53) {
-					stream.createFrame(85);
+					stream.writeEncryptedOpcode(85);
 					stream.writeWordBigEndian(66);
 					anInt1155 = 0;
 				}
-				stream.createFrame(18);
+				stream.writeEncryptedOpcode(18);
 				stream.method431(i1);
 			}
 		}
 		if (l == 113) {//third
 			method66(i1, k, j);
-			stream.createFrame(70);
+			stream.writeEncryptedOpcode(70);
 			stream.method431(j + baseX);
 			stream.writeWord(k + baseY);
 			stream.method433(i1 >> 14 & 0x7fff);
 		}
 		if (l == 872) {//fourth
 			method66(i1, k, j);
-			stream.createFrame(234);
+			stream.writeEncryptedOpcode(234);
 			stream.method433(j + baseX);
 			stream.method432(i1 >> 14 & 0x7fff);
 			stream.method433(k + baseY);
 		}
 		if (l == 502) {//first
 			method66(i1, k, j);
-			stream.createFrame(132);
+			stream.writeEncryptedOpcode(132);
 			stream.method433(j + baseX);
 			stream.writeWord(i1 >> 14 & 0x7fff);
 			stream.method432(k + baseY);
@@ -4434,7 +4434,7 @@ public class Game extends RSApplet {
 			}
 		}
 		if (l == 169) {
-			stream.createFrame(185);
+			stream.writeEncryptedOpcode(185);
 			stream.writeWord(k);
 			RSInterface class9_3 = RSInterface.interfaceCache[k];
 			if (class9_3.valueIndexArray != null && class9_3.valueIndexArray[0][0] == 5) {
@@ -4481,7 +4481,7 @@ public class Game extends RSApplet {
 			crossY = super.saveClickY;
 			crossType = 2;
 			crossIndex = 0;
-			stream.createFrame(253);
+			stream.writeEncryptedOpcode(253);
 			stream.method431(j + baseX);
 			stream.method433(k + baseY);
 			stream.method432(i1);
@@ -4947,19 +4947,19 @@ public class Game extends RSApplet {
 						delFriend(l1);
 					}
 					if (friendsListAction == 3 && promptInput.length() > 0) {
-						stream.createFrame(126);
+						stream.writeEncryptedOpcode(126);
 						stream.writeWordBigEndian(0);
 						int k = stream.currentOffset;
 						stream.writeLongBigEndian(aLong953);
 						TextInput.encodeChatText(promptInput, stream);
-						stream.writeBytes(stream.currentOffset - k);
+						stream.backpatchBytePayloadLength(stream.currentOffset - k);
 						promptInput = TextInput.normalizeChatText(promptInput);
 						promptInput = Censor.doCensor(promptInput);
 						pushMessage(promptInput, 6, TextClass.formatDisplayName(TextClass.decodeBase37Name(aLong953)));
 						if (privateChatMode == 2) {
 							privateChatMode = 1;
 							aBoolean1233 = true;
-							stream.createFrame(95);
+							stream.writeEncryptedOpcode(95);
 							stream.writeWordBigEndian(publicChatMode);
 							stream.writeWordBigEndian(privateChatMode);
 							stream.writeWordBigEndian(tradeMode);
@@ -4999,7 +4999,7 @@ public class Game extends RSApplet {
 							}
 							int amount = 0;
 							amount = Integer.parseInt(amountOrNameInput);
-							stream.createFrame(208);
+							stream.writeEncryptedOpcode(208);
 							stream.writeIntBigEndian(amount);
 						}
 						inputDialogState = 0;
@@ -5027,7 +5027,7 @@ public class Game extends RSApplet {
 				}
 				if (j == 13 || j == 10) {
 					if (amountOrNameInput.length() > 0) {
-						stream.createFrame(60);
+						stream.writeEncryptedOpcode(60);
 						stream.writeLongBigEndian(TextClass.encodeBase37Name(amountOrNameInput));
 					}
 					inputDialogState = 0;
@@ -5153,7 +5153,7 @@ public class Game extends RSApplet {
 							showInfo = !showInfo;
 						}
 					if (inputString.startsWith("::")) {
-						stream.createFrame(103);
+						stream.writeEncryptedOpcode(103);
 						stream.writeWordBigEndian(inputString.length() - 1);
 						stream.writeLfTerminatedString(inputString.substring(2));
 					} else {
@@ -5214,7 +5214,7 @@ public class Game extends RSApplet {
 							i3 = 5;
 							inputString = inputString.substring(6);
 						}
-						stream.createFrame(4);
+						stream.writeEncryptedOpcode(4);
 						stream.writeWordBigEndian(0);
 						int j3 = stream.currentOffset;
 						stream.writeByte128MinusValue(i3);
@@ -5222,7 +5222,7 @@ public class Game extends RSApplet {
 						aStream_834.currentOffset = 0;
 						TextInput.encodeChatText(inputString, aStream_834);
 						stream.writeReversedBytesAdd128(0, aStream_834.buffer, aStream_834.currentOffset);
-						stream.writeBytes(stream.currentOffset - j3);
+						stream.backpatchBytePayloadLength(stream.currentOffset - j3);
 						inputString = TextInput.normalizeChatText(inputString);
 						inputString = Censor.doCensor(inputString);
 						myPlayer.textSpoken = inputString;
@@ -5237,7 +5237,7 @@ public class Game extends RSApplet {
 						if (publicChatMode == 2) {
 							publicChatMode = 3;
 							aBoolean1233 = true;
-							stream.createFrame(95);
+							stream.writeEncryptedOpcode(95);
 							stream.writeWordBigEndian(publicChatMode);
 							stream.writeWordBigEndian(privateChatMode);
 							stream.writeWordBigEndian(tradeMode);
@@ -5815,7 +5815,7 @@ public class Game extends RSApplet {
 				}
 			}
 			if (anInt1054 == tabID) {
-				stream.createFrame(152);
+				stream.writeEncryptedOpcode(152);
 				stream.writeWordBigEndian(tabID);
 			}
 		}
@@ -6516,20 +6516,20 @@ public class Game extends RSApplet {
 			int i7 = bigY[i4];
 			anInt1288 += k4;
 			if (anInt1288 >= 92) {
-				stream.createFrame(36);
+				stream.writeEncryptedOpcode(36);
 				stream.writeIntBigEndian(0);
 				anInt1288 = 0;
 			}
 			if (i == 0) {
-				stream.createFrame(164);
+				stream.writeEncryptedOpcode(164);
 				stream.writeWordBigEndian(k4 + k4 + 3);
 			}
 			if (i == 1) {
-				stream.createFrame(248);
+				stream.writeEncryptedOpcode(248);
 				stream.writeWordBigEndian(k4 + k4 + 3 + 14);
 			}
 			if (i == 2) {
-				stream.createFrame(98);
+				stream.writeEncryptedOpcode(98);
 				stream.writeWordBigEndian(k4 + k4 + 3);
 			}
 			stream.method433(k6 + baseX);
@@ -7468,7 +7468,7 @@ public class Game extends RSApplet {
 			anInt1117++;
 			if (anInt1117 > 1151) {
 				anInt1117 = 0;
-				stream.createFrame(246);
+				stream.writeEncryptedOpcode(246);
 				stream.writeWordBigEndian(0);
 				int l = stream.currentOffset;
 				if ((int) (Math.random() * 2D) == 0) {
@@ -7487,7 +7487,7 @@ public class Game extends RSApplet {
 					stream.writeWordBigEndian(220);
 				}
 				stream.writeWordBigEndian(180);
-				stream.writeBytes(stream.currentOffset - l);
+				stream.backpatchBytePayloadLength(stream.currentOffset - l);
 			}
 		}
 	}
@@ -7970,7 +7970,7 @@ public class Game extends RSApplet {
 		if (tabAreaAltered) {
 			if (anInt1054 != -1 && anInt1054 == tabID) {
 				anInt1054 = -1;
-				stream.createFrame(120);
+				stream.writeEncryptedOpcode(120);
 				stream.writeWordBigEndian(tabID);
 			}
 			tabAreaAltered = false;
@@ -8720,7 +8720,7 @@ public class Game extends RSApplet {
 			anInt1005++;
 			if (anInt1005 > 1512) {
 				anInt1005 = 0;
-				stream.createFrame(77);
+				stream.writeEncryptedOpcode(77);
 				stream.writeWordBigEndian(0);
 				int i2 = stream.currentOffset;
 				stream.writeWordBigEndian((int) (Math.random() * 256D));
@@ -8735,7 +8735,7 @@ public class Game extends RSApplet {
 				stream.writeWordBigEndian(38);
 				stream.writeWord((int) (Math.random() * 65536D));
 				stream.writeWord((int) (Math.random() * 65536D));
-				stream.writeBytes(stream.currentOffset - i2);
+				stream.backpatchBytePayloadLength(stream.currentOffset - i2);
 			}
 			int j2 = k1 * 192;
 			if (j2 > 0x17f00) {
@@ -8828,7 +8828,7 @@ public class Game extends RSApplet {
 			anInt1142++;
 			if (anInt1142 > 67) {
 				anInt1142 = 0;
-				stream.createFrame(78);
+				stream.writeEncryptedOpcode(78);
 			}
 		}
 		if (crossType == 2) {
@@ -8899,7 +8899,7 @@ public class Game extends RSApplet {
 			anInt849++;
 			if (anInt849 > 75) {
 				anInt849 = 0;
-				stream.createFrame(148);
+				stream.writeEncryptedOpcode(148);
 			}
 		}
 	}
@@ -8929,7 +8929,7 @@ public class Game extends RSApplet {
 
 			ignoreListAsLongs[ignoreCount++] = l;
 			needDrawTabArea = true;
-			stream.createFrame(133);
+			stream.writeEncryptedOpcode(133);
 			stream.writeLongBigEndian(l);
 			return;
 		} catch (RuntimeException runtimeexception) {
@@ -9293,7 +9293,7 @@ public class Game extends RSApplet {
 					needDrawTabArea = true;
 					System.arraycopy(ignoreListAsLongs, j + 1, ignoreListAsLongs, j, ignoreCount - j);
 
-					stream.createFrame(74);
+					stream.writeEncryptedOpcode(74);
 					stream.writeLongBigEndian(l);
 					return;
 				}
@@ -11979,7 +11979,7 @@ public class Game extends RSApplet {
 	}
 
 	public void closeOpenInterfaces() {
-		stream.createFrame(130);
+		stream.writeEncryptedOpcode(130);
 		if (invOverlayInterfaceID != -1) {
 			invOverlayInterfaceID = -1;
 			needDrawTabArea = true;

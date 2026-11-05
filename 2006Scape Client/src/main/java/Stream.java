@@ -33,8 +33,8 @@ public final class Stream extends NodeSub {
 		currentOffset = 0;
 	}
 
-	public void createFrame(int i) {
-		buffer[currentOffset++] = (byte) (i + encryption.getNextKey());
+	public void writeEncryptedOpcode(int opcode) {
+		buffer[currentOffset++] = (byte) (opcode + encryption.getNextKey());
 	}
 
 	public void writeWordBigEndian(int i) {
@@ -101,8 +101,8 @@ public final class Stream extends NodeSub {
 
 	}
 
-	public void writeBytes(int i) {
-		buffer[currentOffset - i - 1] = (byte) i;
+	public void backpatchBytePayloadLength(int payloadLength) {
+		buffer[currentOffset - payloadLength - 1] = (byte) payloadLength;
 	}
 
 	public int readUnsignedByte() {
