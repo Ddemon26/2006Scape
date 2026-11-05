@@ -4,99 +4,99 @@
 
 final class TextInput {
 
-	public static String decodeChatText(int i, Stream stream) {
-		int j = 0;
-		int k = -1;
-		for (int l = 0; l < i; l++) {
-			int i1 = stream.readUnsignedByte();
-			int j1 = i1 >> 4 & 0xf;
-			if (k == -1) {
-				if (j1 < 13) {
-					decodedCharacters[j++] = validChars[j1];
+	public static String decodeChatText(int byteCount, Stream input) {
+		int decodedCharacterCount = 0;
+		int extendedPrefixNibble = -1;
+		for (int byteIndex = 0; byteIndex < byteCount; byteIndex++) {
+			int packedByte = input.readUnsignedByte();
+			int nibble = packedByte >> 4 & 0xf;
+			if (extendedPrefixNibble == -1) {
+				if (nibble < 13) {
+					decodedCharacters[decodedCharacterCount++] = chatAlphabet[nibble];
 				} else {
-					k = j1;
+					extendedPrefixNibble = nibble;
 				}
 			} else {
-				decodedCharacters[j++] = validChars[(k << 4) + j1 - 195];
-				k = -1;
+				decodedCharacters[decodedCharacterCount++] = chatAlphabet[(extendedPrefixNibble << 4) + nibble - 195];
+				extendedPrefixNibble = -1;
 			}
-			j1 = i1 & 0xf;
-			if (k == -1) {
-				if (j1 < 13) {
-					decodedCharacters[j++] = validChars[j1];
+			nibble = packedByte & 0xf;
+			if (extendedPrefixNibble == -1) {
+				if (nibble < 13) {
+					decodedCharacters[decodedCharacterCount++] = chatAlphabet[nibble];
 				} else {
-					k = j1;
+					extendedPrefixNibble = nibble;
 				}
 			} else {
-				decodedCharacters[j++] = validChars[(k << 4) + j1 - 195];
-				k = -1;
+				decodedCharacters[decodedCharacterCount++] = chatAlphabet[(extendedPrefixNibble << 4) + nibble - 195];
+				extendedPrefixNibble = -1;
 			}
 		}
 
-		boolean flag1 = true;
-		for (int k1 = 0; k1 < j; k1++) {
-			char c = decodedCharacters[k1];
-			if (flag1 && c >= 'a' && c <= 'z') {
-				decodedCharacters[k1] += '\uFFE0';
-				flag1 = false;
+		boolean capitalizeNextLetter = true;
+		for (int characterIndex = 0; characterIndex < decodedCharacterCount; characterIndex++) {
+			char character = decodedCharacters[characterIndex];
+			if (capitalizeNextLetter && character >= 'a' && character <= 'z') {
+				decodedCharacters[characterIndex] += '\uFFE0';
+				capitalizeNextLetter = false;
 			}
-			if (c == '.' || c == '!' || c == '?') {
-				flag1 = true;
+			if (character == '.' || character == '!' || character == '?') {
+				capitalizeNextLetter = true;
 			}
 		}
-		return new String(decodedCharacters, 0, j);
+		return new String(decodedCharacters, 0, decodedCharacterCount);
 	}
 
-	public static void encodeChatText(String s, Stream stream) {
-		if (s.length() > 80) {
-			s = s.substring(0, 80);
+	public static void encodeChatText(String inputText, Stream output) {
+		if (inputText.length() > 80) {
+			inputText = inputText.substring(0, 80);
 		}
-		s = s.toLowerCase();
-		int i = -1;
-		for (int j = 0; j < s.length(); j++) {
-			char c = s.charAt(j);
-			int k = 0;
-			for (int l = 0; l < validChars.length; l++) {
-				if (c != validChars[l]) {
+		inputText = inputText.toLowerCase();
+		int pendingNibble = -1;
+		for (int characterIndex = 0; characterIndex < inputText.length(); characterIndex++) {
+			char character = inputText.charAt(characterIndex);
+			int characterCode = 0;
+			for (int alphabetIndex = 0; alphabetIndex < chatAlphabet.length; alphabetIndex++) {
+				if (character != chatAlphabet[alphabetIndex]) {
 					continue;
 				}
-				k = l;
+				characterCode = alphabetIndex;
 				break;
 			}
 
-			if (k > 12) {
-				k += 195;
+			if (characterCode > 12) {
+				characterCode += 195;
 			}
-			if (i == -1) {
-				if (k < 13) {
-					i = k;
+			if (pendingNibble == -1) {
+				if (characterCode < 13) {
+					pendingNibble = characterCode;
 				} else {
-					stream.writeWordBigEndian(k);
+					output.writeWordBigEndian(characterCode);
 				}
-			} else if (k < 13) {
-				stream.writeWordBigEndian((i << 4) + k);
-				i = -1;
+			} else if (characterCode < 13) {
+				output.writeWordBigEndian((pendingNibble << 4) + characterCode);
+				pendingNibble = -1;
 			} else {
-				stream.writeWordBigEndian((i << 4) + (k >> 4));
-				i = k & 0xf;
+				output.writeWordBigEndian((pendingNibble << 4) + (characterCode >> 4));
+				pendingNibble = characterCode & 0xf;
 			}
 		}
-		if (i != -1) {
-			stream.writeWordBigEndian(i << 4);
+		if (pendingNibble != -1) {
+			output.writeWordBigEndian(pendingNibble << 4);
 		}
 	}
 
-	public static String normalizeChatText(String s) {
+	public static String normalizeChatText(String inputText) {
 		normalizationStream.currentOffset = 0;
-		encodeChatText(s, normalizationStream);
-		int j = normalizationStream.currentOffset;
+		encodeChatText(inputText, normalizationStream);
+		int encodedByteCount = normalizationStream.currentOffset;
 		normalizationStream.currentOffset = 0;
-		String s1 = decodeChatText(j, normalizationStream);
-		return s1;
+		String normalizedText = decodeChatText(encodedByteCount, normalizationStream);
+		return normalizedText;
 	}
 
 	private static final char[] decodedCharacters = new char[100];
 	private static final Stream normalizationStream = new Stream(new byte[100]);
-	private static final char[] validChars = {' ', 'e', 't', 'a', 'o', 'i', 'h', 'n', 's', 'r', 'd', 'l', 'u', 'm', 'w', 'c', 'y', 'f', 'g', 'p', 'b', 'v', 'k', 'x', 'j', 'q', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ', '!', '?', '.', ',', ':', ';', '(', ')', '-', '&', '*', '\\', '\'', '@', '#', '+', '=', '\243', '$', '%', '"', '[', ']'};
+	private static final char[] chatAlphabet = {' ', 'e', 't', 'a', 'o', 'i', 'h', 'n', 's', 'r', 'd', 'l', 'u', 'm', 'w', 'c', 'y', 'f', 'g', 'p', 'b', 'v', 'k', 'x', 'j', 'q', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ', '!', '?', '.', ',', ':', ';', '(', ')', '-', '&', '*', '\\', '\'', '@', '#', '+', '=', '\243', '$', '%', '"', '[', ']'};
 
 }

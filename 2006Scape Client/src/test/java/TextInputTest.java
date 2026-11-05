@@ -130,6 +130,86 @@ public class TextInputTest {
         assertEquals("", TextInput.normalizeChatText(""));
     }
 
+
+    @Test
+    public void entireWireAlphabetHasFixedCodesAtBothNibbleAlignments() {
+        String alphabet = " etaoihnsrdlumwcyfgpbvkxjqz0123456789 !?.,:;()-&*\\'@#+=\u00a3$%\"[]";
+        String[] codes = ("0 1 2 3 4 5 6 7 8 9 a b c "
+                + "d0 d1 d2 d3 d4 d5 d6 d7 d8 d9 da db dc dd de df "
+                + "e0 e1 e2 e3 e4 e5 e6 e7 e8 e9 ea eb ec ed ee ef "
+                + "f0 f1 f2 f3 f4 f5 f6 f7 f8 f9 fa fb fc fd fe ff").split(" ");
+        assertEquals(61, alphabet.length());
+        assertEquals(alphabet.length(), codes.length);
+        for (int index = 0; index < alphabet.length(); index++) {
+            char symbol = alphabet.charAt(index);
+            // Encoding chooses the first space entry; decoding accepts both.
+            String encodedCode = index == 37 ? "0" : codes[index];
+            assertEncoded(String.valueOf(symbol), packedNibbles(encodedCode));
+            assertEncoded("e" + symbol + "e", packedNibbles("1" + encodedCode + "1"));
+            assertEncoded("ee" + symbol + "e", packedNibbles("11" + encodedCode + "1"));
+            assertEncoded("m" + symbol + "e", packedNibbles("d0" + encodedCode + "1"));
+            String displaySymbol = symbol >= 'a' && symbol <= 'z'
+                    ? String.valueOf((char) (symbol - 'a' + 'A')) : String.valueOf(symbol);
+            assertDecoded(displaySymbol + (codes[index].length() == 1 ? " " : ""),
+                    packedNibbles(codes[index]));
+            assertDecoded("E" + symbol + (codes[index].length() == 1 ? "  " : " "), packedNibbles("1" + codes[index] + "0"));
+            assertDecoded("Ee" + symbol + (codes[index].length() == 1 ? " " : ""),
+                    packedNibbles("11" + codes[index]));
+        }
+    }
+
+    @Test
+    public void pendingExtendedPrefixSpansBytesButNotDecodeCalls() {
+        assertDecoded("M", 0xd0);
+        assertDecoded("E", 0x1d);
+        assertDecoded("M", 0xd0);
+        assertDecoded("Em ", 0x1d, 0x00);
+        assertDecoded("Eme", 0x1d, 0x01);
+        assertDecoded("Emm ", 0x1d, 0x0d, 0x00);
+        assertDecoded("Emm", 0x1d, 0x0d, 0x0d);
+        assertDecoded("  ", 0x00);
+        assertDecoded("Ee", 0x11);
+    }
+
+    @Test
+    public void sentenceCapitalizationWaitsForALetterAcrossDigitsAndSeparators() {
+        assertDecoded("0  Eee", 0xde, 0x00, 0x11, 0x1d);
+        assertDecoded("Ee!0  Eee", 0x11, 0xe9, 0xde, 0x00, 0x11, 0x1d);
+        assertDecoded("Ee,0  eee", 0x11, 0xec, 0xde, 0x00, 0x11, 0x1d);
+        assertDecoded("Ee?Ee.Ee!Ee", 0x11, 0xea, 0x11, 0xeb, 0x11, 0xe9, 0x11);
+    }
+
+    @Test
+    public void inputLimitCountsUtf16UnitsBeforeLocaleLowercaseExpansion() {
+        Locale previous = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.ENGLISH);
+            assertEncoded(repeat('e', 79) + "\u0130", repeatedBytes(39, 0x11, 0x15, 0x00));
+            assertEquals("E" + repeat('e', 78) + "i  ",
+                    TextInput.normalizeChatText(repeat('e', 79) + "\u0130"));
+            assertEncoded(repeat('e', 79) + "\ud83d\ude00", repeatedBytes(39, 0x11, 0x10));
+            assertEncoded(repeat('e', 78) + "\ud83d\ude00", repeatedBytes(39, 0x11, 0x00));
+            assertEquals("E" + repeat('e', 78) + " ",
+                    TextInput.normalizeChatText(repeat('e', 79) + "\ud83d\ude00"));
+            assertEncoded("\u0130", 0x50);
+            Locale.setDefault(new Locale("tr", "TR"));
+            assertEncoded("\u0130", 0x50);
+            assertEncoded("I", 0x00);
+        } finally {
+            Locale.setDefault(previous);
+        }
+    }
+
+    // Independent wire fixtures are concatenated hex digits, then padded to bytes.
+    private static int[] packedNibbles(String hexadecimal) {
+        if ((hexadecimal.length() & 1) != 0) hexadecimal += "0";
+        int[] result = new int[hexadecimal.length() / 2];
+        for (int index = 0; index < result.length; index++) {
+            result[index] = Integer.parseInt(hexadecimal.substring(index * 2, index * 2 + 2), 16);
+        }
+        return result;
+    }
+
     private static void assertEncoded(String text, int... expected) {
         Stream output = new Stream(new byte[100]);
         TextInput.encodeChatText(text, output);
