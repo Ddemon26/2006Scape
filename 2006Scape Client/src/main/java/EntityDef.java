@@ -331,6 +331,6 @@ public final class EntityDef {
 	private int anInt92;
 	public boolean aBoolean93;
 	private int[] anIntArray94;
-	public static MRUNodes mruNodes = new MRUNodes(30);
+	public static LruCache mruNodes = new LruCache(30);
 
 }

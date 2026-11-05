@@ -490,12 +490,12 @@ public final class ObjectDef {
 	public byte description[];
 	public boolean hasActions;
 	public boolean aBoolean779;
-	public static MRUNodes mruNodes2 = new MRUNodes(30);
+	public static LruCache mruNodes2 = new LruCache(30);
 	public int anInt781;
 	private static ObjectDef[] cache;
 	private int anInt783;
 	private int[] modifiedModelColors;
-	public static MRUNodes mruNodes1 = new MRUNodes(500);
+	public static LruCache mruNodes1 = new LruCache(500);
 	public String actions[];
 
 }

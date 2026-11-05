@@ -92,6 +92,6 @@ public final class SpotAnim {
 	public int anInt412;
 	public int anInt413;
 	public int anInt414;
-	public static MRUNodes aMRUNodes_415 = new MRUNodes(30);
+	public static LruCache aMRUNodes_415 = new LruCache(30);
 
 }

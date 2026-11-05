@@ -2367,8 +2367,8 @@ public final class ItemDef {
 	public int value;
 	private int[] modifiedModelColors;
 	public int id;
-	static MRUNodes mruNodes1 = new MRUNodes(100);
-	public static MRUNodes mruNodes2 = new MRUNodes(50);
+	static LruCache mruNodes1 = new LruCache(100);
+	public static LruCache mruNodes2 = new LruCache(50);
 	private int[] originalModelColors;
 	public boolean membersObject;
 	private int anInt162;

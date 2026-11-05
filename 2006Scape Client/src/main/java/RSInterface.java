@@ -10,7 +10,7 @@ public final class RSInterface {
 	}
 	
 	public static void unpack(StreamLoader streamLoader, TextDrawingArea textDrawingAreas[], StreamLoader streamLoader_1) {
-		spriteCache = new MRUNodes(50000);
+		spriteCache = new LruCache(50000);
 		Stream stream = new Stream(streamLoader.getDataForName("data"));
 		int i = -1;
 		int j = stream.readUnsignedWord();
@@ -283,7 +283,7 @@ public final class RSInterface {
 	}
 
 	public static void method208(Model model, int id, int type) {
-		aMRUNodes_264.unlinkAll();
+		aMRUNodes_264.clear();
 		if (model != null && type != 4) {
 			aMRUNodes_264.removeFromCache(model, (type << 16) + id);
 		}
@@ -349,7 +349,7 @@ public final class RSInterface {
 	public boolean aBoolean235;
 	public int parentID;
 	public int spellUsableOn;
-	private static MRUNodes spriteCache;
+	private static LruCache spriteCache;
 	public int anInt239;
 	public int children[];
 	public int childX[];
@@ -374,7 +374,7 @@ public final class RSInterface {
 	public int scrollMax;
 	public int type;
 	public int anInt263;
-	private static final MRUNodes aMRUNodes_264 = new MRUNodes(30);
+	private static final LruCache aMRUNodes_264 = new LruCache(30);
 	public int anInt265;
 	public boolean aBoolean266;
 	public int height;

@@ -26,7 +26,7 @@ public class InterfaceSpriteCacheTest {
         cacheField = RSInterface.class.getDeclaredField("spriteCache");
         cacheField.setAccessible(true);
         previousCache = cacheField.get(null);
-        cacheField.set(null, new MRUNodes(20));
+        cacheField.set(null, new LruCache(20));
         loader = RSInterface.class.getDeclaredMethod("loadCachedSprite", int.class, StreamLoader.class, String.class);
         loader.setAccessible(true);
     }
@@ -94,13 +94,13 @@ public class InterfaceSpriteCacheTest {
 
     @Test
     public void cacheFieldHoldsSpritesUnderTheShiftedNameHashPlusIndex() throws Exception {
-        MRUNodes cache = (MRUNodes) cacheField.get(null);
+        LruCache cache = (LruCache) cacheField.get(null);
         assertNull(cache.insertFromCache(8448L));
         Sprite a0 = load(0, archive(), "a");
         Sprite a1 = load(1, archive(), "a");
         assertSame(a0, cache.insertFromCache(8448L)); // 33 * 256 + 0
         assertSame(a1, cache.insertFromCache(8449L)); // 33 * 256 + 1
-        cacheField.set(null, new MRUNodes(20));
+        cacheField.set(null, new LruCache(20));
         Sprite fresh = load(0, archive(), "a");
         assertNotSame(a0, fresh);
         assertArrayEquals(a0.pixels, fresh.pixels);
@@ -158,7 +158,7 @@ public class InterfaceSpriteCacheTest {
     public void signedIndexIsAddedToTheKeyWithoutMaskingOrRangeValidation() throws Exception {
         int[] indices = {Integer.MIN_VALUE, -257, -256, -1, 0, 1, 255, 256, Integer.MAX_VALUE};
         long[] keys = {-2147475200L, 8191L, 8192L, 8447L, 8448L, 8449L, 8703L, 8704L, 2147492095L};
-        MRUNodes cache = (MRUNodes) cacheField.get(null);
+        LruCache cache = (LruCache) cacheField.get(null);
         for (int n = 0; n < indices.length; n++) {
             Sprite marker = new Sprite(1, 1);
             marker.pixels[0] = n + 1;
@@ -176,7 +176,7 @@ public class InterfaceSpriteCacheTest {
         Sprite first = load(0, redFirst, "a");
         assertArrayEquals(new int[] {0xff0000}, first.pixels);
         assertSame(first, load(0, blueFirst, "a"));
-        cacheField.set(null, new MRUNodes(20));
+        cacheField.set(null, new LruCache(20));
         Sprite second = load(0, blueFirst, "a");
         assertNotSame(first, second);
         assertArrayEquals(new int[] {0x0000ff}, second.pixels);
@@ -186,7 +186,7 @@ public class InterfaceSpriteCacheTest {
     @Test
     public void outOfArchiveIndexFailureDoesNotPoisonLaterValidLoads() throws Exception {
         assertNull(load(2, archive(), "a"));
-        assertNull(((MRUNodes) cacheField.get(null)).insertFromCache(8450L));
+        assertNull(((LruCache) cacheField.get(null)).insertFromCache(8450L));
         Sprite valid = load(1, archive(), "a");
         assertArrayEquals(new int[] {0x0000ff}, valid.pixels);
         assertSame(valid, load(1, null, "a"));

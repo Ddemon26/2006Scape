@@ -352,7 +352,7 @@ public final class Player extends Entity {
 	public int team;
 	private int anInt1702;
 	public String name;
-	static MRUNodes mruNodes = new MRUNodes(260);
+	static LruCache mruNodes = new LruCache(260);
 	public int combatLevel;
 	public int headIcon;
 	public int skullIcon;

@@ -806,7 +806,7 @@ public class Game extends RSApplet {
 			method63();
 		} catch (Exception exception) {
 		}
-		ObjectDef.mruNodes1.unlinkAll();
+		ObjectDef.mruNodes1.clear();
 		if (super.gameFrame != null) {
 			stream.createFrame(210);
 			stream.writeDWord(0x3f008edd);
@@ -853,13 +853,13 @@ public class Game extends RSApplet {
 	}
 
 	public void unlinkMRUNodes() {
-		ObjectDef.mruNodes1.unlinkAll();
-		ObjectDef.mruNodes2.unlinkAll();
-		EntityDef.mruNodes.unlinkAll();
-		ItemDef.mruNodes2.unlinkAll();
-		ItemDef.mruNodes1.unlinkAll();
-		Player.mruNodes.unlinkAll();
-		SpotAnim.aMRUNodes_415.unlinkAll();
+		ObjectDef.mruNodes1.clear();
+		ObjectDef.mruNodes2.clear();
+		EntityDef.mruNodes.clear();
+		ItemDef.mruNodes2.clear();
+		ItemDef.mruNodes1.clear();
+		Player.mruNodes.clear();
+		SpotAnim.aMRUNodes_415.clear();
 	}
 
 	public void method24(int i) {
@@ -1401,7 +1401,7 @@ public class Game extends RSApplet {
 			if (config == 4) {
 				Texture.method372(0.59999999999999998D);
 			}
-			ItemDef.mruNodes1.unlinkAll();
+			ItemDef.mruNodes1.clear();
 			welcomeScreenRaised = true;
 		}
 		if (action == 3) {
