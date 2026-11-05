@@ -5221,7 +5221,7 @@ public class Game extends RSApplet {
 						stream.method425(j2);
 						aStream_834.currentOffset = 0;
 						TextInput.encodeChatText(inputString, aStream_834);
-						stream.method441(0, aStream_834.buffer, aStream_834.currentOffset);
+						stream.writeReversedBytesAdd128(0, aStream_834.buffer, aStream_834.currentOffset);
 						stream.writeBytes(stream.currentOffset - j3);
 						inputString = TextInput.normalizeChatText(inputString);
 						inputString = Censor.doCensor(inputString);
@@ -8599,7 +8599,7 @@ public class Game extends RSApplet {
 				if (!flag && anInt1251 == 0) {
 					try {
 						aStream_834.currentOffset = 0;
-						stream.method442(j3, 0, aStream_834.buffer);
+						stream.readReversedBytes(j3, 0, aStream_834.buffer);
 						aStream_834.currentOffset = 0;
 						String s = TextInput.decodeChatText(j3, aStream_834);
 						s = Censor.doCensor(s);

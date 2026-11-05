@@ -94,9 +94,9 @@ public final class Stream extends NodeSub {
 		buffer[currentOffset++] = 10;
 	}
 
-	public void writeBytes(byte abyte0[], int i, int j) {
-		for (int k = j; k < j + i; k++) {
-			buffer[currentOffset++] = abyte0[k];
+	public void writeBytes(byte source[], int length, int sourceOffset) {
+		for (int sourceIndex = sourceOffset; sourceIndex < sourceOffset + length; sourceIndex++) {
+			buffer[currentOffset++] = source[sourceIndex];
 		}
 
 	}
@@ -161,9 +161,9 @@ public final class Stream extends NodeSub {
 		return abyte0;
 	}
 
-	public void readBytes(int i, int j, byte abyte0[]) {
-		for (int l = j; l < j + i; l++) {
-			abyte0[l] = buffer[currentOffset++];
+	public void readBytes(int length, int destinationOffset, byte destination[]) {
+		for (int destinationIndex = destinationOffset; destinationIndex < destinationOffset + length; destinationIndex++) {
+			destination[destinationIndex] = buffer[currentOffset++];
 		}
 	}
 
@@ -310,16 +310,16 @@ public final class Stream extends NodeSub {
 		return ((buffer[currentOffset - 3] & 0xff) << 24) + ((buffer[currentOffset - 4] & 0xff) << 16) + ((buffer[currentOffset - 1] & 0xff) << 8) + (buffer[currentOffset - 2] & 0xff);
 	}
 
-	public void method441(int i, byte abyte0[], int j) {
-		for (int k = i + j - 1; k >= i; k--) {
-			buffer[currentOffset++] = (byte) (abyte0[k] + 128);
+	public void writeReversedBytesAdd128(int sourceOffset, byte source[], int length) {
+		for (int sourceIndex = sourceOffset + length - 1; sourceIndex >= sourceOffset; sourceIndex--) {
+			buffer[currentOffset++] = (byte) (source[sourceIndex] + 128);
 		}
 
 	}
 
-	public void method442(int i, int j, byte abyte0[]) {
-		for (int k = j + i - 1; k >= j; k--) {
-			abyte0[k] = buffer[currentOffset++];
+	public void readReversedBytes(int length, int destinationOffset, byte destination[]) {
+		for (int destinationIndex = destinationOffset + length - 1; destinationIndex >= destinationOffset; destinationIndex--) {
+			destination[destinationIndex] = buffer[currentOffset++];
 		}
 
 	}
