@@ -3251,7 +3251,7 @@ public class Game extends RSApplet {
 			anIntArray1030[i1]++;
 		}
 
-		method73();
+		processKeyboardInput();
 		super.idleTime++; //Idle timer nope!
 		/*if (super.idleTime > 12000) {
 			anInt1011 = 250;
@@ -4870,27 +4870,27 @@ public class Game extends RSApplet {
 	}
 
 
-	public void method73() {
+	public void processKeyboardInput() {
 		do {
-			int j = readChar(-796);
-			if (j == -1) {
+			int characterCode = readChar(-796);
+			if (characterCode == -1) {
 				break;
 			}
 			if (customTabAction == 1 || customTabAction == 2) {
-				if (j >= 48 && j <= 57 && promptInput.length() < 10 && !promptInput.toLowerCase().contains("k") && !promptInput.toLowerCase().contains("m") && !promptInput.toLowerCase().contains("b")) {
-					promptInput += (char) j;
+				if (characterCode >= 48 && characterCode <= 57 && promptInput.length() < 10 && !promptInput.toLowerCase().contains("k") && !promptInput.toLowerCase().contains("m") && !promptInput.toLowerCase().contains("b")) {
+					promptInput += (char) characterCode;
 					inputTaken = true;
 				}
-				if ((!promptInput.toLowerCase().contains("k") && !promptInput.toLowerCase().contains("m") && !promptInput.toLowerCase().contains("b")) && (j == 107 || j == 109) || j == 98) {
-					promptInput += (char) j;
+				if ((!promptInput.toLowerCase().contains("k") && !promptInput.toLowerCase().contains("m") && !promptInput.toLowerCase().contains("b")) && (characterCode == 107 || characterCode == 109) || characterCode == 98) {
+					promptInput += (char) characterCode;
 					inputTaken = true;
 				}
-				if (j == 8 && promptInput.length() > 0) {
+				if (characterCode == 8 && promptInput.length() > 0) {
 					promptInput = promptInput.substring(0, promptInput.length() - 1);
 					inputTaken = true;
 				}
 				try {
-					if (j == 13 || j == 10) {
+					if (characterCode == 13 || characterCode == 10) {
 						if (promptInput.length() > 0) {
 							if (promptInput.toLowerCase().contains("k")) {
 								promptInput = promptInput.replaceAll("k", "000");
@@ -4919,42 +4919,42 @@ public class Game extends RSApplet {
 					pushMessage("Please enter a lower amount.", 0, "");
 				}
 			} else if (openInterfaceID != -1 && openInterfaceID == reportAbuseInterfaceID) {
-				if (j == 8 && reportAbuseInput.length() > 0) {
+				if (characterCode == 8 && reportAbuseInput.length() > 0) {
 					reportAbuseInput = reportAbuseInput.substring(0, reportAbuseInput.length() - 1);
 				}
-				if ((j >= 97 && j <= 122 || j >= 65 && j <= 90 || j >= 48 && j <= 57 || j == 32) && reportAbuseInput.length() < 12) {
-					reportAbuseInput += (char) j;
+				if ((characterCode >= 97 && characterCode <= 122 || characterCode >= 65 && characterCode <= 90 || characterCode >= 48 && characterCode <= 57 || characterCode == 32) && reportAbuseInput.length() < 12) {
+					reportAbuseInput += (char) characterCode;
 				}
 			} else if (messagePromptRaised) {
-				if (j >= 32 && j <= 122 && promptInput.length() < 80) {
-					promptInput += (char) j;
+				if (characterCode >= 32 && characterCode <= 122 && promptInput.length() < 80) {
+					promptInput += (char) characterCode;
 					inputTaken = true;
 				}
-				if (j == 8 && promptInput.length() > 0) {
+				if (characterCode == 8 && promptInput.length() > 0) {
 					promptInput = promptInput.substring(0, promptInput.length() - 1);
 					inputTaken = true;
 				}
-				if (j == 13 || j == 10) {
+				if (characterCode == 13 || characterCode == 10) {
 					messagePromptRaised = false;
 					inputTaken = true;
 					if (ClientSettings.ANDROID) {
 						AndroidHooks.hideKeyboard();
 					}
 					if (friendsListAction == 1) {
-						long l = TextClass.encodeBase37Name(promptInput);
-						addFriend(l);
+						long friendName = TextClass.encodeBase37Name(promptInput);
+						addFriend(friendName);
 					}
 					if (friendsListAction == 2 && friendsCount > 0) {
-						long l1 = TextClass.encodeBase37Name(promptInput);
-						delFriend(l1);
+						long friendNameToRemove = TextClass.encodeBase37Name(promptInput);
+						delFriend(friendNameToRemove);
 					}
 					if (friendsListAction == 3 && promptInput.length() > 0) {
 						stream.writeEncryptedOpcode(126);
 						stream.writeByte(0);
-						int k = stream.currentOffset;
+						int privatePayloadStart = stream.currentOffset;
 						stream.writeLongBigEndian(aLong953);
 						TextInput.encodeChatText(promptInput, stream);
-						stream.backpatchBytePayloadLength(stream.currentOffset - k);
+						stream.backpatchBytePayloadLength(stream.currentOffset - privatePayloadStart);
 						promptInput = TextInput.normalizeChatText(promptInput);
 						promptInput = Censor.doCensor(promptInput);
 						pushMessage(promptInput, 6, TextClass.formatDisplayName(TextClass.decodeBase37Name(aLong953)));
@@ -4968,29 +4968,29 @@ public class Game extends RSApplet {
 						}
 					}
 					if (friendsListAction == 4 && ignoreCount < 100) {
-						long l2 = TextClass.encodeBase37Name(promptInput);
-						addIgnore(l2);
+						long ignoreName = TextClass.encodeBase37Name(promptInput);
+						addIgnore(ignoreName);
 					}
 					if (friendsListAction == 5 && ignoreCount > 0) {
-						long l3 = TextClass.encodeBase37Name(promptInput);
-						delIgnore(l3);
+						long ignoreNameToRemove = TextClass.encodeBase37Name(promptInput);
+						delIgnore(ignoreNameToRemove);
 					}
 				}
 			} else if (inputDialogState == 1) {
-				if (j >= 48 && j <= 57 && amountOrNameInput.length() < 10 && !amountOrNameInput.toLowerCase().contains("k") && !amountOrNameInput.toLowerCase().contains("m") && !amountOrNameInput.toLowerCase().contains("b")) {
-					amountOrNameInput += (char) j;
+				if (characterCode >= 48 && characterCode <= 57 && amountOrNameInput.length() < 10 && !amountOrNameInput.toLowerCase().contains("k") && !amountOrNameInput.toLowerCase().contains("m") && !amountOrNameInput.toLowerCase().contains("b")) {
+					amountOrNameInput += (char) characterCode;
 					inputTaken = true;
 				}
-				if ((!amountOrNameInput.toLowerCase().contains("k") && !amountOrNameInput.toLowerCase().contains("m") && !amountOrNameInput.toLowerCase().contains("b")) && (j == 107 || j == 109) || j == 98) {
-					amountOrNameInput += (char) j;
+				if ((!amountOrNameInput.toLowerCase().contains("k") && !amountOrNameInput.toLowerCase().contains("m") && !amountOrNameInput.toLowerCase().contains("b")) && (characterCode == 107 || characterCode == 109) || characterCode == 98) {
+					amountOrNameInput += (char) characterCode;
 					inputTaken = true;
 				}
-				if (j == 8 && amountOrNameInput.length() > 0) {
+				if (characterCode == 8 && amountOrNameInput.length() > 0) {
 					amountOrNameInput = amountOrNameInput.substring(0, amountOrNameInput.length() - 1);
 					inputTaken = true;
 				}
 				try {
-					if (j == 13 || j == 10) {
+					if (characterCode == 13 || characterCode == 10) {
 						if (amountOrNameInput.length() > 0) {
 							if (amountOrNameInput.toLowerCase().contains("k")) {
 								amountOrNameInput = amountOrNameInput.replaceAll("k", "000");
@@ -5019,15 +5019,15 @@ public class Game extends RSApplet {
 					pushMessage("Please enter a lower amount.", 0, "");
 				}
 			} else if (inputDialogState == 2) {
-				if (j >= 32 && j <= 122 && amountOrNameInput.length() < 12) {
-					amountOrNameInput += (char) j;
+				if (characterCode >= 32 && characterCode <= 122 && amountOrNameInput.length() < 12) {
+					amountOrNameInput += (char) characterCode;
 					inputTaken = true;
 				}
-				if (j == 8 && amountOrNameInput.length() > 0) {
+				if (characterCode == 8 && amountOrNameInput.length() > 0) {
 					amountOrNameInput = amountOrNameInput.substring(0, amountOrNameInput.length() - 1);
 					inputTaken = true;
 				}
-				if (j == 13 || j == 10) {
+				if (characterCode == 13 || characterCode == 10) {
 					if (amountOrNameInput.length() > 0) {
 						stream.writeEncryptedOpcode(60);
 						stream.writeLongBigEndian(TextClass.encodeBase37Name(amountOrNameInput));
@@ -5040,8 +5040,8 @@ public class Game extends RSApplet {
 				}
 			} else {
 				// typing characters
-				if (j >= 32 && j <= 122 && inputString.length() < 80) {
-					inputString += (char) j;
+				if (characterCode >= 32 && characterCode <= 122 && inputString.length() < 80) {
+					inputString += (char) characterCode;
 					inputTaken = true;
 					if (inputString.startsWith("::search")) {
 						String[] args = inputString.split(" ");
@@ -5064,7 +5064,7 @@ public class Game extends RSApplet {
 					}
 				}
 				// deleting characters
-				if (j == 8 && inputString.length() > 0) {
+				if (characterCode == 8 && inputString.length() > 0) {
 					inputString = inputString.substring(0, inputString.length() - 1);
 					inputTaken = true;
 					if (inputString.startsWith("::search")) {
@@ -5088,7 +5088,7 @@ public class Game extends RSApplet {
 					}
 				}
 				// submitted string
-				if ((j == 13 || j == 10) && inputString.length() > 0) {
+				if ((characterCode == 13 || characterCode == 10) && inputString.length() > 0) {
 					if (inputString.equals("::gfxtgl") || inputString.equals("::tglgfx") || inputString.equals("::togglerender") || inputString.equals("::togglegfx")) {
 						graphicsEnabled = !graphicsEnabled;
 					}
@@ -5159,77 +5159,77 @@ public class Game extends RSApplet {
 						stream.writeByte(inputString.length() - 1);
 						stream.writeLfTerminatedString(inputString.substring(2));
 					} else {
-						String s = inputString.toLowerCase();
-						int j2 = 0;
-						if (s.startsWith("yellow:")) {
-							j2 = 0;
+						String lowercaseChatText = inputString.toLowerCase();
+						int chatColorCode = 0;
+						if (lowercaseChatText.startsWith("yellow:")) {
+							chatColorCode = 0;
 							inputString = inputString.substring(7);
-						} else if (s.startsWith("red:")) {
-							j2 = 1;
+						} else if (lowercaseChatText.startsWith("red:")) {
+							chatColorCode = 1;
 							inputString = inputString.substring(4);
-						} else if (s.startsWith("green:")) {
-							j2 = 2;
+						} else if (lowercaseChatText.startsWith("green:")) {
+							chatColorCode = 2;
 							inputString = inputString.substring(6);
-						} else if (s.startsWith("cyan:")) {
-							j2 = 3;
+						} else if (lowercaseChatText.startsWith("cyan:")) {
+							chatColorCode = 3;
 							inputString = inputString.substring(5);
-						} else if (s.startsWith("purple:")) {
-							j2 = 4;
+						} else if (lowercaseChatText.startsWith("purple:")) {
+							chatColorCode = 4;
 							inputString = inputString.substring(7);
-						} else if (s.startsWith("white:")) {
-							j2 = 5;
+						} else if (lowercaseChatText.startsWith("white:")) {
+							chatColorCode = 5;
 							inputString = inputString.substring(6);
-						} else if (s.startsWith("flash1:")) {
-							j2 = 6;
+						} else if (lowercaseChatText.startsWith("flash1:")) {
+							chatColorCode = 6;
 							inputString = inputString.substring(7);
-						} else if (s.startsWith("flash2:")) {
-							j2 = 7;
+						} else if (lowercaseChatText.startsWith("flash2:")) {
+							chatColorCode = 7;
 							inputString = inputString.substring(7);
-						} else if (s.startsWith("flash3:")) {
-							j2 = 8;
+						} else if (lowercaseChatText.startsWith("flash3:")) {
+							chatColorCode = 8;
 							inputString = inputString.substring(7);
-						} else if (s.startsWith("glow1:")) {
-							j2 = 9;
+						} else if (lowercaseChatText.startsWith("glow1:")) {
+							chatColorCode = 9;
 							inputString = inputString.substring(6);
-						} else if (s.startsWith("glow2:")) {
-							j2 = 10;
+						} else if (lowercaseChatText.startsWith("glow2:")) {
+							chatColorCode = 10;
 							inputString = inputString.substring(6);
-						} else if (s.startsWith("glow3:")) {
-							j2 = 11;
+						} else if (lowercaseChatText.startsWith("glow3:")) {
+							chatColorCode = 11;
 							inputString = inputString.substring(6);
 						}
-						s = inputString.toLowerCase();
-						int i3 = 0;
-						if (s.startsWith("wave:")) {
-							i3 = 1;
+						lowercaseChatText = inputString.toLowerCase();
+						int chatEffectCode = 0;
+						if (lowercaseChatText.startsWith("wave:")) {
+							chatEffectCode = 1;
 							inputString = inputString.substring(5);
-						} else if (s.startsWith("wave2:")) {
-							i3 = 2;
+						} else if (lowercaseChatText.startsWith("wave2:")) {
+							chatEffectCode = 2;
 							inputString = inputString.substring(6);
-						} else if (s.startsWith("shake:")) {
-							i3 = 3;
+						} else if (lowercaseChatText.startsWith("shake:")) {
+							chatEffectCode = 3;
 							inputString = inputString.substring(6);
-						} else if (s.startsWith("scroll:")) {
-							i3 = 4;
+						} else if (lowercaseChatText.startsWith("scroll:")) {
+							chatEffectCode = 4;
 							inputString = inputString.substring(7);
-						} else if (s.startsWith("slide:")) {
-							i3 = 5;
+						} else if (lowercaseChatText.startsWith("slide:")) {
+							chatEffectCode = 5;
 							inputString = inputString.substring(6);
 						}
 						stream.writeEncryptedOpcode(4);
 						stream.writeByte(0);
-						int j3 = stream.currentOffset;
-						stream.writeByte128MinusValue(i3);
-						stream.writeByte128MinusValue(j2);
+						int publicPayloadStart = stream.currentOffset;
+						stream.writeByte128MinusValue(chatEffectCode);
+						stream.writeByte128MinusValue(chatColorCode);
 						aStream_834.currentOffset = 0;
 						TextInput.encodeChatText(inputString, aStream_834);
 						stream.writeReversedBytesAdd128(0, aStream_834.buffer, aStream_834.currentOffset);
-						stream.backpatchBytePayloadLength(stream.currentOffset - j3);
+						stream.backpatchBytePayloadLength(stream.currentOffset - publicPayloadStart);
 						inputString = TextInput.normalizeChatText(inputString);
 						inputString = Censor.doCensor(inputString);
 						myPlayer.textSpoken = inputString;
-						myPlayer.anInt1513 = j2;
-						myPlayer.anInt1531 = i3;
+						myPlayer.anInt1513 = chatColorCode;
+						myPlayer.anInt1531 = chatEffectCode;
 						myPlayer.textCycle = 150;
 						if (myPrivilege >= 1) {
 							pushMessage(myPlayer.textSpoken, 2, "@cr" + Math.min(2, myPrivilege) + "@" + myPlayer.name);
