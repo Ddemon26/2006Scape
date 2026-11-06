@@ -6038,7 +6038,7 @@ public class Game extends RSApplet {
 			int k = socketStream.read();
 			int i1 = k;
 			if (k == 0) {
-				socketStream.flushInputStream(inStream.buffer, 8);
+				socketStream.readFully(inStream.buffer, 8);
 				inStream.currentOffset = 0;
 				aLong1215 = inStream.readLongBigEndian();
 				int ai[] = new int[4];
@@ -10589,7 +10589,7 @@ public class Game extends RSApplet {
 				return false;
 			}
 			if (pktType == -1) {
-				socketStream.flushInputStream(inStream.buffer, 1);
+				socketStream.readFully(inStream.buffer, 1);
 				pktType = inStream.buffer[0] & 0xff;
 				if (encryption != null) {
 					pktType = pktType - encryption.getNextKey() & 0xff;
@@ -10599,7 +10599,7 @@ public class Game extends RSApplet {
 			}
 			if (pktSize == -1) {
 				if (i > 0) {
-					socketStream.flushInputStream(inStream.buffer, 1);
+					socketStream.readFully(inStream.buffer, 1);
 					pktSize = inStream.buffer[0] & 0xff;
 					i--;
 				} else {
@@ -10608,7 +10608,7 @@ public class Game extends RSApplet {
 			}
 			if (pktSize == -2) {
 				if (i > 1) {
-					socketStream.flushInputStream(inStream.buffer, 2);
+					socketStream.readFully(inStream.buffer, 2);
 					inStream.currentOffset = 0;
 					pktSize = inStream.readUnsignedShortBigEndian();
 					i -= 2;
@@ -10620,7 +10620,7 @@ public class Game extends RSApplet {
 				return false;
 			}
 			inStream.currentOffset = 0;
-			socketStream.flushInputStream(inStream.buffer, pktSize);
+			socketStream.readFully(inStream.buffer, pktSize);
 			anInt1009 = 0;
 			prevPktType2 = prevPktType;
 			prevPktType = anInt841;

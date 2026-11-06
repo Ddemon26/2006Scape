@@ -9,12 +9,12 @@ import java.net.Socket;
 
 final class RSSocket implements Runnable {
 
-	public RSSocket(RSApplet RSApplet_, Socket socket1) throws IOException {
+	public RSSocket(RSApplet applet, Socket connection) throws IOException {
 		closed = false;
 		isWriter = false;
 		hasIOError = false;
-		rsApplet = RSApplet_;
-		socket = socket1;
+		rsApplet = applet;
+		socket = connection;
 		socket.setSoTimeout(30000);
 		socket.setTcpNoDelay(true);
 		inputStream = socket.getInputStream();
@@ -33,7 +33,7 @@ final class RSSocket implements Runnable {
 			if (socket != null) {
 				socket.close();
 			}
-		} catch (IOException _ex) {
+		} catch (IOException closeFailure) {
 			System.out.println("Error closing stream");
 		}
 		isWriter = false;
@@ -59,23 +59,23 @@ final class RSSocket implements Runnable {
 		}
 	}
 
-	public void flushInputStream(byte abyte0[], int j) throws IOException {
-		int i = 0;// was parameter
+	public void readFully(byte destination[], int remainingBytes) throws IOException {
+		int destinationOffset = 0;// was parameter
 		if (closed) {
 			return;
 		}
-		int k;
-		for (; j > 0; j -= k) {
-			k = inputStream.read(abyte0, i, j);
-			if (k <= 0) {
+		int bytesRead;
+		for (; remainingBytes > 0; remainingBytes -= bytesRead) {
+			bytesRead = inputStream.read(destination, destinationOffset, remainingBytes);
+			if (bytesRead <= 0) {
 				throw new IOException("EOF");
 			}
-			i += k;
+			destinationOffset += bytesRead;
 		}
 
 	}
 
-	public void queueBytes(int i, byte abyte0[]) throws IOException {
+	public void queueBytes(int byteCount, byte source[]) throws IOException {
 		if (closed) {
 			return;
 		}
@@ -87,10 +87,10 @@ final class RSSocket implements Runnable {
 			buffer = new byte[5000];
 		}
 		synchronized (this) {
-			for (int l = 0; l < i; l++) {
-				buffer[buffIndex] = abyte0[l];
-				buffIndex = (buffIndex + 1) % 5000;
-				if (buffIndex == (writeIndex + 4900) % 5000) {
+			for (int sourceIndex = 0; sourceIndex < byteCount; sourceIndex++) {
+				buffer[enqueueIndex] = source[sourceIndex];
+				enqueueIndex = (enqueueIndex + 1) % 5000;
+				if (enqueueIndex == (writeIndex + 4900) % 5000) {
 					throw new IOException("buffer overflow");
 				}
 			}
@@ -106,37 +106,37 @@ final class RSSocket implements Runnable {
 	@Override
 	public void run() {
 		while (isWriter) {
-			int i;
-			int j;
+			int contiguousByteCount;
+			int bufferOffset;
 			synchronized (this) {
-				if (buffIndex == writeIndex) {
+				if (enqueueIndex == writeIndex) {
 					try {
 						wait();
-					} catch (InterruptedException _ex) {
+					} catch (InterruptedException waitInterrupted) {
 					}
 				}
 				if (!isWriter) {
 					return;
 				}
-				j = writeIndex;
-				if (buffIndex >= writeIndex) {
-					i = buffIndex - writeIndex;
+				bufferOffset = writeIndex;
+				if (enqueueIndex >= writeIndex) {
+					contiguousByteCount = enqueueIndex - writeIndex;
 				} else {
-					i = 5000 - writeIndex;
+					contiguousByteCount = 5000 - writeIndex;
 				}
 			}
-			if (i > 0) {
+			if (contiguousByteCount > 0) {
 				try {
-					outputStream.write(buffer, j, i);
-				} catch (IOException _ex) {
+					outputStream.write(buffer, bufferOffset, contiguousByteCount);
+				} catch (IOException writeFailure) {
 					hasIOError = true;
 				}
-				writeIndex = (writeIndex + i) % 5000;
+				writeIndex = (writeIndex + contiguousByteCount) % 5000;
 				try {
-					if (buffIndex == writeIndex) {
+					if (enqueueIndex == writeIndex) {
 						outputStream.flush();
 					}
-				} catch (IOException _ex) {
+				} catch (IOException flushFailure) {
 					hasIOError = true;
 				}
 			}
@@ -146,12 +146,12 @@ final class RSSocket implements Runnable {
 	public void printDebug() {
 		System.out.println("dummy:" + closed);
 		System.out.println("tcycl:" + writeIndex);
-		System.out.println("tnum:" + buffIndex);
+		System.out.println("tnum:" + enqueueIndex);
 		System.out.println("writer:" + isWriter);
 		System.out.println("ioerror:" + hasIOError);
 		try {
 			System.out.println("available:" + available());
-		} catch (IOException _ex) {
+		} catch (IOException debugFailure) {
 		}
 	}
 
@@ -162,7 +162,7 @@ final class RSSocket implements Runnable {
 	private final RSApplet rsApplet;
 	private byte[] buffer;
 	private int writeIndex;
-	private int buffIndex;
+	private int enqueueIndex;
 	private boolean isWriter;
 	private boolean hasIOError;
 }
