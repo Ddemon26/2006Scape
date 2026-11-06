@@ -7552,7 +7552,7 @@ public class Game extends RSApplet {
 			entity.method446();
 		}
 		if (entity.anInt1547 > loopCycle) {
-			method97(entity);
+			advanceEntityToForcedMovementStart(entity);
 		} else if (entity.anInt1548 >= loopCycle) {
 			method98(entity);
 		} else {
@@ -7562,12 +7562,12 @@ public class Game extends RSApplet {
 		method101(entity);
 	}
 
-	public void method97(Entity entity) {
-		int i = entity.anInt1547 - loopCycle;
-		int j = entity.anInt1543 * 128 + entity.anInt1540 * 64;
-		int k = entity.anInt1545 * 128 + entity.anInt1540 * 64;
-		entity.x += (j - entity.x) / i;
-		entity.y += (k - entity.y) / i;
+	public void advanceEntityToForcedMovementStart(Entity entity) {
+		int ticksUntilMovementStart = entity.anInt1547 - loopCycle;
+		int movementStartX = entity.anInt1543 * 128 + entity.anInt1540 * 64;
+		int movementStartY = entity.anInt1545 * 128 + entity.anInt1540 * 64;
+		entity.x += (movementStartX - entity.x) / ticksUntilMovementStart;
+		entity.y += (movementStartY - entity.y) / ticksUntilMovementStart;
 		entity.anInt1503 = 0;
 		if (entity.anInt1549 == 0) {
 			entity.turnDirection = 1024;
