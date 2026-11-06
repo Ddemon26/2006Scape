@@ -81,12 +81,12 @@ final class TextClass {
 		}
 	}
 
-	public static String passwordAsterisks(String s) {
-		StringBuffer stringbuffer = new StringBuffer();
-		for (int j = 0; j < s.length(); j++) {
-			stringbuffer.append("*");
+	public static String passwordAsterisks(String inputPassword) {
+		StringBuffer maskedPassword = new StringBuffer();
+		for (int utf16Index = 0; utf16Index < inputPassword.length(); utf16Index++) {
+			maskedPassword.append("*");
 		}
-		return stringbuffer.toString();
+		return maskedPassword.toString();
 	}
 
 	private static final char[] base37Digits = {'_', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};

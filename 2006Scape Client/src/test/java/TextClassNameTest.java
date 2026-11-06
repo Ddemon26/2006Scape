@@ -4,6 +4,38 @@ import java.util.Locale;
 import org.junit.Test;
 
 public class TextClassNameTest {
+    @Test public void passwordMaskCountsUtf16UnitsIncludingNoncharacters() {
+        String[][] cases = {{"", ""}, {"a", "*"}, {"Z9!?", "****"},
+                {"\u0000", "*"}, {"\ud83d\ude00", "**"}, {"\ud83d", "*"},
+                {"\ude00", "*"}, {"e\u0301", "**"}, {"@red@", "*****"},
+                {"a\ud83d\ude00b", "****"}};
+        for (String[] pair : cases) assertEquals(pair[1], TextClass.passwordAsterisks(pair[0]));
+    }
+
+    @Test public void passwordMaskDependsOnWidthAndNeverRetainsContent() {
+        String[] inputs = {"abcd", "WXYZ", "1234", "    ", "****", "\ud83d\ude00\ud83d\ude00"};
+        for (String value : inputs) assertEquals("****", TextClass.passwordAsterisks(value));
+        String value = "abcD";
+        TextClass.passwordAsterisks(value);
+        assertEquals("abcD", value);
+    }
+
+    @Test public void passwordMaskHandlesPrefixesAndBufferGrowthWithoutStateLeakage() {
+        StringBuilder value = new StringBuilder();
+        StringBuilder expected = new StringBuilder();
+        for (int size = 0; size <= 257; size++) {
+            assertEquals(expected.toString(), TextClass.passwordAsterisks(value.toString()));
+            assertEquals("", TextClass.passwordAsterisks(""));
+            value.append((char) (size + 1));
+            expected.append('*');
+        }
+    }
+
+    @Test public void nullPasswordKeepsItsFailureContract() {
+        try { TextClass.passwordAsterisks(null); fail("null password"); }
+        catch (NullPointerException expected) { }
+    }
+
     @Test public void eachAsciiLetterAndDigitHasItsBase37Value() {
         for (int index = 0; index < 26; index++) {
             String lower = String.valueOf((char) ('a' + index));
