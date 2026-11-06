@@ -37,17 +37,17 @@ public class Game extends RSApplet {
 	}
     
 
-	public static String intToKOrMilLongName(int i) {
-		String s = String.valueOf(i);
-		for (int k = s.length() - 3; k > 0; k -= 3) {
-			s = s.substring(0, k) + "," + s.substring(k);
+	public static String intToKOrMilLongName(int amount) {
+		String formattedAmount = String.valueOf(amount);
+		for (int commaIndex = formattedAmount.length() - 3; commaIndex > 0; commaIndex -= 3) {
+			formattedAmount = formattedAmount.substring(0, commaIndex) + "," + formattedAmount.substring(commaIndex);
 		}
-		if (s.length() > 8) {
-			s = "@gre@" + s.substring(0, s.length() - 8) + " million @whi@(" + s + ")";
-		} else if (s.length() > 4) {
-			s = "@cya@" + s.substring(0, s.length() - 4) + "K @whi@(" + s + ")";
+		if (formattedAmount.length() > 8) {
+			formattedAmount = "@gre@" + formattedAmount.substring(0, formattedAmount.length() - 8) + " million @whi@(" + formattedAmount + ")";
+		} else if (formattedAmount.length() > 4) {
+			formattedAmount = "@cya@" + formattedAmount.substring(0, formattedAmount.length() - 4) + "K @whi@(" + formattedAmount + ")";
 		}
-		return " " + s;
+		return " " + formattedAmount;
 	}
 	
 	static final boolean musicIsntNull() {
@@ -2159,34 +2159,34 @@ public class Game extends RSApplet {
 		return i2 * (128 - l1) + j2 * l1 >> 7;
 	}
 
-	public static String intToKOrMil(int j) {
-		if (j < 0x186a0) {
-			return String.valueOf(j);
+	public static String intToKOrMil(int amount) {
+		if (amount < 0x186a0) {
+			return String.valueOf(amount);
 		}
-		if (j < 0x989680) {
-			return j / 1000 + "K";
+		if (amount < 0x989680) {
+			return amount / 1000 + "K";
 		} else {
-			return j / 0xf4240 + "M";
+			return amount / 0xf4240 + "M";
 		}
 	}
 
 	public static String intToShortLetter(long number) {
-		DecimalFormat nf = new DecimalFormat("0.0");
-		double i = number;
-		if (i >= 1e9) { // 1B
-				return nf.format((i / 1e9)) + "B";
+		DecimalFormat oneDecimalFormat = new DecimalFormat("0.0");
+		double amountAsDouble = number;
+		if (amountAsDouble >= 1e9) { // 1B
+				return oneDecimalFormat.format((amountAsDouble / 1e9)) + "B";
 		}
-		if (i >= 1e7) { // 1K
-				return (int) (i / 1e6) + "M";
+		if (amountAsDouble >= 1e7) { // 1K
+				return (int) (amountAsDouble / 1e6) + "M";
 		}
-		if (i >= 1e6) { // 1M
-				return nf.format((i / 1e6)) + "M";
+		if (amountAsDouble >= 1e6) { // 1M
+				return oneDecimalFormat.format((amountAsDouble / 1e6)) + "M";
 		}
-		if (i >= 1e4) { // 1K
-				return (int) (i / 1e3) + "K";
+		if (amountAsDouble >= 1e4) { // 1K
+				return (int) (amountAsDouble / 1e3) + "K";
 		}
-		if (i >= 1e3) { // 1K
-				return nf.format((i / 1e3)) + "K";
+		if (amountAsDouble >= 1e3) { // 1K
+				return oneDecimalFormat.format((amountAsDouble / 1e3)) + "K";
 		}
 		return "" + number;
 	}
