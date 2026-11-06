@@ -2464,7 +2464,7 @@ public class Game extends RSApplet {
 			if ((l & 0x40) != 0) {
 				l += stream.readUnsignedByte() << 8;
 			}
-			method107(l, k, stream, player);
+			decodePlayerUpdateMask(l, k, stream, player);
 		}
 
 	}
@@ -8513,8 +8513,8 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method107(int i, int j, Stream stream, Player player) {
-		if ((i & 0x400) != 0) {
+	public void decodePlayerUpdateMask(int updateMask, int playerIndex, Stream stream, Player player) {
+		if ((updateMask & 0x400) != 0) {
 			player.anInt1543 = stream.readUnsignedByte128MinusValue();
 			player.anInt1545 = stream.readUnsignedByte128MinusValue();
 			player.anInt1544 = stream.readUnsignedByte128MinusValue();
@@ -8524,11 +8524,11 @@ public class Game extends RSApplet {
 			player.anInt1549 = stream.readUnsignedByte128MinusValue();
 			player.method446();
 		}
-		if ((i & 0x100) != 0) {
+		if ((updateMask & 0x100) != 0) {
 			player.anInt1520 = stream.readUnsignedShortLittleEndian();
-			int k = stream.readIntBigEndian();
-			player.anInt1524 = k >> 16;
-			player.anInt1523 = loopCycle + (k & 0xffff);
+			int packedSpotData = stream.readIntBigEndian();
+			player.anInt1524 = packedSpotData >> 16;
+			player.anInt1523 = loopCycle + (packedSpotData & 0xffff);
 			player.anInt1521 = 0;
 			player.anInt1522 = 0;
 			if (player.anInt1523 > loopCycle) {
@@ -8539,34 +8539,34 @@ public class Game extends RSApplet {
 			}
 			//processSound(player.anInt1520, 0, player, null);
 		}
-		if ((i & 8) != 0) {
-			int l = stream.readUnsignedShortLittleEndian();
-			if (l == 0x00ffff) {
-				l = -1;
+		if ((updateMask & 8) != 0) {
+			int animationId = stream.readUnsignedShortLittleEndian();
+			if (animationId == 0x00ffff) {
+				animationId = -1;
 			}
-			//processSound(l, 1, player, null);
-			int i2 = stream.readUnsignedNegatedByte();
-			if (l == player.anim && l != -1) {
-				int i3 = Animation.anims[l].anInt365;
-				if (i3 == 1) {
+			//processSound(animationId, 1, player, null);
+			int animationDelay = stream.readUnsignedNegatedByte();
+			if (animationId == player.anim && animationId != -1) {
+				int replayMode = Animation.anims[animationId].anInt365;
+				if (replayMode == 1) {
 					player.anInt1527 = 0;
 					player.anInt1528 = 0;
-					player.anInt1529 = i2;
+					player.anInt1529 = animationDelay;
 					player.anInt1530 = 0;
 				}
-				if (i3 == 2) {
+				if (replayMode == 2) {
 					player.anInt1530 = 0;
 				}
-			} else if (l == -1 || player.anim == -1 || Animation.anims[l].anInt359 >= Animation.anims[player.anim].anInt359) {
-				player.anim = l;
+			} else if (animationId == -1 || player.anim == -1 || Animation.anims[animationId].anInt359 >= Animation.anims[player.anim].anInt359) {
+				player.anim = animationId;
 				player.anInt1527 = 0;
 				player.anInt1528 = 0;
-				player.anInt1529 = i2;
+				player.anInt1529 = animationDelay;
 				player.anInt1530 = 0;
 				player.anInt1542 = player.smallXYIndex;
 			}
 		}
-		if ((i & 4) != 0) {
+		if ((updateMask & 4) != 0) {
 			player.textSpoken = stream.readLfTerminatedString();
 			if (player.textSpoken.charAt(0) == '~') {
 				player.textSpoken = player.textSpoken.substring(1);
@@ -8578,30 +8578,30 @@ public class Game extends RSApplet {
 			player.anInt1531 = 0;
 			player.textCycle = 150;
 		}
-		if ((i & 0x80) != 0) {
+		if ((updateMask & 0x80) != 0) {
 			int i1 = stream.readUnsignedShortLittleEndian();
 			int j2 = stream.readUnsignedByte();
-			int j3 = stream.readUnsignedNegatedByte();
-			int k3 = stream.currentOffset;
+			int compressedChatLength = stream.readUnsignedNegatedByte();
+			int chatPayloadStart = stream.currentOffset;
 			if (player.name != null && player.visible) {
-				long l3 = TextClass.encodeBase37Name(player.name);
-				boolean flag = false;
+				long encodedSpeakerName = TextClass.encodeBase37Name(player.name);
+				boolean ignoredSpeaker = false;
 				if (j2 <= 1) {
-					for (int i4 = 0; i4 < ignoreCount; i4++) {
-						if (ignoreListAsLongs[i4] != l3) {
+					for (int ignoreIndex = 0; ignoreIndex < ignoreCount; ignoreIndex++) {
+						if (ignoreListAsLongs[ignoreIndex] != encodedSpeakerName) {
 							continue;
 						}
-						flag = true;
+						ignoredSpeaker = true;
 						break;
 					}
 
 				}
-				if (!flag && anInt1251 == 0) {
+				if (!ignoredSpeaker && anInt1251 == 0) {
 					try {
 						aStream_834.currentOffset = 0;
-						stream.readReversedBytes(j3, 0, aStream_834.buffer);
+						stream.readReversedBytes(compressedChatLength, 0, aStream_834.buffer);
 						aStream_834.currentOffset = 0;
-						String s = TextInput.decodeChatText(j3, aStream_834);
+						String s = TextInput.decodeChatText(compressedChatLength, aStream_834);
 						s = Censor.doCensor(s);
 						player.textSpoken = s;
 						player.anInt1513 = i1 >> 8;
@@ -8623,38 +8623,38 @@ public class Game extends RSApplet {
 					}
 				}
 			}
-			stream.currentOffset = k3 + j3;
+			stream.currentOffset = chatPayloadStart + compressedChatLength;
 		}
-		if ((i & 1) != 0) {
+		if ((updateMask & 1) != 0) {
 			player.interactingEntity = stream.readUnsignedShortLittleEndian();
 			if (player.interactingEntity == 0x00ffff) {
 				player.interactingEntity = -1;
 			}
 		}
-		if ((i & 0x10) != 0) {
-			int j1 = stream.readUnsignedNegatedByte();
-			byte abyte0[] = new byte[j1];
-			Stream stream_1 = new Stream(abyte0);
-			stream.readBytes(j1, 0, abyte0);
-			aStreamArray895s[j] = stream_1;
-			player.updatePlayer(stream_1);
+		if ((updateMask & 0x10) != 0) {
+			int appearanceLength = stream.readUnsignedNegatedByte();
+			byte appearanceBytes[] = new byte[appearanceLength];
+			Stream appearanceStream = new Stream(appearanceBytes);
+			stream.readBytes(appearanceLength, 0, appearanceBytes);
+			aStreamArray895s[playerIndex] = appearanceStream;
+			player.updatePlayer(appearanceStream);
 		}
-		if ((i & 2) != 0) {
+		if ((updateMask & 2) != 0) {
 			player.anInt1538 = stream.readUnsignedShortLittleEndianSubtract128();
 			player.anInt1539 = stream.readUnsignedShortLittleEndian();
 		}
-		if ((i & 0x20) != 0) {
-			int k1 = stream.readUnsignedByte();
-			int k2 = stream.readUnsignedByteSubtract128();
-			player.updateHitData(k2, k1, loopCycle);
+		if ((updateMask & 0x20) != 0) {
+			int hitDamage = stream.readUnsignedByte();
+			int hitType = stream.readUnsignedByteSubtract128();
+			player.updateHitData(hitType, hitDamage, loopCycle);
 			player.loopCycleStatus = loopCycle + 300;
 			player.currentHealth = stream.readUnsignedNegatedByte();
 			player.maxHealth = stream.readUnsignedByte();
 		}
-		if ((i & 0x200) != 0) {
-			int l1 = stream.readUnsignedByte();
-			int l2 = stream.readUnsignedByte128MinusValue();
-			player.updateHitData(l2, l1, loopCycle);
+		if ((updateMask & 0x200) != 0) {
+			int hitDamage = stream.readUnsignedByte();
+			int hitType = stream.readUnsignedByte128MinusValue();
+			player.updateHitData(hitType, hitDamage, loopCycle);
 			player.loopCycleStatus = loopCycle + 300;
 			player.currentHealth = stream.readUnsignedByte();
 			player.maxHealth = stream.readUnsignedNegatedByte();
