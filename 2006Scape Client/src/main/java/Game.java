@@ -650,7 +650,7 @@ public class Game extends RSApplet {
 	public void method22() {
 		try {
 			anInt985 = -1;
-			aClass19_1056.removeAll();
+			transientGraphics.removeAll();
 			aClass19_1013.removeAll();
 			Texture.method366();
 			unlinkMRUNodes();
@@ -4806,7 +4806,7 @@ public class Game extends RSApplet {
 		groundArray = null;
 		aClass19_1179 = null;
 		aClass19_1013 = null;
-		aClass19_1056 = null;
+		transientGraphics = null;
 		menuActionCmd2 = null;
 		menuActionCmd3 = null;
 		menuActionID = null;
@@ -6142,7 +6142,7 @@ public class Game extends RSApplet {
 
 				myPlayer = playerArray[myPlayerIndex] = new Player();
 				aClass19_1013.removeAll();
-				aClass19_1056.removeAll();
+				transientGraphics.removeAll();
 				for (int l2 = 0; l2 < 4; l2++) {
 					for (int i3 = 0; i3 < 104; i3++) {
 						for (int k3 = 0; k3 < 104; k3++) {
@@ -8150,17 +8150,17 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method104() {
-		Animable_Sub3 class30_sub2_sub4_sub3 = (Animable_Sub3) aClass19_1056.firstFromTail();
-		for (; class30_sub2_sub4_sub3 != null; class30_sub2_sub4_sub3 = (Animable_Sub3) aClass19_1056.nextTowardHead()) {
-			if (class30_sub2_sub4_sub3.anInt1560 != plane || class30_sub2_sub4_sub3.aBoolean1567) {
-				class30_sub2_sub4_sub3.unlink();
-			} else if (loopCycle >= class30_sub2_sub4_sub3.anInt1564) {
-				class30_sub2_sub4_sub3.method454(anInt945);
-				if (class30_sub2_sub4_sub3.aBoolean1567) {
-					class30_sub2_sub4_sub3.unlink();
+	public void updateTransientGraphics() {
+		StationaryGraphic graphic = (StationaryGraphic) transientGraphics.firstFromTail();
+		for (; graphic != null; graphic = (StationaryGraphic) transientGraphics.nextTowardHead()) {
+			if (graphic.plane != plane || graphic.finished) {
+				graphic.unlink();
+			} else if (loopCycle >= graphic.startCycle) {
+				graphic.advanceAnimation(anInt945);
+				if (graphic.finished) {
+					graphic.unlink();
 				} else {
-					worldController.method285(class30_sub2_sub4_sub3.anInt1560, 0, class30_sub2_sub4_sub3.anInt1563, -1, class30_sub2_sub4_sub3.anInt1562, 60, class30_sub2_sub4_sub3.anInt1561, class30_sub2_sub4_sub3, false);
+					worldController.method285(graphic.plane, 0, graphic.height, -1, graphic.worldX, 60, graphic.worldY, graphic, false);
 				}
 			}
 		}
@@ -10227,8 +10227,8 @@ public class Game extends RSApplet {
 			if (i5 >= 0 && l7 >= 0 && i5 < 104 && l7 < 104) {
 				i5 = i5 * 128 + 64;
 				l7 = l7 * 128 + 64;
-				Animable_Sub3 class30_sub2_sub4_sub3 = new Animable_Sub3(plane, loopCycle, j15, k10, interpolatedGroundHeight(plane, l7, i5) - l12, l7, i5);
-				aClass19_1056.insertHead(class30_sub2_sub4_sub3);
+				StationaryGraphic graphic = new StationaryGraphic(plane, loopCycle, j15, k10, interpolatedGroundHeight(plane, l7, i5) - l12, l7, i5);
+				transientGraphics.insertHead(graphic);
 			}
 			return;
 		}
@@ -11835,7 +11835,7 @@ public class Game extends RSApplet {
 		method47(false);
 		method26(false);
 		method55();
-		method104();
+		updateTransientGraphics();
 		if (!aBoolean1160) {
 			int i = anInt1184;
 			if (anInt984 / 256 > i) {
@@ -12081,7 +12081,7 @@ public class Game extends RSApplet {
 		aBoolean1047 = true;
 		anIntArray1052 = new int[151];
 		anInt1054 = -1;
-		aClass19_1056 = new NodeList();
+		transientGraphics = new NodeList();
 		anIntArray1057 = new int[33];
 		aClass9_1059 = new RSInterface();
 		mapScenes = new Background[100];
@@ -12367,7 +12367,7 @@ public class Game extends RSApplet {
 	public StreamLoader titleStreamLoader;
 	public int anInt1054;
 	public int anInt1055;
-	public NodeList aClass19_1056;
+	public NodeList transientGraphics;
 	public final int[] anIntArray1057;
 	public final RSInterface aClass9_1059;
 	public Background[] mapScenes;
