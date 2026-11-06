@@ -9065,38 +9065,38 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method117(Stream stream) {
+	public void decodeLocalPlayerMovement(Stream stream) {
 		stream.beginBitReading();
-		int j = stream.readBitsMsbFirst(1);
-		if (j == 0) {
+		int hasMovementUpdate = stream.readBitsMsbFirst(1);
+		if (hasMovementUpdate == 0) {
 			return;
 		}
-		int k = stream.readBitsMsbFirst(2);
-		if (k == 0) {
+		int movementType = stream.readBitsMsbFirst(2);
+		if (movementType == 0) {
 			anIntArray894[anInt893++] = myPlayerIndex;
 			return;
 		}
-		if (k == 1) {
-			int l = stream.readBitsMsbFirst(3);
-			myPlayer.moveInDir(false, l);
-			int k1 = stream.readBitsMsbFirst(1);
-			if (k1 == 1) {
+		if (movementType == 1) {
+			int walkDirection = stream.readBitsMsbFirst(3);
+			myPlayer.moveInDir(false, walkDirection);
+			int walkHasMask = stream.readBitsMsbFirst(1);
+			if (walkHasMask == 1) {
 				anIntArray894[anInt893++] = myPlayerIndex;
 			}
 			return;
 		}
-		if (k == 2) {
-			int i1 = stream.readBitsMsbFirst(3);
-			myPlayer.moveInDir(true, i1);
-			int l1 = stream.readBitsMsbFirst(3);
-			myPlayer.moveInDir(true, l1);
-			int j2 = stream.readBitsMsbFirst(1);
-			if (j2 == 1) {
+		if (movementType == 2) {
+			int firstRunDirection = stream.readBitsMsbFirst(3);
+			myPlayer.moveInDir(true, firstRunDirection);
+			int secondRunDirection = stream.readBitsMsbFirst(3);
+			myPlayer.moveInDir(true, secondRunDirection);
+			int runHasMask = stream.readBitsMsbFirst(1);
+			if (runHasMask == 1) {
 				anIntArray894[anInt893++] = myPlayerIndex;
 			}
 			return;
 		}
-		if (k == 3) {
+		if (movementType == 3) {
 			boolean debugPlanes = false;
 			if (debugPlanes) {
 				System.out.println("plane is " + plane);
@@ -9105,14 +9105,14 @@ public class Game extends RSApplet {
 			if (debugPlanes) {
 				System.out.println("plane is now " + plane);
 			}
-			int j1 = stream.readBitsMsbFirst(1);
-			int i2 = stream.readBitsMsbFirst(1);
-			if (i2 == 1) {
+			int teleport = stream.readBitsMsbFirst(1);
+			int relocationHasMask = stream.readBitsMsbFirst(1);
+			if (relocationHasMask == 1) {
 				anIntArray894[anInt893++] = myPlayerIndex;
 			}
-			int k2 = stream.readBitsMsbFirst(7);
-			int l2 = stream.readBitsMsbFirst(7);
-			myPlayer.setPos(l2, k2, j1 == 1);
+			int localTileY = stream.readBitsMsbFirst(7);
+			int localTileX = stream.readBitsMsbFirst(7);
+			myPlayer.setPos(localTileX, localTileY, teleport == 1);
 			//Handle plane changes, higher planes need the roof drawing checks disabled, and we need to manually update ObjectManager's anInt131 (plane) then manually call method22 to let the ObjectManaegr know we're on a different plane. This makes plane changes draw properly. Coords for testing this: lumb: 3207 3227 and varrock: 3209, 3392 and gnome agil: 2474, 3427 
 			ObjectManager.hideRoofs = ClientSettings.HIDE_ROOFS;
 			ObjectManager.hideBuggyVarrockSwordShopSnow = ClientSettings.HIDE_BUGGY_VARROCK_SWORD_SHOP_SNOW;
@@ -10523,7 +10523,7 @@ public class Game extends RSApplet {
 	public void updatePlayers(int i, Stream stream) {
 		anInt839 = 0;
 		anInt893 = 0;
-		method117(stream);
+		decodeLocalPlayerMovement(stream);
 		method134(stream);
 		method91(stream, i);
 		method49(stream);
