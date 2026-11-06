@@ -2861,7 +2861,7 @@ public class Game extends RSApplet {
 					}
 				}
 				if (onDemandData.dataType == 1 && onDemandData.buffer != null) {
-					Class36.method529(onDemandData.buffer);
+					AnimationFrame.decodeFile(onDemandData.buffer);
 				}
 				if (onDemandData.dataType == 2 && onDemandData.ID == nextSong && onDemandData.buffer != null) {
 					musicData = new byte[onDemandData.buffer.length];
@@ -4847,7 +4847,7 @@ public class Game extends RSApplet {
 		Texture.nullLoader();
 		WorldController.nullLoader();
 		Model.nullLoader();
-		Class36.nullLoader();
+		AnimationFrame.nullLoader();
 		System.gc();
 	}
 
@@ -7044,7 +7044,7 @@ public class Game extends RSApplet {
 			onDemandFetcher = new OnDemandFetcher();
 			onDemandFetcher.start(streamLoader_6, this);
 //			musics();
-			Class36.method528(onDemandFetcher.getAnimCount());
+			AnimationFrame.initialize(onDemandFetcher.getAnimCount());
 			Model.method459(onDemandFetcher.getVersionCount(0), onDemandFetcher);
 			if (!lowMem) {
 				method58(10, musicVolume, false, 0);

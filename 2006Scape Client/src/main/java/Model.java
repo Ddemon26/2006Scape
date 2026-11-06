@@ -865,17 +865,17 @@ public final class Model extends Animable {
 		if (i == -1) {
 			return;
 		}
-		Class36 class36 = Class36.getFrame(i);
+		AnimationFrame class36 = AnimationFrame.getFrame(i);
 		if (class36 == null) {
 			return;
 		}
-		AnimationTransformTable class18 = class36.aClass18_637;
+		AnimationTransformTable class18 = class36.transformTable;
 		anInt1681 = 0;
 		anInt1682 = 0;
 		anInt1683 = 0;
-		for (int k = 0; k < class36.anInt638; k++) {
-			int l = class36.anIntArray639[k];
-			method472(class18.transformTypes[l], class18.groupIds[l], class36.anIntArray640[k], class36.anIntArray641[k], class36.anIntArray642[k]);
+		for (int k = 0; k < class36.transformCount; k++) {
+			int l = class36.transformIndices[k];
+			method472(class18.transformTypes[l], class18.groupIds[l], class36.transformX[k], class36.transformY[k], class36.transformZ[k]);
 		}
 
 	}
@@ -888,28 +888,28 @@ public final class Model extends Animable {
 			method470(k);
 			return;
 		}
-		Class36 class36 = Class36.getFrame(k);
+		AnimationFrame class36 = AnimationFrame.getFrame(k);
 		if (class36 == null) {
 			return;
 		}
-		Class36 class36_1 = Class36.getFrame(j);
+		AnimationFrame class36_1 = AnimationFrame.getFrame(j);
 		if (class36_1 == null) {
 			method470(k);
 			return;
 		}
-		AnimationTransformTable class18 = class36.aClass18_637;
+		AnimationTransformTable class18 = class36.transformTable;
 		anInt1681 = 0;
 		anInt1682 = 0;
 		anInt1683 = 0;
 		int l = 0;
 		int i1 = ai[l++];
-		for (int j1 = 0; j1 < class36.anInt638; j1++) {
+		for (int j1 = 0; j1 < class36.transformCount; j1++) {
 			int k1;
-			for (k1 = class36.anIntArray639[j1]; k1 > i1; i1 = ai[l++]) {
+			for (k1 = class36.transformIndices[j1]; k1 > i1; i1 = ai[l++]) {
 				;
 			}
 			if (k1 != i1 || class18.transformTypes[k1] == 0) {
-				method472(class18.transformTypes[k1], class18.groupIds[k1], class36.anIntArray640[j1], class36.anIntArray641[j1], class36.anIntArray642[j1]);
+				method472(class18.transformTypes[k1], class18.groupIds[k1], class36.transformX[j1], class36.transformY[j1], class36.transformZ[j1]);
 			}
 		}
 
@@ -918,13 +918,13 @@ public final class Model extends Animable {
 		anInt1683 = 0;
 		l = 0;
 		i1 = ai[l++];
-		for (int l1 = 0; l1 < class36_1.anInt638; l1++) {
+		for (int l1 = 0; l1 < class36_1.transformCount; l1++) {
 			int i2;
-			for (i2 = class36_1.anIntArray639[l1]; i2 > i1; i1 = ai[l++]) {
+			for (i2 = class36_1.transformIndices[l1]; i2 > i1; i1 = ai[l++]) {
 				;
 			}
 			if (i2 == i1 || class18.transformTypes[i2] == 0) {
-				method472(class18.transformTypes[i2], class18.groupIds[i2], class36_1.anIntArray640[l1], class36_1.anIntArray641[l1], class36_1.anIntArray642[l1]);
+				method472(class18.transformTypes[i2], class18.groupIds[i2], class36_1.transformX[l1], class36_1.transformY[l1], class36_1.transformZ[l1]);
 			}
 		}
 

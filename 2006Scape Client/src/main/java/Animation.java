@@ -21,7 +21,7 @@ public final class Animation {
 	public int getFrameDelay(int frameIndex) {
 		int delay = frameDelays[frameIndex];
 		if (delay == 0) {
-			Class36 frame = Class36.getFrame(anIntArray353[frameIndex]);
+			AnimationFrame frame = AnimationFrame.getFrame(anIntArray353[frameIndex]);
 			if (frame != null) {
 				delay = frameDelays[frameIndex] = frame.frameDelay;
 			}

@@ -11,11 +11,11 @@ public class AnimationTransformTableTest {
         Field f = owner.getDeclaredField(name); f.setAccessible(true); return f;
     }
     @Before public void save() throws Exception {
-        savedFrames = field(Class36.class, "loadedFrames").get(null);
+        savedFrames = field(AnimationFrame.class, "loadedFrames").get(null);
         for (int i = 0; i < 3; i++) savedPivot[i] = field(Model.class, "anInt" + (1681 + i)).getInt(null);
     }
     @After public void restore() throws Exception {
-        field(Class36.class, "loadedFrames").set(null, savedFrames);
+        field(AnimationFrame.class, "loadedFrames").set(null, savedFrames);
         for (int i = 0; i < 3; i++) field(Model.class, "anInt" + (1681 + i)).setInt(null, savedPivot[i]);
     }
     private static Object read(Stream s) throws Exception {
@@ -79,10 +79,10 @@ public class AnimationTransformTableTest {
         field(Model.class, "anIntArray1639").set(m, new int[]{11, 22, 33}); return m;
     }
     private static void apply(Model m, Object table, int slot, int x, int y, int z) throws Exception {
-        Constructor<Class36> c = Class36.class.getDeclaredConstructor(); c.setAccessible(true); Class36 f = c.newInstance();
-        field(Class36.class, "aClass18_637").set(f, table); f.anInt638 = 1; f.anIntArray639 = new int[]{slot};
-        f.anIntArray640 = new int[]{x}; f.anIntArray641 = new int[]{y}; f.anIntArray642 = new int[]{z};
-        field(Class36.class, "loadedFrames").set(null, new Class36[]{f}); m.method470(0);
+        Constructor<AnimationFrame> c = AnimationFrame.class.getDeclaredConstructor(); c.setAccessible(true); AnimationFrame f = c.newInstance();
+        field(AnimationFrame.class, "transformTable").set(f, table); f.transformCount = 1; f.transformIndices = new int[]{slot};
+        f.transformX = new int[]{x}; f.transformY = new int[]{y}; f.transformZ = new int[]{z};
+        field(AnimationFrame.class, "loadedFrames").set(null, new AnimationFrame[]{f}); m.method470(0);
     }
     @Test public void decodedRowsSelectOperationsAndGroupIdsRatherThanVertexOrFaceIndices() throws Exception {
         Object o = read(new Stream(bytes(new int[]{1, 3, 5, 200}, new int[]{1}, new int[]{0}, new int[]{2}, new int[]{1})));
