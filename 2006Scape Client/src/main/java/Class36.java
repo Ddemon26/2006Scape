@@ -35,7 +35,7 @@ public final class Class36 {
 		i1 += l;
 		Stream stream_5 = new Stream(abyte0);
 		stream_5.currentOffset = i1;
-		Class18 class18 = new Class18(stream_5);
+		AnimationTransformTable class18 = new AnimationTransformTable(stream_5);
 		int k1 = stream_1.readUnsignedShortBigEndian();
 		int ai[] = new int[500];
 		int ai1[] = new int[500];
@@ -52,9 +52,9 @@ public final class Class36 {
 			for (int i3 = 0; i3 < j2; i3++) {
 				int j3 = stream_2.readUnsignedByte();
 				if (j3 > 0) {
-					if (class18.anIntArray342[i3] != 0) {
+					if (class18.transformTypes[i3] != 0) {
 						for (int l3 = i3 - 1; l3 > k2; l3--) {
-							if (class18.anIntArray342[l3] != 0) {
+							if (class18.transformTypes[l3] != 0) {
 								continue;
 							}
 							ai[l2] = l3;
@@ -68,7 +68,7 @@ public final class Class36 {
 					}
 					ai[l2] = i3;
 					char c = '\0';
-					if (class18.anIntArray342[i3] == 3) {
+					if (class18.transformTypes[i3] == 3) {
 						c = '\200';
 					}
 					if ((j3 & 1) != 0) {
@@ -88,7 +88,7 @@ public final class Class36 {
 					}
 					k2 = i3;
 					l2++;
-					if (class18.anIntArray342[i3] == 5) {
+					if (class18.transformTypes[i3] == 5) {
 						aBooleanArray643[i2] = false;
 					}
 				}
@@ -131,7 +131,7 @@ public final class Class36 {
 
 	private static Class36[] loadedFrames;
 	public int frameDelay;
-	public Class18 aClass18_637;
+	public AnimationTransformTable aClass18_637;
 	public int anInt638;
 	public int anIntArray639[];
 	public int anIntArray640[];

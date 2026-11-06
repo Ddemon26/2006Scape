@@ -869,13 +869,13 @@ public final class Model extends Animable {
 		if (class36 == null) {
 			return;
 		}
-		Class18 class18 = class36.aClass18_637;
+		AnimationTransformTable class18 = class36.aClass18_637;
 		anInt1681 = 0;
 		anInt1682 = 0;
 		anInt1683 = 0;
 		for (int k = 0; k < class36.anInt638; k++) {
 			int l = class36.anIntArray639[k];
-			method472(class18.anIntArray342[l], class18.anIntArrayArray343[l], class36.anIntArray640[k], class36.anIntArray641[k], class36.anIntArray642[k]);
+			method472(class18.transformTypes[l], class18.groupIds[l], class36.anIntArray640[k], class36.anIntArray641[k], class36.anIntArray642[k]);
 		}
 
 	}
@@ -897,7 +897,7 @@ public final class Model extends Animable {
 			method470(k);
 			return;
 		}
-		Class18 class18 = class36.aClass18_637;
+		AnimationTransformTable class18 = class36.aClass18_637;
 		anInt1681 = 0;
 		anInt1682 = 0;
 		anInt1683 = 0;
@@ -908,8 +908,8 @@ public final class Model extends Animable {
 			for (k1 = class36.anIntArray639[j1]; k1 > i1; i1 = ai[l++]) {
 				;
 			}
-			if (k1 != i1 || class18.anIntArray342[k1] == 0) {
-				method472(class18.anIntArray342[k1], class18.anIntArrayArray343[k1], class36.anIntArray640[j1], class36.anIntArray641[j1], class36.anIntArray642[j1]);
+			if (k1 != i1 || class18.transformTypes[k1] == 0) {
+				method472(class18.transformTypes[k1], class18.groupIds[k1], class36.anIntArray640[j1], class36.anIntArray641[j1], class36.anIntArray642[j1]);
 			}
 		}
 
@@ -923,8 +923,8 @@ public final class Model extends Animable {
 			for (i2 = class36_1.anIntArray639[l1]; i2 > i1; i1 = ai[l++]) {
 				;
 			}
-			if (i2 == i1 || class18.anIntArray342[i2] == 0) {
-				method472(class18.anIntArray342[i2], class18.anIntArrayArray343[i2], class36_1.anIntArray640[l1], class36_1.anIntArray641[l1], class36_1.anIntArray642[l1]);
+			if (i2 == i1 || class18.transformTypes[i2] == 0) {
+				method472(class18.transformTypes[i2], class18.groupIds[i2], class36_1.anIntArray640[l1], class36_1.anIntArray641[l1], class36_1.anIntArray642[l1]);
 			}
 		}
 
