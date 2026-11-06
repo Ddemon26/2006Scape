@@ -482,7 +482,7 @@ public class Game extends RSApplet {
 			if (anInt1211 < 78) {
 				anInt1211 = 78;
 			}
-			drawScrollThumb(77, anInt1211 - anInt1089 - 77, 0, 463, anInt1211);
+			drawScrollbar(77, anInt1211 - anInt1089 - 77, 0, 463, anInt1211);
 			String s;
 			if (myPlayer != null && myPlayer.name != null) {
 				s = myPlayer.name;
@@ -1067,7 +1067,7 @@ public class Game extends RSApplet {
 			if (class9_1.type == 0) {
 				buildInterfaceMenu(i2, class9_1, k, j2, i1, class9_1.scrollPosition);
 				if (class9_1.scrollMax > class9_1.height) {
-					method65(i2 + class9_1.width, class9_1.height, k, i1, class9_1, j2, true, class9_1.scrollMax);
+					handleScrollbarInput(i2 + class9_1.width, class9_1.height, k, i1, class9_1, j2, true, class9_1.scrollMax);
 				}
 			} else {
 				if (class9_1.atActionType == 1 && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
@@ -1264,24 +1264,24 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void drawScrollThumb(int j, int k, int l, int i1, int j1) {
-		scrollBar1.drawNonzeroIndexed(i1, l);
-		scrollBar2.drawNonzeroIndexed(i1, l + j - 16);
-		DrawingArea.fillRectangle(j - 32, l + 16, anInt1002, 16, i1);
-		int k1 = (j - 32) * j / j1;
-		if (k1 < 8) {
-			k1 = 8;
+	public void drawScrollbar(int viewportHeight, int scrollOffset, int topY, int leftX, int contentHeight) {
+		scrollUpArrow.drawNonzeroIndexed(leftX, topY);
+		scrollDownArrow.drawNonzeroIndexed(leftX, topY + viewportHeight - 16);
+		DrawingArea.fillRectangle(viewportHeight - 32, topY + 16, scrollTrackColor, 16, leftX);
+		int thumbHeight = (viewportHeight - 32) * viewportHeight / contentHeight;
+		if (thumbHeight < 8) {
+			thumbHeight = 8;
 		}
-		int l1 = (j - 32 - k1) * k / (j1 - j);
-		DrawingArea.fillRectangle(k1, l + 16 + l1, anInt1063, 16, i1);
-		DrawingArea.drawVerticalLine(l + 16 + l1, anInt902, k1, i1);
-		DrawingArea.drawVerticalLine(l + 16 + l1, anInt902, k1, i1 + 1);
-		DrawingArea.drawHorizontalLine(l + 16 + l1, anInt902, 16, i1);
-		DrawingArea.drawHorizontalLine(l + 17 + l1, anInt902, 16, i1);
-		DrawingArea.drawVerticalLine(l + 16 + l1, anInt927, k1, i1 + 15);
-		DrawingArea.drawVerticalLine(l + 17 + l1, anInt927, k1 - 1, i1 + 14);
-		DrawingArea.drawHorizontalLine(l + 15 + l1 + k1, anInt927, 16, i1);
-		DrawingArea.drawHorizontalLine(l + 14 + l1 + k1, anInt927, 15, i1 + 1);
+		int thumbOffset = (viewportHeight - 32 - thumbHeight) * scrollOffset / (contentHeight - viewportHeight);
+		DrawingArea.fillRectangle(thumbHeight, topY + 16 + thumbOffset, scrollThumbColor, 16, leftX);
+		DrawingArea.drawVerticalLine(topY + 16 + thumbOffset, scrollHighlightColor, thumbHeight, leftX);
+		DrawingArea.drawVerticalLine(topY + 16 + thumbOffset, scrollHighlightColor, thumbHeight, leftX + 1);
+		DrawingArea.drawHorizontalLine(topY + 16 + thumbOffset, scrollHighlightColor, 16, leftX);
+		DrawingArea.drawHorizontalLine(topY + 17 + thumbOffset, scrollHighlightColor, 16, leftX);
+		DrawingArea.drawVerticalLine(topY + 16 + thumbOffset, scrollShadowColor, thumbHeight, leftX + 15);
+		DrawingArea.drawVerticalLine(topY + 17 + thumbOffset, scrollShadowColor, thumbHeight - 1, leftX + 14);
+		DrawingArea.drawHorizontalLine(topY + 15 + thumbOffset + thumbHeight, scrollShadowColor, 16, leftX);
+		DrawingArea.drawHorizontalLine(topY + 14 + thumbOffset + thumbHeight, scrollShadowColor, 15, leftX + 1);
 	}
 
 	public void updateNPCs(Stream stream, int i) {
@@ -3378,36 +3378,36 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method65(int i, int j, int k, int l, RSInterface class9, int i1, boolean flag, int j1) {
-		int anInt992;
-		if (aBoolean972) {
-			anInt992 = 32;
+	public void handleScrollbarInput(int leftX, int viewportHeight, int pointerX, int pointerY, RSInterface component, int topY, boolean redrawTabArea, int contentHeight) {
+		int dragMargin;
+		if (scrollbarDragging) {
+			dragMargin = 32;
 		} else {
-			anInt992 = 0;
+			dragMargin = 0;
 		}
-		aBoolean972 = false;
-		if (k >= i && k < i + 16 && l >= i1 && l < i1 + 16) {
-			class9.scrollPosition -= anInt1213 * 4;
-			if (flag) {
+		scrollbarDragging = false;
+		if (pointerX >= leftX && pointerX < leftX + 16 && pointerY >= topY && pointerY < topY + 16) {
+			component.scrollPosition -= anInt1213 * 4;
+			if (redrawTabArea) {
 				needDrawTabArea = true;
 			}
-		} else if (k >= i && k < i + 16 && l >= i1 + j - 16 && l < i1 + j) {
-			class9.scrollPosition += anInt1213 * 4;
-			if (flag) {
+		} else if (pointerX >= leftX && pointerX < leftX + 16 && pointerY >= topY + viewportHeight - 16 && pointerY < topY + viewportHeight) {
+			component.scrollPosition += anInt1213 * 4;
+			if (redrawTabArea) {
 				needDrawTabArea = true;
 			}
-		} else if (k >= i - anInt992 && k < i + 16 + anInt992 && l >= i1 + 16 && l < i1 + j - 16 && anInt1213 > 0) {
-			int l1 = (j - 32) * j / j1;
-			if (l1 < 8) {
-				l1 = 8;
+		} else if (pointerX >= leftX - dragMargin && pointerX < leftX + 16 + dragMargin && pointerY >= topY + 16 && pointerY < topY + viewportHeight - 16 && anInt1213 > 0) {
+			int thumbHeight = (viewportHeight - 32) * viewportHeight / contentHeight;
+			if (thumbHeight < 8) {
+				thumbHeight = 8;
 			}
-			int i2 = l - i1 - 16 - l1 / 2;
-			int j2 = j - 32 - l1;
-			class9.scrollPosition = (j1 - j) * i2 / j2;
-			if (flag) {
+			int thumbTopOffset = pointerY - topY - 16 - thumbHeight / 2;
+			int thumbTravel = viewportHeight - 32 - thumbHeight;
+			component.scrollPosition = (contentHeight - viewportHeight) * thumbTopOffset / thumbTravel;
+			if (redrawTabArea) {
 				needDrawTabArea = true;
 			}
-			aBoolean972 = true;
+			scrollbarDragging = true;
 		}
 	}
 
@@ -7229,8 +7229,8 @@ public class Game extends RSApplet {
 			mapDotPlayer = new Sprite(streamLoader_2, "mapdots", 2);
 			mapDotFriend = new Sprite(streamLoader_2, "mapdots", 3);
 			mapDotTeam = new Sprite(streamLoader_2, "mapdots", 4);
-			scrollBar1 = new Background(streamLoader_2, "scrollbar", 0);
-			scrollBar2 = new Background(streamLoader_2, "scrollbar", 1);
+			scrollUpArrow = new Background(streamLoader_2, "scrollbar", 0);
+			scrollDownArrow = new Background(streamLoader_2, "scrollbar", 1);
 			redStone1 = new Background(streamLoader_2, "redstone1", 0);
 			redStone2 = new Background(streamLoader_2, "redstone2", 0);
 			redStone3 = new Background(streamLoader_2, "redstone3", 0);
@@ -7921,7 +7921,7 @@ public class Game extends RSApplet {
 		if (backDialogID == -1) {
 			aClass9_1059.scrollPosition = anInt1211 - anInt1089 - 77;
 			if (super.mouseX > 448 && super.mouseX < 560 && super.mouseY > 332) {
-				method65(463, 77, super.mouseX - 17, super.mouseY - 357, aClass9_1059, 0, false, anInt1211);
+				handleScrollbarInput(463, 77, super.mouseX - 17, super.mouseY - 357, aClass9_1059, 0, false, anInt1211);
 			}
 			int i = anInt1211 - 77 - aClass9_1059.scrollPosition;
 			if (i < 0) {
@@ -8198,7 +8198,7 @@ public class Game extends RSApplet {
 				}
 				drawInterface(component.scrollPosition, k2, component, l2);
 				if (component.scrollMax > component.height) {
-					drawScrollThumb(component.height, component.scrollPosition, l2, k2 + component.width, component.scrollMax);
+					drawScrollbar(component.height, component.scrollPosition, l2, k2 + component.width, component.scrollMax);
 				}
 			} else if (component.type != 1) {
 				if (component.type == 2) {
@@ -12032,12 +12032,12 @@ public class Game extends RSApplet {
 		aStreamArray895s = new Stream[maxPlayers];
 		anInt897 = 1;
 		anIntArrayArray901 = new int[104][104];
-		anInt902 = 0x766654;
+		scrollHighlightColor = 0x766654;
 		aByteArray912 = new byte[16384];
 		currentStats = new int[Skills.skillsCount];
 		ignoreListAsLongs = new long[100];
 		loadingError = false;
-		anInt927 = 0x332d25;
+		scrollShadowColor = 0x332d25;
 		anIntArray928 = new int[5];
 		anIntArrayArray929 = new int[104][104];
 		chatTypes = new int[100];
@@ -12054,7 +12054,7 @@ public class Game extends RSApplet {
 		anIntArray969 = new int[256];
 		cacheStores = new CacheStore[5];
 		variousSettings = new int[2000];
-		aBoolean972 = false;
+		scrollbarDragging = false;
 		anInt975 = 50;
 		anIntArray976 = new int[anInt975];
 		anIntArray977 = new int[anInt975];
@@ -12067,7 +12067,7 @@ public class Game extends RSApplet {
 		anInt985 = -1;
 		hitMarks = new Sprite[20];
 		anIntArray990 = new int[5];
-		anInt1002 = 0x23201b;
+		scrollTrackColor = 0x23201b;
 		amountOrNameInput = "";
 		aClass19_1013 = new NodeList();
 		aBoolean1017 = false;
@@ -12085,7 +12085,7 @@ public class Game extends RSApplet {
 		anIntArray1057 = new int[33];
 		aClass9_1059 = new RSInterface();
 		mapScenes = new Background[100];
-		anInt1063 = 0x4d4233;
+		scrollThumbColor = 0x4d4233;
 		anIntArray1065 = new int[7];
 		anIntArray1072 = new int[1000];
 		anIntArray1073 = new int[1000];
@@ -12231,7 +12231,7 @@ public class Game extends RSApplet {
 	public int friendsCount;
 	public int anInt900;
 	public int[][] anIntArrayArray901;
-	public final int anInt902;
+	public final int scrollHighlightColor;
 	public RSImageProducer backLeftIP1;
 	public RSImageProducer backLeftIP2;
 	public RSImageProducer backRightIP1;
@@ -12252,7 +12252,7 @@ public class Game extends RSApplet {
 	public static int anInt924;
 	public final long[] ignoreListAsLongs;
 	public boolean loadingError;
-	public final int anInt927;
+	public final int scrollShadowColor;
 	public final int[] anIntArray928;
 	public int[][] anIntArrayArray929;
 	public Sprite aClass30_Sub2_Sub1_Sub1_931;
@@ -12293,7 +12293,7 @@ public class Game extends RSApplet {
 	public final int[] anIntArray969;
 	final CacheStore[] cacheStores;
 	public int variousSettings[];
-	public boolean aBoolean972;
+	public boolean scrollbarDragging;
 	public final int anInt975;
 	public final int[] anIntArray976;
 	public final int[] anIntArray977;
@@ -12318,7 +12318,7 @@ public class Game extends RSApplet {
 	public int anInt999;
 	public ISAACRandomGen encryption;
 	public Sprite mapEdge;
-	public final int anInt1002;
+	public final int scrollTrackColor;
 	static final int[][] anIntArrayArray1003 = {{6798, 107, 10283, 16, 4797, 7744, 5799, 4634, 33697, 22433, 2983, 54193}, {8741, 12, 64030, 43162, 7735, 8404, 1701, 38430, 24094, 10153, 56621, 4783, 1341, 16578, 35003, 25239}, {25238, 8742, 12, 64030, 43162, 7735, 8404, 1701, 38430, 24094, 10153, 56621, 4783, 1341, 16578, 35003}, {4626, 11146, 6439, 12, 4758, 10270}, {4550, 4537, 5681, 5673, 5790, 6806, 8076, 4574}};
 	public String amountOrNameInput;
 	public static int anInt1005;
@@ -12338,8 +12338,8 @@ public class Game extends RSApplet {
 	public int anInt1021;
 	public int anInt1022;
 	public int loadingStage;
-	public Background scrollBar1;
-	public Background scrollBar2;
+	public Background scrollUpArrow;
+	public Background scrollDownArrow;
 	public int anInt1026;
 	public Background backBase1;
 	public Background backBase2;
@@ -12373,7 +12373,7 @@ public class Game extends RSApplet {
 	public Background[] mapScenes;
 	public static int anInt1061;
 	public int currentSound;
-	public final int anInt1063;
+	public final int scrollThumbColor;
 	public int friendsListAction;
 	public final int[] anIntArray1065;
 	public int mouseInvInterfaceIndex;
