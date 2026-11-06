@@ -803,7 +803,7 @@ public class Game extends RSApplet {
 				anInt1051 = 0;
 				stream.writeEncryptedOpcode(150);
 			}
-			method63();
+			resetPendingSceneChangesAfterRegionLoad();
 		} catch (Exception exception) {
 		}
 		ObjectDef.mruNodes1.clear();
@@ -3330,14 +3330,14 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method63() {
-		Class30_Sub1 class30_sub1 = (Class30_Sub1) aClass19_1179.firstFromTail();
-		for (; class30_sub1 != null; class30_sub1 = (Class30_Sub1) aClass19_1179.nextTowardHead()) {
-			if (class30_sub1.restoreDelayTicks == -1) {
-				class30_sub1.placementDelayTicks = 0;
-				method89(class30_sub1);
+	public void resetPendingSceneChangesAfterRegionLoad() {
+		Class30_Sub1 pendingSceneChange = (Class30_Sub1) pendingSceneChanges.firstFromTail();
+		for (; pendingSceneChange != null; pendingSceneChange = (Class30_Sub1) pendingSceneChanges.nextTowardHead()) {
+			if (pendingSceneChange.restoreDelayTicks == -1) {
+				pendingSceneChange.placementDelayTicks = 0;
+				snapshotOriginalSceneObject(pendingSceneChange);
 			} else {
-				class30_sub1.unlink();
+				pendingSceneChange.unlink();
 			}
 		}
 
@@ -4804,7 +4804,7 @@ public class Game extends RSApplet {
 		npcArray = null;
 		npcIndices = null;
 		groundArray = null;
-		aClass19_1179 = null;
+		pendingSceneChanges = null;
 		projectiles = null;
 		transientGraphics = null;
 		menuActionCmd2 = null;
@@ -6151,7 +6151,7 @@ public class Game extends RSApplet {
 					}
 				}
 
-				aClass19_1179 = new NodeList();
+				pendingSceneChanges = new NodeList();
 				anInt900 = 0;
 				friendsCount = 0;
 				dialogID = -1;
@@ -6842,32 +6842,32 @@ public class Game extends RSApplet {
 
 	}
 
-	public void method89(Class30_Sub1 class30_sub1) {
-		int i = 0;
-		int j = -1;
-		int k = 0;
-		int l = 0;
-		if (class30_sub1.objectCategory == 0) {
-			i = worldController.method300(class30_sub1.scenePlane, class30_sub1.tileX, class30_sub1.tileY);
+	public void snapshotOriginalSceneObject(Class30_Sub1 pendingSceneChange) {
+		int sceneUid = 0;
+		int originalObjectId = -1;
+		int originalShape = 0;
+		int originalOrientation = 0;
+		if (pendingSceneChange.objectCategory == 0) {
+			sceneUid = worldController.method300(pendingSceneChange.scenePlane, pendingSceneChange.tileX, pendingSceneChange.tileY);
 		}
-		if (class30_sub1.objectCategory == 1) {
-			i = worldController.method301(class30_sub1.scenePlane, class30_sub1.tileX, class30_sub1.tileY);
+		if (pendingSceneChange.objectCategory == 1) {
+			sceneUid = worldController.method301(pendingSceneChange.scenePlane, pendingSceneChange.tileX, pendingSceneChange.tileY);
 		}
-		if (class30_sub1.objectCategory == 2) {
-			i = worldController.method302(class30_sub1.scenePlane, class30_sub1.tileX, class30_sub1.tileY);
+		if (pendingSceneChange.objectCategory == 2) {
+			sceneUid = worldController.method302(pendingSceneChange.scenePlane, pendingSceneChange.tileX, pendingSceneChange.tileY);
 		}
-		if (class30_sub1.objectCategory == 3) {
-			i = worldController.method303(class30_sub1.scenePlane, class30_sub1.tileX, class30_sub1.tileY);
+		if (pendingSceneChange.objectCategory == 3) {
+			sceneUid = worldController.method303(pendingSceneChange.scenePlane, pendingSceneChange.tileX, pendingSceneChange.tileY);
 		}
-		if (i != 0) {
-			int i1 = worldController.method304(class30_sub1.scenePlane, class30_sub1.tileX, class30_sub1.tileY, i);
-			j = i >> 14 & 0x7fff;
-			k = i1 & 0x1f;
-			l = i1 >> 6;
+		if (sceneUid != 0) {
+			int sceneMetadata = worldController.method304(pendingSceneChange.scenePlane, pendingSceneChange.tileX, pendingSceneChange.tileY, sceneUid);
+			originalObjectId = sceneUid >> 14 & 0x7fff;
+			originalShape = sceneMetadata & 0x1f;
+			originalOrientation = sceneMetadata >> 6;
 		}
-		class30_sub1.originalObjectId = j;
-		class30_sub1.originalShape = k;
-		class30_sub1.originalOrientation = l;
+		pendingSceneChange.originalObjectId = originalObjectId;
+		pendingSceneChange.originalShape = originalShape;
+		pendingSceneChange.originalOrientation = originalOrientation;
 	}
 
 	public final void method90() {
@@ -8956,7 +8956,7 @@ public class Game extends RSApplet {
 
 	public void advancePendingSceneChanges() {
 		if (loadingStage == 2) {
-			for (Class30_Sub1 pendingSceneChange = (Class30_Sub1) aClass19_1179.firstFromTail(); pendingSceneChange != null; pendingSceneChange = (Class30_Sub1) aClass19_1179.nextTowardHead()) {
+			for (Class30_Sub1 pendingSceneChange = (Class30_Sub1) pendingSceneChanges.firstFromTail(); pendingSceneChange != null; pendingSceneChange = (Class30_Sub1) pendingSceneChanges.nextTowardHead()) {
 				if (pendingSceneChange.restoreDelayTicks > 0) {
 					pendingSceneChange.restoreDelayTicks--;
 				}
@@ -9680,7 +9680,7 @@ public class Game extends RSApplet {
 
 	public void method130(int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2) {
 		Class30_Sub1 class30_sub1 = null;
-		for (Class30_Sub1 class30_sub1_1 = (Class30_Sub1) aClass19_1179.firstFromTail(); class30_sub1_1 != null; class30_sub1_1 = (Class30_Sub1) aClass19_1179.nextTowardHead()) {
+		for (Class30_Sub1 class30_sub1_1 = (Class30_Sub1) pendingSceneChanges.firstFromTail(); class30_sub1_1 != null; class30_sub1_1 = (Class30_Sub1) pendingSceneChanges.nextTowardHead()) {
 			if (class30_sub1_1.scenePlane != l1 || class30_sub1_1.tileX != i2 || class30_sub1_1.tileY != j1 || class30_sub1_1.objectCategory != i1) {
 				continue;
 			}
@@ -9694,8 +9694,8 @@ public class Game extends RSApplet {
 			class30_sub1.objectCategory = i1;
 			class30_sub1.tileX = i2;
 			class30_sub1.tileY = j1;
-			method89(class30_sub1);
-			aClass19_1179.insertHead(class30_sub1);
+			snapshotOriginalSceneObject(class30_sub1);
+			pendingSceneChanges.insertHead(class30_sub1);
 		}
 		class30_sub1.requestedObjectId = k;
 		class30_sub1.requestedShape = k1;
@@ -10671,7 +10671,7 @@ public class Game extends RSApplet {
 
 				}
 
-				for (Class30_Sub1 class30_sub1 = (Class30_Sub1) aClass19_1179.firstFromTail(); class30_sub1 != null; class30_sub1 = (Class30_Sub1) aClass19_1179.nextTowardHead()) {
+				for (Class30_Sub1 class30_sub1 = (Class30_Sub1) pendingSceneChanges.firstFromTail(); class30_sub1 != null; class30_sub1 = (Class30_Sub1) pendingSceneChanges.nextTowardHead()) {
 					if (class30_sub1.tileX >= anInt1268 && class30_sub1.tileX < anInt1268 + 8 && class30_sub1.tileY >= anInt1269 && class30_sub1.tileY < anInt1269 + 8 && class30_sub1.scenePlane == plane) {
 						class30_sub1.restoreDelayTicks = 0;
 					}
@@ -11006,7 +11006,7 @@ public class Game extends RSApplet {
 
 				}
 
-				for (Class30_Sub1 class30_sub1_1 = (Class30_Sub1) aClass19_1179.firstFromTail(); class30_sub1_1 != null; class30_sub1_1 = (Class30_Sub1) aClass19_1179.nextTowardHead()) {
+				for (Class30_Sub1 class30_sub1_1 = (Class30_Sub1) pendingSceneChanges.firstFromTail(); class30_sub1_1 != null; class30_sub1_1 = (Class30_Sub1) pendingSceneChanges.nextTowardHead()) {
 					class30_sub1_1.tileX -= i17;
 					class30_sub1_1.tileY -= j21;
 					if (class30_sub1_1.tileX < 0 || class30_sub1_1.tileY < 0 || class30_sub1_1.tileX >= 104 || class30_sub1_1.tileY >= 104) {
@@ -12121,7 +12121,7 @@ public class Game extends RSApplet {
 		myPassword = "";
 		genericLoadingError = false;
 		reportAbuseInterfaceID = -1;
-		aClass19_1179 = new NodeList();
+		pendingSceneChanges = new NodeList();
 		anInt1184 = 128;
 		invOverlayInterfaceID = -1;
 		stream = Stream.acquire();
@@ -12481,7 +12481,7 @@ public class Game extends RSApplet {
 	public boolean genericLoadingError;
 	public final int[] anIntArray1177 = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3};
 	public int reportAbuseInterfaceID;
-	public NodeList aClass19_1179;
+	public NodeList pendingSceneChanges;
 	public int[] chatAreaOffsets;
 	public int[] tabAreaOffsets;
 	public int[] chatBoxAreaOffsets;
