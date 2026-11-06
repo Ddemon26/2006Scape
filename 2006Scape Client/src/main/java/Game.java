@@ -3411,32 +3411,34 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public boolean method66(int i, int j, int k) {
-		int i1 = i >> 14 & 0x7fff;
-		int j1 = worldController.method304(plane, k, j, i);
-		if (j1 == -1) {
+	public boolean walkToSceneObject(int sceneUid, int targetTileY, int targetTileX) {
+		int objectId = sceneUid >> 14 & 0x7fff;
+		int sceneConfig = worldController.method304(plane, targetTileX, targetTileY, sceneUid);
+		if (sceneConfig == -1) {
 			return false;
 		}
-		int k1 = j1 & 0x1f;
-		int l1 = j1 >> 6 & 3;
-		if (k1 == 10 || k1 == 11 || k1 == 22) {
-			ObjectDef class46 = ObjectDef.forID(i1);
-			int i2;
-			int j2;
-			if (l1 == 0 || l1 == 2) {
-				i2 = class46.anInt744;
-				j2 = class46.anInt761;
+		int objectShape = sceneConfig & 0x1f;
+		int objectOrientation = sceneConfig >> 6 & 3;
+		if (objectShape == 10 || objectShape == 11 || objectShape == 22) {
+			ObjectDef definition = ObjectDef.forID(objectId);
+			int orientedSizeX;
+			int orientedSizeY;
+			if (objectOrientation == 0 || objectOrientation == 2) {
+				orientedSizeX = definition.anInt744;
+				orientedSizeY = definition.anInt761;
 			} else {
-				i2 = class46.anInt761;
-				j2 = class46.anInt744;
+				orientedSizeX = definition.anInt761;
+				orientedSizeY = definition.anInt744;
 			}
-			int k2 = class46.anInt768;
-			if (l1 != 0) {
-				k2 = (k2 << l1 & 0xf) + (k2 >> 4 - l1);
+			int rotatedAccessMask = definition.anInt768;
+			if (objectOrientation != 0) {
+				rotatedAccessMask = (rotatedAccessMask << objectOrientation & 0xf) + (rotatedAccessMask >> 4 - objectOrientation);
 			}
-			doWalkTo(2, 0, j2, 0, myPlayer.smallY[0], i2, k2, j, myPlayer.smallX[0], false, k);
+			doWalkTo(2, 0, orientedSizeY, 0, myPlayer.smallY[0], orientedSizeX, rotatedAccessMask,
+					targetTileY, myPlayer.smallX[0], false, targetTileX);
 		} else {
-			doWalkTo(2, l1, 0, k1 + 1, myPlayer.smallY[0], 0, 0, j, myPlayer.smallX[0], false, k);
+			doWalkTo(2, objectOrientation, 0, objectShape + 1, myPlayer.smallY[0], 0, 0,
+					targetTileY, myPlayer.smallX[0], false, targetTileX);
 		}
 		crossX = super.saveClickX;
 		crossY = super.saveClickY;
@@ -3705,7 +3707,7 @@ public class Game extends RSApplet {
 			stream.writeShortBigEndian(i1);
 			stream.writeShortLittleEndian(j + baseX);
 		}
-		if (l == 62 && method66(i1, k, j)) {
+		if (l == 62 && walkToSceneObject(i1, k, j)) {
 			stream.writeEncryptedOpcode(192);
 			stream.writeShortBigEndian(anInt1284);
 			stream.writeShortLittleEndian(i1 >> 14 & 0x7fff);
@@ -3813,7 +3815,7 @@ public class Game extends RSApplet {
 				stream.writeMediumBigEndian(0xe63271);
 				anInt924 = 0;
 			}
-			method66(i1, k, j);
+			walkToSceneObject(i1, k, j);
 			stream.writeEncryptedOpcode(228);
 			stream.writeShortBigEndianAdd128(i1 >> 14 & 0x7fff);
 			stream.writeShortBigEndianAdd128(k + baseY);
@@ -4178,7 +4180,7 @@ public class Game extends RSApplet {
 			}
 		}
 		if (l == 900) {
-			method66(i1, k, j);
+			walkToSceneObject(i1, k, j);
 			stream.writeEncryptedOpcode(252);
 			stream.writeShortLittleEndianAdd128(i1 >> 14 & 0x7fff);
 			stream.writeShortLittleEndian(k + baseY);
@@ -4233,7 +4235,7 @@ public class Game extends RSApplet {
 				stream.writeShortLittleEndian(i1);
 			}
 		}
-		if (l == 956 && method66(i1, k, j)) {
+		if (l == 956 && walkToSceneObject(i1, k, j)) {
 			stream.writeEncryptedOpcode(35);
 			stream.writeShortLittleEndian(j + baseX);
 			stream.writeShortBigEndianAdd128(anInt1137);
@@ -4398,21 +4400,21 @@ public class Game extends RSApplet {
 			}
 		}
 		if (l == 113) {//third
-			method66(i1, k, j);
+			walkToSceneObject(i1, k, j);
 			stream.writeEncryptedOpcode(70);
 			stream.writeShortLittleEndian(j + baseX);
 			stream.writeShortBigEndian(k + baseY);
 			stream.writeShortLittleEndianAdd128(i1 >> 14 & 0x7fff);
 		}
 		if (l == 872) {//fourth
-			method66(i1, k, j);
+			walkToSceneObject(i1, k, j);
 			stream.writeEncryptedOpcode(234);
 			stream.writeShortLittleEndianAdd128(j + baseX);
 			stream.writeShortBigEndianAdd128(i1 >> 14 & 0x7fff);
 			stream.writeShortLittleEndianAdd128(k + baseY);
 		}
 		if (l == 502) {//first
-			method66(i1, k, j);
+			walkToSceneObject(i1, k, j);
 			stream.writeEncryptedOpcode(132);
 			stream.writeShortLittleEndianAdd128(j + baseX);
 			stream.writeShortBigEndian(i1 >> 14 & 0x7fff);
