@@ -7554,7 +7554,7 @@ public class Game extends RSApplet {
 		if (entity.anInt1547 > loopCycle) {
 			advanceEntityToForcedMovementStart(entity);
 		} else if (entity.anInt1548 >= loopCycle) {
-			method98(entity);
+			advanceEntityThroughForcedMovement(entity);
 		} else {
 			method99(entity);
 		}
@@ -7583,16 +7583,16 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method98(Entity entity) {
+	public void advanceEntityThroughForcedMovement(Entity entity) {
 		if (entity.anInt1548 == loopCycle || entity.anim == -1 || entity.anInt1529 != 0 || entity.anInt1528 + 1 > Animation.anims[entity.anim].getFrameDelay(entity.anInt1527)) {
-			int i = entity.anInt1548 - entity.anInt1547;
-			int j = loopCycle - entity.anInt1547;
-			int k = entity.anInt1543 * 128 + entity.anInt1540 * 64;
-			int l = entity.anInt1545 * 128 + entity.anInt1540 * 64;
-			int i1 = entity.anInt1544 * 128 + entity.anInt1540 * 64;
-			int j1 = entity.anInt1546 * 128 + entity.anInt1540 * 64;
-			entity.x = (k * (i - j) + i1 * j) / i;
-			entity.y = (l * (i - j) + j1 * j) / i;
+			int movementDurationTicks = entity.anInt1548 - entity.anInt1547;
+			int elapsedMovementTicks = loopCycle - entity.anInt1547;
+			int movementStartX = entity.anInt1543 * 128 + entity.anInt1540 * 64;
+			int movementStartY = entity.anInt1545 * 128 + entity.anInt1540 * 64;
+			int movementEndX = entity.anInt1544 * 128 + entity.anInt1540 * 64;
+			int movementEndY = entity.anInt1546 * 128 + entity.anInt1540 * 64;
+			entity.x = (movementStartX * (movementDurationTicks - elapsedMovementTicks) + movementEndX * elapsedMovementTicks) / movementDurationTicks;
+			entity.y = (movementStartY * (movementDurationTicks - elapsedMovementTicks) + movementEndY * elapsedMovementTicks) / movementDurationTicks;
 		}
 		entity.anInt1503 = 0;
 		if (entity.anInt1549 == 0) {
