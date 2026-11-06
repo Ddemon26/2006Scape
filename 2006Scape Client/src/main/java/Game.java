@@ -8962,7 +8962,7 @@ public class Game extends RSApplet {
 				}
 				if (pendingSceneChange.restoreDelayTicks == 0) {
 					if (pendingSceneChange.originalObjectId < 0 || ObjectManager.method178(pendingSceneChange.originalObjectId, pendingSceneChange.originalShape)) {
-						method142(pendingSceneChange.tileY, pendingSceneChange.scenePlane, pendingSceneChange.originalOrientation, pendingSceneChange.originalShape, pendingSceneChange.tileX, pendingSceneChange.objectCategory, pendingSceneChange.originalObjectId);
+						applySceneObjectChange(pendingSceneChange.tileY, pendingSceneChange.scenePlane, pendingSceneChange.originalOrientation, pendingSceneChange.originalShape, pendingSceneChange.tileX, pendingSceneChange.objectCategory, pendingSceneChange.originalObjectId);
 						pendingSceneChange.unlink();
 					}
 				} else {
@@ -8970,7 +8970,7 @@ public class Game extends RSApplet {
 						pendingSceneChange.placementDelayTicks--;
 					}
 					if (pendingSceneChange.placementDelayTicks == 0 && pendingSceneChange.tileX >= 1 && pendingSceneChange.tileY >= 1 && pendingSceneChange.tileX <= 102 && pendingSceneChange.tileY <= 102 && (pendingSceneChange.requestedObjectId < 0 || ObjectManager.method178(pendingSceneChange.requestedObjectId, pendingSceneChange.requestedShape))) {
-						method142(pendingSceneChange.tileY, pendingSceneChange.scenePlane, pendingSceneChange.requestedOrientation, pendingSceneChange.requestedShape, pendingSceneChange.tileX, pendingSceneChange.objectCategory, pendingSceneChange.requestedObjectId);
+						applySceneObjectChange(pendingSceneChange.tileY, pendingSceneChange.scenePlane, pendingSceneChange.requestedOrientation, pendingSceneChange.requestedShape, pendingSceneChange.tileX, pendingSceneChange.objectCategory, pendingSceneChange.requestedObjectId);
 						pendingSceneChange.placementDelayTicks = -1;
 						if (pendingSceneChange.requestedObjectId == pendingSceneChange.originalObjectId && pendingSceneChange.originalObjectId == -1) {
 							pendingSceneChange.unlink();
@@ -10459,63 +10459,63 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method142(int i, int j, int k, int l, int i1, int j1, int k1) {
-		if (i1 >= 1 && i >= 1 && i1 <= 102 && i <= 102) {
-			if (lowMem && j != plane) {
+	public void applySceneObjectChange(int tileY, int scenePlane, int orientation, int shape, int tileX, int objectCategory, int objectId) {
+		if (tileX >= 1 && tileY >= 1 && tileX <= 102 && tileY <= 102) {
+			if (lowMem && scenePlane != plane) {
 				return;
 			}
-			int i2 = 0;
-			if (j1 == 0) {
-				i2 = worldController.method300(j, i1, i);
+			int existingPackedUid = 0;
+			if (objectCategory == 0) {
+				existingPackedUid = worldController.method300(scenePlane, tileX, tileY);
 			}
-			if (j1 == 1) {
-				i2 = worldController.method301(j, i1, i);
+			if (objectCategory == 1) {
+				existingPackedUid = worldController.method301(scenePlane, tileX, tileY);
 			}
-			if (j1 == 2) {
-				i2 = worldController.method302(j, i1, i);
+			if (objectCategory == 2) {
+				existingPackedUid = worldController.method302(scenePlane, tileX, tileY);
 			}
-			if (j1 == 3) {
-				i2 = worldController.method303(j, i1, i);
+			if (objectCategory == 3) {
+				existingPackedUid = worldController.method303(scenePlane, tileX, tileY);
 			}
-			if (i2 != 0) {
-				int i3 = worldController.method304(j, i1, i, i2);
-				int j2 = i2 >> 14 & 0x7fff;
-				int k2 = i3 & 0x1f;
-				int l2 = i3 >> 6;
-				if (j1 == 0) {
-					worldController.method291(i1, j, i, (byte) -119);
-					ObjectDef class46 = ObjectDef.forID(j2);
-					if (class46.aBoolean767) {
-						aClass11Array1230[j].method215(l2, k2, class46.aBoolean757, i1, i);
+			if (existingPackedUid != 0) {
+				int existingObjectInfo = worldController.method304(scenePlane, tileX, tileY, existingPackedUid);
+				int existingObjectId = existingPackedUid >> 14 & 0x7fff;
+				int existingShape = existingObjectInfo & 0x1f;
+				int existingOrientation = existingObjectInfo >> 6;
+				if (objectCategory == 0) {
+					worldController.method291(tileX, scenePlane, tileY, (byte) -119);
+					ObjectDef existingWallDefinition = ObjectDef.forID(existingObjectId);
+					if (existingWallDefinition.aBoolean767) {
+						aClass11Array1230[scenePlane].method215(existingOrientation, existingShape, existingWallDefinition.aBoolean757, tileX, tileY);
 					}
 				}
-				if (j1 == 1) {
-					worldController.method292(i, j, i1);
+				if (objectCategory == 1) {
+					worldController.method292(tileY, scenePlane, tileX);
 				}
-				if (j1 == 2) {
-					worldController.method293(j, i1, i);
-					ObjectDef class46_1 = ObjectDef.forID(j2);
-					if (i1 + class46_1.anInt744 > 103 || i + class46_1.anInt744 > 103 || i1 + class46_1.anInt761 > 103 || i + class46_1.anInt761 > 103) {
+				if (objectCategory == 2) {
+					worldController.method293(scenePlane, tileX, tileY);
+					ObjectDef class46_1 = ObjectDef.forID(existingObjectId);
+					if (tileX + class46_1.anInt744 > 103 || tileY + class46_1.anInt744 > 103 || tileX + class46_1.anInt761 > 103 || tileY + class46_1.anInt761 > 103) {
 						return;
 					}
 					if (class46_1.aBoolean767) {
-						aClass11Array1230[j].method216(l2, class46_1.anInt744, i1, i, class46_1.anInt761, class46_1.aBoolean757);
+						aClass11Array1230[scenePlane].method216(existingOrientation, class46_1.anInt744, tileX, tileY, class46_1.anInt761, class46_1.aBoolean757);
 					}
 				}
-				if (j1 == 3) {
-					worldController.method294(j, i, i1);
-					ObjectDef class46_2 = ObjectDef.forID(j2);
+				if (objectCategory == 3) {
+					worldController.method294(scenePlane, tileY, tileX);
+					ObjectDef class46_2 = ObjectDef.forID(existingObjectId);
 					if (class46_2.aBoolean767 && class46_2.hasActions) {
-						aClass11Array1230[j].method218(i, i1);
+						aClass11Array1230[scenePlane].method218(tileY, tileX);
 					}
 				}
 			}
-			if (k1 >= 0) {
-				int j3 = j;
-				if (j3 < 3 && (byteGroundArray[1][i1][i] & 2) == 2) {
-					j3++;
+			if (objectId >= 0) {
+				int heightPlane = scenePlane;
+				if (heightPlane < 3 && (byteGroundArray[1][tileX][tileY] & 2) == 2) {
+					heightPlane++;
 				}
-				ObjectManager.method188(worldController, k, i, l, j3, aClass11Array1230[j], intGroundArray, i1, k1, j);
+				ObjectManager.method188(worldController, orientation, tileY, shape, heightPlane, aClass11Array1230[scenePlane], intGroundArray, tileX, objectId, scenePlane);
 			}
 		}
 	}

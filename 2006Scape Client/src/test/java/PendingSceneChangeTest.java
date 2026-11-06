@@ -3,6 +3,68 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class PendingSceneChangeTest {
+    @Test public void method142PlacesByTilePlaneShapeOrientationAndId() throws Exception {
+        Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
+        unsafeField.setAccessible(true);
+        sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
+        Field cacheField = ObjectDef.class.getDeclaredField("cache");
+        cacheField.setAccessible(true);
+        Object oldCache = cacheField.get(null);
+        boolean oldLowMem = Game.lowMem;
+        try {
+            ObjectDef[] cache = new ObjectDef[20];
+            for (int n = 0; n < cache.length; n++) {
+                cache[n] = (ObjectDef) unsafe.allocateInstance(ObjectDef.class);
+                cache[n].type = -1;
+            }
+            cache[0].type = 401;
+            cache[0].childrenIDs = new int[0];
+            cache[0].anInt781 = -1;
+            cache[1].type = 402;
+            cache[1].aBoolean767 = true;
+            cacheField.set(null, cache);
+            Game.lowMem = false;
+            Game game = game();
+            game.plane = 1;
+            game.intGroundArray = new int[4][105][105];
+            game.byteGroundArray = new byte[4][104][104];
+            game.aClass11Array1230 = new CollisionMap[4];
+            for (int n = 0; n < 4; n++) game.aClass11Array1230[n] = new CollisionMap();
+            for (int x = 0; x < 105; x++) for (int y = 0; y < 105; y++) {
+                game.intGroundArray[1][x][y] = 100;
+                game.intGroundArray[2][x][y] = 200;
+            }
+            game.byteGroundArray[1][10][11] = 2;
+            game.applySceneObjectChange(11, 1, 2, 22, 10, 3, 401);
+            Field ground = WorldController.class.getDeclaredField("groundArray");
+            ground.setAccessible(true);
+            Ground[][][] tiles = (Ground[][][]) ground.get(game.worldController);
+            assertNotNull(tiles[1][10][11].obj3);
+            assertEquals(401, tiles[1][10][11].obj3.uid >> 14 & 0x7fff);
+            assertEquals((2 << 6) | 22, tiles[1][10][11].obj3.aByte816 & 0xff);
+            assertEquals(200, tiles[1][10][11].obj3.anInt811);
+            assertNull(tiles[2][10][11]);
+            game.applySceneObjectChange(12, 1, 1, 22, 10, 3, 401);
+            assertEquals(100, tiles[1][10][12].obj3.anInt811);
+            game.applySceneObjectChange(11, 1, 0, 22, 0, 3, 401);
+            assertNull(tiles[1][0][11]);
+
+            tiles[1][10][11].obj1 = new Object1();
+            tiles[1][10][11].obj1.uid = 402 << 14;
+            tiles[1][10][11].obj1.aByte281 = (byte) (2 << 6);
+            game.aClass11Array1230[1].method211(11, 2, 10, 0, false);
+            assertTrue((game.aClass11Array1230[1].anIntArrayArray294[10][11] & 8) != 0);
+            game.applySceneObjectChange(11, 1, 0, 0, 10, 0, -1);
+            assertNull(tiles[1][10][11].obj1);
+            assertNotNull(tiles[1][10][11].obj3);
+            assertEquals(0, game.aClass11Array1230[1].anIntArrayArray294[10][11] & 8);
+            game.applySceneObjectChange(11, 1, 0, 0, 10, 3, -1);
+            assertNull(tiles[1][10][11].obj3);
+        } finally {
+            cacheField.set(null, oldCache);
+            Game.lowMem = oldLowMem;
+        }
+    }
     private static Game game() throws Exception {
         Field field = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
         field.setAccessible(true);
