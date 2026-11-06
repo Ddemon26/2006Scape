@@ -5911,22 +5911,22 @@ public class Game extends RSApplet {
 		// SignLink.midii.fadeOut();
 	}
 
-	public void method81(Sprite sprite, int y, int x) {
-		int l = x * x + y * y;
-		if (l > 4225 && l < 90000) {
-			int i1 = minimapInt1 + minimapInt2 & 0x7ff;
-			int j1 = Model.modelIntArray1[i1];
-			int k1 = Model.modelIntArray2[i1];
-			j1 = (j1 * 256) / (minimapInt3 + 256);
-			k1 = (k1 * 256) / (minimapInt3 + 256);
-			int l1 = y * j1 + x * k1 >> 16;
-			int i2 = y * k1 - x * j1 >> 16;
-			double d = Math.atan2((double) l1, (double) i2);
-			int j2 = (int) (Math.sin(d) * 63D);
-			int k2 = (int) (Math.cos(d) * 57D);
-			mapEdge.drawRotatedNonzero20x20(83 - k2 - 20, d, 94 + j2 + 4 - 10);
+	public void drawMinimapHint(Sprite sprite, int offsetY, int offsetX) {
+		int distanceSquared = offsetX * offsetX + offsetY * offsetY;
+		if (distanceSquared > 4225 && distanceSquared < 90000) {
+			int rotation2048 = minimapInt1 + minimapInt2 & 0x7ff;
+			int scaledSine16 = Model.modelIntArray1[rotation2048];
+			int scaledCosine16 = Model.modelIntArray2[rotation2048];
+			scaledSine16 = (scaledSine16 * 256) / (minimapInt3 + 256);
+			scaledCosine16 = (scaledCosine16 * 256) / (minimapInt3 + 256);
+			int rotatedX = offsetY * scaledSine16 + offsetX * scaledCosine16 >> 16;
+			int rotatedY = offsetY * scaledCosine16 - offsetX * scaledSine16 >> 16;
+			double arrowAngleRadians = Math.atan2((double) rotatedX, (double) rotatedY);
+			int ellipseOffsetX = (int) (Math.sin(arrowAngleRadians) * 63D);
+			int ellipseOffsetY = (int) (Math.cos(arrowAngleRadians) * 57D);
+			minimapEdgeArrow.drawRotatedNonzero20x20(83 - ellipseOffsetY - 20, arrowAngleRadians, 94 + ellipseOffsetX + 4 - 10);
 		} else {
-			markMinimap(sprite, x, y);
+			drawMinimapMarker(sprite, offsetX, offsetY);
 		}
 	}
 
@@ -7181,8 +7181,8 @@ public class Game extends RSApplet {
 			}
 
 			compass = new Sprite(streamLoader_2, "compass", 0);
-			mapEdge = new Sprite(streamLoader_2, "mapedge", 0);
-			mapEdge.expandToCanvas();
+			minimapEdgeArrow = new Sprite(streamLoader_2, "mapedge", 0);
+			minimapEdgeArrow.expandToCanvas();
 
 			multiOverlay = new Sprite(streamLoader_2, "overlay_multiway", 0);
 			try {
@@ -9494,7 +9494,7 @@ public class Game extends RSApplet {
 		for (int j5 = 0; j5 < anInt1071; j5++) {
 			int k = anIntArray1072[j5] * 4 + 2 - myPlayer.x / 32;
 			int i3 = anIntArray1073[j5] * 4 + 2 - myPlayer.y / 32;
-			markMinimap(aClass30_Sub2_Sub1_Sub1Array1140[j5], k, i3);
+			drawMinimapMarker(aClass30_Sub2_Sub1_Sub1Array1140[j5], k, i3);
 		}
 
 		for (int k5 = 0; k5 < 104; k5++) {
@@ -9503,7 +9503,7 @@ public class Game extends RSApplet {
 				if (class19 != null) {
 					int l = k5 * 4 + 2 - myPlayer.x / 32;
 					int j3 = l5 * 4 + 2 - myPlayer.y / 32;
-					markMinimap(mapDotItem, l, j3);
+					drawMinimapMarker(mapDotItem, l, j3);
 				}
 			}
 		}
@@ -9518,7 +9518,7 @@ public class Game extends RSApplet {
 				if (entityDef != null && entityDef.aBoolean87 && entityDef.aBoolean84) {
 					int i1 = npc.x / 32 - myPlayer.x / 32;
 					int k3 = npc.y / 32 - myPlayer.y / 32;
-					markMinimap(mapDotNPC, i1, k3);
+					drawMinimapMarker(mapDotNPC, i1, k3);
 				}
 			}
 		}
@@ -9545,11 +9545,11 @@ public class Game extends RSApplet {
 				}
 
 				if (flag1) {
-					markMinimap(mapDotTeam, j1, l3);
+					drawMinimapMarker(mapDotTeam, j1, l3);
 				} else if (flag2) {
-					markMinimap(mapDotFriend, j1, l3);
+					drawMinimapMarker(mapDotFriend, j1, l3);
 				} else {
-					markMinimap(mapDotPlayer, j1, l3);
+					drawMinimapMarker(mapDotPlayer, j1, l3);
 				}
 			}
 		}
@@ -9560,27 +9560,27 @@ public class Game extends RSApplet {
 				if (class30_sub2_sub4_sub1_sub1_1 != null) {
 					int k1 = class30_sub2_sub4_sub1_sub1_1.x / 32 - myPlayer.x / 32;
 					int i4 = class30_sub2_sub4_sub1_sub1_1.y / 32 - myPlayer.y / 32;
-					method81(mapMarker, i4, k1);
+					drawMinimapHint(mapMarker, i4, k1);
 				}
 			}
 			if (anInt855 == 2) {
 				int l1 = (anInt934 - baseX) * 4 + 2 - myPlayer.x / 32;
 				int j4 = (anInt935 - baseY) * 4 + 2 - myPlayer.y / 32;
-				method81(mapMarker, j4, l1);
+				drawMinimapHint(mapMarker, j4, l1);
 			}
 			if (anInt855 == 10 && anInt933 >= 0 && anInt933 < playerArray.length) {
 				Player class30_sub2_sub4_sub1_sub2_1 = playerArray[anInt933];
 				if (class30_sub2_sub4_sub1_sub2_1 != null) {
 					int i2 = class30_sub2_sub4_sub1_sub2_1.x / 32 - myPlayer.x / 32;
 					int k4 = class30_sub2_sub4_sub1_sub2_1.y / 32 - myPlayer.y / 32;
-					method81(mapMarker, k4, i2);
+					drawMinimapHint(mapMarker, k4, i2);
 				}
 			}
 		}
 		if (destX != 0) {
 			int j2 = destX * 4 + 2 - myPlayer.x / 32;
 			int l4 = destY * 4 + 2 - myPlayer.y / 32;
-			markMinimap(mapFlag, j2, l4);
+			drawMinimapMarker(mapFlag, j2, l4);
 		}
 		// Draw player square on mini map
 		DrawingArea.fillRectangle(3, 78, 0xffffff, 3, 97);
@@ -10440,22 +10440,22 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void markMinimap(Sprite sprite, int i, int j) {
-		int k = minimapInt1 + minimapInt2 & 0x7ff;
-		int l = i * i + j * j;
-		if (l > 6400) {
+	public void drawMinimapMarker(Sprite sprite, int offsetX, int offsetY) {
+		int rotation2048 = minimapInt1 + minimapInt2 & 0x7ff;
+		int distanceSquared = offsetX * offsetX + offsetY * offsetY;
+		if (distanceSquared > 6400) {
 			return;
 		}
-		int i1 = Model.modelIntArray1[k];
-		int j1 = Model.modelIntArray2[k];
-		i1 = i1 * 256 / (minimapInt3 + 256);
-		j1 = j1 * 256 / (minimapInt3 + 256);
-		int k1 = j * i1 + i * j1 >> 16;
-		int l1 = j * j1 - i * i1 >> 16;
-		if (l > 2500) {
-			sprite.drawNonzeroThroughZeroMask(mapBack, 83 - l1 - sprite.trimHeight / 2 - 4, 94 + k1 - sprite.trimWidth / 2 + 4);
+		int scaledSine16 = Model.modelIntArray1[rotation2048];
+		int scaledCosine16 = Model.modelIntArray2[rotation2048];
+		scaledSine16 = scaledSine16 * 256 / (minimapInt3 + 256);
+		scaledCosine16 = scaledCosine16 * 256 / (minimapInt3 + 256);
+		int rotatedX = offsetY * scaledSine16 + offsetX * scaledCosine16 >> 16;
+		int rotatedY = offsetY * scaledCosine16 - offsetX * scaledSine16 >> 16;
+		if (distanceSquared > 2500) {
+			sprite.drawNonzeroThroughZeroMask(mapBack, 83 - rotatedY - sprite.trimHeight / 2 - 4, 94 + rotatedX - sprite.trimWidth / 2 + 4);
 		} else {
-			sprite.drawSprite(94 + k1 - sprite.trimWidth / 2 + 4, 83 - l1 - sprite.trimHeight / 2 - 4);
+			sprite.drawSprite(94 + rotatedX - sprite.trimWidth / 2 + 4, 83 - rotatedY - sprite.trimHeight / 2 - 4);
 		}
 	}
 
@@ -12317,7 +12317,7 @@ public class Game extends RSApplet {
 	public int anInt998;
 	public int anInt999;
 	public ISAACRandomGen encryption;
-	public Sprite mapEdge;
+	public Sprite minimapEdgeArrow;
 	public final int scrollTrackColor;
 	static final int[][] anIntArrayArray1003 = {{6798, 107, 10283, 16, 4797, 7744, 5799, 4634, 33697, 22433, 2983, 54193}, {8741, 12, 64030, 43162, 7735, 8404, 1701, 38430, 24094, 10153, 56621, 4783, 1341, 16578, 35003, 25239}, {25238, 8742, 12, 64030, 43162, 7735, 8404, 1701, 38430, 24094, 10153, 56621, 4783, 1341, 16578, 35003}, {4626, 11146, 6439, 12, 4758, 10270}, {4550, 4537, 5681, 5673, 5790, 6806, 8076, 4574}};
 	public String amountOrNameInput;
