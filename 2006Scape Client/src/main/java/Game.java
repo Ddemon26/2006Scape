@@ -7556,7 +7556,7 @@ public class Game extends RSApplet {
 		} else if (entity.anInt1548 >= loopCycle) {
 			advanceEntityThroughForcedMovement(entity);
 		} else {
-			method99(entity);
+			advanceEntityAlongWalkingPath(entity);
 		}
 		method100(entity);
 		method101(entity);
@@ -7610,7 +7610,7 @@ public class Game extends RSApplet {
 		entity.anInt1552 = entity.turnDirection;
 	}
 
-	public void method99(Entity entity) {
+	public void advanceEntityAlongWalkingPath(Entity entity) {
 		entity.anInt1517 = entity.anInt1511;
 		if (entity.smallXYIndex == 0) {
 			entity.anInt1503 = 0;
@@ -7627,95 +7627,95 @@ public class Game extends RSApplet {
 				return;
 			}
 		}
-		int i = entity.x;
-		int j = entity.y;
-		int k = entity.smallX[entity.smallXYIndex - 1] * 128 + entity.anInt1540 * 64;
-		int l = entity.smallY[entity.smallXYIndex - 1] * 128 + entity.anInt1540 * 64;
-		if (k - i > 256 || k - i < -256 || l - j > 256 || l - j < -256) {
-			entity.x = k;
-			entity.y = l;
+		int previousX = entity.x;
+		int previousY = entity.y;
+		int targetX = entity.smallX[entity.smallXYIndex - 1] * 128 + entity.anInt1540 * 64;
+		int targetY = entity.smallY[entity.smallXYIndex - 1] * 128 + entity.anInt1540 * 64;
+		if (targetX - previousX > 256 || targetX - previousX < -256 || targetY - previousY > 256 || targetY - previousY < -256) {
+			entity.x = targetX;
+			entity.y = targetY;
 			return;
 		}
-		if (i < k) {
-			if (j < l) {
+		if (previousX < targetX) {
+			if (previousY < targetY) {
 				entity.turnDirection = 1280;
-			} else if (j > l) {
+			} else if (previousY > targetY) {
 				entity.turnDirection = 1792;
 			} else {
 				entity.turnDirection = 1536;
 			}
-		} else if (i > k) {
-			if (j < l) {
+		} else if (previousX > targetX) {
+			if (previousY < targetY) {
 				entity.turnDirection = 768;
-			} else if (j > l) {
+			} else if (previousY > targetY) {
 				entity.turnDirection = 256;
 			} else {
 				entity.turnDirection = 512;
 			}
-		} else if (j < l) {
+		} else if (previousY < targetY) {
 			entity.turnDirection = 1024;
 		} else {
 			entity.turnDirection = 0;
 		}
-		int i1 = entity.turnDirection - entity.anInt1552 & 0x7ff;
-		if (i1 > 1024) {
-			i1 -= 2048;
+		int relativeTurnAngle = entity.turnDirection - entity.anInt1552 & 0x7ff;
+		if (relativeTurnAngle > 1024) {
+			relativeTurnAngle -= 2048;
 		}
-		int j1 = entity.anInt1555;
-		if (i1 >= -256 && i1 <= 256) {
-			j1 = entity.anInt1554;
-		} else if (i1 >= 256 && i1 < 768) {
-			j1 = entity.anInt1557;
-		} else if (i1 >= -768 && i1 <= -256) {
-			j1 = entity.anInt1556;
+		int movementAnimation = entity.anInt1555;
+		if (relativeTurnAngle >= -256 && relativeTurnAngle <= 256) {
+			movementAnimation = entity.anInt1554;
+		} else if (relativeTurnAngle >= 256 && relativeTurnAngle < 768) {
+			movementAnimation = entity.anInt1557;
+		} else if (relativeTurnAngle >= -768 && relativeTurnAngle <= -256) {
+			movementAnimation = entity.anInt1556;
 		}
-		if (j1 == -1) {
-			j1 = entity.anInt1554;
+		if (movementAnimation == -1) {
+			movementAnimation = entity.anInt1554;
 		}
-		entity.anInt1517 = j1;
-		int k1 = 4;
+		entity.anInt1517 = movementAnimation;
+		int movementStepSize = 4;
 		if (entity.anInt1552 != entity.turnDirection && entity.interactingEntity == -1 && entity.anInt1504 != 0) {
-			k1 = 2;
+			movementStepSize = 2;
 		}
 		if (entity.smallXYIndex > 2) {
-			k1 = 6;
+			movementStepSize = 6;
 		}
 		if (entity.smallXYIndex > 3) {
-			k1 = 8;
+			movementStepSize = 8;
 		}
 		if (entity.anInt1503 > 0 && entity.smallXYIndex > 1) {
-			k1 = 8;
+			movementStepSize = 8;
 			entity.anInt1503--;
 		}
 		if (entity.aBooleanArray1553[entity.smallXYIndex - 1]) {
-			k1 <<= 1;
+			movementStepSize <<= 1;
 		}
-		if (k1 >= 8 && entity.anInt1517 == entity.anInt1554 && entity.anInt1505 != -1) {
+		if (movementStepSize >= 8 && entity.anInt1517 == entity.anInt1554 && entity.anInt1505 != -1) {
 			entity.anInt1517 = entity.anInt1505;
 		}
-		if (i < k) {
-			entity.x += k1;
-			if (entity.x > k) {
-				entity.x = k;
+		if (previousX < targetX) {
+			entity.x += movementStepSize;
+			if (entity.x > targetX) {
+				entity.x = targetX;
 			}
-		} else if (i > k) {
-			entity.x -= k1;
-			if (entity.x < k) {
-				entity.x = k;
-			}
-		}
-		if (j < l) {
-			entity.y += k1;
-			if (entity.y > l) {
-				entity.y = l;
-			}
-		} else if (j > l) {
-			entity.y -= k1;
-			if (entity.y < l) {
-				entity.y = l;
+		} else if (previousX > targetX) {
+			entity.x -= movementStepSize;
+			if (entity.x < targetX) {
+				entity.x = targetX;
 			}
 		}
-		if (entity.x == k && entity.y == l) {
+		if (previousY < targetY) {
+			entity.y += movementStepSize;
+			if (entity.y > targetY) {
+				entity.y = targetY;
+			}
+		} else if (previousY > targetY) {
+			entity.y -= movementStepSize;
+			if (entity.y < targetY) {
+				entity.y = targetY;
+			}
+		}
+		if (entity.x == targetX && entity.y == targetY) {
 			entity.smallXYIndex--;
 			if (entity.anInt1542 > 0) {
 				entity.anInt1542--;
