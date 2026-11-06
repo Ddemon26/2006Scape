@@ -6670,7 +6670,7 @@ public class Game extends RSApplet {
 		}
 		String s = entityDef.name;
 		if (entityDef.combatLevel != 0) {
-			s = s + combatDiffColor(myPlayer.combatLevel, entityDef.combatLevel) + " (level-" + entityDef.combatLevel + ")";
+			s = s + combatLevelColorTag(myPlayer.combatLevel, entityDef.combatLevel) + " (level-" + entityDef.combatLevel + ")";
 		}
 		if (itemSelected == 1) {
 			menuActionName[menuActionRow] = "Use " + selectedItemName + " with @yel@" + s;
@@ -6768,7 +6768,7 @@ public class Game extends RSApplet {
 		String s;
 		if (player.skill == 0) {
 			if (player.combatLevel > 0) {
-				s = player.name + combatDiffColor(myPlayer.combatLevel, player.combatLevel) + " (level-" + player.combatLevel + ")";
+				s = player.name + combatLevelColorTag(myPlayer.combatLevel, player.combatLevel) + " (level-" + player.combatLevel + ")";
 			} else {
 				s = player.name + " @cya@(store)";
 			}
@@ -8787,30 +8787,30 @@ public class Game extends RSApplet {
 		return s.equalsIgnoreCase(myPlayer.name);
 	}
 
-	public static String combatDiffColor(int i, int j) {
-		int k = i - j;
-		if (k < -9) {
+	public static String combatLevelColorTag(int localCombatLevel, int targetCombatLevel) {
+		int levelDifference = localCombatLevel - targetCombatLevel;
+		if (levelDifference < -9) {
 			return "@red@";
 		}
-		if (k < -6) {
+		if (levelDifference < -6) {
 			return "@or3@";
 		}
-		if (k < -3) {
+		if (levelDifference < -3) {
 			return "@or2@";
 		}
-		if (k < 0) {
+		if (levelDifference < 0) {
 			return "@or1@";
 		}
-		if (k > 9) {
+		if (levelDifference > 9) {
 			return "@gre@";
 		}
-		if (k > 6) {
+		if (levelDifference > 6) {
 			return "@gr3@";
 		}
-		if (k > 3) {
+		if (levelDifference > 3) {
 			return "@gr2@";
 		}
-		if (k > 0) {
+		if (levelDifference > 0) {
 			return "@gr1@";
 		} else {
 			return "@yel@";
