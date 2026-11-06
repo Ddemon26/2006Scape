@@ -12,11 +12,11 @@ public class AnimationTransformTableTest {
     }
     @Before public void save() throws Exception {
         savedFrames = field(AnimationFrame.class, "loadedFrames").get(null);
-        for (int i = 0; i < 3; i++) savedPivot[i] = field(Model.class, "anInt" + (1681 + i)).getInt(null);
+        for (int i = 0; i < 3; i++) savedPivot[i] = field(Model.class, "animationPivot" + "XYZ".charAt(i)).getInt(null);
     }
     @After public void restore() throws Exception {
         field(AnimationFrame.class, "loadedFrames").set(null, savedFrames);
-        for (int i = 0; i < 3; i++) field(Model.class, "anInt" + (1681 + i)).setInt(null, savedPivot[i]);
+        for (int i = 0; i < 3; i++) field(Model.class, "animationPivot" + "XYZ".charAt(i)).setInt(null, savedPivot[i]);
     }
     private static Object read(Stream s) throws Exception {
         return Class.forName("AnimationTransformTable").getConstructor(Stream.class).newInstance(s);
@@ -82,7 +82,7 @@ public class AnimationTransformTableTest {
         Constructor<AnimationFrame> c = AnimationFrame.class.getDeclaredConstructor(); c.setAccessible(true); AnimationFrame f = c.newInstance();
         field(AnimationFrame.class, "transformTable").set(f, table); f.transformCount = 1; f.transformIndices = new int[]{slot};
         f.transformX = new int[]{x}; f.transformY = new int[]{y}; f.transformZ = new int[]{z};
-        field(AnimationFrame.class, "loadedFrames").set(null, new AnimationFrame[]{f}); m.method470(0);
+        field(AnimationFrame.class, "loadedFrames").set(null, new AnimationFrame[]{f}); m.applyAnimationFrame(0);
     }
     @Test public void decodedRowsSelectOperationsAndGroupIdsRatherThanVertexOrFaceIndices() throws Exception {
         Object o = read(new Stream(bytes(new int[]{1, 3, 5, 200}, new int[]{1}, new int[]{0}, new int[]{2}, new int[]{1})));

@@ -38,7 +38,7 @@ public final class NPC extends Entity {
 				Model model_2 = new Model(true, AnimationFrame.isMissingFrameId(j), false, model_1);
 				model_2.translate(0, -super.anInt1524, 0);
 				model_2.buildAnimationGroups();
-				model_2.method470(j);
+				model_2.applyAnimationFrame(j);
 				model_2.faceGroups = null;
 				model_2.vertexGroups = null;
 				if (spotAnim.anInt410 != 128 || spotAnim.anInt411 != 128) {

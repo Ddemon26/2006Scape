@@ -309,10 +309,10 @@ public final class RSInterface {
 			model_1.buildAnimationGroups();
 		}
 		if (k != -1) {
-			model_1.method470(k);
+			model_1.applyAnimationFrame(k);
 		}
 		if (j != -1) {
-			model_1.method470(j);
+			model_1.applyAnimationFrame(j);
 		}
 		model_1.method479(lightness, shading, -50, -10, -50, true);
 		return model_1;

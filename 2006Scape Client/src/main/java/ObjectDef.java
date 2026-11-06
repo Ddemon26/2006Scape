@@ -264,7 +264,7 @@ public final class ObjectDef {
 		Model model_3 = new Model(modifiedModelColors == null, AnimationFrame.isMissingFrameId(k), l == 0 && k == -1 && !flag && !flag2, model);
 		if (k != -1) {
 			model_3.buildAnimationGroups();
-			model_3.method470(k);
+			model_3.applyAnimationFrame(k);
 			model_3.faceGroups = null;
 			model_3.vertexGroups = null;
 		}

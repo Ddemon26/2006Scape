@@ -163,9 +163,9 @@ public final class EntityDef {
 		Model model_1 = Model.animationScratchModel;
 		model_1.copyIntoAnimationScratch(model, AnimationFrame.isMissingFrameId(k) & AnimationFrame.isMissingFrameId(j));
 		if (k != -1 && j != -1) {
-			model_1.method471(ai, j, k);
+			model_1.applyInterleavedFrames(ai, j, k);
 		} else if (k != -1) {
-			model_1.method470(k);
+			model_1.applyAnimationFrame(k);
 		}
 		if (anInt91 != 128 || anInt86 != 128) {
 			model_1.scale(anInt91, anInt91, anInt86);

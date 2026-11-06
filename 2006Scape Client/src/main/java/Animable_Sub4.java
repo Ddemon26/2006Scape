@@ -36,7 +36,7 @@ final class Animable_Sub4 extends Animable {
 		Model model_1 = new Model(true, AnimationFrame.isMissingFrameId(j), false, model);
 		if (j != -1) {
 			model_1.buildAnimationGroups();
-			model_1.method470(j);
+			model_1.applyAnimationFrame(j);
 			model_1.faceGroups = null;
 			model_1.vertexGroups = null;
 		}

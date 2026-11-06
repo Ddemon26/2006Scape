@@ -858,121 +858,121 @@ public final class Model extends Animable {
 		}
 	}
 
-	public void method470(int i) {
+	public void applyAnimationFrame(int frameId) {
 		if (vertexGroups == null) {
 			return;
 		}
-		if (i == -1) {
+		if (frameId == -1) {
 			return;
 		}
-		AnimationFrame class36 = AnimationFrame.getFrame(i);
-		if (class36 == null) {
+		AnimationFrame frame = AnimationFrame.getFrame(frameId);
+		if (frame == null) {
 			return;
 		}
-		AnimationTransformTable class18 = class36.transformTable;
-		anInt1681 = 0;
-		anInt1682 = 0;
-		anInt1683 = 0;
-		for (int k = 0; k < class36.transformCount; k++) {
-			int l = class36.transformIndices[k];
-			method472(class18.transformTypes[l], class18.groupIds[l], class36.transformX[k], class36.transformY[k], class36.transformZ[k]);
+		AnimationTransformTable table = frame.transformTable;
+		animationPivotX = 0;
+		animationPivotY = 0;
+		animationPivotZ = 0;
+		for (int frameTransformIndex = 0; frameTransformIndex < frame.transformCount; frameTransformIndex++) {
+			int tableTransformIndex = frame.transformIndices[frameTransformIndex];
+			transformAnimationGroups(table.transformTypes[tableTransformIndex], table.groupIds[tableTransformIndex], frame.transformX[frameTransformIndex], frame.transformY[frameTransformIndex], frame.transformZ[frameTransformIndex]);
 		}
 
 	}
 
-	public void method471(int ai[], int j, int k) {
-		if (k == -1) {
+	public void applyInterleavedFrames(int secondaryTransformIndices[], int secondaryFrameId, int primaryFrameId) {
+		if (primaryFrameId == -1) {
 			return;
 		}
-		if (ai == null || j == -1) {
-			method470(k);
+		if (secondaryTransformIndices == null || secondaryFrameId == -1) {
+			applyAnimationFrame(primaryFrameId);
 			return;
 		}
-		AnimationFrame class36 = AnimationFrame.getFrame(k);
-		if (class36 == null) {
+		AnimationFrame primaryFrame = AnimationFrame.getFrame(primaryFrameId);
+		if (primaryFrame == null) {
 			return;
 		}
-		AnimationFrame class36_1 = AnimationFrame.getFrame(j);
-		if (class36_1 == null) {
-			method470(k);
+		AnimationFrame secondaryFrame = AnimationFrame.getFrame(secondaryFrameId);
+		if (secondaryFrame == null) {
+			applyAnimationFrame(primaryFrameId);
 			return;
 		}
-		AnimationTransformTable class18 = class36.transformTable;
-		anInt1681 = 0;
-		anInt1682 = 0;
-		anInt1683 = 0;
-		int l = 0;
-		int i1 = ai[l++];
-		for (int j1 = 0; j1 < class36.transformCount; j1++) {
-			int k1;
-			for (k1 = class36.transformIndices[j1]; k1 > i1; i1 = ai[l++]) {
+		AnimationTransformTable table = primaryFrame.transformTable;
+		animationPivotX = 0;
+		animationPivotY = 0;
+		animationPivotZ = 0;
+		int selectionCursor = 0;
+		int selectedTransformIndex = secondaryTransformIndices[selectionCursor++];
+		for (int primaryTransformIndex = 0; primaryTransformIndex < primaryFrame.transformCount; primaryTransformIndex++) {
+			int primaryTableIndex;
+			for (primaryTableIndex = primaryFrame.transformIndices[primaryTransformIndex]; primaryTableIndex > selectedTransformIndex; selectedTransformIndex = secondaryTransformIndices[selectionCursor++]) {
 				;
 			}
-			if (k1 != i1 || class18.transformTypes[k1] == 0) {
-				method472(class18.transformTypes[k1], class18.groupIds[k1], class36.transformX[j1], class36.transformY[j1], class36.transformZ[j1]);
+			if (primaryTableIndex != selectedTransformIndex || table.transformTypes[primaryTableIndex] == 0) {
+				transformAnimationGroups(table.transformTypes[primaryTableIndex], table.groupIds[primaryTableIndex], primaryFrame.transformX[primaryTransformIndex], primaryFrame.transformY[primaryTransformIndex], primaryFrame.transformZ[primaryTransformIndex]);
 			}
 		}
 
-		anInt1681 = 0;
-		anInt1682 = 0;
-		anInt1683 = 0;
-		l = 0;
-		i1 = ai[l++];
-		for (int l1 = 0; l1 < class36_1.transformCount; l1++) {
-			int i2;
-			for (i2 = class36_1.transformIndices[l1]; i2 > i1; i1 = ai[l++]) {
+		animationPivotX = 0;
+		animationPivotY = 0;
+		animationPivotZ = 0;
+		selectionCursor = 0;
+		selectedTransformIndex = secondaryTransformIndices[selectionCursor++];
+		for (int secondaryTransformIndex = 0; secondaryTransformIndex < secondaryFrame.transformCount; secondaryTransformIndex++) {
+			int secondaryTableIndex;
+			for (secondaryTableIndex = secondaryFrame.transformIndices[secondaryTransformIndex]; secondaryTableIndex > selectedTransformIndex; selectedTransformIndex = secondaryTransformIndices[selectionCursor++]) {
 				;
 			}
-			if (i2 == i1 || class18.transformTypes[i2] == 0) {
-				method472(class18.transformTypes[i2], class18.groupIds[i2], class36_1.transformX[l1], class36_1.transformY[l1], class36_1.transformZ[l1]);
+			if (secondaryTableIndex == selectedTransformIndex || table.transformTypes[secondaryTableIndex] == 0) {
+				transformAnimationGroups(table.transformTypes[secondaryTableIndex], table.groupIds[secondaryTableIndex], secondaryFrame.transformX[secondaryTransformIndex], secondaryFrame.transformY[secondaryTransformIndex], secondaryFrame.transformZ[secondaryTransformIndex]);
 			}
 		}
 
 	}
 
-	private void method472(int i, int ai[], int j, int k, int l) {
-		int i1 = ai.length;
-		if (i == 0) {
-			int j1 = 0;
-			anInt1681 = 0;
-			anInt1682 = 0;
-			anInt1683 = 0;
-			for (int k2 = 0; k2 < i1; k2++) {
-				int l3 = ai[k2];
-				if (l3 < vertexGroups.length) {
-					int ai5[] = vertexGroups[l3];
-					for (int j6 : ai5) {
-						anInt1681 += anIntArray1627[j6];
-						anInt1682 += anIntArray1628[j6];
-						anInt1683 += anIntArray1629[j6];
-						j1++;
+	private void transformAnimationGroups(int transformType, int groupIds[], int x, int y, int z) {
+		int groupCount = groupIds.length;
+		if (transformType == 0) {
+			int selectedVertexCount = 0;
+			animationPivotX = 0;
+			animationPivotY = 0;
+			animationPivotZ = 0;
+			for (int groupIndex = 0; groupIndex < groupCount; groupIndex++) {
+				int vertexGroupId = groupIds[groupIndex];
+				if (vertexGroupId < vertexGroups.length) {
+					int vertexIndices[] = vertexGroups[vertexGroupId];
+					for (int vertexIndex : vertexIndices) {
+						animationPivotX += anIntArray1627[vertexIndex];
+						animationPivotY += anIntArray1628[vertexIndex];
+						animationPivotZ += anIntArray1629[vertexIndex];
+						selectedVertexCount++;
 					}
 
 				}
 			}
 
-			if (j1 > 0) {
-				anInt1681 = anInt1681 / j1 + j;
-				anInt1682 = anInt1682 / j1 + k;
-				anInt1683 = anInt1683 / j1 + l;
+			if (selectedVertexCount > 0) {
+				animationPivotX = animationPivotX / selectedVertexCount + x;
+				animationPivotY = animationPivotY / selectedVertexCount + y;
+				animationPivotZ = animationPivotZ / selectedVertexCount + z;
 				return;
 			} else {
-				anInt1681 = j;
-				anInt1682 = k;
-				anInt1683 = l;
+				animationPivotX = x;
+				animationPivotY = y;
+				animationPivotZ = z;
 				return;
 			}
 		}
-		if (i == 1) {
-			for (int k1 = 0; k1 < i1; k1++) {
-				int l2 = ai[k1];
-				if (l2 < vertexGroups.length) {
-					int ai1[] = vertexGroups[l2];
-					for (int element : ai1) {
-						int j5 = element;
-						anIntArray1627[j5] += j;
-						anIntArray1628[j5] += k;
-						anIntArray1629[j5] += l;
+		if (transformType == 1) {
+			for (int groupIndex = 0; groupIndex < groupCount; groupIndex++) {
+				int vertexGroupId = groupIds[groupIndex];
+				if (vertexGroupId < vertexGroups.length) {
+					int vertexIndices[] = vertexGroups[vertexGroupId];
+					for (int groupVertexIndex : vertexIndices) {
+						int vertexIndex = groupVertexIndex;
+						anIntArray1627[vertexIndex] += x;
+						anIntArray1628[vertexIndex] += y;
+						anIntArray1629[vertexIndex] += z;
 					}
 
 				}
@@ -980,43 +980,43 @@ public final class Model extends Animable {
 
 			return;
 		}
-		if (i == 2) {
-			for (int l1 = 0; l1 < i1; l1++) {
-				int i3 = ai[l1];
-				if (i3 < vertexGroups.length) {
-					int ai2[] = vertexGroups[i3];
-					for (int element : ai2) {
-						int k5 = element;
-						anIntArray1627[k5] -= anInt1681;
-						anIntArray1628[k5] -= anInt1682;
-						anIntArray1629[k5] -= anInt1683;
-						int k6 = (j & 0xff) * 8;
-						int l6 = (k & 0xff) * 8;
-						int i7 = (l & 0xff) * 8;
-						if (i7 != 0) {
-							int j7 = modelIntArray1[i7];
-							int i8 = modelIntArray2[i7];
-							int l8 = anIntArray1628[k5] * j7 + anIntArray1627[k5] * i8 >> 16;
-							anIntArray1628[k5] = anIntArray1628[k5] * i8 - anIntArray1627[k5] * j7 >> 16;
-							anIntArray1627[k5] = l8;
+		if (transformType == 2) {
+			for (int groupIndex = 0; groupIndex < groupCount; groupIndex++) {
+				int vertexGroupId = groupIds[groupIndex];
+				if (vertexGroupId < vertexGroups.length) {
+					int vertexIndices[] = vertexGroups[vertexGroupId];
+					for (int groupVertexIndex : vertexIndices) {
+						int vertexIndex = groupVertexIndex;
+						anIntArray1627[vertexIndex] -= animationPivotX;
+						anIntArray1628[vertexIndex] -= animationPivotY;
+						anIntArray1629[vertexIndex] -= animationPivotZ;
+						int rotationX2048 = (x & 0xff) * 8;
+						int rotationY2048 = (y & 0xff) * 8;
+						int rotationZ2048 = (z & 0xff) * 8;
+						if (rotationZ2048 != 0) {
+							int sineZ16 = modelIntArray1[rotationZ2048];
+							int cosineZ16 = modelIntArray2[rotationZ2048];
+							int rotatedX = anIntArray1628[vertexIndex] * sineZ16 + anIntArray1627[vertexIndex] * cosineZ16 >> 16;
+							anIntArray1628[vertexIndex] = anIntArray1628[vertexIndex] * cosineZ16 - anIntArray1627[vertexIndex] * sineZ16 >> 16;
+							anIntArray1627[vertexIndex] = rotatedX;
 						}
-						if (k6 != 0) {
-							int k7 = modelIntArray1[k6];
-							int j8 = modelIntArray2[k6];
-							int i9 = anIntArray1628[k5] * j8 - anIntArray1629[k5] * k7 >> 16;
-							anIntArray1629[k5] = anIntArray1628[k5] * k7 + anIntArray1629[k5] * j8 >> 16;
-							anIntArray1628[k5] = i9;
+						if (rotationX2048 != 0) {
+							int sineX16 = modelIntArray1[rotationX2048];
+							int cosineX16 = modelIntArray2[rotationX2048];
+							int rotatedY = anIntArray1628[vertexIndex] * cosineX16 - anIntArray1629[vertexIndex] * sineX16 >> 16;
+							anIntArray1629[vertexIndex] = anIntArray1628[vertexIndex] * sineX16 + anIntArray1629[vertexIndex] * cosineX16 >> 16;
+							anIntArray1628[vertexIndex] = rotatedY;
 						}
-						if (l6 != 0) {
-							int l7 = modelIntArray1[l6];
-							int k8 = modelIntArray2[l6];
-							int j9 = anIntArray1629[k5] * l7 + anIntArray1627[k5] * k8 >> 16;
-							anIntArray1629[k5] = anIntArray1629[k5] * k8 - anIntArray1627[k5] * l7 >> 16;
-							anIntArray1627[k5] = j9;
+						if (rotationY2048 != 0) {
+							int sineY16 = modelIntArray1[rotationY2048];
+							int cosineY16 = modelIntArray2[rotationY2048];
+							int rotatedX = anIntArray1629[vertexIndex] * sineY16 + anIntArray1627[vertexIndex] * cosineY16 >> 16;
+							anIntArray1629[vertexIndex] = anIntArray1629[vertexIndex] * cosineY16 - anIntArray1627[vertexIndex] * sineY16 >> 16;
+							anIntArray1627[vertexIndex] = rotatedX;
 						}
-						anIntArray1627[k5] += anInt1681;
-						anIntArray1628[k5] += anInt1682;
-						anIntArray1629[k5] += anInt1683;
+						anIntArray1627[vertexIndex] += animationPivotX;
+						anIntArray1628[vertexIndex] += animationPivotY;
+						anIntArray1629[vertexIndex] += animationPivotZ;
 					}
 
 				}
@@ -1024,22 +1024,22 @@ public final class Model extends Animable {
 
 			return;
 		}
-		if (i == 3) {
-			for (int i2 = 0; i2 < i1; i2++) {
-				int j3 = ai[i2];
-				if (j3 < vertexGroups.length) {
-					int ai3[] = vertexGroups[j3];
-					for (int element : ai3) {
-						int l5 = element;
-						anIntArray1627[l5] -= anInt1681;
-						anIntArray1628[l5] -= anInt1682;
-						anIntArray1629[l5] -= anInt1683;
-						anIntArray1627[l5] = anIntArray1627[l5] * j / 128;
-						anIntArray1628[l5] = anIntArray1628[l5] * k / 128;
-						anIntArray1629[l5] = anIntArray1629[l5] * l / 128;
-						anIntArray1627[l5] += anInt1681;
-						anIntArray1628[l5] += anInt1682;
-						anIntArray1629[l5] += anInt1683;
+		if (transformType == 3) {
+			for (int groupIndex = 0; groupIndex < groupCount; groupIndex++) {
+				int vertexGroupId = groupIds[groupIndex];
+				if (vertexGroupId < vertexGroups.length) {
+					int vertexIndices[] = vertexGroups[vertexGroupId];
+					for (int groupVertexIndex : vertexIndices) {
+						int vertexIndex = groupVertexIndex;
+						anIntArray1627[vertexIndex] -= animationPivotX;
+						anIntArray1628[vertexIndex] -= animationPivotY;
+						anIntArray1629[vertexIndex] -= animationPivotZ;
+						anIntArray1627[vertexIndex] = anIntArray1627[vertexIndex] * x / 128;
+						anIntArray1628[vertexIndex] = anIntArray1628[vertexIndex] * y / 128;
+						anIntArray1629[vertexIndex] = anIntArray1629[vertexIndex] * z / 128;
+						anIntArray1627[vertexIndex] += animationPivotX;
+						anIntArray1628[vertexIndex] += animationPivotY;
+						anIntArray1629[vertexIndex] += animationPivotZ;
 					}
 
 				}
@@ -1047,19 +1047,19 @@ public final class Model extends Animable {
 
 			return;
 		}
-		if (i == 5 && faceGroups != null && anIntArray1639 != null) {
-			for (int j2 = 0; j2 < i1; j2++) {
-				int k3 = ai[j2];
-				if (k3 < faceGroups.length) {
-					int ai4[] = faceGroups[k3];
-					for (int element : ai4) {
-						int i6 = element;
-						anIntArray1639[i6] += j * 8;
-						if (anIntArray1639[i6] < 0) {
-							anIntArray1639[i6] = 0;
+		if (transformType == 5 && faceGroups != null && anIntArray1639 != null) {
+			for (int groupIndex = 0; groupIndex < groupCount; groupIndex++) {
+				int faceGroupId = groupIds[groupIndex];
+				if (faceGroupId < faceGroups.length) {
+					int faceIndices[] = faceGroups[faceGroupId];
+					for (int groupFaceIndex : faceIndices) {
+						int faceIndex = groupFaceIndex;
+						anIntArray1639[faceIndex] += x * 8;
+						if (anIntArray1639[faceIndex] < 0) {
+							anIntArray1639[faceIndex] = 0;
 						}
-						if (anIntArray1639[i6] > 255) {
-							anIntArray1639[i6] = 255;
+						if (anIntArray1639[faceIndex] > 255) {
+							anIntArray1639[faceIndex] = 255;
 						}
 					}
 
@@ -1876,9 +1876,9 @@ public final class Model extends Animable {
 	private static final int[] anIntArray1678 = new int[10];
 	private static final int[] anIntArray1679 = new int[10];
 	private static final int[] anIntArray1680 = new int[10];
-	private static int anInt1681;
-	private static int anInt1682;
-	private static int anInt1683;
+	private static int animationPivotX;
+	private static int animationPivotY;
+	private static int animationPivotZ;
 	public static boolean aBoolean1684;
 	public static int anInt1685;
 	public static int anInt1686;
