@@ -3242,7 +3242,7 @@ public class Game extends RSApplet {
 			anInt1213++;
 		}
 		if (loadingStage == 2) {
-			method108();
+			updateCameraFollow();
 		}
 		if (loadingStage == 2 && aBoolean1160) {
 			calcCameraPos();
@@ -8661,19 +8661,19 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method108() {
+	public void updateCameraFollow() {
 		try {
-			int j = myPlayer.x + anInt1278;
-			int k = myPlayer.y + anInt1131;
-			if (anInt1014 - j < -500 || anInt1014 - j > 500 || anInt1015 - k < -500 || anInt1015 - k > 500) {
-				anInt1014 = j;
-				anInt1015 = k;
+			int targetWorldX = myPlayer.x + anInt1278;
+			int targetWorldY = myPlayer.y + anInt1131;
+			if (anInt1014 - targetWorldX < -500 || anInt1014 - targetWorldX > 500 || anInt1015 - targetWorldY < -500 || anInt1015 - targetWorldY > 500) {
+				anInt1014 = targetWorldX;
+				anInt1015 = targetWorldY;
 			}
-			if (anInt1014 != j) {
-				anInt1014 += (j - anInt1014) / 16;
+			if (anInt1014 != targetWorldX) {
+				anInt1014 += (targetWorldX - anInt1014) / 16;
 			}
-			if (anInt1015 != k) {
-				anInt1015 += (k - anInt1015) / 16;
+			if (anInt1015 != targetWorldY) {
+				anInt1015 += (targetWorldY - anInt1015) / 16;
 			}
 			if (super.keyArray[1] == 1) {
 				anInt1186 += (-24 - anInt1186) / 2;
@@ -8697,20 +8697,20 @@ public class Game extends RSApplet {
 			if (anInt1184 > 383) {
 				anInt1184 = 383;
 			}
-			int l = anInt1014 >> 7;
-			int i1 = anInt1015 >> 7;
-			int j1 = interpolatedGroundHeight(plane, anInt1015, anInt1014);
-			int k1 = 0;
-			if (l > 3 && i1 > 3 && l < 100 && i1 < 100) {
-				for (int l1 = l - 4; l1 <= l + 4; l1++) {
-					for (int k2 = i1 - 4; k2 <= i1 + 4; k2++) {
-						int l2 = plane;
-						if (l2 < 3 && (byteGroundArray[1][l1][k2] & 2) == 2) {
-							l2++;
+			int cameraTileX = anInt1014 >> 7;
+			int cameraTileY = anInt1015 >> 7;
+			int centerGroundHeight = interpolatedGroundHeight(plane, anInt1015, anInt1014);
+			int maximumNearbyClearance = 0;
+			if (cameraTileX > 3 && cameraTileY > 3 && cameraTileX < 100 && cameraTileY < 100) {
+				for (int scanTileX = cameraTileX - 4; scanTileX <= cameraTileX + 4; scanTileX++) {
+					for (int scanTileY = cameraTileY - 4; scanTileY <= cameraTileY + 4; scanTileY++) {
+						int heightPlane = plane;
+						if (heightPlane < 3 && (byteGroundArray[1][scanTileX][scanTileY] & 2) == 2) {
+							heightPlane++;
 						}
-						int i3 = j1 - intGroundArray[l2][l1][k2];
-						if (i3 > k1) {
-							k1 = i3;
+						int sampleClearance = centerGroundHeight - intGroundArray[heightPlane][scanTileX][scanTileY];
+						if (sampleClearance > maximumNearbyClearance) {
+							maximumNearbyClearance = sampleClearance;
 						}
 					}
 
@@ -8737,19 +8737,19 @@ public class Game extends RSApplet {
 				stream.writeShortBigEndian((int) (Math.random() * 65536D));
 				stream.backpatchBytePayloadLength(stream.currentOffset - i2);
 			}
-			int j2 = k1 * 192;
-			if (j2 > 0x17f00) {
-				j2 = 0x17f00;
+			int targetCameraDistance = maximumNearbyClearance * 192;
+			if (targetCameraDistance > 0x17f00) {
+				targetCameraDistance = 0x17f00;
 			}
-			if (j2 < 32768) {
-				j2 = 32768;
+			if (targetCameraDistance < 32768) {
+				targetCameraDistance = 32768;
 			}
-			if (j2 > anInt984) {
-				anInt984 += (j2 - anInt984) / 24;
+			if (targetCameraDistance > anInt984) {
+				anInt984 += (targetCameraDistance - anInt984) / 24;
 				return;
 			}
-			if (j2 < anInt984) {
-				anInt984 += (j2 - anInt984) / 80;
+			if (targetCameraDistance < anInt984) {
+				anInt984 += (targetCameraDistance - anInt984) / 80;
 			}
 		} catch (Exception _ex) {
 			Signlink.reporterror("glfc_ex " + myPlayer.x + "," + myPlayer.y + "," + anInt1014 + "," + anInt1015 + "," + anInt1069 + "," + anInt1070 + "," + baseX + "," + baseY);
