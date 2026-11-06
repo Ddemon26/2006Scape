@@ -1129,8 +1129,8 @@ public class Game extends RSApplet {
 							if (k >= j3 && i1 >= k3 && k < j3 + 32 && i1 < k3 + 32) {
 								mouseInvInterfaceIndex = k2;
 								lastActiveInvInterface = class9_1.id;
-								if (class9_1.inv[k2] > 0) {
-									ItemDef itemDef = ItemDef.forID(class9_1.inv[k2] - 1);
+								if (class9_1.itemIdsPlusOne[k2] > 0) {
+									ItemDef itemDef = ItemDef.forID(class9_1.itemIdsPlusOne[k2] - 1);
 									if (itemSelected == 1 && class9_1.isInventoryInterface) {
 										if (class9_1.id != anInt1284 || k2 != anInt1283) {
 											menuActionName[menuActionRow] = "Use " + selectedItemName + " with @lre@" + itemDef.name;
@@ -1245,7 +1245,7 @@ public class Game extends RSApplet {
 												}
 											}
 										}
-										menuActionName[menuActionRow] = "Examine @lre@" + itemDef.name + (showInfo ? " @gre@(@whi@" + (class9_1.inv[k2] - 1) + "@gre@)" : "");
+										menuActionName[menuActionRow] = "Examine @lre@" + itemDef.name + (showInfo ? " @gre@(@whi@" + (class9_1.itemIdsPlusOne[k2] - 1) + "@gre@)" : "");
 										menuActionID[menuActionRow] = 1125;
 										menuActionCmd1[menuActionRow] = itemDef.id;
 										menuActionCmd2[menuActionRow] = k2;
@@ -3176,16 +3176,16 @@ public class Game extends RSApplet {
 						if (anInt913 == 1 && class9.anInt214 == 206) {
 							j1 = 1;
 						}
-						if (class9.inv[mouseInvInterfaceIndex] <= 0) {
+						if (class9.itemIdsPlusOne[mouseInvInterfaceIndex] <= 0) {
 							j1 = 0;
 						}
 						if (class9.aBoolean235) {
 							int l2 = anInt1085;
 							int l3 = mouseInvInterfaceIndex;
-							class9.inv[l3] = class9.inv[l2];
-							class9.invStackSizes[l3] = class9.invStackSizes[l2];
-							class9.inv[l2] = -1;
-							class9.invStackSizes[l2] = 0;
+							class9.itemIdsPlusOne[l3] = class9.itemIdsPlusOne[l2];
+							class9.itemQuantities[l3] = class9.itemQuantities[l2];
+							class9.itemIdsPlusOne[l2] = -1;
+							class9.itemQuantities[l2] = 0;
 						} else if (j1 == 1) {
 							int i3 = anInt1085;
 							for (int i4 = mouseInvInterfaceIndex; i3 != i4;) {
@@ -4421,11 +4421,11 @@ public class Game extends RSApplet {
 		if (l == 1125) {
 			ItemDef itemDef = ItemDef.forID(i1);
 			RSInterface class9_4 = RSInterface.interfaceCache[k];
-			if (class9_4 != null && class9_4.invStackSizes[j] >= 1e5) {
+			if (class9_4 != null && class9_4.itemQuantities[j] >= 1e5) {
 				DecimalFormatSymbols separator = new DecimalFormatSymbols();
 				separator.setGroupingSeparator(',');
 				DecimalFormat formatter = new DecimalFormat("#,###,###,###", separator);
-				pushMessage(formatter.format(class9_4.invStackSizes[j]) + " x " + itemDef.name, 0, "");
+				pushMessage(formatter.format(class9_4.itemQuantities[j]) + " x " + itemDef.name, 0, "");
 			}
 			if (itemDef.description != null) {
 				pushMessage(new String(itemDef.description) + " (" + intToKOrMil(itemDef.value) + "gp ea)", 0, "");
@@ -8211,16 +8211,16 @@ public class Game extends RSApplet {
 								k5 += component.spritesX[i3];
 								j6 += component.spritesY[i3];
 							}
-							if (component.inv[i3] > 0) {
+							if (component.itemIdsPlusOne[i3] > 0) {
 								int k6 = 0;
 								int j7 = 0;
-								int j9 = component.inv[i3] - 1;
+								int j9 = component.itemIdsPlusOne[i3] - 1;
 								if (k5 > DrawingArea.topX - 32 && k5 < DrawingArea.bottomX && j6 > DrawingArea.topY - 32 && j6 < DrawingArea.bottomY || activeInterfaceType != 0 && anInt1085 == i3) {
 									int l9 = 0;
 									if (itemSelected == 1 && anInt1283 == i3 && anInt1284 == component.id) {
 										l9 = 0xffffff;
 									}
-									Sprite class30_sub2_sub1_sub1_2 = ItemDef.getSprite(j9, component.invStackSizes[i3], l9);
+									Sprite class30_sub2_sub1_sub1_2 = ItemDef.getSprite(j9, component.itemQuantities[i3], l9);
 									if (class30_sub2_sub1_sub1_2 != null) {
 										if (activeInterfaceType != 0 && anInt1085 == i3 && anInt1084 == component.id) {
 											k6 = super.mouseX - anInt1087;
@@ -8266,9 +8266,9 @@ public class Game extends RSApplet {
 											// Draw item in inventory/equipment etc
 											class30_sub2_sub1_sub1_2.drawSprite(k5, j6);
 										}
-										if (class30_sub2_sub1_sub1_2.trimWidth == 33 || component.invStackSizes[i3] != 1) {
+										if (class30_sub2_sub1_sub1_2.trimWidth == 33 || component.itemQuantities[i3] != 1) {
 											// Draw item amounts
-											int k10 = component.invStackSizes[i3];
+											int k10 = component.itemQuantities[i3];
 											aTextDrawingArea_1270.drawLiteralText(0, intToKOrMil(k10), j6 + 10 + j7, k5 + 1 + k6); // shadow
 											aTextDrawingArea_1270.drawLiteralText(0xffff00, intToKOrMil(k10), j6 + 9 + j7, k5 + k6); // top layer
 										}
@@ -8443,11 +8443,11 @@ public class Game extends RSApplet {
 					int k4 = 0;
 					for (int j5 = 0; j5 < component.height; j5++) {
 						for (int i6 = 0; i6 < component.width; i6++) {
-							if (component.inv[k4] > 0) {
-								ItemDef itemDef = ItemDef.forID(component.inv[k4] - 1);
+							if (component.itemIdsPlusOne[k4] > 0) {
+								ItemDef itemDef = ItemDef.forID(component.itemIdsPlusOne[k4] - 1);
 								String s2 = itemDef.name;
-								if (itemDef.stackable || component.invStackSizes[k4] != 1) {
-									s2 = s2 + " x" + intToKOrMilLongName(component.invStackSizes[k4]);
+								if (itemDef.stackable || component.itemQuantities[k4] != 1) {
+									s2 = s2 + " x" + intToKOrMilLongName(component.itemQuantities[k4]);
 								}
 								int i9 = k2 + i6 * (115 + component.invSpritePadX);
 								int k9 = l2 + j5 * (12 + component.invSpritePadY);
@@ -9346,9 +9346,9 @@ public class Game extends RSApplet {
 					RSInterface class9_1 = RSInterface.interfaceCache[ai[l++]];
 					int k2 = ai[l++];
 					if (k2 >= 0 && k2 < ItemDef.totalItems && (!ItemDef.forID(k2).membersObject || isMembers)) {
-						for (int j3 = 0; j3 < class9_1.inv.length; j3++) {
-							if (class9_1.inv[j3] == k2 + 1) {
-								k1 += class9_1.invStackSizes[j3];
+						for (int j3 = 0; j3 < class9_1.itemIdsPlusOne.length; j3++) {
+							if (class9_1.itemIdsPlusOne[j3] == k2 + 1) {
+								k1 += class9_1.itemQuantities[j3];
 							}
 						}
 
@@ -9378,7 +9378,7 @@ public class Game extends RSApplet {
 					RSInterface class9_2 = RSInterface.interfaceCache[ai[l++]];
 					int l2 = ai[l++] + 1;
 					if (l2 >= 0 && l2 < ItemDef.totalItems && (!ItemDef.forID(l2).membersObject || isMembers)) {
-						for (int element : class9_2.inv) {
+						for (int element : class9_2.itemIdsPlusOne) {
 							if (element != l2) {
 								continue;
 							}
@@ -10703,9 +10703,9 @@ public class Game extends RSApplet {
 			if (pktType == 72) {
 				int i1 = inStream.readUnsignedShortLittleEndian();
 				RSInterface class9 = RSInterface.interfaceCache[i1];
-				for (int k15 = 0; k15 < class9.inv.length; k15++) {
-					class9.inv[k15] = -1;
-					class9.inv[k15] = 0;
+				for (int k15 = 0; k15 < class9.itemIdsPlusOne.length; k15++) {
+					class9.itemIdsPlusOne[k15] = -1;
+					class9.itemIdsPlusOne[k15] = 0;
 				}
 
 				pktType = -1;
@@ -11548,13 +11548,13 @@ public class Game extends RSApplet {
 					if (i25 == 255) {
 						i25 = inStream.readIntOrder2143();
 					}
-					class9_1.inv[j22] = inStream.readUnsignedShortLittleEndianSubtract128();
-					class9_1.invStackSizes[j22] = i25;
+					class9_1.itemIdsPlusOne[j22] = inStream.readUnsignedShortLittleEndianSubtract128();
+					class9_1.itemQuantities[j22] = i25;
 				}
 
-				for (int j25 = j19; j25 < class9_1.inv.length; j25++) {
-					class9_1.inv[j25] = 0;
-					class9_1.invStackSizes[j25] = 0;
+				for (int j25 = j19; j25 < class9_1.itemIdsPlusOne.length; j25++) {
+					class9_1.itemIdsPlusOne[j25] = 0;
+					class9_1.itemQuantities[j25] = 0;
 				}
 
 				pktType = -1;
@@ -11763,9 +11763,9 @@ public class Game extends RSApplet {
 					if (l25 == 255) {
 						l25 = inStream.readIntBigEndian();
 					}
-					if (j20 >= 0 && j20 < class9_2.inv.length) {
-						class9_2.inv[j20] = i23;
-						class9_2.invStackSizes[j20] = l25;
+					if (j20 >= 0 && j20 < class9_2.itemIdsPlusOne.length) {
+						class9_2.itemIdsPlusOne[j20] = i23;
+						class9_2.itemQuantities[j20] = l25;
 					}
 				}
 				pktType = -1;
@@ -12849,14 +12849,14 @@ public class Game extends RSApplet {
 
 			int itemCount = 0;
 			for (int ID : definitionResultIDs) {
-				if (ID > 0 && itemCount < class9_1.inv.length) {
-					class9_1.inv[itemCount] = ID + 1; // Sets item ID;
-					class9_1.invStackSizes[itemCount++] = 1; // Sets item amoounts
+				if (ID > 0 && itemCount < class9_1.itemIdsPlusOne.length) {
+					class9_1.itemIdsPlusOne[itemCount] = ID + 1; // Sets item ID;
+					class9_1.itemQuantities[itemCount++] = 1; // Sets item amoounts
 				}
 			}
-			while (itemCount < class9_1.inv.length) {
-				class9_1.inv[itemCount] = 0;
-				class9_1.invStackSizes[itemCount++] = 0;
+			while (itemCount < class9_1.itemIdsPlusOne.length) {
+				class9_1.itemIdsPlusOne[itemCount] = 0;
+				class9_1.itemQuantities[itemCount++] = 0;
 			}
 		} else {
 			pushMessage("@blu@" + sType + " @bla@search results for @blu@" + name + "@bla@ displayed above (@blu@" + definitionResultsTotal + "@bla@ results).", 0, "");
@@ -12953,8 +12953,8 @@ public class Game extends RSApplet {
 		if (lastActiveInvInterface != -1 && mouseInvInterfaceIndex != -1) {
 			RSInterface interf = RSInterface.interfaceCache[lastActiveInvInterface];
 			if (interf != null && (interf.aBoolean259 || interf.aBoolean235)
-					&& mouseInvInterfaceIndex >= 0 && mouseInvInterfaceIndex < interf.inv.length
-					&& interf.inv[mouseInvInterfaceIndex] > 0) {
+					&& mouseInvInterfaceIndex >= 0 && mouseInvInterfaceIndex < interf.itemIdsPlusOne.length
+					&& interf.itemIdsPlusOne[mouseInvInterfaceIndex] > 0) {
 				canDrag = true;
 			}
 		}
@@ -12975,8 +12975,8 @@ public class Game extends RSApplet {
 		if (lastActiveInvInterface != -1 && mouseInvInterfaceIndex != -1) {
 			RSInterface interf = RSInterface.interfaceCache[lastActiveInvInterface];
 			if (interf != null && (interf.aBoolean259 || interf.aBoolean235)
-					&& mouseInvInterfaceIndex >= 0 && mouseInvInterfaceIndex < interf.inv.length
-					&& interf.inv[mouseInvInterfaceIndex] > 0) {
+					&& mouseInvInterfaceIndex >= 0 && mouseInvInterfaceIndex < interf.itemIdsPlusOne.length
+					&& interf.itemIdsPlusOne[mouseInvInterfaceIndex] > 0) {
 				aBoolean1242 = true;
 				anInt989 = 10;
 				anInt1084 = lastActiveInvInterface;

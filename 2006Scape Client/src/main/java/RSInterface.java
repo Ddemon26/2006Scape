@@ -1,12 +1,12 @@
 public final class RSInterface {
 
-	public void swapInventoryItems(int i, int j) {
-		int k = inv[i];
-		inv[i] = inv[j];
-		inv[j] = k;
-		k = invStackSizes[i];
-		invStackSizes[i] = invStackSizes[j];
-		invStackSizes[j] = k;
+	public void swapInventoryItems(int firstSlot, int secondSlot) {
+		int savedValue = itemIdsPlusOne[firstSlot];
+		itemIdsPlusOne[firstSlot] = itemIdsPlusOne[secondSlot];
+		itemIdsPlusOne[secondSlot] = savedValue;
+		savedValue = itemQuantities[firstSlot];
+		itemQuantities[firstSlot] = itemQuantities[secondSlot];
+		itemQuantities[secondSlot] = savedValue;
 	}
 	
 	public static void unpack(StreamLoader streamLoader, TextDrawingArea textDrawingAreas[], StreamLoader streamLoader_1) {
@@ -78,8 +78,8 @@ public final class RSInterface {
 				stream.readUnsignedByte();
 			}
 			if (rsInterface.type == 2) {
-				rsInterface.inv = new int[rsInterface.width * rsInterface.height];
-				rsInterface.invStackSizes = new int[rsInterface.width * rsInterface.height];
+				rsInterface.itemIdsPlusOne = new int[rsInterface.width * rsInterface.height];
+				rsInterface.itemQuantities = new int[rsInterface.width * rsInterface.height];
 				rsInterface.aBoolean259 = stream.readUnsignedByte() == 1;
 				rsInterface.isInventoryInterface = stream.readUnsignedByte() == 1;
 				rsInterface.usableItemInterface = stream.readUnsignedByte() == 1;
@@ -181,8 +181,8 @@ public final class RSInterface {
 				rsInterface.anInt271 = stream.readUnsignedShortBigEndian();
 			}
 			if (rsInterface.type == 7) {
-				rsInterface.inv = new int[rsInterface.width * rsInterface.height];
-				rsInterface.invStackSizes = new int[rsInterface.width * rsInterface.height];
+				rsInterface.itemIdsPlusOne = new int[rsInterface.width * rsInterface.height];
+				rsInterface.itemQuantities = new int[rsInterface.width * rsInterface.height];
 				rsInterface.aBoolean223 = stream.readUnsignedByte() == 1;
 				int l2 = stream.readUnsignedByte();
 				if (textDrawingAreas != null) {
@@ -362,8 +362,8 @@ public final class RSInterface {
 	public String disabledText;
 	public boolean isInventoryInterface;
 	public int id;
-	public int invStackSizes[];
-	public int inv[];
+	public int itemQuantities[];
+	public int itemIdsPlusOne[];
 	public byte aByte254;
 	private int anInt255;
 	private int anInt256;
