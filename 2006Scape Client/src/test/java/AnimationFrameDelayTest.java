@@ -86,10 +86,10 @@ public class AnimationFrameDelayTest {
             Animation.anims = new Animation[]{sequence(null, delay, 3)};
             Entity e = new Entity(); e.anInt1517 = 0;
             for (int cycle = 1; cycle <= delay; cycle++) {
-                g.method101(e); assertEquals(0, e.anInt1518); assertEquals(cycle, e.anInt1519);
+                g.updateEntityAnimations(e); assertEquals(0, e.anInt1518); assertEquals(cycle, e.anInt1519);
             }
-            g.method101(e); assertEquals(1, e.anInt1518); assertEquals(0, e.anInt1519);
-            for (int cycle = 0; cycle < 4; cycle++) g.method101(e);
+            g.updateEntityAnimations(e); assertEquals(1, e.anInt1518); assertEquals(0, e.anInt1519);
+            for (int cycle = 0; cycle < 4; cycle++) g.updateEntityAnimations(e);
             assertEquals(0, e.anInt1518); assertEquals(0, e.anInt1519);
         }
     }

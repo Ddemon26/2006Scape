@@ -7559,7 +7559,7 @@ public class Game extends RSApplet {
 			advanceEntityAlongWalkingPath(entity);
 		}
 		updateEntityTurning(entity);
-		method101(entity);
+		updateEntityAnimations(entity);
 	}
 
 	public void advanceEntityToForcedMovementStart(Entity entity) {
@@ -7780,16 +7780,16 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method101(Entity entity) {
+	public void updateEntityAnimations(Entity entity) {
 		entity.aBoolean1541 = false;
 		if (entity.anInt1517 != -1) {
-			Animation animation = Animation.anims[entity.anInt1517];
+			Animation movementAnimation = Animation.anims[entity.anInt1517];
 			entity.anInt1519++;
-			if (entity.anInt1518 < animation.anInt352 && entity.anInt1519 > animation.getFrameDelay(entity.anInt1518)) {
+			if (entity.anInt1518 < movementAnimation.anInt352 && entity.anInt1519 > movementAnimation.getFrameDelay(entity.anInt1518)) {
 				entity.anInt1519 = 0;
 				entity.anInt1518++;
 			}
-			if (entity.anInt1518 >= animation.anInt352) {
+			if (entity.anInt1518 >= movementAnimation.anInt352) {
 				entity.anInt1519 = 0;
 				entity.anInt1518 = 0;
 			}
@@ -7798,39 +7798,39 @@ public class Game extends RSApplet {
 			if (entity.anInt1521 < 0) {
 				entity.anInt1521 = 0;
 			}
-			Animation animation_1 = SpotAnim.cache[entity.anInt1520].aAnimation_407;
-			for (entity.anInt1522++; entity.anInt1521 < animation_1.anInt352 && entity.anInt1522 > animation_1.getFrameDelay(entity.anInt1521); entity.anInt1521++) {
-				entity.anInt1522 -= animation_1.getFrameDelay(entity.anInt1521);
+			Animation spotAnimation = SpotAnim.cache[entity.anInt1520].aAnimation_407;
+			for (entity.anInt1522++; entity.anInt1521 < spotAnimation.anInt352 && entity.anInt1522 > spotAnimation.getFrameDelay(entity.anInt1521); entity.anInt1521++) {
+				entity.anInt1522 -= spotAnimation.getFrameDelay(entity.anInt1521);
 			}
 
-			if (entity.anInt1521 >= animation_1.anInt352 && (entity.anInt1521 < 0 || entity.anInt1521 >= animation_1.anInt352)) {
+			if (entity.anInt1521 >= spotAnimation.anInt352 && (entity.anInt1521 < 0 || entity.anInt1521 >= spotAnimation.anInt352)) {
 				entity.anInt1520 = -1;
 			}
 		}
 		if (entity.anim != -1 && entity.anInt1529 <= 1) {
-			Animation animation_2 = Animation.anims[entity.anim];
-			if (animation_2.anInt363 == 1 && entity.anInt1542 > 0 && entity.anInt1547 <= loopCycle && entity.anInt1548 < loopCycle) {
+			Animation actionDelayAnimation = Animation.anims[entity.anim];
+			if (actionDelayAnimation.anInt363 == 1 && entity.anInt1542 > 0 && entity.anInt1547 <= loopCycle && entity.anInt1548 < loopCycle) {
 				entity.anInt1529 = 1;
 				return;
 			}
 		}
 		if (entity.anim != -1 && entity.anInt1529 == 0) {
-			Animation animation_3 = Animation.anims[entity.anim];
-			for (entity.anInt1528++; entity.anInt1527 < animation_3.anInt352 && entity.anInt1528 > animation_3.getFrameDelay(entity.anInt1527); entity.anInt1527++) {
-				entity.anInt1528 -= animation_3.getFrameDelay(entity.anInt1527);
+			Animation actionAnimation = Animation.anims[entity.anim];
+			for (entity.anInt1528++; entity.anInt1527 < actionAnimation.anInt352 && entity.anInt1528 > actionAnimation.getFrameDelay(entity.anInt1527); entity.anInt1527++) {
+				entity.anInt1528 -= actionAnimation.getFrameDelay(entity.anInt1527);
 			}
 
-			if (entity.anInt1527 >= animation_3.anInt352) {
-				entity.anInt1527 -= animation_3.anInt356;
+			if (entity.anInt1527 >= actionAnimation.anInt352) {
+				entity.anInt1527 -= actionAnimation.anInt356;
 				entity.anInt1530++;
-				if (entity.anInt1530 >= animation_3.anInt362) {
+				if (entity.anInt1530 >= actionAnimation.anInt362) {
 					entity.anim = -1;
 				}
-				if (entity.anInt1527 < 0 || entity.anInt1527 >= animation_3.anInt352) {
+				if (entity.anInt1527 < 0 || entity.anInt1527 >= actionAnimation.anInt352) {
 					entity.anim = -1;
 				}
 			}
-			entity.aBoolean1541 = animation_3.aBoolean358;
+			entity.aBoolean1541 = actionAnimation.aBoolean358;
 		}
 		if (entity.anInt1529 > 0) {
 			entity.anInt1529--;

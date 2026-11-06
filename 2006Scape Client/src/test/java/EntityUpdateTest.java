@@ -9,7 +9,7 @@ public class EntityUpdateTest {
         @Override public void advanceEntityThroughForcedMovement(Entity e) { calls.add("forced"); }
         @Override public void advanceEntityAlongWalkingPath(Entity e) { calls.add("walk"); }
         @Override public void updateEntityTurning(Entity e) { calls.add("turn"); }
-        @Override public void method101(Entity e) { calls.add("animate"); }
+        @Override public void updateEntityAnimations(Entity e) { calls.add("animate"); }
     }
     private Player saved;
     private int savedCycle;
