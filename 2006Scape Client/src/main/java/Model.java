@@ -522,182 +522,182 @@ public final class Model extends Animable {
 		calculateBounds();
 	}
 
-	public Model(boolean flag, boolean flag1, boolean flag2, Model model) {
+	public Model(boolean shareFaceValues, boolean shareFaceAlpha, boolean shareVertices, Model sourceModel) {
 		aBoolean1659 = false;
-		anInt1626 = model.anInt1626;
-		anInt1630 = model.anInt1630;
-		anInt1642 = model.anInt1642;
-		if (flag2) {
-			anIntArray1627 = model.anIntArray1627;
-			anIntArray1628 = model.anIntArray1628;
-			anIntArray1629 = model.anIntArray1629;
+		anInt1626 = sourceModel.anInt1626;
+		anInt1630 = sourceModel.anInt1630;
+		anInt1642 = sourceModel.anInt1642;
+		if (shareVertices) {
+			anIntArray1627 = sourceModel.anIntArray1627;
+			anIntArray1628 = sourceModel.anIntArray1628;
+			anIntArray1629 = sourceModel.anIntArray1629;
 		} else {
 			anIntArray1627 = new int[anInt1626];
 			anIntArray1628 = new int[anInt1626];
 			anIntArray1629 = new int[anInt1626];
-			for (int j = 0; j < anInt1626; j++) {
-				anIntArray1627[j] = model.anIntArray1627[j];
-				anIntArray1628[j] = model.anIntArray1628[j];
-				anIntArray1629[j] = model.anIntArray1629[j];
+			for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
+				anIntArray1627[vertexIndex] = sourceModel.anIntArray1627[vertexIndex];
+				anIntArray1628[vertexIndex] = sourceModel.anIntArray1628[vertexIndex];
+				anIntArray1629[vertexIndex] = sourceModel.anIntArray1629[vertexIndex];
 			}
 
 		}
-		if (flag) {
-			anIntArray1640 = model.anIntArray1640;
+		if (shareFaceValues) {
+			anIntArray1640 = sourceModel.anIntArray1640;
 		} else {
 			anIntArray1640 = new int[anInt1630];
-			System.arraycopy(model.anIntArray1640, 0, anIntArray1640, 0, anInt1630);
+			System.arraycopy(sourceModel.anIntArray1640, 0, anIntArray1640, 0, anInt1630);
 
 		}
-		if (flag1) {
-			anIntArray1639 = model.anIntArray1639;
+		if (shareFaceAlpha) {
+			anIntArray1639 = sourceModel.anIntArray1639;
 		} else {
 			anIntArray1639 = new int[anInt1630];
-			if (model.anIntArray1639 == null) {
-				for (int l = 0; l < anInt1630; l++) {
-					anIntArray1639[l] = 0;
+			if (sourceModel.anIntArray1639 == null) {
+				for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
+					anIntArray1639[faceIndex] = 0;
 				}
 
 			} else {
-				System.arraycopy(model.anIntArray1639, 0, anIntArray1639, 0, anInt1630);
+				System.arraycopy(sourceModel.anIntArray1639, 0, anIntArray1639, 0, anInt1630);
 
 			}
 		}
-		vertexGroupIds = model.vertexGroupIds;
-		faceGroupIds = model.faceGroupIds;
-		anIntArray1637 = model.anIntArray1637;
-		anIntArray1631 = model.anIntArray1631;
-		anIntArray1632 = model.anIntArray1632;
-		anIntArray1633 = model.anIntArray1633;
-		anIntArray1638 = model.anIntArray1638;
-		anInt1641 = model.anInt1641;
-		anIntArray1643 = model.anIntArray1643;
-		anIntArray1644 = model.anIntArray1644;
-		anIntArray1645 = model.anIntArray1645;
+		vertexGroupIds = sourceModel.vertexGroupIds;
+		faceGroupIds = sourceModel.faceGroupIds;
+		anIntArray1637 = sourceModel.anIntArray1637;
+		anIntArray1631 = sourceModel.anIntArray1631;
+		anIntArray1632 = sourceModel.anIntArray1632;
+		anIntArray1633 = sourceModel.anIntArray1633;
+		anIntArray1638 = sourceModel.anIntArray1638;
+		anInt1641 = sourceModel.anInt1641;
+		anIntArray1643 = sourceModel.anIntArray1643;
+		anIntArray1644 = sourceModel.anIntArray1644;
+		anIntArray1645 = sourceModel.anIntArray1645;
 	}
 
-	public Model(boolean flag, boolean flag1, Model model) {
+	public Model(boolean copyVertexY, boolean copyLightingData, Model sourceModel) {
 		aBoolean1659 = false;
-		anInt1626 = model.anInt1626;
-		anInt1630 = model.anInt1630;
-		anInt1642 = model.anInt1642;
-		if (flag) {
+		anInt1626 = sourceModel.anInt1626;
+		anInt1630 = sourceModel.anInt1630;
+		anInt1642 = sourceModel.anInt1642;
+		if (copyVertexY) {
 			anIntArray1628 = new int[anInt1626];
-			System.arraycopy(model.anIntArray1628, 0, anIntArray1628, 0, anInt1626);
+			System.arraycopy(sourceModel.anIntArray1628, 0, anIntArray1628, 0, anInt1626);
 
 		} else {
-			anIntArray1628 = model.anIntArray1628;
+			anIntArray1628 = sourceModel.anIntArray1628;
 		}
-		if (flag1) {
+		if (copyLightingData) {
 			anIntArray1634 = new int[anInt1630];
 			anIntArray1635 = new int[anInt1630];
 			anIntArray1636 = new int[anInt1630];
-			for (int k = 0; k < anInt1630; k++) {
-				anIntArray1634[k] = model.anIntArray1634[k];
-				anIntArray1635[k] = model.anIntArray1635[k];
-				anIntArray1636[k] = model.anIntArray1636[k];
+			for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
+				anIntArray1634[faceIndex] = sourceModel.anIntArray1634[faceIndex];
+				anIntArray1635[faceIndex] = sourceModel.anIntArray1635[faceIndex];
+				anIntArray1636[faceIndex] = sourceModel.anIntArray1636[faceIndex];
 			}
 
 			anIntArray1637 = new int[anInt1630];
-			if (model.anIntArray1637 == null) {
-				for (int l = 0; l < anInt1630; l++) {
-					anIntArray1637[l] = 0;
+			if (sourceModel.anIntArray1637 == null) {
+				for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
+					anIntArray1637[faceIndex] = 0;
 				}
 
 			} else {
-				System.arraycopy(model.anIntArray1637, 0, anIntArray1637, 0, anInt1630);
+				System.arraycopy(sourceModel.anIntArray1637, 0, anIntArray1637, 0, anInt1630);
 
 			}
 			super.aClass33Array1425 = new Class33[anInt1626];
-			for (int j1 = 0; j1 < anInt1626; j1++) {
-				Class33 class33 = super.aClass33Array1425[j1] = new Class33();
-				Class33 class33_1 = model.aClass33Array1425[j1];
-				class33.anInt602 = class33_1.anInt602;
-				class33.anInt603 = class33_1.anInt603;
-				class33.anInt604 = class33_1.anInt604;
-				class33.anInt605 = class33_1.anInt605;
+			for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
+				Class33 copiedNormal = super.aClass33Array1425[vertexIndex] = new Class33();
+				Class33 sourceNormal = sourceModel.aClass33Array1425[vertexIndex];
+				copiedNormal.anInt602 = sourceNormal.anInt602;
+				copiedNormal.anInt603 = sourceNormal.anInt603;
+				copiedNormal.anInt604 = sourceNormal.anInt604;
+				copiedNormal.anInt605 = sourceNormal.anInt605;
 			}
 
-			aClass33Array1660 = model.aClass33Array1660;
+			aClass33Array1660 = sourceModel.aClass33Array1660;
 		} else {
-			anIntArray1634 = model.anIntArray1634;
-			anIntArray1635 = model.anIntArray1635;
-			anIntArray1636 = model.anIntArray1636;
-			anIntArray1637 = model.anIntArray1637;
+			anIntArray1634 = sourceModel.anIntArray1634;
+			anIntArray1635 = sourceModel.anIntArray1635;
+			anIntArray1636 = sourceModel.anIntArray1636;
+			anIntArray1637 = sourceModel.anIntArray1637;
 		}
-		anIntArray1627 = model.anIntArray1627;
-		anIntArray1629 = model.anIntArray1629;
-		anIntArray1640 = model.anIntArray1640;
-		anIntArray1639 = model.anIntArray1639;
-		anIntArray1638 = model.anIntArray1638;
-		anInt1641 = model.anInt1641;
-		anIntArray1631 = model.anIntArray1631;
-		anIntArray1632 = model.anIntArray1632;
-		anIntArray1633 = model.anIntArray1633;
-		anIntArray1643 = model.anIntArray1643;
-		anIntArray1644 = model.anIntArray1644;
-		anIntArray1645 = model.anIntArray1645;
-		super.modelHeight = model.modelHeight;
-		maxY = model.maxY;
-		radiusXZ = model.radiusXZ;
-		depthBucketOffset = model.depthBucketOffset;
-		depthBucketCount = model.depthBucketCount;
-		minX = model.minX;
-		maxZ = model.maxZ;
-		minZ = model.minZ;
-		maxX = model.maxX;
+		anIntArray1627 = sourceModel.anIntArray1627;
+		anIntArray1629 = sourceModel.anIntArray1629;
+		anIntArray1640 = sourceModel.anIntArray1640;
+		anIntArray1639 = sourceModel.anIntArray1639;
+		anIntArray1638 = sourceModel.anIntArray1638;
+		anInt1641 = sourceModel.anInt1641;
+		anIntArray1631 = sourceModel.anIntArray1631;
+		anIntArray1632 = sourceModel.anIntArray1632;
+		anIntArray1633 = sourceModel.anIntArray1633;
+		anIntArray1643 = sourceModel.anIntArray1643;
+		anIntArray1644 = sourceModel.anIntArray1644;
+		anIntArray1645 = sourceModel.anIntArray1645;
+		super.modelHeight = sourceModel.modelHeight;
+		maxY = sourceModel.maxY;
+		radiusXZ = sourceModel.radiusXZ;
+		depthBucketOffset = sourceModel.depthBucketOffset;
+		depthBucketCount = sourceModel.depthBucketCount;
+		minX = sourceModel.minX;
+		maxZ = sourceModel.maxZ;
+		minZ = sourceModel.minZ;
+		maxX = sourceModel.maxX;
 	}
 
-	public void method464(Model model, boolean flag) {
-		anInt1626 = model.anInt1626;
-		anInt1630 = model.anInt1630;
-		anInt1642 = model.anInt1642;
-		if (anIntArray1622.length < anInt1626) {
-			anIntArray1622 = new int[anInt1626 + 100];
-			anIntArray1623 = new int[anInt1626 + 100];
-			anIntArray1624 = new int[anInt1626 + 100];
+	public void copyIntoAnimationScratch(Model sourceModel, boolean shareFaceAlpha) {
+		anInt1626 = sourceModel.anInt1626;
+		anInt1630 = sourceModel.anInt1630;
+		anInt1642 = sourceModel.anInt1642;
+		if (animationScratchX.length < anInt1626) {
+			animationScratchX = new int[anInt1626 + 100];
+			animationScratchY = new int[anInt1626 + 100];
+			animationScratchZ = new int[anInt1626 + 100];
 		}
-		anIntArray1627 = anIntArray1622;
-		anIntArray1628 = anIntArray1623;
-		anIntArray1629 = anIntArray1624;
-		for (int k = 0; k < anInt1626; k++) {
-			anIntArray1627[k] = model.anIntArray1627[k];
-			anIntArray1628[k] = model.anIntArray1628[k];
-			anIntArray1629[k] = model.anIntArray1629[k];
+		anIntArray1627 = animationScratchX;
+		anIntArray1628 = animationScratchY;
+		anIntArray1629 = animationScratchZ;
+		for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
+			anIntArray1627[vertexIndex] = sourceModel.anIntArray1627[vertexIndex];
+			anIntArray1628[vertexIndex] = sourceModel.anIntArray1628[vertexIndex];
+			anIntArray1629[vertexIndex] = sourceModel.anIntArray1629[vertexIndex];
 		}
 
-		if (flag) {
-			anIntArray1639 = model.anIntArray1639;
+		if (shareFaceAlpha) {
+			anIntArray1639 = sourceModel.anIntArray1639;
 		} else {
-			if (anIntArray1625.length < anInt1630) {
-				anIntArray1625 = new int[anInt1630 + 100];
+			if (animationScratchAlpha.length < anInt1630) {
+				animationScratchAlpha = new int[anInt1630 + 100];
 			}
-			anIntArray1639 = anIntArray1625;
-			if (model.anIntArray1639 == null) {
-				for (int l = 0; l < anInt1630; l++) {
-					anIntArray1639[l] = 0;
+			anIntArray1639 = animationScratchAlpha;
+			if (sourceModel.anIntArray1639 == null) {
+				for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
+					anIntArray1639[faceIndex] = 0;
 				}
 
 			} else {
-				System.arraycopy(model.anIntArray1639, 0, anIntArray1639, 0, anInt1630);
+				System.arraycopy(sourceModel.anIntArray1639, 0, anIntArray1639, 0, anInt1630);
 
 			}
 		}
-		anIntArray1637 = model.anIntArray1637;
-		anIntArray1640 = model.anIntArray1640;
-		anIntArray1638 = model.anIntArray1638;
-		anInt1641 = model.anInt1641;
-		faceGroups = model.faceGroups;
-		vertexGroups = model.vertexGroups;
-		anIntArray1631 = model.anIntArray1631;
-		anIntArray1632 = model.anIntArray1632;
-		anIntArray1633 = model.anIntArray1633;
-		anIntArray1634 = model.anIntArray1634;
-		anIntArray1635 = model.anIntArray1635;
-		anIntArray1636 = model.anIntArray1636;
-		anIntArray1643 = model.anIntArray1643;
-		anIntArray1644 = model.anIntArray1644;
-		anIntArray1645 = model.anIntArray1645;
+		anIntArray1637 = sourceModel.anIntArray1637;
+		anIntArray1640 = sourceModel.anIntArray1640;
+		anIntArray1638 = sourceModel.anIntArray1638;
+		anInt1641 = sourceModel.anInt1641;
+		faceGroups = sourceModel.faceGroups;
+		vertexGroups = sourceModel.vertexGroups;
+		anIntArray1631 = sourceModel.anIntArray1631;
+		anIntArray1632 = sourceModel.anIntArray1632;
+		anIntArray1633 = sourceModel.anIntArray1633;
+		anIntArray1634 = sourceModel.anIntArray1634;
+		anIntArray1635 = sourceModel.anIntArray1635;
+		anIntArray1636 = sourceModel.anIntArray1636;
+		anIntArray1643 = sourceModel.anIntArray1643;
+		anIntArray1644 = sourceModel.anIntArray1644;
+		anIntArray1645 = sourceModel.anIntArray1645;
 	}
 
 	private int getOrAddVertex(Model sourceModel, int sourceVertexIndex) {
@@ -1816,11 +1816,11 @@ public final class Model extends Animable {
 		return !(i < j1 && i < k1 && i < l1) && (i <= j1 || i <= k1 || i <= l1);
 	}
 
-	public static final Model aModel_1621 = new Model();
-	private static int[] anIntArray1622 = new int[2000];
-	private static int[] anIntArray1623 = new int[2000];
-	private static int[] anIntArray1624 = new int[2000];
-	private static int[] anIntArray1625 = new int[2000];
+	public static final Model animationScratchModel = new Model();
+	private static int[] animationScratchX = new int[2000];
+	private static int[] animationScratchY = new int[2000];
+	private static int[] animationScratchZ = new int[2000];
+	private static int[] animationScratchAlpha = new int[2000];
 	public int anInt1626;
 	public int anIntArray1627[];
 	public int anIntArray1628[];
