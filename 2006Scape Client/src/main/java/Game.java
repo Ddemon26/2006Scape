@@ -6011,9 +6011,9 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public int method83(int i, int j, int k) {
-		int l = 256 - k;
-		return ((i & 0xff00ff) * l + (j & 0xff00ff) * k & 0xff00ff00) + ((i & 0xff00) * l + (j & 0xff00) * k & 0xff0000) >> 8;
+	public int blendRgb256(int firstRgb, int secondRgb, int secondWeight) {
+		int firstWeight = 256 - secondWeight;
+		return ((firstRgb & 0xff00ff) * firstWeight + (secondRgb & 0xff00ff) * secondWeight & 0xff00ff00) + ((firstRgb & 0xff00) * firstWeight + (secondRgb & 0xff00) * secondWeight & 0xff0000) >> 8;
 	}
 
 	public void login(String s, String s1, boolean flag) {
@@ -9757,22 +9757,22 @@ public class Game extends RSApplet {
 		if (anInt1040 > 0) {
 			for (int i = 0; i < 256; i++) {
 				if (anInt1040 > 768) {
-					anIntArray850[i] = method83(anIntArray851[i], anIntArray852[i], 1024 - anInt1040);
+					anIntArray850[i] = blendRgb256(anIntArray851[i], anIntArray852[i], 1024 - anInt1040);
 				} else if (anInt1040 > 256) {
 					anIntArray850[i] = anIntArray852[i];
 				} else {
-					anIntArray850[i] = method83(anIntArray852[i], anIntArray851[i], 256 - anInt1040);
+					anIntArray850[i] = blendRgb256(anIntArray852[i], anIntArray851[i], 256 - anInt1040);
 				}
 			}
 
 		} else if (anInt1041 > 0) {
 			for (int j = 0; j < 256; j++) {
 				if (anInt1041 > 768) {
-					anIntArray850[j] = method83(anIntArray851[j], anIntArray853[j], 1024 - anInt1041);
+					anIntArray850[j] = blendRgb256(anIntArray851[j], anIntArray853[j], 1024 - anInt1041);
 				} else if (anInt1041 > 256) {
 					anIntArray850[j] = anIntArray853[j];
 				} else {
-					anIntArray850[j] = method83(anIntArray853[j], anIntArray851[j], 256 - anInt1041);
+					anIntArray850[j] = blendRgb256(anIntArray853[j], anIntArray851[j], 256 - anInt1041);
 				}
 			}
 
