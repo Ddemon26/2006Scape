@@ -9191,87 +9191,87 @@ public class Game extends RSApplet {
 		return frameAdvanced;
 	}
 
-	public int method120() {
-		int j = 3;
+	public int selectRoofVisibilityPlane() {
+		int renderPlane = 3;
 		if (yCameraCurve < 310) {
-			int k = Math.max(0, Math.min(103, xCameraPos >> 7));
-			int l = Math.max(0, Math.min(103, yCameraPos >> 7));
-			int i1 = myPlayer.x >> 7;
-			int j1 = myPlayer.y >> 7;
-			if ((byteGroundArray[plane][k][l] & 4) != 0) {
-				j = plane;
+			int rayTileX = Math.max(0, Math.min(103, xCameraPos >> 7));
+			int rayTileY = Math.max(0, Math.min(103, yCameraPos >> 7));
+			int playerTileX = myPlayer.x >> 7;
+			int playerTileY = myPlayer.y >> 7;
+			if ((byteGroundArray[plane][rayTileX][rayTileY] & 4) != 0) {
+				renderPlane = plane;
 			}
-			int k1;
-			if (i1 > k) {
-				k1 = i1 - k;
+			int tileDistanceX;
+			if (playerTileX > rayTileX) {
+				tileDistanceX = playerTileX - rayTileX;
 			} else {
-				k1 = k - i1;
+				tileDistanceX = rayTileX - playerTileX;
 			}
-			int l1;
-			if (j1 > l) {
-				l1 = j1 - l;
+			int tileDistanceY;
+			if (playerTileY > rayTileY) {
+				tileDistanceY = playerTileY - rayTileY;
 			} else {
-				l1 = l - j1;
+				tileDistanceY = rayTileY - playerTileY;
 			}
-			if (k1 > l1) {
-				int i2 = l1 * 0x10000 / k1;
-				int k2 = 32768;
-				while (k != i1) {
-					if (k < i1) {
-						k++;
-					} else if (k > i1) {
-						k--;
+			if (tileDistanceX > tileDistanceY) {
+				int yStep16 = tileDistanceY * 0x10000 / tileDistanceX;
+				int yAccumulator16 = 32768;
+				while (rayTileX != playerTileX) {
+					if (rayTileX < playerTileX) {
+						rayTileX++;
+					} else if (rayTileX > playerTileX) {
+						rayTileX--;
 					}
-					if ((byteGroundArray[plane][k][l] & 4) != 0) {
-						j = plane;
+					if ((byteGroundArray[plane][rayTileX][rayTileY] & 4) != 0) {
+						renderPlane = plane;
 					}
-					k2 += i2;
-					if (k2 >= 0x10000) {
-						k2 -= 0x10000;
-						if (l < j1) {
-							l++;
-						} else if (l > j1) {
-							l--;
+					yAccumulator16 += yStep16;
+					if (yAccumulator16 >= 0x10000) {
+						yAccumulator16 -= 0x10000;
+						if (rayTileY < playerTileY) {
+							rayTileY++;
+						} else if (rayTileY > playerTileY) {
+							rayTileY--;
 						}
-						if ((byteGroundArray[plane][k][l] & 4) != 0) {
-							j = plane;
+						if ((byteGroundArray[plane][rayTileX][rayTileY] & 4) != 0) {
+							renderPlane = plane;
 						}
 					}
 				}
 			} else {
-				int j2 = k1 * 0x10000 / l1;
-				int l2 = 32768;
-				while (l != j1) {
-					if (l < j1) {
-						l++;
-					} else if (l > j1) {
-						l--;
+				int xStep16 = tileDistanceX * 0x10000 / tileDistanceY;
+				int xAccumulator16 = 32768;
+				while (rayTileY != playerTileY) {
+					if (rayTileY < playerTileY) {
+						rayTileY++;
+					} else if (rayTileY > playerTileY) {
+						rayTileY--;
 					}
-					if ((byteGroundArray[plane][k][l] & 4) != 0) {
-						j = plane;
+					if ((byteGroundArray[plane][rayTileX][rayTileY] & 4) != 0) {
+						renderPlane = plane;
 					}
-					l2 += j2;
-					if (l2 >= 0x10000) {
-						l2 -= 0x10000;
-						if (k < i1) {
-							k++;
-						} else if (k > i1) {
-							k--;
+					xAccumulator16 += xStep16;
+					if (xAccumulator16 >= 0x10000) {
+						xAccumulator16 -= 0x10000;
+						if (rayTileX < playerTileX) {
+							rayTileX++;
+						} else if (rayTileX > playerTileX) {
+							rayTileX--;
 						}
-						if ((byteGroundArray[plane][k][l] & 4) != 0) {
-							j = plane;
+						if ((byteGroundArray[plane][rayTileX][rayTileY] & 4) != 0) {
+							renderPlane = plane;
 						}
 					}
 				}
 			}
 		}
 		if ((byteGroundArray[plane][myPlayer.x >> 7][myPlayer.y >> 7] & 4) != 0) {
-			j = plane;
+			renderPlane = plane;
 		}
-		return j;
+		return renderPlane;
 	}
 
-	public int method121() {
+	public int selectFixedCameraPlane() {
 		// Hide other planes when using fixed camera
 		return plane;
 		// int j = interpolatedGroundHeight(plane, yCameraPos, xCameraPos);
@@ -11850,9 +11850,9 @@ public class Game extends RSApplet {
 		}
 		int j;
 		if (!aBoolean1160) {
-			j = method120();
+			j = selectRoofVisibilityPlane();
 		} else {
-			j = method121();
+			j = selectFixedCameraPlane();
 		}
 		int l = xCameraPos;
 		int i1 = zCameraPos;
