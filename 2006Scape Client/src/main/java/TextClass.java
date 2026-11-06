@@ -56,8 +56,8 @@ final class TextClass {
 		return nameHash;
 	}
 
-	public static String method586(int i) {
-		return (i >> 24 & 0xff) + "." + (i >> 16 & 0xff) + "." + (i >> 8 & 0xff) + "." + (i & 0xff);
+	public static String formatIpv4Address(int packedAddress) {
+		return (packedAddress >> 24 & 0xff) + "." + (packedAddress >> 16 & 0xff) + "." + (packedAddress >> 8 & 0xff) + "." + (packedAddress & 0xff);
 	}
 
 	public static String formatDisplayName(String name) {

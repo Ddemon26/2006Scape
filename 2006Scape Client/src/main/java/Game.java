@@ -10638,7 +10638,7 @@ public class Game extends RSApplet {
 				anInt1193 = inStream.readIntOrder2143();
 				daysSinceLastLogin = inStream.readUnsignedShortBigEndian();
 				if (anInt1193 != 0 && openInterfaceID == -1) {
-					Signlink.dnslookup(TextClass.method586(anInt1193));
+					Signlink.dnslookup(TextClass.formatIpv4Address(anInt1193));
 					closeOpenInterfaces();
 					char c = '\u028A';
 					if (daysSinceRecovChange != 201 || membersInt == 1) {

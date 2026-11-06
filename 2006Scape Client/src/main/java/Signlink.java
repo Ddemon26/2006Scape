@@ -20,7 +20,7 @@ public final class Signlink implements Runnable {
 		}
 		socketreq = 0;
 		threadreq = null;
-		dnsreq = null;
+		pendingDnsAddress = null;
 		saveReq = null;
 		urlreq = null;
 		socketip = inetaddress;
@@ -67,13 +67,13 @@ public final class Signlink implements Runnable {
 				thread.start();
 				thread.setPriority(threadreqpri);
 				threadreq = null;
-			} else if (dnsreq != null) {
+			} else if (pendingDnsAddress != null) {
 				try {
-					dns = InetAddress.getByName(dnsreq).getHostName();
+					dnsLookupResult = InetAddress.getByName(pendingDnsAddress).getHostName();
 				} catch (Exception _ex) {
-					dns = "unknown";
+					dnsLookupResult = "unknown";
 				}
-				dnsreq = null;
+				pendingDnsAddress = null;
 			} else if (saveReq != null) {
 				if (savebuf != null)
 					try {
@@ -215,9 +215,9 @@ public final class Signlink implements Runnable {
 		}
 	}
 
-	public static synchronized void dnslookup(String s) {
-		dns = s;
-		dnsreq = s;
+	public static synchronized void dnslookup(String lookupAddress) {
+		dnsLookupResult = lookupAddress;
+		pendingDnsAddress = lookupAddress;
 	}
 
 	public static synchronized void startthread(Runnable runnable, int i) {
@@ -286,8 +286,8 @@ public final class Signlink implements Runnable {
 	private static Socket socket = null;
 	private static int threadreqpri = 1;
 	private static Runnable threadreq = null;
-	private static String dnsreq = null;
-	public static String dns = null;
+	private static String pendingDnsAddress = null;
+	public static String dnsLookupResult = null;
 	private static String urlreq = null;
 	private static DataInputStream urlstream = null;
 	public static boolean reporterror = true;
