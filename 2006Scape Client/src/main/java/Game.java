@@ -7840,9 +7840,9 @@ public class Game extends RSApplet {
 	public void drawGameScreen() {
 		if (fullScreenInterfaceId != -1 && (loadingStage == 2 || super.fullGameScreen != null)) {
 			if (loadingStage == 2) {
-				method119(anInt945, fullScreenInterfaceId);
+				advanceInterfaceModelAnimations(anInt945, fullScreenInterfaceId);
 				if (fullScreenInterfaceId != -1)
-					method119(anInt945, fullScreenInterfaceId);
+					advanceInterfaceModelAnimations(anInt945, fullScreenInterfaceId);
 				anInt945 = 0;
 				resetAllImageProducers();
 				super.fullGameScreen.setAsDrawingArea();
@@ -7903,7 +7903,7 @@ public class Game extends RSApplet {
 			needDrawTabArea = true;
 		}
 		if (invOverlayInterfaceID != -1) {
-			boolean flag1 = method119(anInt945, invOverlayInterfaceID);
+			boolean flag1 = advanceInterfaceModelAnimations(anInt945, invOverlayInterfaceID);
 			if (flag1) {
 				needDrawTabArea = true;
 			}
@@ -7936,7 +7936,7 @@ public class Game extends RSApplet {
 			}
 		}
 		if (backDialogID != -1) {
-			boolean flag2 = method119(anInt945, backDialogID);
+			boolean flag2 = advanceInterfaceModelAnimations(anInt945, backDialogID);
 			if (flag2) {
 				inputTaken = true;
 			}
@@ -8835,11 +8835,11 @@ public class Game extends RSApplet {
 			crosses[4 + crossIndex / 100].drawSprite(crossX - 8 - 4, crossY - 8 - 4);
 		}
 		if (anInt1018 != -1) {
-			method119(anInt945, anInt1018);
+			advanceInterfaceModelAnimations(anInt945, anInt1018);
 			drawInterface(0, 0, RSInterface.interfaceCache[anInt1018], 0);
 		}
 		if (openInterfaceID != -1) {
-			method119(anInt945, openInterfaceID);
+			advanceInterfaceModelAnimations(anInt945, openInterfaceID);
 			drawInterface(0, 0, RSInterface.interfaceCache[openInterfaceID], 0);
 		}
 		method70();
@@ -9149,46 +9149,46 @@ public class Game extends RSApplet {
 		aClass30_Sub2_Sub1_Sub1_1202 = null;
 	}
 
-	public boolean method119(int i, int j) {
-		boolean flag1 = false;
-		RSInterface class9 = RSInterface.interfaceCache[j];
-		if (class9 == null || class9.children == null)
-			return flag1;
-		for (int element : class9.children) {
-			if (element == -1) {
+	public boolean advanceInterfaceModelAnimations(int elapsedTicks, int interfaceId) {
+		boolean frameAdvanced = false;
+		RSInterface parentInterface = RSInterface.interfaceCache[interfaceId];
+		if (parentInterface == null || parentInterface.children == null)
+			return frameAdvanced;
+		for (int childInterfaceId : parentInterface.children) {
+			if (childInterfaceId == -1) {
 				break;
 			}
-			RSInterface class9_1 = RSInterface.interfaceCache[element];
-			if (class9_1.type == 1) {
-				flag1 |= method119(i, class9_1.id);
+			RSInterface childInterface = RSInterface.interfaceCache[childInterfaceId];
+			if (childInterface.type == 1) {
+				frameAdvanced |= advanceInterfaceModelAnimations(elapsedTicks, childInterface.id);
 			}
-			if (class9_1.type == 6 && (class9_1.anInt257 != -1 || class9_1.anInt258 != -1)) {
-				boolean flag2 = interfaceIsSelected(class9_1);
-				int l;
-				if (flag2) {
-					l = class9_1.anInt258;
+			if (childInterface.type == 6 && (childInterface.anInt257 != -1 || childInterface.anInt258 != -1)) {
+				boolean selected = interfaceIsSelected(childInterface);
+				int animationId;
+				if (selected) {
+					animationId = childInterface.anInt258;
 				} else {
-					l = class9_1.anInt257;
+					animationId = childInterface.anInt257;
 				}
-				if (l != -1) {
-					Animation animation = Animation.anims[l];
-					for (class9_1.anInt208 += i; class9_1.anInt208 > animation.getFrameDelay(class9_1.anInt246);) {
-						class9_1.anInt208 -= animation.getFrameDelay(class9_1.anInt246) + 1;
-						class9_1.anInt246++;
-						if (class9_1.anInt246 >= animation.anInt352) {
-							class9_1.anInt246 -= animation.anInt356;
-							if (class9_1.anInt246 < 0 || class9_1.anInt246 >= animation.anInt352) {
-								class9_1.anInt246 = 0;
+				if (animationId != -1) {
+					Animation animation = Animation.anims[animationId];
+					for (childInterface.anInt208 += elapsedTicks; childInterface.anInt208 > animation.getFrameDelay(childInterface.anInt246);) {
+						childInterface.anInt208 -= animation.getFrameDelay(childInterface.anInt246) + 1;
+						childInterface.anInt246++;
+						if (childInterface.anInt246 >= animation.anInt352) {
+							childInterface.anInt246 -= animation.anInt356;
+							if (childInterface.anInt246 < 0 || childInterface.anInt246 >= animation.anInt352) {
+								childInterface.anInt246 = 0;
 							}
 						}
-						flag1 = true;
+						frameAdvanced = true;
 					}
 
 				}
 			}
 		}
 
-		return flag1;
+		return frameAdvanced;
 	}
 
 	public int method120() {
