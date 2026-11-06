@@ -979,7 +979,7 @@ public class Game extends RSApplet {
 		}
 
 		int i1 = i + (j << 7) + 0x60000000;
-		worldController.method281(i, i1, ((Animable) obj1), method42(plane, j * 128 + 64, i * 128 + 64), ((Animable) obj2), ((Animable) obj), plane, j);
+		worldController.method281(i, i1, ((Animable) obj1), interpolatedGroundHeight(plane, j * 128 + 64, i * 128 + 64), ((Animable) obj2), ((Animable) obj), plane, j);
 	}
 
 	public void method26(boolean flag) {
@@ -1003,7 +1003,7 @@ public class Game extends RSApplet {
 			if (!npc.desc.aBoolean84) {
 				k += 0x80000000;
 			}
-			worldController.method285(plane, npc.anInt1552, method42(plane, npc.y, npc.x), k, npc.y, (npc.anInt1540 - 1) * 64 + 60, npc.x, npc, npc.aBoolean1541);
+			worldController.method285(plane, npc.anInt1552, interpolatedGroundHeight(plane, npc.y, npc.x), k, npc.y, (npc.anInt1540 - 1) * 64 + 60, npc.x, npc, npc.aBoolean1541);
 		}
 	}
 
@@ -1952,7 +1952,7 @@ public class Game extends RSApplet {
 	public void calcCameraPos() {
 		int i = anInt1098 * 128 + 64;
 		int j = anInt1099 * 128 + 64;
-		int k = method42(plane, j, i) - anInt1100;
+		int k = interpolatedGroundHeight(plane, j, i) - anInt1100;
 		if (xCameraPos < i) {
 			xCameraPos += anInt1101 + (i - xCameraPos) * anInt1102 / 1000;
 			if (xCameraPos > i) {
@@ -1991,7 +1991,7 @@ public class Game extends RSApplet {
 		}
 		i = anInt995 * 128 + 64;
 		j = anInt996 * 128 + 64;
-		k = method42(plane, j, i) - anInt997;
+		k = interpolatedGroundHeight(plane, j, i) - anInt997;
 		int l = i - xCameraPos;
 		int i1 = k - zCameraPos;
 		int j1 = j - yCameraPos;
@@ -2142,21 +2142,21 @@ public class Game extends RSApplet {
 		throw new RuntimeException();
 	}
 
-	public int method42(int i, int j, int k) {
-		int l = k >> 7;
-		int i1 = j >> 7;
-		if (l < 0 || i1 < 0 || l > 103 || i1 > 103) {
+	public int interpolatedGroundHeight(int requestedPlane, int worldY, int worldX) {
+		int tileX = worldX >> 7;
+		int tileY = worldY >> 7;
+		if (tileX < 0 || tileY < 0 || tileX > 103 || tileY > 103) {
 			return 0;
 		}
-		int j1 = i;
-		if (j1 < 3 && (byteGroundArray[1][l][i1] & 2) == 2) {
-			j1++;
+		int heightPlane = requestedPlane;
+		if (heightPlane < 3 && (byteGroundArray[1][tileX][tileY] & 2) == 2) {
+			heightPlane++;
 		}
-		int k1 = k & 0x7f;
-		int l1 = j & 0x7f;
-		int i2 = intGroundArray[j1][l][i1] * (128 - k1) + intGroundArray[j1][l + 1][i1] * k1 >> 7;
-		int j2 = intGroundArray[j1][l][i1 + 1] * (128 - k1) + intGroundArray[j1][l + 1][i1 + 1] * k1 >> 7;
-		return i2 * (128 - l1) + j2 * l1 >> 7;
+		int tileOffsetX = worldX & 0x7f;
+		int tileOffsetY = worldY & 0x7f;
+		int lowerYHeight = intGroundArray[heightPlane][tileX][tileY] * (128 - tileOffsetX) + intGroundArray[heightPlane][tileX + 1][tileY] * tileOffsetX >> 7;
+		int upperYHeight = intGroundArray[heightPlane][tileX][tileY + 1] * (128 - tileOffsetX) + intGroundArray[heightPlane][tileX + 1][tileY + 1] * tileOffsetX >> 7;
+		return lowerYHeight * (128 - tileOffsetY) + upperYHeight * tileOffsetY >> 7;
 	}
 
 	public static String intToKOrMil(int amount) {
@@ -2322,7 +2322,7 @@ public class Game extends RSApplet {
 			}
 			if (player.aModel_1714 != null && loopCycle >= player.anInt1707 && loopCycle < player.anInt1708) {
 				player.aBoolean1699 = false;
-				player.anInt1709 = method42(plane, player.y, player.x);
+				player.anInt1709 = interpolatedGroundHeight(plane, player.y, player.x);
 				worldController.method286(plane, player.y, player, player.anInt1552, player.anInt1722, player.x, player.anInt1709, player.anInt1719, player.anInt1721, i1, player.anInt1720);
 				continue;
 			}
@@ -2332,7 +2332,7 @@ public class Game extends RSApplet {
 				}
 				anIntArrayArray929[j1][k1] = anInt1265;
 			}
-			player.anInt1709 = method42(plane, player.y, player.x);
+			player.anInt1709 = interpolatedGroundHeight(plane, player.y, player.x);
 			worldController.method285(plane, player.anInt1552, player.anInt1709, i1, player.y, 60, player.x, player, player.aBoolean1541);
 		}
 
@@ -2763,7 +2763,7 @@ public class Game extends RSApplet {
 				if (class30_sub2_sub4_sub4.anInt1590 > 0) {
 					NPC npc = npcArray[class30_sub2_sub4_sub4.anInt1590 - 1];
 					if (npc != null && npc.x >= 0 && npc.x < 13312 && npc.y >= 0 && npc.y < 13312) {
-						class30_sub2_sub4_sub4.method455(loopCycle, npc.y, method42(class30_sub2_sub4_sub4.anInt1597, npc.y, npc.x) - class30_sub2_sub4_sub4.anInt1583, npc.x);
+						class30_sub2_sub4_sub4.method455(loopCycle, npc.y, interpolatedGroundHeight(class30_sub2_sub4_sub4.anInt1597, npc.y, npc.x) - class30_sub2_sub4_sub4.anInt1583, npc.x);
 					}
 				}
 				if (class30_sub2_sub4_sub4.anInt1590 < 0) {
@@ -2775,7 +2775,7 @@ public class Game extends RSApplet {
 						player = playerArray[j];
 					}
 					if (player != null && player.x >= 0 && player.x < 13312 && player.y >= 0 && player.y < 13312) {
-						class30_sub2_sub4_sub4.method455(loopCycle, player.y, method42(class30_sub2_sub4_sub4.anInt1597, player.y, player.x) - class30_sub2_sub4_sub4.anInt1583, player.x);
+						class30_sub2_sub4_sub4.method455(loopCycle, player.y, interpolatedGroundHeight(class30_sub2_sub4_sub4.anInt1597, player.y, player.x) - class30_sub2_sub4_sub4.anInt1583, player.x);
 					}
 				}
 				class30_sub2_sub4_sub4.method456(anInt945);
@@ -8699,7 +8699,7 @@ public class Game extends RSApplet {
 			}
 			int l = anInt1014 >> 7;
 			int i1 = anInt1015 >> 7;
-			int j1 = method42(plane, anInt1015, anInt1014);
+			int j1 = interpolatedGroundHeight(plane, anInt1015, anInt1014);
 			int k1 = 0;
 			if (l > 3 && i1 > 3 && l < 100 && i1 < 100) {
 				for (int l1 = l - 4; l1 <= l + 4; l1++) {
@@ -9274,7 +9274,7 @@ public class Game extends RSApplet {
 	public int method121() {
 		// Hide other planes when using fixed camera
 		return plane;
-		// int j = method42(plane, yCameraPos, xCameraPos);
+		// int j = interpolatedGroundHeight(plane, yCameraPos, xCameraPos);
 		// if (j - zCameraPos < 800 && (byteGroundArray[plane][xCameraPos >> 7][yCameraPos >> 7] & 4) != 0) {
 		// 	return plane;
 		// } else {
@@ -9601,7 +9601,7 @@ public class Game extends RSApplet {
 			spriteDrawY = -1;
 			return;
 		}
-		int i1 = method42(plane, l, i) - j;
+		int i1 = interpolatedGroundHeight(plane, l, i) - j;
 		i -= xCameraPos;
 		i1 -= zCameraPos;
 		l -= yCameraPos;
@@ -10170,7 +10170,7 @@ public class Game extends RSApplet {
 					}
 					player.anInt1711 = k4 * 128 + i23 * 64;
 					player.anInt1713 = j7 * 128 + j23 * 64;
-					player.anInt1712 = method42(plane, player.anInt1713, player.anInt1711);
+					player.anInt1712 = interpolatedGroundHeight(plane, player.anInt1713, player.anInt1711);
 					if (byte2 > byte0) {
 						byte byte4 = byte2;
 						byte2 = byte0;
@@ -10227,7 +10227,7 @@ public class Game extends RSApplet {
 			if (i5 >= 0 && l7 >= 0 && i5 < 104 && l7 < 104) {
 				i5 = i5 * 128 + 64;
 				l7 = l7 * 128 + 64;
-				Animable_Sub3 class30_sub2_sub4_sub3 = new Animable_Sub3(plane, loopCycle, j15, k10, method42(plane, l7, i5) - l12, l7, i5);
+				Animable_Sub3 class30_sub2_sub4_sub3 = new Animable_Sub3(plane, loopCycle, j15, k10, interpolatedGroundHeight(plane, l7, i5) - l12, l7, i5);
 				aClass19_1056.insertHead(class30_sub2_sub4_sub3);
 			}
 			return;
@@ -10269,8 +10269,8 @@ public class Game extends RSApplet {
 				k8 = k8 * 128 + 64;
 				j11 = j11 * 128 + 64;
 				k13 = k13 * 128 + 64;
-				Animable_Sub4 class30_sub2_sub4_sub4 = new Animable_Sub4(i21, l18, k19 + loopCycle, j20 + loopCycle, j21, plane, method42(plane, k8, l5) - i18, k8, l5, l15, i17);
-				class30_sub2_sub4_sub4.method455(k19 + loopCycle, k13, method42(plane, k13, j11) - l18, j11);
+				Animable_Sub4 class30_sub2_sub4_sub4 = new Animable_Sub4(i21, l18, k19 + loopCycle, j20 + loopCycle, j21, plane, interpolatedGroundHeight(plane, k8, l5) - i18, k8, l5, l15, i17);
+				class30_sub2_sub4_sub4.method455(k19 + loopCycle, k13, interpolatedGroundHeight(plane, k13, j11) - l18, j11);
 				aClass19_1013.insertHead(class30_sub2_sub4_sub4);
 			}
 		}
@@ -10730,7 +10730,7 @@ public class Game extends RSApplet {
 				if (anInt1102 >= 100) {
 					xCameraPos = anInt1098 * 128 + 64;
 					yCameraPos = anInt1099 * 128 + 64;
-					zCameraPos = method42(plane, yCameraPos, xCameraPos) - anInt1100;
+					zCameraPos = interpolatedGroundHeight(plane, yCameraPos, xCameraPos) - anInt1100;
 				}
 				pktType = -1;
 				return true;
@@ -11587,7 +11587,7 @@ public class Game extends RSApplet {
 				if (anInt999 >= 100) {
 					int k7 = anInt995 * 128 + 64;
 					int k14 = anInt996 * 128 + 64;
-					int i20 = method42(plane, k14, k7) - anInt997;
+					int i20 = interpolatedGroundHeight(plane, k14, k7) - anInt997;
 					int l22 = k7 - xCameraPos;
 					int k25 = i20 - zCameraPos;
 					int j28 = k14 - yCameraPos;
@@ -11846,7 +11846,7 @@ public class Game extends RSApplet {
 			}
 			int k = minimapInt1 + anInt896 & 0x7ff;
 			// Camera zoom control
-			setCameraPos(600 + i * zoom, i, anInt1014, method42(plane, myPlayer.y, myPlayer.x) - 70, k, anInt1015);
+			setCameraPos(600 + i * zoom, i, anInt1014, interpolatedGroundHeight(plane, myPlayer.y, myPlayer.x) - 70, k, anInt1015);
 		}
 		int j;
 		if (!aBoolean1160) {
