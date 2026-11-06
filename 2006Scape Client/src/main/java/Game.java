@@ -3132,8 +3132,8 @@ public class Game extends RSApplet {
 		if (anInt1009 > 750) {
 			dropClient();
 		}
-		method114();
-		method95();
+		advancePlayerEntities();
+		advanceNpcEntities();
 		method38();
 		anInt945++;
 		if (crossType != 0) {
@@ -7522,10 +7522,10 @@ public class Game extends RSApplet {
 		// return super.getCodeBase();
 	}
 
-	public void method95() {
-		for (int j = 0; j < npcCount; j++) {
-			int k = npcIndices[j];
-			NPC npc = npcArray[k];
+	public void advanceNpcEntities() {
+		for (int npcListIndex = 0; npcListIndex < npcCount; npcListIndex++) {
+			int npcIndex = npcIndices[npcListIndex];
+			NPC npc = npcArray[npcIndex];
 			if (npc != null) {
 				method96(npc);
 			}
@@ -8938,15 +8938,15 @@ public class Game extends RSApplet {
 		throw new RuntimeException();
 	}
 
-	public void method114() {
-		for (int i = -1; i < playerCount; i++) {
-			int j;
-			if (i == -1) {
-				j = myPlayerIndex;
+	public void advancePlayerEntities() {
+		for (int playerListIndex = -1; playerListIndex < playerCount; playerListIndex++) {
+			int playerIndex;
+			if (playerListIndex == -1) {
+				playerIndex = myPlayerIndex;
 			} else {
-				j = playerIndices[i];
+				playerIndex = playerIndices[playerListIndex];
 			}
-			Player player = playerArray[j];
+			Player player = playerArray[playerIndex];
 			if (player != null) {
 				method96(player);
 			}
