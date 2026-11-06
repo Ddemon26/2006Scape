@@ -322,7 +322,7 @@ public final class RSInterface {
 	}
 
 	public Sprite sprite1;
-	public int anInt208;
+	public int modelAnimationTicks;
 	public Sprite sprites[];
 	public static RSInterface interfaceCache[];
 	public int conditionValues[];
@@ -357,7 +357,7 @@ public final class RSInterface {
 	public TextDrawingArea textDrawingAreas;
 	public int invSpritePadY;
 	public int conditionOperators[];
-	public int anInt246;
+	public int modelAnimationFrame;
 	public int spritesY[];
 	public String disabledText;
 	public boolean isInventoryInterface;

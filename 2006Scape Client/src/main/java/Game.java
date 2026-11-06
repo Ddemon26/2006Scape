@@ -2958,20 +2958,20 @@ public class Game extends RSApplet {
 		return abyte0 == null || Signlink.wavesave(abyte0, i);
 	}
 
-	public void method60(int i) {
-		RSInterface class9 = RSInterface.interfaceCache[i];
-		if (class9 == null || class9.children == null)
+	public void resetInterfaceModelAnimations(int interfaceId) {
+		RSInterface parentInterface = RSInterface.interfaceCache[interfaceId];
+		if (parentInterface == null || parentInterface.children == null)
 			return;
-		for (int element : class9.children) {
-			if (element == -1) {
+		for (int childInterfaceId : parentInterface.children) {
+			if (childInterfaceId == -1) {
 				break;
 			}
-			RSInterface class9_1 = RSInterface.interfaceCache[element];
-			if (class9_1.type == 1) {
-				method60(class9_1.id);
+			RSInterface childInterface = RSInterface.interfaceCache[childInterfaceId];
+			if (childInterface.type == 1) {
+				resetInterfaceModelAnimations(childInterface.id);
 			}
-			class9_1.anInt246 = 0;
-			class9_1.anInt208 = 0;
+			childInterface.modelAnimationFrame = 0;
+			childInterface.modelAnimationTicks = 0;
 		}
 	}
 
@@ -8431,7 +8431,7 @@ public class Game extends RSApplet {
 						model = component.method209(-1, -1, flag2);
 					} else {
 						Animation animation = Animation.anims[i7];
-						model = component.method209(animation.anIntArray354[component.anInt246], animation.anIntArray353[component.anInt246], flag2);
+						model = component.method209(animation.anIntArray354[component.modelAnimationFrame], animation.anIntArray353[component.modelAnimationFrame], flag2);
 					}
 					if (model != null) {
 						model.method482(component.anInt271, 0, component.anInt270, 0, i5, l5);
@@ -9172,13 +9172,13 @@ public class Game extends RSApplet {
 				}
 				if (animationId != -1) {
 					Animation animation = Animation.anims[animationId];
-					for (childInterface.anInt208 += elapsedTicks; childInterface.anInt208 > animation.getFrameDelay(childInterface.anInt246);) {
-						childInterface.anInt208 -= animation.getFrameDelay(childInterface.anInt246) + 1;
-						childInterface.anInt246++;
-						if (childInterface.anInt246 >= animation.anInt352) {
-							childInterface.anInt246 -= animation.anInt356;
-							if (childInterface.anInt246 < 0 || childInterface.anInt246 >= animation.anInt352) {
-								childInterface.anInt246 = 0;
+					for (childInterface.modelAnimationTicks += elapsedTicks; childInterface.modelAnimationTicks > animation.getFrameDelay(childInterface.modelAnimationFrame);) {
+						childInterface.modelAnimationTicks -= animation.getFrameDelay(childInterface.modelAnimationFrame) + 1;
+						childInterface.modelAnimationFrame++;
+						if (childInterface.modelAnimationFrame >= animation.anInt352) {
+							childInterface.modelAnimationFrame -= animation.anInt356;
+							if (childInterface.modelAnimationFrame < 0 || childInterface.modelAnimationFrame >= animation.anInt352) {
+								childInterface.modelAnimationFrame = 0;
 							}
 						}
 						frameAdvanced = true;
@@ -11025,7 +11025,7 @@ public class Game extends RSApplet {
 			if (pktType == 208) {
 				int i3 = inStream.readSignedShortLittleEndian();
 				if (i3 >= 0) {
-					method60(i3);
+					resetInterfaceModelAnimations(i3);
 				}
 				anInt1018 = i3;
 				pktType = -1;
@@ -11441,7 +11441,7 @@ public class Game extends RSApplet {
 			}
 			if (pktType == 142) {
 				int j6 = inStream.readUnsignedShortLittleEndian();
-				method60(j6);
+				resetInterfaceModelAnimations(j6);
 				if (backDialogID != -1) {
 					backDialogID = -1;
 					inputTaken = true;
@@ -11500,9 +11500,9 @@ public class Game extends RSApplet {
 			if (pktType == 69) {
 				int k9 = inStream.readUnsignedShortBigEndian();
 				int k15 = inStream.readUnsignedShortBigEndian();
-				method60(k15);
+				resetInterfaceModelAnimations(k15);
 				if (k9 != -1)
-					method60(k9);
+					resetInterfaceModelAnimations(k9);
 				if (openInterfaceID != -1) {
 					openInterfaceID = -1;
 				}
@@ -11639,7 +11639,7 @@ public class Game extends RSApplet {
 			}
 			if (pktType == 97) {
 				int l7 = inStream.readUnsignedShortBigEndian();
-				method60(l7);
+				resetInterfaceModelAnimations(l7);
 				if (invOverlayInterfaceID != -1) {
 					invOverlayInterfaceID = -1;
 					needDrawTabArea = true;
@@ -11722,8 +11722,8 @@ public class Game extends RSApplet {
 				RSInterface class9_4 = RSInterface.interfaceCache[l8];
 				class9_4.anInt257 = i15;
 				if (i15 == -1) {
-					class9_4.anInt246 = 0;
-					class9_4.anInt208 = 0;
+					class9_4.modelAnimationFrame = 0;
+					class9_4.modelAnimationTicks = 0;
 				}
 				pktType = -1;
 				return true;
@@ -11785,7 +11785,7 @@ public class Game extends RSApplet {
 			}
 			if (pktType == 164) {
 				int j9 = inStream.readUnsignedShortLittleEndian();
-				method60(j9);
+				resetInterfaceModelAnimations(j9);
 				if (invOverlayInterfaceID != -1) {
 					invOverlayInterfaceID = -1;
 					needDrawTabArea = true;
@@ -12864,7 +12864,7 @@ public class Game extends RSApplet {
     }
 
 	public void openInterface(int interfaceID) {
-		method60(interfaceID);
+		resetInterfaceModelAnimations(interfaceID);
 		if (invOverlayInterfaceID != -1) {
 			invOverlayInterfaceID = -1;
 			needDrawTabArea = true;
