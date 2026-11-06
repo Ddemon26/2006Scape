@@ -4504,18 +4504,18 @@ public class Game extends RSApplet {
 
 	}
 
-	public void method70() {
-		anInt1251 = 0;
-		int j = (myPlayer.x >> 7) + baseX;
-		int k = (myPlayer.y >> 7) + baseY;
-		if (j >= 3053 && j <= 3156 && k >= 3056 && k <= 3136) {
-			anInt1251 = 1;
+	public void updateChatSuppressionZone() {
+		chatSuppressionZone = 0;
+		int worldTileX = (myPlayer.x >> 7) + baseX;
+		int worldTileY = (myPlayer.y >> 7) + baseY;
+		if (worldTileX >= 3053 && worldTileX <= 3156 && worldTileY >= 3056 && worldTileY <= 3136) {
+			chatSuppressionZone = 1;
 		}
-		if (j >= 3072 && j <= 3118 && k >= 9492 && k <= 9535) {
-			anInt1251 = 1;
+		if (worldTileX >= 3072 && worldTileX <= 3118 && worldTileY >= 9492 && worldTileY <= 9535) {
+			chatSuppressionZone = 1;
 		}
-		if (anInt1251 == 1 && j >= 3139 && j <= 3199 && k >= 3008 && k <= 3062) {
-			anInt1251 = 0;
+		if (chatSuppressionZone == 1 && worldTileX >= 3139 && worldTileX <= 3199 && worldTileY >= 3008 && worldTileY <= 3062) {
+			chatSuppressionZone = 0;
 		}
 	}
 
@@ -8598,7 +8598,7 @@ public class Game extends RSApplet {
 					}
 
 				}
-				if (!ignoredSpeaker && anInt1251 == 0) {
+				if (!ignoredSpeaker && chatSuppressionZone == 0) {
 					try {
 						aStream_834.currentOffset = 0;
 						stream.readReversedBytes(compressedChatLength, 0, aStream_834.buffer);
@@ -8844,7 +8844,7 @@ public class Game extends RSApplet {
 			advanceInterfaceModelAnimations(anInt945, openInterfaceID);
 			drawInterface(0, 0, RSInterface.interfaceCache[openInterfaceID], 0);
 		}
-		method70();
+		updateChatSuppressionZone();
 		if (!menuOpen) {
 			processRightClick();
 			drawTooltip();
@@ -11120,7 +11120,7 @@ public class Game extends RSApplet {
 						break;
 					}
 
-					if (!flag2 && anInt1251 == 0) {
+					if (!flag2 && chatSuppressionZone == 0) {
 						pushMessage("wishes to trade with you.", 4, s3);
 					}
 				} else if (s.endsWith(":duelreq:")) {
@@ -11135,7 +11135,7 @@ public class Game extends RSApplet {
 						break;
 					}
 
-					if (!flag3 && anInt1251 == 0) {
+					if (!flag3 && chatSuppressionZone == 0) {
 						pushMessage("wishes to duel with you.", 8, s4);
 					}
 				} else if (s.endsWith(":chalreq:")) {
@@ -11150,7 +11150,7 @@ public class Game extends RSApplet {
 						break;
 					}
 
-					if (!flag4 && anInt1251 == 0) {
+					if (!flag4 && chatSuppressionZone == 0) {
 						String s8 = s.substring(s.indexOf(":") + 1, s.length() - 9);
 						pushMessage(s8, 8, s5);
 					}
@@ -11378,7 +11378,7 @@ public class Game extends RSApplet {
 
 					}
 				}
-				if (!flag5 && anInt1251 == 0) {
+				if (!flag5 && chatSuppressionZone == 0) {
 					try {
 						// Direct message
 						String s9 = TextInput.decodeChatText(pktSize - 13, inStream);
@@ -12548,7 +12548,7 @@ public class Game extends RSApplet {
 	public int anInt1249;
 	public final int[] soundDelay;
 	public final int[] soundVolume;
-	public int anInt1251;
+	public int chatSuppressionZone;
 	public final boolean rsAlreadyLoaded;
 	public int anInt1253;
 	public int anInt1254;
