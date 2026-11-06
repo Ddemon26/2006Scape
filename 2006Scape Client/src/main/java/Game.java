@@ -651,7 +651,7 @@ public class Game extends RSApplet {
 		try {
 			anInt985 = -1;
 			transientGraphics.removeAll();
-			aClass19_1013.removeAll();
+			projectiles.removeAll();
 			Texture.method366();
 			unlinkMRUNodes();
 			worldController.initToNull();
@@ -2755,31 +2755,31 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method55() {
-		for (Animable_Sub4 class30_sub2_sub4_sub4 = (Animable_Sub4) aClass19_1013.firstFromTail(); class30_sub2_sub4_sub4 != null; class30_sub2_sub4_sub4 = (Animable_Sub4) aClass19_1013.nextTowardHead()) {
-			if (class30_sub2_sub4_sub4.anInt1597 != plane || loopCycle > class30_sub2_sub4_sub4.anInt1572) {
-				class30_sub2_sub4_sub4.unlink();
-			} else if (loopCycle >= class30_sub2_sub4_sub4.anInt1571) {
-				if (class30_sub2_sub4_sub4.anInt1590 > 0) {
-					NPC npc = npcArray[class30_sub2_sub4_sub4.anInt1590 - 1];
+	public void updateProjectiles() {
+		for (Animable_Sub4 projectile = (Animable_Sub4) projectiles.firstFromTail(); projectile != null; projectile = (Animable_Sub4) projectiles.nextTowardHead()) {
+			if (projectile.anInt1597 != plane || loopCycle > projectile.anInt1572) {
+				projectile.unlink();
+			} else if (loopCycle >= projectile.anInt1571) {
+				if (projectile.anInt1590 > 0) {
+					NPC npc = npcArray[projectile.anInt1590 - 1];
 					if (npc != null && npc.x >= 0 && npc.x < 13312 && npc.y >= 0 && npc.y < 13312) {
-						class30_sub2_sub4_sub4.method455(loopCycle, npc.y, interpolatedGroundHeight(class30_sub2_sub4_sub4.anInt1597, npc.y, npc.x) - class30_sub2_sub4_sub4.anInt1583, npc.x);
+						projectile.method455(loopCycle, npc.y, interpolatedGroundHeight(projectile.anInt1597, npc.y, npc.x) - projectile.anInt1583, npc.x);
 					}
 				}
-				if (class30_sub2_sub4_sub4.anInt1590 < 0) {
-					int j = -class30_sub2_sub4_sub4.anInt1590 - 1;
+				if (projectile.anInt1590 < 0) {
+					int playerIndex = -projectile.anInt1590 - 1;
 					Player player;
-					if (j == unknownInt10) {
+					if (playerIndex == unknownInt10) {
 						player = myPlayer;
 					} else {
-						player = playerArray[j];
+						player = playerArray[playerIndex];
 					}
 					if (player != null && player.x >= 0 && player.x < 13312 && player.y >= 0 && player.y < 13312) {
-						class30_sub2_sub4_sub4.method455(loopCycle, player.y, interpolatedGroundHeight(class30_sub2_sub4_sub4.anInt1597, player.y, player.x) - class30_sub2_sub4_sub4.anInt1583, player.x);
+						projectile.method455(loopCycle, player.y, interpolatedGroundHeight(projectile.anInt1597, player.y, player.x) - projectile.anInt1583, player.x);
 					}
 				}
-				class30_sub2_sub4_sub4.method456(anInt945);
-				worldController.method285(plane, class30_sub2_sub4_sub4.anInt1595, (int) class30_sub2_sub4_sub4.aDouble1587, -1, (int) class30_sub2_sub4_sub4.aDouble1586, 60, (int) class30_sub2_sub4_sub4.aDouble1585, class30_sub2_sub4_sub4, false);
+				projectile.method456(anInt945);
+				worldController.method285(plane, projectile.anInt1595, (int) projectile.aDouble1587, -1, (int) projectile.aDouble1586, 60, (int) projectile.aDouble1585, projectile, false);
 			}
 		}
 
@@ -4805,7 +4805,7 @@ public class Game extends RSApplet {
 		npcIndices = null;
 		groundArray = null;
 		aClass19_1179 = null;
-		aClass19_1013 = null;
+		projectiles = null;
 		transientGraphics = null;
 		menuActionCmd2 = null;
 		menuActionCmd3 = null;
@@ -6141,7 +6141,7 @@ public class Game extends RSApplet {
 				}
 
 				myPlayer = playerArray[myPlayerIndex] = new Player();
-				aClass19_1013.removeAll();
+				projectiles.removeAll();
 				transientGraphics.removeAll();
 				for (int l2 = 0; l2 < 4; l2++) {
 					for (int i3 = 0; i3 < 104; i3++) {
@@ -10271,7 +10271,7 @@ public class Game extends RSApplet {
 				k13 = k13 * 128 + 64;
 				Animable_Sub4 class30_sub2_sub4_sub4 = new Animable_Sub4(i21, l18, k19 + loopCycle, j20 + loopCycle, j21, plane, interpolatedGroundHeight(plane, k8, l5) - i18, k8, l5, l15, i17);
 				class30_sub2_sub4_sub4.method455(k19 + loopCycle, k13, interpolatedGroundHeight(plane, k13, j11) - l18, j11);
-				aClass19_1013.insertHead(class30_sub2_sub4_sub4);
+				projectiles.insertHead(class30_sub2_sub4_sub4);
 			}
 		}
 	}
@@ -11834,7 +11834,7 @@ public class Game extends RSApplet {
 		method26(true);
 		method47(false);
 		method26(false);
-		method55();
+		updateProjectiles();
 		updateTransientGraphics();
 		if (!aBoolean1160) {
 			int i = anInt1184;
@@ -12069,7 +12069,7 @@ public class Game extends RSApplet {
 		anIntArray990 = new int[5];
 		scrollTrackColor = 0x23201b;
 		amountOrNameInput = "";
-		aClass19_1013 = new NodeList();
+		projectiles = new NodeList();
 		aBoolean1017 = false;
 		anInt1018 = -1;
 		anIntArray1030 = new int[5];
@@ -12328,7 +12328,7 @@ public class Game extends RSApplet {
 	public int anInt1009;
 	public int anInt1010;
 	public int anInt1011;
-	public NodeList aClass19_1013;
+	public NodeList projectiles;
 	public int anInt1014;
 	public int anInt1015;
 	public int anInt1016;
