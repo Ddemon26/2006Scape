@@ -1461,7 +1461,7 @@ public final class Model extends Animable {
 					int j5 = (anIntArray1667[l] + anIntArray1667[k1] + anIntArray1667[j2]) / 3 + depthBucketOffset;
 					anIntArrayArray1672[j5][anIntArray1671[j5]++] = k;
 				} else {
-					if (flag1 && method486(anInt1685, anInt1686, anIntArray1666[l], anIntArray1666[k1], anIntArray1666[j2], i3, l3, k4)) {
+					if (flag1 && isPointWithinFaceBounds(anInt1685, anInt1686, anIntArray1666[l], anIntArray1666[k1], anIntArray1666[j2], i3, l3, k4)) {
 						anIntArray1688[anInt1687++] = i;
 						flag1 = false;
 					}
@@ -1806,14 +1806,14 @@ public final class Model extends Animable {
 		}
 	}
 
-	private boolean method486(int i, int j, int k, int l, int i1, int j1, int k1, int l1) {
-		if (j < k && j < l && j < i1) {
+	private boolean isPointWithinFaceBounds(int pointX, int pointY, int vertexAY, int vertexBY, int vertexCY, int vertexAX, int vertexBX, int vertexCX) {
+		if (pointY < vertexAY && pointY < vertexBY && pointY < vertexCY) {
 			return false;
 		}
-		if (j > k && j > l && j > i1) {
+		if (pointY > vertexAY && pointY > vertexBY && pointY > vertexCY) {
 			return false;
 		}
-		return !(i < j1 && i < k1 && i < l1) && (i <= j1 || i <= k1 || i <= l1);
+		return !(pointX < vertexAX && pointX < vertexBX && pointX < vertexCX) && (pointX <= vertexAX || pointX <= vertexBX || pointX <= vertexCX);
 	}
 
 	public static final Model animationScratchModel = new Model();
