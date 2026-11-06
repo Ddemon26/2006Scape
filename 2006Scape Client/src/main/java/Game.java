@@ -7527,12 +7527,12 @@ public class Game extends RSApplet {
 			int npcIndex = npcIndices[npcListIndex];
 			NPC npc = npcArray[npcIndex];
 			if (npc != null) {
-				method96(npc);
+				advanceEntityMovementAndAnimation(npc);
 			}
 		}
 	}
 
-	public void method96(Entity entity) {
+	public void advanceEntityMovementAndAnimation(Entity entity) {
 		if (entity.x < 128 || entity.y < 128 || entity.x >= 13184 || entity.y >= 13184) {
 			entity.anim = -1;
 			entity.anInt1520 = -1;
@@ -8948,7 +8948,7 @@ public class Game extends RSApplet {
 			}
 			Player player = playerArray[playerIndex];
 			if (player != null) {
-				method96(player);
+				advanceEntityMovementAndAnimation(player);
 			}
 		}
 

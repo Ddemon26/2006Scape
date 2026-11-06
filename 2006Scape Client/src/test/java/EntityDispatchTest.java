@@ -13,7 +13,7 @@ public class EntityDispatchTest {
     public static class Probe extends Game {
         final List<Entity> calls=new ArrayList<Entity>();
         int failAt=-1;
-        @Override public void method96(Entity a){calls.add(a);if(calls.size()==failAt)throw new IllegalStateException("controlled callback");}
+        @Override public void advanceEntityMovementAndAnimation(Entity a){calls.add(a);if(calls.size()==failAt)throw new IllegalStateException("controlled callback");}
     }
     private Probe g;
     private Player saved;
