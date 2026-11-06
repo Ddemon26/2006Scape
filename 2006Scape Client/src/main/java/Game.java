@@ -1289,7 +1289,7 @@ public class Game extends RSApplet {
 		anInt893 = 0;
 		method139(stream);
 		method46(i, stream);
-		method86(stream);
+		decodeNpcUpdateMasks(stream);
 		for (int k = 0; k < anInt839; k++) {
 			int l = anIntArray840[k];
 			if (npcArray[l].anInt1537 != loopCycle) {
@@ -6569,50 +6569,50 @@ public class Game extends RSApplet {
 		return (i_1_ & 0xff80) + i;
 	}
 
-	public void method86(Stream stream) {
-		for (int j = 0; j < anInt893; j++) {
-			int k = anIntArray894[j];
-			NPC npc = npcArray[k];
-			int l = stream.readUnsignedByte();
-			if ((l & 0x10) != 0) {
-				int i1 = stream.readUnsignedShortLittleEndian();
-				if (i1 == 0x00ffff) {
-					i1 = -1;
+	public void decodeNpcUpdateMasks(Stream packet) {
+		for (int updateSlot = 0; updateSlot < anInt893; updateSlot++) {
+			int npcIndex = anIntArray894[updateSlot];
+			NPC npc = npcArray[npcIndex];
+			int mask = packet.readUnsignedByte();
+			if ((mask & 0x10) != 0) {
+				int animationId = packet.readUnsignedShortLittleEndian();
+				if (animationId == 0x00ffff) {
+					animationId = -1;
 				}
-				int i2 = stream.readUnsignedByte();
-				if (i1 == npc.anim && i1 != -1) {
-					int l2 = Animation.anims[i1].anInt365;
-					if (l2 == 1) {
+				int animationDelay = packet.readUnsignedByte();
+				if (animationId == npc.anim && animationId != -1) {
+					int replayMode = Animation.anims[animationId].anInt365;
+					if (replayMode == 1) {
 						npc.anInt1527 = 0;
 						npc.anInt1528 = 0;
-						npc.anInt1529 = i2;
+						npc.anInt1529 = animationDelay;
 						npc.anInt1530 = 0;
 					}
-					if (l2 == 2) {
+					if (replayMode == 2) {
 						npc.anInt1530 = 0;
 					}
-				} else if (i1 == -1 || npc.anim == -1 || Animation.anims[i1].anInt359 >= Animation.anims[npc.anim].anInt359) {
-					npc.anim = i1;
+				} else if (animationId == -1 || npc.anim == -1 || Animation.anims[animationId].anInt359 >= Animation.anims[npc.anim].anInt359) {
+					npc.anim = animationId;
 					npc.anInt1527 = 0;
 					npc.anInt1528 = 0;
-					npc.anInt1529 = i2;
+					npc.anInt1529 = animationDelay;
 					npc.anInt1530 = 0;
 					npc.anInt1542 = npc.smallXYIndex;
 				}
 			}
-			if ((l & 8) != 0) {
-				int j1 = stream.readUnsignedByteSubtract128();
-				int j2 = stream.readUnsignedNegatedByte();
-				npc.updateHitData(j2, j1, loopCycle);
+			if ((mask & 8) != 0) {
+				int hitDamage = packet.readUnsignedByteSubtract128();
+				int hitType = packet.readUnsignedNegatedByte();
+				npc.updateHitData(hitType, hitDamage, loopCycle);
 				npc.loopCycleStatus = loopCycle + 300;
-				npc.currentHealth = stream.readUnsignedByteSubtract128();
-				npc.maxHealth = stream.readUnsignedByte();
+				npc.currentHealth = packet.readUnsignedByteSubtract128();
+				npc.maxHealth = packet.readUnsignedByte();
 			}
-			if ((l & 0x80) != 0) {
-				npc.anInt1520 = stream.readUnsignedShortBigEndian();
-				int k1 = stream.readIntBigEndian();
-				npc.anInt1524 = k1 >> 16;
-				npc.anInt1523 = loopCycle + (k1 & 0xffff);
+			if ((mask & 0x80) != 0) {
+				npc.anInt1520 = packet.readUnsignedShortBigEndian();
+				int graphicTiming = packet.readIntBigEndian();
+				npc.anInt1524 = graphicTiming >> 16;
+				npc.anInt1523 = loopCycle + (graphicTiming & 0xffff);
 				npc.anInt1521 = 0;
 				npc.anInt1522 = 0;
 				if (npc.anInt1523 > loopCycle) {
@@ -6622,26 +6622,26 @@ public class Game extends RSApplet {
 					npc.anInt1520 = -1;
 				}
 			}
-			if ((l & 0x20) != 0) {
-				npc.interactingEntity = stream.readUnsignedShortBigEndian();
+			if ((mask & 0x20) != 0) {
+				npc.interactingEntity = packet.readUnsignedShortBigEndian();
 				if (npc.interactingEntity == 0x00ffff) {
 					npc.interactingEntity = -1;
 				}
 			}
-			if ((l & 1) != 0) {
-				npc.textSpoken = stream.readLfTerminatedString();
+			if ((mask & 1) != 0) {
+				npc.textSpoken = packet.readLfTerminatedString();
 				npc.textCycle = 100;
 			}
-			if ((l & 0x40) != 0) {
-				int l1 = stream.readUnsignedNegatedByte();
-				int k2 = stream.readUnsignedByte128MinusValue();
-				npc.updateHitData(k2, l1, loopCycle);
+			if ((mask & 0x40) != 0) {
+				int secondHitDamage = packet.readUnsignedNegatedByte();
+				int secondHitType = packet.readUnsignedByte128MinusValue();
+				npc.updateHitData(secondHitType, secondHitDamage, loopCycle);
 				npc.loopCycleStatus = loopCycle + 300;
-				npc.currentHealth = stream.readUnsignedByte128MinusValue();
-				npc.maxHealth = stream.readUnsignedNegatedByte();
+				npc.currentHealth = packet.readUnsignedByte128MinusValue();
+				npc.maxHealth = packet.readUnsignedNegatedByte();
 			}
-			if ((l & 2) != 0) {
-				npc.desc = EntityDef.forID(stream.readUnsignedShortLittleEndianSubtract128());
+			if ((mask & 2) != 0) {
+				npc.desc = EntityDef.forID(packet.readUnsignedShortLittleEndianSubtract128());
 				npc.anInt1540 = npc.desc.aByte68;
 				npc.anInt1504 = npc.desc.anInt79;
 				npc.anInt1554 = npc.desc.anInt67;
@@ -6650,9 +6650,9 @@ public class Game extends RSApplet {
 				npc.anInt1557 = npc.desc.anInt55;
 				npc.anInt1511 = npc.desc.anInt77;
 			}
-			if ((l & 4) != 0) {
-				npc.anInt1538 = stream.readUnsignedShortLittleEndian();
-				npc.anInt1539 = stream.readUnsignedShortLittleEndian();
+			if ((mask & 4) != 0) {
+				npc.anInt1538 = packet.readUnsignedShortLittleEndian();
+				npc.anInt1539 = packet.readUnsignedShortLittleEndian();
 			}
 		}
 	}
