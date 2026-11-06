@@ -8,7 +8,7 @@ public class EntityUpdateTest {
         @Override public void advanceEntityToForcedMovementStart(Entity e) { calls.add("start"); }
         @Override public void advanceEntityThroughForcedMovement(Entity e) { calls.add("forced"); }
         @Override public void advanceEntityAlongWalkingPath(Entity e) { calls.add("walk"); }
-        @Override public void method100(Entity e) { calls.add("turn"); }
+        @Override public void updateEntityTurning(Entity e) { calls.add("turn"); }
         @Override public void method101(Entity e) { calls.add("animate"); }
     }
     private Player saved;

@@ -7558,7 +7558,7 @@ public class Game extends RSApplet {
 		} else {
 			advanceEntityAlongWalkingPath(entity);
 		}
-		method100(entity);
+		updateEntityTurning(entity);
 		method101(entity);
 	}
 
@@ -7723,48 +7723,48 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method100(Entity entity) {
+	public void updateEntityTurning(Entity entity) {
 		if (entity.anInt1504 == 0) {
 			return;
 		}
 		if (entity.interactingEntity != -1 && entity.interactingEntity < 32768) {
 			NPC npc = npcArray[entity.interactingEntity];
 			if (npc != null) {
-				int i1 = entity.x - npc.x;
-				int k1 = entity.y - npc.y;
-				if (i1 != 0 || k1 != 0) {
-					entity.turnDirection = (int) (Math.atan2(i1, k1) * 325.94900000000001D) & 0x7ff;
+				int npcDeltaX = entity.x - npc.x;
+				int npcDeltaY = entity.y - npc.y;
+				if (npcDeltaX != 0 || npcDeltaY != 0) {
+					entity.turnDirection = (int) (Math.atan2(npcDeltaX, npcDeltaY) * 325.94900000000001D) & 0x7ff;
 				}
 			}
 		}
 		if (entity.interactingEntity >= 32768) {
-			int j = entity.interactingEntity - 32768;
-			if (j == unknownInt10) {
-				j = myPlayerIndex;
+			int playerIndex = entity.interactingEntity - 32768;
+			if (playerIndex == unknownInt10) {
+				playerIndex = myPlayerIndex;
 			}
-			Player player = playerArray[j];
+			Player player = playerArray[playerIndex];
 			if (player != null) {
-				int l1 = entity.x - player.x;
-				int i2 = entity.y - player.y;
-				if (l1 != 0 || i2 != 0) {
-					entity.turnDirection = (int) (Math.atan2(l1, i2) * 325.94900000000001D) & 0x7ff;
+				int playerDeltaX = entity.x - player.x;
+				int playerDeltaY = entity.y - player.y;
+				if (playerDeltaX != 0 || playerDeltaY != 0) {
+					entity.turnDirection = (int) (Math.atan2(playerDeltaX, playerDeltaY) * 325.94900000000001D) & 0x7ff;
 				}
 			}
 		}
 		if ((entity.anInt1538 != 0 || entity.anInt1539 != 0) && (entity.smallXYIndex == 0 || entity.anInt1503 > 0)) {
-			int k = entity.x - (entity.anInt1538 - baseX - baseX) * 64;
-			int j1 = entity.y - (entity.anInt1539 - baseY - baseY) * 64;
-			if (k != 0 || j1 != 0) {
-				entity.turnDirection = (int) (Math.atan2(k, j1) * 325.94900000000001D) & 0x7ff;
+			int faceTileDeltaX = entity.x - (entity.anInt1538 - baseX - baseX) * 64;
+			int faceTileDeltaY = entity.y - (entity.anInt1539 - baseY - baseY) * 64;
+			if (faceTileDeltaX != 0 || faceTileDeltaY != 0) {
+				entity.turnDirection = (int) (Math.atan2(faceTileDeltaX, faceTileDeltaY) * 325.94900000000001D) & 0x7ff;
 			}
 			entity.anInt1538 = 0;
 			entity.anInt1539 = 0;
 		}
-		int l = entity.turnDirection - entity.anInt1552 & 0x7ff;
-		if (l != 0) {
-			if (l < entity.anInt1504 || l > 2048 - entity.anInt1504) {
+		int turnDelta = entity.turnDirection - entity.anInt1552 & 0x7ff;
+		if (turnDelta != 0) {
+			if (turnDelta < entity.anInt1504 || turnDelta > 2048 - entity.anInt1504) {
 				entity.anInt1552 = entity.turnDirection;
-			} else if (l > 1024) {
+			} else if (turnDelta > 1024) {
 				entity.anInt1552 -= entity.anInt1504;
 			} else {
 				entity.anInt1552 += entity.anInt1504;
