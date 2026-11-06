@@ -3127,7 +3127,7 @@ public class Game extends RSApplet {
 		}
 		loadingStages();
 		advancePendingSceneChanges();
-		method90();
+		drainQueuedSoundsAndAdvanceSongCountdown();
 		anInt1009++;
 		if (anInt1009 > 750) {
 			dropClient();
@@ -6872,7 +6872,7 @@ public class Game extends RSApplet {
 		pendingSceneChange.originalOrientation = originalOrientation;
 	}
 
-	public final void method90() {
+	public final void drainQueuedSoundsAndAdvanceSongCountdown() {
 		for (int index = 0; index < currentSound; index++) {
 			//if (soundDelay[index] <= 0) {
 				boolean flag1 = false;
@@ -6884,9 +6884,9 @@ public class Game extends RSApplet {
 						} else {
 							DesktopHooks.playSound(soundStream.buffer, 0, soundStream.currentOffset, soundVolume[index], soundDelay[index]);
 						}
-						if (System.currentTimeMillis() + (long) (soundStream.currentOffset / 22) > aLong1172 + (long) (anInt1257 / 22)) {
-							anInt1257 = soundStream.currentOffset;
-							aLong1172 = System.currentTimeMillis();
+						if (System.currentTimeMillis() + (long) (soundStream.currentOffset / 22) > soundEndReferenceStartMillis + (long) (soundEndReferenceByteLength / 22)) {
+							soundEndReferenceByteLength = soundStream.currentOffset;
+							soundEndReferenceStartMillis = System.currentTimeMillis();
 						}
 					}
 				} catch (Exception exception) {
@@ -6894,11 +6894,11 @@ public class Game extends RSApplet {
 				}
 				if (!flag1 || soundDelay[index] == -5) {
 					currentSound--;
-					for (int j = index; j < currentSound; j++) {
-						sound[j] = sound[j + 1];
-						soundType[j] = soundType[j + 1];
-						soundDelay[j] = soundDelay[j + 1];
-						soundVolume[j] = soundVolume[j + 1];
+					for (int shiftIndex = index; shiftIndex < currentSound; shiftIndex++) {
+						sound[shiftIndex] = sound[shiftIndex + 1];
+						soundType[shiftIndex] = soundType[shiftIndex + 1];
+						soundDelay[shiftIndex] = soundDelay[shiftIndex + 1];
+						soundVolume[shiftIndex] = soundVolume[shiftIndex + 1];
 					}
 					index--;
 				} else {
@@ -12476,7 +12476,7 @@ public class Game extends RSApplet {
 	public RSSocket socketStream;
 	public int minimapInt3;
 	public int anInt1171;
-	public static long aLong1172;
+	public static long soundEndReferenceStartMillis;
 	public String myUsername;
 	public String myPassword;
 	public static int anInt1175;
@@ -12554,7 +12554,7 @@ public class Game extends RSApplet {
 	public int anInt1254;
 	public boolean welcomeScreenRaised;
 	public boolean messagePromptRaised;
-	public static int anInt1257;
+	public static int soundEndReferenceByteLength;
 	public byte[][][] byteGroundArray;
 	public int previousSong;
 	public int destX;
