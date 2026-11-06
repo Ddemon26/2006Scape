@@ -4100,8 +4100,8 @@ public class Game extends RSApplet {
 			RSInterface class9_2 = RSInterface.interfaceCache[k];
 			if (class9_2.valueIndexArray != null && class9_2.valueIndexArray[0][0] == 5) {
 				int i2 = class9_2.valueIndexArray[0][1];
-				if (variousSettings[i2] != class9_2.anIntArray212[0]) {
-					variousSettings[i2] = class9_2.anIntArray212[0];
+				if (variousSettings[i2] != class9_2.conditionValues[0]) {
+					variousSettings[i2] = class9_2.conditionValues[0];
 					method33(i2);
 					needDrawTabArea = true;
 				}
@@ -9704,26 +9704,26 @@ public class Game extends RSApplet {
 		class30_sub1.anInt1294 = j;
 	}
 
-	public boolean interfaceIsSelected(RSInterface class9) {
-		if (class9.anIntArray245 == null) {
+	public boolean interfaceIsSelected(RSInterface component) {
+		if (component.conditionOperators == null) {
 			return false;
 		}
-		for (int i = 0; i < class9.anIntArray245.length; i++) {
-			int j = extractInterfaceValues(class9, i);
-			int k = class9.anIntArray212[i];
-			if (class9.anIntArray245[i] == 2) {
-				if (j >= k) {
+		for (int conditionIndex = 0; conditionIndex < component.conditionOperators.length; conditionIndex++) {
+			int actualValue = extractInterfaceValues(component, conditionIndex);
+			int requiredValue = component.conditionValues[conditionIndex];
+			if (component.conditionOperators[conditionIndex] == 2) {
+				if (actualValue >= requiredValue) {
 					return false;
 				}
-			} else if (class9.anIntArray245[i] == 3) {
-				if (j <= k) {
+			} else if (component.conditionOperators[conditionIndex] == 3) {
+				if (actualValue <= requiredValue) {
 					return false;
 				}
-			} else if (class9.anIntArray245[i] == 4) {
-				if (j == k) {
+			} else if (component.conditionOperators[conditionIndex] == 4) {
+				if (actualValue == requiredValue) {
 					return false;
 				}
-			} else if (j != k) {
+			} else if (actualValue != requiredValue) {
 				return false;
 			}
 		}

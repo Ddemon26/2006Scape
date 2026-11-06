@@ -51,12 +51,12 @@ public class InterfaceAnimationTest {
         Trace.saw(3,0);Trace.saw(3,1);Trace.saw(4,RSInterface.interfaceCache[2]);Trace.saw(8,7);Trace.saw(9,c());Trace.saw(10,0);Trace.saw(11,1);Trace.saw(12,Animation.anims[1]);
     }
     @Test public void realSelectionPredicateChoosesAlternateSequenceAndMissingChoiceIsNotFallback(){
-        c().anIntArray245=new int[0];assertTrue(g.interfaceIsSelected(c()));
+        c().conditionOperators=new int[0];assertTrue(g.interfaceIsSelected(c()));
         assertFalse(g.advanceInterfaceModelAnimations(7,2));assertEquals(7,c().anInt208);assertEquals(0,c().anInt246);
         assertTrue(g.advanceInterfaceModelAnimations(1,2));assertEquals(1,c().anInt246);assertEquals(0,c().anInt208);
         Trace.saw(10,1);Trace.saw(11,3);Trace.saw(12,Animation.anims[3]);
         c().anInt258=-1;assertFalse(g.advanceInterfaceModelAnimations(99,2));assertEquals(0,c().anInt208);assertEquals(1,c().anInt246);Trace.saw(11,-1);
-        c().anIntArray245=null;c().anInt257=-1;c().anInt258=3;
+        c().conditionOperators=null;c().anInt257=-1;c().anInt258=3;
         assertFalse(g.interfaceIsSelected(c()));assertFalse(g.advanceInterfaceModelAnimations(99,2));assertEquals(0,c().anInt208);
     }
     @Test public void multipleFramesLoopByTailCountAndInvalidLoopReturnsToZero(){

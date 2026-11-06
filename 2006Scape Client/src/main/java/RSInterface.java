@@ -38,11 +38,11 @@ public final class RSInterface {
 			}
 			int i1 = stream.readUnsignedByte();
 			if (i1 > 0) {
-				rsInterface.anIntArray245 = new int[i1];
-				rsInterface.anIntArray212 = new int[i1];
+				rsInterface.conditionOperators = new int[i1];
+				rsInterface.conditionValues = new int[i1];
 				for (int j1 = 0; j1 < i1; j1++) {
-					rsInterface.anIntArray245[j1] = stream.readUnsignedByte();
-					rsInterface.anIntArray212[j1] = stream.readUnsignedShortBigEndian();
+					rsInterface.conditionOperators[j1] = stream.readUnsignedByte();
+					rsInterface.conditionValues[j1] = stream.readUnsignedShortBigEndian();
 				}
 
 			}
@@ -325,7 +325,7 @@ public final class RSInterface {
 	public int anInt208;
 	public Sprite sprites[];
 	public static RSInterface interfaceCache[];
-	public int anIntArray212[];
+	public int conditionValues[];
 	public int anInt214;
 	public int spritesX[];
 	public int anInt216;
@@ -356,7 +356,7 @@ public final class RSInterface {
 	public boolean usableItemInterface;
 	public TextDrawingArea textDrawingAreas;
 	public int invSpritePadY;
-	public int anIntArray245[];
+	public int conditionOperators[];
 	public int anInt246;
 	public int spritesY[];
 	public String disabledText;
