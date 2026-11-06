@@ -1484,7 +1484,7 @@ public class Game extends RSApplet {
 							ItemDef itemDef = ItemDef.forID(item.ID);
 							long totalValue = Math.max(1, item.amount) * Math.max(1, itemDef.value);
 							totalValue = totalValue > 0 ? totalValue : Integer.MAX_VALUE;
-							calcEntityScreenPos(k5 * 128 + 64, 20, l5 * 128 + 64);
+							projectWorldToScreen(k5 * 128 + 64, 20, l5 * 128 + 64);
 							// only show ground items names if worth more than x (1k default)
 							if (totalValue >= customSettingMinItemValue) {
 								int color = RSColors.WHITE;
@@ -1539,22 +1539,22 @@ public class Game extends RSApplet {
 					if (player.combatLevel == 0) {
 						if (customSettingVisiblePlayerNames) {
 							// Show shops
-							npcScreenPos(((Entity) obj), ((Entity) obj).height + 15);
+							projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
 							// ItemDef.getSprite(995, 1000, 0xffff00).drawSprite(spriteDrawX - 16, spriteDrawY - l);
 							aTextDrawingArea_1270.drawCenteredLiteralText(0x00ffff, "[SHOP]", spriteDrawY - 5, spriteDrawX);
 						}
 					} else if (customSettingVisiblePlayerNames) {
 						// Show player names
-						npcScreenPos(((Entity) obj), ((Entity) obj).height + 15);
+						projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
 						aTextDrawingArea_1270.drawCenteredLiteralText(0xffffff, player.name, spriteDrawY - 5, spriteDrawX);
 						if (player.privelage >= 1) {
-							npcScreenPos(((Entity) obj), ((Entity) obj).height + 15);
+							projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
 							int icon = Math.max(0, Math.min(1, player.privelage - 1));
 							modIcons[icon].drawNonzeroIndexed( spriteDrawX - player.name.length() * 3 - 16, spriteDrawY - 7);
 						}
 					}
 					if (player.headIcon >= 0) {
-						npcScreenPos(((Entity) obj), ((Entity) obj).height + 15);
+						projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
 							if (player.skullIcon < 2) {
 								skullIcons[player.skullIcon].drawSprite(spriteDrawX - 12, spriteDrawY - l);
@@ -1567,7 +1567,7 @@ public class Game extends RSApplet {
 						}
 					}
 					if (j >= 0 && anInt855 == 10 && anInt933 == playerIndices[j]) {
-						npcScreenPos(((Entity) obj), ((Entity) obj).height + 15);
+						projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
 							headIconsHint[1].drawSprite(spriteDrawX - 12, spriteDrawY - l);
 						}
@@ -1575,13 +1575,13 @@ public class Game extends RSApplet {
 				} else {
 					EntityDef entityDef_1 = ((NPC) obj).desc;
 					if (entityDef_1.anInt75 >= 0 && entityDef_1.anInt75 < headIcons.length) {
-						npcScreenPos(((Entity) obj), ((Entity) obj).height + 15);
+						projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
 							headIcons[entityDef_1.anInt75].drawSprite(spriteDrawX - 12, spriteDrawY - 30);
 						}
 					}
 					if (anInt855 == 1 && anInt1222 == npcIndices[j - playerCount] && loopCycle % 20 < 10) {
-						npcScreenPos(((Entity) obj), ((Entity) obj).height + 15);
+						projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
 							headIconsHint[0].drawSprite(spriteDrawX - 12, spriteDrawY - 28);
 						}
@@ -1589,7 +1589,7 @@ public class Game extends RSApplet {
 				}
 				// Chat messages sent
 				if (((Entity) obj).textSpoken != null && (j >= playerCount || publicChatMode == 0 || publicChatMode == 3 || publicChatMode == 1 && isFriendOrSelf(((Player) obj).name))) {
-					npcScreenPos(((Entity) obj), ((Entity) obj).height);
+					projectEntityToScreen(((Entity) obj), ((Entity) obj).height);
 					if (spriteDrawX > -1 && anInt974 < anInt975) {
 						anIntArray979[anInt974] = chatTextDrawingArea.measureLiteralTextWidth(((Entity) obj).textSpoken) / 2;
 						anIntArray978[anInt974] = chatTextDrawingArea.maxAsciiGlyphHeightPixels;
@@ -1614,7 +1614,7 @@ public class Game extends RSApplet {
 				// HP markers for player?
 				if (((Entity) obj).loopCycleStatus > loopCycle) {
 					try {
-						npcScreenPos(((Entity) obj), ((Entity) obj).height + 15);
+						projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
 							int i1 = ((Entity) obj).currentHealth * 30 / ((Entity) obj).maxHealth;
 							if (i1 > 30) {
@@ -1629,7 +1629,7 @@ public class Game extends RSApplet {
 				// Hit markers
 				for (int j1 = 0; j1 < 4; j1++) {
 					if (((Entity) obj).hitsLoopCycle[j1] > loopCycle) {
-						npcScreenPos(((Entity) obj), ((Entity) obj).height / 2);
+						projectEntityToScreen(((Entity) obj), ((Entity) obj).height / 2);
 						if (spriteDrawX > -1) {
 							if (j1 == 1) {
 								spriteDrawY -= 20;
@@ -2979,7 +2979,7 @@ public class Game extends RSApplet {
 		if (anInt855 != 2) {
 			return;
 		}
-		calcEntityScreenPos((anInt934 - baseX << 7) + anInt937, anInt936 * 2, (anInt935 - baseY << 7) + anInt938);
+		projectWorldToScreen((anInt934 - baseX << 7) + anInt937, anInt936 * 2, (anInt935 - baseY << 7) + anInt938);
 		if (spriteDrawX > -1 && loopCycle % 20 < 10) {
 			headIconsHint[0].drawSprite(spriteDrawX - 12, spriteDrawY - 28);
 		}
@@ -9588,36 +9588,36 @@ public class Game extends RSApplet {
 		Texture.lineOffsets = chatBoxAreaOffsets;
 	}
 
-	public void npcScreenPos(Entity entity, int i) {
-		calcEntityScreenPos(entity.x, i, entity.y);
+	public void projectEntityToScreen(Entity entity, int heightOffset) {
+		projectWorldToScreen(entity.x, heightOffset, entity.y);
 
 		// aryan entity.entScreenX = spriteDrawX; entity.entScreenY =
 		// spriteDrawY;
 	}
 
-	public void calcEntityScreenPos(int i, int j, int l) {
-		if (i < 128 || l < 128 || i > 13056 || l > 13056) {
+	public void projectWorldToScreen(int worldX, int heightOffset, int worldY) {
+		if (worldX < 128 || worldY < 128 || worldX > 13056 || worldY > 13056) {
 			spriteDrawX = -1;
 			spriteDrawY = -1;
 			return;
 		}
-		int i1 = interpolatedGroundHeight(plane, l, i) - j;
-		i -= xCameraPos;
-		i1 -= zCameraPos;
-		l -= yCameraPos;
-		int j1 = Model.modelIntArray1[yCameraCurve];
-		int k1 = Model.modelIntArray2[yCameraCurve];
-		int l1 = Model.modelIntArray1[xCameraCurve];
-		int i2 = Model.modelIntArray2[xCameraCurve];
-		int j2 = l * l1 + i * i2 >> 16;
-		l = l * i2 - i * l1 >> 16;
-		i = j2;
-		j2 = i1 * k1 - l * j1 >> 16;
-		l = i1 * j1 + l * k1 >> 16;
-		i1 = j2;
-		if (l >= 50) {
-			spriteDrawX = Texture.textureInt1 + (i << 9) / l;
-			spriteDrawY = Texture.textureInt2 + (i1 << 9) / l;
+		int verticalPosition = interpolatedGroundHeight(plane, worldY, worldX) - heightOffset;
+		worldX -= xCameraPos;
+		verticalPosition -= zCameraPos;
+		worldY -= yCameraPos;
+		int pitchSine16 = Model.modelIntArray1[yCameraCurve];
+		int pitchCosine16 = Model.modelIntArray2[yCameraCurve];
+		int yawSine16 = Model.modelIntArray1[xCameraCurve];
+		int yawCosine16 = Model.modelIntArray2[xCameraCurve];
+		int rotatedComponent = worldY * yawSine16 + worldX * yawCosine16 >> 16;
+		worldY = worldY * yawCosine16 - worldX * yawSine16 >> 16;
+		worldX = rotatedComponent;
+		rotatedComponent = verticalPosition * pitchCosine16 - worldY * pitchSine16 >> 16;
+		worldY = verticalPosition * pitchSine16 + worldY * pitchCosine16 >> 16;
+		verticalPosition = rotatedComponent;
+		if (worldY >= 50) {
+			spriteDrawX = Texture.textureInt1 + (worldX << 9) / worldY;
+			spriteDrawY = Texture.textureInt2 + (verticalPosition << 9) / worldY;
 		} else {
 			spriteDrawX = -1;
 			spriteDrawY = -1;
