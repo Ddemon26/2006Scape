@@ -398,36 +398,36 @@ public final class Model extends Animable {
 
 	}
 
-	public Model(Model aclass30_sub2_sub4_sub6s[]) {
-		int i = 2;// was parameter
+	public Model(Model parts[]) {
+		int partCount = 2;// was parameter
 		aBoolean1659 = false;
-		boolean flag1 = false;
-		boolean flag2 = false;
-		boolean flag3 = false;
-		boolean flag4 = false;
+		boolean needsFaceRenderFlags = false;
+		boolean needsFacePriorities = false;
+		boolean needsFaceAlpha = false;
+		boolean needsFaceValues = false;
 		anInt1626 = 0;
 		anInt1630 = 0;
 		anInt1642 = 0;
 		anInt1641 = -1;
-		for (int k = 0; k < i; k++) {
-			Model model = aclass30_sub2_sub4_sub6s[k];
-			if (model != null) {
-				anInt1626 += model.anInt1626;
-				anInt1630 += model.anInt1630;
-				anInt1642 += model.anInt1642;
-				flag1 |= model.anIntArray1637 != null;
-				if (model.anIntArray1638 != null) {
-					flag2 = true;
+		for (int partIndex = 0; partIndex < partCount; partIndex++) {
+			Model sourcePart = parts[partIndex];
+			if (sourcePart != null) {
+				anInt1626 += sourcePart.anInt1626;
+				anInt1630 += sourcePart.anInt1630;
+				anInt1642 += sourcePart.anInt1642;
+				needsFaceRenderFlags |= sourcePart.anIntArray1637 != null;
+				if (sourcePart.anIntArray1638 != null) {
+					needsFacePriorities = true;
 				} else {
 					if (anInt1641 == -1) {
-						anInt1641 = model.anInt1641;
+						anInt1641 = sourcePart.anInt1641;
 					}
-					if (anInt1641 != model.anInt1641) {
-						flag2 = true;
+					if (anInt1641 != sourcePart.anInt1641) {
+						needsFacePriorities = true;
 					}
 				}
-				flag3 |= model.anIntArray1639 != null;
-				flag4 |= model.anIntArray1640 != null;
+				needsFaceAlpha |= sourcePart.anIntArray1639 != null;
+				needsFaceValues |= sourcePart.anIntArray1640 != null;
 			}
 		}
 
@@ -443,79 +443,79 @@ public final class Model extends Animable {
 		anIntArray1643 = new int[anInt1642];
 		anIntArray1644 = new int[anInt1642];
 		anIntArray1645 = new int[anInt1642];
-		if (flag1) {
+		if (needsFaceRenderFlags) {
 			anIntArray1637 = new int[anInt1630];
 		}
-		if (flag2) {
+		if (needsFacePriorities) {
 			anIntArray1638 = new int[anInt1630];
 		}
-		if (flag3) {
+		if (needsFaceAlpha) {
 			anIntArray1639 = new int[anInt1630];
 		}
-		if (flag4) {
+		if (needsFaceValues) {
 			anIntArray1640 = new int[anInt1630];
 		}
 		anInt1626 = 0;
 		anInt1630 = 0;
 		anInt1642 = 0;
-		int i1 = 0;
-		for (int j1 = 0; j1 < i; j1++) {
-			Model model_1 = aclass30_sub2_sub4_sub6s[j1];
-			if (model_1 != null) {
-				int k1 = anInt1626;
-				for (int l1 = 0; l1 < model_1.anInt1626; l1++) {
-					anIntArray1627[anInt1626] = model_1.anIntArray1627[l1];
-					anIntArray1628[anInt1626] = model_1.anIntArray1628[l1];
-					anIntArray1629[anInt1626] = model_1.anIntArray1629[l1];
+		int textureTriangleOffset = 0;
+		for (int partIndex = 0; partIndex < partCount; partIndex++) {
+			Model sourcePart = parts[partIndex];
+			if (sourcePart != null) {
+				int vertexOffset = anInt1626;
+				for (int vertexIndex = 0; vertexIndex < sourcePart.anInt1626; vertexIndex++) {
+					anIntArray1627[anInt1626] = sourcePart.anIntArray1627[vertexIndex];
+					anIntArray1628[anInt1626] = sourcePart.anIntArray1628[vertexIndex];
+					anIntArray1629[anInt1626] = sourcePart.anIntArray1629[vertexIndex];
 					anInt1626++;
 				}
 
-				for (int i2 = 0; i2 < model_1.anInt1630; i2++) {
-					anIntArray1631[anInt1630] = model_1.anIntArray1631[i2] + k1;
-					anIntArray1632[anInt1630] = model_1.anIntArray1632[i2] + k1;
-					anIntArray1633[anInt1630] = model_1.anIntArray1633[i2] + k1;
-					anIntArray1634[anInt1630] = model_1.anIntArray1634[i2];
-					anIntArray1635[anInt1630] = model_1.anIntArray1635[i2];
-					anIntArray1636[anInt1630] = model_1.anIntArray1636[i2];
-					if (flag1) {
-						if (model_1.anIntArray1637 == null) {
+				for (int faceIndex = 0; faceIndex < sourcePart.anInt1630; faceIndex++) {
+					anIntArray1631[anInt1630] = sourcePart.anIntArray1631[faceIndex] + vertexOffset;
+					anIntArray1632[anInt1630] = sourcePart.anIntArray1632[faceIndex] + vertexOffset;
+					anIntArray1633[anInt1630] = sourcePart.anIntArray1633[faceIndex] + vertexOffset;
+					anIntArray1634[anInt1630] = sourcePart.anIntArray1634[faceIndex];
+					anIntArray1635[anInt1630] = sourcePart.anIntArray1635[faceIndex];
+					anIntArray1636[anInt1630] = sourcePart.anIntArray1636[faceIndex];
+					if (needsFaceRenderFlags) {
+						if (sourcePart.anIntArray1637 == null) {
 							anIntArray1637[anInt1630] = 0;
 						} else {
-							int j2 = model_1.anIntArray1637[i2];
-							if ((j2 & 2) == 2) {
-								j2 += i1 << 2;
+							int faceRenderFlags = sourcePart.anIntArray1637[faceIndex];
+							if ((faceRenderFlags & 2) == 2) {
+								faceRenderFlags += textureTriangleOffset << 2;
 							}
-							anIntArray1637[anInt1630] = j2;
+							anIntArray1637[anInt1630] = faceRenderFlags;
 						}
 					}
-					if (flag2) {
-						if (model_1.anIntArray1638 == null) {
-							anIntArray1638[anInt1630] = model_1.anInt1641;
+					if (needsFacePriorities) {
+						if (sourcePart.anIntArray1638 == null) {
+							anIntArray1638[anInt1630] = sourcePart.anInt1641;
 						} else {
-							anIntArray1638[anInt1630] = model_1.anIntArray1638[i2];
+							anIntArray1638[anInt1630] = sourcePart.anIntArray1638[faceIndex];
 						}
 					}
-					if (flag3) {
-						if (model_1.anIntArray1639 == null) {
+					if (needsFaceAlpha) {
+						if (sourcePart.anIntArray1639 == null) {
 							anIntArray1639[anInt1630] = 0;
 						} else {
-							anIntArray1639[anInt1630] = model_1.anIntArray1639[i2];
+							anIntArray1639[anInt1630] = sourcePart.anIntArray1639[faceIndex];
 						}
 					}
-					if (flag4 && model_1.anIntArray1640 != null) {
-						anIntArray1640[anInt1630] = model_1.anIntArray1640[i2];
+					if (needsFaceValues && sourcePart.anIntArray1640 != null) {
+						anIntArray1640[anInt1630] = sourcePart.anIntArray1640[faceIndex];
 					}
 					anInt1630++;
 				}
 
-				for (int k2 = 0; k2 < model_1.anInt1642; k2++) {
-					anIntArray1643[anInt1642] = model_1.anIntArray1643[k2] + k1;
-					anIntArray1644[anInt1642] = model_1.anIntArray1644[k2] + k1;
-					anIntArray1645[anInt1642] = model_1.anIntArray1645[k2] + k1;
+				for (int textureTriangleIndex = 0; textureTriangleIndex < sourcePart.anInt1642; textureTriangleIndex++) {
+					anIntArray1643[anInt1642] = sourcePart.anIntArray1643[textureTriangleIndex] + vertexOffset;
+					anIntArray1644[anInt1642] = sourcePart.anIntArray1644[textureTriangleIndex] + vertexOffset;
+					anIntArray1645[anInt1642] = sourcePart.anIntArray1645[textureTriangleIndex] + vertexOffset;
 					anInt1642++;
 				}
 
-				i1 += model_1.anInt1642;
+				textureTriangleOffset += sourcePart.anInt1642;
 			}
 		}
 
