@@ -289,7 +289,7 @@ public class ObjectTerrainTest {
         Object animable = g[0][x][y].obj5Array[0].model;
         int[] out = new int[4];
         for (int n = 0; n < 4; n++) {
-            out[n] = field(animable.getClass(), "anInt" + (1603 + n)).getInt(animable);
+            out[n] = field(animable.getClass(), new String[] {"heightX0Y0", "heightX1Y0", "heightX1Y1", "heightX0Y1"}[n]).getInt(animable);
         }
         return out;
     }
@@ -313,7 +313,7 @@ public class ObjectTerrainTest {
                 CollisionMap.class, int.class, int.class, int.class, int.class, int.class);
         method.setAccessible(true);
         method.invoke(m, y, w, null, 10, 0, x, 604, 0);
-        // Animable_Sub5 stores them as (x0y0, x1y0, x1y1, x0y1) = anInt1603..anInt1606, the getModel parameter order
+        // AnimatedObject stores them as (x0y0, x1y0, x1y1, x0y1) = heightX0Y0..heightX0Y1, the getModel parameter order
         assertArrayEquals(new int[] {10, 20, 30, 40}, animatedCorners(w, x, y));
     }
 

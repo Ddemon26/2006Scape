@@ -2756,18 +2756,18 @@ public class Game extends RSApplet {
 	}
 
 	public void updateProjectiles() {
-		for (Animable_Sub4 projectile = (Animable_Sub4) projectiles.firstFromTail(); projectile != null; projectile = (Animable_Sub4) projectiles.nextTowardHead()) {
-			if (projectile.anInt1597 != plane || loopCycle > projectile.anInt1572) {
+		for (Projectile projectile = (Projectile) projectiles.firstFromTail(); projectile != null; projectile = (Projectile) projectiles.nextTowardHead()) {
+			if (projectile.plane != plane || loopCycle > projectile.endCycle) {
 				projectile.unlink();
-			} else if (loopCycle >= projectile.anInt1571) {
-				if (projectile.anInt1590 > 0) {
-					NPC npc = npcArray[projectile.anInt1590 - 1];
+			} else if (loopCycle >= projectile.startCycle) {
+				if (projectile.target > 0) {
+					NPC npc = npcArray[projectile.target - 1];
 					if (npc != null && npc.x >= 0 && npc.x < 13312 && npc.y >= 0 && npc.y < 13312) {
-						projectile.method455(loopCycle, npc.y, interpolatedGroundHeight(projectile.anInt1597, npc.y, npc.x) - projectile.anInt1583, npc.x);
+						projectile.retarget(loopCycle, npc.y, interpolatedGroundHeight(projectile.plane, npc.y, npc.x) - projectile.targetHeightOffset, npc.x);
 					}
 				}
-				if (projectile.anInt1590 < 0) {
-					int playerIndex = -projectile.anInt1590 - 1;
+				if (projectile.target < 0) {
+					int playerIndex = -projectile.target - 1;
 					Player player;
 					if (playerIndex == unknownInt10) {
 						player = myPlayer;
@@ -2775,11 +2775,11 @@ public class Game extends RSApplet {
 						player = playerArray[playerIndex];
 					}
 					if (player != null && player.x >= 0 && player.x < 13312 && player.y >= 0 && player.y < 13312) {
-						projectile.method455(loopCycle, player.y, interpolatedGroundHeight(projectile.anInt1597, player.y, player.x) - projectile.anInt1583, player.x);
+						projectile.retarget(loopCycle, player.y, interpolatedGroundHeight(projectile.plane, player.y, player.x) - projectile.targetHeightOffset, player.x);
 					}
 				}
-				projectile.method456(anInt945);
-				worldController.addEntity(plane, projectile.anInt1595, (int) projectile.aDouble1587, -1, (int) projectile.aDouble1586, 60, (int) projectile.aDouble1585, projectile, false);
+				projectile.advance(anInt945);
+				worldController.addEntity(plane, projectile.yaw, (int) projectile.positionHeight, -1, (int) projectile.positionY, 60, (int) projectile.positionX, projectile, false);
 			}
 		}
 
@@ -7383,7 +7383,7 @@ public class Game extends RSApplet {
 			Censor.loadConfig(streamLoader_4);
 			mouseDetection = new MouseDetection(this);
 			startRunnable(mouseDetection, 10);
-			Animable_Sub5.clientInstance = this;
+			AnimatedObject.clientInstance = this;
 			ObjectDef.clientInstance = this;
 			EntityDef.clientInstance = this;
 			
@@ -10100,17 +10100,17 @@ public class Game extends RSApplet {
 					if (class10 != null) {
 						int k21 = class10.uid >> 14 & 0x7fff;
 						if (j12 == 2) {
-							class10.model = new Animable_Sub5(k21, 4 + k14, 2, i19, l19, j18, k20, j17, false);
-							class10.secondaryModel = new Animable_Sub5(k21, k14 + 1 & 3, 2, i19, l19, j18, k20, j17, false);
+							class10.model = new AnimatedObject(k21, 4 + k14, 2, i19, l19, j18, k20, j17, false);
+							class10.secondaryModel = new AnimatedObject(k21, k14 + 1 & 3, 2, i19, l19, j18, k20, j17, false);
 						} else {
-							class10.model = new Animable_Sub5(k21, k14, j12, i19, l19, j18, k20, j17, false);
+							class10.model = new AnimatedObject(k21, k14, j12, i19, l19, j18, k20, j17, false);
 						}
 					}
 				}
 				if (j16 == 1) {
 					Object2 class26 = worldController.getWallDecoration(j4, i7, plane);
 					if (class26 != null) {
-						class26.model = new Animable_Sub5(class26.uid >> 14 & 0x7fff, 0, 4, i19, l19, j18, k20, j17, false);
+						class26.model = new AnimatedObject(class26.uid >> 14 & 0x7fff, 0, 4, i19, l19, j18, k20, j17, false);
 					}
 				}
 				if (j16 == 2) {
@@ -10119,13 +10119,13 @@ public class Game extends RSApplet {
 						j12 = 10;
 					}
 					if (class28 != null) {
-						class28.model = new Animable_Sub5(class28.uid >> 14 & 0x7fff, k14, j12, i19, l19, j18, k20, j17, false);
+						class28.model = new AnimatedObject(class28.uid >> 14 & 0x7fff, k14, j12, i19, l19, j18, k20, j17, false);
 					}
 				}
 				if (j16 == 3) {
 					Object3 class49 = worldController.getGroundDecoration(i7, j4, plane);
 					if (class49 != null) {
-						class49.model = new Animable_Sub5(class49.uid >> 14 & 0x7fff, k14, 22, i19, l19, j18, k20, j17, false);
+						class49.model = new AnimatedObject(class49.uid >> 14 & 0x7fff, k14, 22, i19, l19, j18, k20, j17, false);
 					}
 				}
 			}
@@ -10272,8 +10272,8 @@ public class Game extends RSApplet {
 				k8 = k8 * 128 + 64;
 				j11 = j11 * 128 + 64;
 				k13 = k13 * 128 + 64;
-				Animable_Sub4 class30_sub2_sub4_sub4 = new Animable_Sub4(i21, l18, k19 + loopCycle, j20 + loopCycle, j21, plane, interpolatedGroundHeight(plane, k8, l5) - i18, k8, l5, l15, i17);
-				class30_sub2_sub4_sub4.method455(k19 + loopCycle, k13, interpolatedGroundHeight(plane, k13, j11) - l18, j11);
+				Projectile class30_sub2_sub4_sub4 = new Projectile(i21, l18, k19 + loopCycle, j20 + loopCycle, j21, plane, interpolatedGroundHeight(plane, k8, l5) - i18, k8, l5, l15, i17);
+				class30_sub2_sub4_sub4.retarget(k19 + loopCycle, k13, interpolatedGroundHeight(plane, k13, j11) - l18, j11);
 				projectiles.insertHead(class30_sub2_sub4_sub4);
 			}
 		}

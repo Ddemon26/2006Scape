@@ -394,8 +394,8 @@ public class ObjectPlanePlacementTest {
     private static final int[] DIR_Y = {0, -1, 0, 1};
 
     private static int sub5(Animable a, String name) throws Exception {
-        assertTrue(a instanceof Animable_Sub5);
-        return field(Animable_Sub5.class, name).getInt(a);
+        assertTrue(a instanceof AnimatedObject);
+        return field(AnimatedObject.class, name).getInt(a);
     }
 
     @Test public void wallShapesUseTheEdgeMaskTableAndTheCornerMaskTableByOrientation() throws Exception {
@@ -415,10 +415,10 @@ public class ObjectPlanePlacementTest {
                 wall = ground(placeEither(twin, manager(), world(), 2, 10, 10, 1, o), 0, 10, 10).obj1;
                 assertEquals("shape 2 first piece", EDGE[o], wall.orientation);
                 assertEquals("shape 2 second piece uses the next orientation", EDGE[(o + 1) & 3], wall.orientation1);
-                assertEquals(4 + o, sub5(wall.model, "anInt1612"));
-                assertEquals((o + 1) & 3, sub5(wall.secondaryModel, "anInt1612"));
-                assertEquals(2, sub5(wall.model, "anInt1611"));
-                assertEquals(2, sub5(wall.secondaryModel, "anInt1611"));
+                assertEquals(4 + o, sub5(wall.model, "orientation"));
+                assertEquals((o + 1) & 3, sub5(wall.secondaryModel, "orientation"));
+                assertEquals(2, sub5(wall.model, "type"));
+                assertEquals(2, sub5(wall.secondaryModel, "type"));
             }
         }
     }
@@ -494,7 +494,7 @@ public class ObjectPlanePlacementTest {
     }
 
     private static int[] corners(Animable a) throws Exception {
-        return new int[] {sub5(a, "anInt1603"), sub5(a, "anInt1604"), sub5(a, "anInt1605"), sub5(a, "anInt1606")}; // x0y0 x1y0 x1y1 x0y1
+        return new int[] {sub5(a, "heightX0Y0"), sub5(a, "heightX1Y0"), sub5(a, "heightX1Y1"), sub5(a, "heightX0Y1")}; // x0y0 x1y0 x1y1 x0y1
     }
 
     @Test public void adjustsToTerrainRotatesTheFourCornerHeightsOneStepPerOrientation() throws Exception {
@@ -535,8 +535,8 @@ public class ObjectPlanePlacementTest {
                     default: model = g.obj5Array[0].model; break;
                 }
                 String label = "shape " + c[0] + " twin " + twin;
-                assertEquals(label, c[1], sub5(model, "anInt1611"));
-                assertEquals(label, c[2], sub5(model, "anInt1612"));
+                assertEquals(label, c[1], sub5(model, "type"));
+                assertEquals(label, c[2], sub5(model, "orientation"));
             }
         }
     }

@@ -520,8 +520,8 @@ public class ObjectDefTest {
         WorldController world = new WorldController(new int[4][105][105]);
         ObjectManager.placeObjectWithoutShading(world, 0, 41, 10, 0, blank(), new int[4][105][105], 40, 604, 0);
         Animable placed = placedObject(world, 0, 40, 41);
-        assertTrue(placed instanceof Animable_Sub5);
-        assertSame("animation table entry at the object's animation id", anims[3], get(placed, "aAnimation_1607"));
+        assertTrue(placed instanceof AnimatedObject);
+        assertSame("animation table entry at the object's animation id", anims[3], get(placed, "animation"));
 
         d.animationId = -1;
         world = new WorldController(new int[4][105][105]);
@@ -532,9 +532,9 @@ public class ObjectDefTest {
         world = new WorldController(new int[4][105][105]);
         ObjectManager.placeObjectWithoutShading(world, 0, 41, 10, 0, blank(), new int[4][105][105], 40, 604, 0);
         placed = placedObject(world, 0, 40, 41);
-        assertTrue(placed instanceof Animable_Sub5);
-        assertNull(get(placed, "aAnimation_1607"));
-        assertSame("children and morph ids are copied", d.childrenIDs, get(placed, "anIntArray1600"));
+        assertTrue(placed instanceof AnimatedObject);
+        assertNull(get(placed, "animation"));
+        assertSame("children and morph ids are copied", d.childrenIDs, get(placed, "childObjectIds"));
     }
 
     @Test public void animatedObjectCopiesMorphSourcesFromItsDefinition() throws Exception {
@@ -546,9 +546,9 @@ public class ObjectDefTest {
         d.varBitId = 17;
         d.settingId = 29;
         installCache(d);
-        Animable_Sub5 animated = new Animable_Sub5(605, 0, 10, 0, 0, 0, 0, 3, false);
-        assertEquals(17, getInt(animated, "anInt1601"));
-        assertEquals(29, getInt(animated, "anInt1602"));
+        AnimatedObject animated = new AnimatedObject(605, 0, 10, 0, 0, 0, 0, 3, false);
+        assertEquals(17, getInt(animated, "varBitId"));
+        assertEquals(29, getInt(animated, "settingId"));
     }
 
     @Test public void objectExtentSwapsWithOrientationInTheWorld() throws Exception {

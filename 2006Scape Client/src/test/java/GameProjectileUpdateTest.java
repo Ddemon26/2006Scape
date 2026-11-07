@@ -40,10 +40,10 @@ public class GameProjectileUpdateTest {
         return game;
     }
 
-    private static Animable_Sub4 projectile(int start, int end, int plane, int target) {
-        Animable_Sub4 result = new Animable_Sub4(0, 0, start, end, 0, plane,
+    private static Projectile projectile(int start, int end, int plane, int target) {
+        Projectile result = new Projectile(0, 0, start, end, 0, plane,
                 0, 320, 320, target, 0);
-        result.method455(start, 320, 0, 448);
+        result.retarget(start, 320, 0, 448);
         return result;
     }
 
@@ -56,9 +56,9 @@ public class GameProjectileUpdateTest {
     @Test public void method55ExpiresWrongPlaneAndPastEndButWaitsForStart() throws Exception {
         Game game = game();
         Game.loopCycle = 10;
-        Animable_Sub4 wrongPlane = projectile(1, 20, 1, 0);
-        Animable_Sub4 expired = projectile(1, 9, 0, 0);
-        Animable_Sub4 future = projectile(11, 20, 0, 0);
+        Projectile wrongPlane = projectile(1, 20, 1, 0);
+        Projectile expired = projectile(1, 9, 0, 0);
+        Projectile future = projectile(11, 20, 0, 0);
         game.projectiles.insertHead(wrongPlane);
         game.projectiles.insertHead(expired);
         game.projectiles.insertHead(future);
@@ -67,10 +67,10 @@ public class GameProjectileUpdateTest {
         assertNull(expired.next);
         assertSame(future, game.projectiles.firstFromTail());
         assertNull(game.projectiles.nextTowardHead());
-        assertEquals(320.0, future.aDouble1585, 0.001);
+        assertEquals(320.0, future.positionX, 0.001);
         Game.loopCycle = 11;
         game.updateProjectiles();
-        assertTrue(future.aDouble1585 > 320.0);
+        assertTrue(future.positionX > 320.0);
         assertSame(future, game.projectiles.firstFromTail());
         assertNotNull(grounds(game)[0][2][2]);
     }
@@ -78,15 +78,15 @@ public class GameProjectileUpdateTest {
     @Test public void method55ProcessesEachQueuedEntryIndependently() throws Exception {
         Game game = game();
         Game.loopCycle = 10;
-        Animable_Sub4 first = projectile(10, 20, 0, 0);
-        Animable_Sub4 second = projectile(10, 20, 0, 0);
-        second.method455(10, 448, 0, 320);
+        Projectile first = projectile(10, 20, 0, 0);
+        Projectile second = projectile(10, 20, 0, 0);
+        second.retarget(10, 448, 0, 320);
         game.projectiles.insertHead(first);
         game.projectiles.insertHead(second);
         game.updateProjectiles();
-        assertTrue(first.aDouble1585 > 320);
-        assertEquals(320.0, second.aDouble1585, 0.001);
-        assertTrue(second.aDouble1586 > 320);
+        assertTrue(first.positionX > 320);
+        assertEquals(320.0, second.positionX, 0.001);
+        assertTrue(second.positionY > 320);
         assertSame(first, game.projectiles.firstFromTail());
         assertSame(second, game.projectiles.nextTowardHead());
     }
@@ -100,22 +100,22 @@ public class GameProjectileUpdateTest {
         game.playerArray[0] = indexed;
         Player local = new Player(); local.x = 640; local.y = 320;
         Game.myPlayer = local; game.unknownInt10 = 1;
-        Animable_Sub4 npcShot = projectile(10, 15, 0, 1);
-        Animable_Sub4 indexedShot = projectile(10, 15, 0, -1);
-        Animable_Sub4 localShot = projectile(10, 15, 0, -2);
+        Projectile npcShot = projectile(10, 15, 0, 1);
+        Projectile indexedShot = projectile(10, 15, 0, -1);
+        Projectile localShot = projectile(10, 15, 0, -2);
         game.projectiles.insertHead(npcShot);
         game.projectiles.insertHead(indexedShot);
         game.projectiles.insertHead(localShot);
         game.updateProjectiles();
-        assertEquals(320 + 128.0 / 6, npcShot.aDouble1585, 0.001);
-        assertEquals(320 + 448.0 / 6, indexedShot.aDouble1585, 0.001);
-        assertEquals(320 + 320.0 / 6, localShot.aDouble1585, 0.001);
-        assertTrue(indexedShot.aDouble1585 > localShot.aDouble1585);
-        assertTrue(localShot.aDouble1585 > npcShot.aDouble1585);
+        assertEquals(320 + 128.0 / 6, npcShot.positionX, 0.001);
+        assertEquals(320 + 448.0 / 6, indexedShot.positionX, 0.001);
+        assertEquals(320 + 320.0 / 6, localShot.positionX, 0.001);
+        assertTrue(indexedShot.positionX > localShot.positionX);
+        assertTrue(localShot.positionX > npcShot.positionX);
         indexed.x = 13312;
-        Animable_Sub4 invalidTarget = projectile(10, 15, 0, -1);
+        Projectile invalidTarget = projectile(10, 15, 0, -1);
         game.projectiles.insertHead(invalidTarget);
         game.updateProjectiles();
-        assertEquals(320 + 128.0 / 6, invalidTarget.aDouble1585, 0.001);
+        assertEquals(320 + 128.0 / 6, invalidTarget.positionX, 0.001);
     }
 }
