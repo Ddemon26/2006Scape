@@ -3102,15 +3102,15 @@ public class Game extends RSApplet {
 			stream.writeEncryptedOpcode(241);
 			stream.writeIntBigEndian((l5 << 20) + (j5 << 19) + k4);
 		}
-		if (anInt1016 > 0) {
-			anInt1016--;
+		if (cameraSendCooldown > 0) {
+			cameraSendCooldown--;
 		}
 		if (super.keyArray[1] == 1 || super.keyArray[2] == 1 || super.keyArray[3] == 1 || super.keyArray[4] == 1) {
-			aBoolean1017 = true;
+			cameraMovePending = true;
 		}
-		if (aBoolean1017 && anInt1016 <= 0) {
-			anInt1016 = 20;
-			aBoolean1017 = false;
+		if (cameraMovePending && cameraSendCooldown <= 0) {
+			cameraSendCooldown = 20;
+			cameraMovePending = false;
 			stream.writeEncryptedOpcode(86);
 			stream.writeShortBigEndian(cameraPitchBase);
 			stream.writeShortBigEndianAdd128(cameraYawBase);
@@ -3258,37 +3258,37 @@ public class Game extends RSApplet {
 			super.idleTime -= 500;
 			stream.writeEncryptedOpcode(202);
 		}*/
-		anInt988++;
-		if (anInt988 > 500) {
-			anInt988 = 0;
-			int l1 = (int) (Math.random() * 8D);
-			if ((l1 & 1) == 1) {
-				anInt1278 += anInt1279;
+		cameraDriftTimer++;
+		if (cameraDriftTimer > 500) {
+			cameraDriftTimer = 0;
+			int driftAxisMask = (int) (Math.random() * 8D);
+			if ((driftAxisMask & 1) == 1) {
+				cameraDriftX += cameraDriftXStep;
 			}
-			if ((l1 & 2) == 2) {
-				anInt1131 += anInt1132;
+			if ((driftAxisMask & 2) == 2) {
+				cameraDriftY += cameraDriftYStep;
 			}
-			if ((l1 & 4) == 4) {
-				cameraYawDrift += anInt897;
+			if ((driftAxisMask & 4) == 4) {
+				cameraYawDrift += cameraYawDriftStep;
 			}
 		}
-		if (anInt1278 < -50) {
-			anInt1279 = 2;
+		if (cameraDriftX < -50) {
+			cameraDriftXStep = 2;
 		}
-		if (anInt1278 > 50) {
-			anInt1279 = -2;
+		if (cameraDriftX > 50) {
+			cameraDriftXStep = -2;
 		}
-		if (anInt1131 < -55) {
-			anInt1132 = 2;
+		if (cameraDriftY < -55) {
+			cameraDriftYStep = 2;
 		}
-		if (anInt1131 > 55) {
-			anInt1132 = -2;
+		if (cameraDriftY > 55) {
+			cameraDriftYStep = -2;
 		}
 		if (cameraYawDrift < -40) {
-			anInt897 = 1;
+			cameraYawDriftStep = 1;
 		}
 		if (cameraYawDrift > 40) {
-			anInt897 = -1;
+			cameraYawDriftStep = -1;
 		}
 		anInt1254++;
 		if (anInt1254 > 500) {
@@ -6121,8 +6121,8 @@ public class Game extends RSApplet {
 				spellSelected = 0;
 				loadingStage = 0;
 				currentSound = 0;
-				anInt1278 = (int) (Math.random() * 100D) - 50;
-				anInt1131 = (int) (Math.random() * 110D) - 55;
+				cameraDriftX = (int) (Math.random() * 100D) - 50;
+				cameraDriftY = (int) (Math.random() * 110D) - 55;
 				cameraYawDrift = (int) (Math.random() * 80D) - 40;
 				minimapInt2 = (int) (Math.random() * 120D) - 60;
 				minimapInt3 = (int) (Math.random() * 30D) - 20;
@@ -8666,8 +8666,8 @@ public class Game extends RSApplet {
 
 	public void updateCameraFollow() {
 		try {
-			int targetWorldX = myPlayer.x + anInt1278;
-			int targetWorldY = myPlayer.y + anInt1131;
+			int targetWorldX = myPlayer.x + cameraDriftX;
+			int targetWorldY = myPlayer.y + cameraDriftY;
 			if (cameraFollowX - targetWorldX < -500 || cameraFollowX - targetWorldX > 500 || cameraFollowY - targetWorldY < -500 || cameraFollowY - targetWorldY > 500) {
 				cameraFollowX = targetWorldX;
 				cameraFollowY = targetWorldY;
@@ -8679,21 +8679,21 @@ public class Game extends RSApplet {
 				cameraFollowY += (targetWorldY - cameraFollowY) / 16;
 			}
 			if (super.keyArray[1] == 1) {
-				anInt1186 += (-24 - anInt1186) / 2;
+				cameraYawVelocity += (-24 - cameraYawVelocity) / 2;
 			} else if (super.keyArray[2] == 1) {
-				anInt1186 += (24 - anInt1186) / 2;
+				cameraYawVelocity += (24 - cameraYawVelocity) / 2;
 			} else {
-				anInt1186 /= 2;
+				cameraYawVelocity /= 2;
 			}
 			if (super.keyArray[3] == 1) {
-				anInt1187 += (12 - anInt1187) / 2;
+				cameraPitchVelocity += (12 - cameraPitchVelocity) / 2;
 			} else if (super.keyArray[4] == 1) {
-				anInt1187 += (-12 - anInt1187) / 2;
+				cameraPitchVelocity += (-12 - cameraPitchVelocity) / 2;
 			} else {
-				anInt1187 /= 2;
+				cameraPitchVelocity /= 2;
 			}
-			cameraYawBase = cameraYawBase + anInt1186 / 2 & 0x7ff;
-			cameraPitchBase += anInt1187 / 2;
+			cameraYawBase = cameraYawBase + cameraYawVelocity / 2 & 0x7ff;
+			cameraPitchBase += cameraPitchVelocity / 2;
 			if (cameraPitchBase < 128) {
 				cameraPitchBase = 128;
 			}
@@ -12033,7 +12033,7 @@ public class Game extends RSApplet {
 		playerIndices = new int[maxPlayers];
 		maskUpdateIndices = new int[maxPlayers];
 		aStreamArray895s = new Stream[maxPlayers];
-		anInt897 = 1;
+		cameraYawDriftStep = 1;
 		pathBackDirection = new int[104][104];
 		scrollHighlightColor = 0x766654;
 		textureScrollScratch = new byte[16384];
@@ -12073,7 +12073,7 @@ public class Game extends RSApplet {
 		scrollTrackColor = 0x23201b;
 		amountOrNameInput = "";
 		projectiles = new NodeList();
-		aBoolean1017 = false;
+		cameraMovePending = false;
 		anInt1018 = -1;
 		shakePhase = new int[5];
 		designerModelDirty = false;
@@ -12108,7 +12108,7 @@ public class Game extends RSApplet {
 		atPlayerActions = new String[5];
 		atPlayerArray = new boolean[5];
 		anIntArrayArrayArray1129 = new int[4][13][13];
-		anInt1132 = 2;
+		cameraDriftYStep = 2;
 		mapFunctionIconSprites = new Sprite[1000];
 		aBoolean1141 = false;
 		aBoolean1149 = false;
@@ -12151,7 +12151,7 @@ public class Game extends RSApplet {
 		loginMessage1 = "";
 		loginMessage2 = "";
 		backDialogID = -1;
-		anInt1279 = 2;
+		cameraDriftXStep = 2;
 		bigX = new int[4000];
 		bigY = new int[4000];
 		anInt1289 = -1;
@@ -12230,7 +12230,7 @@ public class Game extends RSApplet {
 	public int[] maskUpdateIndices;
 	public Stream[] aStreamArray895s;
 	public int cameraYawDrift;
-	public int anInt897;
+	public int cameraYawDriftStep;
 	public int friendsCount;
 	public int anInt900;
 	public int[][] pathBackDirection;
@@ -12310,7 +12310,7 @@ public class Game extends RSApplet {
 	public int minimapBuiltPlane;
 	public static int anInt986;
 	public Sprite[] hitMarks;
-	public int anInt988;
+	public int cameraDriftTimer;
 	public int anInt989;
 	public final int[] anIntArray990;
 	public static boolean aBoolean993;
@@ -12334,8 +12334,8 @@ public class Game extends RSApplet {
 	public NodeList projectiles;
 	public int cameraFollowX;
 	public int cameraFollowY;
-	public int anInt1016;
-	public boolean aBoolean1017;
+	public int cameraSendCooldown;
+	public boolean cameraMovePending;
 	public int anInt1018;
 	public static final int[] anIntArray1019;
 	public int minimapState;
@@ -12439,8 +12439,8 @@ public class Game extends RSApplet {
 	public final boolean[] atPlayerArray;
 	public final int[][][] anIntArrayArrayArray1129;
 	public final int[] tabInterfaceIDs = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-	public int anInt1131;
-	public int anInt1132;
+	public int cameraDriftY;
+	public int cameraDriftYStep;
 	public int menuActionRow;
 	public static int anInt1134;
 	public int spellSelected;
@@ -12491,8 +12491,8 @@ public class Game extends RSApplet {
 	public byte[][] regionTerrainData;
 	public int cameraPitchBase;
 	public int cameraYawBase;
-	public int anInt1186;
-	public int anInt1187;
+	public int cameraYawVelocity;
+	public int cameraPitchVelocity;
 	public static int anInt1188;
 	public int invOverlayInterfaceID;
 	public int[] anIntArray1190;
@@ -12572,8 +12572,8 @@ public class Game extends RSApplet {
 	public TextDrawingArea chatTextDrawingArea;
 	public int anInt1275;
 	public int backDialogID;
-	public int anInt1278;
-	public int anInt1279;
+	public int cameraDriftX;
+	public int cameraDriftXStep;
 	public int[] bigX;
 	public int[] bigY;
 	public int itemSelected;
@@ -12634,8 +12634,8 @@ public class Game extends RSApplet {
 	void mouseWheelDragged(int i, int j) {
 		if (!mouseWheelDown)
 			return;
-		this.anInt1186 += i * 3;
-		this.anInt1187 += (j << 1);
+		this.cameraYawVelocity += i * 3;
+		this.cameraPitchVelocity += (j << 1);
 	}
 
 	public void handleKeyPressed(int keyCode, char keyChar, boolean isControlDown, boolean isShiftDown)
