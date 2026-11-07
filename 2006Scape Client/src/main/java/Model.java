@@ -1481,7 +1481,7 @@ public final class Model extends Animable {
 				if (l1 > 0) {
 					int ai[] = anIntArrayArray1672[i1];
 					for (int j3 = 0; j3 < l1; j3++) {
-						method484(ai[j3]);
+						drawFace(ai[j3]);
 					}
 
 				}
@@ -1545,7 +1545,7 @@ public final class Model extends Animable {
 		}
 		for (int l6 = 0; l6 < 10; l6++) {
 			while (l6 == 0 && i5 > l2) {
-				method484(ai2[i6++]);
+				drawFace(ai2[i6++]);
 				if (i6 == k6 && ai2 != anIntArrayArray1674[11]) {
 					i6 = 0;
 					k6 = anIntArray1673[11];
@@ -1559,7 +1559,7 @@ public final class Model extends Animable {
 				}
 			}
 			while (l6 == 3 && i5 > k3) {
-				method484(ai2[i6++]);
+				drawFace(ai2[i6++]);
 				if (i6 == k6 && ai2 != anIntArrayArray1674[11]) {
 					i6 = 0;
 					k6 = anIntArray1673[11];
@@ -1573,7 +1573,7 @@ public final class Model extends Animable {
 				}
 			}
 			while (l6 == 5 && i5 > j4) {
-				method484(ai2[i6++]);
+				drawFace(ai2[i6++]);
 				if (i6 == k6 && ai2 != anIntArrayArray1674[11]) {
 					i6 = 0;
 					k6 = anIntArray1673[11];
@@ -1589,13 +1589,13 @@ public final class Model extends Animable {
 			int i7 = anIntArray1673[l6];
 			int ai4[] = anIntArrayArray1674[l6];
 			for (int j7 = 0; j7 < i7; j7++) {
-				method484(ai4[j7]);
+				drawFace(ai4[j7]);
 			}
 
 		}
 
 		while (i5 != -1000) {
-			method484(ai2[i6++]);
+			drawFace(ai2[i6++]);
 			if (i6 == k6 && ai2 != anIntArrayArray1674[11]) {
 				i6 = 0;
 				ai2 = anIntArrayArray1674[11];
@@ -1610,48 +1610,48 @@ public final class Model extends Animable {
 		}
 	}
 
-	private void method484(int i) {
-		if (aBooleanArray1664[i]) {
-			method485(i);
+	private void drawFace(int faceIndex) {
+		if (aBooleanArray1664[faceIndex]) {
+			method485(faceIndex);
 			return;
 		}
-		int j = anIntArray1631[i];
-		int k = anIntArray1632[i];
-		int l = anIntArray1633[i];
-		Texture.clipScanlines = aBooleanArray1663[i];
+		int vertexA = anIntArray1631[faceIndex];
+		int vertexB = anIntArray1632[faceIndex];
+		int vertexC = anIntArray1633[faceIndex];
+		Texture.clipScanlines = aBooleanArray1663[faceIndex];
 		if (anIntArray1639 == null) {
 			Texture.transparency = 0;
 		} else {
-			Texture.transparency = anIntArray1639[i];
+			Texture.transparency = anIntArray1639[faceIndex];
 		}
-		int i1;
+		int renderType;
 		if (anIntArray1637 == null) {
-			i1 = 0;
+			renderType = 0;
 		} else {
-			i1 = anIntArray1637[i] & 3;
+			renderType = anIntArray1637[faceIndex] & 3;
 		}
-		if (i1 == 0) {
-			Texture.drawShadedTriangle(anIntArray1666[j], anIntArray1666[k], anIntArray1666[l], anIntArray1665[j], anIntArray1665[k], anIntArray1665[l], anIntArray1634[i], anIntArray1635[i], anIntArray1636[i]);
+		if (renderType == 0) {
+			Texture.drawShadedTriangle(anIntArray1666[vertexA], anIntArray1666[vertexB], anIntArray1666[vertexC], anIntArray1665[vertexA], anIntArray1665[vertexB], anIntArray1665[vertexC], anIntArray1634[faceIndex], anIntArray1635[faceIndex], anIntArray1636[faceIndex]);
 			return;
 		}
-		if (i1 == 1) {
-			Texture.drawFlatTriangle(anIntArray1666[j], anIntArray1666[k], anIntArray1666[l], anIntArray1665[j], anIntArray1665[k], anIntArray1665[l], modelIntArray3[anIntArray1634[i]]);
+		if (renderType == 1) {
+			Texture.drawFlatTriangle(anIntArray1666[vertexA], anIntArray1666[vertexB], anIntArray1666[vertexC], anIntArray1665[vertexA], anIntArray1665[vertexB], anIntArray1665[vertexC], modelIntArray3[anIntArray1634[faceIndex]]);
 			return;
 		}
-		if (i1 == 2) {
-			int j1 = anIntArray1637[i] >> 2;
-			int l1 = anIntArray1643[j1];
-			int j2 = anIntArray1644[j1];
-			int l2 = anIntArray1645[j1];
-			Texture.drawTexturedTriangle(anIntArray1666[j], anIntArray1666[k], anIntArray1666[l], anIntArray1665[j], anIntArray1665[k], anIntArray1665[l], anIntArray1634[i], anIntArray1635[i], anIntArray1636[i], anIntArray1668[l1], anIntArray1668[j2], anIntArray1668[l2], anIntArray1669[l1], anIntArray1669[j2], anIntArray1669[l2], anIntArray1670[l1], anIntArray1670[j2], anIntArray1670[l2], anIntArray1640[i]);
+		if (renderType == 2) {
+			int textureFaceIndex = anIntArray1637[faceIndex] >> 2;
+			int mappingVertexA = anIntArray1643[textureFaceIndex];
+			int mappingVertexB = anIntArray1644[textureFaceIndex];
+			int mappingVertexC = anIntArray1645[textureFaceIndex];
+			Texture.drawTexturedTriangle(anIntArray1666[vertexA], anIntArray1666[vertexB], anIntArray1666[vertexC], anIntArray1665[vertexA], anIntArray1665[vertexB], anIntArray1665[vertexC], anIntArray1634[faceIndex], anIntArray1635[faceIndex], anIntArray1636[faceIndex], anIntArray1668[mappingVertexA], anIntArray1668[mappingVertexB], anIntArray1668[mappingVertexC], anIntArray1669[mappingVertexA], anIntArray1669[mappingVertexB], anIntArray1669[mappingVertexC], anIntArray1670[mappingVertexA], anIntArray1670[mappingVertexB], anIntArray1670[mappingVertexC], anIntArray1640[faceIndex]);
 			return;
 		}
-		if (i1 == 3) {
-			int k1 = anIntArray1637[i] >> 2;
-			int i2 = anIntArray1643[k1];
-			int k2 = anIntArray1644[k1];
-			int i3 = anIntArray1645[k1];
-			Texture.drawTexturedTriangle(anIntArray1666[j], anIntArray1666[k], anIntArray1666[l], anIntArray1665[j], anIntArray1665[k], anIntArray1665[l], anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], anIntArray1668[i2], anIntArray1668[k2], anIntArray1668[i3], anIntArray1669[i2], anIntArray1669[k2], anIntArray1669[i3], anIntArray1670[i2], anIntArray1670[k2], anIntArray1670[i3], anIntArray1640[i]);
+		if (renderType == 3) {
+			int textureFaceIndex = anIntArray1637[faceIndex] >> 2;
+			int mappingVertexA = anIntArray1643[textureFaceIndex];
+			int mappingVertexB = anIntArray1644[textureFaceIndex];
+			int mappingVertexC = anIntArray1645[textureFaceIndex];
+			Texture.drawTexturedTriangle(anIntArray1666[vertexA], anIntArray1666[vertexB], anIntArray1666[vertexC], anIntArray1665[vertexA], anIntArray1665[vertexB], anIntArray1665[vertexC], anIntArray1634[faceIndex], anIntArray1634[faceIndex], anIntArray1634[faceIndex], anIntArray1668[mappingVertexA], anIntArray1668[mappingVertexB], anIntArray1668[mappingVertexC], anIntArray1669[mappingVertexA], anIntArray1669[mappingVertexB], anIntArray1669[mappingVertexC], anIntArray1670[mappingVertexA], anIntArray1670[mappingVertexB], anIntArray1670[mappingVertexC], anIntArray1640[faceIndex]);
 		}
 	}
 
