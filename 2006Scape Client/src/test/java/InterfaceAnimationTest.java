@@ -29,7 +29,7 @@ public class InterfaceAnimationTest {
         RSInterface.interfaceCache[2]=component(2,0);
         RSInterface.interfaceCache[2].children=new int[]{7};
         RSInterface.interfaceCache[7]=component(7,6);
-        RSInterface.interfaceCache[7].anInt257=1;RSInterface.interfaceCache[7].anInt258=3;
+        RSInterface.interfaceCache[7].disabledAnimationId=1;RSInterface.interfaceCache[7].enabledAnimationId=3;
         Trace.reset();
     }
     @After public void after(){Trace.on=false;RSInterface.interfaceCache=a;Animation.anims=b;}
@@ -39,7 +39,7 @@ public class InterfaceAnimationTest {
         Field e=Animation.class.getDeclaredField("frameDelays");e.setAccessible(true);e.set(d,a.clone());
         d.frameIds=new int[a.length];d.secondFrameIds=new int[a.length];Arrays.fill(d.frameIds,-1);Arrays.fill(d.secondFrameIds,-1);return d;
     }
-    public static RSInterface component(int a,int b){RSInterface c=new RSInterface();c.id=a;c.type=b;c.anInt257=-1;c.anInt258=-1;return c;}
+    public static RSInterface component(int a,int b){RSInterface c=new RSInterface();c.id=a;c.type=b;c.disabledAnimationId=-1;c.enabledAnimationId=-1;return c;}
     private RSInterface c(){return RSInterface.interfaceCache[7];}
 
     @Test public void accumulatedTimeUsesStrictDelayBoundaryAndReportsOnlyFrameAdvance(){
@@ -55,8 +55,8 @@ public class InterfaceAnimationTest {
         assertFalse(g.advanceInterfaceModelAnimations(7,2));assertEquals(7,c().modelAnimationTicks);assertEquals(0,c().modelAnimationFrame);
         assertTrue(g.advanceInterfaceModelAnimations(1,2));assertEquals(1,c().modelAnimationFrame);assertEquals(0,c().modelAnimationTicks);
         Trace.saw(10,1);Trace.saw(11,3);Trace.saw(12,Animation.anims[3]);
-        c().anInt258=-1;assertFalse(g.advanceInterfaceModelAnimations(99,2));assertEquals(0,c().modelAnimationTicks);assertEquals(1,c().modelAnimationFrame);Trace.saw(11,-1);
-        c().conditionOperators=null;c().anInt257=-1;c().anInt258=3;
+        c().enabledAnimationId=-1;assertFalse(g.advanceInterfaceModelAnimations(99,2));assertEquals(0,c().modelAnimationTicks);assertEquals(1,c().modelAnimationFrame);Trace.saw(11,-1);
+        c().conditionOperators=null;c().disabledAnimationId=-1;c().enabledAnimationId=3;
         assertFalse(g.interfaceIsSelected(c()));assertFalse(g.advanceInterfaceModelAnimations(99,2));assertEquals(0,c().modelAnimationTicks);
     }
     @Test public void multipleFramesLoopByTailCountAndInvalidLoopReturnsToZero(){
@@ -78,7 +78,7 @@ public class InterfaceAnimationTest {
         d.type=1;c().type=5;assertFalse(g.advanceInterfaceModelAnimations(3,2));assertEquals(0,c().modelAnimationTicks);
     }
     @Test public void allSiblingsAdvanceEvenAfterRedrawBecameTrue(){
-        RSInterface d=component(15,6);d.anInt257=3;RSInterface.interfaceCache[15]=d;
+        RSInterface d=component(15,6);d.disabledAnimationId=3;RSInterface.interfaceCache[15]=d;
         RSInterface.interfaceCache[2].children=new int[]{7,15};
         assertTrue(g.advanceInterfaceModelAnimations(8,2));assertEquals(2,c().modelAnimationFrame);assertEquals(1,d.modelAnimationFrame);assertEquals(0,d.modelAnimationTicks);
         Trace.saw(8,15);Trace.saw(9,d);Trace.saw(11,3);

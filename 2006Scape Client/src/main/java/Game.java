@@ -1044,7 +1044,7 @@ public class Game extends RSApplet {
 	}
 
 	public void buildInterfaceMenu(int i, RSInterface class9, int k, int l, int i1, int j1) {
-		if (class9.type != 0 || class9.children == null || class9.aBoolean266) {
+		if (class9.type != 0 || class9.children == null || class9.hidden) {
 			return;
 		}
 		if (k < i || i1 < l || k > i + class9.width || i1 > l + class9.height) {
@@ -1055,11 +1055,11 @@ public class Game extends RSApplet {
 			int i2 = class9.childX[l1] + i;
 			int j2 = class9.childY[l1] + l - j1;
 			RSInterface class9_1 = RSInterface.interfaceCache[class9.children[l1]];
-			i2 += class9_1.anInt263;
-			j2 += class9_1.anInt265;
-			if ((class9_1.anInt230 >= 0 || class9_1.anInt216 != 0) && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
-				if (class9_1.anInt230 >= 0) {
-					anInt886 = class9_1.anInt230;
+			i2 += class9_1.offsetX;
+			j2 += class9_1.offsetY;
+			if ((class9_1.hoverRedirectId >= 0 || class9_1.disabledHoverColor != 0) && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
+				if (class9_1.hoverRedirectId >= 0) {
+					anInt886 = class9_1.hoverRedirectId;
 				} else {
 					anInt886 = class9_1.id;
 				}
@@ -1072,7 +1072,7 @@ public class Game extends RSApplet {
 			} else {
 				if (class9_1.atActionType == 1 && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
 					boolean flag = false;
-					if (class9_1.anInt214 != 0) {
+					if (class9_1.contentType != 0) {
 						flag = buildFriendsListMenu(class9_1);
 					}
 					if (!flag) {
@@ -1346,7 +1346,7 @@ public class Game extends RSApplet {
 					reportAbuseInput = "";
 					canMute = false;
 					for (RSInterface element : RSInterface.interfaceCache) {
-						if (element == null || element.anInt214 != 600) {
+						if (element == null || element.contentType != 600) {
 							continue;
 						}
 						reportAbuseInterfaceID = openInterfaceID = element.parentID;
@@ -2339,7 +2339,7 @@ public class Game extends RSApplet {
 	}
 
 	public boolean promptUserForInput(RSInterface class9) {
-		int j = class9.anInt214;
+		int j = class9.contentType;
 		if (anInt900 == 2) {
 			if (j == 201) {
 				inputTaken = true;
@@ -3173,7 +3173,7 @@ public class Game extends RSApplet {
 					if (lastActiveInvInterface == anInt1084 && mouseInvInterfaceIndex != anInt1085) {
 						RSInterface class9 = RSInterface.interfaceCache[anInt1084];
 						int j1 = 0;
-						if (anInt913 == 1 && class9.anInt214 == 206) {
+						if (anInt913 == 1 && class9.contentType == 206) {
 							j1 = 1;
 						}
 						if (class9.itemIdsPlusOne[mouseInvInterfaceIndex] <= 0) {
@@ -3752,7 +3752,7 @@ public class Game extends RSApplet {
 		if (l == 315) {
 			RSInterface class9 = RSInterface.interfaceCache[k];
 			boolean flag8 = true;
-			if (class9.anInt214 > 0) {
+			if (class9.contentType > 0) {
 				flag8 = promptUserForInput(class9);
 			}
 			if (flag8) {
@@ -4306,7 +4306,7 @@ public class Game extends RSApplet {
 					reportAbuseInput = s2.substring(j2 + 5).trim();
 					canMute = false;
 					for (RSInterface element : RSInterface.interfaceCache) {
-						if (element == null || element.anInt214 != 600) {
+						if (element == null || element.contentType != 600) {
 							continue;
 						}
 						reportAbuseInterfaceID = openInterfaceID = element.parentID;
@@ -5335,7 +5335,7 @@ public class Game extends RSApplet {
 	}
 
 	public void drawFriendsListOrWelcomeScreen(RSInterface class9) {
-		int j = class9.anInt214;
+		int j = class9.contentType;
 		if (j >= 1 && j <= 100 || j >= 701 && j <= 800) {
 			if (j == 1 && anInt900 == 0) {
 				class9.disabledText = "Loading friend list";
@@ -5440,8 +5440,8 @@ public class Game extends RSApplet {
 			return;
 		}
 		if (j == 327) {
-			class9.anInt270 = 150;
-			class9.anInt271 = (int) (Math.sin((double) loopCycle / 40D) * 256D) & 0x7ff;
+			class9.modelPitch = 150;
+			class9.modelYaw = (int) (Math.sin((double) loopCycle / 40D) * 256D) & 0x7ff;
 			if (aBoolean1031) {
 				for (int k1 = 0; k1 < 7; k1++) {
 					int l1 = anIntArray1065[k1];
@@ -5473,9 +5473,9 @@ public class Game extends RSApplet {
 				model.buildAnimationGroups();
 				model.applyAnimationFrame(Animation.anims[myPlayer.idleAnimationId].frameIds[0]);
 				model.applyLighting(64, 850, -30, -50, -30, true);
-				class9.anInt233 = 5;
+				class9.mediaType = 5;
 				class9.mediaID = 0;
-				RSInterface.method208(model, 0, 5);
+				RSInterface.replaceCachedModel(model, 0, 5);
 			}
 			return;
 		}
@@ -8124,7 +8124,7 @@ public class Game extends RSApplet {
 	}
 
 	public boolean buildFriendsListMenu(RSInterface class9) {
-		int i = class9.anInt214;
+		int i = class9.contentType;
 		if (i >= 1 && i <= 200 || i >= 701 && i <= 900) {
 			if (i >= 801) {
 				i -= 701;
@@ -8174,7 +8174,7 @@ public class Game extends RSApplet {
 		if (class9.type != 0 || class9.children == null) {
 			return;
 		}
-		if (class9.aBoolean266 && anInt1026 != class9.id && anInt1048 != class9.id && anInt1039 != class9.id) {
+		if (class9.hidden && anInt1026 != class9.id && anInt1048 != class9.id && anInt1039 != class9.id) {
 			return;
 		}
 		int i1 = DrawingArea.topX;
@@ -8187,9 +8187,9 @@ public class Game extends RSApplet {
 			int k2 = class9.childX[j2] + k;
 			int l2 = class9.childY[j2] + l - scrollPos;
 			RSInterface component = RSInterface.interfaceCache[class9.children[j2]];
-			k2 += component.anInt263;
-			l2 += component.anInt265;
-			if (component.anInt214 > 0) {
+			k2 += component.offsetX;
+			l2 += component.offsetY;
+			if (component.contentType > 0) {
 				drawFriendsListOrWelcomeScreen(component);
 			}
 			if (component.type == 0) {
@@ -8296,26 +8296,26 @@ public class Game extends RSApplet {
 					}
 					int color;
 					if (interfaceIsSelected(component)) {
-						color = component.anInt219;
-						if (flag && component.anInt239 != 0) {
-							color = component.anInt239;
+						color = component.enabledColor;
+						if (flag && component.enabledHoverColor != 0) {
+							color = component.enabledHoverColor;
 						}
 					} else {
 						color = component.textColor;
-						if (flag && component.anInt216 != 0) {
-							color = component.anInt216;
+						if (flag && component.disabledHoverColor != 0) {
+							color = component.disabledHoverColor;
 						}
 					}
-					if (component.aByte254 == 0) {
-						if (component.aBoolean227) {
+					if (component.transparency == 0) {
+						if (component.filled) {
 							DrawingArea.fillRectangle(component.height, l2, 0x2a251e, component.width, k2);
 						} else {
 							DrawingArea.drawRectangleOutline(l2, component.height, color, k2, component.width);
 						}
-					} else if (component.aBoolean227) {
-						DrawingArea.fillBlendedRectangle(color, l2, component.width, component.height, 256 - (component.aByte254 & 0xff), k2);
+					} else if (component.filled) {
+						DrawingArea.fillBlendedRectangle(color, l2, component.width, component.height, 256 - (component.transparency & 0xff), k2);
 					} else {
-						DrawingArea.drawBlendedRectangleOutline(l2, component.height, 256 - (component.aByte254 & 0xff), color, component.width, k2);
+						DrawingArea.drawBlendedRectangleOutline(l2, component.height, 256 - (component.transparency & 0xff), color, component.width, k2);
 					}
 				} else if (component.type == 4) {
 					TextDrawingArea textDrawingArea = component.textDrawingAreas;
@@ -8326,17 +8326,17 @@ public class Game extends RSApplet {
 					}
 					int i4;
 					if (interfaceIsSelected(component)) {
-						i4 = component.anInt219;
-						if (flag1 && component.anInt239 != 0) {
-							i4 = component.anInt239;
+						i4 = component.enabledColor;
+						if (flag1 && component.enabledHoverColor != 0) {
+							i4 = component.enabledHoverColor;
 						}
 						if (component.enabledText.length() > 0) {
 							s = component.enabledText;
 						}
 					} else {
 						i4 = component.textColor;
-						if (flag1 && component.anInt216 != 0) {
-							i4 = component.anInt216;
+						if (flag1 && component.disabledHoverColor != 0) {
+							i4 = component.disabledHoverColor;
 						}
 					}
 					if (component.atActionType == 6 && aBoolean1149) {
@@ -8398,10 +8398,10 @@ public class Game extends RSApplet {
 							s1 = s;
 							s = "";
 						}
-						if (component.aBoolean223) {
-							textDrawingArea.drawCenteredTaggedText(i4, k2 + component.width / 2, s1, l6, component.aBoolean268);
+						if (component.centeredText) {
+							textDrawingArea.drawCenteredTaggedText(i4, k2 + component.width / 2, s1, l6, component.shadowedText);
 						} else {
-							textDrawingArea.drawTaggedText(component.aBoolean268, k2, i4, s1, l6);
+							textDrawingArea.drawTaggedText(component.shadowedText, k2, i4, s1, l6);
 						}
 					}
 
@@ -8420,24 +8420,24 @@ public class Game extends RSApplet {
 					int j4 = Texture.textureInt2;
 					Texture.textureInt1 = k2 + component.width / 2;
 					Texture.textureInt2 = l2 + component.height / 2;
-					int i5 = Texture.sineTable[component.anInt270] * component.anInt269 >> 16;
-					int l5 = Texture.cosineTable[component.anInt270] * component.anInt269 >> 16;
+					int i5 = Texture.sineTable[component.modelPitch] * component.modelZoom >> 16;
+					int l5 = Texture.cosineTable[component.modelPitch] * component.modelZoom >> 16;
 					boolean flag2 = interfaceIsSelected(component);
 					int i7;
 					if (flag2) {
-						i7 = component.anInt258;
+						i7 = component.enabledAnimationId;
 					} else {
-						i7 = component.anInt257;
+						i7 = component.disabledAnimationId;
 					}
 					Model model;
 					if (i7 == -1) {
-						model = component.method209(-1, -1, flag2);
+						model = component.getMediaModel(-1, -1, flag2);
 					} else {
 						Animation animation = Animation.anims[i7];
-						model = component.method209(animation.secondFrameIds[component.modelAnimationFrame], animation.frameIds[component.modelAnimationFrame], flag2);
+						model = component.getMediaModel(animation.secondFrameIds[component.modelAnimationFrame], animation.frameIds[component.modelAnimationFrame], flag2);
 					}
 					if (model != null) {
-						model.projectRotated(component.anInt271, 0, component.anInt270, 0, i5, l5);
+						model.projectRotated(component.modelYaw, 0, component.modelPitch, 0, i5, l5);
 					}
 					Texture.textureInt1 = k3;
 					Texture.textureInt2 = j4;
@@ -8454,10 +8454,10 @@ public class Game extends RSApplet {
 								}
 								int i9 = k2 + i6 * (115 + component.invSpritePadX);
 								int k9 = l2 + j5 * (12 + component.invSpritePadY);
-								if (component.aBoolean223) {
-									textDrawingArea_1.drawCenteredTaggedText(component.textColor, i9 + component.width / 2, s2, k9, component.aBoolean268);
+								if (component.centeredText) {
+									textDrawingArea_1.drawCenteredTaggedText(component.textColor, i9 + component.width / 2, s2, k9, component.shadowedText);
 								} else {
-									textDrawingArea_1.drawTaggedText(component.aBoolean268, i9, component.textColor, s2, k9);
+									textDrawingArea_1.drawTaggedText(component.shadowedText, i9, component.textColor, s2, k9);
 								}
 							}
 							k4++;
@@ -9165,13 +9165,13 @@ public class Game extends RSApplet {
 			if (childInterface.type == 1) {
 				frameAdvanced |= advanceInterfaceModelAnimations(elapsedTicks, childInterface.id);
 			}
-			if (childInterface.type == 6 && (childInterface.anInt257 != -1 || childInterface.anInt258 != -1)) {
+			if (childInterface.type == 6 && (childInterface.disabledAnimationId != -1 || childInterface.enabledAnimationId != -1)) {
 				boolean selected = interfaceIsSelected(childInterface);
 				int animationId;
 				if (selected) {
-					animationId = childInterface.anInt258;
+					animationId = childInterface.enabledAnimationId;
 				} else {
-					animationId = childInterface.anInt257;
+					animationId = childInterface.disabledAnimationId;
 				}
 				if (animationId != -1) {
 					Animation animation = Animation.anims[animationId];
@@ -10650,7 +10650,7 @@ public class Game extends RSApplet {
 					reportAbuseInput = "";
 					canMute = false;
 					for (RSInterface element : RSInterface.interfaceCache) {
-						if (element == null || element.anInt214 != c) {
+						if (element == null || element.contentType != c) {
 							continue;
 						}
 						openInterfaceID = element.parentID;
@@ -10685,7 +10685,7 @@ public class Game extends RSApplet {
 			}
 			if (pktType == 185) {
 				int k = inStream.readUnsignedShortLittleEndianSubtract128();
-				RSInterface.interfaceCache[k].anInt233 = 3;
+				RSInterface.interfaceCache[k].mediaType = 3;
 				if (myPlayer.desc == null) {
 					RSInterface.interfaceCache[k].mediaID = (myPlayer.anIntArray1700[0] << 25) + (myPlayer.anIntArray1700[4] << 20) + (myPlayer.equipment[0] << 15) + (myPlayer.equipment[8] << 10) + (myPlayer.equipment[11] << 5) + myPlayer.equipment[1];
 				} else {
@@ -10807,8 +10807,8 @@ public class Game extends RSApplet {
 				int l10 = inStream.readSignedShortLittleEndian();
 				int i16 = inStream.readUnsignedShortLittleEndian();
 				RSInterface class9_5 = RSInterface.interfaceCache[i16];
-				class9_5.anInt263 = k2;
-				class9_5.anInt265 = l10;
+				class9_5.offsetX = k2;
+				class9_5.offsetY = l10;
 				pktType = -1;
 				return true;
 			}
@@ -11042,7 +11042,7 @@ public class Game extends RSApplet {
 			if (pktType == 75) {
 				int j3 = inStream.readUnsignedShortLittleEndianSubtract128();
 				int j11 = inStream.readUnsignedShortLittleEndianSubtract128();
-				RSInterface.interfaceCache[j11].anInt233 = 2;
+				RSInterface.interfaceCache[j11].mediaType = 2;
 				RSInterface.interfaceCache[j11].mediaID = j3;
 				pktType = -1;
 				return true;
@@ -11421,16 +11421,16 @@ public class Game extends RSApplet {
 				int i13 = inStream.readUnsignedShortBigEndian();
 				int k18 = inStream.readUnsignedShortBigEndian();
 				if (k18 == 0x00ffff) {
-					RSInterface.interfaceCache[i6].anInt233 = 0;
+					RSInterface.interfaceCache[i6].mediaType = 0;
 					pktType = -1;
 					return true;
 				} else {
 					ItemDef itemDef = ItemDef.forID(k18);
-					RSInterface.interfaceCache[i6].anInt233 = 4;
+					RSInterface.interfaceCache[i6].mediaType = 4;
 					RSInterface.interfaceCache[i6].mediaID = k18;
-					RSInterface.interfaceCache[i6].anInt270 = itemDef.modelRotation1;
-					RSInterface.interfaceCache[i6].anInt271 = itemDef.modelRotation2;
-					RSInterface.interfaceCache[i6].anInt269 = itemDef.modelZoom * 100 / i13;
+					RSInterface.interfaceCache[i6].modelPitch = itemDef.modelRotation1;
+					RSInterface.interfaceCache[i6].modelYaw = itemDef.modelRotation2;
+					RSInterface.interfaceCache[i6].modelZoom = itemDef.modelZoom * 100 / i13;
 					pktType = -1;
 					return true;
 				}
@@ -11438,7 +11438,7 @@ public class Game extends RSApplet {
 			if (pktType == 171) {
 				boolean flag1 = inStream.readUnsignedByte() == 1;
 				int j13 = inStream.readUnsignedShortBigEndian();
-				RSInterface.interfaceCache[j13].aBoolean266 = flag1;
+				RSInterface.interfaceCache[j13].hidden = flag1;
 				pktType = -1;
 				return true;
 			}
@@ -11526,7 +11526,7 @@ public class Game extends RSApplet {
 			if (pktType == 8) {
 				int k6 = inStream.readUnsignedShortLittleEndianSubtract128();
 				int l13 = inStream.readUnsignedShortBigEndian();
-				RSInterface.interfaceCache[k6].anInt233 = 1;
+				RSInterface.interfaceCache[k6].mediaType = 1;
 				RSInterface.interfaceCache[k6].mediaID = l13;
 				pktType = -1;
 				return true;
@@ -11568,9 +11568,9 @@ public class Game extends RSApplet {
 				int j14 = inStream.readUnsignedShortBigEndian();
 				int k19 = inStream.readUnsignedShortBigEndian();
 				int k22 = inStream.readUnsignedShortLittleEndianSubtract128();
-				RSInterface.interfaceCache[j14].anInt270 = k19;
-				RSInterface.interfaceCache[j14].anInt271 = k22;
-				RSInterface.interfaceCache[j14].anInt269 = j7;
+				RSInterface.interfaceCache[j14].modelPitch = k19;
+				RSInterface.interfaceCache[j14].modelYaw = k22;
+				RSInterface.interfaceCache[j14].modelZoom = j7;
 				pktType = -1;
 				return true;
 			}
@@ -11723,7 +11723,7 @@ public class Game extends RSApplet {
 				int l8 = inStream.readUnsignedShortBigEndian();
 				int i15 = inStream.readSignedShortBigEndian();
 				RSInterface class9_4 = RSInterface.interfaceCache[l8];
-				class9_4.anInt257 = i15;
+				class9_4.disabledAnimationId = i15;
 				if (i15 == -1) {
 					class9_4.modelAnimationFrame = 0;
 					class9_4.modelAnimationTicks = 0;
@@ -13067,7 +13067,7 @@ public class Game extends RSApplet {
 	}
 
 	private boolean checkInterfaceScrollBar(RSInterface rsi, int i, int l, int scrollPos, int clickX, int clickY) {
-		if (rsi == null || rsi.children == null || rsi.aBoolean266) {
+		if (rsi == null || rsi.children == null || rsi.hidden) {
 			return false;
 		}
 		int count = rsi.children.length;
@@ -13077,11 +13077,11 @@ public class Game extends RSApplet {
 				continue;
 			}
 			RSInterface child = RSInterface.interfaceCache[childId];
-			if (child == null || child.aBoolean266) {
+			if (child == null || child.hidden) {
 				continue;
 			}
-			int i2 = rsi.childX[idx] + i + child.anInt263;
-			int j2 = rsi.childY[idx] + l - scrollPos + child.anInt265;
+			int i2 = rsi.childX[idx] + i + child.offsetX;
+			int j2 = rsi.childY[idx] + l - scrollPos + child.offsetY;
 			if (child.type == 0) {
 				if (child.scrollMax > child.height) {
 					int sbX = i2 + child.width;

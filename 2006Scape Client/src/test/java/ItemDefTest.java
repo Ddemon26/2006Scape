@@ -582,7 +582,7 @@ public class ItemDefTest {
     }
     @Test public void interfaceMediaLoaderPicksTheSourceByTypeAndCachesUnderTypeAndId() throws Exception {
         install(blanks(8)); loadAll(11, 12, 31, 32, 41, 42);
-        LruCache cache = (LruCache) sget(RSInterface.class, "aMRUNodes_264"); cache.clear();
+        LruCache cache = (LruCache) sget(RSInterface.class, "modelCache"); cache.clear();
         RSInterface ri = new RSInterface();
         Model one = media(ri, 1, 11);                    // type 1: model file by id
         assertArrayEquals(x3(11), xs(one));
@@ -809,7 +809,7 @@ public class ItemDefTest {
         Object[] saved = {sget(EntityDef.class, "stream"), sget(EntityDef.class, "streamIndices"), sget(EntityDef.class, "cache")};
         try {
             stackDb(); loadAll(23, 34);
-            LruCache cache = (LruCache) sget(RSInterface.class, "aMRUNodes_264"); cache.clear();
+            LruCache cache = (LruCache) sget(RSInterface.class, "modelCache"); cache.clear();
             // npc 1: opcode 60 head models {62, 61}; opcode 1 body models {11} (ignored by the interface loader)
             installNpcs144(new Rec().done(), new Rec().b(60).b(2).s(34).s(23).b(1).b(1).s(11).done());
             RSInterface ri = new RSInterface();
@@ -829,5 +829,5 @@ public class ItemDefTest {
             assertEquals(l3, geti(ri3, "lightness"));                 // offsets only added when the interface type is 4
         } finally { sset(EntityDef.class, "stream", saved[0]); sset(EntityDef.class, "streamIndices", saved[1]); sset(EntityDef.class, "cache", saved[2]); cacheClear144(); }
     }
-    private static void cacheClear144() throws Exception { ((LruCache) sget(RSInterface.class, "aMRUNodes_264")).clear(); }
+    private static void cacheClear144() throws Exception { ((LruCache) sget(RSInterface.class, "modelCache")).clear(); }
 }
