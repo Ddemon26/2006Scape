@@ -10815,24 +10815,24 @@ public class Game extends RSApplet {
 			if (pktType == 73 || pktType == 241) {
 
 				// mapReset();
-				int l2 = anInt1069;
-				int i11 = anInt1070;
+				int centerChunkX = anInt1069;
+				int centerChunkY = anInt1070;
 				if (pktType == 73) {
-					l2 = inStream.readUnsignedShortBigEndianSubtract128();
-					i11 = inStream.readUnsignedShortBigEndian();
+					centerChunkX = inStream.readUnsignedShortBigEndianSubtract128();
+					centerChunkY = inStream.readUnsignedShortBigEndian();
 					aBoolean1159 = false;
 				}
 				if (pktType == 241) {
-					i11 = inStream.readUnsignedShortBigEndianSubtract128();
+					centerChunkY = inStream.readUnsignedShortBigEndianSubtract128();
 					inStream.beginBitReading();
-					for (int j16 = 0; j16 < 4; j16++) {
-						for (int l20 = 0; l20 < 13; l20++) {
-							for (int j23 = 0; j23 < 13; j23++) {
-								int i26 = inStream.readBitsMsbFirst(1);
-								if (i26 == 1) {
-									anIntArrayArrayArray1129[j16][l20][j23] = inStream.readBitsMsbFirst(26);
+					for (int destPlane = 0; destPlane < 4; destPlane++) {
+						for (int destChunkX = 0; destChunkX < 13; destChunkX++) {
+							for (int destChunkY = 0; destChunkY < 13; destChunkY++) {
+								int hasTemplate = inStream.readBitsMsbFirst(1);
+								if (hasTemplate == 1) {
+									anIntArrayArrayArray1129[destPlane][destChunkX][destChunkY] = inStream.readBitsMsbFirst(26);
 								} else {
-									anIntArrayArrayArray1129[j16][l20][j23] = -1;
+									anIntArrayArrayArray1129[destPlane][destChunkX][destChunkY] = -1;
 								}
 							}
 
@@ -10841,15 +10841,15 @@ public class Game extends RSApplet {
 					}
 
 					inStream.finishBitReading();
-					l2 = inStream.readUnsignedShortBigEndian();
+					centerChunkX = inStream.readUnsignedShortBigEndian();
 					aBoolean1159 = true;
 				}
-				if (anInt1069 == l2 && anInt1070 == i11 && loadingStage == 2) {
+				if (anInt1069 == centerChunkX && anInt1070 == centerChunkY && loadingStage == 2) {
 					pktType = -1;
 					return true;
 				}
-				anInt1069 = l2;
-				anInt1070 = i11;
+				anInt1069 = centerChunkX;
+				anInt1070 = centerChunkY;
 				baseX = (anInt1069 - 6) * 8;
 				baseY = (anInt1070 - 6) * 8;
 				aBoolean1141 = (anInt1069 / 8 == 48 || anInt1069 / 8 == 49) && anInt1070 / 8 == 48;
@@ -10860,37 +10860,37 @@ public class Game extends RSApplet {
 				aLong824 = System.currentTimeMillis();
 				drawTextOnScreen(null, "Loading - please wait.");
 				if (pktType == 73) {
-					int k16 = 0;
-					for (int i21 = (anInt1069 - 6) / 8; i21 <= (anInt1069 + 6) / 8; i21++) {
-						for (int k23 = (anInt1070 - 6) / 8; k23 <= (anInt1070 + 6) / 8; k23++) {
-							k16++;
+					int regionCount = 0;
+					for (int regionX = (anInt1069 - 6) / 8; regionX <= (anInt1069 + 6) / 8; regionX++) {
+						for (int regionY = (anInt1070 - 6) / 8; regionY <= (anInt1070 + 6) / 8; regionY++) {
+							regionCount++;
 						}
 
 					}
 
-					regionTerrainData = new byte[k16][];
-					regionObjectData = new byte[k16][];
-					regionKeys = new int[k16];
-					regionTerrainFileIds = new int[k16];
-					regionObjectFileIds = new int[k16];
-					k16 = 0;
-					for (int l23 = (anInt1069 - 6) / 8; l23 <= (anInt1069 + 6) / 8; l23++) {
-						for (int j26 = (anInt1070 - 6) / 8; j26 <= (anInt1070 + 6) / 8; j26++) {
-							regionKeys[k16] = (l23 << 8) + j26;
-							if (aBoolean1141 && (j26 == 49 || j26 == 149 || j26 == 147 || l23 == 50 || l23 == 49 && j26 == 47)) {
-								regionTerrainFileIds[k16] = -1;
-								regionObjectFileIds[k16] = -1;
-								k16++;
+					regionTerrainData = new byte[regionCount][];
+					regionObjectData = new byte[regionCount][];
+					regionKeys = new int[regionCount];
+					regionTerrainFileIds = new int[regionCount];
+					regionObjectFileIds = new int[regionCount];
+					regionCount = 0;
+					for (int regionX = (anInt1069 - 6) / 8; regionX <= (anInt1069 + 6) / 8; regionX++) {
+						for (int regionY = (anInt1070 - 6) / 8; regionY <= (anInt1070 + 6) / 8; regionY++) {
+							regionKeys[regionCount] = (regionX << 8) + regionY;
+							if (aBoolean1141 && (regionY == 49 || regionY == 149 || regionY == 147 || regionX == 50 || regionX == 49 && regionY == 47)) {
+								regionTerrainFileIds[regionCount] = -1;
+								regionObjectFileIds[regionCount] = -1;
+								regionCount++;
 							} else {
-								int k28 = regionTerrainFileIds[k16] = onDemandFetcher.getMapFileId(0, j26, l23);
-								if (k28 != -1) {
-									onDemandFetcher.method558(3, k28);
+								int terrainFileId = regionTerrainFileIds[regionCount] = onDemandFetcher.getMapFileId(0, regionY, regionX);
+								if (terrainFileId != -1) {
+									onDemandFetcher.method558(3, terrainFileId);
 								}
-								int j30 = regionObjectFileIds[k16] = onDemandFetcher.getMapFileId(1, j26, l23);
-								if (j30 != -1) {
-									onDemandFetcher.method558(3, j30);
+								int objectFileId = regionObjectFileIds[regionCount] = onDemandFetcher.getMapFileId(1, regionY, regionX);
+								if (objectFileId != -1) {
+									onDemandFetcher.method558(3, objectFileId);
 								}
-								k16++;
+								regionCount++;
 							}
 						}
 
@@ -10898,26 +10898,26 @@ public class Game extends RSApplet {
 
 				}
 				if (pktType == 241) {
-					int l16 = 0;
-					int ai[] = new int[676];
-					for (int i24 = 0; i24 < 4; i24++) {
-						for (int k26 = 0; k26 < 13; k26++) {
-							for (int l28 = 0; l28 < 13; l28++) {
-								int k30 = anIntArrayArrayArray1129[i24][k26][l28];
-								if (k30 != -1) {
-									int k31 = k30 >> 14 & 0x3ff;
-									int i32 = k30 >> 3 & 0x7ff;
-									int k32 = (k31 / 8 << 8) + i32 / 8;
-									for (int j33 = 0; j33 < l16; j33++) {
-										if (ai[j33] != k32) {
+					int regionCount = 0;
+					int uniqueRegionKeys[] = new int[676];
+					for (int destPlane = 0; destPlane < 4; destPlane++) {
+						for (int destChunkX = 0; destChunkX < 13; destChunkX++) {
+							for (int destChunkY = 0; destChunkY < 13; destChunkY++) {
+								int chunkTemplate = anIntArrayArrayArray1129[destPlane][destChunkX][destChunkY];
+								if (chunkTemplate != -1) {
+									int sourceChunkX = chunkTemplate >> 14 & 0x3ff;
+									int sourceChunkY = chunkTemplate >> 3 & 0x7ff;
+									int regionKey = (sourceChunkX / 8 << 8) + sourceChunkY / 8;
+									for (int seenIndex = 0; seenIndex < regionCount; seenIndex++) {
+										if (uniqueRegionKeys[seenIndex] != regionKey) {
 											continue;
 										}
-										k32 = -1;
+										regionKey = -1;
 										break;
 									}
 
-									if (k32 != -1) {
-										ai[l16++] = k32;
+									if (regionKey != -1) {
+										uniqueRegionKeys[regionCount++] = regionKey;
 									}
 								}
 							}
@@ -10926,82 +10926,82 @@ public class Game extends RSApplet {
 
 					}
 
-					regionTerrainData = new byte[l16][];
-					regionObjectData = new byte[l16][];
-					regionKeys = new int[l16];
-					regionTerrainFileIds = new int[l16];
-					regionObjectFileIds = new int[l16];
-					for (int l26 = 0; l26 < l16; l26++) {
-						int i29 = regionKeys[l26] = ai[l26];
-						int l30 = i29 >> 8 & 0xff;
-						int l31 = i29 & 0xff;
-						int j32 = regionTerrainFileIds[l26] = onDemandFetcher.getMapFileId(0, l31, l30);
-						if (j32 != -1) {
-							onDemandFetcher.method558(3, j32);
+					regionTerrainData = new byte[regionCount][];
+					regionObjectData = new byte[regionCount][];
+					regionKeys = new int[regionCount];
+					regionTerrainFileIds = new int[regionCount];
+					regionObjectFileIds = new int[regionCount];
+					for (int regionIndex = 0; regionIndex < regionCount; regionIndex++) {
+						int regionKey = regionKeys[regionIndex] = uniqueRegionKeys[regionIndex];
+						int regionX = regionKey >> 8 & 0xff;
+						int regionY = regionKey & 0xff;
+						int terrainFileId = regionTerrainFileIds[regionIndex] = onDemandFetcher.getMapFileId(0, regionY, regionX);
+						if (terrainFileId != -1) {
+							onDemandFetcher.method558(3, terrainFileId);
 						}
-						int i33 = regionObjectFileIds[l26] = onDemandFetcher.getMapFileId(1, l31, l30);
-						if (i33 != -1) {
-							onDemandFetcher.method558(3, i33);
+						int objectFileId = regionObjectFileIds[regionIndex] = onDemandFetcher.getMapFileId(1, regionY, regionX);
+						if (objectFileId != -1) {
+							onDemandFetcher.method558(3, objectFileId);
 						}
 					}
 
 				}
-				int i17 = baseX - anInt1036;
-				int j21 = baseY - anInt1037;
+				int deltaX = baseX - anInt1036;
+				int deltaY = baseY - anInt1037;
 				anInt1036 = baseX;
 				anInt1037 = baseY;
-				for (int j24 = 0; j24 < 16384; j24++) {
-					NPC npc = npcArray[j24];
+				for (int npcIndex = 0; npcIndex < 16384; npcIndex++) {
+					NPC npc = npcArray[npcIndex];
 					if (npc != null) {
-						for (int j29 = 0; j29 < 10; j29++) {
-							npc.smallX[j29] -= i17;
-							npc.smallY[j29] -= j21;
+						for (int pathIndex = 0; pathIndex < 10; pathIndex++) {
+							npc.smallX[pathIndex] -= deltaX;
+							npc.smallY[pathIndex] -= deltaY;
 						}
 
-						npc.x -= i17 * 128;
-						npc.y -= j21 * 128;
+						npc.x -= deltaX * 128;
+						npc.y -= deltaY * 128;
 					}
 				}
 
-				for (int i27 = 0; i27 < maxPlayers; i27++) {
-					Player player = playerArray[i27];
+				for (int playerIndex = 0; playerIndex < maxPlayers; playerIndex++) {
+					Player player = playerArray[playerIndex];
 					if (player != null) {
-						for (int i31 = 0; i31 < 10; i31++) {
-							player.smallX[i31] -= i17;
-							player.smallY[i31] -= j21;
+						for (int pathIndex = 0; pathIndex < 10; pathIndex++) {
+							player.smallX[pathIndex] -= deltaX;
+							player.smallY[pathIndex] -= deltaY;
 						}
 
-						player.x -= i17 * 128;
-						player.y -= j21 * 128;
+						player.x -= deltaX * 128;
+						player.y -= deltaY * 128;
 					}
 				}
 
 				aBoolean1080 = true;
-				byte byte1 = 0;
-				byte byte2 = 104;
-				byte byte3 = 1;
-				if (i17 < 0) {
-					byte1 = 103;
-					byte2 = -1;
-					byte3 = -1;
+				byte startX = 0;
+				byte endX = 104;
+				byte stepX = 1;
+				if (deltaX < 0) {
+					startX = 103;
+					endX = -1;
+					stepX = -1;
 				}
-				byte byte4 = 0;
-				byte byte5 = 104;
-				byte byte6 = 1;
-				if (j21 < 0) {
-					byte4 = 103;
-					byte5 = -1;
-					byte6 = -1;
+				byte startY = 0;
+				byte endY = 104;
+				byte stepY = 1;
+				if (deltaY < 0) {
+					startY = 103;
+					endY = -1;
+					stepY = -1;
 				}
-				for (int k33 = byte1; k33 != byte2; k33 += byte3) {
-					for (int l33 = byte4; l33 != byte5; l33 += byte6) {
-						int i34 = k33 + i17;
-						int j34 = l33 + j21;
-						for (int k34 = 0; k34 < 4; k34++) {
-							if (i34 >= 0 && j34 >= 0 && i34 < 104 && j34 < 104) {
-								groundArray[k34][k33][l33] = groundArray[k34][i34][j34];
+				for (int newTileX = startX; newTileX != endX; newTileX += stepX) {
+					for (int newTileY = startY; newTileY != endY; newTileY += stepY) {
+						int oldTileX = newTileX + deltaX;
+						int oldTileY = newTileY + deltaY;
+						for (int tilePlane = 0; tilePlane < 4; tilePlane++) {
+							if (oldTileX >= 0 && oldTileY >= 0 && oldTileX < 104 && oldTileY < 104) {
+								groundArray[tilePlane][newTileX][newTileY] = groundArray[tilePlane][oldTileX][oldTileY];
 							} else {
-								groundArray[k34][k33][l33] = null;
+								groundArray[tilePlane][newTileX][newTileY] = null;
 							}
 						}
 
@@ -11009,17 +11009,17 @@ public class Game extends RSApplet {
 
 				}
 
-				for (Class30_Sub1 class30_sub1_1 = (Class30_Sub1) pendingSceneChanges.firstFromTail(); class30_sub1_1 != null; class30_sub1_1 = (Class30_Sub1) pendingSceneChanges.nextTowardHead()) {
-					class30_sub1_1.tileX -= i17;
-					class30_sub1_1.tileY -= j21;
-					if (class30_sub1_1.tileX < 0 || class30_sub1_1.tileY < 0 || class30_sub1_1.tileX >= 104 || class30_sub1_1.tileY >= 104) {
-						class30_sub1_1.unlink();
+				for (Class30_Sub1 pendingSceneChange = (Class30_Sub1) pendingSceneChanges.firstFromTail(); pendingSceneChange != null; pendingSceneChange = (Class30_Sub1) pendingSceneChanges.nextTowardHead()) {
+					pendingSceneChange.tileX -= deltaX;
+					pendingSceneChange.tileY -= deltaY;
+					if (pendingSceneChange.tileX < 0 || pendingSceneChange.tileY < 0 || pendingSceneChange.tileX >= 104 || pendingSceneChange.tileY >= 104) {
+						pendingSceneChange.unlink();
 					}
 				}
 
 				if (destX != 0) {
-					destX -= i17;
-					destY -= j21;
+					destX -= deltaX;
+					destY -= deltaY;
 				}
 				aBoolean1160 = false;
 				pktType = -1;
