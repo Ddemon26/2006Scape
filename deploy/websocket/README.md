@@ -5,7 +5,7 @@ port-forward. The client wraps its TCP traffic in WebSocket frames; on the
 server, `websockify` unwraps them and passes the bytes to the normal game ports.
 
 ```
-client  --wss://game.damon.nobeggar.com/43594-->  Cloudflare  --tunnel-->  cloudflared
+client  --wss://game.nobeggar.com/43594-->  Cloudflare  --tunnel-->  cloudflared
                                                                               |
         websockify 127.0.0.1:53594  <--------------------------------------- /43594
         websockify 127.0.0.1:53595  <--------------------------------------- /43595
@@ -31,7 +31,7 @@ client  --wss://game.damon.nobeggar.com/43594-->  Cloudflare  --tunnel-->  cloud
 Point the client at the gateway, either with the flag:
 
 ```bash
-java -jar client.jar -ws wss://game.damon.nobeggar.com
+java -jar client.jar -ws wss://game.nobeggar.com
 ```
 
 or by setting `ClientSettings.WEBSOCKET_URL`. When it is set, every
@@ -40,6 +40,11 @@ connection goes to `<url>/<port>` and `SERVER_IP` is ignored.
 Without `-ws` the client behaves exactly as before (plain TCP).
 
 ## Caveats
+
+- Use a one-level hostname (`game.nobeggar.com`). Cloudflare's free edge
+  certificate only covers `nobeggar.com` and `*.nobeggar.com`; something like
+  `game.damon.nobeggar.com` fails the TLS handshake unless you pay for
+  Advanced Certificate Manager / Total TLS.
 
 - The server sees every player as `127.0.0.1`. IP bans and IP mutes
   (`data/bans/IpsBanned.txt`, `IpsMuted.txt`) can't tell players apart -

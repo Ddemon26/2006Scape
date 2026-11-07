@@ -1,0 +1,40 @@
+# 2006Scape game server (game + on-demand on 43594, JAGGRAB on 43595, HTTP on 8080).
+#
+# Set "bind_address": "127.0.0.1" in ServerConfig.json so the listeners are
+# localhost only; players come in through 2006scape-ws@ + Cloudflare Tunnel.
+#
+# Install:
+#   sudo cp 2006scape-server.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now 2006scape-server
+# Logs:
+#   journalctl -u 2006scape-server -f
+
+[Unit]
+Description=2006Scape game server
+After=network.target
+
+[Service]
+Type=simple
+User=damon
+Group=damon
+WorkingDirectory=/home/damon/Apps/RunescapeServer/2006Scape/2006Scape Server
+ExecStart=/usr/lib/jvm/java-8-openjdk-amd64/bin/java -Xms512m -Xmx2G -jar target/server-1.0-jar-with-dependencies.jar -c ServerConfig.json
+Restart=always
+RestartSec=5
+# Give the server time to save players on stop.
+TimeoutStopSec=60
+SuccessExitStatus=143
+
+# Defence in depth on top of bind_address: only loopback traffic reaches the
+# process. This also blocks OUTBOUND connections - if you enable the Discord
+# bot or website integration, remove these two lines.
+IPAddressDeny=any
+IPAddressAllow=localhost
+
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target

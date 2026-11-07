@@ -1,0 +1,29 @@
+# Cloudflare Tunnel for the 2006Scape WebSocket gateway.
+#
+# Separate from the stock cloudflared.service so it can coexist with other
+# tunnels on this machine. Uses /etc/cloudflared/config.yml (built from
+# cloudflared-config.yml) and the credentials file it references.
+#
+# Install:
+#   sudo cp 2006scape-tunnel.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now 2006scape-tunnel
+
+[Unit]
+Description=Cloudflare Tunnel for 2006Scape (game.nobeggar.com)
+After=network-online.target 2006scape-ws@43594.service 2006scape-ws@43595.service
+Wants=network-online.target
+
+[Service]
+Type=notify
+TimeoutStartSec=0
+ExecStart=/usr/bin/cloudflared --no-autoupdate --config /etc/cloudflared/config.yml tunnel run
+Restart=always
+RestartSec=5
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target
