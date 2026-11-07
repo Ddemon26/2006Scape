@@ -9,7 +9,7 @@ public final class Player extends Entity {
 		if (!visible) {
 			return null;
 		}
-		Model model = method452();
+		Model model = buildBodyModel();
 		if (model == null) {
 			return null;
 		}
@@ -74,7 +74,7 @@ public final class Player extends Entity {
 
 	public void updatePlayer(Stream stream) {
 		stream.currentOffset = 0;
-		anInt1702 = stream.readUnsignedByte();
+		gender = stream.readUnsignedByte();
 		headIcon = stream.readUnsignedByte();
 		skullIcon = stream.readUnsignedByte();
 		desc = null;
@@ -139,30 +139,30 @@ public final class Player extends Entity {
 		combatLevel = stream.readUnsignedByte();
 		skill = stream.readUnsignedShortBigEndian();
 		visible = true;
-		aLong1718 = 0L;
+		appearanceKey = 0L;
 		for (int k1 = 0; k1 < 12; k1++) {
-			aLong1718 <<= 4;
+			appearanceKey <<= 4;
 			if (equipment[k1] >= 256) {
-				aLong1718 += equipment[k1] - 256;
+				appearanceKey += equipment[k1] - 256;
 			}
 		}
 
 		if (equipment[0] >= 256) {
-			aLong1718 += equipment[0] - 256 >> 4;
+			appearanceKey += equipment[0] - 256 >> 4;
 		}
 		if (equipment[1] >= 256) {
-			aLong1718 += equipment[1] - 256 >> 8;
+			appearanceKey += equipment[1] - 256 >> 8;
 		}
 		for (int i2 = 0; i2 < 5; i2++) {
-			aLong1718 <<= 3;
-			aLong1718 += anIntArray1700[i2];
+			appearanceKey <<= 3;
+			appearanceKey += anIntArray1700[i2];
 		}
 
-		aLong1718 <<= 1;
-		aLong1718 += anInt1702;
+		appearanceKey <<= 1;
+		appearanceKey += gender;
 	}
 
-	private Model method452() {
+	private Model buildBodyModel() {
 		if (desc != null) {
 			int j = -1;
 			if (super.anim >= 0 && super.anInt1529 == 0) {
@@ -173,7 +173,7 @@ public final class Player extends Entity {
 			Model model = desc.method164(-1, j, null);
 			return model;
 		}
-		long l = aLong1718;
+		long cacheKey = appearanceKey;
 		int k = -1;
 		int i1 = -1;
 		int j1 = -1;
@@ -186,16 +186,16 @@ public final class Player extends Entity {
 			}
 			if (animation.anInt360 >= 0) {
 				j1 = animation.anInt360;
-				l += j1 - equipment[5] << 40;
+				cacheKey += j1 - equipment[5] << 40;
 			}
 			if (animation.anInt361 >= 0) {
 				k1 = animation.anInt361;
-				l += k1 - equipment[3] << 48;
+				cacheKey += k1 - equipment[3] << 48;
 			}
 		} else if (super.anInt1517 >= 0) {
 			k = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
 		}
-		Model model_1 = (Model) mruNodes.insertFromCache(l);
+		Model model_1 = (Model) mruNodes.insertFromCache(cacheKey);
 		if (model_1 == null) {
 			boolean flag = false;
 			for (int i2 = 0; i2 < 12; i2++) {
@@ -209,7 +209,7 @@ public final class Player extends Entity {
 				if (k2 >= 256 && k2 < 512 && !IDK.cache[k2 - 256].method537()) {
 					flag = true;
 				}
-				if (k2 >= 512 && !ItemDef.forID(k2 - 512).isWornModelReady(anInt1702)) {
+				if (k2 >= 512 && !ItemDef.forID(k2 - 512).isWornModelReady(gender)) {
 					flag = true;
 				}
 			}
@@ -241,7 +241,7 @@ public final class Player extends Entity {
 					}
 				}
 				if (i3 >= 512) {
-					Model model_4 = ItemDef.forID(i3 - 512).getWornModel(anInt1702);
+					Model model_4 = ItemDef.forID(i3 - 512).getWornModel(gender);
 					if (model_4 != null) {
 						aclass30_sub2_sub4_sub6s[j2++] = model_4;
 					}
@@ -260,8 +260,8 @@ public final class Player extends Entity {
 
 			model_1.buildAnimationGroups();
 			model_1.method479(64, 850, -30, -50, -30, true);
-			mruNodes.removeFromCache(model_1, l);
-			aLong1697 = l;
+			mruNodes.removeFromCache(model_1, cacheKey);
+			aLong1697 = cacheKey;
 		}
 		if (aBoolean1699) {
 			return model_1;
@@ -285,7 +285,7 @@ public final class Player extends Entity {
 	}
 
 	public int privelage;
-	public Model method453() {
+	public Model buildHeadModel() {
 		if (!visible) {
 			return null;
 		}
@@ -298,7 +298,7 @@ public final class Player extends Entity {
 			if (j >= 256 && j < 512 && !IDK.cache[j - 256].method539()) {
 				flag = true;
 			}
-			if (j >= 512 && !ItemDef.forID(j - 512).isHeadModelReady(anInt1702)) {
+			if (j >= 512 && !ItemDef.forID(j - 512).isHeadModelReady(gender)) {
 				flag = true;
 			}
 		}
@@ -317,7 +317,7 @@ public final class Player extends Entity {
 				}
 			}
 			if (i1 >= 512) {
-				Model model_2 = ItemDef.forID(i1 - 512).getHeadModel(anInt1702);
+				Model model_2 = ItemDef.forID(i1 - 512).getHeadModel(gender);
 				if (model_2 != null) {
 					aclass30_sub2_sub4_sub6s[k++] = model_2;
 				}
@@ -350,7 +350,7 @@ public final class Player extends Entity {
 	boolean aBoolean1699;
 	final int[] anIntArray1700;
 	public int team;
-	private int anInt1702;
+	private int gender;
 	public String name;
 	static LruCache mruNodes = new LruCache(260);
 	public int combatLevel;
@@ -366,7 +366,7 @@ public final class Player extends Entity {
 	int anInt1713;
 	Model aModel_1714;
 	public final int[] equipment;
-	private long aLong1718;
+	private long appearanceKey;
 	int anInt1719;
 	int anInt1720;
 	int anInt1721;

@@ -316,11 +316,11 @@ public class ItemDefTest {
         ItemDef[] cache = (ItemDef[]) sget(ItemDef.class, "cache"); cache[0] = d; seti(d, "id", 3);
         sset(ItemDef.class, "cacheIndex", 5);
         for (int gender = 0; gender < 2; gender++) {
-            Player p = new Player(); p.visible = true; seti(p, "anInt1702", gender); p.equipment[0] = 512 + 3;
-            assertArrayEquals(gender == 0 ? x3(31, 32) : x3(41, 42), xs(p.method453()));
+            Player p = new Player(); p.visible = true; seti(p, "gender", gender); p.equipment[0] = 512 + 3;
+            assertArrayEquals(gender == 0 ? x3(31, 32) : x3(41, 42), xs(p.buildHeadModel()));
         }
-        Player p = new Player(); p.visible = true; seti(p, "anInt1702", 1); p.equipment[0] = 512 + 3;
-        Model.method461(41); assertNull(p.method453());
+        Player p = new Player(); p.visible = true; seti(p, "gender", 1); p.equipment[0] = 512 + 3;
+        Model.method461(41); assertNull(p.buildHeadModel());
     }
     @Test public void playerBodyModelUsesTheWornSetOfTheAppearanceGender() throws Exception {
         byte[][] r = new byte[8][]; for (int i = 0; i < 8; i++) r[i] = blank();
@@ -329,9 +329,9 @@ public class ItemDefTest {
         ItemDef[] cache = (ItemDef[]) sget(ItemDef.class, "cache"); cache[0] = d; seti(d, "id", 3);
         for (int gender = 0; gender < 2; gender++) {
             Player.mruNodes.clear();
-            Player p = new Player(); p.visible = true; seti(p, "anInt1702", gender); p.equipment[4] = 512 + 3;
-            f(Player.class, "aLong1718").setLong(p, 5000L + gender);
-            Method m = Player.class.getDeclaredMethod("method452"); m.setAccessible(true);
+            Player p = new Player(); p.visible = true; seti(p, "gender", gender); p.equipment[4] = 512 + 3;
+            f(Player.class, "appearanceKey").setLong(p, 5000L + gender);
+            Method m = Player.class.getDeclaredMethod("buildBodyModel"); m.setAccessible(true);
             Model out = (Model) m.invoke(p);
             assertArrayEquals(gender == 0 ? x3(11, 12, 13) : x3(21, 22, 23), xs(out));
         }
@@ -537,5 +537,71 @@ public class ItemDefTest {
         assertEquals(10, slots.length);
         for (int i = 0; i < 10; i++) { assertNotNull(slots[i]); assertEquals(-1, slots[i].id); for (int j = 0; j < i; j++) assertNotSame(slots[i], slots[j]); }
         assertEquals("One", ItemDef.forID(1).name); assertEquals(7, geti(ItemDef.forID(1), "modelID")); assertEquals("Zero", ItemDef.forID(0).name);
+    }
+
+    // ================= pass 134: appearance hash, gender, and the interface media model loader =================
+    private static byte[] appearanceStream(int gender, int[] equip, int[] colours) {
+        ByteArrayOutputStream o = new ByteArrayOutputStream();
+        o.write(gender); o.write(0); o.write(0);
+        for (int j = 0; j < 12; j++) { if (equip[j] == 0) o.write(0); else { o.write(equip[j] >> 8); o.write(equip[j] & 255); } }
+        for (int c : colours) o.write(c);
+        for (int k = 0; k < 7; k++) { o.write(255); o.write(255); }
+        for (int k = 0; k < 8; k++) o.write(0);
+        o.write(3); o.write(0); o.write(0);
+        return o.toByteArray();
+    }
+    @Test public void updatePlayerStoresGenderAndPacksEquipmentColoursAndGenderIntoTheLongKey() throws Exception {
+        int[] colours = {1, 2, 3, 1, 2};
+        long packed = 0; for (int c : colours) packed = (packed << 3) + c;
+        for (int gender = 0; gender < 2; gender++) {
+            Player p = new Player(); int[] eq = new int[12];
+            p.updatePlayer(new Stream(appearanceStream(gender, eq, colours)));
+            assertEquals(gender, geti(p, "gender"));
+            assertEquals((packed << 1) + gender, f(Player.class, "appearanceKey").getLong(p));
+            eq[11] = 256 + 3;   // a kit part in the last slot lands just above the colour bits
+            p.updatePlayer(new Stream(appearanceStream(gender, eq, colours)));
+            assertEquals((((3L << 15) + packed) << 1) + gender, f(Player.class, "appearanceKey").getLong(p));
+        }
+    }
+    @Test public void bodyModelIsLookedUpInTheCacheUnderTheLongKey() throws Exception {
+        install(blanks(8)); loadAll(11);
+        Model cached = Model.getModel(11);
+        Player.mruNodes.clear();
+        Player p = new Player(); p.visible = true;
+        f(Player.class, "appearanceKey").setLong(p, 777L);
+        Player.mruNodes.removeFromCache(cached, 777L);
+        Method m = Player.class.getDeclaredMethod("buildBodyModel"); m.setAccessible(true);
+        assertArrayEquals(x3(11), xs((Model) m.invoke(p)));   // the cached model, copied into the animation scratch model
+        f(Player.class, "appearanceKey").setLong(p, 778L);   // a different key must not hit the cached model
+        assertFalse(Arrays.equals(x3(11), xs((Model) m.invoke(p))));
+        Player.mruNodes.clear();
+    }
+    private static Model media(RSInterface ri, int type, int id) throws Exception {
+        Method m = RSInterface.class.getDeclaredMethod("loadMediaModel", int.class, int.class); m.setAccessible(true);
+        return (Model) m.invoke(ri, type, id);
+    }
+    @Test public void interfaceMediaLoaderPicksTheSourceByTypeAndCachesUnderTypeAndId() throws Exception {
+        install(blanks(8)); loadAll(11, 12, 31, 32, 41, 42);
+        LruCache cache = (LruCache) sget(RSInterface.class, "aMRUNodes_264"); cache.clear();
+        RSInterface ri = new RSInterface();
+        Model one = media(ri, 1, 11);                    // type 1: model file by id
+        assertArrayEquals(x3(11), xs(one));
+        assertSame(one, media(ri, 1, 11));               // cached under (type << 16) + id
+        assertArrayEquals(x3(12), xs(media(ri, 1, 12)));
+        assertNull(media(ri, 5, 11));                    // type 5: nothing
+        Model sentinel = Model.getModel(12);
+        cache.removeFromCache(sentinel, (2 << 16) + 7);  // type 2 id 7 would need an NPC definition; the cache answers first
+        assertSame(sentinel, media(ri, 2, 7));
+        assertNotSame(sentinel, media(ri, 1, 7));        // same id, other type: different key
+        assertNotSame(sentinel, media(ri, 7, 2));        // swapped type/id: different key
+        ItemDef[] c = (ItemDef[]) sget(ItemDef.class, "cache");
+        ItemDef d = withModels(11, 12, 13, 21, 22, 23, 31, 32, 41, 42);
+        c[0] = d; seti(d, "id", 3); sset(ItemDef.class, "cacheIndex", 5);
+        Player me = new Player(); me.visible = true; seti(me, "gender", 1); me.equipment[0] = 512 + 3;
+        Player saved = Game.myPlayer;
+        try {
+            Game.myPlayer = me;                          // type 3: the local player's head model
+            assertArrayEquals(x3(41, 42), xs(media(ri, 3, 0)));
+        } finally { Game.myPlayer = saved; cache.clear(); }
     }
 }

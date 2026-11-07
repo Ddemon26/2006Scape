@@ -231,28 +231,28 @@ public final class RSInterface {
 		spriteCache = null;
 	}
 
-	private Model method206(int i, int j) {
+	private Model loadMediaModel(int modelType, int modelId) {
 		ItemDef itemDefinition = null;
 		if (type == 4) {
 			itemDefinition = ItemDef.forID(id);
 			lightness += itemDefinition.ambientLightOffset;
 			shading += itemDefinition.lightDivisorOffset;
 		}
-		Model model = (Model) aMRUNodes_264.insertFromCache((i << 16) + j);
+		Model model = (Model) aMRUNodes_264.insertFromCache((modelType << 16) + modelId);
 		if (model != null)
 			return model;
-		if (i == 1)
-			model = Model.getModel(j);
-		if (i == 2)
-			model = EntityDef.forID(j).method160();
-		if (i == 3)
-			model = Game.myPlayer.method453();
-		if (i == 4)
-			model = ItemDef.forID(j).getUnlitModel(50);
-		if (i == 5)
+		if (modelType == 1)
+			model = Model.getModel(modelId);
+		if (modelType == 2)
+			model = EntityDef.forID(modelId).method160();
+		if (modelType == 3)
+			model = Game.myPlayer.buildHeadModel();
+		if (modelType == 4)
+			model = ItemDef.forID(modelId).getUnlitModel(50);
+		if (modelType == 5)
 			model = null;
 		if (model != null)
-			aMRUNodes_264.removeFromCache(model, (i << 16) + j);
+			aMRUNodes_264.removeFromCache(model, (modelType << 16) + modelId);
 		return model;
 	}
 
@@ -294,9 +294,9 @@ public final class RSInterface {
 		shading = 768;
 		Model model;
 		if (flag) {
-			model = method206(anInt255, anInt256);
+			model = loadMediaModel(anInt255, anInt256);
 		} else {
-			model = method206(anInt233, mediaID);
+			model = loadMediaModel(anInt233, mediaID);
 		}
 		if (model == null) {
 			return null;
