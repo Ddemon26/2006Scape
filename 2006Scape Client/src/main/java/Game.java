@@ -9999,282 +9999,282 @@ public class Game extends RSApplet {
 		welcomeScreenRaised = true;
 	}
 
-	public void method137(Stream stream, int j) {
-		if (j == 84) {
-			int k = stream.readUnsignedByte();
-			int j3 = updateBlockX + (k >> 4 & 7);
-			int i6 = updateBlockY + (k & 7);
-			int l8 = stream.readUnsignedShortBigEndian();
-			int k11 = stream.readUnsignedShortBigEndian();
-			int l13 = stream.readUnsignedShortBigEndian();
-			if (j3 >= 0 && i6 >= 0 && j3 < 104 && i6 < 104) {
-				NodeList class19_1 = groundArray[plane][j3][i6];
-				if (class19_1 != null) {
-					for (Item class30_sub2_sub4_sub2_3 = (Item) class19_1.firstFromTail(); class30_sub2_sub4_sub2_3 != null; class30_sub2_sub4_sub2_3 = (Item) class19_1.nextTowardHead()) {
-						if (class30_sub2_sub4_sub2_3.ID != (l8 & 0x7fff) || class30_sub2_sub4_sub2_3.amount != k11) {
+	public void applyRegionUpdate(Stream stream, int opcode) {
+		if (opcode == 84) {
+			int positionByte = stream.readUnsignedByte();
+			int tileX = updateBlockX + (positionByte >> 4 & 7);
+			int tileY = updateBlockY + (positionByte & 7);
+			int itemId = stream.readUnsignedShortBigEndian();
+			int oldAmount = stream.readUnsignedShortBigEndian();
+			int newAmount = stream.readUnsignedShortBigEndian();
+			if (tileX >= 0 && tileY >= 0 && tileX < 104 && tileY < 104) {
+				NodeList tileItems = groundArray[plane][tileX][tileY];
+				if (tileItems != null) {
+					for (Item item = (Item) tileItems.firstFromTail(); item != null; item = (Item) tileItems.nextTowardHead()) {
+						if (item.ID != (itemId & 0x7fff) || item.amount != oldAmount) {
 							continue;
 						}
-						class30_sub2_sub4_sub2_3.amount = l13;
+						item.amount = newAmount;
 						break;
 					}
 
-					spawnGroundItem(j3, i6);
+					spawnGroundItem(tileX, tileY);
 				}
 			}
 			return;
 		}
-		if (j == 105) {
-			int l = stream.readUnsignedByte();
-			int k3 = updateBlockX + (l >> 4 & 7);
-			int j6 = updateBlockY + (l & 7);
-			int i9 = stream.readUnsignedShortBigEndian();
-			int l11 = stream.readUnsignedByte();
-			int i14 = l11 >> 4 & 0xf;
-			int i16 = l11 & 7;
-			if (myPlayer.smallX[0] >= k3 - i14 && myPlayer.smallX[0] <= k3 + i14 && myPlayer.smallY[0] >= j6 - i14 && myPlayer.smallY[0] <= j6 + i14 && aBoolean848 && !lowMem && currentSound < 50) {
-				sound[currentSound] = i9;
-				soundType[currentSound] = i16;
-				soundDelay[currentSound] = Sounds.leadingSilence20msUnits[i9];
+		if (opcode == 105) {
+			int positionByte = stream.readUnsignedByte();
+			int tileX = updateBlockX + (positionByte >> 4 & 7);
+			int tileY = updateBlockY + (positionByte & 7);
+			int soundEffectId = stream.readUnsignedShortBigEndian();
+			int soundParams = stream.readUnsignedByte();
+			int hearingRadius = soundParams >> 4 & 0xf;
+			int playCount = soundParams & 7;
+			if (myPlayer.smallX[0] >= tileX - hearingRadius && myPlayer.smallX[0] <= tileX + hearingRadius && myPlayer.smallY[0] >= tileY - hearingRadius && myPlayer.smallY[0] <= tileY + hearingRadius && aBoolean848 && !lowMem && currentSound < 50) {
+				sound[currentSound] = soundEffectId;
+				soundType[currentSound] = playCount;
+				soundDelay[currentSound] = Sounds.leadingSilence20msUnits[soundEffectId];
 				currentSound++;
 			}
 		}
-		if (j == 215) {
-			int i1 = stream.readUnsignedShortBigEndianSubtract128();
-			int l3 = stream.readUnsignedByte128MinusValue();
-			int k6 = updateBlockX + (l3 >> 4 & 7);
-			int j9 = updateBlockY + (l3 & 7);
-			int i12 = stream.readUnsignedShortBigEndianSubtract128();
-			int j14 = stream.readUnsignedShortBigEndian();
-			if (k6 >= 0 && j9 >= 0 && k6 < 104 && j9 < 104 && i12 != unknownInt10) {
-				Item class30_sub2_sub4_sub2_2 = new Item();
-				class30_sub2_sub4_sub2_2.ID = i1;
-				class30_sub2_sub4_sub2_2.amount = j14;
-				if (groundArray[plane][k6][j9] == null) {
-					groundArray[plane][k6][j9] = new NodeList();
+		if (opcode == 215) {
+			int itemId = stream.readUnsignedShortBigEndianSubtract128();
+			int positionByte = stream.readUnsignedByte128MinusValue();
+			int tileX = updateBlockX + (positionByte >> 4 & 7);
+			int tileY = updateBlockY + (positionByte & 7);
+			int ownerIndex = stream.readUnsignedShortBigEndianSubtract128();
+			int amount = stream.readUnsignedShortBigEndian();
+			if (tileX >= 0 && tileY >= 0 && tileX < 104 && tileY < 104 && ownerIndex != unknownInt10) {
+				Item item = new Item();
+				item.ID = itemId;
+				item.amount = amount;
+				if (groundArray[plane][tileX][tileY] == null) {
+					groundArray[plane][tileX][tileY] = new NodeList();
 				}
-				groundArray[plane][k6][j9].insertHead(class30_sub2_sub4_sub2_2);
-				spawnGroundItem(k6, j9);
+				groundArray[plane][tileX][tileY].insertHead(item);
+				spawnGroundItem(tileX, tileY);
 			}
 			return;
 		}
-		if (j == 156) {
-			int j1 = stream.readUnsignedByteSubtract128();
-			int i4 = updateBlockX + (j1 >> 4 & 7);
-			int l6 = updateBlockY + (j1 & 7);
-			int k9 = stream.readUnsignedShortBigEndian();
-			if (i4 >= 0 && l6 >= 0 && i4 < 104 && l6 < 104) {
-				NodeList class19 = groundArray[plane][i4][l6];
-				if (class19 != null) {
-					for (Item item = (Item) class19.firstFromTail(); item != null; item = (Item) class19.nextTowardHead()) {
-						if (item.ID != (k9 & 0x7fff)) {
+		if (opcode == 156) {
+			int positionByte = stream.readUnsignedByteSubtract128();
+			int tileX = updateBlockX + (positionByte >> 4 & 7);
+			int tileY = updateBlockY + (positionByte & 7);
+			int itemId = stream.readUnsignedShortBigEndian();
+			if (tileX >= 0 && tileY >= 0 && tileX < 104 && tileY < 104) {
+				NodeList tileItems = groundArray[plane][tileX][tileY];
+				if (tileItems != null) {
+					for (Item item = (Item) tileItems.firstFromTail(); item != null; item = (Item) tileItems.nextTowardHead()) {
+						if (item.ID != (itemId & 0x7fff)) {
 							continue;
 						}
 						item.unlink();
 						break;
 					}
 
-					if (class19.firstFromTail() == null) {
-						groundArray[plane][i4][l6] = null;
+					if (tileItems.firstFromTail() == null) {
+						groundArray[plane][tileX][tileY] = null;
 					}
-					spawnGroundItem(i4, l6);
+					spawnGroundItem(tileX, tileY);
 				}
 			}
 			return;
 		}
-		if (j == 160) {
-			int k1 = stream.readUnsignedByte128MinusValue();
-			int j4 = updateBlockX + (k1 >> 4 & 7);
-			int i7 = updateBlockY + (k1 & 7);
-			int l9 = stream.readUnsignedByte128MinusValue();
-			int j12 = l9 >> 2;
-			int k14 = l9 & 3;
-			int j16 = anIntArray1177[j12];
-			int j17 = stream.readUnsignedShortBigEndianSubtract128();
-			if (j4 >= 0 && i7 >= 0 && j4 < 103 && i7 < 103) {
-				int j18 = intGroundArray[plane][j4][i7];
-				int i19 = intGroundArray[plane][j4 + 1][i7];
-				int l19 = intGroundArray[plane][j4 + 1][i7 + 1];
-				int k20 = intGroundArray[plane][j4][i7 + 1];
-				if (j16 == 0) {
-					Object1 class10 = worldController.getWall(plane, j4, i7);
-					if (class10 != null) {
-						int k21 = class10.uid >> 14 & 0x7fff;
-						if (j12 == 2) {
-							class10.model = new AnimatedObject(k21, 4 + k14, 2, i19, l19, j18, k20, j17, false);
-							class10.secondaryModel = new AnimatedObject(k21, k14 + 1 & 3, 2, i19, l19, j18, k20, j17, false);
+		if (opcode == 160) {
+			int positionByte = stream.readUnsignedByte128MinusValue();
+			int tileX = updateBlockX + (positionByte >> 4 & 7);
+			int tileY = updateBlockY + (positionByte & 7);
+			int packedShapeAndOrientation = stream.readUnsignedByte128MinusValue();
+			int shape = packedShapeAndOrientation >> 2;
+			int orientation = packedShapeAndOrientation & 3;
+			int objectCategory = anIntArray1177[shape];
+			int animationId = stream.readUnsignedShortBigEndianSubtract128();
+			if (tileX >= 0 && tileY >= 0 && tileX < 103 && tileY < 103) {
+				int heightX0Y0 = intGroundArray[plane][tileX][tileY];
+				int heightX1Y0 = intGroundArray[plane][tileX + 1][tileY];
+				int heightX1Y1 = intGroundArray[plane][tileX + 1][tileY + 1];
+				int heightX0Y1 = intGroundArray[plane][tileX][tileY + 1];
+				if (objectCategory == 0) {
+					Object1 wall = worldController.getWall(plane, tileX, tileY);
+					if (wall != null) {
+						int objectId = wall.uid >> 14 & 0x7fff;
+						if (shape == 2) {
+							wall.model = new AnimatedObject(objectId, 4 + orientation, 2, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, animationId, false);
+							wall.secondaryModel = new AnimatedObject(objectId, orientation + 1 & 3, 2, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, animationId, false);
 						} else {
-							class10.model = new AnimatedObject(k21, k14, j12, i19, l19, j18, k20, j17, false);
+							wall.model = new AnimatedObject(objectId, orientation, shape, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, animationId, false);
 						}
 					}
 				}
-				if (j16 == 1) {
-					Object2 class26 = worldController.getWallDecoration(j4, i7, plane);
-					if (class26 != null) {
-						class26.model = new AnimatedObject(class26.uid >> 14 & 0x7fff, 0, 4, i19, l19, j18, k20, j17, false);
+				if (objectCategory == 1) {
+					Object2 wallDecoration = worldController.getWallDecoration(tileX, tileY, plane);
+					if (wallDecoration != null) {
+						wallDecoration.model = new AnimatedObject(wallDecoration.uid >> 14 & 0x7fff, 0, 4, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, animationId, false);
 					}
 				}
-				if (j16 == 2) {
-					Object5 class28 = worldController.getSceneObject(j4, i7, plane);
-					if (j12 == 11) {
-						j12 = 10;
+				if (objectCategory == 2) {
+					Object5 sceneObject = worldController.getSceneObject(tileX, tileY, plane);
+					if (shape == 11) {
+						shape = 10;
 					}
-					if (class28 != null) {
-						class28.model = new AnimatedObject(class28.uid >> 14 & 0x7fff, k14, j12, i19, l19, j18, k20, j17, false);
+					if (sceneObject != null) {
+						sceneObject.model = new AnimatedObject(sceneObject.uid >> 14 & 0x7fff, orientation, shape, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, animationId, false);
 					}
 				}
-				if (j16 == 3) {
-					Object3 class49 = worldController.getGroundDecoration(i7, j4, plane);
-					if (class49 != null) {
-						class49.model = new AnimatedObject(class49.uid >> 14 & 0x7fff, k14, 22, i19, l19, j18, k20, j17, false);
+				if (objectCategory == 3) {
+					Object3 groundDecoration = worldController.getGroundDecoration(tileY, tileX, plane);
+					if (groundDecoration != null) {
+						groundDecoration.model = new AnimatedObject(groundDecoration.uid >> 14 & 0x7fff, orientation, 22, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, animationId, false);
 					}
 				}
 			}
 			return;
 		}
-		if (j == 147) {
-			int l1 = stream.readUnsignedByte128MinusValue();
-			int k4 = updateBlockX + (l1 >> 4 & 7);
-			int j7 = updateBlockY + (l1 & 7);
-			int i10 = stream.readUnsignedShortBigEndian();
-			byte byte0 = stream.readSignedByte128MinusValue();
-			int l14 = stream.readUnsignedShortLittleEndian();
-			byte byte1 = stream.readSignedNegatedByte();
-			int k17 = stream.readUnsignedShortBigEndian();
-			int k18 = stream.readUnsignedByte128MinusValue();
-			int j19 = k18 >> 2;
-			int i20 = k18 & 3;
-			int l20 = anIntArray1177[j19];
-			byte byte2 = stream.readSignedByte();
-			int l21 = stream.readUnsignedShortBigEndian();
-			byte byte3 = stream.readSignedNegatedByte();
+		if (opcode == 147) {
+			int positionByte = stream.readUnsignedByte128MinusValue();
+			int tileX = updateBlockX + (positionByte >> 4 & 7);
+			int tileY = updateBlockY + (positionByte & 7);
+			int playerIndex = stream.readUnsignedShortBigEndian();
+			byte firstXOffset = stream.readSignedByte128MinusValue();
+			int startDelay = stream.readUnsignedShortLittleEndian();
+			byte firstYOffset = stream.readSignedNegatedByte();
+			int endDelay = stream.readUnsignedShortBigEndian();
+			int packedShapeAndOrientation = stream.readUnsignedByte128MinusValue();
+			int shape = packedShapeAndOrientation >> 2;
+			int orientation = packedShapeAndOrientation & 3;
+			int objectCategory = anIntArray1177[shape];
+			byte secondXOffset = stream.readSignedByte();
+			int objectId = stream.readUnsignedShortBigEndian();
+			byte secondYOffset = stream.readSignedNegatedByte();
 			Player player;
-			if (i10 == unknownInt10) {
+			if (playerIndex == unknownInt10) {
 				player = myPlayer;
 			} else {
-				player = playerArray[i10];
+				player = playerArray[playerIndex];
 			}
 			if (player != null) {
-				ObjectDef class46 = ObjectDef.forID(l21);
-				int i22 = intGroundArray[plane][k4][j7];
-				int j22 = intGroundArray[plane][k4 + 1][j7];
-				int k22 = intGroundArray[plane][k4 + 1][j7 + 1];
-				int l22 = intGroundArray[plane][k4][j7 + 1];
-				Model model = class46.getModel(j19, i20, i22, j22, k22, l22, -1);
+				ObjectDef objectDef = ObjectDef.forID(objectId);
+				int i22 = intGroundArray[plane][tileX][tileY];
+				int j22 = intGroundArray[plane][tileX + 1][tileY];
+				int k22 = intGroundArray[plane][tileX + 1][tileY + 1];
+				int l22 = intGroundArray[plane][tileX][tileY + 1];
+				Model model = objectDef.getModel(shape, orientation, i22, j22, k22, l22, -1);
 				if (model != null) {
-					queueSceneObjectChange(k17 + 1, -1, 0, l20, j7, 0, plane, k4, l14 + 1);
-					player.attachedModelStartCycle = l14 + loopCycle;
-					player.attachedModelEndCycle = k17 + loopCycle;
+					queueSceneObjectChange(endDelay + 1, -1, 0, objectCategory, tileY, 0, plane, tileX, startDelay + 1);
+					player.attachedModelStartCycle = startDelay + loopCycle;
+					player.attachedModelEndCycle = endDelay + loopCycle;
 					player.attachedModel = model;
-					int i23 = class46.sizeX;
-					int j23 = class46.sizeY;
-					if (i20 == 1 || i20 == 3) {
-						i23 = class46.sizeY;
-						j23 = class46.sizeX;
+					int footprintX = objectDef.sizeX;
+					int footprintY = objectDef.sizeY;
+					if (orientation == 1 || orientation == 3) {
+						footprintX = objectDef.sizeY;
+						footprintY = objectDef.sizeX;
 					}
-					player.attachedModelX = k4 * 128 + i23 * 64;
-					player.attachedModelY = j7 * 128 + j23 * 64;
+					player.attachedModelX = tileX * 128 + footprintX * 64;
+					player.attachedModelY = tileY * 128 + footprintY * 64;
 					player.attachedModelHeight = interpolatedGroundHeight(plane, player.attachedModelY, player.attachedModelX);
-					if (byte2 > byte0) {
-						byte byte4 = byte2;
-						byte2 = byte0;
-						byte0 = byte4;
+					if (secondXOffset > firstXOffset) {
+						byte xSwapTemp = secondXOffset;
+						secondXOffset = firstXOffset;
+						firstXOffset = xSwapTemp;
 					}
-					if (byte3 > byte1) {
-						byte byte5 = byte3;
-						byte3 = byte1;
-						byte1 = byte5;
+					if (secondYOffset > firstYOffset) {
+						byte ySwapTemp = secondYOffset;
+						secondYOffset = firstYOffset;
+						firstYOffset = ySwapTemp;
 					}
-					player.attachedMinTileX = k4 + byte2;
-					player.attachedMaxTileX = k4 + byte0;
-					player.attachedMinTileY = j7 + byte3;
-					player.attachedMaxTileY = j7 + byte1;
+					player.attachedMinTileX = tileX + secondXOffset;
+					player.attachedMaxTileX = tileX + firstXOffset;
+					player.attachedMinTileY = tileY + secondYOffset;
+					player.attachedMaxTileY = tileY + firstYOffset;
 				}
 			}
 		}
-		if (j == 101) {
-			int l2 = stream.readUnsignedNegatedByte();
-			int k5 = l2 >> 2;
-			int j8 = l2 & 3;
-			int i11 = anIntArray1177[k5];
-			int j13 = stream.readUnsignedByte();
-			int k15 = updateBlockX + (j13 >> 4 & 7);
-			int l16 = updateBlockY + (j13 & 7);
+		if (opcode == 101) {
+			int packedShapeAndOrientation = stream.readUnsignedNegatedByte();
+			int shape = packedShapeAndOrientation >> 2;
+			int orientation = packedShapeAndOrientation & 3;
+			int objectCategory = anIntArray1177[shape];
+			int positionByte = stream.readUnsignedByte();
+			int tileX = updateBlockX + (positionByte >> 4 & 7);
+			int tileY = updateBlockY + (positionByte & 7);
 
-			if (k15 >= 0 && l16 >= 0 && k15 < 104 && l16 < 104) {
-				queueSceneObjectChange(-1, -1, j8, i11, l16, k5, plane, k15, 0);
+			if (tileX >= 0 && tileY >= 0 && tileX < 104 && tileY < 104) {
+				queueSceneObjectChange(-1, -1, orientation, objectCategory, tileY, shape, plane, tileX, 0);
 			}
 			return;
 		}
-		if (j == 151) {
-			int i2 = stream.readUnsignedByteSubtract128Duplicate();
-			int l4 = updateBlockX + (i2 >> 4 & 7);
-			int k7 = updateBlockY + (i2 & 7);
-			int j10 = stream.readUnsignedShortLittleEndian();
-			int k12 = stream.readUnsignedByte128MinusValue();
-			int i15 = k12 >> 2;
-			int k16 = k12 & 3;
-			int l17 = anIntArray1177[i15];
-			//System.out.println("id: " + j10 + " x:" + (this.baseX + updateBlockX) + " y:" + (this.baseY + updateBlockY));
-			if (l4 >= 0 && k7 >= 0 && l4 < 104 && k7 < 104)
-				queueSceneObjectChange(-1, j10, k16, l17, k7, i15, plane, l4, 0);
+		if (opcode == 151) {
+			int positionByte = stream.readUnsignedByteSubtract128Duplicate();
+			int tileX = updateBlockX + (positionByte >> 4 & 7);
+			int tileY = updateBlockY + (positionByte & 7);
+			int objectId = stream.readUnsignedShortLittleEndian();
+			int packedShapeAndOrientation = stream.readUnsignedByte128MinusValue();
+			int shape = packedShapeAndOrientation >> 2;
+			int orientation = packedShapeAndOrientation & 3;
+			int objectCategory = anIntArray1177[shape];
+			//System.out.println("id: " + objectId + " x:" + (this.baseX + updateBlockX) + " y:" + (this.baseY + updateBlockY));
+			if (tileX >= 0 && tileY >= 0 && tileX < 104 && tileY < 104)
+				queueSceneObjectChange(-1, objectId, orientation, objectCategory, tileY, shape, plane, tileX, 0);
 			return;
 		}
 
-		if (j == 4) {
-			int j2 = stream.readUnsignedByte();
-			int i5 = updateBlockX + (j2 >> 4 & 7);
-			int l7 = updateBlockY + (j2 & 7);
-			int k10 = stream.readUnsignedShortBigEndian();
-			int l12 = stream.readUnsignedByte();
-			int j15 = stream.readUnsignedShortBigEndian();
-			if (i5 >= 0 && l7 >= 0 && i5 < 104 && l7 < 104) {
-				i5 = i5 * 128 + 64;
-				l7 = l7 * 128 + 64;
-				StationaryGraphic graphic = new StationaryGraphic(plane, loopCycle, j15, k10, interpolatedGroundHeight(plane, l7, i5) - l12, l7, i5);
+		if (opcode == 4) {
+			int positionByte = stream.readUnsignedByte();
+			int positionX = updateBlockX + (positionByte >> 4 & 7);
+			int positionY = updateBlockY + (positionByte & 7);
+			int graphicId = stream.readUnsignedShortBigEndian();
+			int heightOffset = stream.readUnsignedByte();
+			int delay = stream.readUnsignedShortBigEndian();
+			if (positionX >= 0 && positionY >= 0 && positionX < 104 && positionY < 104) {
+				positionX = positionX * 128 + 64;
+				positionY = positionY * 128 + 64;
+				StationaryGraphic graphic = new StationaryGraphic(plane, loopCycle, delay, graphicId, interpolatedGroundHeight(plane, positionY, positionX) - heightOffset, positionY, positionX);
 				transientGraphics.insertHead(graphic);
 			}
 			return;
 		}
-		if (j == 44) {
+		if (opcode == 44) {
 			int itemID = stream.readUnsignedShortLittleEndianSubtract128();
 			int itemAmount = stream.readUnsignedShortBigEndian();
-			int i8 = stream.readUnsignedByte();
-			int l10 = updateBlockX + (i8 >> 4 & 7);
-			int i13 = updateBlockY + (i8 & 7);
-			if (l10 >= 0 && i13 >= 0 && l10 < 104 && i13 < 104) {
+			int positionByte = stream.readUnsignedByte();
+			int tileX = updateBlockX + (positionByte >> 4 & 7);
+			int tileY = updateBlockY + (positionByte & 7);
+			if (tileX >= 0 && tileY >= 0 && tileX < 104 && tileY < 104) {
 				Item gItem = new Item();
 				gItem.ID = itemID;
 				gItem.amount = itemAmount;
-				if (groundArray[plane][l10][i13] == null) {
-					groundArray[plane][l10][i13] = new NodeList();
+				if (groundArray[plane][tileX][tileY] == null) {
+					groundArray[plane][tileX][tileY] = new NodeList();
 				}
-				groundArray[plane][l10][i13].insertHead(gItem);
-				spawnGroundItem(l10, i13);
+				groundArray[plane][tileX][tileY].insertHead(gItem);
+				spawnGroundItem(tileX, tileY);
 			}
 			return;
 		}
-		if (j == 117) {
-			int i3 = stream.readUnsignedByte();
-			int l5 = updateBlockX + (i3 >> 4 & 7);
-			int k8 = updateBlockY + (i3 & 7);
-			int j11 = l5 + stream.readSignedByte();
-			int k13 = k8 + stream.readSignedByte();
-			int l15 = stream.readSignedShortBigEndian();
-			int i17 = stream.readUnsignedShortBigEndian();
-			int i18 = stream.readUnsignedByte() * 4;
-			int l18 = stream.readUnsignedByte() * 4;
-			int k19 = stream.readUnsignedShortBigEndian();
-			int j20 = stream.readUnsignedShortBigEndian();
-			int i21 = stream.readUnsignedByte();
-			int j21 = stream.readUnsignedByte();
-			if (l5 >= 0 && k8 >= 0 && l5 < 104 && k8 < 104 && j11 >= 0 && k13 >= 0 && j11 < 104 && k13 < 104 && i17 != 0x00ffff) {
-				l5 = l5 * 128 + 64;
-				k8 = k8 * 128 + 64;
-				j11 = j11 * 128 + 64;
-				k13 = k13 * 128 + 64;
-				Projectile class30_sub2_sub4_sub4 = new Projectile(i21, l18, k19 + loopCycle, j20 + loopCycle, j21, plane, interpolatedGroundHeight(plane, k8, l5) - i18, k8, l5, l15, i17);
-				class30_sub2_sub4_sub4.retarget(k19 + loopCycle, k13, interpolatedGroundHeight(plane, k13, j11) - l18, j11);
-				projectiles.insertHead(class30_sub2_sub4_sub4);
+		if (opcode == 117) {
+			int positionByte = stream.readUnsignedByte();
+			int startX = updateBlockX + (positionByte >> 4 & 7);
+			int startY = updateBlockY + (positionByte & 7);
+			int endX = startX + stream.readSignedByte();
+			int endY = startY + stream.readSignedByte();
+			int targetIndex = stream.readSignedShortBigEndian();
+			int graphicId = stream.readUnsignedShortBigEndian();
+			int startHeight = stream.readUnsignedByte() * 4;
+			int endHeight = stream.readUnsignedByte() * 4;
+			int startDelay = stream.readUnsignedShortBigEndian();
+			int endDelay = stream.readUnsignedShortBigEndian();
+			int launchAngle = stream.readUnsignedByte();
+			int startOffset = stream.readUnsignedByte();
+			if (startX >= 0 && startY >= 0 && startX < 104 && startY < 104 && endX >= 0 && endY >= 0 && endX < 104 && endY < 104 && graphicId != 0x00ffff) {
+				startX = startX * 128 + 64;
+				startY = startY * 128 + 64;
+				endX = endX * 128 + 64;
+				endY = endY * 128 + 64;
+				Projectile projectile = new Projectile(launchAngle, endHeight, startDelay + loopCycle, endDelay + loopCycle, startOffset, plane, interpolatedGroundHeight(plane, startY, startX) - startHeight, startY, startX, targetIndex, graphicId);
+				projectile.retarget(startDelay + loopCycle, endY, interpolatedGroundHeight(plane, endY, endX) - endHeight, endX);
+				projectiles.insertHead(projectile);
 			}
 		}
 	}
@@ -11057,7 +11057,7 @@ public class Game extends RSApplet {
 				updateBlockX = inStream.readUnsignedNegatedByte();
 				while (inStream.currentOffset < pktSize) {
 					int subOpcode = inStream.readUnsignedByte();
-					method137(inStream, subOpcode);
+					applyRegionUpdate(inStream, subOpcode);
 				}
 				pktType = -1;
 				return true;
@@ -11775,7 +11775,7 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 105 || pktType == 84 || pktType == 147 || pktType == 215 || pktType == 4 || pktType == 117 || pktType == 156 || pktType == 44 || pktType == 160 || pktType == 101 || pktType == 151) {
-				method137(inStream, pktType);
+				applyRegionUpdate(inStream, pktType);
 				pktType = -1;
 				return true;
 			}
