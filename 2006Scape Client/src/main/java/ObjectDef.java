@@ -197,9 +197,9 @@ public final class ObjectDef {
 				return null;
 			}
 			boolean mirrorModel = mirrored ^ orientation > 3;
-			int k1 = modelIds.length;
-			for (int i2 = 0; i2 < k1; i2++) {
-				int modelKey = modelIds[i2];
+			int modelCount = modelIds.length;
+			for (int modelIndex = 0; modelIndex < modelCount; modelIndex++) {
+				int modelKey = modelIds[modelIndex];
 				if (mirrorModel) {
 					modelKey += 0x10000;
 				}
@@ -214,47 +214,47 @@ public final class ObjectDef {
 					}
 					mruNodes1.removeFromCache(model, modelKey);
 				}
-				if (k1 > 1) {
-					aModelArray741s[i2] = model;
+				if (modelCount > 1) {
+					aModelArray741s[modelIndex] = model;
 				}
 			}
 
-			if (k1 > 1) {
-				model = new Model(k1, aModelArray741s);
+			if (modelCount > 1) {
+				model = new Model(modelCount, aModelArray741s);
 			}
 		} else {
-			int i1 = -1;
-			for (int j1 = 0; j1 < modelShapes.length; j1++) {
-				if (modelShapes[j1] != shape) {
+			int shapeIndex = -1;
+			for (int shapeSearchIndex = 0; shapeSearchIndex < modelShapes.length; shapeSearchIndex++) {
+				if (modelShapes[shapeSearchIndex] != shape) {
 					continue;
 				}
-				i1 = j1;
+				shapeIndex = shapeSearchIndex;
 				break;
 			}
 
-			if (i1 == -1) {
+			if (shapeIndex == -1) {
 				return null;
 			}
-			cacheKey = (type << 6) + (i1 << 3) + orientation + ((long) (frameId + 1) << 32);
-			Model model_2 = (Model) mruNodes2.insertFromCache(cacheKey);
-			if (model_2 != null) {
-				return model_2;
+			cacheKey = (type << 6) + (shapeIndex << 3) + orientation + ((long) (frameId + 1) << 32);
+			Model cachedShapeModel = (Model) mruNodes2.insertFromCache(cacheKey);
+			if (cachedShapeModel != null) {
+				return cachedShapeModel;
 			}
-			int j2 = modelIds[i1];
-			boolean flag3 = mirrored ^ orientation > 3;
-			if (flag3) {
-				j2 += 0x10000;
+			int shapeModelKey = modelIds[shapeIndex];
+			boolean mirrorShapeModel = mirrored ^ orientation > 3;
+			if (mirrorShapeModel) {
+				shapeModelKey += 0x10000;
 			}
-			model = (Model) mruNodes1.insertFromCache(j2);
+			model = (Model) mruNodes1.insertFromCache(shapeModelKey);
 			if (model == null) {
-				model = Model.getModel(j2 & 0xffff);
+				model = Model.getModel(shapeModelKey & 0xffff);
 				if (model == null) {
 					return null;
 				}
-				if (flag3) {
+				if (mirrorShapeModel) {
 					model.reflectZAndReverseWinding();
 				}
-				mruNodes1.removeFromCache(model, j2);
+				mruNodes1.removeFromCache(model, shapeModelKey);
 			}
 		}
 		boolean scaled;
@@ -272,8 +272,8 @@ public final class ObjectDef {
 			builtModel.rotateYQuarterTurn();
 		}
 		if (modifiedModelColors != null) {
-			for (int k2 = 0; k2 < modifiedModelColors.length; k2++) {
-				builtModel.recolor(modifiedModelColors[k2], originalModelColors[k2]);
+			for (int colorIndex = 0; colorIndex < modifiedModelColors.length; colorIndex++) {
+				builtModel.recolor(modifiedModelColors[colorIndex], originalModelColors[colorIndex]);
 			}
 
 		}

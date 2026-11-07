@@ -410,44 +410,44 @@ final class ObjectManager {
 		return height;
 	}
 
-	public static void method173(Stream stream, OnDemandFetcher class42_sub1) {
+	public static void requestObjectModels(Stream objectData, OnDemandFetcher fetcher) {
 		label0 : {
-			int i = -1;
+			int objectId = -1;
 			do {
-				int j = stream.readUnsignedSmart();
-				if (j == 0) {
+				int objectIdDelta = objectData.readUnsignedSmart();
+				if (objectIdDelta == 0) {
 					break label0;
 				}
-				i += j;
-				ObjectDef class46 = ObjectDef.forID(i);
-				class46.requestModels(class42_sub1);
+				objectId += objectIdDelta;
+				ObjectDef objectDef = ObjectDef.forID(objectId);
+				objectDef.requestModels(fetcher);
 				do {
-					int k = stream.readUnsignedSmart();
-					if (k == 0) {
+					int positionDelta = objectData.readUnsignedSmart();
+					if (positionDelta == 0) {
 						break;
 					}
-					stream.readUnsignedByte();
+					objectData.readUnsignedByte();
 				} while (true);
 			} while (true);
 		}
 	}
 
-	public final void method174(int i, int j, int l, int i1) {
-		for (int j1 = i; j1 <= i + j; j1++) {
-			for (int k1 = i1; k1 <= i1 + l; k1++) {
-				if (k1 >= 0 && k1 < anInt146 && j1 >= 0 && j1 < anInt147) {
-					objectShadow[0][k1][j1] = 127;
-					if (k1 == i1 && k1 > 0) {
-						anIntArrayArrayArray129[0][k1][j1] = anIntArrayArrayArray129[0][k1 - 1][j1];
+	public final void blankRegionArea(int startY, int spanY, int spanX, int startX) {
+		for (int tileY = startY; tileY <= startY + spanY; tileY++) {
+			for (int tileX = startX; tileX <= startX + spanX; tileX++) {
+				if (tileX >= 0 && tileX < anInt146 && tileY >= 0 && tileY < anInt147) {
+					objectShadow[0][tileX][tileY] = 127;
+					if (tileX == startX && tileX > 0) {
+						anIntArrayArrayArray129[0][tileX][tileY] = anIntArrayArrayArray129[0][tileX - 1][tileY];
 					}
-					if (k1 == i1 + l && k1 < anInt146 - 1) {
-						anIntArrayArrayArray129[0][k1][j1] = anIntArrayArrayArray129[0][k1 + 1][j1];
+					if (tileX == startX + spanX && tileX < anInt146 - 1) {
+						anIntArrayArrayArray129[0][tileX][tileY] = anIntArrayArrayArray129[0][tileX + 1][tileY];
 					}
-					if (j1 == i && j1 > 0) {
-						anIntArrayArrayArray129[0][k1][j1] = anIntArrayArrayArray129[0][k1][j1 - 1];
+					if (tileY == startY && tileY > 0) {
+						anIntArrayArrayArray129[0][tileX][tileY] = anIntArrayArrayArray129[0][tileX][tileY - 1];
 					}
-					if (j1 == i + j && j1 < anInt147 - 1) {
-						anIntArrayArrayArray129[0][k1][j1] = anIntArrayArrayArray129[0][k1][j1 + 1];
+					if (tileY == startY + spanY && tileY < anInt147 - 1) {
+						anIntArrayArrayArray129[0][tileX][tileY] = anIntArrayArrayArray129[0][tileX][tileY + 1];
 					}
 				}
 			}
@@ -506,16 +506,16 @@ final class ObjectManager {
 				if (shape == 11) {
 					i5 += 256;
 				}
-				int j4;
-				int l4;
+				int footprintX;
+				int footprintY;
 				if (orientation == 1 || orientation == 3) {
-					j4 = objectDef.sizeY;
-					l4 = objectDef.sizeX;
+					footprintX = objectDef.sizeY;
+					footprintY = objectDef.sizeX;
 				} else {
-					j4 = objectDef.sizeX;
-					l4 = objectDef.sizeY;
+					footprintX = objectDef.sizeX;
+					footprintY = objectDef.sizeY;
 				}
-				if (worldController.addSceneObject(uid, shapeAndOrientation, averageHeight, l4, ((Animable) obj1), j4, plane, i5, tileY, tileX) && objectDef.castsShadow) {
+				if (worldController.addSceneObject(uid, shapeAndOrientation, averageHeight, footprintY, ((Animable) obj1), footprintX, plane, i5, tileY, tileX) && objectDef.castsShadow) {
 					Model model;
 					if (obj1 instanceof Model) {
 						model = (Model) obj1;
@@ -523,14 +523,14 @@ final class ObjectManager {
 						model = objectDef.getModel(10, orientation, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 					}
 					if (model != null) {
-						for (int j5 = 0; j5 <= j4; j5++) {
-							for (int k5 = 0; k5 <= l4; k5++) {
-								int l5 = model.radiusXZ / 4;
-								if (l5 > 30) {
-									l5 = 30;
+						for (int shadowOffsetX = 0; shadowOffsetX <= footprintX; shadowOffsetX++) {
+							for (int shadowOffsetY = 0; shadowOffsetY <= footprintY; shadowOffsetY++) {
+								int shadowStrength = model.radiusXZ / 4;
+								if (shadowStrength > 30) {
+									shadowStrength = 30;
 								}
-								if (l5 > objectShadow[plane][tileX + j5][tileY + k5]) {
-									objectShadow[plane][tileX + j5][tileY + k5] = (byte) l5;
+								if (shadowStrength > objectShadow[plane][tileX + shadowOffsetX][tileY + shadowOffsetY]) {
+									objectShadow[plane][tileX + shadowOffsetX][tileY + shadowOffsetY] = (byte) shadowStrength;
 								}
 							}
 
@@ -813,34 +813,34 @@ final class ObjectManager {
 		return (hue / 4 << 10) + (saturation / 32 << 7) + lightness / 2;
 	}
 
-	public static boolean method178(int i, int j) {
-		ObjectDef class46 = ObjectDef.forID(i);
-		if (j == 11) {
-			j = 10;
+	public static boolean areObjectModelsLoaded(int objectId, int shape) {
+		ObjectDef objectDef = ObjectDef.forID(objectId);
+		if (shape == 11) {
+			shape = 10;
 		}
-		if (j >= 5 && j <= 8) {
-			j = 4;
+		if (shape >= 5 && shape <= 8) {
+			shape = 4;
 		}
-		return class46.areModelsLoaded(j);
+		return objectDef.areModelsLoaded(shape);
 	}
 
-	public final void method179(int i, int j, CollisionMap aclass11[], int l, int i1, byte abyte0[], int j1, int k1, int l1) {
-		for (int i2 = 0; i2 < 8; i2++) {
-			for (int j2 = 0; j2 < 8; j2++) {
-				if (l + i2 > 0 && l + i2 < 103 && l1 + j2 > 0 && l1 + j2 < 103) {
-					aclass11[k1].tileFlags[l + i2][l1 + j2] &= 0xfeffffff;
+	public final void loadTerrainChunk(int sourcePlane, int rotation, CollisionMap collisionMaps[], int destX, int sourceX, byte data[], int sourceY, int destPlane, int destY) {
+		for (int offsetX = 0; offsetX < 8; offsetX++) {
+			for (int offsetY = 0; offsetY < 8; offsetY++) {
+				if (destX + offsetX > 0 && destX + offsetX < 103 && destY + offsetY > 0 && destY + offsetY < 103) {
+					collisionMaps[destPlane].tileFlags[destX + offsetX][destY + offsetY] &= 0xfeffffff;
 				}
 			}
 
 		}
-		Stream stream = new Stream(abyte0);
-		for (int l2 = 0; l2 < 4; l2++) {
-			for (int i3 = 0; i3 < 64; i3++) {
-				for (int j3 = 0; j3 < 64; j3++) {
-					if (l2 == i && i3 >= i1 && i3 < i1 + 8 && j3 >= j1 && j3 < j1 + 8) {
-						method181(l1 + Class4.method156(j3 & 7, j, i3 & 7), 0, stream, l + Class4.method155(j, j3 & 7, i3 & 7), k1, j, 0);
+		Stream stream = new Stream(data);
+		for (int plane = 0; plane < 4; plane++) {
+			for (int regionX = 0; regionX < 64; regionX++) {
+				for (int regionY = 0; regionY < 64; regionY++) {
+					if (plane == sourcePlane && regionX >= sourceX && regionX < sourceX + 8 && regionY >= sourceY && regionY < sourceY + 8) {
+						readTerrainTile(destY + Class4.method156(regionY & 7, rotation, regionX & 7), 0, stream, destX + Class4.method155(rotation, regionY & 7, regionX & 7), destPlane, rotation, 0);
 					} else {
-						method181(-1, 0, stream, -1, 0, 0, 0);
+						readTerrainTile(-1, 0, stream, -1, 0, 0, 0);
 					}
 				}
 
@@ -850,12 +850,12 @@ final class ObjectManager {
 
 	}
 
-	public final void method180(byte abyte0[], int i, int j, int k, int l, CollisionMap aclass11[]) {
-		for (int i1 = 0; i1 < 4; i1++) {
-			for (int j1 = 0; j1 < 64; j1++) {
-				for (int k1 = 0; k1 < 64; k1++) {
-					if (j + j1 > 0 && j + j1 < 103 && i + k1 > 0 && i + k1 < 103) {
-						aclass11[i1].tileFlags[j + j1][i + k1] &= 0xfeffffff;
+	public final void loadTerrainRegion(byte data[], int baseY, int baseX, int noiseOffsetX, int noiseOffsetY, CollisionMap collisionMaps[]) {
+		for (int plane = 0; plane < 4; plane++) {
+			for (int offsetX = 0; offsetX < 64; offsetX++) {
+				for (int offsetY = 0; offsetY < 64; offsetY++) {
+					if (baseX + offsetX > 0 && baseX + offsetX < 103 && baseY + offsetY > 0 && baseY + offsetY < 103) {
+						collisionMaps[plane].tileFlags[baseX + offsetX][baseY + offsetY] &= 0xfeffffff;
 					}
 				}
 
@@ -863,11 +863,11 @@ final class ObjectManager {
 
 		}
 
-		Stream stream = new Stream(abyte0);
-		for (int l1 = 0; l1 < 4; l1++) {
-			for (int i2 = 0; i2 < 64; i2++) {
-				for (int j2 = 0; j2 < 64; j2++) {
-					method181(j2 + i, l, stream, i2 + j, l1, 0, k);
+		Stream stream = new Stream(data);
+		for (int plane = 0; plane < 4; plane++) {
+			for (int offsetX = 0; offsetX < 64; offsetX++) {
+				for (int offsetY = 0; offsetY < 64; offsetY++) {
+					readTerrainTile(offsetY + baseY, noiseOffsetY, stream, offsetX + baseX, plane, 0, noiseOffsetX);
 				}
 
 			}
@@ -875,54 +875,54 @@ final class ObjectManager {
 		}
 	}
 
-	private void method181(int i, int j, Stream stream, int k, int l, int i1, int k1) {
-		if (k >= 0 && k < 104 && i >= 0 && i < 104) {
-			aByteArrayArrayArray149[l][k][i] = 0;
+	private void readTerrainTile(int tileY, int noiseOffsetY, Stream stream, int tileX, int plane, int rotation, int noiseOffsetX) {
+		if (tileX >= 0 && tileX < 104 && tileY >= 0 && tileY < 104) {
+			aByteArrayArrayArray149[plane][tileX][tileY] = 0;
 			do {
-				int l1 = stream.readUnsignedByte();
-				if (l1 == 0) {
-					if (l == 0) {
-						anIntArrayArrayArray129[0][k][i] = -proceduralHeight(0xe3b7b + k + k1, 0x87cce + i + j) * 8;
+				int opcode = stream.readUnsignedByte();
+				if (opcode == 0) {
+					if (plane == 0) {
+						anIntArrayArrayArray129[0][tileX][tileY] = -proceduralHeight(0xe3b7b + tileX + noiseOffsetX, 0x87cce + tileY + noiseOffsetY) * 8;
 						return;
 					} else {
-						anIntArrayArrayArray129[l][k][i] = anIntArrayArrayArray129[l - 1][k][i] - 240;
+						anIntArrayArrayArray129[plane][tileX][tileY] = anIntArrayArrayArray129[plane - 1][tileX][tileY] - 240;
 						return;
 					}
 				}
-				if (l1 == 1) {
-					int j2 = stream.readUnsignedByte();
-					if (j2 == 1) {
-						j2 = 0;
+				if (opcode == 1) {
+					int explicitHeight = stream.readUnsignedByte();
+					if (explicitHeight == 1) {
+						explicitHeight = 0;
 					}
-					if (l == 0) {
-						anIntArrayArrayArray129[0][k][i] = -j2 * 8;
+					if (plane == 0) {
+						anIntArrayArrayArray129[0][tileX][tileY] = -explicitHeight * 8;
 						return;
 					} else {
-						anIntArrayArrayArray129[l][k][i] = anIntArrayArrayArray129[l - 1][k][i] - j2 * 8;
+						anIntArrayArrayArray129[plane][tileX][tileY] = anIntArrayArrayArray129[plane - 1][tileX][tileY] - explicitHeight * 8;
 						return;
 					}
 				}
-				if (l1 <= 49) {
-					aByteArrayArrayArray130[l][k][i] = stream.readSignedByte();
-					aByteArrayArrayArray136[l][k][i] = (byte) ((l1 - 2) / 4);
-					aByteArrayArrayArray148[l][k][i] = (byte) (l1 - 2 + i1 & 3);
-				} else if (l1 <= 81) {
-					aByteArrayArrayArray149[l][k][i] = (byte) (l1 - 49);
+				if (opcode <= 49) {
+					aByteArrayArrayArray130[plane][tileX][tileY] = stream.readSignedByte();
+					aByteArrayArrayArray136[plane][tileX][tileY] = (byte) ((opcode - 2) / 4);
+					aByteArrayArrayArray148[plane][tileX][tileY] = (byte) (opcode - 2 + rotation & 3);
+				} else if (opcode <= 81) {
+					aByteArrayArrayArray149[plane][tileX][tileY] = (byte) (opcode - 49);
 				} else {
-					aByteArrayArrayArray142[l][k][i] = (byte) (l1 - 81);
+					aByteArrayArrayArray142[plane][tileX][tileY] = (byte) (opcode - 81);
 				}
 			} while (true);
 		}
 		do {
-			int i2 = stream.readUnsignedByte();
-			if (i2 == 0) {
+			int skippedOpcode = stream.readUnsignedByte();
+			if (skippedOpcode == 0) {
 				break;
 			}
-			if (i2 == 1) {
+			if (skippedOpcode == 1) {
 				stream.readUnsignedByte();
 				return;
 			}
-			if (i2 <= 49) {
+			if (skippedOpcode <= 49) {
 				stream.readUnsignedByte();
 			}
 		} while (true);
@@ -939,43 +939,43 @@ final class ObjectManager {
 		}
 	}
 
-	public final void method183(CollisionMap aclass11[], WorldController worldController, int i, int j, int k, int l, byte abyte0[], int i1, int j1, int k1) {
+	public final void loadObjectChunk(CollisionMap collisionMaps[], WorldController worldController, int sourcePlane, int destX, int sourceY, int destPlane, byte data[], int sourceX, int rotation, int destY) {
 		label0 : {
-			Stream stream = new Stream(abyte0);
-			int l1 = -1;
+			Stream stream = new Stream(data);
+			int objectId = -1;
 			do {
-				int i2 = stream.readUnsignedSmart();
-				if (i2 == 0) {
+				int objectIdDelta = stream.readUnsignedSmart();
+				if (objectIdDelta == 0) {
 					break label0;
 				}
-				l1 += i2;
-				int j2 = 0;
+				objectId += objectIdDelta;
+				int packedPosition = 0;
 				do {
-					int k2 = stream.readUnsignedSmart();
-					if (k2 == 0) {
+					int positionDelta = stream.readUnsignedSmart();
+					if (positionDelta == 0) {
 						break;
 					}
-					j2 += k2 - 1;
-					int l2 = j2 & 0x3f;
-					int i3 = j2 >> 6 & 0x3f;
-					int j3 = j2 >> 12;
-					int k3 = stream.readUnsignedByte();
-					int l3 = k3 >> 2;
-					int i4 = k3 & 3;
-					if (j3 == i && i3 >= i1 && i3 < i1 + 8 && l2 >= k && l2 < k + 8) {
-						ObjectDef class46 = ObjectDef.forID(l1);
-						int j4 = j + Class4.method157(j1, class46.sizeY, i3 & 7, l2 & 7, class46.sizeX);
-						int k4 = k1 + Class4.method158(l2 & 7, class46.sizeY, j1, class46.sizeX, i3 & 7);
-						if (j4 > 0 && k4 > 0 && j4 < 103 && k4 < 103) {
-							int l4 = j3;
-							if ((aByteArrayArrayArray149[1][j4][k4] & 2) == 2) {
-								l4--;
+					packedPosition += positionDelta - 1;
+					int localY = packedPosition & 0x3f;
+					int localX = packedPosition >> 6 & 0x3f;
+					int objectPlane = packedPosition >> 12;
+					int attribute = stream.readUnsignedByte();
+					int shape = attribute >> 2;
+					int objectOrientation = attribute & 3;
+					if (objectPlane == sourcePlane && localX >= sourceX && localX < sourceX + 8 && localY >= sourceY && localY < sourceY + 8) {
+						ObjectDef objectDef = ObjectDef.forID(objectId);
+						int destTileX = destX + Class4.method157(rotation, objectDef.sizeY, localX & 7, localY & 7, objectDef.sizeX);
+						int destTileY = destY + Class4.method158(localY & 7, objectDef.sizeY, rotation, objectDef.sizeX, localX & 7);
+						if (destTileX > 0 && destTileY > 0 && destTileX < 103 && destTileY < 103) {
+							int collisionPlane = objectPlane;
+							if ((aByteArrayArrayArray149[1][destTileX][destTileY] & 2) == 2) {
+								collisionPlane--;
 							}
-							CollisionMap class11 = null;
-							if (l4 >= 0) {
-								class11 = aclass11[l4];
+							CollisionMap collisionMap = null;
+							if (collisionPlane >= 0) {
+								collisionMap = collisionMaps[collisionPlane];
 							}
-							placeObject(k4, worldController, class11, l3, l, j4, l1, i4 + j1 & 3);
+							placeObject(destTileY, worldController, collisionMap, shape, destPlane, destTileX, objectId, objectOrientation + rotation & 3);
 						}
 					}
 				} while (true);

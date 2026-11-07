@@ -679,7 +679,7 @@ public class Game extends RSApplet {
 					int k5 = (anIntArray1234[i3] & 0xff) * 64 - baseY;
 					byte abyte0[] = aByteArrayArray1183[i3];
 					if (abyte0 != null) {
-						objectManager.method180(abyte0, k5, i4, (anInt1069 - 6) * 8, (anInt1070 - 6) * 8, aClass11Array1230);
+						objectManager.loadTerrainRegion(abyte0, k5, i4, (anInt1069 - 6) * 8, (anInt1070 - 6) * 8, aClass11Array1230);
 					}
 				}
 
@@ -688,7 +688,7 @@ public class Game extends RSApplet {
 					int k7 = (anIntArray1234[j4] & 0xff) * 64 - baseY;
 					byte abyte2[] = aByteArrayArray1183[j4];
 					if (abyte2 == null && anInt1070 < 800) {
-						objectManager.method174(k7, 64, 64, l5);
+						objectManager.blankRegionArea(k7, 64, 64, l5);
 					}
 				}
 
@@ -724,7 +724,7 @@ public class Game extends RSApplet {
 									if (anIntArray1234[l11] != j11 || aByteArrayArray1183[l11] == null) {
 										continue;
 									}
-									objectManager.method179(i9, l9, aClass11Array1230, k4 * 8, (j10 & 7) * 8, aByteArrayArray1183[l11], (l10 & 7) * 8, j3, j6 * 8);
+									objectManager.loadTerrainChunk(i9, l9, aClass11Array1230, k4 * 8, (j10 & 7) * 8, aByteArrayArray1183[l11], (l10 & 7) * 8, j3, j6 * 8);
 									break;
 								}
 
@@ -739,7 +739,7 @@ public class Game extends RSApplet {
 					for (int k6 = 0; k6 < 13; k6++) {
 						int i8 = anIntArrayArrayArray1129[0][l4][k6];
 						if (i8 == -1) {
-							objectManager.method174(k6 * 8, 8, 8, l4 * 8);
+							objectManager.blankRegionArea(k6 * 8, 8, 8, l4 * 8);
 						}
 					}
 
@@ -760,7 +760,7 @@ public class Game extends RSApplet {
 									if (anIntArray1234[k12] != j12 || aByteArrayArray1247[k12] == null) {
 										continue;
 									}
-									objectManager.method183(aClass11Array1230, worldController, k10, j8 * 8, (i12 & 7) * 8, l6, aByteArrayArray1247[k12], (k11 & 7) * 8, i11, j9 * 8);
+									objectManager.loadObjectChunk(aClass11Array1230, worldController, k10, j8 * 8, (i12 & 7) * 8, l6, aByteArrayArray1247[k12], (k11 & 7) * 8, i11, j9 * 8);
 									break;
 								}
 
@@ -2889,7 +2889,7 @@ public class Game extends RSApplet {
 
 				}
 			} while (onDemandData.dataType != 93 || !onDemandFetcher.method564(onDemandData.ID));
-			ObjectManager.method173(new Stream(onDemandData.buffer), onDemandFetcher);
+			ObjectManager.requestObjectModels(new Stream(onDemandData.buffer), onDemandFetcher);
 		} while (true);
 	}
 
@@ -8964,7 +8964,7 @@ public class Game extends RSApplet {
 					pendingSceneChange.restoreDelayTicks--;
 				}
 				if (pendingSceneChange.restoreDelayTicks == 0) {
-					if (pendingSceneChange.originalObjectId < 0 || ObjectManager.method178(pendingSceneChange.originalObjectId, pendingSceneChange.originalShape)) {
+					if (pendingSceneChange.originalObjectId < 0 || ObjectManager.areObjectModelsLoaded(pendingSceneChange.originalObjectId, pendingSceneChange.originalShape)) {
 						applySceneObjectChange(pendingSceneChange.tileY, pendingSceneChange.scenePlane, pendingSceneChange.originalOrientation, pendingSceneChange.originalShape, pendingSceneChange.tileX, pendingSceneChange.objectCategory, pendingSceneChange.originalObjectId);
 						pendingSceneChange.unlink();
 					}
@@ -8972,7 +8972,7 @@ public class Game extends RSApplet {
 					if (pendingSceneChange.placementDelayTicks > 0) {
 						pendingSceneChange.placementDelayTicks--;
 					}
-					if (pendingSceneChange.placementDelayTicks == 0 && pendingSceneChange.tileX >= 1 && pendingSceneChange.tileY >= 1 && pendingSceneChange.tileX <= 102 && pendingSceneChange.tileY <= 102 && (pendingSceneChange.requestedObjectId < 0 || ObjectManager.method178(pendingSceneChange.requestedObjectId, pendingSceneChange.requestedShape))) {
+					if (pendingSceneChange.placementDelayTicks == 0 && pendingSceneChange.tileX >= 1 && pendingSceneChange.tileY >= 1 && pendingSceneChange.tileX <= 102 && pendingSceneChange.tileY <= 102 && (pendingSceneChange.requestedObjectId < 0 || ObjectManager.areObjectModelsLoaded(pendingSceneChange.requestedObjectId, pendingSceneChange.requestedShape))) {
 						applySceneObjectChange(pendingSceneChange.tileY, pendingSceneChange.scenePlane, pendingSceneChange.requestedOrientation, pendingSceneChange.requestedShape, pendingSceneChange.tileX, pendingSceneChange.objectCategory, pendingSceneChange.requestedObjectId);
 						pendingSceneChange.placementDelayTicks = -1;
 						if (pendingSceneChange.requestedObjectId == pendingSceneChange.originalObjectId && pendingSceneChange.originalObjectId == -1) {
