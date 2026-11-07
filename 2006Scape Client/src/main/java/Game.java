@@ -9474,12 +9474,12 @@ public class Game extends RSApplet {
 	public void drawMinimap() {
 		aRSImageProducer_1164.setAsDrawingArea();
 		if (anInt1021 == 2) {
-			byte abyte0[] = mapBack.paletteIndices;
-			int ai[] = DrawingArea.pixels;
-			int k2 = abyte0.length;
-			for (int i5 = 0; i5 < k2; i5++) {
-				if (abyte0[i5] == 0) {
-					ai[i5] = 0;
+			byte backMaskIndices[] = mapBack.paletteIndices;
+			int raster[] = DrawingArea.pixels;
+			int maskLength = backMaskIndices.length;
+			for (int pixelIndex = 0; pixelIndex < maskLength; pixelIndex++) {
+				if (backMaskIndices[pixelIndex] == 0) {
+					raster[pixelIndex] = 0;
 				}
 			}
 
@@ -9488,102 +9488,102 @@ public class Game extends RSApplet {
 			Texture.lineOffsets = chatBoxAreaOffsets;
 			return;
 		}
-		int i = minimapInt1 + minimapInt2 & 0x7ff;
-		int j = 48 + myPlayer.x / 32;
-		int l2 = 464 - myPlayer.y / 32;
-		minimapSprite.drawRotatedScanlines(151, i, anIntArray1229, 256 + minimapInt3, anIntArray1052, l2, 5, 25, 146, j);
+		int minimapRotation = minimapInt1 + minimapInt2 & 0x7ff;
+		int sourceCenterX = 48 + myPlayer.x / 32;
+		int sourceCenterY = 464 - myPlayer.y / 32;
+		minimapSprite.drawRotatedScanlines(151, minimapRotation, anIntArray1229, 256 + minimapInt3, anIntArray1052, sourceCenterY, 5, 25, 146, sourceCenterX);
 		compass.drawRotatedScanlines(33, minimapInt1, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
 		// Minimap icons (shops, quest etc)
-		for (int j5 = 0; j5 < mapFunctionIconCount; j5++) {
-			int k = mapFunctionIconTileX[j5] * 4 + 2 - myPlayer.x / 32;
-			int i3 = mapFunctionIconTileY[j5] * 4 + 2 - myPlayer.y / 32;
-			drawMinimapMarker(mapFunctionIconSprites[j5], k, i3);
+		for (int iconIndex = 0; iconIndex < mapFunctionIconCount; iconIndex++) {
+			int iconOffsetX = mapFunctionIconTileX[iconIndex] * 4 + 2 - myPlayer.x / 32;
+			int iconOffsetY = mapFunctionIconTileY[iconIndex] * 4 + 2 - myPlayer.y / 32;
+			drawMinimapMarker(mapFunctionIconSprites[iconIndex], iconOffsetX, iconOffsetY);
 		}
 
-		for (int k5 = 0; k5 < 104; k5++) {
-			for (int l5 = 0; l5 < 104; l5++) {
-				NodeList class19 = groundArray[plane][k5][l5];
-				if (class19 != null) {
-					int l = k5 * 4 + 2 - myPlayer.x / 32;
-					int j3 = l5 * 4 + 2 - myPlayer.y / 32;
-					drawMinimapMarker(mapDotItem, l, j3);
+		for (int tileX = 0; tileX < 104; tileX++) {
+			for (int tileY = 0; tileY < 104; tileY++) {
+				NodeList groundItems = groundArray[plane][tileX][tileY];
+				if (groundItems != null) {
+					int itemOffsetX = tileX * 4 + 2 - myPlayer.x / 32;
+					int itemOffsetY = tileY * 4 + 2 - myPlayer.y / 32;
+					drawMinimapMarker(mapDotItem, itemOffsetX, itemOffsetY);
 				}
 			}
 		}
 
-		for (int i6 = 0; i6 < npcCount; i6++) {
-			NPC npc = npcArray[npcIndices[i6]];
+		for (int npcSlot = 0; npcSlot < npcCount; npcSlot++) {
+			NPC npc = npcArray[npcIndices[npcSlot]];
 			if (npc != null && npc.isVisible()) {
 				EntityDef entityDef = npc.desc;
 				if (entityDef.childrenIDs != null) {
 					entityDef = entityDef.getMorphedDefinition();
 				}
 				if (entityDef != null && entityDef.showsMinimapDot && entityDef.interactable) {
-					int i1 = npc.x / 32 - myPlayer.x / 32;
-					int k3 = npc.y / 32 - myPlayer.y / 32;
-					drawMinimapMarker(mapDotNPC, i1, k3);
+					int npcOffsetX = npc.x / 32 - myPlayer.x / 32;
+					int npcOffsetY = npc.y / 32 - myPlayer.y / 32;
+					drawMinimapMarker(mapDotNPC, npcOffsetX, npcOffsetY);
 				}
 			}
 		}
 
-		for (int j6 = 0; j6 < playerCount; j6++) {
-			Player player = playerArray[playerIndices[j6]];
+		for (int playerSlot = 0; playerSlot < playerCount; playerSlot++) {
+			Player player = playerArray[playerIndices[playerSlot]];
 			if (player != null && player.isVisible()) {
-				int j1 = player.x / 32 - myPlayer.x / 32;
-				int l3 = player.y / 32 - myPlayer.y / 32;
-				boolean flag1 = false;
-				boolean flag2 = false;
-				long l6 = TextClass.encodeBase37Name(player.name);
+				int playerOffsetX = player.x / 32 - myPlayer.x / 32;
+				int playerOffsetY = player.y / 32 - myPlayer.y / 32;
+				boolean teamDot = false;
+				boolean onlineFriend = false;
+				long nameHash = TextClass.encodeBase37Name(player.name);
 
 				if (myPlayer.team != 0 && player.team != 0 && myPlayer.team == player.team || player.combatLevel == 0) {
-					flag1 = true;
+					teamDot = true;
 				}
 
-				for (int k6 = 0; k6 < friendsCount; k6++) {
-					if (l6 != friendsListAsLongs[k6] || friendsNodeIDs[k6] == 0) {
+				for (int friendSlot = 0; friendSlot < friendsCount; friendSlot++) {
+					if (nameHash != friendsListAsLongs[friendSlot] || friendsNodeIDs[friendSlot] == 0) {
 						continue;
 					}
-					flag2 = true;
+					onlineFriend = true;
 					break;
 				}
 
-				if (flag1) {
-					drawMinimapMarker(mapDotTeam, j1, l3);
-				} else if (flag2) {
-					drawMinimapMarker(mapDotFriend, j1, l3);
+				if (teamDot) {
+					drawMinimapMarker(mapDotTeam, playerOffsetX, playerOffsetY);
+				} else if (onlineFriend) {
+					drawMinimapMarker(mapDotFriend, playerOffsetX, playerOffsetY);
 				} else {
-					drawMinimapMarker(mapDotPlayer, j1, l3);
+					drawMinimapMarker(mapDotPlayer, playerOffsetX, playerOffsetY);
 				}
 			}
 		}
 
 		if (anInt855 != 0 && loopCycle % 20 < 10) {
 			if (anInt855 == 1 && anInt1222 >= 0 && anInt1222 < npcArray.length) {
-				NPC class30_sub2_sub4_sub1_sub1_1 = npcArray[anInt1222];
-				if (class30_sub2_sub4_sub1_sub1_1 != null) {
-					int k1 = class30_sub2_sub4_sub1_sub1_1.x / 32 - myPlayer.x / 32;
-					int i4 = class30_sub2_sub4_sub1_sub1_1.y / 32 - myPlayer.y / 32;
-					drawMinimapHint(mapMarker, i4, k1);
+				NPC hintNpc = npcArray[anInt1222];
+				if (hintNpc != null) {
+					int hintNpcOffsetX = hintNpc.x / 32 - myPlayer.x / 32;
+					int hintNpcOffsetY = hintNpc.y / 32 - myPlayer.y / 32;
+					drawMinimapHint(mapMarker, hintNpcOffsetY, hintNpcOffsetX);
 				}
 			}
 			if (anInt855 == 2) {
-				int l1 = (anInt934 - baseX) * 4 + 2 - myPlayer.x / 32;
-				int j4 = (anInt935 - baseY) * 4 + 2 - myPlayer.y / 32;
-				drawMinimapHint(mapMarker, j4, l1);
+				int hintLocationOffsetX = (anInt934 - baseX) * 4 + 2 - myPlayer.x / 32;
+				int hintLocationOffsetY = (anInt935 - baseY) * 4 + 2 - myPlayer.y / 32;
+				drawMinimapHint(mapMarker, hintLocationOffsetY, hintLocationOffsetX);
 			}
 			if (anInt855 == 10 && anInt933 >= 0 && anInt933 < playerArray.length) {
-				Player class30_sub2_sub4_sub1_sub2_1 = playerArray[anInt933];
-				if (class30_sub2_sub4_sub1_sub2_1 != null) {
-					int i2 = class30_sub2_sub4_sub1_sub2_1.x / 32 - myPlayer.x / 32;
-					int k4 = class30_sub2_sub4_sub1_sub2_1.y / 32 - myPlayer.y / 32;
-					drawMinimapHint(mapMarker, k4, i2);
+				Player hintPlayer = playerArray[anInt933];
+				if (hintPlayer != null) {
+					int hintPlayerOffsetX = hintPlayer.x / 32 - myPlayer.x / 32;
+					int hintPlayerOffsetY = hintPlayer.y / 32 - myPlayer.y / 32;
+					drawMinimapHint(mapMarker, hintPlayerOffsetY, hintPlayerOffsetX);
 				}
 			}
 		}
 		if (destX != 0) {
-			int j2 = destX * 4 + 2 - myPlayer.x / 32;
-			int l4 = destY * 4 + 2 - myPlayer.y / 32;
-			drawMinimapMarker(mapFlag, j2, l4);
+			int destOffsetX = destX * 4 + 2 - myPlayer.x / 32;
+			int destOffsetY = destY * 4 + 2 - myPlayer.y / 32;
+			drawMinimapMarker(mapFlag, destOffsetX, destOffsetY);
 		}
 		// Draw player square on mini map
 		DrawingArea.fillRectangle(3, 78, 0xffffff, 3, 97);
