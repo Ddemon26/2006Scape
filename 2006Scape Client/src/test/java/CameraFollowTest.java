@@ -202,6 +202,42 @@ public class CameraFollowTest {
         assertFalse(fresh.cameraMovePending); assertEquals(0, fresh.cameraSendCooldown);
     }
 
+    // mainGameProcessor minimap drift: timer, axis bits and bounce (rotation and zoom offsets)
+    @Test public void minimapDriftTimerAppliesStepsOnlyAfterFiveHundredCyclesWithIndependentAxisBits() throws Exception {
+        CycleSpy g = cycleGame();
+        g.minimapDriftTimer = 499; g.minimapRotationDrift = 10; g.minimapZoomDrift = -5;
+        cycle(g);                                    // 499 -> 500: no drift yet
+        assertEquals(500, g.minimapDriftTimer); assertEquals(10, g.minimapRotationDrift); assertEquals(-5, g.minimapZoomDrift);
+        boolean[] combos = new boolean[4];
+        for (int t = 0; t < 300; t++) {
+            g.minimapDriftTimer = 500; g.minimapRotationDrift = 10; g.minimapZoomDrift = -5;
+            g.minimapRotationDriftStep = -2; g.minimapZoomDriftStep = 1;
+            cycle(g);
+            assertEquals(0, g.minimapDriftTimer);            // the drift tick resets the timer
+            int dr = g.minimapRotationDrift - 10, dz = g.minimapZoomDrift + 5;
+            assertTrue(dr == 0 || dr == -2); assertTrue(dz == 0 || dz == 1);
+            combos[(dr != 0 ? 1 : 0) | (dz != 0 ? 2 : 0)] = true;
+        }
+        for (int c = 0; c < 4; c++) assertTrue("minimap axis combination " + c, combos[c]);
+        g.minimapDriftTimer = 0; g.minimapRotationDrift = 10; g.minimapZoomDrift = -5; g.minimapRotationDriftStep = -2; g.minimapZoomDriftStep = 1;
+        cycle(g);                                    // ordinary cycle only counts the timer up
+        assertEquals(1, g.minimapDriftTimer); assertEquals(10, g.minimapRotationDrift); assertEquals(-5, g.minimapZoomDrift);
+    }
+
+    @Test public void minimapDriftStepsBounceAtTheirBounds() throws Exception {
+        int[][] cases = { // rotation, zoom, expected rotation step, zoom step (start steps 7)
+            {-61, -21, 2, 1}, {61, 11, -2, -1}, {-60, -20, 7, 7}, {60, 10, 7, 7}, {0, 0, 7, 7}};
+        for (int[] c : cases) {
+            CycleSpy g = cycleGame();
+            g.minimapRotationDrift = c[0]; g.minimapZoomDrift = c[1]; g.minimapRotationDriftStep = 7; g.minimapZoomDriftStep = 7;
+            cycle(g);
+            assertEquals(c[2], g.minimapRotationDriftStep); assertEquals(c[3], g.minimapZoomDriftStep);
+            assertEquals(c[0], g.minimapRotationDrift); assertEquals(c[1], g.minimapZoomDrift);
+        }
+        CycleSpy fresh = new CycleSpy();             // constructor starts both minimap drifts moving positive
+        assertEquals(2, fresh.minimapRotationDriftStep); assertEquals(1, fresh.minimapZoomDriftStep);
+    }
+
     @Test public void wheelDragAddsToYawAndPitchVelocities() throws Exception {
         Game game = game(); game.updateCameraFollow();
         int yaw = game.cameraYawBase, pitch = game.cameraPitchBase = 200;

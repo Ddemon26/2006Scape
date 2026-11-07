@@ -124,23 +124,44 @@ public class MinimapDrawTest {
         Arrays.fill(map.pixels, 0x101010);
         int col = 48 + 250, row = 464 - 250;
         for (int dy = -1; dy <= 1; dy++) for (int dx = 9; dx <= 11; dx++) map.pixels[col + dx + (row + dy) * 512] = 0x00ff00;
-        g.cameraYawBase = 0; g.minimapInt2 = 0;
+        g.cameraYawBase = 0; g.minimapRotationDrift = 0;
         drawFresh();
         int[] a0 = scan(0x00ff00);
         assertTrue(a0[0] > 0 && a0[1] > 98 + 5);
-        g.cameraYawBase = 1024; g.minimapInt2 = 0;
+        g.cameraYawBase = 1024; g.minimapRotationDrift = 0;
         drawFresh();
         int[] half = scan(0x00ff00);
         assertTrue("half turn mirrors to the other side " + Arrays.toString(a0) + Arrays.toString(half), half[0] > 0 && half[1] < 98 - 5);
-        g.cameraYawBase = 600; g.minimapInt2 = 424;
+        g.cameraYawBase = 600; g.minimapRotationDrift = 424;
         drawFresh();
         assertArrayEquals("sum of the two angles", half, scan(0x00ff00));
-        g.cameraYawBase = 2000; g.minimapInt2 = 100;
+        g.cameraYawBase = 2000; g.minimapRotationDrift = 100;
         drawFresh();
         int[] saved = g.aRSImageProducer_1164.pixels.clone();
-        g.cameraYawBase = 52; g.minimapInt2 = 0;
+        g.cameraYawBase = 52; g.minimapRotationDrift = 0;
         drawFresh();
         assertArrayEquals("2100 & 0x7ff == 52", saved, g.aRSImageProducer_1164.pixels);
+    }
+
+    @Test public void zoomOffsetScalesTheImageAboutThePlayerWithoutRotatingIt() {
+        Game.myPlayer.x = 250 * 32;
+        Game.myPlayer.y = 250 * 32;
+        Arrays.fill(map.pixels, 0x101010);
+        int col = 48 + 250, row = 464 - 250;
+        for (int dy = -1; dy <= 1; dy++) for (int dx = 19; dx <= 21; dx++) map.pixels[col + dx + (row + dy) * 512] = 0x00ff00;
+        g.cameraYawBase = 0; g.minimapRotationDrift = 0;
+        int[] d = new int[3]; int[] z = {0, 128, -64};
+        for (int n = 0; n < 3; n++) {
+            g.minimapZoomDrift = z[n];
+            drawFresh();
+            int[] f = scan(0x00ff00);
+            assertTrue("block visible at zoom " + z[n], f[0] > 0);
+            assertTrue("zoom does not rotate: row stays at the centre " + Arrays.toString(f), Math.abs(f[2] - 80) <= 2);
+            d[n] = f[1] - 98;
+        }
+        assertTrue("256 is unit scale " + d[0], Math.abs(d[0] - 20) <= 2);
+        assertTrue("positive offset shrinks distance to 20*256/384 " + d[1], Math.abs(d[1] - 13) <= 2);
+        assertTrue("negative offset grows distance to 20*256/192 " + d[2], Math.abs(d[2] - 27) <= 2);
     }
 
     @Test public void interfaceModeTwoOnlyBlanksTheBackMaskAndDrawsNoMarkers() {

@@ -3290,28 +3290,28 @@ public class Game extends RSApplet {
 		if (cameraYawDrift > 40) {
 			cameraYawDriftStep = -1;
 		}
-		anInt1254++;
-		if (anInt1254 > 500) {
-			anInt1254 = 0;
-			int i2 = (int) (Math.random() * 8D);
-			if ((i2 & 1) == 1) {
-				minimapInt2 += anInt1210;
+		minimapDriftTimer++;
+		if (minimapDriftTimer > 500) {
+			minimapDriftTimer = 0;
+			int minimapDriftAxisMask = (int) (Math.random() * 8D);
+			if ((minimapDriftAxisMask & 1) == 1) {
+				minimapRotationDrift += minimapRotationDriftStep;
 			}
-			if ((i2 & 2) == 2) {
-				minimapInt3 += anInt1171;
+			if ((minimapDriftAxisMask & 2) == 2) {
+				minimapZoomDrift += minimapZoomDriftStep;
 			}
 		}
-		if (minimapInt2 < -60) {
-			anInt1210 = 2;
+		if (minimapRotationDrift < -60) {
+			minimapRotationDriftStep = 2;
 		}
-		if (minimapInt2 > 60) {
-			anInt1210 = -2;
+		if (minimapRotationDrift > 60) {
+			minimapRotationDriftStep = -2;
 		}
-		if (minimapInt3 < -20) {
-			anInt1171 = 1;
+		if (minimapZoomDrift < -20) {
+			minimapZoomDriftStep = 1;
 		}
-		if (minimapInt3 > 10) {
-			anInt1171 = -1;
+		if (minimapZoomDrift > 10) {
+			minimapZoomDriftStep = -1;
 		}
 		anInt1010++;
 		if (anInt1010 > 50) {
@@ -5916,11 +5916,11 @@ public class Game extends RSApplet {
 	public void drawMinimapHint(Sprite sprite, int offsetY, int offsetX) {
 		int distanceSquared = offsetX * offsetX + offsetY * offsetY;
 		if (distanceSquared > 4225 && distanceSquared < 90000) {
-			int rotation2048 = cameraYawBase + minimapInt2 & 0x7ff;
+			int rotation2048 = cameraYawBase + minimapRotationDrift & 0x7ff;
 			int scaledSine16 = Model.sineTable16[rotation2048];
 			int scaledCosine16 = Model.cosineTable16[rotation2048];
-			scaledSine16 = (scaledSine16 * 256) / (minimapInt3 + 256);
-			scaledCosine16 = (scaledCosine16 * 256) / (minimapInt3 + 256);
+			scaledSine16 = (scaledSine16 * 256) / (minimapZoomDrift + 256);
+			scaledCosine16 = (scaledCosine16 * 256) / (minimapZoomDrift + 256);
 			int rotatedX = offsetY * scaledSine16 + offsetX * scaledCosine16 >> 16;
 			int rotatedY = offsetY * scaledCosine16 - offsetX * scaledSine16 >> 16;
 			double arrowAngleRadians = Math.atan2((double) rotatedX, (double) rotatedY);
@@ -6124,8 +6124,8 @@ public class Game extends RSApplet {
 				cameraDriftX = (int) (Math.random() * 100D) - 50;
 				cameraDriftY = (int) (Math.random() * 110D) - 55;
 				cameraYawDrift = (int) (Math.random() * 80D) - 40;
-				minimapInt2 = (int) (Math.random() * 120D) - 60;
-				minimapInt3 = (int) (Math.random() * 30D) - 20;
+				minimapRotationDrift = (int) (Math.random() * 120D) - 60;
+				minimapZoomDrift = (int) (Math.random() * 30D) - 20;
 				cameraYawBase = (int) (Math.random() * 20D) - 10 & 0x7ff;
 				minimapState = 0;
 				minimapBuiltPlane = -1;
@@ -7444,11 +7444,11 @@ public class Game extends RSApplet {
 			if (i >= 0 && j >= 0 && i < 146 && j < 151) {
 				i -= 73;
 				j -= 75;
-				int k = cameraYawBase + minimapInt2 & 0x7ff;
+				int k = cameraYawBase + minimapRotationDrift & 0x7ff;
 				int i1 = Texture.sineTable[k];
 				int j1 = Texture.cosineTable[k];
-				i1 = i1 * (minimapInt3 + 256) >> 8;
-				j1 = j1 * (minimapInt3 + 256) >> 8;
+				i1 = i1 * (minimapZoomDrift + 256) >> 8;
+				j1 = j1 * (minimapZoomDrift + 256) >> 8;
 				int k1 = j * i1 + i * j1 >> 11;
 				int l1 = j * j1 - i * i1 >> 11;
 				int i2 = myPlayer.x + k1 >> 7;
@@ -7459,8 +7459,8 @@ public class Game extends RSApplet {
 					stream.writeByte(j);
 					stream.writeShortBigEndian(cameraYawBase);
 					stream.writeByte(57);
-					stream.writeByte(minimapInt2);
-					stream.writeByte(minimapInt3);
+					stream.writeByte(minimapRotationDrift);
+					stream.writeByte(minimapZoomDrift);
 					stream.writeByte(89);
 					stream.writeShortBigEndian(myPlayer.x);
 					stream.writeShortBigEndian(myPlayer.y);
@@ -9488,10 +9488,10 @@ public class Game extends RSApplet {
 			Texture.lineOffsets = chatBoxAreaOffsets;
 			return;
 		}
-		int minimapRotation = cameraYawBase + minimapInt2 & 0x7ff;
+		int minimapRotation = cameraYawBase + minimapRotationDrift & 0x7ff;
 		int sourceCenterX = 48 + myPlayer.x / 32;
 		int sourceCenterY = 464 - myPlayer.y / 32;
-		minimapSprite.drawRotatedScanlines(151, minimapRotation, anIntArray1229, 256 + minimapInt3, anIntArray1052, sourceCenterY, 5, 25, 146, sourceCenterX);
+		minimapSprite.drawRotatedScanlines(151, minimapRotation, anIntArray1229, 256 + minimapZoomDrift, anIntArray1052, sourceCenterY, 5, 25, 146, sourceCenterX);
 		compass.drawRotatedScanlines(33, cameraYawBase, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
 		// Minimap icons (shops, quest etc)
 		for (int iconIndex = 0; iconIndex < mapFunctionIconCount; iconIndex++) {
@@ -10444,15 +10444,15 @@ public class Game extends RSApplet {
 	}
 
 	public void drawMinimapMarker(Sprite sprite, int offsetX, int offsetY) {
-		int rotation2048 = cameraYawBase + minimapInt2 & 0x7ff;
+		int rotation2048 = cameraYawBase + minimapRotationDrift & 0x7ff;
 		int distanceSquared = offsetX * offsetX + offsetY * offsetY;
 		if (distanceSquared > 6400) {
 			return;
 		}
 		int scaledSine16 = Model.sineTable16[rotation2048];
 		int scaledCosine16 = Model.cosineTable16[rotation2048];
-		scaledSine16 = scaledSine16 * 256 / (minimapInt3 + 256);
-		scaledCosine16 = scaledCosine16 * 256 / (minimapInt3 + 256);
+		scaledSine16 = scaledSine16 * 256 / (minimapZoomDrift + 256);
+		scaledCosine16 = scaledCosine16 * 256 / (minimapZoomDrift + 256);
 		int rotatedX = offsetY * scaledSine16 + offsetX * scaledCosine16 >> 16;
 		int rotatedY = offsetY * scaledCosine16 - offsetX * scaledSine16 >> 16;
 		if (distanceSquared > 2500) {
@@ -12119,7 +12119,7 @@ public class Game extends RSApplet {
 		canMute = false;
 		aBoolean1159 = false;
 		aBoolean1160 = false;
-		anInt1171 = 1;
+		minimapZoomDriftStep = 1;
 		myUsername = "";
 		myPassword = "";
 		genericLoadingError = false;
@@ -12131,7 +12131,7 @@ public class Game extends RSApplet {
 		menuActionName = new String[500];
 		shakeSineAmplitude = new int[5];
 		sound = new int[50];
-		anInt1210 = 2;
+		minimapRotationDriftStep = 2;
 		anInt1211 = 78;
 		promptInput = "";
 		modIcons = new Background[2];
@@ -12475,8 +12475,8 @@ public class Game extends RSApplet {
 	public RSImageProducer aRSImageProducer_1166;
 	public int daysSinceRecovChange;
 	public RSSocket socketStream;
-	public int minimapInt3;
-	public int anInt1171;
+	public int minimapZoomDrift;
+	public int minimapZoomDriftStep;
 	public static long soundEndReferenceStartMillis;
 	public String myUsername;
 	public String myPassword;
@@ -12511,8 +12511,8 @@ public class Game extends RSApplet {
 	public static boolean flagged;
 	public final int[] sound;
 	public int anInt1208;
-	public int minimapInt2;
-	public int anInt1210;
+	public int minimapRotationDrift;
+	public int minimapRotationDriftStep;
 	public int anInt1211;
 	public String promptInput;
 	public int anInt1213;
@@ -12552,7 +12552,7 @@ public class Game extends RSApplet {
 	public int chatSuppressionZone;
 	public final boolean rsAlreadyLoaded;
 	public int leftClickOpensMenu;
-	public int anInt1254;
+	public int minimapDriftTimer;
 	public boolean welcomeScreenRaised;
 	public boolean messagePromptRaised;
 	public static int soundEndReferenceByteLength;
