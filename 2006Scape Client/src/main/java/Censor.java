@@ -1,126 +1,126 @@
 // Decompiled by Jad v1.5.8f. Copyright 2001 Pavel Kouznetsov.
 // Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) 
+// Decompiler options: packimports(3)
 
 final class Censor {
 
 	public static void loadConfig(StreamLoader streamLoader) {
-		Stream stream = new Stream(streamLoader.getDataForName("fragmentsenc.txt"));
-		Stream stream_1 = new Stream(streamLoader.getDataForName("badenc.txt"));
-		Stream stream_2 = new Stream(streamLoader.getDataForName("domainenc.txt"));
-		Stream stream_3 = new Stream(streamLoader.getDataForName("tldlist.txt"));
-		readValues(stream, stream_1, stream_2, stream_3);
+		Stream fragmentsStream = new Stream(streamLoader.getDataForName("fragmentsenc.txt"));
+		Stream badEncStream = new Stream(streamLoader.getDataForName("badenc.txt"));
+		Stream domainEncStream = new Stream(streamLoader.getDataForName("domainenc.txt"));
+		Stream tldListStream = new Stream(streamLoader.getDataForName("tldlist.txt"));
+		readValues(fragmentsStream, badEncStream, domainEncStream, tldListStream);
 	}
 
-	private static void readValues(Stream stream, Stream stream_1, Stream stream_2, Stream stream_3) {
-		readBadEnc(stream_1);
-		readDomainEnc(stream_2);
-		readFragmentsEnc(stream);
-		readTldList(stream_3);
+	private static void readValues(Stream fragmentsStream, Stream badEncStream, Stream domainEncStream, Stream tldListStream) {
+		readBadEnc(badEncStream);
+		readDomainEnc(domainEncStream);
+		readFragmentsEnc(fragmentsStream);
+		readTldList(tldListStream);
 	}
 
 	private static void readTldList(Stream stream) {
-		int i = stream.readIntBigEndian();
-		aCharArrayArray624 = new char[i][];
-		anIntArray625 = new int[i];
-		for (int j = 0; j < i; j++) {
-			anIntArray625[j] = stream.readUnsignedByte();
-			char ac[] = new char[stream.readUnsignedByte()];
-			for (int k = 0; k < ac.length; k++) {
-				ac[k] = (char) stream.readUnsignedByte();
+		int count = stream.readIntBigEndian();
+		topLevelDomains = new char[count][];
+		topLevelDomainStrictness = new int[count];
+		for (int entry = 0; entry < count; entry++) {
+			topLevelDomainStrictness[entry] = stream.readUnsignedByte();
+			char word[] = new char[stream.readUnsignedByte()];
+			for (int charIndex = 0; charIndex < word.length; charIndex++) {
+				word[charIndex] = (char) stream.readUnsignedByte();
 			}
 
-			aCharArrayArray624[j] = ac;
+			topLevelDomains[entry] = word;
 		}
 
 	}
 
 	private static void readBadEnc(Stream stream) {
-		int j = stream.readIntBigEndian();
-		aCharArrayArray621 = new char[j][];
-		aByteArrayArrayArray622 = new byte[j][][];
-		method493(stream, aCharArrayArray621, aByteArrayArrayArray622);
+		int count = stream.readIntBigEndian();
+		badWords = new char[count][];
+		badWordExemptionPairs = new byte[count][][];
+		readBadWordEntries(stream, badWords, badWordExemptionPairs);
 	}
 
 	private static void readDomainEnc(Stream stream) {
-		int i = stream.readIntBigEndian();
-		aCharArrayArray623 = new char[i][];
-		method494(aCharArrayArray623, stream);
+		int count = stream.readIntBigEndian();
+		domains = new char[count][];
+		readDomainEntries(domains, stream);
 	}
 
 	private static void readFragmentsEnc(Stream stream) {
-		anIntArray620 = new int[stream.readIntBigEndian()];
-		for (int i = 0; i < anIntArray620.length; i++) {
-			anIntArray620[i] = stream.readUnsignedShortBigEndian();
+		allowedFragmentCodes = new int[stream.readIntBigEndian()];
+		for (int index = 0; index < allowedFragmentCodes.length; index++) {
+			allowedFragmentCodes[index] = stream.readUnsignedShortBigEndian();
 		}
 	}
 
-	private static void method493(Stream stream, char ac[][], byte abyte0[][][]) {
-		for (int j = 0; j < ac.length; j++) {
-			char ac1[] = new char[stream.readUnsignedByte()];
-			for (int k = 0; k < ac1.length; k++) {
-				ac1[k] = (char) stream.readUnsignedByte();
+	private static void readBadWordEntries(Stream stream, char words[][], byte exemptionPairs[][][]) {
+		for (int entry = 0; entry < words.length; entry++) {
+			char word[] = new char[stream.readUnsignedByte()];
+			for (int charIndex = 0; charIndex < word.length; charIndex++) {
+				word[charIndex] = (char) stream.readUnsignedByte();
 			}
 
-			ac[j] = ac1;
-			byte abyte1[][] = new byte[stream.readUnsignedByte()][2];
-			for (int l = 0; l < abyte1.length; l++) {
-				abyte1[l][0] = (byte) stream.readUnsignedByte();
-				abyte1[l][1] = (byte) stream.readUnsignedByte();
+			words[entry] = word;
+			byte pairs[][] = new byte[stream.readUnsignedByte()][2];
+			for (int pairIndex = 0; pairIndex < pairs.length; pairIndex++) {
+				pairs[pairIndex][0] = (byte) stream.readUnsignedByte();
+				pairs[pairIndex][1] = (byte) stream.readUnsignedByte();
 			}
 
-			if (abyte1.length > 0) {
-				abyte0[j] = abyte1;
+			if (pairs.length > 0) {
+				exemptionPairs[entry] = pairs;
 			}
-		}
-
-	}
-
-	private static void method494(char ac[][], Stream stream) {
-		for (int j = 0; j < ac.length; j++) {
-			char ac1[] = new char[stream.readUnsignedByte()];
-			for (int k = 0; k < ac1.length; k++) {
-				ac1[k] = (char) stream.readUnsignedByte();
-			}
-
-			ac[j] = ac1;
 		}
 
 	}
 
-	private static void method495(char ac[]) {
-		int i = 0;
-		for (int j = 0; j < ac.length; j++) {
-			if (method496(ac[j])) {
-				ac[i] = ac[j];
+	private static void readDomainEntries(char words[][], Stream stream) {
+		for (int entry = 0; entry < words.length; entry++) {
+			char word[] = new char[stream.readUnsignedByte()];
+			for (int charIndex = 0; charIndex < word.length; charIndex++) {
+				word[charIndex] = (char) stream.readUnsignedByte();
+			}
+
+			words[entry] = word;
+		}
+
+	}
+
+	private static void sanitizeCharacters(char text[]) {
+		int writeIndex = 0;
+		for (int readIndex = 0; readIndex < text.length; readIndex++) {
+			if (isPermittedCharacter(text[readIndex])) {
+				text[writeIndex] = text[readIndex];
 			} else {
-				ac[i] = ' ';
+				text[writeIndex] = ' ';
 			}
-			if (i == 0 || ac[i] != ' ' || ac[i - 1] != ' ') {
-				i++;
+			if (writeIndex == 0 || text[writeIndex] != ' ' || text[writeIndex - 1] != ' ') {
+				writeIndex++;
 			}
 		}
-		for (int k = i; k < ac.length; k++) {
-			ac[k] = ' ';
+		for (int fillIndex = writeIndex; fillIndex < text.length; fillIndex++) {
+			text[fillIndex] = ' ';
 		}
 
 	}
 
-	private static boolean method496(char c) {
+	private static boolean isPermittedCharacter(char c) {
 		return c >= ' ' && c <= '\177' || c == ' ' || c == '\n' || c == '\t' || c == '\243' || c == '\u20AC';
 	}
 
 	public static String doCensor(String s) {
 		System.currentTimeMillis();
 		char ac[] = s.toCharArray();
-		method495(ac);
+		sanitizeCharacters(ac);
 		String s1 = new String(ac).trim();
 		ac = s1.toLowerCase().toCharArray();
 		String s2 = s1.toLowerCase();
-		method505(ac);
-		method500(ac);
-		method501(ac);
-		method514(ac);
+		censorTopLevelDomains(ac);
+		censorBadWords(ac);
+		censorDomains(ac);
+		censorIpAddresses(ac);
 		for (String exception : exceptions) {
 			for (int k = -1; (k = s2.indexOf(exception, k + 1)) != -1;) {
 				char ac1[] = exception.toCharArray();
@@ -129,105 +129,105 @@ final class Censor {
 			}
 
 		}
-		method498(s1.toCharArray(), ac);
-		method499(ac);
+		restoreUpperCase(s1.toCharArray(), ac);
+		lowerTrailingCapitals(ac);
 		System.currentTimeMillis();
 		return s; // xxx chat filter, return s to avoid new String(ac).trim()
 	}
 
-	private static void method498(char ac[], char ac1[]) {
-		for (int j = 0; j < ac.length; j++) {
-			if (ac1[j] != '*' && isUpperCaseLetter(ac[j])) {
-				ac1[j] = ac[j];
+	private static void restoreUpperCase(char original[], char censored[]) {
+		for (int index = 0; index < original.length; index++) {
+			if (censored[index] != '*' && isUpperCaseLetter(original[index])) {
+				censored[index] = original[index];
 			}
 		}
 	}
 
-	private static void method499(char ac[]) {
-		boolean flag = true;
-		for (int j = 0; j < ac.length; j++) {
-			char c = ac[j];
-			if (isLetter(c)) {
-				if (flag) {
-					if (isLowerCaseLetter(c)) {
-						flag = false;
+	private static void lowerTrailingCapitals(char text[]) {
+		boolean beforeFirstLowercase = true;
+		for (int index = 0; index < text.length; index++) {
+			char ch = text[index];
+			if (isLetter(ch)) {
+				if (beforeFirstLowercase) {
+					if (isLowerCaseLetter(ch)) {
+						beforeFirstLowercase = false;
 					}
-				} else if (isUpperCaseLetter(c)) {
-					ac[j] = (char) (c + 97 - 65);
+				} else if (isUpperCaseLetter(ch)) {
+					text[index] = (char) (ch + 97 - 65);
 				}
 			} else {
-				flag = true;
+				beforeFirstLowercase = true;
 			}
 		}
 	}
 
-	private static void method500(char ac[]) {
-		for (int i = 0; i < 2; i++) {
-			for (int j = aCharArrayArray621.length - 1; j >= 0; j--) {
-				method509(aByteArrayArrayArray622[j], ac, aCharArrayArray621[j]);
+	private static void censorBadWords(char text[]) {
+		for (int pass = 0; pass < 2; pass++) {
+			for (int wordIndex = badWords.length - 1; wordIndex >= 0; wordIndex--) {
+				censorWord(badWordExemptionPairs[wordIndex], text, badWords[wordIndex]);
 			}
 
 		}
 	}
 
-	private static void method501(char ac[]) {
-		char ac1[] = ac.clone();
-		char ac2[] = {'(', 'a', ')'};
-		method509(null, ac1, ac2);
-		char ac3[] = ac.clone();
-		char ac4[] = {'d', 'o', 't'};
-		method509(null, ac3, ac4);
-		for (int i = aCharArrayArray623.length - 1; i >= 0; i--) {
-			method502(ac, aCharArrayArray623[i], ac3, ac1);
+	private static void censorDomains(char text[]) {
+		char atMasked[] = text.clone();
+		char atPattern[] = {'(', 'a', ')'};
+		censorWord(null, atMasked, atPattern);
+		char dotMasked[] = text.clone();
+		char dotPattern[] = {'d', 'o', 't'};
+		censorWord(null, dotMasked, dotPattern);
+		for (int domainIndex = domains.length - 1; domainIndex >= 0; domainIndex--) {
+			censorDomain(text, domains[domainIndex], dotMasked, atMasked);
 		}
 	}
 
-	private static void method502(char ac[], char ac1[], char ac2[], char ac3[]) {
-		if (ac1.length > ac.length) {
+	private static void censorDomain(char text[], char domain[], char dotMasked[], char atMasked[]) {
+		if (domain.length > text.length) {
 			return;
 		}
-		int j;
-		for (int k = 0; k <= ac.length - ac1.length; k += j) {
-			int l = k;
-			int i1 = 0;
-			j = 1;
-			while (l < ac.length) {
-				int j1;
-				char c = ac[l];
-				char c1 = '\0';
-				if (l + 1 < ac.length) {
-					c1 = ac[l + 1];
+		int step;
+		for (int start = 0; start <= text.length - domain.length; start += step) {
+			int end = start;
+			int domainIndex = 0;
+			step = 1;
+			while (end < text.length) {
+				int consumed;
+				char current = text[end];
+				char next = '\0';
+				if (end + 1 < text.length) {
+					next = text[end + 1];
 				}
-				if (i1 < ac1.length && (j1 = method511(c, ac1[i1], c1)) > 0) {
-					l += j1;
-					i1++;
+				if (domainIndex < domain.length && (consumed = simpleSubstitutionLength(current, domain[domainIndex], next)) > 0) {
+					end += consumed;
+					domainIndex++;
 					continue;
 				}
-				if (i1 == 0) {
+				if (domainIndex == 0) {
 					break;
 				}
-				if ((j1 = method511(c, ac1[i1 - 1], c1)) > 0) {
-					l += j1;
-					if (i1 == 1) {
-						j++;
+				if ((consumed = simpleSubstitutionLength(current, domain[domainIndex - 1], next)) > 0) {
+					end += consumed;
+					if (domainIndex == 1) {
+						step++;
 					}
 					continue;
 				}
-				if (i1 >= ac1.length || !method517(c)) {
+				if (domainIndex >= domain.length || !isSeparator(current)) {
 					break;
 				}
-				l++;
+				end++;
 			}
-			if (i1 >= ac1.length) {
-				boolean flag1 = false;
-				int k1 = method503(ac, ac3, k);
-				int l1 = method504(ac2, l - 1, ac);
-				if (k1 > 2 || l1 > 2) {
-					flag1 = true;
+			if (domainIndex >= domain.length) {
+				boolean shouldMask = false;
+				int prefixClass = classifyDomainPrefix(text, atMasked, start);
+				int suffixClass = classifyDomainSuffix(dotMasked, end - 1, text);
+				if (prefixClass > 2 || suffixClass > 2) {
+					shouldMask = true;
 				}
-				if (flag1) {
-					for (int i2 = k; i2 < l; i2++) {
-						ac[i2] = '*';
+				if (shouldMask) {
+					for (int maskIndex = start; maskIndex < end; maskIndex++) {
+						text[maskIndex] = '*';
 					}
 
 				}
@@ -236,190 +236,190 @@ final class Censor {
 
 	}
 
-	private static int method503(char ac[], char ac1[], int j) {
-		if (j == 0) {
+	private static int classifyDomainPrefix(char text[], char atMasked[], int start) {
+		if (start == 0) {
 			return 2;
 		}
-		for (int k = j - 1; k >= 0; k--) {
-			if (!method517(ac[k])) {
+		for (int index = start - 1; index >= 0; index--) {
+			if (!isSeparator(text[index])) {
 				break;
 			}
-			if (ac[k] == '@') {
+			if (text[index] == '@') {
 				return 3;
 			}
 		}
 
-		int l = 0;
-		for (int i1 = j - 1; i1 >= 0; i1--) {
-			if (!method517(ac1[i1])) {
+		int maskCount = 0;
+		for (int index = start - 1; index >= 0; index--) {
+			if (!isSeparator(atMasked[index])) {
 				break;
 			}
-			if (ac1[i1] == '*') {
-				l++;
+			if (atMasked[index] == '*') {
+				maskCount++;
 			}
 		}
 
-		if (l >= 3) {
+		if (maskCount >= 3) {
 			return 4;
 		}
-		return !method517(ac[j - 1]) ? 0 : 1;
+		return !isSeparator(text[start - 1]) ? 0 : 1;
 	}
 
-	private static int method504(char ac[], int i, char ac1[]) {
-		if (i + 1 == ac1.length) {
+	private static int classifyDomainSuffix(char dotMasked[], int lastIndex, char text[]) {
+		if (lastIndex + 1 == text.length) {
 			return 2;
 		}
-		for (int j = i + 1; j < ac1.length; j++) {
-			if (!method517(ac1[j])) {
+		for (int index = lastIndex + 1; index < text.length; index++) {
+			if (!isSeparator(text[index])) {
 				break;
 			}
-			if (ac1[j] == '.' || ac1[j] == ',') {
+			if (text[index] == '.' || text[index] == ',') {
 				return 3;
 			}
 		}
-		int k = 0;
-		for (int l = i + 1; l < ac1.length; l++) {
-			if (!method517(ac[l])) {
+		int maskCount = 0;
+		for (int index = lastIndex + 1; index < text.length; index++) {
+			if (!isSeparator(dotMasked[index])) {
 				break;
 			}
-			if (ac[l] == '*') {
-				k++;
+			if (dotMasked[index] == '*') {
+				maskCount++;
 			}
 		}
 
-		if (k >= 3) {
+		if (maskCount >= 3) {
 			return 4;
 		}
-		return !method517(ac1[i + 1]) ? 0 : 1;
+		return !isSeparator(text[lastIndex + 1]) ? 0 : 1;
 	}
 
-	private static void method505(char ac[]) {
-		char ac1[] = ac.clone();
-		char ac2[] = {'d', 'o', 't'};
-		method509(null, ac1, ac2);
-		char ac3[] = ac.clone();
-		char ac4[] = {'s', 'l', 'a', 's', 'h'};
-		method509(null, ac3, ac4);
-		for (int i = 0; i < aCharArrayArray624.length; i++) {
-			method506(ac3, aCharArrayArray624[i], anIntArray625[i], ac1, ac);
+	private static void censorTopLevelDomains(char text[]) {
+		char dotMasked[] = text.clone();
+		char dotPattern[] = {'d', 'o', 't'};
+		censorWord(null, dotMasked, dotPattern);
+		char slashMasked[] = text.clone();
+		char slashPattern[] = {'s', 'l', 'a', 's', 'h'};
+		censorWord(null, slashMasked, slashPattern);
+		for (int index = 0; index < topLevelDomains.length; index++) {
+			censorTopLevelDomain(slashMasked, topLevelDomains[index], topLevelDomainStrictness[index], dotMasked, text);
 		}
 
 	}
 
-	private static void method506(char ac[], char ac1[], int i, char ac2[], char ac3[]) {
-		if (ac1.length > ac3.length) {
+	private static void censorTopLevelDomain(char slashMasked[], char tld[], int strictness, char dotMasked[], char text[]) {
+		if (tld.length > text.length) {
 			return;
 		}
-		int j;
-		for (int k = 0; k <= ac3.length - ac1.length; k += j) {
-			int l = k;
-			int i1 = 0;
-			j = 1;
-			while (l < ac3.length) {
-				int j1;
-				char c = ac3[l];
-				char c1 = '\0';
-				if (l + 1 < ac3.length) {
-					c1 = ac3[l + 1];
+		int step;
+		for (int start = 0; start <= text.length - tld.length; start += step) {
+			int end = start;
+			int tldIndex = 0;
+			step = 1;
+			while (end < text.length) {
+				int consumed;
+				char current = text[end];
+				char next = '\0';
+				if (end + 1 < text.length) {
+					next = text[end + 1];
 				}
-				if (i1 < ac1.length && (j1 = method511(c, ac1[i1], c1)) > 0) {
-					l += j1;
-					i1++;
+				if (tldIndex < tld.length && (consumed = simpleSubstitutionLength(current, tld[tldIndex], next)) > 0) {
+					end += consumed;
+					tldIndex++;
 					continue;
 				}
-				if (i1 == 0) {
+				if (tldIndex == 0) {
 					break;
 				}
-				if ((j1 = method511(c, ac1[i1 - 1], c1)) > 0) {
-					l += j1;
-					if (i1 == 1) {
-						j++;
+				if ((consumed = simpleSubstitutionLength(current, tld[tldIndex - 1], next)) > 0) {
+					end += consumed;
+					if (tldIndex == 1) {
+						step++;
 					}
 					continue;
 				}
-				if (i1 >= ac1.length || !method517(c)) {
+				if (tldIndex >= tld.length || !isSeparator(current)) {
 					break;
 				}
-				l++;
+				end++;
 			}
-			if (i1 >= ac1.length) {
-				boolean flag1 = false;
-				int k1 = method507(ac3, k, ac2);
-				int l1 = method508(ac3, ac, l - 1);
-				if (i == 1 && k1 > 0 && l1 > 0) {
-					flag1 = true;
+			if (tldIndex >= tld.length) {
+				boolean shouldMask = false;
+				int prefixClass = classifyTldPrefix(text, start, dotMasked);
+				int suffixClass = classifyTldSuffix(text, slashMasked, end - 1);
+				if (strictness == 1 && prefixClass > 0 && suffixClass > 0) {
+					shouldMask = true;
 				}
-				if (i == 2 && (k1 > 2 && l1 > 0 || k1 > 0 && l1 > 2)) {
-					flag1 = true;
+				if (strictness == 2 && (prefixClass > 2 && suffixClass > 0 || prefixClass > 0 && suffixClass > 2)) {
+					shouldMask = true;
 				}
-				if (i == 3 && k1 > 0 && l1 > 2) {
-					flag1 = true;
+				if (strictness == 3 && prefixClass > 0 && suffixClass > 2) {
+					shouldMask = true;
 				}
-				if (flag1) {
-					int i2 = k;
-					int j2 = l - 1;
-					if (k1 > 2) {
-						if (k1 == 4) {
-							boolean flag2 = false;
-							for (int l2 = i2 - 1; l2 >= 0; l2--) {
-								if (flag2) {
-									if (ac2[l2] != '*') {
+				if (shouldMask) {
+					int maskStart = start;
+					int maskEnd = end - 1;
+					if (prefixClass > 2) {
+						if (prefixClass == 4) {
+							boolean inMaskRun = false;
+							for (int index = maskStart - 1; index >= 0; index--) {
+								if (inMaskRun) {
+									if (dotMasked[index] != '*') {
 										break;
 									}
-									i2 = l2;
-								} else if (ac2[l2] == '*') {
-									i2 = l2;
-									flag2 = true;
+									maskStart = index;
+								} else if (dotMasked[index] == '*') {
+									maskStart = index;
+									inMaskRun = true;
 								}
 							}
 
 						}
-						boolean flag3 = false;
-						for (int i3 = i2 - 1; i3 >= 0; i3--) {
-							if (flag3) {
-								if (method517(ac3[i3])) {
+						boolean inWord = false;
+						for (int index = maskStart - 1; index >= 0; index--) {
+							if (inWord) {
+								if (isSeparator(text[index])) {
 									break;
 								}
-								i2 = i3;
-							} else if (!method517(ac3[i3])) {
-								flag3 = true;
-								i2 = i3;
+								maskStart = index;
+							} else if (!isSeparator(text[index])) {
+								inWord = true;
+								maskStart = index;
 							}
 						}
 
 					}
-					if (l1 > 2) {
-						if (l1 == 4) {
-							boolean flag4 = false;
-							for (int j3 = j2 + 1; j3 < ac3.length; j3++) {
-								if (flag4) {
-									if (ac[j3] != '*') {
+					if (suffixClass > 2) {
+						if (suffixClass == 4) {
+							boolean inMaskRun = false;
+							for (int index = maskEnd + 1; index < text.length; index++) {
+								if (inMaskRun) {
+									if (slashMasked[index] != '*') {
 										break;
 									}
-									j2 = j3;
-								} else if (ac[j3] == '*') {
-									j2 = j3;
-									flag4 = true;
+									maskEnd = index;
+								} else if (slashMasked[index] == '*') {
+									maskEnd = index;
+									inMaskRun = true;
 								}
 							}
 
 						}
-						boolean flag5 = false;
-						for (int k3 = j2 + 1; k3 < ac3.length; k3++) {
-							if (flag5) {
-								if (method517(ac3[k3])) {
+						boolean inWord = false;
+						for (int index = maskEnd + 1; index < text.length; index++) {
+							if (inWord) {
+								if (isSeparator(text[index])) {
 									break;
 								}
-								j2 = k3;
-							} else if (!method517(ac3[k3])) {
-								flag5 = true;
-								j2 = k3;
+								maskEnd = index;
+							} else if (!isSeparator(text[index])) {
+								inWord = true;
+								maskEnd = index;
 							}
 						}
 
 					}
-					for (int k2 = i2; k2 <= j2; k2++) {
-						ac3[k2] = '*';
+					for (int maskIndex = maskStart; maskIndex <= maskEnd; maskIndex++) {
+						text[maskIndex] = '*';
 					}
 
 				}
@@ -427,201 +427,201 @@ final class Censor {
 		}
 	}
 
-	private static int method507(char ac[], int j, char ac1[]) {
-		if (j == 0) {
+	private static int classifyTldPrefix(char text[], int start, char dotMasked[]) {
+		if (start == 0) {
 			return 2;
 		}
-		for (int k = j - 1; k >= 0; k--) {
-			if (!method517(ac[k])) {
+		for (int index = start - 1; index >= 0; index--) {
+			if (!isSeparator(text[index])) {
 				break;
 			}
-			if (ac[k] == ',' || ac[k] == '.') {
+			if (text[index] == ',' || text[index] == '.') {
 				return 3;
 			}
 		}
 
-		int l = 0;
-		for (int i1 = j - 1; i1 >= 0; i1--) {
-			if (!method517(ac1[i1])) {
+		int maskCount = 0;
+		for (int index = start - 1; index >= 0; index--) {
+			if (!isSeparator(dotMasked[index])) {
 				break;
 			}
-			if (ac1[i1] == '*') {
-				l++;
+			if (dotMasked[index] == '*') {
+				maskCount++;
 			}
 		}
-		if (l >= 3) {
+		if (maskCount >= 3) {
 			return 4;
 		}
-		return !method517(ac[j - 1]) ? 0 : 1;
+		return !isSeparator(text[start - 1]) ? 0 : 1;
 	}
 
-	private static int method508(char ac[], char ac1[], int i) {
-		if (i + 1 == ac.length) {
+	private static int classifyTldSuffix(char text[], char slashMasked[], int lastIndex) {
+		if (lastIndex + 1 == text.length) {
 			return 2;
 		}
-		for (int j = i + 1; j < ac.length; j++) {
-			if (!method517(ac[j])) {
+		for (int index = lastIndex + 1; index < text.length; index++) {
+			if (!isSeparator(text[index])) {
 				break;
 			}
-			if (ac[j] == '\\' || ac[j] == '/') {
+			if (text[index] == '\\' || text[index] == '/') {
 				return 3;
 			}
 		}
 
-		int k = 0;
-		for (int l = i + 1; l < ac.length; l++) {
-			if (!method517(ac1[l])) {
+		int maskCount = 0;
+		for (int index = lastIndex + 1; index < text.length; index++) {
+			if (!isSeparator(slashMasked[index])) {
 				break;
 			}
-			if (ac1[l] == '*') {
-				k++;
+			if (slashMasked[index] == '*') {
+				maskCount++;
 			}
 		}
 
-		if (k >= 5) {
+		if (maskCount >= 5) {
 			return 4;
 		}
-		return !method517(ac[i + 1]) ? 0 : 1;
+		return !isSeparator(text[lastIndex + 1]) ? 0 : 1;
 	}
 
-	private static void method509(byte abyte0[][], char ac[], char ac1[]) {
-		if (ac1.length > ac.length) {
+	private static void censorWord(byte exemptionPairs[][], char text[], char word[]) {
+		if (word.length > text.length) {
 			return;
 		}
-		int j;
-		for (int k = 0; k <= ac.length - ac1.length; k += j) {
-			int l = k;
-			int i1 = 0;
-			int j1 = 0;
-			j = 1;
-			boolean flag1 = false;
-			boolean flag2 = false;
-			boolean flag3 = false;
-			while (l < ac.length && (!flag2 || !flag3)) {
-				int k1;
-				char c = ac[l];
-				char c2 = '\0';
-				if (l + 1 < ac.length) {
-					c2 = ac[l + 1];
+		int step;
+		for (int start = 0; start <= text.length - word.length; start += step) {
+			int end = start;
+			int wordIndex = 0;
+			int fillerCount = 0;
+			step = 1;
+			boolean hasSeparatorFiller = false;
+			boolean digitLookalike = false;
+			boolean digitFiller = false;
+			while (end < text.length && (!digitLookalike || !digitFiller)) {
+				int consumed;
+				char current = text[end];
+				char next = '\0';
+				if (end + 1 < text.length) {
+					next = text[end + 1];
 				}
-				if (i1 < ac1.length && (k1 = method512(c2, c, ac1[i1])) > 0) {
-					if (k1 == 1 && isDigit(c)) {
-						flag2 = true;
+				if (wordIndex < word.length && (consumed = lookalikeSubstitutionLength(next, current, word[wordIndex])) > 0) {
+					if (consumed == 1 && isDigit(current)) {
+						digitLookalike = true;
 					}
-					if (k1 == 2 && (isDigit(c) || isDigit(c2))) {
-						flag2 = true;
+					if (consumed == 2 && (isDigit(current) || isDigit(next))) {
+						digitLookalike = true;
 					}
-					l += k1;
-					i1++;
+					end += consumed;
+					wordIndex++;
 					continue;
 				}
-				if (i1 == 0) {
+				if (wordIndex == 0) {
 					break;
 				}
-				if ((k1 = method512(c2, c, ac1[i1 - 1])) > 0) {
-					l += k1;
-					if (i1 == 1) {
-						j++;
+				if ((consumed = lookalikeSubstitutionLength(next, current, word[wordIndex - 1])) > 0) {
+					end += consumed;
+					if (wordIndex == 1) {
+						step++;
 					}
 					continue;
 				}
-				if (i1 >= ac1.length || !method518(c)) {
+				if (wordIndex >= word.length || !isSkippableFiller(current)) {
 					break;
 				}
-				if (method517(c) && c != '\'') {
-					flag1 = true;
+				if (isSeparator(current) && current != '\'') {
+					hasSeparatorFiller = true;
 				}
-				if (isDigit(c)) {
-					flag3 = true;
+				if (isDigit(current)) {
+					digitFiller = true;
 				}
-				l++;
-				if (++j1 * 100 / (l - k) > 90) {
+				end++;
+				if (++fillerCount * 100 / (end - start) > 90) {
 					break;
 				}
 			}
-			if (i1 >= ac1.length && (!flag2 || !flag3)) {
-				boolean flag4 = true;
-				if (!flag1) {
-					char c1 = ' ';
-					if (k - 1 >= 0) {
-						c1 = ac[k - 1];
+			if (wordIndex >= word.length && (!digitLookalike || !digitFiller)) {
+				boolean shouldMask = true;
+				if (!hasSeparatorFiller) {
+					char previousChar = ' ';
+					if (start - 1 >= 0) {
+						previousChar = text[start - 1];
 					}
-					char c3 = ' ';
-					if (l < ac.length) {
-						c3 = ac[l];
+					char nextChar = ' ';
+					if (end < text.length) {
+						nextChar = text[end];
 					}
-					byte byte0 = method513(c1);
-					byte byte1 = method513(c3);
-					if (abyte0 != null && method510(byte0, abyte0, byte1)) {
-						flag4 = false;
+					byte previousCode = neighbourCode(previousChar);
+					byte nextCode = neighbourCode(nextChar);
+					if (exemptionPairs != null && isExemptNeighbourPair(previousCode, exemptionPairs, nextCode)) {
+						shouldMask = false;
 					}
 				} else {
-					boolean flag5 = false;
-					boolean flag6 = false;
-					if (k - 1 < 0 || method517(ac[k - 1]) && ac[k - 1] != '\'') {
-						flag5 = true;
+					boolean startsAtBoundary = false;
+					boolean endsAtBoundary = false;
+					if (start - 1 < 0 || isSeparator(text[start - 1]) && text[start - 1] != '\'') {
+						startsAtBoundary = true;
 					}
-					if (l >= ac.length || method517(ac[l]) && ac[l] != '\'') {
-						flag6 = true;
+					if (end >= text.length || isSeparator(text[end]) && text[end] != '\'') {
+						endsAtBoundary = true;
 					}
-					if (!flag5 || !flag6) {
-						boolean flag7 = false;
-						int k2 = k - 2;
-						if (flag5) {
-							k2 = k;
+					if (!startsAtBoundary || !endsAtBoundary) {
+						boolean foundUnallowedFragment = false;
+						int windowStart = start - 2;
+						if (startsAtBoundary) {
+							windowStart = start;
 						}
-						for (; !flag7 && k2 < l; k2++) {
-							if (k2 >= 0 && (!method517(ac[k2]) || ac[k2] == '\'')) {
-								char ac2[] = new char[3];
-								int j3;
-								for (j3 = 0; j3 < 3; j3++) {
-									if (k2 + j3 >= ac.length || method517(ac[k2 + j3]) && ac[k2 + j3] != '\'') {
+						for (; !foundUnallowedFragment && windowStart < end; windowStart++) {
+							if (windowStart >= 0 && (!isSeparator(text[windowStart]) || text[windowStart] == '\'')) {
+								char window[] = new char[3];
+								int windowLength;
+								for (windowLength = 0; windowLength < 3; windowLength++) {
+									if (windowStart + windowLength >= text.length || isSeparator(text[windowStart + windowLength]) && text[windowStart + windowLength] != '\'') {
 										break;
 									}
-									ac2[j3] = ac[k2 + j3];
+									window[windowLength] = text[windowStart + windowLength];
 								}
 
-								boolean flag8 = true;
-								if (j3 == 0) {
-									flag8 = false;
+								boolean windowCounts = true;
+								if (windowLength == 0) {
+									windowCounts = false;
 								}
-								if (j3 < 3 && k2 - 1 >= 0 && (!method517(ac[k2 - 1]) || ac[k2 - 1] == '\'')) {
-									flag8 = false;
+								if (windowLength < 3 && windowStart - 1 >= 0 && (!isSeparator(text[windowStart - 1]) || text[windowStart - 1] == '\'')) {
+									windowCounts = false;
 								}
-								if (flag8 && !method523(ac2)) {
-									flag7 = true;
+								if (windowCounts && !isAllowedFragment(window)) {
+									foundUnallowedFragment = true;
 								}
 							}
 						}
 
-						if (!flag7) {
-							flag4 = false;
+						if (!foundUnallowedFragment) {
+							shouldMask = false;
 						}
 					}
 				}
-				if (flag4) {
-					int l1 = 0;
-					int i2 = 0;
-					int j2 = -1;
-					for (int l2 = k; l2 < l; l2++) {
-						if (isDigit(ac[l2])) {
-							l1++;
-						} else if (isLetter(ac[l2])) {
-							i2++;
-							j2 = l2;
+				if (shouldMask) {
+					int digitCount = 0;
+					int letterCount = 0;
+					int lastLetterIndex = -1;
+					for (int scanIndex = start; scanIndex < end; scanIndex++) {
+						if (isDigit(text[scanIndex])) {
+							digitCount++;
+						} else if (isLetter(text[scanIndex])) {
+							letterCount++;
+							lastLetterIndex = scanIndex;
 						}
 					}
 
-					if (j2 > -1) {
-						l1 -= l - 1 - j2;
+					if (lastLetterIndex > -1) {
+						digitCount -= end - 1 - lastLetterIndex;
 					}
-					if (l1 <= i2) {
-						for (int i3 = k; i3 < l; i3++) {
-							ac[i3] = '*';
+					if (digitCount <= letterCount) {
+						for (int maskIndex = start; maskIndex < end; maskIndex++) {
+							text[maskIndex] = '*';
 						}
 
 					} else {
-						j = 1;
+						step = 1;
 					}
 				}
 			}
@@ -629,179 +629,179 @@ final class Censor {
 
 	}
 
-	private static boolean method510(byte byte0, byte abyte0[][], byte byte2) {
-		int i = 0;
-		if (abyte0[i][0] == byte0 && abyte0[i][1] == byte2) {
+	private static boolean isExemptNeighbourPair(byte previousCode, byte pairs[][], byte nextCode) {
+		int low = 0;
+		if (pairs[low][0] == previousCode && pairs[low][1] == nextCode) {
 			return true;
 		}
-		int j = abyte0.length - 1;
-		if (abyte0[j][0] == byte0 && abyte0[j][1] == byte2) {
+		int high = pairs.length - 1;
+		if (pairs[high][0] == previousCode && pairs[high][1] == nextCode) {
 			return true;
 		}
 		do {
-			int k = (i + j) / 2;
-			if (abyte0[k][0] == byte0 && abyte0[k][1] == byte2) {
+			int middle = (low + high) / 2;
+			if (pairs[middle][0] == previousCode && pairs[middle][1] == nextCode) {
 				return true;
 			}
-			if (byte0 < abyte0[k][0] || byte0 == abyte0[k][0] && byte2 < abyte0[k][1]) {
-				j = k;
+			if (previousCode < pairs[middle][0] || previousCode == pairs[middle][0] && nextCode < pairs[middle][1]) {
+				high = middle;
 			} else {
-				i = k;
+				low = middle;
 			}
-		} while (i != j && i + 1 != j);
+		} while (low != high && low + 1 != high);
 		return false;
 	}
 
-	private static int method511(char c, char c1, char c2) {
-		if (c1 == c) {
+	private static int simpleSubstitutionLength(char textChar, char patternChar, char nextTextChar) {
+		if (patternChar == textChar) {
 			return 1;
 		}
-		if (c1 == 'o' && c == '0') {
+		if (patternChar == 'o' && textChar == '0') {
 			return 1;
 		}
-		if (c1 == 'o' && c == '(' && c2 == ')') {
+		if (patternChar == 'o' && textChar == '(' && nextTextChar == ')') {
 			return 2;
 		}
-		if (c1 == 'c' && (c == '(' || c == '<' || c == '[')) {
+		if (patternChar == 'c' && (textChar == '(' || textChar == '<' || textChar == '[')) {
 			return 1;
 		}
-		if (c1 == 'e' && c == '\u20AC') {
+		if (patternChar == 'e' && textChar == '\u20AC') {
 			return 1;
 		}
-		if (c1 == 's' && c == '$') {
+		if (patternChar == 's' && textChar == '$') {
 			return 1;
 		}
-		return c1 != 'l' || c != 'i' ? 0 : 1;
+		return patternChar != 'l' || textChar != 'i' ? 0 : 1;
 	}
 
-	private static int method512(char c, char c1, char c2) {
-		if (c2 == c1) {
+	private static int lookalikeSubstitutionLength(char nextTextChar, char currentTextChar, char patternChar) {
+		if (patternChar == currentTextChar) {
 			return 1;
 		}
-		if (c2 >= 'a' && c2 <= 'm') {
-			if (c2 == 'a') {
-				if (c1 == '4' || c1 == '@' || c1 == '^') {
+		if (patternChar >= 'a' && patternChar <= 'm') {
+			if (patternChar == 'a') {
+				if (currentTextChar == '4' || currentTextChar == '@' || currentTextChar == '^') {
 					return 1;
 				}
-				return c1 != '/' || c != '\\' ? 0 : 2;
+				return currentTextChar != '/' || nextTextChar != '\\' ? 0 : 2;
 			}
-			if (c2 == 'b') {
-				if (c1 == '6' || c1 == '8') {
+			if (patternChar == 'b') {
+				if (currentTextChar == '6' || currentTextChar == '8') {
 					return 1;
 				}
-				return (c1 != '1' || c != '3') && (c1 != 'i' || c != '3') ? 0 : 2;
+				return (currentTextChar != '1' || nextTextChar != '3') && (currentTextChar != 'i' || nextTextChar != '3') ? 0 : 2;
 			}
-			if (c2 == 'c') {
-				return c1 != '(' && c1 != '<' && c1 != '{' && c1 != '[' ? 0 : 1;
+			if (patternChar == 'c') {
+				return currentTextChar != '(' && currentTextChar != '<' && currentTextChar != '{' && currentTextChar != '[' ? 0 : 1;
 			}
-			if (c2 == 'd') {
-				return (c1 != '[' || c != ')') && (c1 != 'i' || c != ')') ? 0 : 2;
+			if (patternChar == 'd') {
+				return (currentTextChar != '[' || nextTextChar != ')') && (currentTextChar != 'i' || nextTextChar != ')') ? 0 : 2;
 			}
-			if (c2 == 'e') {
-				return c1 != '3' && c1 != '\u20AC' ? 0 : 1;
+			if (patternChar == 'e') {
+				return currentTextChar != '3' && currentTextChar != '\u20AC' ? 0 : 1;
 			}
-			if (c2 == 'f') {
-				if (c1 == 'p' && c == 'h') {
+			if (patternChar == 'f') {
+				if (currentTextChar == 'p' && nextTextChar == 'h') {
 					return 2;
 				}
-				return c1 != '\243' ? 0 : 1;
+				return currentTextChar != '\243' ? 0 : 1;
 			}
-			if (c2 == 'g') {
-				return c1 != '9' && c1 != '6' && c1 != 'q' ? 0 : 1;
+			if (patternChar == 'g') {
+				return currentTextChar != '9' && currentTextChar != '6' && currentTextChar != 'q' ? 0 : 1;
 			}
-			if (c2 == 'h') {
-				return c1 != '#' ? 0 : 1;
+			if (patternChar == 'h') {
+				return currentTextChar != '#' ? 0 : 1;
 			}
-			if (c2 == 'i') {
-				return c1 != 'y' && c1 != 'l' && c1 != 'j' && c1 != '1' && c1 != '!' && c1 != ':' && c1 != ';' && c1 != '|' ? 0 : 1;
+			if (patternChar == 'i') {
+				return currentTextChar != 'y' && currentTextChar != 'l' && currentTextChar != 'j' && currentTextChar != '1' && currentTextChar != '!' && currentTextChar != ':' && currentTextChar != ';' && currentTextChar != '|' ? 0 : 1;
 			}
-			if (c2 == 'j') {
+			if (patternChar == 'j') {
 				return 0;
 			}
-			if (c2 == 'k') {
+			if (patternChar == 'k') {
 				return 0;
 			}
-			if (c2 == 'l') {
-				return c1 != '1' && c1 != '|' && c1 != 'i' ? 0 : 1;
+			if (patternChar == 'l') {
+				return currentTextChar != '1' && currentTextChar != '|' && currentTextChar != 'i' ? 0 : 1;
 			}
-			if (c2 == 'm') {
-				return 0;
-			}
-		}
-		if (c2 >= 'n' && c2 <= 'z') {
-			if (c2 == 'n') {
-				return 0;
-			}
-			if (c2 == 'o') {
-				if (c1 == '0' || c1 == '*') {
-					return 1;
-				}
-				return (c1 != '(' || c != ')') && (c1 != '[' || c != ']') && (c1 != '{' || c != '}') && (c1 != '<' || c != '>') ? 0 : 2;
-			}
-			if (c2 == 'p') {
-				return 0;
-			}
-			if (c2 == 'q') {
-				return 0;
-			}
-			if (c2 == 'r') {
-				return 0;
-			}
-			if (c2 == 's') {
-				return c1 != '5' && c1 != 'z' && c1 != '$' && c1 != '2' ? 0 : 1;
-			}
-			if (c2 == 't') {
-				return c1 != '7' && c1 != '+' ? 0 : 1;
-			}
-			if (c2 == 'u') {
-				if (c1 == 'v') {
-					return 1;
-				}
-				return (c1 != '\\' || c != '/') && (c1 != '\\' || c != '|') && (c1 != '|' || c != '/') ? 0 : 2;
-			}
-			if (c2 == 'v') {
-				return (c1 != '\\' || c != '/') && (c1 != '\\' || c != '|') && (c1 != '|' || c != '/') ? 0 : 2;
-			}
-			if (c2 == 'w') {
-				return c1 != 'v' || c != 'v' ? 0 : 2;
-			}
-			if (c2 == 'x') {
-				return (c1 != ')' || c != '(') && (c1 != '}' || c != '{') && (c1 != ']' || c != '[') && (c1 != '>' || c != '<') ? 0 : 2;
-			}
-			if (c2 == 'y') {
-				return 0;
-			}
-			if (c2 == 'z') {
+			if (patternChar == 'm') {
 				return 0;
 			}
 		}
-		if (c2 >= '0' && c2 <= '9') {
-			if (c2 == '0') {
-				if (c1 == 'o' || c1 == 'O') {
+		if (patternChar >= 'n' && patternChar <= 'z') {
+			if (patternChar == 'n') {
+				return 0;
+			}
+			if (patternChar == 'o') {
+				if (currentTextChar == '0' || currentTextChar == '*') {
 					return 1;
 				}
-				return (c1 != '(' || c != ')') && (c1 != '{' || c != '}') && (c1 != '[' || c != ']') ? 0 : 2;
+				return (currentTextChar != '(' || nextTextChar != ')') && (currentTextChar != '[' || nextTextChar != ']') && (currentTextChar != '{' || nextTextChar != '}') && (currentTextChar != '<' || nextTextChar != '>') ? 0 : 2;
 			}
-			if (c2 == '1') {
-				return c1 != 'l' ? 0 : 1;
+			if (patternChar == 'p') {
+				return 0;
+			}
+			if (patternChar == 'q') {
+				return 0;
+			}
+			if (patternChar == 'r') {
+				return 0;
+			}
+			if (patternChar == 's') {
+				return currentTextChar != '5' && currentTextChar != 'z' && currentTextChar != '$' && currentTextChar != '2' ? 0 : 1;
+			}
+			if (patternChar == 't') {
+				return currentTextChar != '7' && currentTextChar != '+' ? 0 : 1;
+			}
+			if (patternChar == 'u') {
+				if (currentTextChar == 'v') {
+					return 1;
+				}
+				return (currentTextChar != '\\' || nextTextChar != '/') && (currentTextChar != '\\' || nextTextChar != '|') && (currentTextChar != '|' || nextTextChar != '/') ? 0 : 2;
+			}
+			if (patternChar == 'v') {
+				return (currentTextChar != '\\' || nextTextChar != '/') && (currentTextChar != '\\' || nextTextChar != '|') && (currentTextChar != '|' || nextTextChar != '/') ? 0 : 2;
+			}
+			if (patternChar == 'w') {
+				return currentTextChar != 'v' || nextTextChar != 'v' ? 0 : 2;
+			}
+			if (patternChar == 'x') {
+				return (currentTextChar != ')' || nextTextChar != '(') && (currentTextChar != '}' || nextTextChar != '{') && (currentTextChar != ']' || nextTextChar != '[') && (currentTextChar != '>' || nextTextChar != '<') ? 0 : 2;
+			}
+			if (patternChar == 'y') {
+				return 0;
+			}
+			if (patternChar == 'z') {
+				return 0;
+			}
+		}
+		if (patternChar >= '0' && patternChar <= '9') {
+			if (patternChar == '0') {
+				if (currentTextChar == 'o' || currentTextChar == 'O') {
+					return 1;
+				}
+				return (currentTextChar != '(' || nextTextChar != ')') && (currentTextChar != '{' || nextTextChar != '}') && (currentTextChar != '[' || nextTextChar != ']') ? 0 : 2;
+			}
+			if (patternChar == '1') {
+				return currentTextChar != 'l' ? 0 : 1;
 			} else {
 				return 0;
 			}
 		}
-		if (c2 == ',') {
-			return c1 != '.' ? 0 : 1;
+		if (patternChar == ',') {
+			return currentTextChar != '.' ? 0 : 1;
 		}
-		if (c2 == '.') {
-			return c1 != ',' ? 0 : 1;
+		if (patternChar == '.') {
+			return currentTextChar != ',' ? 0 : 1;
 		}
-		if (c2 == '!') {
-			return c1 != 'i' ? 0 : 1;
+		if (patternChar == '!') {
+			return currentTextChar != 'i' ? 0 : 1;
 		} else {
 			return 0;
 		}
 	}
 
-	private static byte method513(char c) {
+	private static byte neighbourCode(char c) {
 		if (c >= 'a' && c <= 'z') {
 			return (byte) (c - 97 + 1);
 		}
@@ -815,70 +815,70 @@ final class Censor {
 		}
 	}
 
-	private static void method514(char ac[]) {
-		int j;
-		int k = 0;
-		int l = 0;
-		int i1 = 0;
-		while ((j = method515(ac, k)) != -1) {
-			boolean flag = false;
-			for (int j1 = k; j1 >= 0 && j1 < j && !flag; j1++) {
-				if (!method517(ac[j1]) && !method518(ac[j1])) {
-					flag = true;
+	private static void censorIpAddresses(char text[]) {
+		int numberStart;
+		int previousNumberEnd = 0;
+		int runCount = 0;
+		int runStart = 0;
+		while ((numberStart = findNextDigit(text, previousNumberEnd)) != -1) {
+			boolean brokenByLetter = false;
+			for (int scanIndex = previousNumberEnd; scanIndex >= 0 && scanIndex < numberStart && !brokenByLetter; scanIndex++) {
+				if (!isSeparator(text[scanIndex]) && !isSkippableFiller(text[scanIndex])) {
+					brokenByLetter = true;
 				}
 			}
 
-			if (flag) {
-				l = 0;
+			if (brokenByLetter) {
+				runCount = 0;
 			}
-			if (l == 0) {
-				i1 = j;
+			if (runCount == 0) {
+				runStart = numberStart;
 			}
-			k = method516(ac, j);
-			int k1 = 0;
-			for (int l1 = j; l1 < k; l1++) {
-				k1 = k1 * 10 + ac[l1] - 48;
+			previousNumberEnd = findDigitRunEnd(text, numberStart);
+			int value = 0;
+			for (int digitIndex = numberStart; digitIndex < previousNumberEnd; digitIndex++) {
+				value = value * 10 + text[digitIndex] - 48;
 			}
 
-			if (k1 > 255 || k - j > 8) {
-				l = 0;
+			if (value > 255 || previousNumberEnd - numberStart > 8) {
+				runCount = 0;
 			} else {
-				l++;
+				runCount++;
 			}
-			if (l == 4) {
-				for (int i2 = i1; i2 < k; i2++) {
-					ac[i2] = '*';
+			if (runCount == 4) {
+				for (int maskIndex = runStart; maskIndex < previousNumberEnd; maskIndex++) {
+					text[maskIndex] = '*';
 				}
 
-				l = 0;
+				runCount = 0;
 			}
 		}
 	}
 
-	private static int method515(char ac[], int i) {
-		for (int k = i; k < ac.length && k >= 0; k++) {
-			if (ac[k] >= '0' && ac[k] <= '9') {
-				return k;
+	private static int findNextDigit(char text[], int start) {
+		for (int index = start; index < text.length && index >= 0; index++) {
+			if (text[index] >= '0' && text[index] <= '9') {
+				return index;
 			}
 		}
 
 		return -1;
 	}
 
-	private static int method516(char ac[], int j) {
-		for (int k = j; k < ac.length && k >= 0; k++) {
-			if (ac[k] < '0' || ac[k] > '9') {
-				return k;
+	private static int findDigitRunEnd(char text[], int start) {
+		for (int index = start; index < text.length && index >= 0; index++) {
+			if (text[index] < '0' || text[index] > '9') {
+				return index;
 			}
 		}
-		return ac.length;
+		return text.length;
 	}
 
-	private static boolean method517(char c) {
+	private static boolean isSeparator(char c) {
 		return !isLetter(c) && !isDigit(c);
 	}
 
-	private static boolean method518(char c) {
+	private static boolean isSkippableFiller(char c) {
 		return c < 'a' || c > 'z' || c == 'v' || c == 'x' || c == 'j' || c == 'q' || c == 'z';
 	}
 
@@ -898,64 +898,64 @@ final class Censor {
 		return c >= 'A' && c <= 'Z';
 	}
 
-	private static boolean method523(char ac[]) {
-		boolean flag = true;
-		for (int i = 0; i < ac.length; i++) {
-			if (!isDigit(ac[i]) && ac[i] != 0) {
-				flag = false;
+	private static boolean isAllowedFragment(char text[]) {
+		boolean digitsOnly = true;
+		for (int index = 0; index < text.length; index++) {
+			if (!isDigit(text[index]) && text[index] != 0) {
+				digitsOnly = false;
 			}
 		}
 
-		if (flag) {
+		if (digitsOnly) {
 			return true;
 		}
-		int j = method524(ac);
-		int k = 0;
-		int l = anIntArray620.length - 1;
-		if (j == anIntArray620[k] || j == anIntArray620[l]) {
+		int code = encodeFragment(text);
+		int low = 0;
+		int high = allowedFragmentCodes.length - 1;
+		if (code == allowedFragmentCodes[low] || code == allowedFragmentCodes[high]) {
 			return true;
 		}
 		do {
-			int i1 = (k + l) / 2;
-			if (j == anIntArray620[i1]) {
+			int middle = (low + high) / 2;
+			if (code == allowedFragmentCodes[middle]) {
 				return true;
 			}
-			if (j < anIntArray620[i1]) {
-				l = i1;
+			if (code < allowedFragmentCodes[middle]) {
+				high = middle;
 			} else {
-				k = i1;
+				low = middle;
 			}
-		} while (k != l && k + 1 != l);
+		} while (low != high && low + 1 != high);
 		return false;
 	}
 
-	private static int method524(char ac[]) {
-		if (ac.length > 6) {
+	private static int encodeFragment(char text[]) {
+		if (text.length > 6) {
 			return 0;
 		}
-		int k = 0;
-		for (int l = 0; l < ac.length; l++) {
-			char c = ac[ac.length - l - 1];
+		int code = 0;
+		for (int index = 0; index < text.length; index++) {
+			char c = text[text.length - index - 1];
 			if (c >= 'a' && c <= 'z') {
-				k = k * 38 + c - 97 + 1;
+				code = code * 38 + c - 97 + 1;
 			} else if (c == '\'') {
-				k = k * 38 + 27;
+				code = code * 38 + 27;
 			} else if (c >= '0' && c <= '9') {
-				k = k * 38 + c - 48 + 28;
+				code = code * 38 + c - 48 + 28;
 			} else if (c != 0) {
 				return 0;
 			}
 		}
 
-		return k;
+		return code;
 	}
 
-	private static int[] anIntArray620;
-	private static char[][] aCharArrayArray621;
-	private static byte[][][] aByteArrayArrayArray622;
-	private static char[][] aCharArrayArray623;
-	private static char[][] aCharArrayArray624;
-	private static int[] anIntArray625;
+	private static int[] allowedFragmentCodes;
+	private static char[][] badWords;
+	private static byte[][][] badWordExemptionPairs;
+	private static char[][] domains;
+	private static char[][] topLevelDomains;
+	private static int[] topLevelDomainStrictness;
 	private static final String[] exceptions = {"cook", "cook's", "cooks", "seeks", "sheet", "woop", "woops", "faq", "noob", "noobs"};
 
 }

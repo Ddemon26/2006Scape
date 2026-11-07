@@ -19,7 +19,7 @@ public class GameKeyboardDispatchTest {
     private Player previousPlayer;
     private boolean previousAndroid;
     private final Object[] previousCensor = new Object[6];
-    private static final String[] CENSOR_FIELDS = {"anIntArray620", "aCharArrayArray621", "aByteArrayArrayArray622", "aCharArrayArray623", "aCharArrayArray624", "anIntArray625"};
+    private static final String[] CENSOR_FIELDS = {"allowedFragmentCodes", "badWords", "badWordExemptionPairs", "domains", "topLevelDomains", "topLevelDomainStrictness"};
 
     @Before public void setUp() throws Exception {
         previousAndroid = ClientSettings.ANDROID;
