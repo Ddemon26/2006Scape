@@ -4,11 +4,11 @@
 
 public class Animable extends NodeSub {
 
-	public void method443(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2) {
+	public void drawFromCamera(int modelRotation, int pitchSine, int pitchCosine, int yawSine, int yawCosine, int offsetX, int offsetY, int offsetZ, int pickId) {
 		Model model = getRotatedModel();
 		if (model != null) {
 			modelHeight = model.modelHeight;
-			model.method443(i, j, k, l, i1, j1, k1, l1, i2);
+			model.drawFromCamera(modelRotation, pitchSine, pitchCosine, yawSine, yawCosine, offsetX, offsetY, offsetZ, pickId);
 		}
 	}
 

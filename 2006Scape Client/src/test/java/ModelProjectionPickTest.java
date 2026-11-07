@@ -6,7 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-/** Controlled original-name observations of Model.method443 (view transform, culling, picking). */
+/** Controlled original-name observations of Model.drawFromCamera (view transform, culling, picking). */
 public class ModelProjectionPickTest {
     private static final int SENT = 123456, CX = 100, CY = 80;
     private int tex1, tex2, clipX, clipY, drawDistance, zoom;
@@ -67,7 +67,7 @@ public class ModelProjectionPickTest {
     /** Draws with identity rotation and camera angles; true if the vertices were transformed (model not culled). */
     private boolean drawn(int offX, int offY, int offZ) throws Exception {
         reset();
-        model.method443(0, 0, 65536, 0, 65536, offX, offY, offZ, 0);
+        model.drawFromCamera(0, 0, 65536, 0, 65536, offX, offY, offZ, 0);
         return arr("screenX")[0] != SENT;
     }
 
@@ -77,7 +77,7 @@ public class ModelProjectionPickTest {
     }
 
     @Test public void identityProjectionOffsetsDepthAndCameraCoordinates() throws Exception {
-        model.method443(0, 0, 65536, 0, 65536, 5, 6, 1000, 0);
+        model.drawFromCamera(0, 0, 65536, 0, 65536, 5, 6, 1000, 0);
         // camera-space (15, 26, 1030); depth is relative to the model centre depth 1000
         assertEquals(CX + (15 << 9) / 1030, arr("screenX")[0]);
         assertEquals(CY + (26 << 9) / 1030, arr("screenY")[0]);
@@ -86,7 +86,7 @@ public class ModelProjectionPickTest {
         assertEquals(SENT, arr("vertexCameraX")[0]);
         set("texturedFaceCount", model, 1);
         reset();
-        model.method443(0, 0, 65536, 0, 65536, 5, 6, 1000, 0);
+        model.drawFromCamera(0, 0, 65536, 0, 65536, 5, 6, 1000, 0);
         assertEquals(15, arr("vertexCameraX")[0]);
         assertEquals(26, arr("vertexCameraY")[0]);
         assertEquals(1030, arr("vertexCameraZ")[0]);
@@ -98,7 +98,7 @@ public class ModelProjectionPickTest {
         set("texturedFaceCount", model, 1);
         // rotation 512 maps (x,y,z) to (z,y,-x): (30,20,-10); plus offsets (-1000,6,7) -> (-970,26,-3);
         // yaw 512 maps (x,z) to (z,-x): (-3,26,970); centre depth = 1000
-        model.method443(512, 0, 65536, sin512, cos512, -1000, 6, 7, 0);
+        model.drawFromCamera(512, 0, 65536, sin512, cos512, -1000, 6, 7, 0);
         // the 16-bit trig tables are off by one at 90 degrees, so allow one unit
         int cx = arr("vertexCameraX")[0], cy = arr("vertexCameraY")[0], cz = arr("vertexCameraZ")[0];
         assertTrue(cx + " vs -3", Math.abs(cx + 3) <= 1);
@@ -111,12 +111,12 @@ public class ModelProjectionPickTest {
 
     @Test public void vertexBehindNearPlaneIsMarkedAndKeepsCameraCoordinates() throws Exception {
         model.vertexZ = new int[] {-951, 0, 0};   // camera z 49
-        model.method443(0, 0, 65536, 0, 65536, 0, 0, 1000, 0);
+        model.drawFromCamera(0, 0, 65536, 0, 65536, 0, 0, 1000, 0);
         assertEquals(-5000, arr("screenX")[0]);
         assertEquals(49, arr("vertexCameraZ")[0]);
         reset();
         model.vertexZ = new int[] {-950, 0, 0};   // camera z 50
-        model.method443(0, 0, 65536, 0, 65536, 0, 0, 1000, 0);
+        model.drawFromCamera(0, 0, 65536, 0, 65536, 0, 0, 1000, 0);
         assertEquals(CX + (10 << 9) / 50, arr("screenX")[0]);
         assertEquals(SENT, arr("vertexCameraZ")[0]);
     }
@@ -155,17 +155,17 @@ public class ModelProjectionPickTest {
     @Test public void nearPlaneFlagUsesTheNearestExtentOfTheBounds() throws Exception {
         // identity pitch: nearest extent = radius; centre depth - radius <= 50 forces camera-space output
         model.radiusXZ = 100; set("texturedFaceCount", model, 0);
-        reset(); model.method443(0, 0, 65536, 0, 65536, 0, 0, 150, 0);
+        reset(); model.drawFromCamera(0, 0, 65536, 0, 65536, 0, 0, 150, 0);
         assertEquals(150 + 30, arr("vertexCameraZ")[0]);
-        reset(); model.method443(0, 0, 65536, 0, 65536, 0, 0, 151, 0);
+        reset(); model.drawFromCamera(0, 0, 65536, 0, 65536, 0, 0, 151, 0);
         assertEquals(SENT, arr("vertexCameraZ")[0]);
         // pitched 90 degrees the radius no longer reaches toward the camera but the model height does
         int sin = Model.sineTable16[512], cos = Model.cosineTable16[512];
         model.modelHeight = 900;
-        reset(); model.method443(0, sin, cos, 0, 65536, 0, 1000, 0, 0);
+        reset(); model.drawFromCamera(0, sin, cos, 0, 65536, 0, 1000, 0, 0);
         assertEquals(SENT, arr("vertexCameraZ")[0]);
         model.modelHeight = 960;
-        reset(); model.method443(0, sin, cos, 0, 65536, 0, 1000, 0, 0);
+        reset(); model.drawFromCamera(0, sin, cos, 0, 65536, 0, 1000, 0, 0);
         assertNotEquals(SENT, arr("vertexCameraZ")[0]);
     }
 
@@ -174,7 +174,7 @@ public class ModelProjectionPickTest {
         model.radiusXZ = radius;
         int sin = Model.sineTable16[512], cos = Model.cosineTable16[512];
         for (int z = 0; Math.abs(z) < 2000; z += step) {
-            reset(); model.method443(0, sin, cos, 0, 65536, 0, 1000, z, 0);
+            reset(); model.drawFromCamera(0, sin, cos, 0, 65536, 0, 1000, z, 0);
             if (arr("screenX")[0] == SENT) return z;
         }
         return Integer.MAX_VALUE;
@@ -195,17 +195,17 @@ public class ModelProjectionPickTest {
         set("pickByBounds", model, true);
         Model.pickingEnabled = true;
         Model.pickMouseX = CX; Model.pickMouseY = CY + 20;
-        model.method443(0, 0, 65536, 0, 65536, 0, 100, 1000, 77);
+        model.drawFromCamera(0, 0, 65536, 0, 65536, 0, 100, 1000, 77);
         assertEquals(1, Model.pickedCount); assertEquals(77, Model.pickedIds[0]);
         // each coordinate crossing the box edge stops the pick: x box [-56, 46], y box [-46, 56] around the centre
         for (int[] miss : new int[][] {{CX + 47, CY + 20}, {CX - 57, CY + 20}, {CX, CY + 57}, {CX, CY - 47}}) {
             Model.pickedCount = 0; Model.pickMouseX = miss[0]; Model.pickMouseY = miss[1];
-            model.method443(0, 0, 65536, 0, 65536, 0, 100, 1000, 77);
+            model.drawFromCamera(0, 0, 65536, 0, 65536, 0, 100, 1000, 77);
             assertEquals("miss at " + miss[0] + "," + miss[1], 0, Model.pickedCount);
         }
         for (int[] hit : new int[][] {{CX + 45, CY + 20}, {CX - 55, CY + 20}, {CX, CY + 55}, {CX, CY - 45}}) {
             Model.pickedCount = 0; Model.pickMouseX = hit[0]; Model.pickMouseY = hit[1];
-            model.method443(0, 0, 65536, 0, 65536, 0, 100, 1000, 77);
+            model.drawFromCamera(0, 0, 65536, 0, 65536, 0, 100, 1000, 77);
             assertEquals("hit at " + hit[0] + "," + hit[1], 1, Model.pickedCount);
         }
     }
@@ -215,13 +215,13 @@ public class ModelProjectionPickTest {
         Model.pickMouseX = CX; Model.pickMouseY = CY + 20;
         set("pickByBounds", model, true);
         Model.pickingEnabled = false;
-        model.method443(0, 0, 65536, 0, 65536, 0, 100, 1000, 77);
+        model.drawFromCamera(0, 0, 65536, 0, 65536, 0, 100, 1000, 77);
         assertEquals(0, Model.pickedCount);
         Model.pickingEnabled = true;
-        model.method443(0, 0, 65536, 0, 65536, 0, 100, 1000, 0);
+        model.drawFromCamera(0, 0, 65536, 0, 65536, 0, 100, 1000, 0);
         assertEquals(0, Model.pickedCount);
         set("pickByBounds", model, false);   // no faces, so a per-face pick records nothing
-        model.method443(0, 0, 65536, 0, 65536, 0, 100, 1000, 77);
+        model.drawFromCamera(0, 0, 65536, 0, 65536, 0, 100, 1000, 77);
         assertEquals(0, Model.pickedCount);
     }
 

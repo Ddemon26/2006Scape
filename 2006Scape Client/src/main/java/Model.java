@@ -1330,7 +1330,7 @@ public final class Model extends Animable {
 	}
 
 	@Override
-	public void method443(int modelRotation, int pitchSine, int pitchCosine, int yawSine, int yawCosine, int offsetX, int offsetY, int offsetZ, int pickId) {
+	public void drawFromCamera(int modelRotation, int pitchSine, int pitchCosine, int yawSine, int yawCosine, int offsetX, int offsetY, int offsetZ, int pickId) {
 		int yawedDepth = offsetZ * yawCosine - offsetX * yawSine >> 16;
 		int centerDepth = offsetY * pitchSine + yawedDepth * pitchCosine >> 16;
 		int radiusDepth = radiusXZ * pitchCosine >> 16;

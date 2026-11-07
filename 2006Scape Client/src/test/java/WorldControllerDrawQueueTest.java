@@ -24,7 +24,7 @@ public class WorldControllerDrawQueueTest {
     private static final class Rec extends Animable {
         final String name;
         Rec(String name) { this.name = name; }
-        @Override public void method443(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2) {
+        @Override public void drawFromCamera(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2) {
             if (SNAP_TILE != null && name.equals("wall")) SNAP = new int[] {SNAP_TILE.cornerWallEdgeMask, SNAP_TILE.cornerWallFarEdgeValue, SNAP_TILE.cornerWallNearEdgeValue};
             LOG.add(name + ":" + i + "," + j1 + "," + k1 + "," + l1 + "," + i2);
         }
