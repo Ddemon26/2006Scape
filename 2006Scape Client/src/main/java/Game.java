@@ -10668,19 +10668,19 @@ public class Game extends RSApplet {
 			if (pktType == 64) {
 				updateBlockX = inStream.readUnsignedNegatedByte();
 				updateBlockY = inStream.readUnsignedByte128MinusValue();
-				for (int j = updateBlockX; j < updateBlockX + 8; j++) {
-					for (int l9 = updateBlockY; l9 < updateBlockY + 8; l9++) {
-						if (groundArray[plane][j][l9] != null) {
-							groundArray[plane][j][l9] = null;
-							spawnGroundItem(j, l9);
+				for (int tileX = updateBlockX; tileX < updateBlockX + 8; tileX++) {
+					for (int tileY = updateBlockY; tileY < updateBlockY + 8; tileY++) {
+						if (groundArray[plane][tileX][tileY] != null) {
+							groundArray[plane][tileX][tileY] = null;
+							spawnGroundItem(tileX, tileY);
 						}
 					}
 
 				}
 
-				for (Class30_Sub1 class30_sub1 = (Class30_Sub1) pendingSceneChanges.firstFromTail(); class30_sub1 != null; class30_sub1 = (Class30_Sub1) pendingSceneChanges.nextTowardHead()) {
-					if (class30_sub1.tileX >= updateBlockX && class30_sub1.tileX < updateBlockX + 8 && class30_sub1.tileY >= updateBlockY && class30_sub1.tileY < updateBlockY + 8 && class30_sub1.scenePlane == plane) {
-						class30_sub1.restoreDelayTicks = 0;
+				for (Class30_Sub1 pendingChange = (Class30_Sub1) pendingSceneChanges.firstFromTail(); pendingChange != null; pendingChange = (Class30_Sub1) pendingSceneChanges.nextTowardHead()) {
+					if (pendingChange.tileX >= updateBlockX && pendingChange.tileX < updateBlockX + 8 && pendingChange.tileY >= updateBlockY && pendingChange.tileY < updateBlockY + 8 && pendingChange.scenePlane == plane) {
+						pendingChange.restoreDelayTicks = 0;
 					}
 				}
 
