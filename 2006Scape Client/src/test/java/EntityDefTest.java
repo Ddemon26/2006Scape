@@ -200,28 +200,28 @@ public class EntityDefTest {
             def.childrenIDs = new int[] {500, -1, 502, 503};
             seti(def, "morphVarBitId", 7);
             game.variousSettings[3] = 12;
-            assertEquals(503, def.method161().type);
-            game.variousSettings[3] = 0b1000; assertEquals(502, def.method161().type);
-            game.variousSettings[3] = 0b0011; assertEquals("bits below the low bit are ignored", 500, def.method161().type);
-            game.variousSettings[3] = 0b0100; assertNull("child id -1", def.method161());
-            game.variousSettings[3] = 0b10000; assertNull("index past the children", def.method161());
-            game.variousSettings[3] = 0b1100000; assertEquals("bits above the high bit are masked off", 500, def.method161().type);
+            assertEquals(503, def.getMorphedDefinition().type);
+            game.variousSettings[3] = 0b1000; assertEquals(502, def.getMorphedDefinition().type);
+            game.variousSettings[3] = 0b0011; assertEquals("bits below the low bit are ignored", 500, def.getMorphedDefinition().type);
+            game.variousSettings[3] = 0b0100; assertNull("child id -1", def.getMorphedDefinition());
+            game.variousSettings[3] = 0b10000; assertNull("index past the children", def.getMorphedDefinition());
+            game.variousSettings[3] = 0b1100000; assertEquals("bits above the high bit are masked off", 500, def.getMorphedDefinition().type);
 
             EntityDef bySetting = newDef();
             bySetting.childrenIDs = new int[] {500, -1, 502, 503};
             seti(bySetting, "morphSettingId", 9);
-            game.variousSettings[9] = 2; assertEquals(502, bySetting.method161().type);
-            game.variousSettings[9] = 4; assertNull(bySetting.method161());
-            game.variousSettings[9] = -1; assertNull("negative value", bySetting.method161());
+            game.variousSettings[9] = 2; assertEquals(502, bySetting.getMorphedDefinition().type);
+            game.variousSettings[9] = 4; assertNull(bySetting.getMorphedDefinition());
+            game.variousSettings[9] = -1; assertNull("negative value", bySetting.getMorphedDefinition());
 
             EntityDef both = newDef();
             both.childrenIDs = new int[] {500, 501, 502, 503};
             seti(both, "morphVarBitId", 7); seti(both, "morphSettingId", 9);
             game.variousSettings[3] = 0b1000; game.variousSettings[9] = 1;
-            assertEquals("varbit wins over the plain setting", 502, both.method161().type);
+            assertEquals("varbit wins over the plain setting", 502, both.getMorphedDefinition().type);
 
             EntityDef neither = newDef(); neither.childrenIDs = new int[] {500, 501};
-            assertNull(neither.method161());
+            assertNull(neither.getMorphedDefinition());
         } finally {
             sset(EntityDef.class, "cache", savedCache); EntityDef.clientInstance = savedClient;
             Game.anIntArray1232 = (int[]) savedMasks; VarBit.cache = savedBits;
@@ -291,5 +291,311 @@ public class EntityDefTest {
             sset(EntityDef.class, "cache", sc); sset(EntityDef.class, "stream", ss); sset(EntityDef.class, "streamIndices", si);
             EntityDef.totalNPCs = total;
         }
+    }
+
+    // ---------------- pass 156: remaining EntityDef members, observed through their Game/NPC consumers (original identifiers only) ----------------
+    static class TestGame extends Game {
+        final List<Object[]> markers = new ArrayList<Object[]>();
+        final List<Entity> projected = new ArrayList<Entity>();
+        @Override public void drawMinimapMarker(Sprite sprite, int offsetX, int offsetY) { markers.add(new Object[] {sprite, offsetX, offsetY}); }
+        @Override public void projectEntityToScreen(Entity entity, int heightOffset) { projected.add(entity); spriteDrawX = 50; spriteDrawY = 60; }
+    }
+    interface Body { void run() throws Exception; }
+
+    /** Runs body with `def` installed as the cached definition for npc id `id` (EntityDef.forID returns cached slots by type). */
+    private static void withDefInCache(EntityDef def, long id, Body body) throws Exception {
+        Object savedCache = sget(EntityDef.class, "cache");
+        Game savedClient = EntityDef.clientInstance;
+        try {
+            EntityDef[] cache = new EntityDef[20];
+            for (int n = 0; n < 20; n++) cache[n] = typed(-1);
+            def.type = id; cache[0] = def;
+            sset(EntityDef.class, "cache", cache);
+            body.run();
+        } finally { sset(EntityDef.class, "cache", savedCache); EntityDef.clientInstance = savedClient; }
+    }
+
+    /** Delivers NPC update mask 2 (new definition id) to a fresh NPC in slot 2, which copies the definition fields onto the NPC. */
+    private static NPC npcWithDef(Game game, int id) throws Exception {
+        NPC npc = new NPC();
+        game.npcArray = new NPC[8]; game.anIntArray894 = new int[8];
+        game.npcArray[2] = npc; game.anIntArray894[0] = 2; game.anInt893 = 1;
+        Stream packet = new Stream(new byte[] {2, (byte) (id + 128), (byte) (id >> 8)});
+        game.decodeNpcUpdateMasks(packet);
+        assertEquals(3, packet.currentOffset);
+        return npc;
+    }
+
+    @Test public void constructorDefaultsAndOpcodesDecodeSizeAnimationsTurnSpeedHeadIconAndFlags() throws Exception {
+        EntityDef fresh = newDef();
+        assertEquals(1, fresh.tileSize); assertEquals(32, fresh.turnSpeed);
+        assertEquals(-1, fresh.walkAnimationId); assertEquals(-1, fresh.reverseWalkAnimationId); assertEquals(-1, fresh.sidestepNegativeAnimationId);
+        assertEquals(-1, fresh.sidestepPositiveAnimationId); assertEquals(-1, fresh.idleAnimationId); assertEquals(-1, fresh.headIconId);
+        assertTrue(fresh.interactable); assertTrue(fresh.showsMinimapDot); assertFalse(fresh.placedInFirstPass);
+        EntityDef d = decode(12, 0xFD, 13, 0, 50, 14, 0, 51, 17, 0, 60, 0, 61, 0, 62, 0, 63, 93, 99, 102, 0, 9, 103, 0, 17, 107, 0);
+        assertEquals(-3, d.tileSize);
+        assertEquals(50, d.idleAnimationId);
+        assertEquals("opcode 17 rewrites the opcode 14 value, then reads three more", 60, d.walkAnimationId);
+        assertEquals(61, d.reverseWalkAnimationId); assertEquals(62, d.sidestepNegativeAnimationId); assertEquals(63, d.sidestepPositiveAnimationId);
+        assertEquals(9, d.headIconId); assertEquals(17, d.turnSpeed);
+        assertFalse(d.showsMinimapDot); assertTrue(d.placedInFirstPass); assertFalse(d.interactable);
+        EntityDef w = decode(14, 0, 51, 0);
+        assertEquals(51, w.walkAnimationId); assertEquals(-1, w.reverseWalkAnimationId); assertEquals(-1, w.sidestepNegativeAnimationId); assertEquals(-1, w.sidestepPositiveAnimationId);
+        assertEquals(1, decode(0).tileSize);
+        assertEquals(3, decode(12, 3, 0).tileSize);
+        EntityDef onlyOne = decode(107, 0);
+        assertFalse(onlyOne.interactable); assertTrue(onlyOne.showsMinimapDot); assertFalse(onlyOne.placedInFirstPass);
+        EntityDef onlyTwo = decode(93, 0);
+        assertTrue(onlyTwo.interactable); assertFalse(onlyTwo.showsMinimapDot);
+    }
+
+    @Test public void animationFieldsReachTheEntityAndSelectTheMovementAnimationByHeadingAndIdleWhenStill() throws Exception {
+        final EntityDef def = typed(0);
+        def.idleAnimationId = 105; def.walkAnimationId = 101; def.reverseWalkAnimationId = 102; def.sidestepNegativeAnimationId = 103; def.sidestepPositiveAnimationId = 104; def.turnSpeed = 7; def.tileSize = 1;
+        withDefInCache(def, 77, new Body() { @Override public void run() throws Exception {
+            Game game = new Game();
+            NPC npc = npcWithDef(game, 77);
+            assertSame(def, npc.desc);
+            assertEquals(105, npc.anInt1511); assertEquals(101, npc.anInt1554); assertEquals(102, npc.anInt1555);
+            assertEquals(103, npc.anInt1556); assertEquals(104, npc.anInt1557); assertEquals(7, npc.anInt1504); assertEquals(1, npc.anInt1540);
+            npc.anInt1517 = -1; npc.smallXYIndex = 0;
+            game.advanceEntityAlongWalkingPath(npc);
+            assertEquals("no queued steps: the idle animation", 105, npc.anInt1517);
+            // facing 0; the walk target is tile (10,10), centre 1344. {startX, startY, expected animation, expected turnDirection}
+            int[][] cases = {
+                {1284, 1344, 103, 1536},   // target east: relative heading -512
+                {1404, 1344, 104, 512},    // target west: relative heading +512
+                {1344, 1284, 102, 1024},   // target north: relative heading 1024, away from the facing
+                {1344, 1404, 101, 0},      // target south: straight ahead
+                {1284, 1404, 101, 1792},   // relative -256: still forward
+                {1404, 1404, 101, 256},    // relative +256: still forward
+                {1284, 1284, 103, 1280},   // relative -768: the -512 side
+                {1404, 1284, 102, 768}};   // relative +768: away from the facing
+            for (int[] c : cases) {
+                npc.smallXYIndex = 1; npc.smallX[0] = 10; npc.smallY[0] = 10; npc.anInt1552 = 0; npc.anInt1503 = 0; npc.anInt1517 = -1;
+                npc.x = c[0]; npc.y = c[1];
+                game.advanceEntityAlongWalkingPath(npc);
+                assertEquals(Arrays.toString(c) + " turnDirection", c[3], npc.turnDirection);
+                assertEquals(Arrays.toString(c) + " animation", c[2], npc.anInt1517);
+            }
+            def.sidestepNegativeAnimationId = -1; def.sidestepPositiveAnimationId = -1; def.reverseWalkAnimationId = -1;
+            npcWithDef(game, 77);
+            for (int[] c : cases) {
+                npc = game.npcArray[2];
+                npc.smallXYIndex = 1; npc.smallX[0] = 10; npc.smallY[0] = 10; npc.anInt1552 = 0; npc.anInt1503 = 0; npc.anInt1517 = -1;
+                npc.x = c[0]; npc.y = c[1];
+                game.advanceEntityAlongWalkingPath(npc);
+                assertEquals(Arrays.toString(c) + " with missing side animations falls back to the forward one", 101, npc.anInt1517);
+            }
+        } });
+    }
+
+    @Test public void turnSpeedIsTheAngleStepPerTurnUpdateAndZeroDisablesTurning() throws Exception {
+        final EntityDef def = typed(0);
+        def.idleAnimationId = 105; def.walkAnimationId = 101;
+        withDefInCache(def, 77, new Body() { @Override public void run() throws Exception {
+            Game game = new Game();
+            for (int speed : new int[] {7, 32, 0}) {
+                def.turnSpeed = speed;
+                NPC npc = npcWithDef(game, 77);
+                assertEquals(speed, npc.anInt1504);
+                npc.turnDirection = 1024; npc.anInt1552 = 0; npc.interactingEntity = -1; npc.anInt1517 = npc.anInt1511;
+                game.updateEntityTurning(npc);
+                assertEquals("one update turns by the speed", speed, npc.anInt1552);
+                assertEquals(speed == 0 ? 105 : 101, npc.anInt1517);   // a turning idle NPC plays the walk animation
+                game.updateEntityTurning(npc);
+                assertEquals(2 * speed, npc.anInt1552);
+            }
+            def.turnSpeed = 7;
+            NPC npc = npcWithDef(game, 77);
+            npc.turnDirection = 5; npc.anInt1552 = 0; npc.interactingEntity = -1;
+            game.updateEntityTurning(npc);
+            assertEquals("less than one step away: snaps to the target", 5, npc.anInt1552);
+            npc.turnDirection = 2040; npc.anInt1552 = 0;
+            game.updateEntityTurning(npc);
+            assertEquals("short way round is negative", 2041, npc.anInt1552);
+        } });
+    }
+
+    @Test public void sizeIsTheFootprintInTilesCentringTheWalkTargetWideningTheSceneFootprintAndEnablingBoundsPicking() throws Exception {
+        final EntityDef def = typed(0);
+        withDefInCache(def, 77, new Body() { @Override public void run() throws Exception {
+            Game game = new Game();
+            for (int size = 1; size <= 3; size++) {
+                for (int standing = 1; standing <= 3; standing++) {
+                    def.tileSize = (byte) size;
+                    NPC npc = npcWithDef(game, 77);
+                    assertEquals(size, npc.anInt1540);
+                    npc.smallXYIndex = 1; npc.smallX[0] = 10; npc.smallY[0] = 10; npc.anInt1552 = 0; npc.anInt1503 = 0;
+                    npc.x = 10 * 128 + standing * 64; npc.y = 10 * 128 + standing * 64;
+                    game.advanceEntityAlongWalkingPath(npc);
+                    assertEquals("size " + size + " standing as " + standing, size == standing ? 0 : 1, npc.smallXYIndex);
+                    if (size == standing) { assertEquals(10 * 128 + size * 64, npc.x); }
+                    else { assertTrue(npc.x != 10 * 128 + standing * 64 || npc.y != 10 * 128 + standing * 64); }
+                }
+            }
+            // animated model: bounds picking only for size 1
+            Model.loadModelHeader(triangle(5, 40000), 5);
+            for (int size = 0; size <= 3; size++) {
+                EntityDef.mruNodes.clear();
+                EntityDef e = newDef(); e.type = 300L + size; e.tileSize = (byte) size; set(e, "bodyModelIds", new int[] {5});
+                Model.animationScratchModel.pickByBounds = false;
+                assertEquals("size " + size, size == 1, e.getAnimatedModel(-1, -1, null).pickByBounds);
+            }
+            // scene footprint: radius (size - 1) * 64 + 60 around the centre of tile (10,10)
+            game.npcIndices = new int[] {2}; game.npcCount = 1; game.plane = 0;
+            game.byteGroundArray = new byte[4][104][104]; game.intGroundArray = new int[4][105][105];
+            for (int[] c : new int[][] {{1, 10, 10}, {3, 9, 11}, {5, 8, 12}}) {
+                def.tileSize = (byte) c[0];
+                NPC npc = npcWithDef(game, 77);
+                npc.x = 1344; npc.y = 1344;
+                game.anIntArrayArray929 = new int[104][104]; game.anInt1265 = 1;
+                game.worldController = new WorldController(new int[4][105][105]);
+                game.method26(false);
+                Ground[][][] tiles = (Ground[][][]) f(WorldController.class, "groundArray").get(game.worldController);
+                Object5 o = tiles[0][10][10].obj5Array[0];
+                assertEquals("size " + c[0] + " minTileX", c[1], o.minTileX); assertEquals(c[2], o.maxTileX);
+                assertEquals(c[1], o.minTileY); assertEquals(c[2], o.maxTileY);
+            }
+        } });
+    }
+
+    @Test public void lateDrawAndClickableFlagsChoosePassAndPickHashWhenPlacingNpcs() throws Exception {
+        final EntityDef def = typed(0);
+        withDefInCache(def, 77, new Body() { @Override public void run() throws Exception {
+            Game game = new Game();
+            NPC npc = npcWithDef(game, 77);
+            game.npcIndices = new int[] {2}; game.npcCount = 1; game.plane = 0;
+            game.byteGroundArray = new byte[4][104][104]; game.intGroundArray = new int[4][105][105];
+            npc.x = 1344; npc.y = 1344;
+            for (boolean late : new boolean[] {false, true}) {
+                for (boolean clickable : new boolean[] {true, false}) {
+                    def.placedInFirstPass = late; def.interactable = clickable;
+                    Ground[][][] tiles;
+                    game.anIntArrayArray929 = new int[104][104]; game.anInt1265 = 1;
+                    game.worldController = new WorldController(new int[4][105][105]);
+                    game.method26(late);
+                    tiles = (Ground[][][]) f(WorldController.class, "groundArray").get(game.worldController);
+                    String label = "late=" + late + " clickable=" + clickable;
+                    assertNotNull(label, tiles[0][10][10]);
+                    assertEquals(label, 0x20000000 + (2 << 14) + (clickable ? 0 : 0x80000000), tiles[0][10][10].obj5Array[0].uid);
+                    game.anIntArrayArray929 = new int[104][104]; game.anInt1265 = 1;
+                    game.worldController = new WorldController(new int[4][105][105]);
+                    game.method26(!late);
+                    tiles = (Ground[][][]) f(WorldController.class, "groundArray").get(game.worldController);
+                    assertNull(label + " other pass", tiles[0][10][10]);
+                }
+            }
+        } });
+    }
+
+    @Test public void clickableFlagGatesTheNpcMenuRows() throws Exception {
+        Game game = new Game();
+        EntityDef d = typed(5); d.name = "Bob"; d.combatLevel = 0; d.actions = new String[] {"Talk-to", null, null, null, "Attack"};
+        game.menuActionID = new int[500]; game.menuActionCmd1 = new int[500]; game.menuActionCmd2 = new int[500]; game.menuActionCmd3 = new int[500];
+        Player savedMe = Game.myPlayer; Game.myPlayer = new Player();
+        try {
+        game.menuActionRow = 0; game.itemSelected = 0; game.spellSelected = 0;
+        game.buildAtNPCMenu(d, 1, 2, 3);
+        assertEquals("Talk-to, Attack, Examine", 3, game.menuActionRow);
+        d.interactable = false;
+        game.menuActionRow = 0;
+        game.buildAtNPCMenu(d, 1, 2, 3);
+        assertEquals("not clickable: no rows at all", 0, game.menuActionRow);
+        d.showsMinimapDot = false; d.interactable = true;
+        game.buildAtNPCMenu(d, 1, 2, 3);
+        assertEquals("the minimap flag does not gate the menu", 3, game.menuActionRow);
+        } finally { Game.myPlayer = savedMe; }
+    }
+
+    private static RSImageProducer producer(int w, int h) throws Exception {
+        RSImageProducer p = (RSImageProducer) unsafe().allocateInstance(RSImageProducer.class);
+        f(RSImageProducer.class, "pixels").set(p, new int[w * h]);
+        f(RSImageProducer.class, "width").setInt(p, w);
+        f(RSImageProducer.class, "height").setInt(p, h);
+        return p;
+    }
+    private static int[] saveRaster() {
+        return new int[] {DrawingArea.width, DrawingArea.height, DrawingArea.topX, DrawingArea.topY, DrawingArea.bottomX, DrawingArea.bottomY};
+    }
+    private static void restoreRaster(int[] pixelsHolderIgnored, int[] s, int[] savedPixels) {
+        DrawingArea.pixels = savedPixels;
+        DrawingArea.width = s[0]; DrawingArea.height = s[1]; DrawingArea.topX = s[2]; DrawingArea.topY = s[3]; DrawingArea.bottomX = s[4]; DrawingArea.bottomY = s[5];
+    }
+
+    /** Draws the minimap with NPCs at (10, 20) offset units from the player and returns how many NPC dots were requested. */
+    private static int npcDots(TestGame g, NPC... npcs) throws Exception {
+        g.npcArray = new NPC[8]; g.npcIndices = new int[npcs.length];
+        for (int n = 0; n < npcs.length; n++) { g.npcArray[n + 1] = npcs[n]; g.npcIndices[n] = n + 1; }
+        g.npcCount = npcs.length;
+        g.markers.clear();
+        g.drawMinimap();
+        int dots = 0;
+        for (Object[] m : g.markers) if (m[0] == g.mapDotNPC) { dots++; assertEquals(10, m[1]); assertEquals(20, m[2]); }
+        return dots;
+    }
+
+    @Test public void minimapFlagSelectsNpcDotsAndBothFlagsAreReadFromTheMorphedChild() throws Exception {
+        int[] savedState = saveRaster(); int[] savedPixels = DrawingArea.pixels; int[] savedOffsets = Texture.lineOffsets; Player savedMe = Game.myPlayer;
+        try {
+            TestGame g = new TestGame();
+            g.aRSImageProducer_1164 = producer(172, 156); g.aRSImageProducer_1165 = producer(8, 8);
+            g.anInt1021 = 0; g.compass = new Sprite(1, 1); g.minimapSprite = new Sprite(1, 1); g.mapDotNPC = new Sprite(1, 1);
+            g.groundArray = new NodeList[4][104][104]; g.plane = 0; g.playerCount = 0; g.mapFunctionIconCount = 0; g.anInt855 = 0; g.destX = 0;
+            g.variousSettings = new int[10];
+            Game.myPlayer = new Player(); Game.myPlayer.x = 0; Game.myPlayer.y = 0;
+            final EntityDef def = typed(0);
+            final TestGame game = g;
+            withDefInCache(def, 77, new Body() { @Override public void run() throws Exception {
+                NPC npc = new NPC(); npc.desc = def; npc.x = 320; npc.y = 640;
+                assertEquals("defaults draw a dot", 1, npcDots(game, npc));
+                def.showsMinimapDot = false;
+                assertEquals("flag 87 off", 0, npcDots(game, npc));
+                def.showsMinimapDot = true; def.interactable = false;
+                assertEquals("flag 84 off", 0, npcDots(game, npc));
+                def.interactable = true;
+                assertEquals(1, npcDots(game, npc));
+                assertEquals("two NPCs", 2, npcDots(game, npc, npc));
+                // morph: the dot flags come from the child definition the settings select
+                EntityDef[] cache = (EntityDef[]) sget(EntityDef.class, "cache");
+                cache[1] = typed(500); cache[1].showsMinimapDot = false;
+                cache[2] = typed(501);
+                def.childrenIDs = new int[] {500, 501};
+                seti(def, "morphSettingId", 3);
+                EntityDef.clientInstance = game;
+                game.variousSettings[3] = 0; assertEquals("child 500 has flag 87 off", 0, npcDots(game, npc));
+                game.variousSettings[3] = 1; assertEquals("child 501 default", 1, npcDots(game, npc));
+                game.variousSettings[3] = 5; assertEquals("no child: no dot", 0, npcDots(game, npc));
+                cache[2].interactable = false;
+                game.variousSettings[3] = 1; assertEquals("child 501 flag 84 off", 0, npcDots(game, npc));
+            } });
+        } finally { restoreRaster(null, savedState, savedPixels); Texture.lineOffsets = savedOffsets; Game.myPlayer = savedMe; }
+    }
+
+    @Test public void headIconFieldIndexesTheOverheadIconSpritesWithinTheirBounds() throws Exception {
+        int[] savedState = saveRaster(); int[] savedPixels = DrawingArea.pixels; Player savedMe = Game.myPlayer;
+        try {
+            final TestGame g = new TestGame();
+            g.groundArray = new NodeList[4][104][104]; g.plane = 0; g.playerCount = 0; g.anInt855 = 0;
+            Player me = new Player(); me.visible = true; me.combatLevel = 3; me.headIcon = -1; me.x = 640; me.y = 640;
+            Game.myPlayer = me; g.playerArray = new Player[8]; g.playerIndices = new int[8];
+            g.headIcons = new Sprite[4];
+            for (int n = 0; n < 4; n++) { g.headIcons[n] = new Sprite(1, 1); g.headIcons[n].pixels[0] = 0xAA0000 + 0x100 * n + 1; }
+            final EntityDef def = typed(0);
+            withDefInCache(def, 77, new Body() { @Override public void run() throws Exception {
+                NPC npc = new NPC(); npc.desc = def; npc.x = 640; npc.y = 640;
+                g.npcArray = new NPC[8]; g.npcArray[1] = npc; g.npcIndices = new int[] {1}; g.npcCount = 1;
+                for (int icon : new int[] {-1, 0, 1, 3, 4, 19, 20}) {
+                    def.headIconId = icon;
+                    int[] raster = new int[100 * 100];
+                    DrawingArea.bindRaster(100, 100, raster);
+                    g.projected.clear();
+                    g.updateEntities();
+                    boolean drawn = icon >= 0 && icon < 4;
+                    assertEquals("icon " + icon, drawn ? 1 : 0, g.projected.size());
+                    assertEquals("icon " + icon + " pixel", drawn ? 0xAA0000 + 0x100 * icon + 1 : 0, raster[30 * 100 + 38]);
+                }
+            } });
+        } finally { restoreRaster(null, savedState, savedPixels); Game.myPlayer = savedMe; }
     }
 }

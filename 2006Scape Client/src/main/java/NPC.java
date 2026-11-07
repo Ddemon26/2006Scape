@@ -49,7 +49,7 @@ public final class NPC extends Entity {
 				model = new Model(aModel);
 			}
 		}
-		if (desc.aByte68 == 1) {
+		if (desc.tileSize == 1) {
 			model.pickByBounds = true;
 		}
 		return model;

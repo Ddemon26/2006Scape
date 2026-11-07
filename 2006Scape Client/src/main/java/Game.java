@@ -986,7 +986,7 @@ public class Game extends RSApplet {
 		for (int j = 0; j < npcCount; j++) {
 			NPC npc = npcArray[npcIndices[j]];
 			int k = 0x20000000 + (npcIndices[j] << 14);
-			if (npc == null || !npc.isVisible() || npc.desc.aBoolean93 != flag) {
+			if (npc == null || !npc.isVisible() || npc.desc.placedInFirstPass != flag) {
 				continue;
 			}
 			int l = npc.x >> 7;
@@ -1000,7 +1000,7 @@ public class Game extends RSApplet {
 				}
 				anIntArrayArray929[l][i1] = anInt1265;
 			}
-			if (!npc.desc.aBoolean84) {
+			if (!npc.desc.interactable) {
 				k += 0x80000000;
 			}
 			worldController.addEntity(plane, npc.anInt1552, interpolatedGroundHeight(plane, npc.y, npc.x), k, npc.y, (npc.anInt1540 - 1) * 64 + 60, npc.x, npc, npc.aBoolean1541);
@@ -1527,7 +1527,7 @@ public class Game extends RSApplet {
 				if (obj instanceof NPC) {
 					EntityDef entityDef = ((NPC) obj).desc;
 					if (entityDef.childrenIDs != null) {
-						entityDef = entityDef.method161();
+						entityDef = entityDef.getMorphedDefinition();
 					}
 					if (entityDef == null) {
 						continue;
@@ -1574,10 +1574,10 @@ public class Game extends RSApplet {
 					}
 				} else {
 					EntityDef entityDef_1 = ((NPC) obj).desc;
-					if (entityDef_1.anInt75 >= 0 && entityDef_1.anInt75 < headIcons.length) {
+					if (entityDef_1.headIconId >= 0 && entityDef_1.headIconId < headIcons.length) {
 						projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
-							headIcons[entityDef_1.anInt75].drawSprite(spriteDrawX - 12, spriteDrawY - 30);
+							headIcons[entityDef_1.headIconId].drawSprite(spriteDrawX - 12, spriteDrawY - 30);
 						}
 					}
 					if (anInt855 == 1 && anInt1222 == npcIndices[j - playerCount] && loopCycle % 20 < 10) {
@@ -2267,13 +2267,13 @@ public class Game extends RSApplet {
 			if (k1 == 1) {
 				anIntArray894[anInt893++] = k;
 			}
-			npc.anInt1540 = npc.desc.aByte68;
-			npc.anInt1504 = npc.desc.anInt79;
-			npc.anInt1554 = npc.desc.anInt67;
-			npc.anInt1555 = npc.desc.anInt58;
-			npc.anInt1556 = npc.desc.anInt83;
-			npc.anInt1557 = npc.desc.anInt55;
-			npc.anInt1511 = npc.desc.anInt77;
+			npc.anInt1540 = npc.desc.tileSize;
+			npc.anInt1504 = npc.desc.turnSpeed;
+			npc.anInt1554 = npc.desc.walkAnimationId;
+			npc.anInt1555 = npc.desc.reverseWalkAnimationId;
+			npc.anInt1556 = npc.desc.sidestepNegativeAnimationId;
+			npc.anInt1557 = npc.desc.sidestepPositiveAnimationId;
+			npc.anInt1511 = npc.desc.idleAnimationId;
 			npc.setPos(myPlayer.smallX[0] + i1, myPlayer.smallY[0] + l, j1 == 1);
 		}
 		stream.finishBitReading();
@@ -4166,7 +4166,7 @@ public class Game extends RSApplet {
 			if (class30_sub2_sub4_sub1_sub1_5 != null) {
 				EntityDef entityDef = class30_sub2_sub4_sub1_sub1_5.desc;
 				if (entityDef.childrenIDs != null) {
-					entityDef = entityDef.method161();
+					entityDef = entityDef.getMorphedDefinition();
 				}
 				if (entityDef != null) {
 					String s9;
@@ -4608,10 +4608,10 @@ public class Game extends RSApplet {
 			}
 			if (k1 == 1) {
 				NPC npc = npcArray[l1];
-				if (npc.desc.aByte68 == 1 && (npc.x & 0x7f) == 64 && (npc.y & 0x7f) == 64) {
+				if (npc.desc.tileSize == 1 && (npc.x & 0x7f) == 64 && (npc.y & 0x7f) == 64) {
 					for (int j2 = 0; j2 < npcCount; j2++) {
 						NPC npc2 = npcArray[npcIndices[j2]];
-						if (npc2 != null && npc2 != npc && npc2.desc.aByte68 == 1 && npc2.x == npc.x && npc2.y == npc.y) {
+						if (npc2 != null && npc2 != npc && npc2.desc.tileSize == 1 && npc2.x == npc.x && npc2.y == npc.y) {
 							buildAtNPCMenu(npc2.desc, npcIndices[j2], j1, i1);
 						}
 					}
@@ -4631,7 +4631,7 @@ public class Game extends RSApplet {
 				if ((player.x & 0x7f) == 64 && (player.y & 0x7f) == 64) {
 					for (int k2 = 0; k2 < npcCount; k2++) {
 						NPC class30_sub2_sub4_sub1_sub1_2 = npcArray[npcIndices[k2]];
-						if (class30_sub2_sub4_sub1_sub1_2 != null && class30_sub2_sub4_sub1_sub1_2.desc.aByte68 == 1 && class30_sub2_sub4_sub1_sub1_2.x == player.x && class30_sub2_sub4_sub1_sub1_2.y == player.y) {
+						if (class30_sub2_sub4_sub1_sub1_2 != null && class30_sub2_sub4_sub1_sub1_2.desc.tileSize == 1 && class30_sub2_sub4_sub1_sub1_2.x == player.x && class30_sub2_sub4_sub1_sub1_2.y == player.y) {
 							buildAtNPCMenu(class30_sub2_sub4_sub1_sub1_2.desc, npcIndices[k2], j1, i1);
 						}
 					}
@@ -6643,13 +6643,13 @@ public class Game extends RSApplet {
 			}
 			if ((mask & 2) != 0) {
 				npc.desc = EntityDef.forID(packet.readUnsignedShortLittleEndianSubtract128());
-				npc.anInt1540 = npc.desc.aByte68;
-				npc.anInt1504 = npc.desc.anInt79;
-				npc.anInt1554 = npc.desc.anInt67;
-				npc.anInt1555 = npc.desc.anInt58;
-				npc.anInt1556 = npc.desc.anInt83;
-				npc.anInt1557 = npc.desc.anInt55;
-				npc.anInt1511 = npc.desc.anInt77;
+				npc.anInt1540 = npc.desc.tileSize;
+				npc.anInt1504 = npc.desc.turnSpeed;
+				npc.anInt1554 = npc.desc.walkAnimationId;
+				npc.anInt1555 = npc.desc.reverseWalkAnimationId;
+				npc.anInt1556 = npc.desc.sidestepNegativeAnimationId;
+				npc.anInt1557 = npc.desc.sidestepPositiveAnimationId;
+				npc.anInt1511 = npc.desc.idleAnimationId;
 			}
 			if ((mask & 4) != 0) {
 				npc.anInt1538 = packet.readUnsignedShortLittleEndian();
@@ -6663,12 +6663,12 @@ public class Game extends RSApplet {
 			return;
 		}
 		if (entityDef.childrenIDs != null) {
-			entityDef = entityDef.method161();
+			entityDef = entityDef.getMorphedDefinition();
 		}
 		if (entityDef == null) {
 			return;
 		}
-		if (!entityDef.aBoolean84) {
+		if (!entityDef.interactable) {
 			return;
 		}
 		String s = entityDef.name;
@@ -9516,9 +9516,9 @@ public class Game extends RSApplet {
 			if (npc != null && npc.isVisible()) {
 				EntityDef entityDef = npc.desc;
 				if (entityDef.childrenIDs != null) {
-					entityDef = entityDef.method161();
+					entityDef = entityDef.getMorphedDefinition();
 				}
-				if (entityDef != null && entityDef.aBoolean87 && entityDef.aBoolean84) {
+				if (entityDef != null && entityDef.showsMinimapDot && entityDef.interactable) {
 					int i1 = npc.x / 32 - myPlayer.x / 32;
 					int k3 = npc.y / 32 - myPlayer.y / 32;
 					drawMinimapMarker(mapDotNPC, i1, k3);

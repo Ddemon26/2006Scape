@@ -33,7 +33,7 @@ public final class EntityDef {
 
 	public Model getHeadModel() {
 		if (childrenIDs != null) {
-			EntityDef entityDef = method161();
+			EntityDef entityDef = getMorphedDefinition();
 			if (entityDef == null) {
 				return null;
 			} else {
@@ -73,7 +73,7 @@ public final class EntityDef {
 		return model;
 	}
 
-	public EntityDef method161() {
+	public EntityDef getMorphedDefinition() {
 		int childIndex = -1;
 		if (morphVarBitId != -1) {
 			VarBit varBit = VarBit.cache[morphVarBitId];
@@ -121,7 +121,7 @@ public final class EntityDef {
 
 	public Model getAnimatedModel(int secondaryFrameId, int primaryFrameId, int secondaryTransformIndices[]) {
 		if (childrenIDs != null) {
-			EntityDef entityDef = method161();
+			EntityDef entityDef = getMorphedDefinition();
 			if (entityDef == null) {
 				return null;
 			} else {
@@ -173,7 +173,7 @@ public final class EntityDef {
 		animatedModel.calculateBounds();
 		animatedModel.faceGroups = null;
 		animatedModel.vertexGroups = null;
-		if (aByte68 == 1) {
+		if (tileSize == 1) {
 			animatedModel.pickByBounds = true;
 		}
 		return animatedModel;
@@ -197,16 +197,16 @@ public final class EntityDef {
 			} else if (opcode == 3) {
 				description = stream.readLfTerminatedBytes();
 			} else if (opcode == 12) {
-				aByte68 = stream.readSignedByte();
+				tileSize = stream.readSignedByte();
 			} else if (opcode == 13) {
-				anInt77 = stream.readUnsignedShortBigEndian();
+				idleAnimationId = stream.readUnsignedShortBigEndian();
 			} else if (opcode == 14) {
-				anInt67 = stream.readUnsignedShortBigEndian();
+				walkAnimationId = stream.readUnsignedShortBigEndian();
 			} else if (opcode == 17) {
-				anInt67 = stream.readUnsignedShortBigEndian();
-				anInt58 = stream.readUnsignedShortBigEndian();
-				anInt83 = stream.readUnsignedShortBigEndian();
-				anInt55 = stream.readUnsignedShortBigEndian();
+				walkAnimationId = stream.readUnsignedShortBigEndian();
+				reverseWalkAnimationId = stream.readUnsignedShortBigEndian();
+				sidestepNegativeAnimationId = stream.readUnsignedShortBigEndian();
+				sidestepPositiveAnimationId = stream.readUnsignedShortBigEndian();
 			} else if (opcode >= 30 && opcode < 40) {
 				if (actions == null) {
 					actions = new String[5];
@@ -238,7 +238,7 @@ public final class EntityDef {
 			} else if (opcode == 92) {
 				stream.readUnsignedShortBigEndian();
 			} else if (opcode == 93) {
-				aBoolean87 = false;
+				showsMinimapDot = false;
 			} else if (opcode == 95) {
 				combatLevel = stream.readUnsignedShortBigEndian();
 			} else if (opcode == 97) {
@@ -246,15 +246,15 @@ public final class EntityDef {
 			} else if (opcode == 98) {
 				verticalScale = stream.readUnsignedShortBigEndian();
 			} else if (opcode == 99) {
-				aBoolean93 = true;
+				placedInFirstPass = true;
 			} else if (opcode == 100) {
 				ambientLightOffset = stream.readSignedByte();
 			} else if (opcode == 101) {
 				lightDivisorOffset = stream.readSignedByte() * 5;
 			} else if (opcode == 102) {
-				anInt75 = stream.readUnsignedShortBigEndian();
+				headIconId = stream.readUnsignedShortBigEndian();
 			} else if (opcode == 103) {
-				anInt79 = stream.readUnsignedShortBigEndian();
+				turnSpeed = stream.readUnsignedShortBigEndian();
 			} else if (opcode == 106) {
 				morphVarBitId = stream.readUnsignedShortBigEndian();
 				if (morphVarBitId == 65535) {
@@ -274,62 +274,62 @@ public final class EntityDef {
 				}
 
 			} else if (opcode == 107) {
-				aBoolean84 = false;
+				interactable = false;
 			}
 		} while (true);
 	}
 
 	private EntityDef() {
-		anInt55 = -1;
+		sidestepPositiveAnimationId = -1;
 		morphVarBitId = -1;
-		anInt58 = -1;
+		reverseWalkAnimationId = -1;
 		morphSettingId = -1;
 		combatLevel = -1;
-		anInt67 = -1;
-		aByte68 = 1;
-		anInt75 = -1;
-		anInt77 = -1;
+		walkAnimationId = -1;
+		tileSize = 1;
+		headIconId = -1;
+		idleAnimationId = -1;
 		type = -1L;
-		anInt79 = 32;
-		anInt83 = -1;
-		aBoolean84 = true;
+		turnSpeed = 32;
+		sidestepNegativeAnimationId = -1;
+		interactable = true;
 		verticalScale = 128;
-		aBoolean87 = true;
+		showsMinimapDot = true;
 		horizontalScale = 128;
-		aBoolean93 = false;
+		placedInFirstPass = false;
 	}
 
-	public int anInt55;
+	public int sidestepPositiveAnimationId;
 	private static int cacheIndex;
 	private int morphVarBitId;
-	public int anInt58;
+	public int reverseWalkAnimationId;
 	private int morphSettingId;
 	private static Stream stream;
 	public int combatLevel;
 	public String name;
 	public String actions[];
-	public int anInt67;
-	public byte aByte68;
+	public int walkAnimationId;
+	public byte tileSize;
 	private int[] recolorReplacements;
 	private static int[] streamIndices;
 	private int[] headModelIds;
-	public int anInt75;
+	public int headIconId;
 	private int[] recolorSources;
-	public int anInt77;
+	public int idleAnimationId;
 	public long type;
-	public int anInt79;
+	public int turnSpeed;
 	private static EntityDef[] cache;
 	public static Game clientInstance;
-	public int anInt83;
-	public boolean aBoolean84;
+	public int sidestepNegativeAnimationId;
+	public boolean interactable;
 	private int ambientLightOffset;
 	private int verticalScale;
-	public boolean aBoolean87;
+	public boolean showsMinimapDot;
 	public int childrenIDs[];
 	public byte description[];
 	private int horizontalScale;
 	private int lightDivisorOffset;
-	public boolean aBoolean93;
+	public boolean placedInFirstPass;
 	private int[] bodyModelIds;
 	public static LruCache mruNodes = new LruCache(30);
 
