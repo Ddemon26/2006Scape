@@ -4,7 +4,7 @@
 
 public class OnDemandFetcherParent {
 
-	public void requestModel(int i) {
+	public void requestModel(int modelId) {
 	}
 
 	OnDemandFetcherParent() {

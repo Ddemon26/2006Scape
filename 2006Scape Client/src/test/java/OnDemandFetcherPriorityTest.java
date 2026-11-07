@@ -41,7 +41,7 @@ public class OnDemandFetcherPriorityTest {
             ((int[][]) get("crcs"))[t] = new int[20];
             status[t] = new byte[20];
         }
-        set("openSocketTime", System.currentTimeMillis() + 3000000L); // closeRequest returns early, no IO
+        set("openSocketTime", System.currentTimeMillis() + 3000000L); // sendRequest returns early, no IO
         set("totalFiles", 100);
     }
 

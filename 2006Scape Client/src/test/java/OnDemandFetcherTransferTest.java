@@ -10,7 +10,7 @@ import java.util.zip.GZIPOutputStream;
 import org.junit.Before;
 import org.junit.Test;
 
-/** OnDemandFetcher.readData, closeRequest, method558, getNextNode and the three queues, original names only. */
+/** OnDemandFetcher.readData, sendRequest (was closeRequest), method558, getNextNode and the three queues, original names only. */
 public class OnDemandFetcherTransferTest {
     private OnDemandFetcher fetcher;
     private Game game;
@@ -233,7 +233,7 @@ public class OnDemandFetcherTransferTest {
         set("inputStream", new ByteArrayInputStream(new byte[0]));
         OnDemandData d = new OnDemandData();
         d.dataType = 2; d.ID = 0x0304; d.incomplete = true;
-        Method m = OnDemandFetcher.class.getDeclaredMethod("closeRequest", OnDemandData.class);
+        Method m = OnDemandFetcher.class.getDeclaredMethod("sendRequest", OnDemandData.class);
         m.setAccessible(true);
         m.invoke(fetcher, d);
         assertEquals(-10000, geti("connectionFailureCount"));

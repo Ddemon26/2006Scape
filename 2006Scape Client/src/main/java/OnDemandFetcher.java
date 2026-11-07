@@ -227,7 +227,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		return versions[dataType].length;
 	}
 
-	private void closeRequest(OnDemandData onDemandData) {
+	private void sendRequest(OnDemandData request) {
 		try {
 			if (socket == null) {
 				long currentTime = System.currentTimeMillis();
@@ -245,10 +245,10 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 
 				loopCycle = 0;
 			}
-			ioBuffer[0] = (byte) onDemandData.dataType;
-			ioBuffer[1] = (byte) (onDemandData.ID >> 8);
-			ioBuffer[2] = (byte) onDemandData.ID;
-			if (onDemandData.incomplete) {
+			ioBuffer[0] = (byte) request.dataType;
+			ioBuffer[1] = (byte) (request.ID >> 8);
+			ioBuffer[2] = (byte) request.ID;
+			if (request.incomplete) {
 				ioBuffer[3] = 2;
 			} else if (!clientInstance.loggedIn) {
 				ioBuffer[3] = 1;
@@ -301,8 +301,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		}
 	}
 
-	public int getModelIndex(int i) {
-		return modelIndices[i] & 0xff;
+	public int getModelIndex(int modelId) {
+		return modelIndices[modelId] & 0xff;
 	}
 
 	@Override
@@ -310,23 +310,23 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		try {
 			while (running) {
 				onDemandCycle++;
-				int i = 20;
+				int sleepMillis = 20;
 				if (highestPendingPriority == 0 && clientInstance.cacheStores[0] != null) {
-					i = 50;
+					sleepMillis = 50;
 				}
 				try {
-					Thread.sleep(i);
+					Thread.sleep(sleepMillis);
 				} catch (Exception _ex) {
 				}
 				waiting = true;
-				for (int j = 0; j < 100; j++) {
+				for (int pollPass = 0; pollPass < 100; pollPass++) {
 					if (!waiting) {
 						break;
 					}
 					waiting = false;
 					checkReceived();
 					handleFailed();
-					if (uncompletedCount == 0 && j >= 5) {
+					if (uncompletedCount == 0 && pollPass >= 5) {
 						break;
 					}
 					dispatchExtraFileRequests();
@@ -335,30 +335,30 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 					}
 				}
 
-				boolean flag = false;
-				for (OnDemandData onDemandData = (OnDemandData) requested.firstFromTail(); onDemandData != null; onDemandData = (OnDemandData) requested.nextTowardHead()) {
-					if (onDemandData.incomplete) {
-						flag = true;
-						onDemandData.loopCycle++;
-						if (onDemandData.loopCycle > 50) {
-							onDemandData.loopCycle = 0;
-							closeRequest(onDemandData);
+				boolean hasOutstandingRequest = false;
+				for (OnDemandData request = (OnDemandData) requested.firstFromTail(); request != null; request = (OnDemandData) requested.nextTowardHead()) {
+					if (request.incomplete) {
+						hasOutstandingRequest = true;
+						request.loopCycle++;
+						if (request.loopCycle > 50) {
+							request.loopCycle = 0;
+							sendRequest(request);
 						}
 					}
 				}
 
-				if (!flag) {
-					for (OnDemandData onDemandData_1 = (OnDemandData) requested.firstFromTail(); onDemandData_1 != null; onDemandData_1 = (OnDemandData) requested.nextTowardHead()) {
-						flag = true;
-						onDemandData_1.loopCycle++;
-						if (onDemandData_1.loopCycle > 50) {
-							onDemandData_1.loopCycle = 0;
-							closeRequest(onDemandData_1);
+				if (!hasOutstandingRequest) {
+					for (OnDemandData request = (OnDemandData) requested.firstFromTail(); request != null; request = (OnDemandData) requested.nextTowardHead()) {
+						hasOutstandingRequest = true;
+						request.loopCycle++;
+						if (request.loopCycle > 50) {
+							request.loopCycle = 0;
+							sendRequest(request);
 						}
 					}
 
 				}
-				if (flag) {
+				if (hasOutstandingRequest) {
 					loopCycle++;
 					if (loopCycle > 750) {
 						try {
@@ -468,8 +468,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	}
 
 	@Override
-	public void requestModel(int i) {
-		requestFile(0, i);
+	public void requestModel(int modelId) {
+		requestFile(0, modelId);
 	}
 
 	public void markExtraFileForDownload(byte priority, int dataType, int fileId) {
@@ -521,7 +521,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			fileStatus[onDemandData_1.dataType][onDemandData_1.ID] = 0;
 			requested.insertHead(onDemandData_1);
 			uncompletedCount++;
-			closeRequest(onDemandData_1);
+			sendRequest(onDemandData_1);
 			waiting = true;
 		}
 	}
@@ -573,7 +573,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				if (fileStatus[queuedRequest.dataType][queuedRequest.ID] != 0) {
 					fileStatus[queuedRequest.dataType][queuedRequest.ID] = 0;
 					requested.insertHead(queuedRequest);
-					closeRequest(queuedRequest);
+					sendRequest(queuedRequest);
 					waiting = true;
 					if (filesLoaded < totalFiles) {
 						filesLoaded++;
@@ -599,7 +599,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 						scannedRequest.ID = fileId;
 						scannedRequest.incomplete = false;
 						requested.insertHead(scannedRequest);
-						closeRequest(scannedRequest);
+						sendRequest(scannedRequest);
 						waiting = true;
 						if (filesLoaded < totalFiles) {
 							filesLoaded++;
