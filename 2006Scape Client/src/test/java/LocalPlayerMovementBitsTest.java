@@ -19,8 +19,8 @@ public class LocalPlayerMovementBitsTest {
         game = new Probe();
         Game.myPlayer = new Player();
         Game.myPlayer.setPos(50, 50, true);
-        game.anIntArray894 = new int[8];
-        game.anInt893 = 0;
+        game.maskUpdateIndices = new int[8];
+        game.maskUpdateCount = 0;
         game.plane = 0;
     }
     @After public void tearDown() {
@@ -49,12 +49,12 @@ public class LocalPlayerMovementBitsTest {
     @Test public void presenceAndKindSelectDistinctOutcomes() {
         Stream absent = apply(1, 0, 2, 3);
         assertEquals(1, absent.bitOffset);
-        assertEquals(0, game.anInt893);
+        assertEquals(0, game.maskUpdateCount);
         assertEquals(50, Game.myPlayer.smallX[0]);
         Stream maskOnly = apply(1, 1, 2, 0);
         assertEquals(3, maskOnly.bitOffset);
-        assertEquals(1, game.anInt893);
-        assertEquals(game.myPlayerIndex, game.anIntArray894[0]);
+        assertEquals(1, game.maskUpdateCount);
+        assertEquals(game.myPlayerIndex, game.maskUpdateIndices[0]);
         assertEquals(50, Game.myPlayer.smallY[0]);
     }
     @Test public void walkingDirectionAndMaskBitAreIndependent() {
@@ -63,12 +63,12 @@ public class LocalPlayerMovementBitsTest {
         assertEquals(49, Game.myPlayer.smallX[0]);
         assertEquals(50, Game.myPlayer.smallY[0]);
         assertFalse(Game.myPlayer.aBooleanArray1553[0]);
-        assertEquals(0, game.anInt893);
+        assertEquals(0, game.maskUpdateCount);
         Game.myPlayer.setPos(50, 50, true);
         apply(1, 1, 2, 1, 3, 4, 1, 1);
         assertEquals(51, Game.myPlayer.smallX[0]);
         assertEquals(50, Game.myPlayer.smallY[0]);
-        assertEquals(1, game.anInt893);
+        assertEquals(1, game.maskUpdateCount);
     }
     @Test public void bothRunDirectionsAreOrderedAndMaskIsSeparate() {
         Stream run = apply(1, 1, 2, 2, 3, 1, 3, 4, 1, 1);
@@ -79,13 +79,13 @@ public class LocalPlayerMovementBitsTest {
         assertEquals(51, Game.myPlayer.smallY[1]);
         assertTrue(Game.myPlayer.aBooleanArray1553[0]);
         assertTrue(Game.myPlayer.aBooleanArray1553[1]);
-        assertEquals(1, game.anInt893);
+        assertEquals(1, game.maskUpdateCount);
         Game.myPlayer.setPos(50, 50, true);
-        game.anInt893 = 0;
+        game.maskUpdateCount = 0;
         apply(1, 1, 2, 2, 3, 4, 3, 1, 1, 0);
         assertEquals(51, Game.myPlayer.smallX[0]);
         assertEquals(51, Game.myPlayer.smallY[0]);
-        assertEquals(0, game.anInt893);
+        assertEquals(0, game.maskUpdateCount);
     }
     @Test public void relocationSeparatesPlaneResetMaskAndXY() {
         Stream near = apply(1, 1, 2, 3, 2, 0, 1, 0, 1, 0, 7, 52, 7, 51);
@@ -93,18 +93,18 @@ public class LocalPlayerMovementBitsTest {
         assertEquals(51, Game.myPlayer.smallX[0]);
         assertEquals(52, Game.myPlayer.smallY[0]);
         assertEquals(1, Game.myPlayer.smallXYIndex);
-        assertEquals(0, game.anInt893);
+        assertEquals(0, game.maskUpdateCount);
         assertEquals(1, game.refreshes);
         Game.myPlayer.setPos(50, 50, true);
         apply(1, 1, 2, 3, 2, 0, 1, 1, 1, 0, 7, 52, 7, 51);
         assertEquals(0, Game.myPlayer.smallXYIndex);
-        assertEquals(0, game.anInt893);
+        assertEquals(0, game.maskUpdateCount);
         Game.myPlayer.setPos(50, 50, true);
         apply(1, 1, 2, 3, 2, 0, 1, 0, 1, 1, 7, 52, 7, 51);
         assertEquals(1, Game.myPlayer.smallXYIndex);
-        assertEquals(1, game.anInt893);
+        assertEquals(1, game.maskUpdateCount);
         Game.myPlayer.setPos(50, 50, true);
-        game.anInt893 = 0;
+        game.maskUpdateCount = 0;
         apply(1, 1, 2, 3, 2, 2, 1, 0, 1, 0, 7, 52, 7, 51);
         assertEquals(2, game.plane);
         assertEquals(51, Game.myPlayer.smallX[0]);
@@ -118,7 +118,7 @@ public class LocalPlayerMovementBitsTest {
         assertEquals(52, Game.myPlayer.smallX[0]);
         assertEquals(52, Game.myPlayer.smallY[0]);
         Game.myPlayer.setPos(50, 50, true);
-        game.anInt893 = 0;
+        game.maskUpdateCount = 0;
         Stream far = apply(1, 1, 2, 3, 2, 2, 1, 1, 1, 1, 7, 77, 7, 20);
         assertEquals(21, far.bitOffset);
         assertEquals(20, Game.myPlayer.smallX[0]);
@@ -126,7 +126,7 @@ public class LocalPlayerMovementBitsTest {
         assertEquals(0, Game.myPlayer.smallXYIndex);
         assertEquals(2, game.plane);
         assertEquals(2, ObjectManager.scenePlaneFilter);
-        assertEquals(1, game.anInt893);
+        assertEquals(1, game.maskUpdateCount);
         assertFalse(ObjectManager.hideRoofs);
         assertEquals(7, game.refreshes);
     }

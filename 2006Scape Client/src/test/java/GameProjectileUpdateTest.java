@@ -36,7 +36,7 @@ public class GameProjectileUpdateTest {
         game.npcArray = new NPC[2];
         game.playerArray = new Player[2];
         game.plane = 0;
-        game.anInt945 = 1;
+        game.cyclesSinceDraw = 1;
         return game;
     }
 

@@ -29,7 +29,7 @@ public class EntitySceneInsertionTest {
         @Override public int selectFixedCameraPlane() { return fixedPlane; }
         @Override public void updateEntities() { log.add("entities"); if (bumpCounterInEntities) Texture.useCounter = 123; }
         @Override public void drawHeadIcon() { log.add("icons"); }
-        @Override public void method37(int j) { methodArg37 = j; log.add("m37"); }
+        @Override public void scrollAnimatedTextures(int j) { methodArg37 = j; log.add("m37"); }
         @Override public void draw3dScreen() { log.add("3d"); }
     }
 

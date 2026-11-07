@@ -94,7 +94,7 @@ public class TransientGraphicTest {
         g.worldController = new WorldController(new int[4][105][105]);
         g.plane = 1;
         g.loopCycle = 11;
-        g.anInt945 = 1;
+        g.cyclesSinceDraw = 1;
         StationaryGraphic delayed = new StationaryGraphic(1, 10, 2, 0, 55, 320, 448);
         StationaryGraphic other = new StationaryGraphic(2, 10, 0, 0, 66, 576, 704);
         g.transientGraphics.insertHead(delayed);
@@ -112,7 +112,7 @@ public class TransientGraphicTest {
         assertEquals(448, tile.obj5Array[0].worldX);
         assertEquals(320, tile.obj5Array[0].worldY);
         assertSame(delayed, g.transientGraphics.firstFromTail());
-        g.anInt945 = 2;
+        g.cyclesSinceDraw = 2;
         g.updateTransientGraphics();
         assertTrue(delayed.finished);
         assertNull(g.transientGraphics.firstFromTail());

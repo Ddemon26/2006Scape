@@ -208,13 +208,13 @@ public class FloIdkSoundsTest {
             Field uf = sun.misc.Unsafe.class.getDeclaredField("theUnsafe"); uf.setAccessible(true);
             sun.misc.Unsafe u = (sun.misc.Unsafe) uf.get(null);
             Game g = (Game) u.allocateInstance(Game.class);
-            Field arr = f(Game.class, "anIntArray1065"); arr.set(g, new int[7]);
-            g.aBoolean1047 = true;
-            g.method45();
+            Field arr = f(Game.class, "designerKitIds"); arr.set(g, new int[7]);
+            g.designerMale = true;
+            g.selectDefaultDesignerKits();
             int[] male = (int[]) arr.get(g);
             assertEquals(0, male[0]); assertEquals(-1, male[1]); assertEquals(3, male[2]); // kit 2 is hidden, kit 3 is the part-2 kit
-            g.aBoolean1047 = false;
-            g.method45();
+            g.designerMale = false;
+            g.selectDefaultDesignerKits();
             int[] female = (int[]) arr.get(g);
             assertEquals(1, female[0]); assertEquals(4, female[2]); assertEquals(-1, female[1]); // part index + 7
         } finally { IDK.cache = (IDK[]) savedCache; IDK.length = savedLen; }

@@ -318,8 +318,8 @@ public class EntityDefTest {
     /** Delivers NPC update mask 2 (new definition id) to a fresh NPC in slot 2, which copies the definition fields onto the NPC. */
     private static NPC npcWithDef(Game game, int id) throws Exception {
         NPC npc = new NPC();
-        game.npcArray = new NPC[8]; game.anIntArray894 = new int[8];
-        game.npcArray[2] = npc; game.anIntArray894[0] = 2; game.anInt893 = 1;
+        game.npcArray = new NPC[8]; game.maskUpdateIndices = new int[8];
+        game.npcArray[2] = npc; game.maskUpdateIndices[0] = 2; game.maskUpdateCount = 1;
         Stream packet = new Stream(new byte[] {2, (byte) (id + 128), (byte) (id >> 8)});
         game.decodeNpcUpdateMasks(packet);
         assertEquals(3, packet.currentOffset);

@@ -9,7 +9,7 @@ public class NpcUpdateMaskTest {
         field.setAccessible(true);
         Game game = (Game) ((sun.misc.Unsafe) field.get(null)).allocateInstance(Game.class);
         game.npcArray = new NPC[8];
-        game.anIntArray894 = new int[8];
+        game.maskUpdateIndices = new int[8];
         return game;
     }
 
@@ -31,13 +31,13 @@ public class NpcUpdateMaskTest {
     @Test public void queuedSlotsSelectTheirOwnNpcAndMaskByte() throws Exception {
         Game game = game(); NPC first = new NPC(), second = new NPC();
         game.npcArray[2] = first; game.npcArray[5] = second;
-        game.anIntArray894[0] = 2; game.anIntArray894[1] = 5; game.anInt893 = 2;
+        game.maskUpdateIndices[0] = 2; game.maskUpdateIndices[1] = 5; game.maskUpdateCount = 2;
         Stream stream = packet(0, 1, 'h', 'i', 10, 77);
         game.decodeNpcUpdateMasks(stream);
         assertNull(first.textSpoken); assertEquals("hi", second.textSpoken);
         assertEquals(100, second.textCycle); assertEquals(5, stream.currentOffset);
         assertEquals(77, stream.readUnsignedByte());
-        game.anInt893 = 0;
+        game.maskUpdateCount = 0;
         Stream empty = packet(99); game.decodeNpcUpdateMasks(empty);
         assertEquals(0, empty.currentOffset);
     }
@@ -47,7 +47,7 @@ public class NpcUpdateMaskTest {
         try {
             Animation.anims = new Animation[] {animation(1, 4), animation(2, 2)};
             Game game = game(); NPC npc = new NPC(); npc.anim = -1; npc.smallXYIndex = 3;
-            game.npcArray[2] = npc; game.anIntArray894[0] = 2; game.anInt893 = 1;
+            game.npcArray[2] = npc; game.maskUpdateIndices[0] = 2; game.maskUpdateCount = 1;
             Stream start = packet(0x10, 0, 0, 5);
             game.decodeNpcUpdateMasks(start);
             assertEquals(4, start.currentOffset); assertEquals(0, npc.anim);
@@ -68,7 +68,7 @@ public class NpcUpdateMaskTest {
 
     @Test public void twoHitFormatsKeepDamageAndTypeSeparate() throws Exception {
         Game game = game(); NPC npc = new NPC(); Game.loopCycle = 200;
-        game.npcArray[2] = npc; game.anIntArray894[0] = 2; game.anInt893 = 1;
+        game.npcArray[2] = npc; game.maskUpdateIndices[0] = 2; game.maskUpdateCount = 1;
         Stream stream = packet(0x48, 139, 254, 131, 40, 237, 123, 97, 224, 77);
         game.decodeNpcUpdateMasks(stream);
         assertEquals(9, stream.currentOffset); assertEquals(77, stream.readUnsignedByte());
@@ -81,7 +81,7 @@ public class NpcUpdateMaskTest {
 
     @Test public void graphicPackedHalvesAndSentinelAreIndependent() throws Exception {
         Game game = game(); NPC npc = new NPC(); Game.loopCycle = 100;
-        game.npcArray[2] = npc; game.anIntArray894[0] = 2; game.anInt893 = 1;
+        game.npcArray[2] = npc; game.maskUpdateIndices[0] = 2; game.maskUpdateCount = 1;
         Stream future = packet(0x80, 0, 42, 0, 18, 0, 5);
         game.decodeNpcUpdateMasks(future);
         assertEquals(7, future.currentOffset); assertEquals(42, npc.anInt1520);
@@ -94,7 +94,7 @@ public class NpcUpdateMaskTest {
 
     @Test public void targetTextAndFaceCoordinatesUseSeparateMaskBits() throws Exception {
         Game game = game(); NPC npc = new NPC();
-        game.npcArray[2] = npc; game.anIntArray894[0] = 2; game.anInt893 = 1;
+        game.npcArray[2] = npc; game.maskUpdateIndices[0] = 2; game.maskUpdateCount = 1;
         Stream stream = packet(0x25, 0, 17, 'o', 'k', 10, 2, 1, 4, 3, 77);
         game.decodeNpcUpdateMasks(stream);
         assertEquals(10, stream.currentOffset); assertEquals(77, stream.readUnsignedByte());
