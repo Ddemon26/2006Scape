@@ -1595,18 +1595,18 @@ public class Game extends RSApplet {
 						anIntArray978[anInt974] = chatTextDrawingArea.maxAsciiGlyphHeightPixels;
 						anIntArray976[anInt974] = spriteDrawX;
 						anIntArray977[anInt974] = spriteDrawY;
-						anIntArray980[anInt974] = ((Entity) obj).anInt1513;
-						anIntArray981[anInt974] = ((Entity) obj).anInt1531;
+						anIntArray980[anInt974] = ((Entity) obj).overheadChatColorCode;
+						anIntArray981[anInt974] = ((Entity) obj).overheadChatEffectCode;
 						anIntArray982[anInt974] = ((Entity) obj).textCycle;
 						aStringArray983[anInt974++] = ((Entity) obj).textSpoken;
-						if (chatEffectsMode == 0 && ((Entity) obj).anInt1531 >= 1 && ((Entity) obj).anInt1531 <= 3) {
+						if (chatEffectsMode == 0 && ((Entity) obj).overheadChatEffectCode >= 1 && ((Entity) obj).overheadChatEffectCode <= 3) {
 							anIntArray978[anInt974] += 10;
 							anIntArray977[anInt974] += 5;
 						}
-						if (chatEffectsMode == 0 && ((Entity) obj).anInt1531 == 4) {
+						if (chatEffectsMode == 0 && ((Entity) obj).overheadChatEffectCode == 4) {
 							anIntArray979[anInt974] = 60;
 						}
-						if (chatEffectsMode == 0 && ((Entity) obj).anInt1531 == 5) {
+						if (chatEffectsMode == 0 && ((Entity) obj).overheadChatEffectCode == 5) {
 							anIntArray978[anInt974] += 5;
 						}
 					}
@@ -5228,8 +5228,8 @@ public class Game extends RSApplet {
 						inputString = TextInput.normalizeChatText(inputString);
 						inputString = Censor.doCensor(inputString);
 						myPlayer.textSpoken = inputString;
-						myPlayer.anInt1513 = chatColorCode;
-						myPlayer.anInt1531 = chatEffectCode;
+						myPlayer.overheadChatColorCode = chatColorCode;
+						myPlayer.overheadChatEffectCode = chatEffectCode;
 						myPlayer.textCycle = 150;
 						if (myPrivilege >= 1) {
 							pushMessage(myPlayer.textSpoken, 2, "@cr" + Math.min(2, myPrivilege) + "@" + myPlayer.name);
@@ -8577,19 +8577,19 @@ public class Game extends RSApplet {
 			} else if (player == myPlayer) {
 				pushMessage(player.textSpoken, 2, player.name);
 			}
-			player.anInt1513 = 0;
-			player.anInt1531 = 0;
+			player.overheadChatColorCode = 0;
+			player.overheadChatEffectCode = 0;
 			player.textCycle = 150;
 		}
 		if ((updateMask & 0x80) != 0) {
-			int i1 = stream.readUnsignedShortLittleEndian();
-			int j2 = stream.readUnsignedByte();
+			int packedChatStyle = stream.readUnsignedShortLittleEndian();
+			int speakerRights = stream.readUnsignedByte();
 			int compressedChatLength = stream.readUnsignedNegatedByte();
 			int chatPayloadStart = stream.currentOffset;
 			if (player.name != null && player.visible) {
 				long encodedSpeakerName = TextClass.encodeBase37Name(player.name);
 				boolean ignoredSpeaker = false;
-				if (j2 <= 1) {
+				if (speakerRights <= 1) {
 					for (int ignoreIndex = 0; ignoreIndex < ignoreCount; ignoreIndex++) {
 						if (ignoreListAsLongs[ignoreIndex] != encodedSpeakerName) {
 							continue;
@@ -8604,22 +8604,22 @@ public class Game extends RSApplet {
 						aStream_834.currentOffset = 0;
 						stream.readReversedBytes(compressedChatLength, 0, aStream_834.buffer);
 						aStream_834.currentOffset = 0;
-						String s = TextInput.decodeChatText(compressedChatLength, aStream_834);
-						s = Censor.doCensor(s);
-						player.textSpoken = s;
-						player.anInt1513 = i1 >> 8;
-						player.rights = j2;
+						String chatText = TextInput.decodeChatText(compressedChatLength, aStream_834);
+						chatText = Censor.doCensor(chatText);
+						player.textSpoken = chatText;
+						player.overheadChatColorCode = packedChatStyle >> 8;
+						player.rights = speakerRights;
 
 						// entityMessage(player);
 
-						player.anInt1531 = i1 & 0xff;
+						player.overheadChatEffectCode = packedChatStyle & 0xff;
 						player.textCycle = 150;
-						if (j2 == 2 || j2 == 3) {
-							pushMessage(s, 1, "@cr2@" + player.name);
-						} else if (j2 == 1) {
-							pushMessage(s, 1, "@cr1@" + player.name);
+						if (speakerRights == 2 || speakerRights == 3) {
+							pushMessage(chatText, 1, "@cr2@" + player.name);
+						} else if (speakerRights == 1) {
+							pushMessage(chatText, 1, "@cr1@" + player.name);
 						} else {
-							pushMessage(s, 2, player.name);
+							pushMessage(chatText, 2, player.name);
 						}
 					} catch (Exception exception) {
 						Signlink.reporterror("cde2");
