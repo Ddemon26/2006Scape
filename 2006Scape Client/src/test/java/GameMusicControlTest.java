@@ -12,67 +12,67 @@ public class GameMusicControlTest {
     private FakePlayer player;
 
     @Before public void setUp() {
-        oldPlayer = Game.aClass56_749;
+        oldPlayer = Game.musicPlayer;
         oldFetch = Game.fetchMusic;
-        oldVolume = Game.anInt478;
-        oldFade = Game.anInt720;
-        oldProgress = Game.anInt155;
-        oldData = Game.aByteArray347;
+        oldVolume = Game.currentSongVolume;
+        oldFade = Game.songTransitionTicks;
+        oldProgress = Game.fadeProgress;
+        oldData = Game.queuedSongData;
         player = new FakePlayer();
-        Game.aClass56_749 = player;
+        Game.musicPlayer = player;
         Game.fetchMusic = true;
-        Game.anInt478 = 75;
-        Game.anInt720 = 0;
-        Game.anInt155 = 37;
-        Game.aByteArray347 = new byte[] {9};
+        Game.currentSongVolume = 75;
+        Game.songTransitionTicks = 0;
+        Game.fadeProgress = 37;
+        Game.queuedSongData = new byte[] {9};
     }
 
     @After public void tearDown() {
-        Game.aClass56_749 = oldPlayer;
+        Game.musicPlayer = oldPlayer;
         Game.fetchMusic = oldFetch;
-        Game.anInt478 = oldVolume;
-        Game.anInt720 = oldFade;
-        Game.anInt155 = oldProgress;
-        Game.aByteArray347 = oldData;
+        Game.currentSongVolume = oldVolume;
+        Game.songTransitionTicks = oldFade;
+        Game.fadeProgress = oldProgress;
+        Game.queuedSongData = oldData;
     }
 
     @Test public void method55StopsActivePlayerAndClearsPendingFetch() {
         Game.stopMusic(false);
         assertEquals(1, player.stops);
         assertFalse(Game.fetchMusic);
-        assertEquals(-1, Game.anInt478);
-        assertNull(Game.aByteArray347);
-        assertEquals(20, Game.anInt720);
-        assertEquals(0, Game.anInt155);
+        assertEquals(-1, Game.currentSongVolume);
+        assertNull(Game.queuedSongData);
+        assertEquals(20, Game.songTransitionTicks);
+        assertEquals(0, Game.fadeProgress);
         assertEquals(0, player.plays);
         Game.stopMusic(true);
         assertEquals(1, player.stops);
     }
 
     @Test public void method55RequiresPlayerAndMethod891DoesNotClearPendingFetch() {
-        Game.aClass56_749 = null;
+        Game.musicPlayer = null;
         Game.stopMusic(false);
         assertTrue(Game.fetchMusic);
-        assertEquals(75, Game.anInt478);
-        Game.aClass56_749 = player;
+        assertEquals(75, Game.currentSongVolume);
+        Game.musicPlayer = player;
         Game.stopMusicPlayback(true);
         assertTrue(Game.fetchMusic);
         assertEquals(1, player.stops);
-        assertEquals(-1, Game.anInt478);
+        assertEquals(-1, Game.currentSongVolume);
     }
 
     @Test public void method853UsesVolumeDataAndLoopFlag() {
         byte[] first = {1, 2};
-        Game.anInt478 = -1;
-        Game.anInt720 = 20;
+        Game.currentSongVolume = -1;
+        Game.songTransitionTicks = 20;
         Game.setMusicData(64, first, false);
         assertEquals(0, player.stops);
         assertEquals(1, player.plays);
         assertEquals(64, player.volume);
         assertSame(first, player.data);
         assertFalse(player.loop);
-        assertEquals(64, Game.anInt478);
-        assertEquals(0, Game.anInt720);
+        assertEquals(64, Game.currentSongVolume);
+        assertEquals(0, Game.songTransitionTicks);
         byte[] second = {3};
         Game.setMusicData(127, second, true);
         assertEquals(1, player.stops);
@@ -88,8 +88,8 @@ public class GameMusicControlTest {
         assertEquals(1, player.stops);
         assertEquals(0, player.plays);
         assertTrue(Game.fetchMusic);
-        assertEquals(-1, Game.anInt478);
-        assertNull(Game.aByteArray347);
+        assertEquals(-1, Game.currentSongVolume);
+        assertNull(Game.queuedSongData);
     }
 
     private static final class FakePlayer extends Class56 {

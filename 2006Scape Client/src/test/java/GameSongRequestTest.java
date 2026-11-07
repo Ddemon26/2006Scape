@@ -14,45 +14,45 @@ public class GameSongRequestTest {
     private PlayerProbe player;
 
     @Before public void setUp() {
-        oldPlayer = Game.aClass56_749;
+        oldPlayer = Game.musicPlayer;
         oldFetch = Game.fetchMusic;
         oldLoop = Game.aBoolean995;
         oldAndroid = ClientSettings.ANDROID;
         oldVolume = Game.musicVolume2;
         oldPending = Game.pendingSongFadeStep;
-        oldOtherPending = Game.anInt139;
-        oldFadeVolume = Game.anInt478;
-        oldFadeStep = Game.anInt720;
-        oldProgress = Game.anInt155;
+        oldOtherPending = Game.pendingSongFadeTicks;
+        oldFadeVolume = Game.currentSongVolume;
+        oldFadeStep = Game.songTransitionTicks;
+        oldProgress = Game.fadeProgress;
         oldData = Game.musicData;
-        oldPendingData = Game.aByteArray347;
+        oldPendingData = Game.queuedSongData;
         game = new Game();
         fetcher = new OnDemandFetcher();
         fetcher.versions[2] = new int[] {1, 1, 1, 1};
         game.onDemandFetcher = fetcher;
         game.nextSong = -1;
         player = new PlayerProbe();
-        Game.aClass56_749 = player;
+        Game.musicPlayer = player;
         ClientSettings.ANDROID = false;
         Game.fetchMusic = true;
-        Game.anInt478 = -1;
-        Game.anInt720 = 0;
+        Game.currentSongVolume = -1;
+        Game.songTransitionTicks = 0;
         Game.musicData = null;
     }
 
     @After public void tearDown() {
-        Game.aClass56_749 = oldPlayer;
+        Game.musicPlayer = oldPlayer;
         Game.fetchMusic = oldFetch;
         Game.aBoolean995 = oldLoop;
         ClientSettings.ANDROID = oldAndroid;
         Game.musicVolume2 = oldVolume;
         Game.pendingSongFadeStep = oldPending;
-        Game.anInt139 = oldOtherPending;
-        Game.anInt478 = oldFadeVolume;
-        Game.anInt720 = oldFadeStep;
-        Game.anInt155 = oldProgress;
+        Game.pendingSongFadeTicks = oldOtherPending;
+        Game.currentSongVolume = oldFadeVolume;
+        Game.songTransitionTicks = oldFadeStep;
+        Game.fadeProgress = oldProgress;
         Game.musicData = oldData;
-        Game.aByteArray347 = oldPendingData;
+        Game.queuedSongData = oldPendingData;
     }
 
     @Test public void method58QueuesSongAndCarriesFirstAndSecondArguments() {
@@ -61,7 +61,7 @@ public class GameSongRequestTest {
         assertEquals(1, fetcher.getNodeCount());
         assertEquals(64, Game.musicVolume2);
         assertEquals(10, Game.pendingSongFadeStep);
-        assertEquals(-1, Game.anInt139);
+        assertEquals(-1, Game.pendingSongFadeTicks);
         assertTrue(Game.aBoolean995);
         game.requestSongWithFade(20, 96, true, 3);
         assertEquals(3, game.nextSong);
@@ -77,32 +77,32 @@ public class GameSongRequestTest {
         assertEquals(2, fetcher.getNodeCount());
         assertEquals(127, Game.musicVolume2);
         assertEquals(-1, Game.pendingSongFadeStep);
-        assertEquals(-1, Game.anInt139);
+        assertEquals(-1, Game.pendingSongFadeTicks);
         assertTrue(Game.aBoolean995);
     }
 
     @Test public void originalCodeDispatchesFadeOnlyForMethod58() {
         byte[] data = {1, 2, 3};
-        Game.anInt478 = 64;
-        Game.anInt155 = 0;
+        Game.currentSongVolume = 64;
+        Game.fadeProgress = 0;
         game.requestSongWithFade(10, 96, false, 2);
         Game.musicData = data;
         Game.updateMusic();
-        int firstStep = Game.anInt720;
+        int firstStep = Game.songTransitionTicks;
         assertTrue(firstStep > 0);
         assertEquals(0, player.plays);
-        assertSame(data, Game.aByteArray347);
+        assertSame(data, Game.queuedSongData);
         assertFalse(Game.fetchMusic);
 
-        Game.anInt478 = 64;
-        Game.anInt720 = 0;
+        Game.currentSongVolume = 64;
+        Game.songTransitionTicks = 0;
         Game.fetchMusic = true;
         game.requestSongWithFade(20, 96, false, 2);
         Game.updateMusic();
-        assertTrue(Game.anInt720 < firstStep);
+        assertTrue(Game.songTransitionTicks < firstStep);
 
-        Game.anInt478 = -1;
-        Game.anInt720 = 0;
+        Game.currentSongVolume = -1;
+        Game.songTransitionTicks = 0;
         Game.fetchMusic = true;
         game.requestSongWithoutFade(127, false, 1);
         Game.updateMusic();
@@ -113,7 +113,7 @@ public class GameSongRequestTest {
     }
 
     @Test public void requestsRequirePlayer() {
-        Game.aClass56_749 = null;
+        Game.musicPlayer = null;
         game.requestSongWithFade(10, 64, false, 2);
         game.requestSongWithoutFade(127, true, 1);
         assertEquals(0, fetcher.getNodeCount());
@@ -122,7 +122,7 @@ public class GameSongRequestTest {
 
     @Test public void method49UsesAvailableDataAndAdvancesPlayerOncePerCall() {
         Game.pendingSongFadeStep = -1;
-        Game.anInt139 = -1;
+        Game.pendingSongFadeTicks = -1;
         Game.musicVolume2 = 73;
         Game.aBoolean995 = false;
         Game.updateMusic();
@@ -149,7 +149,7 @@ public class GameSongRequestTest {
     @Test public void method49RequiresPlayerEvenWithFetchedData() {
         byte[] data = {7};
         Game.musicData = data;
-        Game.aClass56_749 = null;
+        Game.musicPlayer = null;
         Game.updateMusic();
         assertTrue(Game.fetchMusic);
         assertSame(data, Game.musicData);
@@ -158,29 +158,29 @@ public class GameSongRequestTest {
     }
 
     @Test public void method790ClosesPlayerAndClearsAttachmentAfterStoppingPlayback() {
-        Game.anInt478 = 70;
-        Game.anInt720 = 4;
-        Game.aByteArray347 = new byte[] {1};
+        Game.currentSongVolume = 70;
+        Game.songTransitionTicks = 4;
+        Game.queuedSongData = new byte[] {1};
         Game.shutdownMusicPlayer();
         assertEquals("stop;volume256;close;", player.events.toString());
-        assertNull(Game.aClass56_749);
-        assertEquals(-1, Game.anInt478);
-        assertEquals(0, Game.anInt720);
-        assertNull(Game.aByteArray347);
+        assertNull(Game.musicPlayer);
+        assertEquals(-1, Game.currentSongVolume);
+        assertEquals(0, Game.songTransitionTicks);
+        assertNull(Game.queuedSongData);
         Game.shutdownMusicPlayer();
         assertEquals("stop;volume256;close;", player.events.toString());
     }
 
     @Test public void method790HandlesNoPlayerAndIdlePlayer() {
-        Game.aClass56_749 = null;
-        Game.anInt720 = 7;
+        Game.musicPlayer = null;
+        Game.songTransitionTicks = 7;
         Game.shutdownMusicPlayer();
-        assertEquals(7, Game.anInt720);
-        Game.aClass56_749 = player;
-        Game.anInt720 = 0;
+        assertEquals(7, Game.songTransitionTicks);
+        Game.musicPlayer = player;
+        Game.songTransitionTicks = 0;
         Game.shutdownMusicPlayer();
         assertEquals("close;", player.events.toString());
-        assertNull(Game.aClass56_749);
+        assertNull(Game.musicPlayer);
     }
 
     private static final class PlayerProbe extends Class56 {
