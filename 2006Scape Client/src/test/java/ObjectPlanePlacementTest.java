@@ -347,7 +347,7 @@ public class ObjectPlanePlacementTest {
     private static class Probe extends Game {
         int texts, refreshes;
         @Override public void drawTextOnScreen(String s, String s1) { texts++; }
-        @Override public void method22() { refreshes++; }
+        @Override public void rebuildScene() { refreshes++; }
     }
 
     private Probe probe(int plane, int filter) throws Exception {

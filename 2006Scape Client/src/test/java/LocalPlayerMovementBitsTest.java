@@ -4,7 +4,7 @@ import org.junit.*;
 public class LocalPlayerMovementBitsTest {
     private static class Probe extends Game {
         int refreshes;
-        @Override public void method22() { refreshes++; }
+        @Override public void rebuildScene() { refreshes++; }
     }
     private Probe game;
     private Player saved;

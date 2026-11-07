@@ -647,7 +647,7 @@ public class Game extends RSApplet {
 		Signlink.saveMidi(abyte0, abyte0.length);
 	}
 
-	public void method22() {
+	public void rebuildScene() {
 		try {
 			minimapBuiltPlane = -1;
 			transientGraphics.removeAll();
@@ -656,14 +656,14 @@ public class Game extends RSApplet {
 			unlinkMRUNodes();
 			worldController.initToNull();
 			System.gc();
-			for (int i = 0; i < 4; i++) {
-				aClass11Array1230[i].reset();
+			for (int collisionMapIndex = 0; collisionMapIndex < 4; collisionMapIndex++) {
+				aClass11Array1230[collisionMapIndex].reset();
 			}
 
-			for (int l = 0; l < 4; l++) {
-				for (int k1 = 0; k1 < 104; k1++) {
-					for (int j2 = 0; j2 < 104; j2++) {
-						byteGroundArray[l][k1][j2] = 0;
+			for (int tilePlane = 0; tilePlane < 4; tilePlane++) {
+				for (int tileX = 0; tileX < 104; tileX++) {
+					for (int tileY = 0; tileY < 104; tileY++) {
+						byteGroundArray[tilePlane][tileX][tileY] = 0;
 					}
 
 				}
@@ -671,24 +671,24 @@ public class Game extends RSApplet {
 			}
 
 			ObjectManager objectManager = new ObjectManager(byteGroundArray, intGroundArray);
-			int k2 = regionTerrainData.length;
+			int regionCount = regionTerrainData.length;
 			stream.writeEncryptedOpcode(0);
 			if (!aBoolean1159) {
-				for (int i3 = 0; i3 < k2; i3++) {
-					int i4 = (regionKeys[i3] >> 8) * 64 - baseX;
-					int k5 = (regionKeys[i3] & 0xff) * 64 - baseY;
-					byte abyte0[] = regionTerrainData[i3];
-					if (abyte0 != null) {
-						objectManager.loadTerrainRegion(abyte0, k5, i4, (anInt1069 - 6) * 8, (anInt1070 - 6) * 8, aClass11Array1230);
+				for (int regionIndex = 0; regionIndex < regionCount; regionIndex++) {
+					int regionTileX = (regionKeys[regionIndex] >> 8) * 64 - baseX;
+					int regionTileY = (regionKeys[regionIndex] & 0xff) * 64 - baseY;
+					byte terrainData[] = regionTerrainData[regionIndex];
+					if (terrainData != null) {
+						objectManager.loadTerrainRegion(terrainData, regionTileY, regionTileX, (anInt1069 - 6) * 8, (anInt1070 - 6) * 8, aClass11Array1230);
 					}
 				}
 
-				for (int j4 = 0; j4 < k2; j4++) {
-					int l5 = (regionKeys[j4] >> 8) * 64 - baseX;
-					int k7 = (regionKeys[j4] & 0xff) * 64 - baseY;
-					byte abyte2[] = regionTerrainData[j4];
-					if (abyte2 == null && anInt1070 < 800) {
-						objectManager.blankRegionArea(k7, 64, 64, l5);
+				for (int regionIndex = 0; regionIndex < regionCount; regionIndex++) {
+					int regionTileX = (regionKeys[regionIndex] >> 8) * 64 - baseX;
+					int regionTileY = (regionKeys[regionIndex] & 0xff) * 64 - baseY;
+					byte terrainData[] = regionTerrainData[regionIndex];
+					if (terrainData == null && anInt1070 < 800) {
+						objectManager.blankRegionArea(regionTileY, 64, 64, regionTileX);
 					}
 				}
 
@@ -699,32 +699,32 @@ public class Game extends RSApplet {
 					stream.writeByte(96);
 				}
 				stream.writeEncryptedOpcode(0);
-				for (int i6 = 0; i6 < k2; i6++) {
-					byte abyte1[] = regionObjectData[i6];
-					if (abyte1 != null) {
-						int l8 = (regionKeys[i6] >> 8) * 64 - baseX;
-						int k9 = (regionKeys[i6] & 0xff) * 64 - baseY;
-						objectManager.loadObjects(l8, aClass11Array1230, k9, worldController, abyte1);
+				for (int regionIndex = 0; regionIndex < regionCount; regionIndex++) {
+					byte objectData[] = regionObjectData[regionIndex];
+					if (objectData != null) {
+						int regionTileX = (regionKeys[regionIndex] >> 8) * 64 - baseX;
+						int regionTileY = (regionKeys[regionIndex] & 0xff) * 64 - baseY;
+						objectManager.loadObjects(regionTileX, aClass11Array1230, regionTileY, worldController, objectData);
 					}
 				}
 
 			}
 			if (aBoolean1159) {
-				for (int j3 = 0; j3 < 4; j3++) {
-					for (int k4 = 0; k4 < 13; k4++) {
-						for (int j6 = 0; j6 < 13; j6++) {
-							int l7 = anIntArrayArrayArray1129[j3][k4][j6];
-							if (l7 != -1) {
-								int i9 = l7 >> 24 & 3;
-								int l9 = l7 >> 1 & 3;
-								int j10 = l7 >> 14 & 0x3ff;
-								int l10 = l7 >> 3 & 0x7ff;
-								int j11 = (j10 / 8 << 8) + l10 / 8;
-								for (int l11 = 0; l11 < regionKeys.length; l11++) {
-									if (regionKeys[l11] != j11 || regionTerrainData[l11] == null) {
+				for (int destPlane = 0; destPlane < 4; destPlane++) {
+					for (int destChunkX = 0; destChunkX < 13; destChunkX++) {
+						for (int destChunkY = 0; destChunkY < 13; destChunkY++) {
+							int chunkTemplate = anIntArrayArrayArray1129[destPlane][destChunkX][destChunkY];
+							if (chunkTemplate != -1) {
+								int sourcePlane = chunkTemplate >> 24 & 3;
+								int rotation = chunkTemplate >> 1 & 3;
+								int sourceChunkX = chunkTemplate >> 14 & 0x3ff;
+								int sourceChunkY = chunkTemplate >> 3 & 0x7ff;
+								int sourceRegionKey = (sourceChunkX / 8 << 8) + sourceChunkY / 8;
+								for (int regionIndex = 0; regionIndex < regionKeys.length; regionIndex++) {
+									if (regionKeys[regionIndex] != sourceRegionKey || regionTerrainData[regionIndex] == null) {
 										continue;
 									}
-									objectManager.loadTerrainChunk(i9, l9, aClass11Array1230, k4 * 8, (j10 & 7) * 8, regionTerrainData[l11], (l10 & 7) * 8, j3, j6 * 8);
+									objectManager.loadTerrainChunk(sourcePlane, rotation, aClass11Array1230, destChunkX * 8, (sourceChunkX & 7) * 8, regionTerrainData[regionIndex], (sourceChunkY & 7) * 8, destPlane, destChunkY * 8);
 									break;
 								}
 
@@ -735,32 +735,32 @@ public class Game extends RSApplet {
 
 				}
 
-				for (int l4 = 0; l4 < 13; l4++) {
-					for (int k6 = 0; k6 < 13; k6++) {
-						int i8 = anIntArrayArrayArray1129[0][l4][k6];
-						if (i8 == -1) {
-							objectManager.blankRegionArea(k6 * 8, 8, 8, l4 * 8);
+				for (int chunkX = 0; chunkX < 13; chunkX++) {
+					for (int chunkY = 0; chunkY < 13; chunkY++) {
+						int chunkTemplate = anIntArrayArrayArray1129[0][chunkX][chunkY];
+						if (chunkTemplate == -1) {
+							objectManager.blankRegionArea(chunkY * 8, 8, 8, chunkX * 8);
 						}
 					}
 
 				}
 
 				stream.writeEncryptedOpcode(0);
-				for (int l6 = 0; l6 < 4; l6++) {
-					for (int j8 = 0; j8 < 13; j8++) {
-						for (int j9 = 0; j9 < 13; j9++) {
-							int i10 = anIntArrayArrayArray1129[l6][j8][j9];
-							if (i10 != -1) {
-								int k10 = i10 >> 24 & 3;
-								int i11 = i10 >> 1 & 3;
-								int k11 = i10 >> 14 & 0x3ff;
-								int i12 = i10 >> 3 & 0x7ff;
-								int j12 = (k11 / 8 << 8) + i12 / 8;
-								for (int k12 = 0; k12 < regionKeys.length; k12++) {
-									if (regionKeys[k12] != j12 || regionObjectData[k12] == null) {
+				for (int destPlane = 0; destPlane < 4; destPlane++) {
+					for (int chunkX = 0; chunkX < 13; chunkX++) {
+						for (int chunkY = 0; chunkY < 13; chunkY++) {
+							int chunkTemplate = anIntArrayArrayArray1129[destPlane][chunkX][chunkY];
+							if (chunkTemplate != -1) {
+								int sourcePlane = chunkTemplate >> 24 & 3;
+								int rotation = chunkTemplate >> 1 & 3;
+								int sourceChunkX = chunkTemplate >> 14 & 0x3ff;
+								int sourceChunkY = chunkTemplate >> 3 & 0x7ff;
+								int sourceRegionKey = (sourceChunkX / 8 << 8) + sourceChunkY / 8;
+								for (int regionIndex = 0; regionIndex < regionKeys.length; regionIndex++) {
+									if (regionKeys[regionIndex] != sourceRegionKey || regionObjectData[regionIndex] == null) {
 										continue;
 									}
-									objectManager.loadObjectChunk(aClass11Array1230, worldController, k10, j8 * 8, (i12 & 7) * 8, l6, regionObjectData[k12], (k11 & 7) * 8, i11, j9 * 8);
+									objectManager.loadObjectChunk(aClass11Array1230, worldController, sourcePlane, chunkX * 8, (sourceChunkY & 7) * 8, destPlane, regionObjectData[regionIndex], (sourceChunkX & 7) * 8, rotation, chunkY * 8);
 									break;
 								}
 
@@ -791,9 +791,9 @@ public class Game extends RSApplet {
 			} else {
 				worldController.createPlaneTiles(0);
 			}
-			for (int i5 = 0; i5 < 104; i5++) {
-				for (int i7 = 0; i7 < 104; i7++) {
-					spawnGroundItem(i5, i7);
+			for (int tileX = 0; tileX < 104; tileX++) {
+				for (int tileY = 0; tileY < 104; tileY++) {
+					spawnGroundItem(tileX, tileY);
 				}
 
 			}
@@ -812,11 +812,11 @@ public class Game extends RSApplet {
 			stream.writeIntBigEndian(0x3f008edd);
 		}
 		if (lowMem && Signlink.cache_dat != null) {
-			int j = onDemandFetcher.getVersionCount(0);
-			for (int i1 = 0; i1 < j; i1++) {
-				int l1 = onDemandFetcher.getModelIndex(i1);
-				if ((l1 & 0x79) == 0) {
-					Model.unloadModelHeader(i1);
+			int modelCount = onDemandFetcher.getVersionCount(0);
+			for (int modelId = 0; modelId < modelCount; modelId++) {
+				int modelIndexByte = onDemandFetcher.getModelIndex(modelId);
+				if ((modelIndexByte & 0x79) == 0) {
+					Model.unloadModelHeader(modelId);
 				}
 			}
 
@@ -824,26 +824,26 @@ public class Game extends RSApplet {
 		System.gc();
 		Texture.allocateBufferPool();
 		onDemandFetcher.clearExtraFileQueue();
-		int k = (anInt1069 - 6) / 8 - 1;
-		int j1 = (anInt1069 + 6) / 8 + 1;
-		int i2 = (anInt1070 - 6) / 8 - 1;
-		int l2 = (anInt1070 + 6) / 8 + 1;
+		int minRegionX = (anInt1069 - 6) / 8 - 1;
+		int maxRegionX = (anInt1069 + 6) / 8 + 1;
+		int minRegionY = (anInt1070 - 6) / 8 - 1;
+		int maxRegionY = (anInt1070 + 6) / 8 + 1;
 		if (aBoolean1141) {
-			k = 49;
-			j1 = 50;
-			i2 = 49;
-			l2 = 50;
+			minRegionX = 49;
+			maxRegionX = 50;
+			minRegionY = 49;
+			maxRegionY = 50;
 		}
-		for (int l3 = k; l3 <= j1; l3++) {
-			for (int j5 = i2; j5 <= l2; j5++) {
-				if (l3 == k || l3 == j1 || j5 == i2 || j5 == l2) {
-					int j7 = onDemandFetcher.getMapFileId(0, j5, l3);
-					if (j7 != -1) {
-						onDemandFetcher.requestExtraFile(j7, 3);
+		for (int regionX = minRegionX; regionX <= maxRegionX; regionX++) {
+			for (int regionY = minRegionY; regionY <= maxRegionY; regionY++) {
+				if (regionX == minRegionX || regionX == maxRegionX || regionY == minRegionY || regionY == maxRegionY) {
+					int terrainFileId = onDemandFetcher.getMapFileId(0, regionY, regionX);
+					if (terrainFileId != -1) {
+						onDemandFetcher.requestExtraFile(terrainFileId, 3);
 					}
-					int k8 = onDemandFetcher.getMapFileId(1, j5, l3);
-					if (k8 != -1) {
-						onDemandFetcher.requestExtraFile(k8, 3);
+					int objectFileId = onDemandFetcher.getMapFileId(1, regionY, regionX);
+					if (objectFileId != -1) {
+						onDemandFetcher.requestExtraFile(objectFileId, 3);
 					}
 				}
 			}
@@ -2749,7 +2749,7 @@ public class Game extends RSApplet {
 		} else {
 			loadingStage = 2;
 			ObjectManager.scenePlaneFilter = plane;
-			method22();
+			rebuildScene();
 			stream.writeEncryptedOpcode(121);
 			return 0;
 		}
@@ -9116,7 +9116,7 @@ public class Game extends RSApplet {
 			int localTileY = stream.readBitsMsbFirst(7);
 			int localTileX = stream.readBitsMsbFirst(7);
 			myPlayer.setPos(localTileX, localTileY, teleport == 1);
-			//Handle plane changes, higher planes need the roof drawing checks disabled, and we need to manually update ObjectManager's scenePlaneFilter (plane) then manually call method22 to let the ObjectManaegr know we're on a different plane. This makes plane changes draw properly. Coords for testing this: lumb: 3207 3227 and varrock: 3209, 3392 and gnome agil: 2474, 3427
+			//Handle plane changes, higher planes need the roof drawing checks disabled, and we need to manually update ObjectManager's scenePlaneFilter (plane) then manually call rebuildScene to let the ObjectManaegr know we're on a different plane. This makes plane changes draw properly. Coords for testing this: lumb: 3207 3227 and varrock: 3209, 3392 and gnome agil: 2474, 3427
 			ObjectManager.hideRoofs = ClientSettings.HIDE_ROOFS;
 			ObjectManager.hideBuggyVarrockSwordShopSnow = ClientSettings.HIDE_BUGGY_VARROCK_SWORD_SHOP_SNOW;
 			if (plane > 0) {
@@ -9124,7 +9124,7 @@ public class Game extends RSApplet {
 				ObjectManager.hideBuggyVarrockSwordShopSnow = false;
 			}
 			ObjectManager.scenePlaneFilter = plane;
-			method22();
+			rebuildScene();
 		}
 	}
 

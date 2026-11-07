@@ -48,7 +48,7 @@ public class RegionLoadReadinessTest {
     }
     private static class Probe extends Game {
         int builds;
-        @Override public void method22() { builds++; }
+        @Override public void rebuildScene() { builds++; }
     }
     private Probe game(int count) {
         Probe g = new Probe();
