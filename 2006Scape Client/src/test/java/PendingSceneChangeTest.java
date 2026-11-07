@@ -52,12 +52,12 @@ public class PendingSceneChangeTest {
             tiles[1][10][11].obj1 = new Object1();
             tiles[1][10][11].obj1.uid = 402 << 14;
             tiles[1][10][11].obj1.aByte281 = (byte) (2 << 6);
-            game.aClass11Array1230[1].method211(11, 2, 10, 0, false);
-            assertTrue((game.aClass11Array1230[1].anIntArrayArray294[10][11] & 8) != 0);
+            game.aClass11Array1230[1].addWall(11, 2, 10, 0, false);
+            assertTrue((game.aClass11Array1230[1].tileFlags[10][11] & 8) != 0);
             game.applySceneObjectChange(11, 1, 0, 0, 10, 0, -1);
             assertNull(tiles[1][10][11].obj1);
             assertNotNull(tiles[1][10][11].obj3);
-            assertEquals(0, game.aClass11Array1230[1].anIntArrayArray294[10][11] & 8);
+            assertEquals(0, game.aClass11Array1230[1].tileFlags[10][11] & 8);
             game.applySceneObjectChange(11, 1, 0, 0, 10, 3, -1);
             assertNull(tiles[1][10][11].obj3);
         } finally {

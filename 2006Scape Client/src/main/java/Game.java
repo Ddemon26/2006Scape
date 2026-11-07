@@ -657,7 +657,7 @@ public class Game extends RSApplet {
 			worldController.initToNull();
 			System.gc();
 			for (int i = 0; i < 4; i++) {
-				aClass11Array1230[i].method210();
+				aClass11Array1230[i].reset();
 			}
 
 			for (int l = 0; l < 4; l++) {
@@ -914,7 +914,7 @@ public class Game extends RSApplet {
 						if (j3 != 22 && j3 != 29 && j3 != 34 && j3 != 36 && j3 != 46 && j3 != 47 && j3 != 48) {
 							byte byte0 = 104;
 							byte byte1 = 104;
-							int ai1[][] = aClass11Array1230[plane].anIntArrayArray294;
+							int ai1[][] = aClass11Array1230[plane].tileFlags;
 							for (int i4 = 0; i4 < 10; i4++) {
 								int j4 = (int) (Math.random() * 4D);
 								if (j4 == 0 && k3 > 0 && k3 > k2 - 3 && (ai1[k3 - 1][l3] & 0x1280108) == 0) {
@@ -2214,7 +2214,7 @@ public class Game extends RSApplet {
 		unlinkMRUNodes();
 		worldController.initToNull();
 		for (int i = 0; i < 4; i++) {
-			aClass11Array1230[i].method210();
+			aClass11Array1230[i].reset();
 		}
 
 		System.gc();
@@ -5101,7 +5101,7 @@ public class Game extends RSApplet {
 							for (int k1 = 0; k1 < 4; k1++)
 								for (int i2 = 1; i2 < 103; i2++)
 									for (int k2 = 1; k2 < 103; k2++)
-										aClass11Array1230[k1].anIntArrayArray294[i2][k2] = 0;
+										aClass11Array1230[k1].tileFlags[i2][k2] = 0;
 						if (inputString.equals("::clientdrop")) {
 							dropClient();
 						}
@@ -6376,7 +6376,7 @@ public class Game extends RSApplet {
 		bigY[l3++] = j1;
 		boolean flag1 = false;
 		int j4 = bigX.length;
-		int ai[][] = aClass11Array1230[plane].anIntArrayArray294;
+		int ai[][] = aClass11Array1230[plane].tileFlags;
 		while (i4 != l3) {
 			j3 = bigX[i4];
 			k3 = bigY[i4];
@@ -6386,16 +6386,16 @@ public class Game extends RSApplet {
 				break;
 			}
 			if (i1 != 0) {
-				if ((i1 < 5 || i1 == 10) && aClass11Array1230[plane].method219(k2, j3, k3, j, i1 - 1, i2)) {
+				if ((i1 < 5 || i1 == 10) && aClass11Array1230[plane].reachedWallObject(k2, j3, k3, j, i1 - 1, i2)) {
 					flag1 = true;
 					break;
 				}
-				if (i1 < 10 && aClass11Array1230[plane].method220(k2, i2, k3, i1 - 1, j, j3)) {
+				if (i1 < 10 && aClass11Array1230[plane].reachedWallDecoration(k2, i2, k3, i1 - 1, j, j3)) {
 					flag1 = true;
 					break;
 				}
 			}
-			if (k1 != 0 && k != 0 && aClass11Array1230[plane].method221(i2, k2, j3, k, l1, k1, k3)) {
+			if (k1 != 0 && k != 0 && aClass11Array1230[plane].reachedObjectFootprint(i2, k2, j3, k, l1, k1, k3)) {
 				flag1 = true;
 				break;
 			}
@@ -10488,7 +10488,7 @@ public class Game extends RSApplet {
 					worldController.removeWall(tileX, scenePlane, tileY, (byte) -119);
 					ObjectDef existingWallDefinition = ObjectDef.forID(existingObjectId);
 					if (existingWallDefinition.aBoolean767) {
-						aClass11Array1230[scenePlane].method215(existingOrientation, existingShape, existingWallDefinition.aBoolean757, tileX, tileY);
+						aClass11Array1230[scenePlane].removeWall(existingOrientation, existingShape, existingWallDefinition.aBoolean757, tileX, tileY);
 					}
 				}
 				if (objectCategory == 1) {
@@ -10501,14 +10501,14 @@ public class Game extends RSApplet {
 						return;
 					}
 					if (class46_1.aBoolean767) {
-						aClass11Array1230[scenePlane].method216(existingOrientation, class46_1.anInt744, tileX, tileY, class46_1.anInt761, class46_1.aBoolean757);
+						aClass11Array1230[scenePlane].removeObject(existingOrientation, class46_1.anInt744, tileX, tileY, class46_1.anInt761, class46_1.aBoolean757);
 					}
 				}
 				if (objectCategory == 3) {
 					worldController.removeGroundDecoration(scenePlane, tileY, tileX);
 					ObjectDef class46_2 = ObjectDef.forID(existingObjectId);
 					if (class46_2.aBoolean767 && class46_2.hasActions) {
-						aClass11Array1230[scenePlane].method218(tileY, tileX);
+						aClass11Array1230[scenePlane].unblockTile(tileY, tileX);
 					}
 				}
 			}

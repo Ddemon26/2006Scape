@@ -5,21 +5,21 @@
 final class CollisionMap {
 
 	public CollisionMap() {
-		anInt290 = 0;
-		anInt291 = 0;
-		anInt292 = 104;
-		anInt293 = 104;
-		anIntArrayArray294 = new int[anInt292][anInt293];
-		method210();
+		originX = 0;
+		originY = 0;
+		width = 104;
+		height = 104;
+		tileFlags = new int[width][height];
+		reset();
 	}
 
-	public void method210() {
-		for (int i = 0; i < anInt292; i++) {
-			for (int j = 0; j < anInt293; j++) {
-				if (i == 0 || j == 0 || i == anInt292 - 1 || j == anInt293 - 1) {
-					anIntArrayArray294[i][j] = 0xffffff;
+	public void reset() {
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				if (x == 0 || y == 0 || x == width - 1 || y == height - 1) {
+					tileFlags[x][y] = 0xffffff;
 				} else {
-					anIntArrayArray294[i][j] = 0x1000000;
+					tileFlags[x][y] = 0x1000000;
 				}
 			}
 
@@ -27,146 +27,146 @@ final class CollisionMap {
 
 	}
 
-	public void method211(int i, int j, int k, int l, boolean flag) {
-		k -= anInt290;
-		i -= anInt291;
-		if (l == 0) {
-			if (j == 0) {
-				method214(k, i, 128);
-				method214(k - 1, i, 8);
+	public void addWall(int tileY, int orientation, int tileX, int shape, boolean blocksProjectiles) {
+		tileX -= originX;
+		tileY -= originY;
+		if (shape == 0) {
+			if (orientation == 0) {
+				addFlags(tileX, tileY, 128);
+				addFlags(tileX - 1, tileY, 8);
 			}
-			if (j == 1) {
-				method214(k, i, 2);
-				method214(k, i + 1, 32);
+			if (orientation == 1) {
+				addFlags(tileX, tileY, 2);
+				addFlags(tileX, tileY + 1, 32);
 			}
-			if (j == 2) {
-				method214(k, i, 8);
-				method214(k + 1, i, 128);
+			if (orientation == 2) {
+				addFlags(tileX, tileY, 8);
+				addFlags(tileX + 1, tileY, 128);
 			}
-			if (j == 3) {
-				method214(k, i, 32);
-				method214(k, i - 1, 2);
-			}
-		}
-		if (l == 1 || l == 3) {
-			if (j == 0) {
-				method214(k, i, 1);
-				method214(k - 1, i + 1, 16);
-			}
-			if (j == 1) {
-				method214(k, i, 4);
-				method214(k + 1, i + 1, 64);
-			}
-			if (j == 2) {
-				method214(k, i, 16);
-				method214(k + 1, i - 1, 1);
-			}
-			if (j == 3) {
-				method214(k, i, 64);
-				method214(k - 1, i - 1, 4);
+			if (orientation == 3) {
+				addFlags(tileX, tileY, 32);
+				addFlags(tileX, tileY - 1, 2);
 			}
 		}
-		if (l == 2) {
-			if (j == 0) {
-				method214(k, i, 130);
-				method214(k - 1, i, 8);
-				method214(k, i + 1, 32);
+		if (shape == 1 || shape == 3) {
+			if (orientation == 0) {
+				addFlags(tileX, tileY, 1);
+				addFlags(tileX - 1, tileY + 1, 16);
 			}
-			if (j == 1) {
-				method214(k, i, 10);
-				method214(k, i + 1, 32);
-				method214(k + 1, i, 128);
+			if (orientation == 1) {
+				addFlags(tileX, tileY, 4);
+				addFlags(tileX + 1, tileY + 1, 64);
 			}
-			if (j == 2) {
-				method214(k, i, 40);
-				method214(k + 1, i, 128);
-				method214(k, i - 1, 2);
+			if (orientation == 2) {
+				addFlags(tileX, tileY, 16);
+				addFlags(tileX + 1, tileY - 1, 1);
 			}
-			if (j == 3) {
-				method214(k, i, 160);
-				method214(k, i - 1, 2);
-				method214(k - 1, i, 8);
+			if (orientation == 3) {
+				addFlags(tileX, tileY, 64);
+				addFlags(tileX - 1, tileY - 1, 4);
 			}
 		}
-		if (flag) {
-			if (l == 0) {
-				if (j == 0) {
-					method214(k, i, 0x10000);
-					method214(k - 1, i, 4096);
+		if (shape == 2) {
+			if (orientation == 0) {
+				addFlags(tileX, tileY, 130);
+				addFlags(tileX - 1, tileY, 8);
+				addFlags(tileX, tileY + 1, 32);
+			}
+			if (orientation == 1) {
+				addFlags(tileX, tileY, 10);
+				addFlags(tileX, tileY + 1, 32);
+				addFlags(tileX + 1, tileY, 128);
+			}
+			if (orientation == 2) {
+				addFlags(tileX, tileY, 40);
+				addFlags(tileX + 1, tileY, 128);
+				addFlags(tileX, tileY - 1, 2);
+			}
+			if (orientation == 3) {
+				addFlags(tileX, tileY, 160);
+				addFlags(tileX, tileY - 1, 2);
+				addFlags(tileX - 1, tileY, 8);
+			}
+		}
+		if (blocksProjectiles) {
+			if (shape == 0) {
+				if (orientation == 0) {
+					addFlags(tileX, tileY, 0x10000);
+					addFlags(tileX - 1, tileY, 4096);
 				}
-				if (j == 1) {
-					method214(k, i, 1024);
-					method214(k, i + 1, 16384);
+				if (orientation == 1) {
+					addFlags(tileX, tileY, 1024);
+					addFlags(tileX, tileY + 1, 16384);
 				}
-				if (j == 2) {
-					method214(k, i, 4096);
-					method214(k + 1, i, 0x10000);
+				if (orientation == 2) {
+					addFlags(tileX, tileY, 4096);
+					addFlags(tileX + 1, tileY, 0x10000);
 				}
-				if (j == 3) {
-					method214(k, i, 16384);
-					method214(k, i - 1, 1024);
+				if (orientation == 3) {
+					addFlags(tileX, tileY, 16384);
+					addFlags(tileX, tileY - 1, 1024);
 				}
 			}
-			if (l == 1 || l == 3) {
-				if (j == 0) {
-					method214(k, i, 512);
-					method214(k - 1, i + 1, 8192);
+			if (shape == 1 || shape == 3) {
+				if (orientation == 0) {
+					addFlags(tileX, tileY, 512);
+					addFlags(tileX - 1, tileY + 1, 8192);
 				}
-				if (j == 1) {
-					method214(k, i, 2048);
-					method214(k + 1, i + 1, 32768);
+				if (orientation == 1) {
+					addFlags(tileX, tileY, 2048);
+					addFlags(tileX + 1, tileY + 1, 32768);
 				}
-				if (j == 2) {
-					method214(k, i, 8192);
-					method214(k + 1, i - 1, 512);
+				if (orientation == 2) {
+					addFlags(tileX, tileY, 8192);
+					addFlags(tileX + 1, tileY - 1, 512);
 				}
-				if (j == 3) {
-					method214(k, i, 32768);
-					method214(k - 1, i - 1, 2048);
+				if (orientation == 3) {
+					addFlags(tileX, tileY, 32768);
+					addFlags(tileX - 1, tileY - 1, 2048);
 				}
 			}
-			if (l == 2) {
-				if (j == 0) {
-					method214(k, i, 0x10400);
-					method214(k - 1, i, 4096);
-					method214(k, i + 1, 16384);
+			if (shape == 2) {
+				if (orientation == 0) {
+					addFlags(tileX, tileY, 0x10400);
+					addFlags(tileX - 1, tileY, 4096);
+					addFlags(tileX, tileY + 1, 16384);
 				}
-				if (j == 1) {
-					method214(k, i, 5120);
-					method214(k, i + 1, 16384);
-					method214(k + 1, i, 0x10000);
+				if (orientation == 1) {
+					addFlags(tileX, tileY, 5120);
+					addFlags(tileX, tileY + 1, 16384);
+					addFlags(tileX + 1, tileY, 0x10000);
 				}
-				if (j == 2) {
-					method214(k, i, 20480);
-					method214(k + 1, i, 0x10000);
-					method214(k, i - 1, 1024);
+				if (orientation == 2) {
+					addFlags(tileX, tileY, 20480);
+					addFlags(tileX + 1, tileY, 0x10000);
+					addFlags(tileX, tileY - 1, 1024);
 				}
-				if (j == 3) {
-					method214(k, i, 0x14000);
-					method214(k, i - 1, 1024);
-					method214(k - 1, i, 4096);
+				if (orientation == 3) {
+					addFlags(tileX, tileY, 0x14000);
+					addFlags(tileX, tileY - 1, 1024);
+					addFlags(tileX - 1, tileY, 4096);
 				}
 			}
 		}
 	}
 
-	public void method212(boolean flag, int j, int k, int l, int i1, int j1) {
-		int k1 = 256;
-		if (flag) {
-			k1 += 0x20000;
+	public void addObject(boolean blocksProjectiles, int sizeX, int sizeY, int tileX, int tileY, int orientation) {
+		int blockMask = 256;
+		if (blocksProjectiles) {
+			blockMask += 0x20000;
 		}
-		l -= anInt290;
-		i1 -= anInt291;
-		if (j1 == 1 || j1 == 3) {
-			int l1 = j;
-			j = k;
-			k = l1;
+		tileX -= originX;
+		tileY -= originY;
+		if (orientation == 1 || orientation == 3) {
+			int previousSizeX = sizeX;
+			sizeX = sizeY;
+			sizeY = previousSizeX;
 		}
-		for (int i2 = l; i2 < l + j; i2++) {
-			if (i2 >= 0 && i2 < anInt292) {
-				for (int j2 = i1; j2 < i1 + k; j2++) {
-					if (j2 >= 0 && j2 < anInt293) {
-						method214(i2, j2, k1);
+		for (int x = tileX; x < tileX + sizeX; x++) {
+			if (x >= 0 && x < width) {
+				for (int y = tileY; y < tileY + sizeY; y++) {
+					if (y >= 0 && y < height) {
+						addFlags(x, y, blockMask);
 					}
 				}
 
@@ -175,156 +175,156 @@ final class CollisionMap {
 
 	}
 
-	public void method213(int i, int k) {
-		k -= anInt290;
-		i -= anInt291;
-		anIntArrayArray294[k][i] |= 0x200000;
+	public void blockTile(int tileY, int tileX) {
+		tileX -= originX;
+		tileY -= originY;
+		tileFlags[tileX][tileY] |= 0x200000;
 	}
 
-	private void method214(int i, int j, int k) {
-		anIntArrayArray294[i][j] |= k;
+	private void addFlags(int tileX, int tileY, int mask) {
+		tileFlags[tileX][tileY] |= mask;
 	}
 
-	public void method215(int i, int j, boolean flag, int k, int l) {
-		k -= anInt290;
-		l -= anInt291;
-		if (j == 0) {
-			if (i == 0) {
-				method217(128, k, l);
-				method217(8, k - 1, l);
+	public void removeWall(int orientation, int shape, boolean blocksProjectiles, int tileX, int tileY) {
+		tileX -= originX;
+		tileY -= originY;
+		if (shape == 0) {
+			if (orientation == 0) {
+				clearFlags(128, tileX, tileY);
+				clearFlags(8, tileX - 1, tileY);
 			}
-			if (i == 1) {
-				method217(2, k, l);
-				method217(32, k, l + 1);
+			if (orientation == 1) {
+				clearFlags(2, tileX, tileY);
+				clearFlags(32, tileX, tileY + 1);
 			}
-			if (i == 2) {
-				method217(8, k, l);
-				method217(128, k + 1, l);
+			if (orientation == 2) {
+				clearFlags(8, tileX, tileY);
+				clearFlags(128, tileX + 1, tileY);
 			}
-			if (i == 3) {
-				method217(32, k, l);
-				method217(2, k, l - 1);
-			}
-		}
-		if (j == 1 || j == 3) {
-			if (i == 0) {
-				method217(1, k, l);
-				method217(16, k - 1, l + 1);
-			}
-			if (i == 1) {
-				method217(4, k, l);
-				method217(64, k + 1, l + 1);
-			}
-			if (i == 2) {
-				method217(16, k, l);
-				method217(1, k + 1, l - 1);
-			}
-			if (i == 3) {
-				method217(64, k, l);
-				method217(4, k - 1, l - 1);
+			if (orientation == 3) {
+				clearFlags(32, tileX, tileY);
+				clearFlags(2, tileX, tileY - 1);
 			}
 		}
-		if (j == 2) {
-			if (i == 0) {
-				method217(130, k, l);
-				method217(8, k - 1, l);
-				method217(32, k, l + 1);
+		if (shape == 1 || shape == 3) {
+			if (orientation == 0) {
+				clearFlags(1, tileX, tileY);
+				clearFlags(16, tileX - 1, tileY + 1);
 			}
-			if (i == 1) {
-				method217(10, k, l);
-				method217(32, k, l + 1);
-				method217(128, k + 1, l);
+			if (orientation == 1) {
+				clearFlags(4, tileX, tileY);
+				clearFlags(64, tileX + 1, tileY + 1);
 			}
-			if (i == 2) {
-				method217(40, k, l);
-				method217(128, k + 1, l);
-				method217(2, k, l - 1);
+			if (orientation == 2) {
+				clearFlags(16, tileX, tileY);
+				clearFlags(1, tileX + 1, tileY - 1);
 			}
-			if (i == 3) {
-				method217(160, k, l);
-				method217(2, k, l - 1);
-				method217(8, k - 1, l);
+			if (orientation == 3) {
+				clearFlags(64, tileX, tileY);
+				clearFlags(4, tileX - 1, tileY - 1);
 			}
 		}
-		if (flag) {
-			if (j == 0) {
-				if (i == 0) {
-					method217(0x10000, k, l);
-					method217(4096, k - 1, l);
+		if (shape == 2) {
+			if (orientation == 0) {
+				clearFlags(130, tileX, tileY);
+				clearFlags(8, tileX - 1, tileY);
+				clearFlags(32, tileX, tileY + 1);
+			}
+			if (orientation == 1) {
+				clearFlags(10, tileX, tileY);
+				clearFlags(32, tileX, tileY + 1);
+				clearFlags(128, tileX + 1, tileY);
+			}
+			if (orientation == 2) {
+				clearFlags(40, tileX, tileY);
+				clearFlags(128, tileX + 1, tileY);
+				clearFlags(2, tileX, tileY - 1);
+			}
+			if (orientation == 3) {
+				clearFlags(160, tileX, tileY);
+				clearFlags(2, tileX, tileY - 1);
+				clearFlags(8, tileX - 1, tileY);
+			}
+		}
+		if (blocksProjectiles) {
+			if (shape == 0) {
+				if (orientation == 0) {
+					clearFlags(0x10000, tileX, tileY);
+					clearFlags(4096, tileX - 1, tileY);
 				}
-				if (i == 1) {
-					method217(1024, k, l);
-					method217(16384, k, l + 1);
+				if (orientation == 1) {
+					clearFlags(1024, tileX, tileY);
+					clearFlags(16384, tileX, tileY + 1);
 				}
-				if (i == 2) {
-					method217(4096, k, l);
-					method217(0x10000, k + 1, l);
+				if (orientation == 2) {
+					clearFlags(4096, tileX, tileY);
+					clearFlags(0x10000, tileX + 1, tileY);
 				}
-				if (i == 3) {
-					method217(16384, k, l);
-					method217(1024, k, l - 1);
+				if (orientation == 3) {
+					clearFlags(16384, tileX, tileY);
+					clearFlags(1024, tileX, tileY - 1);
 				}
 			}
-			if (j == 1 || j == 3) {
-				if (i == 0) {
-					method217(512, k, l);
-					method217(8192, k - 1, l + 1);
+			if (shape == 1 || shape == 3) {
+				if (orientation == 0) {
+					clearFlags(512, tileX, tileY);
+					clearFlags(8192, tileX - 1, tileY + 1);
 				}
-				if (i == 1) {
-					method217(2048, k, l);
-					method217(32768, k + 1, l + 1);
+				if (orientation == 1) {
+					clearFlags(2048, tileX, tileY);
+					clearFlags(32768, tileX + 1, tileY + 1);
 				}
-				if (i == 2) {
-					method217(8192, k, l);
-					method217(512, k + 1, l - 1);
+				if (orientation == 2) {
+					clearFlags(8192, tileX, tileY);
+					clearFlags(512, tileX + 1, tileY - 1);
 				}
-				if (i == 3) {
-					method217(32768, k, l);
-					method217(2048, k - 1, l - 1);
+				if (orientation == 3) {
+					clearFlags(32768, tileX, tileY);
+					clearFlags(2048, tileX - 1, tileY - 1);
 				}
 			}
-			if (j == 2) {
-				if (i == 0) {
-					method217(0x10400, k, l);
-					method217(4096, k - 1, l);
-					method217(16384, k, l + 1);
+			if (shape == 2) {
+				if (orientation == 0) {
+					clearFlags(0x10400, tileX, tileY);
+					clearFlags(4096, tileX - 1, tileY);
+					clearFlags(16384, tileX, tileY + 1);
 				}
-				if (i == 1) {
-					method217(5120, k, l);
-					method217(16384, k, l + 1);
-					method217(0x10000, k + 1, l);
+				if (orientation == 1) {
+					clearFlags(5120, tileX, tileY);
+					clearFlags(16384, tileX, tileY + 1);
+					clearFlags(0x10000, tileX + 1, tileY);
 				}
-				if (i == 2) {
-					method217(20480, k, l);
-					method217(0x10000, k + 1, l);
-					method217(1024, k, l - 1);
+				if (orientation == 2) {
+					clearFlags(20480, tileX, tileY);
+					clearFlags(0x10000, tileX + 1, tileY);
+					clearFlags(1024, tileX, tileY - 1);
 				}
-				if (i == 3) {
-					method217(0x14000, k, l);
-					method217(1024, k, l - 1);
-					method217(4096, k - 1, l);
+				if (orientation == 3) {
+					clearFlags(0x14000, tileX, tileY);
+					clearFlags(1024, tileX, tileY - 1);
+					clearFlags(4096, tileX - 1, tileY);
 				}
 			}
 		}
 	}
 
-	public void method216(int i, int j, int k, int l, int i1, boolean flag) {
-		int j1 = 256;
-		if (flag) {
-			j1 += 0x20000;
+	public void removeObject(int orientation, int sizeX, int tileX, int tileY, int sizeY, boolean blocksProjectiles) {
+		int blockMask = 256;
+		if (blocksProjectiles) {
+			blockMask += 0x20000;
 		}
-		k -= anInt290;
-		l -= anInt291;
-		if (i == 1 || i == 3) {
-			int k1 = j;
-			j = i1;
-			i1 = k1;
+		tileX -= originX;
+		tileY -= originY;
+		if (orientation == 1 || orientation == 3) {
+			int previousSizeX = sizeX;
+			sizeX = sizeY;
+			sizeY = previousSizeX;
 		}
-		for (int l1 = k; l1 < k + j; l1++) {
-			if (l1 >= 0 && l1 < anInt292) {
-				for (int i2 = l; i2 < l + i1; i2++) {
-					if (i2 >= 0 && i2 < anInt293) {
-						method217(j1, l1, i2);
+		for (int x = tileX; x < tileX + sizeX; x++) {
+			if (x >= 0 && x < width) {
+				for (int y = tileY; y < tileY + sizeY; y++) {
+					if (y >= 0 && y < height) {
+						clearFlags(blockMask, x, y);
 					}
 				}
 
@@ -333,192 +333,192 @@ final class CollisionMap {
 
 	}
 
-	private void method217(int i, int j, int k) {
-		anIntArrayArray294[j][k] &= 0xffffff - i;
+	private void clearFlags(int mask, int tileX, int tileY) {
+		tileFlags[tileX][tileY] &= 0xffffff - mask;
 	}
 
-	public void method218(int j, int k) {
-		k -= anInt290;
-		j -= anInt291;
-		anIntArrayArray294[k][j] &= 0xdfffff;
+	public void unblockTile(int tileY, int tileX) {
+		tileX -= originX;
+		tileY -= originY;
+		tileFlags[tileX][tileY] &= 0xdfffff;
 	}
 
-	public boolean method219(int i, int j, int k, int i1, int j1, int k1) {
-		if (j == i && k == k1) {
+	public boolean reachedWallObject(int targetX, int tileX, int tileY, int orientation, int shape, int targetY) {
+		if (tileX == targetX && tileY == targetY) {
 			return true;
 		}
-		j -= anInt290;
-		k -= anInt291;
-		i -= anInt290;
-		k1 -= anInt291;
-		if (j1 == 0) {
-			if (i1 == 0) {
-				if (j == i - 1 && k == k1) {
+		tileX -= originX;
+		tileY -= originY;
+		targetX -= originX;
+		targetY -= originY;
+		if (shape == 0) {
+			if (orientation == 0) {
+				if (tileX == targetX - 1 && tileY == targetY) {
 					return true;
 				}
-				if (j == i && k == k1 + 1 && (anIntArrayArray294[j][k] & 0x1280120) == 0) {
+				if (tileX == targetX && tileY == targetY + 1 && (tileFlags[tileX][tileY] & 0x1280120) == 0) {
 					return true;
 				}
-				if (j == i && k == k1 - 1 && (anIntArrayArray294[j][k] & 0x1280102) == 0) {
+				if (tileX == targetX && tileY == targetY - 1 && (tileFlags[tileX][tileY] & 0x1280102) == 0) {
 					return true;
 				}
-			} else if (i1 == 1) {
-				if (j == i && k == k1 + 1) {
+			} else if (orientation == 1) {
+				if (tileX == targetX && tileY == targetY + 1) {
 					return true;
 				}
-				if (j == i - 1 && k == k1 && (anIntArrayArray294[j][k] & 0x1280108) == 0) {
+				if (tileX == targetX - 1 && tileY == targetY && (tileFlags[tileX][tileY] & 0x1280108) == 0) {
 					return true;
 				}
-				if (j == i + 1 && k == k1 && (anIntArrayArray294[j][k] & 0x1280180) == 0) {
+				if (tileX == targetX + 1 && tileY == targetY && (tileFlags[tileX][tileY] & 0x1280180) == 0) {
 					return true;
 				}
-			} else if (i1 == 2) {
-				if (j == i + 1 && k == k1) {
+			} else if (orientation == 2) {
+				if (tileX == targetX + 1 && tileY == targetY) {
 					return true;
 				}
-				if (j == i && k == k1 + 1 && (anIntArrayArray294[j][k] & 0x1280120) == 0) {
+				if (tileX == targetX && tileY == targetY + 1 && (tileFlags[tileX][tileY] & 0x1280120) == 0) {
 					return true;
 				}
-				if (j == i && k == k1 - 1 && (anIntArrayArray294[j][k] & 0x1280102) == 0) {
+				if (tileX == targetX && tileY == targetY - 1 && (tileFlags[tileX][tileY] & 0x1280102) == 0) {
 					return true;
 				}
-			} else if (i1 == 3) {
-				if (j == i && k == k1 - 1) {
+			} else if (orientation == 3) {
+				if (tileX == targetX && tileY == targetY - 1) {
 					return true;
 				}
-				if (j == i - 1 && k == k1 && (anIntArrayArray294[j][k] & 0x1280108) == 0) {
+				if (tileX == targetX - 1 && tileY == targetY && (tileFlags[tileX][tileY] & 0x1280108) == 0) {
 					return true;
 				}
-				if (j == i + 1 && k == k1 && (anIntArrayArray294[j][k] & 0x1280180) == 0) {
-					return true;
-				}
-			}
-		}
-		if (j1 == 2) {
-			if (i1 == 0) {
-				if (j == i - 1 && k == k1) {
-					return true;
-				}
-				if (j == i && k == k1 + 1) {
-					return true;
-				}
-				if (j == i + 1 && k == k1 && (anIntArrayArray294[j][k] & 0x1280180) == 0) {
-					return true;
-				}
-				if (j == i && k == k1 - 1 && (anIntArrayArray294[j][k] & 0x1280102) == 0) {
-					return true;
-				}
-			} else if (i1 == 1) {
-				if (j == i - 1 && k == k1 && (anIntArrayArray294[j][k] & 0x1280108) == 0) {
-					return true;
-				}
-				if (j == i && k == k1 + 1) {
-					return true;
-				}
-				if (j == i + 1 && k == k1) {
-					return true;
-				}
-				if (j == i && k == k1 - 1 && (anIntArrayArray294[j][k] & 0x1280102) == 0) {
-					return true;
-				}
-			} else if (i1 == 2) {
-				if (j == i - 1 && k == k1 && (anIntArrayArray294[j][k] & 0x1280108) == 0) {
-					return true;
-				}
-				if (j == i && k == k1 + 1 && (anIntArrayArray294[j][k] & 0x1280120) == 0) {
-					return true;
-				}
-				if (j == i + 1 && k == k1) {
-					return true;
-				}
-				if (j == i && k == k1 - 1) {
-					return true;
-				}
-			} else if (i1 == 3) {
-				if (j == i - 1 && k == k1) {
-					return true;
-				}
-				if (j == i && k == k1 + 1 && (anIntArrayArray294[j][k] & 0x1280120) == 0) {
-					return true;
-				}
-				if (j == i + 1 && k == k1 && (anIntArrayArray294[j][k] & 0x1280180) == 0) {
-					return true;
-				}
-				if (j == i && k == k1 - 1) {
+				if (tileX == targetX + 1 && tileY == targetY && (tileFlags[tileX][tileY] & 0x1280180) == 0) {
 					return true;
 				}
 			}
 		}
-		if (j1 == 9) {
-			if (j == i && k == k1 + 1 && (anIntArrayArray294[j][k] & 0x20) == 0) {
+		if (shape == 2) {
+			if (orientation == 0) {
+				if (tileX == targetX - 1 && tileY == targetY) {
+					return true;
+				}
+				if (tileX == targetX && tileY == targetY + 1) {
+					return true;
+				}
+				if (tileX == targetX + 1 && tileY == targetY && (tileFlags[tileX][tileY] & 0x1280180) == 0) {
+					return true;
+				}
+				if (tileX == targetX && tileY == targetY - 1 && (tileFlags[tileX][tileY] & 0x1280102) == 0) {
+					return true;
+				}
+			} else if (orientation == 1) {
+				if (tileX == targetX - 1 && tileY == targetY && (tileFlags[tileX][tileY] & 0x1280108) == 0) {
+					return true;
+				}
+				if (tileX == targetX && tileY == targetY + 1) {
+					return true;
+				}
+				if (tileX == targetX + 1 && tileY == targetY) {
+					return true;
+				}
+				if (tileX == targetX && tileY == targetY - 1 && (tileFlags[tileX][tileY] & 0x1280102) == 0) {
+					return true;
+				}
+			} else if (orientation == 2) {
+				if (tileX == targetX - 1 && tileY == targetY && (tileFlags[tileX][tileY] & 0x1280108) == 0) {
+					return true;
+				}
+				if (tileX == targetX && tileY == targetY + 1 && (tileFlags[tileX][tileY] & 0x1280120) == 0) {
+					return true;
+				}
+				if (tileX == targetX + 1 && tileY == targetY) {
+					return true;
+				}
+				if (tileX == targetX && tileY == targetY - 1) {
+					return true;
+				}
+			} else if (orientation == 3) {
+				if (tileX == targetX - 1 && tileY == targetY) {
+					return true;
+				}
+				if (tileX == targetX && tileY == targetY + 1 && (tileFlags[tileX][tileY] & 0x1280120) == 0) {
+					return true;
+				}
+				if (tileX == targetX + 1 && tileY == targetY && (tileFlags[tileX][tileY] & 0x1280180) == 0) {
+					return true;
+				}
+				if (tileX == targetX && tileY == targetY - 1) {
+					return true;
+				}
+			}
+		}
+		if (shape == 9) {
+			if (tileX == targetX && tileY == targetY + 1 && (tileFlags[tileX][tileY] & 0x20) == 0) {
 				return true;
 			}
-			if (j == i && k == k1 - 1 && (anIntArrayArray294[j][k] & 2) == 0) {
+			if (tileX == targetX && tileY == targetY - 1 && (tileFlags[tileX][tileY] & 2) == 0) {
 				return true;
 			}
-			if (j == i - 1 && k == k1 && (anIntArrayArray294[j][k] & 8) == 0) {
+			if (tileX == targetX - 1 && tileY == targetY && (tileFlags[tileX][tileY] & 8) == 0) {
 				return true;
 			}
-			if (j == i + 1 && k == k1 && (anIntArrayArray294[j][k] & 0x80) == 0) {
+			if (tileX == targetX + 1 && tileY == targetY && (tileFlags[tileX][tileY] & 0x80) == 0) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public boolean method220(int i, int j, int k, int l, int i1, int j1) {
-		if (j1 == i && k == j) {
+	public boolean reachedWallDecoration(int targetX, int targetY, int tileY, int shape, int orientation, int tileX) {
+		if (tileX == targetX && tileY == targetY) {
 			return true;
 		}
-		j1 -= anInt290;
-		k -= anInt291;
-		i -= anInt290;
-		j -= anInt291;
-		if (l == 6 || l == 7) {
-			if (l == 7) {
-				i1 = i1 + 2 & 3;
+		tileX -= originX;
+		tileY -= originY;
+		targetX -= originX;
+		targetY -= originY;
+		if (shape == 6 || shape == 7) {
+			if (shape == 7) {
+				orientation = orientation + 2 & 3;
 			}
-			if (i1 == 0) {
-				if (j1 == i + 1 && k == j && (anIntArrayArray294[j1][k] & 0x80) == 0) {
+			if (orientation == 0) {
+				if (tileX == targetX + 1 && tileY == targetY && (tileFlags[tileX][tileY] & 0x80) == 0) {
 					return true;
 				}
-				if (j1 == i && k == j - 1 && (anIntArrayArray294[j1][k] & 2) == 0) {
+				if (tileX == targetX && tileY == targetY - 1 && (tileFlags[tileX][tileY] & 2) == 0) {
 					return true;
 				}
-			} else if (i1 == 1) {
-				if (j1 == i - 1 && k == j && (anIntArrayArray294[j1][k] & 8) == 0) {
+			} else if (orientation == 1) {
+				if (tileX == targetX - 1 && tileY == targetY && (tileFlags[tileX][tileY] & 8) == 0) {
 					return true;
 				}
-				if (j1 == i && k == j - 1 && (anIntArrayArray294[j1][k] & 2) == 0) {
+				if (tileX == targetX && tileY == targetY - 1 && (tileFlags[tileX][tileY] & 2) == 0) {
 					return true;
 				}
-			} else if (i1 == 2) {
-				if (j1 == i - 1 && k == j && (anIntArrayArray294[j1][k] & 8) == 0) {
+			} else if (orientation == 2) {
+				if (tileX == targetX - 1 && tileY == targetY && (tileFlags[tileX][tileY] & 8) == 0) {
 					return true;
 				}
-				if (j1 == i && k == j + 1 && (anIntArrayArray294[j1][k] & 0x20) == 0) {
+				if (tileX == targetX && tileY == targetY + 1 && (tileFlags[tileX][tileY] & 0x20) == 0) {
 					return true;
 				}
-			} else if (i1 == 3) {
-				if (j1 == i + 1 && k == j && (anIntArrayArray294[j1][k] & 0x80) == 0) {
+			} else if (orientation == 3) {
+				if (tileX == targetX + 1 && tileY == targetY && (tileFlags[tileX][tileY] & 0x80) == 0) {
 					return true;
 				}
-				if (j1 == i && k == j + 1 && (anIntArrayArray294[j1][k] & 0x20) == 0) {
+				if (tileX == targetX && tileY == targetY + 1 && (tileFlags[tileX][tileY] & 0x20) == 0) {
 					return true;
 				}
 			}
 		}
-		if (l == 8) {
-			if (j1 == i && k == j + 1 && (anIntArrayArray294[j1][k] & 0x20) == 0) {
+		if (shape == 8) {
+			if (tileX == targetX && tileY == targetY + 1 && (tileFlags[tileX][tileY] & 0x20) == 0) {
 				return true;
 			}
-			if (j1 == i && k == j - 1 && (anIntArrayArray294[j1][k] & 2) == 0) {
+			if (tileX == targetX && tileY == targetY - 1 && (tileFlags[tileX][tileY] & 2) == 0) {
 				return true;
 			}
-			if (j1 == i - 1 && k == j && (anIntArrayArray294[j1][k] & 8) == 0) {
+			if (tileX == targetX - 1 && tileY == targetY && (tileFlags[tileX][tileY] & 8) == 0) {
 				return true;
 			}
-			if (j1 == i + 1 && k == j && (anIntArrayArray294[j1][k] & 0x80) == 0) {
+			if (tileX == targetX + 1 && tileY == targetY && (tileFlags[tileX][tileY] & 0x80) == 0) {
 				return true;
 			}
 		}
@@ -527,24 +527,24 @@ final class CollisionMap {
 
 	// Something to do with moving to objects/npcs etc when clicked on
 	// Maybe checking distance?
-	public boolean method221(int i, int j, int k, int l, int i1, int j1, int k1) {
-		int l1 = j + j1 - 1;
-		int i2 = i + l - 1;
-		if (k >= j && k <= l1 && k1 >= i && k1 <= i2) {
+	public boolean reachedObjectFootprint(int targetY, int targetX, int tileX, int sizeY, int blockedSidesMask, int sizeX, int tileY) {
+		int maxX = targetX + sizeX - 1;
+		int maxY = targetY + sizeY - 1;
+		if (tileX >= targetX && tileX <= maxX && tileY >= targetY && tileY <= maxY) {
 			return true;
 		}
-		if (k == j - 1 && k1 >= i && k1 <= i2 && (anIntArrayArray294[k - anInt290][k1 - anInt291] & 8) == 0 && (i1 & 8) == 0) {
+		if (tileX == targetX - 1 && tileY >= targetY && tileY <= maxY && (tileFlags[tileX - originX][tileY - originY] & 8) == 0 && (blockedSidesMask & 8) == 0) {
 			return true;
 		}
-		if (k == l1 + 1 && k1 >= i && k1 <= i2 && (anIntArrayArray294[k - anInt290][k1 - anInt291] & 0x80) == 0 && (i1 & 2) == 0) {
+		if (tileX == maxX + 1 && tileY >= targetY && tileY <= maxY && (tileFlags[tileX - originX][tileY - originY] & 0x80) == 0 && (blockedSidesMask & 2) == 0) {
 			return true;
 		}
-		return k1 == i - 1 && k >= j && k <= l1 && (anIntArrayArray294[k - anInt290][k1 - anInt291] & 2) == 0 && (i1 & 4) == 0 || k1 == i2 + 1 && k >= j && k <= l1 && (anIntArrayArray294[k - anInt290][k1 - anInt291] & 0x20) == 0 && (i1 & 1) == 0;
+		return tileY == targetY - 1 && tileX >= targetX && tileX <= maxX && (tileFlags[tileX - originX][tileY - originY] & 2) == 0 && (blockedSidesMask & 4) == 0 || tileY == maxY + 1 && tileX >= targetX && tileX <= maxX && (tileFlags[tileX - originX][tileY - originY] & 0x20) == 0 && (blockedSidesMask & 1) == 0;
 	}
 
-	private final int anInt290;
-	private final int anInt291;
-	private final int anInt292;
-	private final int anInt293;
-	public final int[][] anIntArrayArray294;
+	private final int originX;
+	private final int originY;
+	private final int width;
+	private final int height;
+	public final int[][] tileFlags;
 }
