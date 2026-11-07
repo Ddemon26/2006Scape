@@ -35,10 +35,10 @@ public class GameSoundQueueTest {
         Constructor<Sounds> constructor = Sounds.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         Sounds controlledSound = constructor.newInstance();
-        Class6 instrument = new Class6();
-        instrument.anInt113 = 1;
-        instrument.anInt114 = 0;
-        ((Class6[]) field(Sounds.class, "aClass6Array329").get(controlledSound))[0] = instrument;
+        SynthVoice instrument = new SynthVoice();
+        instrument.durationMs = 1;
+        instrument.startOffsetMs = 0;
+        ((SynthVoice[]) field(Sounds.class, "voices").get(controlledSound))[0] = instrument;
         field(Sounds.class, "anInt330").setInt(controlledSound, 0);
         field(Sounds.class, "anInt331").setInt(controlledSound, 1);
         sounds[SOUND_ID] = controlledSound;
