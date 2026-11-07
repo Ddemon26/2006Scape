@@ -2101,7 +2101,7 @@ public final class ItemDef {
 		int l2 = DrawingArea.bottomX;
 		int i3 = DrawingArea.topY;
 		int j3 = DrawingArea.bottomY;
-		Texture.aBoolean1464 = false;
+		Texture.blockShading = false;
 		DrawingArea.bindRaster(32, 32, sprite2.pixels);
 		DrawingArea.fillRectangle(32, 0, 0, 32, 0);
 		Texture.setScreenSizeFromDrawingArea();
@@ -2112,8 +2112,8 @@ public final class ItemDef {
 		if (k > 0) {
 			k3 = (int) (k3 * 1.04D);
 		}
-		int l3 = Texture.anIntArray1470[itemDef.modelRotation1] * k3 >> 16;
-		int i4 = Texture.anIntArray1471[itemDef.modelRotation1] * k3 >> 16;
+		int l3 = Texture.sineTable[itemDef.modelRotation1] * k3 >> 16;
+		int i4 = Texture.cosineTable[itemDef.modelRotation1] * k3 >> 16;
 		model.method482(itemDef.modelRotation2, itemDef.anInt204, itemDef.modelRotation1, itemDef.modelOffset1, l3 + model.modelHeight / 2 + itemDef.modelOffset2, i4 + itemDef.modelOffset2);
 		for (int i5 = 31; i5 >= 0; i5--) {
 			for (int j4 = 31; j4 >= 0; j4--) {
@@ -2178,7 +2178,7 @@ public final class ItemDef {
 		Texture.textureInt1 = k1;
 		Texture.textureInt2 = l1;
 		Texture.lineOffsets = ai;
-		Texture.aBoolean1464 = true;
+		Texture.blockShading = true;
 		if (itemDef.stackable) {
 			sprite2.trimWidth = 33;
 		} else {

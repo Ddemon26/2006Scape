@@ -7375,7 +7375,7 @@ public class Game extends RSApplet {
 			for (int i8 = 0; i8 < 9; i8++) {
 				int k8 = 128 + i8 * 32 + 15;
 				int l8 = 600 + k8 * 3;
-				int i9 = Texture.anIntArray1470[k8];
+				int i9 = Texture.sineTable[k8];
 				ai[i8] = l8 * i9 >> 16;
 			}
 
@@ -7445,8 +7445,8 @@ public class Game extends RSApplet {
 				i -= 73;
 				j -= 75;
 				int k = minimapInt1 + minimapInt2 & 0x7ff;
-				int i1 = Texture.anIntArray1470[k];
-				int j1 = Texture.anIntArray1471[k];
+				int i1 = Texture.sineTable[k];
+				int j1 = Texture.cosineTable[k];
 				i1 = i1 * (minimapInt3 + 256) >> 8;
 				j1 = j1 * (minimapInt3 + 256) >> 8;
 				int k1 = j * i1 + i * j1 >> 11;
@@ -8420,8 +8420,8 @@ public class Game extends RSApplet {
 					int j4 = Texture.textureInt2;
 					Texture.textureInt1 = k2 + component.width / 2;
 					Texture.textureInt2 = l2 + component.height / 2;
-					int i5 = Texture.anIntArray1470[component.anInt270] * component.anInt269 >> 16;
-					int l5 = Texture.anIntArray1471[component.anInt270] * component.anInt269 >> 16;
+					int i5 = Texture.sineTable[component.anInt270] * component.anInt269 >> 16;
+					int l5 = Texture.cosineTable[component.anInt270] * component.anInt269 >> 16;
 					boolean flag2 = interfaceIsSelected(component);
 					int i7;
 					if (flag2) {

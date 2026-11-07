@@ -263,12 +263,12 @@ public class SpriteDrawingAreaTest {
 
     @Test
     public void scanlineConsumerUsesViewportDependentRightLimitExclusively() throws Exception {
-        java.lang.reflect.Method line=Texture.class.getDeclaredMethod("method377",int[].class,
+        java.lang.reflect.Method line=Texture.class.getDeclaredMethod("drawFlatScanline",int[].class,
                 int.class,int.class,int.class,int.class);
         line.setAccessible(true);
-        boolean clipping=Texture.aBoolean1462; int alpha=Texture.anInt1465;
+        boolean clipping=Texture.clipScanlines; int alpha=Texture.transparency;
         try {
-            Texture.aBoolean1462=true; Texture.anInt1465=0;
+            Texture.clipScanlines=true; Texture.transparency=0;
             for(boolean viewport:new boolean[]{false,true}) {
                 ClientSettings.FULL_512PX_VIEWPORT=viewport;
                 for(int right:new int[]{1,2,7,12,13}) {
@@ -280,7 +280,7 @@ public class SpriteDrawingAreaTest {
                     for(int i=0;i<pixels.length;i++) assertEquals(i/13==4 && i%13<end?0xabcdef:42,pixels[i]);
                 }
             }
-        } finally { Texture.aBoolean1462=clipping; Texture.anInt1465=alpha; }
+        } finally { Texture.clipScanlines=clipping; Texture.transparency=alpha; }
     }
 
     @Test
