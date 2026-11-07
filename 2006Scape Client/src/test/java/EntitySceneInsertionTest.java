@@ -166,8 +166,8 @@ public class EntitySceneInsertionTest {
         try {
             TestGame g = newGame(); setupFrame(g); Game.myPlayer = hidden(player(1, 1)); g.playerCount = 0; g.npcCount = 0;
             // angle 1.57 rad -> sin ~ 1, so the offset is about the amplitude (plus 0 or 1 from the random term)
-            for (int c = 0; c < 5; c++) { g.anIntArray873[c] = 0; g.anIntArray1030[c] = 157; g.anIntArray928[c] = 1; g.anIntArray1203[c] = 100 * (c + 1); g.aBooleanArray876[c] = true; }
-            g.aBooleanArray876[2] = false;
+            for (int c = 0; c < 5; c++) { g.shakeRandomAmplitude[c] = 0; g.shakePhase[c] = 157; g.shakeSineSpeed[c] = 1; g.shakeSineAmplitude[c] = 100 * (c + 1); g.shakeChannelActive[c] = true; }
+            g.shakeChannelActive[2] = false;
             g.fixedPlane = 1;
             g.drawWorldView();
             int[] a = cam(); // x, y, height(z), plane, pitchSine, yawSine
@@ -181,7 +181,7 @@ public class EntitySceneInsertionTest {
             assertEquals("restored xCameraPos", 11, g.xCameraPos); assertEquals(22, g.zCameraPos); assertEquals(33, g.yCameraPos);
             assertEquals(200, g.yCameraCurve); assertEquals(44, g.xCameraCurve);
             g.xCameraCurve = 2000; g.yCameraCurve = 200;
-            g.anIntArray1203[3] = 100; g.anIntArray1203[4] = -500;
+            g.shakeSineAmplitude[3] = 100; g.shakeSineAmplitude[4] = -500;
             g.drawWorldView();
             a = cam();
             int wrapped = (2000 + 100) & 0x7ff;
@@ -196,20 +196,20 @@ public class EntitySceneInsertionTest {
         try {
             TestGame g = newGame(); setupFrame(g); g.aBoolean1160 = false; Game.myPlayer = hidden(player(5 * 128, 6 * 128)); g.playerCount = 0; g.npcCount = 0;
             Game.zoom = 3; g.roofPlane = 2; g.fixedPlane = 3;
-            for (int c = 0; c < 5; c++) g.aBooleanArray876[c] = false;
-            g.anInt1184 = 150; g.anInt984 = 256 * 90; g.minimapInt1 = 1000; g.anInt896 = 1500;
+            for (int c = 0; c < 5; c++) g.shakeChannelActive[c] = false;
+            g.cameraPitchBase = 150; g.cameraTerrainClearance = 256 * 90; g.cameraYawBase = 1000; g.cameraYawDrift = 1500;
             g.drawWorldView();
             assertEquals("roof plane (free camera) goes to drawScene", 2, cam()[3]);
-            assertEquals("pitch = max source (anInt1184)", 150, g.cameraArgs[1]);
+            assertEquals("pitch = max source (cameraPitchBase)", 150, g.cameraArgs[1]);
             assertEquals("distance = 600 + pitch * zoom", 600 + 150 * 3, g.cameraArgs[0]);
-            assertEquals("yaw = (minimapInt1 + anInt896) & 0x7ff", (1000 + 1500) & 0x7ff, g.cameraArgs[4]);
+            assertEquals("yaw = (cameraYawBase + cameraYawDrift) & 0x7ff", (1000 + 1500) & 0x7ff, g.cameraArgs[4]);
             assertEquals("camera height = ground - 70 at the player", -70, g.cameraArgs[3]);
-            g.anInt984 = 256 * 400;
-            g.drawWorldView(); assertEquals("pitch from anInt984/256", 400, g.cameraArgs[1]);
-            g.aBooleanArray876[4] = true; g.anIntArray1203[4] = 300; g.anIntArray873[4] = 0; g.anIntArray1030[4] = 0;
+            g.cameraTerrainClearance = 256 * 400;
+            g.drawWorldView(); assertEquals("pitch from cameraTerrainClearance/256", 400, g.cameraArgs[1]);
+            g.shakeChannelActive[4] = true; g.shakeSineAmplitude[4] = 300; g.shakeRandomAmplitude[4] = 0; g.shakePhase[4] = 0;
             g.drawWorldView(); assertEquals("pitch from shake amplitude + 128", 428, g.cameraArgs[1]);
-            g.anIntArray1203[4] = 200; g.drawWorldView(); assertEquals("shake loses to anInt984/256", 400, g.cameraArgs[1]);
-            g.aBooleanArray876[4] = false; Texture.useCounter = 99;
+            g.shakeSineAmplitude[4] = 200; g.drawWorldView(); assertEquals("shake loses to cameraTerrainClearance/256", 400, g.cameraArgs[1]);
+            g.shakeChannelActive[4] = false; Texture.useCounter = 99;
             g.bumpCounterInEntities = true;
             g.drawWorldView();
             assertEquals("method37 gets the counter sampled before the scene is drawn", 99, g.methodArg37);

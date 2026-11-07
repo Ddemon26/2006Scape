@@ -28,7 +28,7 @@ public class MinimapMarkerTest {
         int[][] r={{256,256,0,10,20,20,-10,512,65536,0}, {2048,0,0,10,20,10,20,0,0,65536},
             {-1,513,256,10,20,10,-5,512,32768,0},{0,0,256,-1,1,-1,0,0,0,32768},
             {0,0,-128,10,-20,20,-40,0,0,131072},{257,0,0,10,20,19,9,257,39321,52428}};
-        for(int[] t:r){g.minimapInt1=t[0];g.minimapInt2=t[1];g.minimapInt3=t[2];Trace.reset();g.drawMinimapMarker(a,t[3],t[4]);check(1,95+t[5],75-t[6]);Trace.expect(104,t[7]);Trace.expect(106,t[7]==512?65536:t[8],t[8]);Trace.expect(107,t[7]==0?65536:t[9],t[9]);Trace.expect(108,t[5]);Trace.expect(109,t[6]);}
+        for(int[] t:r){g.cameraYawBase=t[0];g.minimapInt2=t[1];g.minimapInt3=t[2];Trace.reset();g.drawMinimapMarker(a,t[3],t[4]);check(1,95+t[5],75-t[6]);Trace.expect(104,t[7]);Trace.expect(106,t[7]==512?65536:t[8],t[8]);Trace.expect(107,t[7]==0?65536:t[9],t[9]);Trace.expect(108,t[5]);Trace.expect(109,t[6]);}
     }
     @Test public void hintStrictThresholdsAndFallbackOrder(){
         for(int n:new int[]{0,50,65,300,301}){Trace.reset();g.drawMinimapHint(a,0,n);if(n<=65)check(n>50?2:1,95+n,75);else blank();Trace.expect(204,n*n);}
@@ -37,7 +37,7 @@ public class MinimapMarkerTest {
     @Test public void hintCardinalsObliqueAnglesAndLocalEllipseValues(){
         double[][] r={{0,100,0,100,0,0,57},{100,0,100,0,Math.PI/2,63,0},{0,-100,0,-100,Math.PI,0,-57},{-100,0,-100,0,-Math.PI/2,-63,0},{60,80,60,80,0.6435011087932844,37,45}};
         for(double[] t:r){Trace.reset();g.drawMinimapHint(a,(int)t[1],(int)t[0]);check(3,88+(int)t[5],63-(int)t[6]);Trace.expect(204,t[0]*t[0]+t[1]*t[1]);Trace.expect(205,0);Trace.expect(206,0,0);Trace.expect(207,65536,65536);Trace.expect(208,t[2]);Trace.expect(209,t[3]);Trace.expect(210,t[4]);Trace.expect(212,t[5]);Trace.expect(213,t[6]);}
-        g.minimapInt1=256;g.minimapInt2=256;g.minimapInt3=256;Trace.reset();g.drawMinimapHint(a,0,100);check(3,88,120);Trace.expect(205,512);Trace.expect(206,65536,32768);Trace.expect(207,0,0);Trace.expect(208,0);Trace.expect(209,-50);Trace.expect(210,Math.PI);
+        g.cameraYawBase=256;g.minimapInt2=256;g.minimapInt3=256;Trace.reset();g.drawMinimapHint(a,0,100);check(3,88,120);Trace.expect(205,512);Trace.expect(206,65536,32768);Trace.expect(207,0,0);Trace.expect(208,0);Trace.expect(209,-50);Trace.expect(210,Math.PI);
     }
     @Test public void sourceIdentityAndInputRadiusAreIndependentOfZoom(){
         Sprite e=new Sprite(50,50);Arrays.fill(e.pixels,0x123456);g.minimapEdgeArrow=e;g.minimapInt3=256;g.drawMinimapHint(a,0,66);assertEquals(0x123456,raster[151+63*400]);Arrays.fill(raster,0);

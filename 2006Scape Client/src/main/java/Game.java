@@ -3112,8 +3112,8 @@ public class Game extends RSApplet {
 			anInt1016 = 20;
 			aBoolean1017 = false;
 			stream.writeEncryptedOpcode(86);
-			stream.writeShortBigEndian(anInt1184);
-			stream.writeShortBigEndianAdd128(minimapInt1);
+			stream.writeShortBigEndian(cameraPitchBase);
+			stream.writeShortBigEndianAdd128(cameraYawBase);
 		}
 		if (super.awtFocus && !aBoolean954) {
 			aBoolean954 = true;
@@ -3248,7 +3248,7 @@ public class Game extends RSApplet {
 			calcCameraPos();
 		}
 		for (int i1 = 0; i1 < 5; i1++) {
-			anIntArray1030[i1]++;
+			shakePhase[i1]++;
 		}
 
 		processKeyboardInput();
@@ -3269,7 +3269,7 @@ public class Game extends RSApplet {
 				anInt1131 += anInt1132;
 			}
 			if ((l1 & 4) == 4) {
-				anInt896 += anInt897;
+				cameraYawDrift += anInt897;
 			}
 		}
 		if (anInt1278 < -50) {
@@ -3284,10 +3284,10 @@ public class Game extends RSApplet {
 		if (anInt1131 > 55) {
 			anInt1132 = -2;
 		}
-		if (anInt896 < -40) {
+		if (cameraYawDrift < -40) {
 			anInt897 = 1;
 		}
-		if (anInt896 > 40) {
+		if (cameraYawDrift > 40) {
 			anInt897 = -1;
 		}
 		anInt1254++;
@@ -3675,8 +3675,8 @@ public class Game extends RSApplet {
 			l -= 2000;
 		}
 		if (l == 696) {
-			minimapInt1 = 0;
-            anInt1184 = 120;
+			cameraYawBase = 0;
+            cameraPitchBase = 120;
         }
 		if (l == 582) {
 			NPC npc = npcArray[i1];
@@ -5916,7 +5916,7 @@ public class Game extends RSApplet {
 	public void drawMinimapHint(Sprite sprite, int offsetY, int offsetX) {
 		int distanceSquared = offsetX * offsetX + offsetY * offsetY;
 		if (distanceSquared > 4225 && distanceSquared < 90000) {
-			int rotation2048 = minimapInt1 + minimapInt2 & 0x7ff;
+			int rotation2048 = cameraYawBase + minimapInt2 & 0x7ff;
 			int scaledSine16 = Model.sineTable16[rotation2048];
 			int scaledCosine16 = Model.cosineTable16[rotation2048];
 			scaledSine16 = (scaledSine16 * 256) / (minimapInt3 + 256);
@@ -6123,10 +6123,10 @@ public class Game extends RSApplet {
 				currentSound = 0;
 				anInt1278 = (int) (Math.random() * 100D) - 50;
 				anInt1131 = (int) (Math.random() * 110D) - 55;
-				anInt896 = (int) (Math.random() * 80D) - 40;
+				cameraYawDrift = (int) (Math.random() * 80D) - 40;
 				minimapInt2 = (int) (Math.random() * 120D) - 60;
 				minimapInt3 = (int) (Math.random() * 30D) - 20;
-				minimapInt1 = (int) (Math.random() * 20D) - 10 & 0x7ff;
+				cameraYawBase = (int) (Math.random() * 20D) - 10 & 0x7ff;
 				minimapState = 0;
 				minimapBuiltPlane = -1;
 				destX = 0;
@@ -7444,7 +7444,7 @@ public class Game extends RSApplet {
 			if (i >= 0 && j >= 0 && i < 146 && j < 151) {
 				i -= 73;
 				j -= 75;
-				int k = minimapInt1 + minimapInt2 & 0x7ff;
+				int k = cameraYawBase + minimapInt2 & 0x7ff;
 				int i1 = Texture.sineTable[k];
 				int j1 = Texture.cosineTable[k];
 				i1 = i1 * (minimapInt3 + 256) >> 8;
@@ -7457,7 +7457,7 @@ public class Game extends RSApplet {
 				if (flag1) {
 					stream.writeByte(i);
 					stream.writeByte(j);
-					stream.writeShortBigEndian(minimapInt1);
+					stream.writeShortBigEndian(cameraYawBase);
 					stream.writeByte(57);
 					stream.writeByte(minimapInt2);
 					stream.writeByte(minimapInt3);
@@ -8668,15 +8668,15 @@ public class Game extends RSApplet {
 		try {
 			int targetWorldX = myPlayer.x + anInt1278;
 			int targetWorldY = myPlayer.y + anInt1131;
-			if (anInt1014 - targetWorldX < -500 || anInt1014 - targetWorldX > 500 || anInt1015 - targetWorldY < -500 || anInt1015 - targetWorldY > 500) {
-				anInt1014 = targetWorldX;
-				anInt1015 = targetWorldY;
+			if (cameraFollowX - targetWorldX < -500 || cameraFollowX - targetWorldX > 500 || cameraFollowY - targetWorldY < -500 || cameraFollowY - targetWorldY > 500) {
+				cameraFollowX = targetWorldX;
+				cameraFollowY = targetWorldY;
 			}
-			if (anInt1014 != targetWorldX) {
-				anInt1014 += (targetWorldX - anInt1014) / 16;
+			if (cameraFollowX != targetWorldX) {
+				cameraFollowX += (targetWorldX - cameraFollowX) / 16;
 			}
-			if (anInt1015 != targetWorldY) {
-				anInt1015 += (targetWorldY - anInt1015) / 16;
+			if (cameraFollowY != targetWorldY) {
+				cameraFollowY += (targetWorldY - cameraFollowY) / 16;
 			}
 			if (super.keyArray[1] == 1) {
 				anInt1186 += (-24 - anInt1186) / 2;
@@ -8692,17 +8692,17 @@ public class Game extends RSApplet {
 			} else {
 				anInt1187 /= 2;
 			}
-			minimapInt1 = minimapInt1 + anInt1186 / 2 & 0x7ff;
-			anInt1184 += anInt1187 / 2;
-			if (anInt1184 < 128) {
-				anInt1184 = 128;
+			cameraYawBase = cameraYawBase + anInt1186 / 2 & 0x7ff;
+			cameraPitchBase += anInt1187 / 2;
+			if (cameraPitchBase < 128) {
+				cameraPitchBase = 128;
 			}
-			if (anInt1184 > 383) {
-				anInt1184 = 383;
+			if (cameraPitchBase > 383) {
+				cameraPitchBase = 383;
 			}
-			int cameraTileX = anInt1014 >> 7;
-			int cameraTileY = anInt1015 >> 7;
-			int centerGroundHeight = interpolatedGroundHeight(plane, anInt1015, anInt1014);
+			int cameraTileX = cameraFollowX >> 7;
+			int cameraTileY = cameraFollowY >> 7;
+			int centerGroundHeight = interpolatedGroundHeight(plane, cameraFollowY, cameraFollowX);
 			int maximumNearbyClearance = 0;
 			if (cameraTileX > 3 && cameraTileY > 3 && cameraTileX < 100 && cameraTileY < 100) {
 				for (int scanTileX = cameraTileX - 4; scanTileX <= cameraTileX + 4; scanTileX++) {
@@ -8747,15 +8747,15 @@ public class Game extends RSApplet {
 			if (targetCameraDistance < 32768) {
 				targetCameraDistance = 32768;
 			}
-			if (targetCameraDistance > anInt984) {
-				anInt984 += (targetCameraDistance - anInt984) / 24;
+			if (targetCameraDistance > cameraTerrainClearance) {
+				cameraTerrainClearance += (targetCameraDistance - cameraTerrainClearance) / 24;
 				return;
 			}
-			if (targetCameraDistance < anInt984) {
-				anInt984 += (targetCameraDistance - anInt984) / 80;
+			if (targetCameraDistance < cameraTerrainClearance) {
+				cameraTerrainClearance += (targetCameraDistance - cameraTerrainClearance) / 80;
 			}
 		} catch (Exception _ex) {
-			Signlink.reporterror("glfc_ex " + myPlayer.x + "," + myPlayer.y + "," + anInt1014 + "," + anInt1015 + "," + anInt1069 + "," + anInt1070 + "," + baseX + "," + baseY);
+			Signlink.reporterror("glfc_ex " + myPlayer.x + "," + myPlayer.y + "," + cameraFollowX + "," + cameraFollowY + "," + anInt1069 + "," + anInt1070 + "," + baseX + "," + baseY);
 			throw new RuntimeException("eek");
 		}
 	}
@@ -9483,16 +9483,16 @@ public class Game extends RSApplet {
 				}
 			}
 
-			compass.drawRotatedScanlines(33, minimapInt1, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
+			compass.drawRotatedScanlines(33, cameraYawBase, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
 			aRSImageProducer_1165.setAsDrawingArea();
 			Texture.lineOffsets = chatBoxAreaOffsets;
 			return;
 		}
-		int minimapRotation = minimapInt1 + minimapInt2 & 0x7ff;
+		int minimapRotation = cameraYawBase + minimapInt2 & 0x7ff;
 		int sourceCenterX = 48 + myPlayer.x / 32;
 		int sourceCenterY = 464 - myPlayer.y / 32;
 		minimapSprite.drawRotatedScanlines(151, minimapRotation, anIntArray1229, 256 + minimapInt3, anIntArray1052, sourceCenterY, 5, 25, 146, sourceCenterX);
-		compass.drawRotatedScanlines(33, minimapInt1, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
+		compass.drawRotatedScanlines(33, cameraYawBase, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
 		// Minimap icons (shops, quest etc)
 		for (int iconIndex = 0; iconIndex < mapFunctionIconCount; iconIndex++) {
 			int iconOffsetX = mapFunctionIconTileX[iconIndex] * 4 + 2 - myPlayer.x / 32;
@@ -10444,7 +10444,7 @@ public class Game extends RSApplet {
 	}
 
 	public void drawMinimapMarker(Sprite sprite, int offsetX, int offsetY) {
-		int rotation2048 = minimapInt1 + minimapInt2 & 0x7ff;
+		int rotation2048 = cameraYawBase + minimapInt2 & 0x7ff;
 		int distanceSquared = offsetX * offsetX + offsetY * offsetY;
 		if (distanceSquared > 6400) {
 			return;
@@ -10697,7 +10697,7 @@ public class Game extends RSApplet {
 			if (pktType == 107) {
 				aBoolean1160 = false;
 				for (int l = 0; l < 5; l++) {
-					aBooleanArray876[l] = false;
+					shakeChannelActive[l] = false;
 				}
 
 				pktType = -1;
@@ -11067,11 +11067,11 @@ public class Game extends RSApplet {
 				int k11 = inStream.readUnsignedByte();
 				int j17 = inStream.readUnsignedByte();
 				int k21 = inStream.readUnsignedByte();
-				aBooleanArray876[l3] = true;
-				anIntArray873[l3] = k11;
-				anIntArray1203[l3] = j17;
-				anIntArray928[l3] = k21;
-				anIntArray1030[l3] = 0;
+				shakeChannelActive[l3] = true;
+				shakeRandomAmplitude[l3] = k11;
+				shakeSineAmplitude[l3] = j17;
+				shakeSineSpeed[l3] = k21;
+				shakePhase[l3] = 0;
 				pktType = -1;
 				return true;
 			}
@@ -11840,16 +11840,16 @@ public class Game extends RSApplet {
 		updateProjectiles();
 		updateTransientGraphics();
 		if (!aBoolean1160) {
-			int cameraPitch = anInt1184;
-			if (anInt984 / 256 > cameraPitch) {
-				cameraPitch = anInt984 / 256;
+			int cameraPitch = cameraPitchBase;
+			if (cameraTerrainClearance / 256 > cameraPitch) {
+				cameraPitch = cameraTerrainClearance / 256;
 			}
-			if (aBooleanArray876[4] && anIntArray1203[4] + 128 > cameraPitch) {
-				cameraPitch = anIntArray1203[4] + 128;
+			if (shakeChannelActive[4] && shakeSineAmplitude[4] + 128 > cameraPitch) {
+				cameraPitch = shakeSineAmplitude[4] + 128;
 			}
-			int cameraYaw = minimapInt1 + anInt896 & 0x7ff;
+			int cameraYaw = cameraYawBase + cameraYawDrift & 0x7ff;
 			// Camera zoom control
-			setCameraPos(600 + cameraPitch * zoom, cameraPitch, anInt1014, interpolatedGroundHeight(plane, myPlayer.y, myPlayer.x) - 70, cameraYaw, anInt1015);
+			setCameraPos(600 + cameraPitch * zoom, cameraPitch, cameraFollowX, interpolatedGroundHeight(plane, myPlayer.y, myPlayer.x) - 70, cameraYaw, cameraFollowY);
 		}
 		int scenePlane;
 		if (!aBoolean1160) {
@@ -11863,8 +11863,8 @@ public class Game extends RSApplet {
 		int savedYCameraCurve = yCameraCurve;
 		int savedXCameraCurve = xCameraCurve;
 		for (int shakeChannel = 0; shakeChannel < 5; shakeChannel++) {
-			if (aBooleanArray876[shakeChannel]) {
-				int shakeOffset = (int) (Math.random() * (double) (anIntArray873[shakeChannel] * 2 + 1) - (double) anIntArray873[shakeChannel] + Math.sin((double) anIntArray1030[shakeChannel] * (double) anIntArray928[shakeChannel] / 100D) * (double) anIntArray1203[shakeChannel]);
+			if (shakeChannelActive[shakeChannel]) {
+				int shakeOffset = (int) (Math.random() * (double) (shakeRandomAmplitude[shakeChannel] * 2 + 1) - (double) shakeRandomAmplitude[shakeChannel] + Math.sin((double) shakePhase[shakeChannel] * (double) shakeSineSpeed[shakeChannel] / 100D) * (double) shakeSineAmplitude[shakeChannel]);
 				if (shakeChannel == 0) {
 					xCameraPos += shakeOffset;
 				}
@@ -12019,9 +12019,9 @@ public class Game extends RSApplet {
 		openInterfaceID = -1;
 		currentExp = new int[Skills.skillsCount];
 		aBoolean872 = false;
-		anIntArray873 = new int[5];
+		shakeRandomAmplitude = new int[5];
 		anInt874 = -1;
-		aBooleanArray876 = new boolean[5];
+		shakeChannelActive = new boolean[5];
 		drawFlames = false;
 		reportAbuseInput = "";
 		unknownInt10 = -1;
@@ -12041,7 +12041,7 @@ public class Game extends RSApplet {
 		ignoreListAsLongs = new long[100];
 		loadingError = false;
 		scrollShadowColor = 0x332d25;
-		anIntArray928 = new int[5];
+		shakeSineSpeed = new int[5];
 		anIntArrayArray929 = new int[104][104];
 		chatTypes = new int[100];
 		chatNames = new String[100];
@@ -12075,7 +12075,7 @@ public class Game extends RSApplet {
 		projectiles = new NodeList();
 		aBoolean1017 = false;
 		anInt1018 = -1;
-		anIntArray1030 = new int[5];
+		shakePhase = new int[5];
 		designerModelDirty = false;
 		mapFunctions = new Sprite[100];
 		dialogID = -1;
@@ -12125,11 +12125,11 @@ public class Game extends RSApplet {
 		genericLoadingError = false;
 		reportAbuseInterfaceID = -1;
 		pendingSceneChanges = new NodeList();
-		anInt1184 = 128;
+		cameraPitchBase = 128;
 		invOverlayInterfaceID = -1;
 		stream = Stream.acquire();
 		menuActionName = new String[500];
-		anIntArray1203 = new int[5];
+		shakeSineAmplitude = new int[5];
 		sound = new int[50];
 		anInt1210 = 2;
 		anInt1211 = 78;
@@ -12210,9 +12210,9 @@ public class Game extends RSApplet {
 	public Sprite mapFlag;
 	public Sprite mapMarker;
 	public boolean aBoolean872;
-	public final int[] anIntArray873;
+	public final int[] shakeRandomAmplitude;
 	public int anInt874;
-	public final boolean[] aBooleanArray876;
+	public final boolean[] shakeChannelActive;
 	public int weight;
 	public MouseDetection mouseDetection;
 	public volatile boolean drawFlames;
@@ -12229,7 +12229,7 @@ public class Game extends RSApplet {
 	public int maskUpdateCount;
 	public int[] maskUpdateIndices;
 	public Stream[] aStreamArray895s;
-	public int anInt896;
+	public int cameraYawDrift;
 	public int anInt897;
 	public int friendsCount;
 	public int anInt900;
@@ -12256,7 +12256,7 @@ public class Game extends RSApplet {
 	public final long[] ignoreListAsLongs;
 	public boolean loadingError;
 	public final int scrollShadowColor;
-	public final int[] anIntArray928;
+	public final int[] shakeSineSpeed;
 	public int[][] anIntArrayArray929;
 	public Sprite aClass30_Sub2_Sub1_Sub1_931;
 	public Sprite aClass30_Sub2_Sub1_Sub1_932;
@@ -12306,7 +12306,7 @@ public class Game extends RSApplet {
 	public final int[] anIntArray981;
 	public final int[] anIntArray982;
 	public final String[] aStringArray983;
-	public int anInt984;
+	public int cameraTerrainClearance;
 	public int minimapBuiltPlane;
 	public static int anInt986;
 	public Sprite[] hitMarks;
@@ -12332,8 +12332,8 @@ public class Game extends RSApplet {
 	public int anInt1010;
 	public int anInt1011;
 	public NodeList projectiles;
-	public int anInt1014;
-	public int anInt1015;
+	public int cameraFollowX;
+	public int cameraFollowY;
 	public int anInt1016;
 	public boolean aBoolean1017;
 	public int anInt1018;
@@ -12347,7 +12347,7 @@ public class Game extends RSApplet {
 	public Background backBase1;
 	public Background backBase2;
 	public Background backHmid1;
-	public final int[] anIntArray1030;
+	public final int[] shakePhase;
 	public boolean designerModelDirty;
 	public Sprite[] mapFunctions;
 	public int baseX;
@@ -12489,8 +12489,8 @@ public class Game extends RSApplet {
 	public int[] tabAreaOffsets;
 	public int[] chatBoxAreaOffsets;
 	public byte[][] regionTerrainData;
-	public int anInt1184;
-	public int minimapInt1;
+	public int cameraPitchBase;
+	public int cameraYawBase;
 	public int anInt1186;
 	public int anInt1187;
 	public static int anInt1188;
@@ -12506,7 +12506,7 @@ public class Game extends RSApplet {
 	public String[] menuActionName;
 	public Sprite aClass30_Sub2_Sub1_Sub1_1201;
 	public Sprite aClass30_Sub2_Sub1_Sub1_1202;
-	public final int[] anIntArray1203;
+	public final int[] shakeSineAmplitude;
 	static final int[] anIntArray1204 = {9104, 10275, 7595, 3610, 7975, 8526, 918, 38802, 24466, 10145, 58654, 5027, 1457, 16565, 34991, 25486};
 	public static boolean flagged;
 	public final int[] sound;

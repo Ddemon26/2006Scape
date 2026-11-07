@@ -124,21 +124,21 @@ public class MinimapDrawTest {
         Arrays.fill(map.pixels, 0x101010);
         int col = 48 + 250, row = 464 - 250;
         for (int dy = -1; dy <= 1; dy++) for (int dx = 9; dx <= 11; dx++) map.pixels[col + dx + (row + dy) * 512] = 0x00ff00;
-        g.minimapInt1 = 0; g.minimapInt2 = 0;
+        g.cameraYawBase = 0; g.minimapInt2 = 0;
         drawFresh();
         int[] a0 = scan(0x00ff00);
         assertTrue(a0[0] > 0 && a0[1] > 98 + 5);
-        g.minimapInt1 = 1024; g.minimapInt2 = 0;
+        g.cameraYawBase = 1024; g.minimapInt2 = 0;
         drawFresh();
         int[] half = scan(0x00ff00);
         assertTrue("half turn mirrors to the other side " + Arrays.toString(a0) + Arrays.toString(half), half[0] > 0 && half[1] < 98 - 5);
-        g.minimapInt1 = 600; g.minimapInt2 = 424;
+        g.cameraYawBase = 600; g.minimapInt2 = 424;
         drawFresh();
         assertArrayEquals("sum of the two angles", half, scan(0x00ff00));
-        g.minimapInt1 = 2000; g.minimapInt2 = 100;
+        g.cameraYawBase = 2000; g.minimapInt2 = 100;
         drawFresh();
         int[] saved = g.aRSImageProducer_1164.pixels.clone();
-        g.minimapInt1 = 52; g.minimapInt2 = 0;
+        g.cameraYawBase = 52; g.minimapInt2 = 0;
         drawFresh();
         assertArrayEquals("2100 & 0x7ff == 52", saved, g.aRSImageProducer_1164.pixels);
     }
