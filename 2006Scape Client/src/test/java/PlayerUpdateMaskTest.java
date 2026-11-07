@@ -39,10 +39,10 @@ public class PlayerUpdateMaskTest {
         Stream movement = packet(127, 126, 125, 124, 135, 0, 0, 137, 123);
         game.decodePlayerUpdateMask(0x400, 2, movement, player);
         assertEquals(9, movement.currentOffset);
-        assertEquals(1, player.anInt1543); assertEquals(2, player.anInt1545);
-        assertEquals(3, player.anInt1544); assertEquals(4, player.anInt1546);
-        assertEquals(107, player.anInt1547); assertEquals(109, player.anInt1548);
-        assertEquals(5, player.anInt1549); assertEquals(0, player.smallXYIndex);
+        assertEquals(1, player.forceMoveStartX); assertEquals(2, player.forceMoveStartY);
+        assertEquals(3, player.forceMoveEndX); assertEquals(4, player.forceMoveEndY);
+        assertEquals(107, player.forceMoveStartCycle); assertEquals(109, player.forceMoveEndCycle);
+        assertEquals(5, player.forceMoveDirection); assertEquals(0, player.smallXYIndex);
     }
 
     @Test public void graphicPackedWordsAndSentinelHaveDifferentEffects() throws Exception {
@@ -118,7 +118,7 @@ public class PlayerUpdateMaskTest {
     @Test public void faceCoordinatesAndTwoHitFormatsKeepDamageAndTypeDistinct() throws Exception {
         Game game = game(); Player player = new Player(); Game.loopCycle = 200;
         game.decodePlayerUpdateMask(2, 0, packet(129, 1, 45, 2), player);
-        assertEquals(257, player.anInt1538); assertEquals(557, player.anInt1539);
+        assertEquals(257, player.faceHalfTileX); assertEquals(557, player.faceHalfTileY);
         game.decodePlayerUpdateMask(0x20, 0, packet(11, 130, 253, 40), player);
         assertEquals(11, player.hitArray[0]); assertEquals(2, player.hitMarkTypes[0]);
         assertEquals(3, player.currentHealth); assertEquals(40, player.maxHealth);

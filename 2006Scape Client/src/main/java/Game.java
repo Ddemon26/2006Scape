@@ -1007,7 +1007,7 @@ public class Game extends RSApplet {
 			if (!npc.desc.interactable) {
 				uid += 0x80000000;
 			}
-			worldController.addEntity(plane, npc.facingDirection, interpolatedGroundHeight(plane, npc.y, npc.x), uid, npc.y, (npc.tileSize - 1) * 64 + 60, npc.x, npc, npc.aBoolean1541);
+			worldController.addEntity(plane, npc.facingDirection, interpolatedGroundHeight(plane, npc.y, npc.x), uid, npc.y, (npc.tileSize - 1) * 64 + 60, npc.x, npc, npc.animExtendByYaw);
 		}
 	}
 
@@ -1288,27 +1288,27 @@ public class Game extends RSApplet {
 		DrawingArea.drawHorizontalLine(topY + 14 + thumbOffset + thumbHeight, scrollShadowColor, 15, leftX + 1);
 	}
 
-	public void updateNPCs(Stream stream, int i) {
-		anInt839 = 0;
+	public void updateNPCs(Stream stream, int packetSize) {
+		removedEntityCount = 0;
 		maskUpdateCount = 0;
 		decodeExistingNpcMovement(stream);
-		addNewNpcs(i, stream);
+		addNewNpcs(packetSize, stream);
 		decodeNpcUpdateMasks(stream);
-		for (int k = 0; k < anInt839; k++) {
-			int l = anIntArray840[k];
-			if (npcArray[l].anInt1537 != loopCycle) {
-				npcArray[l].desc = null;
-				npcArray[l] = null;
+		for (int removalListIndex = 0; removalListIndex < removedEntityCount; removalListIndex++) {
+			int removedNpcIndex = removedEntityIndices[removalListIndex];
+			if (npcArray[removedNpcIndex].lastUpdateCycle != loopCycle) {
+				npcArray[removedNpcIndex].desc = null;
+				npcArray[removedNpcIndex] = null;
 			}
 		}
 
-		if (stream.currentOffset != i) {
-			Signlink.reporterror(myUsername + " size mismatch in getnpcpos - pos:" + stream.currentOffset + " psize:" + i);
+		if (stream.currentOffset != packetSize) {
+			Signlink.reporterror(myUsername + " size mismatch in getnpcpos - pos:" + stream.currentOffset + " psize:" + packetSize);
 			throw new RuntimeException("eek");
 		}
-		for (int i1 = 0; i1 < npcCount; i1++) {
-			if (npcArray[npcIndices[i1]] == null) {
-				Signlink.reporterror(myUsername + " null entry in npc list - pos:" + i1 + " size:" + npcCount);
+		for (int npcListIndex = 0; npcListIndex < npcCount; npcListIndex++) {
+			if (npcArray[npcIndices[npcListIndex]] == null) {
+				Signlink.reporterror(myUsername + " null entry in npc list - pos:" + npcListIndex + " size:" + npcCount);
 				throw new RuntimeException("eek");
 			}
 		}
@@ -2256,7 +2256,7 @@ public class Game extends RSApplet {
 			}
 			NPC npc = npcArray[npcIndex];
 			npcIndices[npcCount++] = npcIndex;
-			npc.anInt1537 = loopCycle;
+			npc.lastUpdateCycle = loopCycle;
 			int yOffset = stream.readBitsMsbFirst(5);
 			if (yOffset > 15) {
 				yOffset -= 32;
@@ -2337,7 +2337,7 @@ public class Game extends RSApplet {
 				anIntArrayArray929[tileX][tileY] = anInt1265;
 			}
 			player.groundHeight = interpolatedGroundHeight(plane, player.y, player.x);
-			worldController.addEntity(plane, player.facingDirection, player.groundHeight, uid, player.y, 60, player.x, player, player.aBoolean1541);
+			worldController.addEntity(plane, player.facingDirection, player.groundHeight, uid, player.y, 60, player.x, player, player.animExtendByYaw);
 		}
 
 	}
@@ -2990,8 +2990,8 @@ public class Game extends RSApplet {
 	}
 
 	public void mainGameProcessor() {
-		if (anInt1104 > 1) {
-			anInt1104--;
+		if (systemUpdateCycles > 1) {
+			systemUpdateCycles--;
 		}
 		if (anInt1011 > 0) {
 			anInt1011--;
@@ -3106,15 +3106,15 @@ public class Game extends RSApplet {
 			stream.writeEncryptedOpcode(241);
 			stream.writeIntBigEndian((l5 << 20) + (j5 << 19) + k4);
 		}
-		if (anInt1016 > 0) {
-			anInt1016--;
+		if (cameraSendCooldown > 0) {
+			cameraSendCooldown--;
 		}
 		if (super.keyArray[1] == 1 || super.keyArray[2] == 1 || super.keyArray[3] == 1 || super.keyArray[4] == 1) {
-			aBoolean1017 = true;
+			cameraMovePending = true;
 		}
-		if (aBoolean1017 && anInt1016 <= 0) {
-			anInt1016 = 20;
-			aBoolean1017 = false;
+		if (cameraMovePending && cameraSendCooldown <= 0) {
+			cameraSendCooldown = 20;
+			cameraMovePending = false;
 			stream.writeEncryptedOpcode(86);
 			stream.writeShortBigEndian(cameraPitchBase);
 			stream.writeShortBigEndianAdd128(cameraYawBase);
@@ -3262,37 +3262,37 @@ public class Game extends RSApplet {
 			super.idleTime -= 500;
 			stream.writeEncryptedOpcode(202);
 		}*/
-		anInt988++;
-		if (anInt988 > 500) {
-			anInt988 = 0;
-			int l1 = (int) (Math.random() * 8D);
-			if ((l1 & 1) == 1) {
-				anInt1278 += anInt1279;
+		cameraDriftTimer++;
+		if (cameraDriftTimer > 500) {
+			cameraDriftTimer = 0;
+			int driftAxisMask = (int) (Math.random() * 8D);
+			if ((driftAxisMask & 1) == 1) {
+				cameraDriftX += cameraDriftXStep;
 			}
-			if ((l1 & 2) == 2) {
-				anInt1131 += anInt1132;
+			if ((driftAxisMask & 2) == 2) {
+				cameraDriftY += cameraDriftYStep;
 			}
-			if ((l1 & 4) == 4) {
-				cameraYawDrift += anInt897;
+			if ((driftAxisMask & 4) == 4) {
+				cameraYawDrift += cameraYawDriftStep;
 			}
 		}
-		if (anInt1278 < -50) {
-			anInt1279 = 2;
+		if (cameraDriftX < -50) {
+			cameraDriftXStep = 2;
 		}
-		if (anInt1278 > 50) {
-			anInt1279 = -2;
+		if (cameraDriftX > 50) {
+			cameraDriftXStep = -2;
 		}
-		if (anInt1131 < -55) {
-			anInt1132 = 2;
+		if (cameraDriftY < -55) {
+			cameraDriftYStep = 2;
 		}
-		if (anInt1131 > 55) {
-			anInt1132 = -2;
+		if (cameraDriftY > 55) {
+			cameraDriftYStep = -2;
 		}
 		if (cameraYawDrift < -40) {
-			anInt897 = 1;
+			cameraYawDriftStep = 1;
 		}
 		if (cameraYawDrift > 40) {
-			anInt897 = -1;
+			cameraYawDriftStep = -1;
 		}
 		anInt1254++;
 		if (anInt1254 > 500) {
@@ -4806,7 +4806,7 @@ public class Game extends RSApplet {
 		playerIndices = null;
 		maskUpdateIndices = null;
 		aStreamArray895s = null;
-		anIntArray840 = null;
+		removedEntityIndices = null;
 		npcArray = null;
 		npcIndices = null;
 		groundArray = null;
@@ -5588,56 +5588,56 @@ public class Game extends RSApplet {
 			return;
 		}
 		TextDrawingArea textDrawingArea = aTextDrawingArea_1271;
-		int i = 0;
-		if (anInt1104 != 0) {
-			i = 1;
+		int splitRow = 0;
+		if (systemUpdateCycles != 0) {
+			splitRow = 1;
 		}
-		for (int j = 0; j < 100; j++) {
-			if (chatMessages[j] != null) {
-				int k = chatTypes[j];
-				String s = chatNames[j];
-				byte byte1 = 0;
-				if (s != null && s.startsWith("@cr1@")) {
-					s = s.substring(5);
-					byte1 = 1;
+		for (int messageSlot = 0; messageSlot < 100; messageSlot++) {
+			if (chatMessages[messageSlot] != null) {
+				int chatType = chatTypes[messageSlot];
+				String senderName = chatNames[messageSlot];
+				byte crownIcon = 0;
+				if (senderName != null && senderName.startsWith("@cr1@")) {
+					senderName = senderName.substring(5);
+					crownIcon = 1;
 				}
-				if (s != null && s.startsWith("@cr2@")) {
-					s = s.substring(5);
-					byte1 = 2;
+				if (senderName != null && senderName.startsWith("@cr2@")) {
+					senderName = senderName.substring(5);
+					crownIcon = 2;
 				}
-				if ((k == 3 || k == 7) && (k == 7 || privateChatMode == 0 || privateChatMode == 1 && isFriendOrSelf(s))) {
-					int l = 329 - i * 13;
-					int k1 = 4;
-					textDrawingArea.drawLiteralText(0, "From", l, k1);
-					textDrawingArea.drawLiteralText(0x00ffff, "From", l - 1, k1);
-					k1 += textDrawingArea.measureTaggedTextWidth("From ");
-					if (byte1 == 1) {
-						modIcons[0].drawNonzeroIndexed(k1, l - 12);
-						k1 += 14;
+				if ((chatType == 3 || chatType == 7) && (chatType == 7 || privateChatMode == 0 || privateChatMode == 1 && isFriendOrSelf(senderName))) {
+					int rowBaselineY = 329 - splitRow * 13;
+					int textX = 4;
+					textDrawingArea.drawLiteralText(0, "From", rowBaselineY, textX);
+					textDrawingArea.drawLiteralText(0x00ffff, "From", rowBaselineY - 1, textX);
+					textX += textDrawingArea.measureTaggedTextWidth("From ");
+					if (crownIcon == 1) {
+						modIcons[0].drawNonzeroIndexed(textX, rowBaselineY - 12);
+						textX += 14;
 					}
-					if (byte1 == 2) {
-						modIcons[1].drawNonzeroIndexed(k1, l - 12);
-						k1 += 14;
+					if (crownIcon == 2) {
+						modIcons[1].drawNonzeroIndexed(textX, rowBaselineY - 12);
+						textX += 14;
 					}
-					textDrawingArea.drawLiteralText(0, s + ": " + chatMessages[j], l, k1);
-					textDrawingArea.drawLiteralText(0x00ffff, s + ": " + chatMessages[j], l - 1, k1);
-					if (++i >= 5) {
+					textDrawingArea.drawLiteralText(0, senderName + ": " + chatMessages[messageSlot], rowBaselineY, textX);
+					textDrawingArea.drawLiteralText(0x00ffff, senderName + ": " + chatMessages[messageSlot], rowBaselineY - 1, textX);
+					if (++splitRow >= 5) {
 						return;
 					}
 				}
-				if (k == 5 && privateChatMode < 2) {
-					int i1 = 329 - i * 13;
-					textDrawingArea.drawLiteralText(0, chatMessages[j], i1, 4);
-					textDrawingArea.drawLiteralText(0x00ffff, chatMessages[j], i1 - 1, 4);
-					if (++i >= 5) {
+				if (chatType == 5 && privateChatMode < 2) {
+					int rowBaselineY = 329 - splitRow * 13;
+					textDrawingArea.drawLiteralText(0, chatMessages[messageSlot], rowBaselineY, 4);
+					textDrawingArea.drawLiteralText(0x00ffff, chatMessages[messageSlot], rowBaselineY - 1, 4);
+					if (++splitRow >= 5) {
 						return;
 					}
 				}
-				if (k == 6 && privateChatMode < 2) {
-					int j1 = 329 - i * 13;
-					textDrawingArea.drawLiteralText(0, "To " + s + ": " + chatMessages[j], j1, 4);
-					textDrawingArea.drawLiteralText(0x00ffff, "To " + s + ": " + chatMessages[j], j1 - 1, 4);
-					if (++i >= 5) {
+				if (chatType == 6 && privateChatMode < 2) {
+					int rowBaselineY = 329 - splitRow * 13;
+					textDrawingArea.drawLiteralText(0, "To " + senderName + ": " + chatMessages[messageSlot], rowBaselineY, 4);
+					textDrawingArea.drawLiteralText(0x00ffff, "To " + senderName + ": " + chatMessages[messageSlot], rowBaselineY - 1, 4);
+					if (++splitRow >= 5) {
 						return;
 					}
 				}
@@ -6111,7 +6111,7 @@ public class Game extends RSApplet {
 				prevPktType2 = -1;
 				pktSize = 0;
 				anInt1009 = 0;
-				anInt1104 = 0;
+				systemUpdateCycles = 0;
 				anInt1011 = 0;
 				anInt855 = 0;
 				menuActionRow = 0;
@@ -6125,8 +6125,8 @@ public class Game extends RSApplet {
 				spellSelected = 0;
 				loadingStage = 0;
 				currentSound = 0;
-				anInt1278 = (int) (Math.random() * 100D) - 50;
-				anInt1131 = (int) (Math.random() * 110D) - 55;
+				cameraDriftX = (int) (Math.random() * 100D) - 50;
+				cameraDriftY = (int) (Math.random() * 110D) - 55;
 				cameraYawDrift = (int) (Math.random() * 80D) - 40;
 				minimapInt2 = (int) (Math.random() * 120D) - 60;
 				minimapInt3 = (int) (Math.random() * 30D) - 20;
@@ -6268,7 +6268,7 @@ public class Game extends RSApplet {
 				prevPktType2 = -1;
 				pktSize = 0;
 				anInt1009 = 0;
-				anInt1104 = 0;
+				systemUpdateCycles = 0;
 				menuActionRow = 0;
 				menuOpen = false;
 				aLong824 = System.currentTimeMillis();
@@ -6591,18 +6591,18 @@ public class Game extends RSApplet {
 						npc.animFrame = 0;
 						npc.animFrameTimer = 0;
 						npc.animationDelay = animationDelay;
-						npc.anInt1530 = 0;
+						npc.animLoopCount = 0;
 					}
 					if (replayMode == 2) {
-						npc.anInt1530 = 0;
+						npc.animLoopCount = 0;
 					}
 				} else if (animationId == -1 || npc.anim == -1 || Animation.anims[animationId].priority >= Animation.anims[npc.anim].priority) {
 					npc.anim = animationId;
 					npc.animFrame = 0;
 					npc.animFrameTimer = 0;
 					npc.animationDelay = animationDelay;
-					npc.anInt1530 = 0;
-					npc.anInt1542 = npc.smallXYIndex;
+					npc.animLoopCount = 0;
+					npc.stepsQueuedBeforeAnimation = npc.smallXYIndex;
 				}
 			}
 			if ((mask & 8) != 0) {
@@ -6656,8 +6656,8 @@ public class Game extends RSApplet {
 				npc.idleAnimationId = npc.desc.idleAnimationId;
 			}
 			if ((mask & 4) != 0) {
-				npc.anInt1538 = packet.readUnsignedShortLittleEndian();
-				npc.anInt1539 = packet.readUnsignedShortLittleEndian();
+				npc.faceHalfTileX = packet.readUnsignedShortLittleEndian();
+				npc.faceHalfTileY = packet.readUnsignedShortLittleEndian();
 			}
 		}
 	}
@@ -7419,7 +7419,7 @@ public class Game extends RSApplet {
 			}
 			playerIndices[playerCount++] = playerIndex;
 			Player player = playerArray[playerIndex];
-			player.anInt1537 = loopCycle;
+			player.lastUpdateCycle = loopCycle;
 			int needsUpdate = stream.readBitsMsbFirst(1);
 			if (needsUpdate == 1) {
 				maskUpdateIndices[maskUpdateCount++] = playerIndex;
@@ -7543,24 +7543,24 @@ public class Game extends RSApplet {
 		if (entity.x < 128 || entity.y < 128 || entity.x >= 13184 || entity.y >= 13184) {
 			entity.anim = -1;
 			entity.spotAnimId = -1;
-			entity.anInt1547 = 0;
-			entity.anInt1548 = 0;
+			entity.forceMoveStartCycle = 0;
+			entity.forceMoveEndCycle = 0;
 			entity.x = entity.smallX[0] * 128 + entity.tileSize * 64;
 			entity.y = entity.smallY[0] * 128 + entity.tileSize * 64;
-			entity.method446();
+			entity.resetPath();
 		}
 		if (entity == myPlayer && (entity.x < 1536 || entity.y < 1536 || entity.x >= 11776 || entity.y >= 11776)) {
 			entity.anim = -1;
 			entity.spotAnimId = -1;
-			entity.anInt1547 = 0;
-			entity.anInt1548 = 0;
+			entity.forceMoveStartCycle = 0;
+			entity.forceMoveEndCycle = 0;
 			entity.x = entity.smallX[0] * 128 + entity.tileSize * 64;
 			entity.y = entity.smallY[0] * 128 + entity.tileSize * 64;
-			entity.method446();
+			entity.resetPath();
 		}
-		if (entity.anInt1547 > loopCycle) {
+		if (entity.forceMoveStartCycle > loopCycle) {
 			advanceEntityToForcedMovementStart(entity);
-		} else if (entity.anInt1548 >= loopCycle) {
+		} else if (entity.forceMoveEndCycle >= loopCycle) {
 			advanceEntityThroughForcedMovement(entity);
 		} else {
 			advanceEntityAlongWalkingPath(entity);
@@ -7570,48 +7570,48 @@ public class Game extends RSApplet {
 	}
 
 	public void advanceEntityToForcedMovementStart(Entity entity) {
-		int ticksUntilMovementStart = entity.anInt1547 - loopCycle;
-		int movementStartX = entity.anInt1543 * 128 + entity.tileSize * 64;
-		int movementStartY = entity.anInt1545 * 128 + entity.tileSize * 64;
+		int ticksUntilMovementStart = entity.forceMoveStartCycle - loopCycle;
+		int movementStartX = entity.forceMoveStartX * 128 + entity.tileSize * 64;
+		int movementStartY = entity.forceMoveStartY * 128 + entity.tileSize * 64;
 		entity.x += (movementStartX - entity.x) / ticksUntilMovementStart;
 		entity.y += (movementStartY - entity.y) / ticksUntilMovementStart;
 		entity.deferredMovementTicks = 0;
-		if (entity.anInt1549 == 0) {
+		if (entity.forceMoveDirection == 0) {
 			entity.turnDirection = 1024;
 		}
-		if (entity.anInt1549 == 1) {
+		if (entity.forceMoveDirection == 1) {
 			entity.turnDirection = 1536;
 		}
-		if (entity.anInt1549 == 2) {
+		if (entity.forceMoveDirection == 2) {
 			entity.turnDirection = 0;
 		}
-		if (entity.anInt1549 == 3) {
+		if (entity.forceMoveDirection == 3) {
 			entity.turnDirection = 512;
 		}
 	}
 
 	public void advanceEntityThroughForcedMovement(Entity entity) {
-		if (entity.anInt1548 == loopCycle || entity.anim == -1 || entity.animationDelay != 0 || entity.animFrameTimer + 1 > Animation.anims[entity.anim].getFrameDelay(entity.animFrame)) {
-			int movementDurationTicks = entity.anInt1548 - entity.anInt1547;
-			int elapsedMovementTicks = loopCycle - entity.anInt1547;
-			int movementStartX = entity.anInt1543 * 128 + entity.tileSize * 64;
-			int movementStartY = entity.anInt1545 * 128 + entity.tileSize * 64;
-			int movementEndX = entity.anInt1544 * 128 + entity.tileSize * 64;
-			int movementEndY = entity.anInt1546 * 128 + entity.tileSize * 64;
+		if (entity.forceMoveEndCycle == loopCycle || entity.anim == -1 || entity.animationDelay != 0 || entity.animFrameTimer + 1 > Animation.anims[entity.anim].getFrameDelay(entity.animFrame)) {
+			int movementDurationTicks = entity.forceMoveEndCycle - entity.forceMoveStartCycle;
+			int elapsedMovementTicks = loopCycle - entity.forceMoveStartCycle;
+			int movementStartX = entity.forceMoveStartX * 128 + entity.tileSize * 64;
+			int movementStartY = entity.forceMoveStartY * 128 + entity.tileSize * 64;
+			int movementEndX = entity.forceMoveEndX * 128 + entity.tileSize * 64;
+			int movementEndY = entity.forceMoveEndY * 128 + entity.tileSize * 64;
 			entity.x = (movementStartX * (movementDurationTicks - elapsedMovementTicks) + movementEndX * elapsedMovementTicks) / movementDurationTicks;
 			entity.y = (movementStartY * (movementDurationTicks - elapsedMovementTicks) + movementEndY * elapsedMovementTicks) / movementDurationTicks;
 		}
 		entity.deferredMovementTicks = 0;
-		if (entity.anInt1549 == 0) {
+		if (entity.forceMoveDirection == 0) {
 			entity.turnDirection = 1024;
 		}
-		if (entity.anInt1549 == 1) {
+		if (entity.forceMoveDirection == 1) {
 			entity.turnDirection = 1536;
 		}
-		if (entity.anInt1549 == 2) {
+		if (entity.forceMoveDirection == 2) {
 			entity.turnDirection = 0;
 		}
-		if (entity.anInt1549 == 3) {
+		if (entity.forceMoveDirection == 3) {
 			entity.turnDirection = 512;
 		}
 		entity.facingDirection = entity.turnDirection;
@@ -7625,11 +7625,11 @@ public class Game extends RSApplet {
 		}
 		if (entity.anim != -1 && entity.animationDelay == 0) {
 			Animation animation = Animation.anims[entity.anim];
-			if (entity.anInt1542 > 0 && animation.movingPrecedence == 0) {
+			if (entity.stepsQueuedBeforeAnimation > 0 && animation.movingPrecedence == 0) {
 				entity.deferredMovementTicks++;
 				return;
 			}
-			if (entity.anInt1542 <= 0 && animation.idlePrecedence == 0) {
+			if (entity.stepsQueuedBeforeAnimation <= 0 && animation.idlePrecedence == 0) {
 				entity.deferredMovementTicks++;
 				return;
 			}
@@ -7694,7 +7694,7 @@ public class Game extends RSApplet {
 			movementStepSize = 8;
 			entity.deferredMovementTicks--;
 		}
-		if (entity.aBooleanArray1553[entity.smallXYIndex - 1]) {
+		if (entity.pathRunFlags[entity.smallXYIndex - 1]) {
 			movementStepSize <<= 1;
 		}
 		if (movementStepSize >= 8 && entity.movementAnimationId == entity.walkAnimationId && entity.runAnimationId != -1) {
@@ -7724,8 +7724,8 @@ public class Game extends RSApplet {
 		}
 		if (entity.x == targetX && entity.y == targetY) {
 			entity.smallXYIndex--;
-			if (entity.anInt1542 > 0) {
-				entity.anInt1542--;
+			if (entity.stepsQueuedBeforeAnimation > 0) {
+				entity.stepsQueuedBeforeAnimation--;
 			}
 		}
 	}
@@ -7758,14 +7758,14 @@ public class Game extends RSApplet {
 				}
 			}
 		}
-		if ((entity.anInt1538 != 0 || entity.anInt1539 != 0) && (entity.smallXYIndex == 0 || entity.deferredMovementTicks > 0)) {
-			int faceTileDeltaX = entity.x - (entity.anInt1538 - baseX - baseX) * 64;
-			int faceTileDeltaY = entity.y - (entity.anInt1539 - baseY - baseY) * 64;
+		if ((entity.faceHalfTileX != 0 || entity.faceHalfTileY != 0) && (entity.smallXYIndex == 0 || entity.deferredMovementTicks > 0)) {
+			int faceTileDeltaX = entity.x - (entity.faceHalfTileX - baseX - baseX) * 64;
+			int faceTileDeltaY = entity.y - (entity.faceHalfTileY - baseY - baseY) * 64;
 			if (faceTileDeltaX != 0 || faceTileDeltaY != 0) {
 				entity.turnDirection = (int) (Math.atan2(faceTileDeltaX, faceTileDeltaY) * 325.94900000000001D) & 0x7ff;
 			}
-			entity.anInt1538 = 0;
-			entity.anInt1539 = 0;
+			entity.faceHalfTileX = 0;
+			entity.faceHalfTileY = 0;
 		}
 		int turnDelta = entity.turnDirection - entity.facingDirection & 0x7ff;
 		if (turnDelta != 0) {
@@ -7788,7 +7788,7 @@ public class Game extends RSApplet {
 	}
 
 	public void updateEntityAnimations(Entity entity) {
-		entity.aBoolean1541 = false;
+		entity.animExtendByYaw = false;
 		if (entity.movementAnimationId != -1) {
 			Animation movementAnimation = Animation.anims[entity.movementAnimationId];
 			entity.movementFrameTimer++;
@@ -7816,7 +7816,7 @@ public class Game extends RSApplet {
 		}
 		if (entity.anim != -1 && entity.animationDelay <= 1) {
 			Animation actionDelayAnimation = Animation.anims[entity.anim];
-			if (actionDelayAnimation.movingPrecedence == 1 && entity.anInt1542 > 0 && entity.anInt1547 <= loopCycle && entity.anInt1548 < loopCycle) {
+			if (actionDelayAnimation.movingPrecedence == 1 && entity.stepsQueuedBeforeAnimation > 0 && entity.forceMoveStartCycle <= loopCycle && entity.forceMoveEndCycle < loopCycle) {
 				entity.animationDelay = 1;
 				return;
 			}
@@ -7829,15 +7829,15 @@ public class Game extends RSApplet {
 
 			if (entity.animFrame >= actionAnimation.frameCount) {
 				entity.animFrame -= actionAnimation.loopBackFrames;
-				entity.anInt1530++;
-				if (entity.anInt1530 >= actionAnimation.maxLoops) {
+				entity.animLoopCount++;
+				if (entity.animLoopCount >= actionAnimation.maxLoops) {
 					entity.anim = -1;
 				}
 				if (entity.animFrame < 0 || entity.animFrame >= actionAnimation.frameCount) {
 					entity.anim = -1;
 				}
 			}
-			entity.aBoolean1541 = actionAnimation.extendByYaw;
+			entity.animExtendByYaw = actionAnimation.extendByYaw;
 		}
 		if (entity.animationDelay > 0) {
 			entity.animationDelay--;
@@ -8522,14 +8522,14 @@ public class Game extends RSApplet {
 
 	public void decodePlayerUpdateMask(int updateMask, int playerIndex, Stream stream, Player player) {
 		if ((updateMask & 0x400) != 0) {
-			player.anInt1543 = stream.readUnsignedByte128MinusValue();
-			player.anInt1545 = stream.readUnsignedByte128MinusValue();
-			player.anInt1544 = stream.readUnsignedByte128MinusValue();
-			player.anInt1546 = stream.readUnsignedByte128MinusValue();
-			player.anInt1547 = stream.readUnsignedShortLittleEndianSubtract128() + loopCycle;
-			player.anInt1548 = stream.readUnsignedShortBigEndianSubtract128() + loopCycle;
-			player.anInt1549 = stream.readUnsignedByte128MinusValue();
-			player.method446();
+			player.forceMoveStartX = stream.readUnsignedByte128MinusValue();
+			player.forceMoveStartY = stream.readUnsignedByte128MinusValue();
+			player.forceMoveEndX = stream.readUnsignedByte128MinusValue();
+			player.forceMoveEndY = stream.readUnsignedByte128MinusValue();
+			player.forceMoveStartCycle = stream.readUnsignedShortLittleEndianSubtract128() + loopCycle;
+			player.forceMoveEndCycle = stream.readUnsignedShortBigEndianSubtract128() + loopCycle;
+			player.forceMoveDirection = stream.readUnsignedByte128MinusValue();
+			player.resetPath();
 		}
 		if ((updateMask & 0x100) != 0) {
 			player.spotAnimId = stream.readUnsignedShortLittleEndian();
@@ -8559,18 +8559,18 @@ public class Game extends RSApplet {
 					player.animFrame = 0;
 					player.animFrameTimer = 0;
 					player.animationDelay = animationDelay;
-					player.anInt1530 = 0;
+					player.animLoopCount = 0;
 				}
 				if (replayMode == 2) {
-					player.anInt1530 = 0;
+					player.animLoopCount = 0;
 				}
 			} else if (animationId == -1 || player.anim == -1 || Animation.anims[animationId].priority >= Animation.anims[player.anim].priority) {
 				player.anim = animationId;
 				player.animFrame = 0;
 				player.animFrameTimer = 0;
 				player.animationDelay = animationDelay;
-				player.anInt1530 = 0;
-				player.anInt1542 = player.smallXYIndex;
+				player.animLoopCount = 0;
+				player.stepsQueuedBeforeAnimation = player.smallXYIndex;
 			}
 		}
 		if ((updateMask & 4) != 0) {
@@ -8647,8 +8647,8 @@ public class Game extends RSApplet {
 			player.updatePlayer(appearanceStream);
 		}
 		if ((updateMask & 2) != 0) {
-			player.anInt1538 = stream.readUnsignedShortLittleEndianSubtract128();
-			player.anInt1539 = stream.readUnsignedShortLittleEndian();
+			player.faceHalfTileX = stream.readUnsignedShortLittleEndianSubtract128();
+			player.faceHalfTileY = stream.readUnsignedShortLittleEndian();
 		}
 		if ((updateMask & 0x20) != 0) {
 			int hitDamage = stream.readUnsignedByte();
@@ -8670,8 +8670,8 @@ public class Game extends RSApplet {
 
 	public void updateCameraFollow() {
 		try {
-			int targetWorldX = myPlayer.x + anInt1278;
-			int targetWorldY = myPlayer.y + anInt1131;
+			int targetWorldX = myPlayer.x + cameraDriftX;
+			int targetWorldY = myPlayer.y + cameraDriftY;
 			if (cameraFollowX - targetWorldX < -500 || cameraFollowX - targetWorldX > 500 || cameraFollowY - targetWorldY < -500 || cameraFollowY - targetWorldY > 500) {
 				cameraFollowX = targetWorldX;
 				cameraFollowY = targetWorldY;
@@ -8683,21 +8683,21 @@ public class Game extends RSApplet {
 				cameraFollowY += (targetWorldY - cameraFollowY) / 16;
 			}
 			if (super.keyArray[1] == 1) {
-				anInt1186 += (-24 - anInt1186) / 2;
+				cameraYawVelocity += (-24 - cameraYawVelocity) / 2;
 			} else if (super.keyArray[2] == 1) {
-				anInt1186 += (24 - anInt1186) / 2;
+				cameraYawVelocity += (24 - cameraYawVelocity) / 2;
 			} else {
-				anInt1186 /= 2;
+				cameraYawVelocity /= 2;
 			}
 			if (super.keyArray[3] == 1) {
-				anInt1187 += (12 - anInt1187) / 2;
+				cameraPitchVelocity += (12 - cameraPitchVelocity) / 2;
 			} else if (super.keyArray[4] == 1) {
-				anInt1187 += (-12 - anInt1187) / 2;
+				cameraPitchVelocity += (-12 - cameraPitchVelocity) / 2;
 			} else {
-				anInt1187 /= 2;
+				cameraPitchVelocity /= 2;
 			}
-			cameraYawBase = cameraYawBase + anInt1186 / 2 & 0x7ff;
-			cameraPitchBase += anInt1187 / 2;
+			cameraYawBase = cameraYawBase + cameraYawVelocity / 2 & 0x7ff;
+			cameraPitchBase += cameraPitchVelocity / 2;
 			if (cameraPitchBase < 128) {
 				cameraPitchBase = 128;
 			}
@@ -8859,9 +8859,9 @@ public class Game extends RSApplet {
 		if (anInt1055 == 1) {
 			multiOverlay.drawSprite(472, 296);
 		}
-		if (anInt1104 != 0) {
+		if (systemUpdateCycles != 0) {
 			String message = "";
-			int seconds = anInt1104 / 50;
+			int seconds = systemUpdateCycles / 50;
 			int minutes = seconds / 60;
 			int hours = minutes / 60;
 			seconds %= 60;
@@ -8903,9 +8903,9 @@ public class Game extends RSApplet {
 			chatTextDrawingArea.drawRightAlignedTaggedText(true, debugX + debugWidth - 4, RSColors.YELLOW, message, debugY);
 
 			// Not sure what this is for
-			anInt849++;
-			if (anInt849 > 75) {
-				anInt849 = 0;
+			systemUpdateNoticeDrawCount++;
+			if (systemUpdateNoticeDrawCount > 75) {
+				systemUpdateNoticeDrawCount = 0;
 				stream.writeEncryptedOpcode(148);
 			}
 		}
@@ -9635,49 +9635,49 @@ public class Game extends RSApplet {
 		if (splitpublicChat == 0) {
 			return;
 		}
-		int i = 0;
-		if (anInt1104 != 0) {
-			i = 1;
+		int splitRow = 0;
+		if (systemUpdateCycles != 0) {
+			splitRow = 1;
 		}
-		for (int j = 0; j < 100; j++) {
-			if (chatMessages[j] != null) {
-				int k = chatTypes[j];
-				String s = chatNames[j];
-				if (s != null && s.startsWith("@cr1@")) {
-					s = s.substring(5);
+		for (int messageSlot = 0; messageSlot < 100; messageSlot++) {
+			if (chatMessages[messageSlot] != null) {
+				int chatType = chatTypes[messageSlot];
+				String senderName = chatNames[messageSlot];
+				if (senderName != null && senderName.startsWith("@cr1@")) {
+					senderName = senderName.substring(5);
 				}
-				if (s != null && s.startsWith("@cr2@")) {
-					s = s.substring(5);
+				if (senderName != null && senderName.startsWith("@cr2@")) {
+					senderName = senderName.substring(5);
 				}
-				if ((k == 3 || k == 7) && (k == 7 || privateChatMode == 0 || privateChatMode == 1 && isFriendOrSelf(s))) {
-					int l = 329 - i * 13;
-					if (super.mouseX > 4 && super.mouseY - 4 > l - 10 && super.mouseY - 4 <= l + 3) {
-						int i1 = aTextDrawingArea_1271.measureTaggedTextWidth("From:  " + s + chatMessages[j]) + 25;
-						if (i1 > 450) {
-							i1 = 450;
+				if ((chatType == 3 || chatType == 7) && (chatType == 7 || privateChatMode == 0 || privateChatMode == 1 && isFriendOrSelf(senderName))) {
+					int rowBaselineY = 329 - splitRow * 13;
+					if (super.mouseX > 4 && super.mouseY - 4 > rowBaselineY - 10 && super.mouseY - 4 <= rowBaselineY + 3) {
+						int hitWidth = aTextDrawingArea_1271.measureTaggedTextWidth("From:  " + senderName + chatMessages[messageSlot]) + 25;
+						if (hitWidth > 450) {
+							hitWidth = 450;
 						}
-						if (super.mouseX < 4 + i1) {
+						if (super.mouseX < 4 + hitWidth) {
 							if (myPrivilege >= 1 && myPrivilege <= 3) {
-								menuActionName[menuActionRow] = "Report abuse @whi@" + s;
+								menuActionName[menuActionRow] = "Report abuse @whi@" + senderName;
 								menuActionID[menuActionRow] = 2606;
 								menuActionRow++;
 							}
-							menuActionName[menuActionRow] = "Add ignore @whi@" + s;
+							menuActionName[menuActionRow] = "Add ignore @whi@" + senderName;
 							menuActionID[menuActionRow] = 2042;
 							menuActionRow++;
-							menuActionName[menuActionRow] = "Reply to @whi@" + s;
+							menuActionName[menuActionRow] = "Reply to @whi@" + senderName;
 							menuActionID[menuActionRow] = 2639;
 							menuActionRow++;
-							menuActionName[menuActionRow] = "Add friend @whi@" + s;
+							menuActionName[menuActionRow] = "Add friend @whi@" + senderName;
 							menuActionID[menuActionRow] = 2337;
 							menuActionRow++;
 						}
 					}
-					if (++i >= 5) {
+					if (++splitRow >= 5) {
 						return;
 					}
 				}
-				if ((k == 5 || k == 6) && privateChatMode < 2 && ++i >= 5) {
+				if ((chatType == 5 || chatType == 6) && privateChatMode < 2 && ++splitRow >= 5) {
 					return;
 				}
 			}
@@ -9847,7 +9847,7 @@ public class Game extends RSApplet {
 		int reportedPlayerCount = stream.readBitsMsbFirst(8);
 		if (reportedPlayerCount < playerCount) {
 			for (int removedTailIndex = reportedPlayerCount; removedTailIndex < playerCount; removedTailIndex++) {
-				anIntArray840[anInt839++] = playerIndices[removedTailIndex];
+				removedEntityIndices[removedEntityCount++] = playerIndices[removedTailIndex];
 			}
 
 		}
@@ -9862,16 +9862,16 @@ public class Game extends RSApplet {
 			int updateFlag = stream.readBitsMsbFirst(1);
 			if (updateFlag == 0) {
 				playerIndices[playerCount++] = playerIndex;
-				player.anInt1537 = loopCycle;
+				player.lastUpdateCycle = loopCycle;
 			} else {
 				int movementType = stream.readBitsMsbFirst(2);
 				if (movementType == 0) {
 					playerIndices[playerCount++] = playerIndex;
-					player.anInt1537 = loopCycle;
+					player.lastUpdateCycle = loopCycle;
 					maskUpdateIndices[maskUpdateCount++] = playerIndex;
 				} else if (movementType == 1) {
 					playerIndices[playerCount++] = playerIndex;
-					player.anInt1537 = loopCycle;
+					player.lastUpdateCycle = loopCycle;
 					int walkDirection = stream.readBitsMsbFirst(3);
 					player.moveInDir(false, walkDirection);
 					int walkMaskUpdateFlag = stream.readBitsMsbFirst(1);
@@ -9880,7 +9880,7 @@ public class Game extends RSApplet {
 					}
 				} else if (movementType == 2) {
 					playerIndices[playerCount++] = playerIndex;
-					player.anInt1537 = loopCycle;
+					player.lastUpdateCycle = loopCycle;
 					int firstRunDirection = stream.readBitsMsbFirst(3);
 					player.moveInDir(true, firstRunDirection);
 					int secondRunDirection = stream.readBitsMsbFirst(3);
@@ -9890,7 +9890,7 @@ public class Game extends RSApplet {
 						maskUpdateIndices[maskUpdateCount++] = playerIndex;
 					}
 				} else if (movementType == 3) {
-					anIntArray840[anInt839++] = playerIndex;
+					removedEntityIndices[removedEntityCount++] = playerIndex;
 				}
 			}
 		}
@@ -10296,7 +10296,7 @@ public class Game extends RSApplet {
 		int reportedNpcCount = stream.readBitsMsbFirst(8);
 		if (reportedNpcCount < npcCount) {
 			for (int removedTailIndex = reportedNpcCount; removedTailIndex < npcCount; removedTailIndex++) {
-				anIntArray840[anInt839++] = npcIndices[removedTailIndex];
+				removedEntityIndices[removedEntityCount++] = npcIndices[removedTailIndex];
 			}
 
 		}
@@ -10311,16 +10311,16 @@ public class Game extends RSApplet {
 			int updateFlag = stream.readBitsMsbFirst(1);
 			if (updateFlag == 0) {
 				npcIndices[npcCount++] = npcIndex;
-				npc.anInt1537 = loopCycle;
+				npc.lastUpdateCycle = loopCycle;
 			} else {
 				int movementType = stream.readBitsMsbFirst(2);
 				if (movementType == 0) {
 					npcIndices[npcCount++] = npcIndex;
-					npc.anInt1537 = loopCycle;
+					npc.lastUpdateCycle = loopCycle;
 					maskUpdateIndices[maskUpdateCount++] = npcIndex;
 				} else if (movementType == 1) {
 					npcIndices[npcCount++] = npcIndex;
-					npc.anInt1537 = loopCycle;
+					npc.lastUpdateCycle = loopCycle;
 					int walkDirection = stream.readBitsMsbFirst(3);
 					npc.moveInDir(false, walkDirection);
 					int walkMaskUpdateFlag = stream.readBitsMsbFirst(1);
@@ -10329,7 +10329,7 @@ public class Game extends RSApplet {
 					}
 				} else if (movementType == 2) {
 					npcIndices[npcCount++] = npcIndex;
-					npc.anInt1537 = loopCycle;
+					npc.lastUpdateCycle = loopCycle;
 					int firstRunDirection = stream.readBitsMsbFirst(3);
 					npc.moveInDir(true, firstRunDirection);
 					int secondRunDirection = stream.readBitsMsbFirst(3);
@@ -10339,7 +10339,7 @@ public class Game extends RSApplet {
 						maskUpdateIndices[maskUpdateCount++] = npcIndex;
 					}
 				} else if (movementType == 3) {
-					anIntArray840[anInt839++] = npcIndex;
+					removedEntityIndices[removedEntityCount++] = npcIndex;
 				}
 			}
 		}
@@ -10527,27 +10527,27 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void updatePlayers(int i, Stream stream) {
-		anInt839 = 0;
+	public void updatePlayers(int packetSize, Stream stream) {
+		removedEntityCount = 0;
 		maskUpdateCount = 0;
 		decodeLocalPlayerMovement(stream);
 		decodeExistingPlayerMovement(stream);
-		addNewLocalPlayers(stream, i);
+		addNewLocalPlayers(stream, packetSize);
 		decodePlayerUpdateMasks(stream);
-		for (int k = 0; k < anInt839; k++) {
-			int l = anIntArray840[k];
-			if (playerArray[l].anInt1537 != loopCycle) {
-				playerArray[l] = null;
+		for (int removalListIndex = 0; removalListIndex < removedEntityCount; removalListIndex++) {
+			int removedPlayerIndex = removedEntityIndices[removalListIndex];
+			if (playerArray[removedPlayerIndex].lastUpdateCycle != loopCycle) {
+				playerArray[removedPlayerIndex] = null;
 			}
 		}
 
-		if (stream.currentOffset != i) {
-			Signlink.reporterror("Error packet size mismatch in getplayer pos:" + stream.currentOffset + " psize:" + i);
+		if (stream.currentOffset != packetSize) {
+			Signlink.reporterror("Error packet size mismatch in getplayer pos:" + stream.currentOffset + " psize:" + packetSize);
 			throw new RuntimeException("eek");
 		}
-		for (int i1 = 0; i1 < playerCount; i1++) {
-			if (playerArray[playerIndices[i1]] == null) {
-				Signlink.reporterror(myUsername + " null entry in pl list - pos:" + i1 + " size:" + playerCount);
+		for (int playerListIndex = 0; playerListIndex < playerCount; playerListIndex++) {
+			if (playerArray[playerIndices[playerListIndex]] == null) {
+				Signlink.reporterror(myUsername + " null entry in pl list - pos:" + playerListIndex + " size:" + playerCount);
 				throw new RuntimeException("eek");
 			}
 		}
@@ -11052,7 +11052,7 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 114) {
-				anInt1104 = inStream.readUnsignedShortLittleEndian() * 30;
+				systemUpdateCycles = inStream.readUnsignedShortLittleEndian() * 30;
 				pktType = -1;
 				return true;
 			}
@@ -12017,7 +12017,7 @@ public class Game extends RSApplet {
 		aStream_834 = new Stream(new byte[5000]);
 		npcArray = new NPC[16384];
 		npcIndices = new int[16384];
-		anIntArray840 = new int[1000];
+		removedEntityIndices = new int[1000];
 		aStream_847 = Stream.acquire();
 		aBoolean848 = true;
 		openInterfaceID = -1;
@@ -12037,7 +12037,7 @@ public class Game extends RSApplet {
 		playerIndices = new int[maxPlayers];
 		maskUpdateIndices = new int[maxPlayers];
 		aStreamArray895s = new Stream[maxPlayers];
-		anInt897 = 1;
+		cameraYawDriftStep = 1;
 		pathBackDirection = new int[104][104];
 		scrollHighlightColor = 0x766654;
 		textureScrollScratch = new byte[16384];
@@ -12077,7 +12077,7 @@ public class Game extends RSApplet {
 		scrollTrackColor = 0x23201b;
 		amountOrNameInput = "";
 		projectiles = new NodeList();
-		aBoolean1017 = false;
+		cameraMovePending = false;
 		anInt1018 = -1;
 		shakePhase = new int[5];
 		designerModelDirty = false;
@@ -12112,7 +12112,7 @@ public class Game extends RSApplet {
 		atPlayerActions = new String[5];
 		atPlayerArray = new boolean[5];
 		anIntArrayArrayArray1129 = new int[4][13][13];
-		anInt1132 = 2;
+		cameraDriftYStep = 2;
 		mapFunctionIconSprites = new Sprite[1000];
 		aBoolean1141 = false;
 		aBoolean1149 = false;
@@ -12155,7 +12155,7 @@ public class Game extends RSApplet {
 		loginMessage1 = "";
 		loginMessage2 = "";
 		backDialogID = -1;
-		anInt1279 = 2;
+		cameraDriftXStep = 2;
 		bigX = new int[4000];
 		bigY = new int[4000];
 		anInt1289 = -1;
@@ -12177,8 +12177,8 @@ public class Game extends RSApplet {
 	public NPC[] npcArray;
 	public int npcCount;
 	public int[] npcIndices;
-	public int anInt839;
-	public int[] anIntArray840;
+	public int removedEntityCount;
+	public int[] removedEntityIndices;
 	public int anInt841;
 	public int prevPktType;
 	public int prevPktType2;
@@ -12187,7 +12187,7 @@ public class Game extends RSApplet {
 	public int privateChatMode;
 	public Stream aStream_847;
 	public boolean aBoolean848;
-	public static int anInt849;
+	public static int systemUpdateNoticeDrawCount;
 	public int[] anIntArray850;
 	public int[] anIntArray851;
 	public int[] anIntArray852;
@@ -12234,7 +12234,7 @@ public class Game extends RSApplet {
 	public int[] maskUpdateIndices;
 	public Stream[] aStreamArray895s;
 	public int cameraYawDrift;
-	public int anInt897;
+	public int cameraYawDriftStep;
 	public int friendsCount;
 	public int anInt900;
 	public int[][] pathBackDirection;
@@ -12314,7 +12314,7 @@ public class Game extends RSApplet {
 	public int minimapBuiltPlane;
 	public static int anInt986;
 	public Sprite[] hitMarks;
-	public int anInt988;
+	public int cameraDriftTimer;
 	public int anInt989;
 	public final int[] anIntArray990;
 	public static boolean aBoolean993;
@@ -12338,8 +12338,8 @@ public class Game extends RSApplet {
 	public NodeList projectiles;
 	public int cameraFollowX;
 	public int cameraFollowY;
-	public int anInt1016;
-	public boolean aBoolean1017;
+	public int cameraSendCooldown;
+	public boolean cameraMovePending;
 	public int anInt1018;
 	public static final int[] anIntArray1019;
 	public int minimapState;
@@ -12421,7 +12421,7 @@ public class Game extends RSApplet {
 	public int anInt1101;
 	public int anInt1102;
 	public boolean tabAreaAltered;
-	public int anInt1104;
+	public int systemUpdateCycles;
 	public RSImageProducer aRSImageProducer_1107;
 	public RSImageProducer aRSImageProducer_1108;
 	public RSImageProducer aRSImageProducer_1109;
@@ -12443,8 +12443,8 @@ public class Game extends RSApplet {
 	public final boolean[] atPlayerArray;
 	public final int[][][] anIntArrayArrayArray1129;
 	public final int[] tabInterfaceIDs = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-	public int anInt1131;
-	public int anInt1132;
+	public int cameraDriftY;
+	public int cameraDriftYStep;
 	public int menuActionRow;
 	public static int anInt1134;
 	public int spellSelected;
@@ -12495,8 +12495,8 @@ public class Game extends RSApplet {
 	public byte[][] regionTerrainData;
 	public int cameraPitchBase;
 	public int cameraYawBase;
-	public int anInt1186;
-	public int anInt1187;
+	public int cameraYawVelocity;
+	public int cameraPitchVelocity;
 	public static int anInt1188;
 	public int invOverlayInterfaceID;
 	public int[] anIntArray1190;
@@ -12576,8 +12576,8 @@ public class Game extends RSApplet {
 	public TextDrawingArea chatTextDrawingArea;
 	public int anInt1275;
 	public int backDialogID;
-	public int anInt1278;
-	public int anInt1279;
+	public int cameraDriftX;
+	public int cameraDriftXStep;
 	public int[] bigX;
 	public int[] bigY;
 	public int itemSelected;
@@ -12638,8 +12638,8 @@ public class Game extends RSApplet {
 	void mouseWheelDragged(int i, int j) {
 		if (!mouseWheelDown)
 			return;
-		this.anInt1186 += i * 3;
-		this.anInt1187 += (j << 1);
+		this.cameraYawVelocity += i * 3;
+		this.cameraPitchVelocity += (j << 1);
 	}
 
 	public void handleKeyPressed(int keyCode, char keyChar, boolean isControlDown, boolean isShiftDown)

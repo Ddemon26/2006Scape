@@ -48,8 +48,8 @@ public class CameraFollowTest {
         Game.myPlayer.y += 160;
         game.updateCameraFollow();
         assertEquals(Game.myPlayer.y - 150, game.cameraFollowY);
-        game.anInt1278 = 32;
-        game.anInt1131 = -32;
+        game.cameraDriftX = 32;
+        game.cameraDriftY = -32;
         game.updateCameraFollow();
         assertEquals(Game.myPlayer.x - 150 + (150 / 16) + (173 / 16), game.cameraFollowX);
         assertEquals(Game.myPlayer.y - 150 + (118 / 16), game.cameraFollowY);
@@ -64,22 +64,22 @@ public class CameraFollowTest {
         game.keyArray[3] = 1;
         game.cameraPitchBase = 380;
         game.updateCameraFollow();
-        assertEquals(12, game.anInt1186);
+        assertEquals(12, game.cameraYawVelocity);
         assertEquals(6, game.cameraYawBase);
-        assertEquals(6, game.anInt1187);
+        assertEquals(6, game.cameraPitchVelocity);
         assertEquals(383, game.cameraPitchBase);
         game.keyArray[2] = 0; game.keyArray[3] = 0;
         game.keyArray[1] = 1; game.keyArray[4] = 1;
         game.cameraPitchBase = 128;
         game.updateCameraFollow();
-        assertEquals(-6, game.anInt1186);
+        assertEquals(-6, game.cameraYawVelocity);
         assertEquals(3, game.cameraYawBase);
-        assertEquals(-3, game.anInt1187);
+        assertEquals(-3, game.cameraPitchVelocity);
         assertEquals(128, game.cameraPitchBase);
         game.keyArray[1] = 0; game.keyArray[4] = 0;
         game.updateCameraFollow();
-        assertEquals(-3, game.anInt1186);
-        assertEquals(-1, game.anInt1187);
+        assertEquals(-3, game.cameraYawVelocity);
+        assertEquals(-1, game.cameraPitchVelocity);
     }
 
     @Test public void nearbyGroundClearanceSetsAndSmoothsCameraDistance() throws Exception {
@@ -102,5 +102,119 @@ public class CameraFollowTest {
         game.cameraTerrainClearance = 32768;
         game.updateCameraFollow();
         assertEquals(32768, game.cameraTerrainClearance);
+    }
+
+    // mainGameProcessor camera cycle: opcode-86 send, drift timer and drift bounce
+    static class CycleSpy extends Game {
+        @Override public boolean parsePacket() { return false; }
+        @Override public void loadingStages() { }
+        @Override public void advancePendingSceneChanges() { }
+        @Override public void advancePlayerEntities() { }
+        @Override public void advanceNpcEntities() { }
+        @Override public void decrementOverheadTextTimers() { }
+        @Override public void dropClient() { }
+    }
+
+    private static CycleSpy cycleGame() {
+        CycleSpy s = new CycleSpy();
+        s.mouseDetection = new MouseDetection(s);
+        s.stream = new Stream(new byte[5000]);
+        s.stream.encryption = new ISAACRandomGen(new int[]{1, 2, 3, 4});
+        s.loggedIn = true;
+        s.aBoolean954 = true;
+        s.cameraDriftTimer = 0;
+        return s;
+    }
+
+    private static void cycle(Game g) {
+        try { g.mainGameProcessor(); } catch (RuntimeException e) { /* later code needs a live session */ }
+    }
+
+    /** Number of opcode-86 payloads (pitch short, yaw short +128) present in the written stream. */
+    private static int cameraSends(Game g) {
+        byte[] b = g.stream.buffer; int n = 0;
+        for (int i = 1; i + 3 < g.stream.currentOffset; i++) {
+            if (b[i] == (byte) (g.cameraPitchBase >> 8) && b[i + 1] == (byte) g.cameraPitchBase
+                && b[i + 2] == (byte) (g.cameraYawBase >> 8) && b[i + 3] == (byte) (g.cameraYawBase + 128)) n++;
+        }
+        return n;
+    }
+
+    @Test public void arrowKeysMarkCameraMovedAndSendOpcode86AtMostEveryTwentyCycles() throws Exception {
+        CycleSpy g = cycleGame();
+        assertFalse(g.cameraMovePending);
+        g.cameraPitchBase = 0x0123; g.cameraYawBase = 0x0456;
+        cycle(g);                                    // no key, no pending: nothing sent, cooldown stays 0
+        assertEquals(0, g.cameraSendCooldown); assertFalse(g.cameraMovePending); assertEquals(0, cameraSends(g));
+        assertEquals(1, g.cameraDriftTimer);                 // cycle reached the drift code
+        int before = g.stream.currentOffset;
+        g.keyArray[3] = 1;
+        cycle(g);                                    // key and no cooldown: send now, cooldown 20, flag cleared
+        assertEquals(1, cameraSends(g)); assertEquals(5, g.stream.currentOffset - before);
+        assertEquals(20, g.cameraSendCooldown); assertFalse(g.cameraMovePending);
+        cycle(g);                                    // key still held during cooldown: pending, no send
+        assertEquals(1, cameraSends(g)); assertEquals(19, g.cameraSendCooldown); assertTrue(g.cameraMovePending);
+        g.keyArray[3] = 0;
+        for (int i = 0; i < 18; i++) cycle(g);       // released: flag stays pending through the cooldown
+        assertEquals(1, cameraSends(g)); assertEquals(1, g.cameraSendCooldown); assertTrue(g.cameraMovePending);
+        cycle(g);                                    // cooldown hits 0: the pending move is sent without a key
+        assertEquals(2, cameraSends(g)); assertEquals(20, g.cameraSendCooldown); assertFalse(g.cameraMovePending);
+        for (int k = 1; k <= 4; k++) {               // each arrow key alone marks the camera moved
+            CycleSpy h = cycleGame(); h.cameraSendCooldown = 5; h.keyArray[k] = 1;
+            cycle(h);
+            assertTrue("key " + k, h.cameraMovePending); assertEquals(4, h.cameraSendCooldown);
+        }
+        CycleSpy h = cycleGame(); h.cameraSendCooldown = 5; h.keyArray[5] = 1;   // a non-arrow key does not
+        cycle(h); assertFalse(h.cameraMovePending);
+    }
+
+    @Test public void driftTimerAppliesStepsOnlyAfterFiveHundredCyclesWithIndependentAxisBits() throws Exception {
+        CycleSpy g = cycleGame();
+        g.cameraDriftTimer = 499; g.cameraDriftX = 10; g.cameraDriftY = 20; g.cameraYawDrift = 30;
+        cycle(g);                                    // 499 -> 500: no drift yet
+        assertEquals(500, g.cameraDriftTimer); assertEquals(10, g.cameraDriftX); assertEquals(20, g.cameraDriftY); assertEquals(30, g.cameraYawDrift);
+        boolean[] combos = new boolean[8];
+        for (int t = 0; t < 400; t++) {
+            g.cameraDriftTimer = 500; g.cameraDriftX = 10; g.cameraDriftY = 20; g.cameraYawDrift = 30;
+            g.cameraDriftXStep = 2; g.cameraDriftYStep = -2; g.cameraYawDriftStep = 1;
+            cycle(g);
+            assertEquals(0, g.cameraDriftTimer);             // the drift tick resets the timer
+            int dx = g.cameraDriftX - 10, dy = g.cameraDriftY - 20, dw = g.cameraYawDrift - 30;
+            assertTrue(dx == 0 || dx == 2); assertTrue(dy == 0 || dy == -2); assertTrue(dw == 0 || dw == 1);
+            combos[(dx != 0 ? 1 : 0) | (dy != 0 ? 2 : 0) | (dw != 0 ? 4 : 0)] = true;
+        }
+        for (int c = 0; c < 8; c++) assertTrue("axis combination " + c, combos[c]);
+    }
+
+    @Test public void driftStepsBounceAtTheirBounds() throws Exception {
+        int[][] cases = { // x, y, yaw, expected x step, y step, yaw step (start steps 7)
+            {-51, -56, -41, 2, 2, 1}, {51, 56, 41, -2, -2, -1}, {-50, -55, -40, 7, 7, 7}, {50, 55, 40, 7, 7, 7}};
+        for (int[] c : cases) {
+            CycleSpy g = cycleGame();
+            g.cameraDriftX = c[0]; g.cameraDriftY = c[1]; g.cameraYawDrift = c[2];
+            g.cameraDriftXStep = 7; g.cameraDriftYStep = 7; g.cameraYawDriftStep = 7;
+            cycle(g);
+            assertEquals(c[3], g.cameraDriftXStep); assertEquals(c[4], g.cameraDriftYStep); assertEquals(c[5], g.cameraYawDriftStep);
+            assertEquals(c[0], g.cameraDriftX); assertEquals(c[1], g.cameraDriftY); assertEquals(c[2], g.cameraYawDrift);
+        }
+        CycleSpy fresh = new CycleSpy();             // constructor starts every drift moving positive
+        assertEquals(2, fresh.cameraDriftXStep); assertEquals(2, fresh.cameraDriftYStep); assertEquals(1, fresh.cameraYawDriftStep);
+        assertFalse(fresh.cameraMovePending); assertEquals(0, fresh.cameraSendCooldown);
+    }
+
+    @Test public void wheelDragAddsToYawAndPitchVelocities() throws Exception {
+        Game game = game(); game.updateCameraFollow();
+        int yaw = game.cameraYawBase, pitch = game.cameraPitchBase = 200;
+        game.mouseWheelDown = false;
+        game.mouseWheelDragged(4, 5);
+        assertEquals(0, game.cameraYawVelocity); assertEquals(0, game.cameraPitchVelocity);
+        game.mouseWheelDown = true;
+        game.mouseWheelDragged(4, 0);
+        assertEquals(12, game.cameraYawVelocity); assertEquals(0, game.cameraPitchVelocity);
+        game.mouseWheelDragged(0, 5);
+        assertEquals(12, game.cameraYawVelocity); assertEquals(10, game.cameraPitchVelocity);
+        game.updateCameraFollow();                   // no key: velocity halves, then half of it is applied
+        assertEquals(6, game.cameraYawVelocity); assertEquals(5, game.cameraPitchVelocity);
+        assertEquals(yaw + 3 & 0x7ff, game.cameraYawBase); assertEquals(pitch + 2, game.cameraPitchBase);
     }
 }

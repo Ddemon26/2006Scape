@@ -183,7 +183,7 @@ public class OnDemandFetcherTransferTest {
         call("handleFailed");
         assertNull(list("cacheMissQueue").popTail());
         assertSame(d, list("requested").firstFromTail());
-        assertEquals(1, geti("uncompletedCount"));
+        assertEquals(1, geti("urgentInFlightCount"));
         assertEquals(0, ((byte[][]) get("fileStatus"))[2][3]);
     }
 
@@ -269,5 +269,116 @@ public class OnDemandFetcherTransferTest {
         ((int[][]) get("versions"))[2] = new int[13];
         assertEquals(13, fetcher.getVersionCount(2));
         assertEquals(600, fetcher.getVersionCount(0));
+    }
+
+    // Pass 197: request-node locals and in-flight counters, original names only.
+    private OnDemandData node(int type, int id) {
+        OnDemandData d = new OnDemandData();
+        d.dataType = type; d.ID = id;
+        return d;
+    }
+
+    @Test public void requestFileDuplicateScanNeedsSameTypeAndIdAndNewNodeGoesToBothQueues() throws Exception {
+        ((int[][]) get("versions"))[1][7] = 4;
+        ((int[][]) get("versions"))[2][7] = 4;
+        fetcher.requestFile(1, 7);
+        fetcher.requestFile(2, 7);   // same ID, other type: not a duplicate
+        fetcher.requestFile(1, 7);   // same type and ID: duplicate
+        assertEquals(2, fetcher.getNodeCount());
+        OnDemandData first = (OnDemandData) list("cacheLookupQueue").popTail();
+        OnDemandData second = (OnDemandData) list("cacheLookupQueue").popTail();
+        assertNull(list("cacheLookupQueue").popTail());
+        assertEquals(1, first.dataType); assertEquals(7, first.ID); assertTrue(first.incomplete);
+        assertEquals(2, second.dataType); assertEquals(7, second.ID); assertTrue(second.incomplete);
+    }
+
+    @Test public void handleFailedCountsRequestedNodesByIncompleteFlag() throws Exception {
+        request(0, 1, true);
+        request(0, 2, true);
+        request(0, 3, false);
+        request(1, 4, false);
+        request(2, 5, false);
+        call("handleFailed");
+        assertEquals(2, geti("urgentInFlightCount"));
+        assertEquals(3, geti("extraInFlightCount"));
+        set("urgentInFlightCount", 77);
+        set("extraInFlightCount", 77);
+        list("requested").removeAll();
+        call("handleFailed");
+        assertEquals(0, geti("urgentInFlightCount"));
+        assertEquals(0, geti("extraInFlightCount"));
+    }
+
+    @Test public void handleFailedMovesOldestMissesUntilTenUrgentInFlight() throws Exception {
+        for (int i = 0; i < 8; i++) request(0, 100 + i, true);
+        request(0, 200, false);
+        OnDemandData[] miss = new OnDemandData[5];
+        for (int i = 0; i < 5; i++) {
+            miss[i] = node(1, 10 + i);
+            list("cacheMissQueue").insertHead(miss[i]);
+        }
+        ((byte[][]) get("fileStatus"))[1][10] = 3;   // was also a pending extra: counted as loaded
+        set("filesLoaded", 0);
+        call("handleFailed");
+        assertEquals(10, geti("urgentInFlightCount"));
+        assertEquals(1, geti("extraInFlightCount"));
+        assertEquals(1, geti("filesLoaded"));
+        assertEquals(0, ((byte[][]) get("fileStatus"))[1][10]);
+        assertSame(miss[2], list("cacheMissQueue").popTail());   // oldest two were taken
+        assertSame(miss[1], lastSent());                       // newest entry in requested
+        assertSame(miss[3], list("cacheMissQueue").popTail());
+        assertSame(miss[4], list("cacheMissQueue").popTail());
+        assertNull(list("cacheMissQueue").popTail());
+    }
+
+    private OnDemandData lastSent() throws Exception {
+        OnDemandData last = null;
+        for (OnDemandData d = (OnDemandData) list("requested").firstFromTail(); d != null; d = (OnDemandData) list("requested").nextTowardHead()) {
+            last = d;
+        }
+        return last;
+    }
+
+    @Test public void requestExtraFileQueuesNonIncompleteNodeForTypeAndId() throws Exception {
+        ((int[][]) get("versions"))[3][9] = 1;
+        ((byte[][]) get("fileStatus"))[3][9] = 2;
+        set("highestPendingPriority", 2);
+        fetcher.requestExtraFile(9, 3);
+        OnDemandData d = (OnDemandData) list("extraFileQueue").popTail();
+        assertEquals(3, d.dataType);
+        assertEquals(9, d.ID);
+        assertFalse(d.incomplete);
+        assertEquals(0, fetcher.getNodeCount());
+        assertNull(list("cacheLookupQueue").popTail());
+    }
+
+    @Test public void checkReceivedDrainsEveryLookupOldestFirst() throws Exception {
+        OnDemandData a = node(0, 11), b = node(1, 12), c = node(2, 13);
+        list("cacheLookupQueue").insertHead(a);
+        list("cacheLookupQueue").insertHead(b);
+        list("cacheLookupQueue").insertHead(c);
+        call("checkReceived");
+        assertNull(list("cacheLookupQueue").popTail());
+        assertSame(a, list("cacheMissQueue").popTail());
+        assertSame(b, list("cacheMissQueue").popTail());
+        assertSame(c, list("cacheMissQueue").popTail());
+    }
+
+    @Test public void getNextNodeReturnsOldestCompletedAndUnlinksItFromNodeSubList() throws Exception {
+        ((int[][]) get("versions"))[0][5] = 1;
+        ((int[][]) get("versions"))[0][6] = 1;
+        fetcher.requestFile(0, 5);
+        fetcher.requestFile(0, 6);
+        OnDemandData a = (OnDemandData) list("cacheLookupQueue").popTail();
+        OnDemandData b = (OnDemandData) list("cacheLookupQueue").popTail();
+        list("completedRequests").insertHead(a);
+        list("completedRequests").insertHead(b);
+        assertEquals(2, fetcher.getNodeCount());
+        assertSame(a, fetcher.getNextNode());
+        assertNull(a.buffer);
+        assertEquals(1, fetcher.getNodeCount());
+        assertSame(b, fetcher.getNextNode());
+        assertEquals(0, fetcher.getNodeCount());
+        assertNull(fetcher.getNextNode());
     }
 }

@@ -74,11 +74,11 @@ public class EntityAnimationUpdateTest {
         Animation action = sequence(1, 3); action.movingPrecedence = 1;
         Animation.anims = new Animation[]{action}; SpotAnim.cache = new SpotAnim[0];
         Game game = game(); game.loopCycle = 100;
-        Entity entity = new Entity(); entity.anim = 0; entity.anInt1542 = 1;
-        entity.anInt1547 = 100; entity.anInt1548 = 99;
+        Entity entity = new Entity(); entity.anim = 0; entity.stepsQueuedBeforeAnimation = 1;
+        entity.forceMoveStartCycle = 100; entity.forceMoveEndCycle = 99;
         game.updateEntityAnimations(entity);
         assertEquals(1, entity.animationDelay); assertEquals(0, entity.animFrameTimer);
-        entity.anInt1547 = 101; entity.animationDelay = 0;
+        entity.forceMoveStartCycle = 101; entity.animationDelay = 0;
         game.updateEntityAnimations(entity);
         assertEquals(0, entity.animationDelay); assertEquals(1, entity.animFrameTimer);
         game.updateEntityAnimations(entity);
@@ -94,12 +94,12 @@ public class EntityAnimationUpdateTest {
         Animation.anims = new Animation[]{action}; SpotAnim.cache = new SpotAnim[0];
         Game game = game(); Entity entity = new Entity(); entity.anim = 0;
         game.updateEntityAnimations(entity);
-        assertTrue(entity.aBoolean1541); assertEquals(0, entity.animFrame);
+        assertTrue(entity.animExtendByYaw); assertEquals(0, entity.animFrame);
         game.updateEntityAnimations(entity); game.updateEntityAnimations(entity);
-        assertEquals(1, entity.anInt1530); assertEquals(1, entity.animFrame);
+        assertEquals(1, entity.animLoopCount); assertEquals(1, entity.animFrame);
         game.updateEntityAnimations(entity); game.updateEntityAnimations(entity);
-        assertEquals(-1, entity.anim); assertEquals(2, entity.anInt1530);
+        assertEquals(-1, entity.anim); assertEquals(2, entity.animLoopCount);
         game.updateEntityAnimations(entity);
-        assertFalse(entity.aBoolean1541);
+        assertFalse(entity.animExtendByYaw);
     }
 }

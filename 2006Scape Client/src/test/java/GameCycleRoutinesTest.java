@@ -163,7 +163,7 @@ public class GameCycleRoutinesTest {
             NPC a = g.npcArray[9], b = g.npcArray[12];
             assertEquals(48, a.smallX[0]); assertEquals(63, a.smallY[0]); // x = 50 + xOff, y = 60 + yOff
             assertEquals(54, b.smallX[0]); assertEquals(59, b.smallY[0]);
-            assertEquals(33, a.anInt1537); assertEquals(7, a.desc.type);
+            assertEquals(33, a.lastUpdateCycle); assertEquals(7, a.desc.type);
             assertEquals(1, g.maskUpdateCount); assertEquals(9, g.maskUpdateIndices[0]);
             assertEquals(48 * 128 + 64, a.x);
             // stops when fewer than 21 bits remain

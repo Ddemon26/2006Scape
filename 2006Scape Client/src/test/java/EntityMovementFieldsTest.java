@@ -32,23 +32,23 @@ public class EntityMovementFieldsTest {
         Game g = game();
         Animation.anims = new Animation[]{anim(0, 0), anim(1, 1)};
         // walking queue pending (anInt1542 > 0), animation 0 forbids movement then (movingPrecedence == 0)
-        Entity a = walker(1); a.anim = 0; a.animationDelay = 0; a.anInt1542 = 2;
+        Entity a = walker(1); a.anim = 0; a.animationDelay = 0; a.stepsQueuedBeforeAnimation = 2;
         g.advanceEntityAlongWalkingPath(a);
         assertEquals(1, a.deferredMovementTicks); assertEquals(1344, a.x);
         g.advanceEntityAlongWalkingPath(a);
         assertEquals(2, a.deferredMovementTicks); assertEquals(1344, a.x);
         // no pending queue (anInt1542 <= 0): governed by idlePrecedence instead
-        Entity b = walker(1); b.anim = 0; b.anInt1542 = 0;
+        Entity b = walker(1); b.anim = 0; b.stepsQueuedBeforeAnimation = 0;
         g.advanceEntityAlongWalkingPath(b);
         assertEquals(1, b.deferredMovementTicks); assertEquals(1344, b.x);
         // counterexamples: animation that allows movement, animation delay running, no animation
-        Entity c = walker(1); c.anim = 1; c.anInt1542 = 2;
+        Entity c = walker(1); c.anim = 1; c.stepsQueuedBeforeAnimation = 2;
         g.advanceEntityAlongWalkingPath(c);
         assertEquals(0, c.deferredMovementTicks); assertEquals(1348, c.x);
-        Entity d = walker(1); d.anim = 0; d.animationDelay = 1; d.anInt1542 = 2;
+        Entity d = walker(1); d.anim = 0; d.animationDelay = 1; d.stepsQueuedBeforeAnimation = 2;
         g.advanceEntityAlongWalkingPath(d);
         assertEquals(0, d.deferredMovementTicks); assertEquals(1348, d.x);
-        Entity e = walker(1); e.anim = -1; e.anInt1542 = 2;
+        Entity e = walker(1); e.anim = -1; e.stepsQueuedBeforeAnimation = 2;
         g.advanceEntityAlongWalkingPath(e);
         assertEquals(0, e.deferredMovementTicks); assertEquals(1348, e.x);
     }
@@ -69,7 +69,7 @@ public class EntityMovementFieldsTest {
     @Test public void anInt1505ReplacesOnlyTheForwardWalkAnimationAtFastStepSpeed() throws Exception {
         Game g = game();
         // run flag doubles the step to 8; heading 1536 vs facing 1536: forward walk animation -> replaced by runAnimationId
-        Entity run = walker(1); run.aBooleanArray1553[0] = true;
+        Entity run = walker(1); run.pathRunFlags[0] = true;
         g.advanceEntityAlongWalkingPath(run);
         assertEquals(1352, run.x); assertEquals(24, run.movementAnimationId);
         // normal speed (4): not replaced
@@ -77,15 +77,15 @@ public class EntityMovementFieldsTest {
         g.advanceEntityAlongWalkingPath(slow);
         assertEquals(1348, slow.x); assertEquals(20, slow.movementAnimationId);
         // fast but sidestepping (facing 1024, heading 1536): stays the sidestep animation
-        Entity side = walker(1); side.aBooleanArray1553[0] = true; side.facingDirection = 1024;
+        Entity side = walker(1); side.pathRunFlags[0] = true; side.facingDirection = 1024;
         g.advanceEntityAlongWalkingPath(side);
         assertEquals(23, side.movementAnimationId);
         // fast but backwards (facing 512): stays the reverse animation
-        Entity back = walker(1); back.aBooleanArray1553[0] = true; back.facingDirection = 512;
+        Entity back = walker(1); back.pathRunFlags[0] = true; back.facingDirection = 512;
         g.advanceEntityAlongWalkingPath(back);
         assertEquals(21, back.movementAnimationId);
         // -1 means none: keep the walk animation
-        Entity none = walker(1); none.aBooleanArray1553[0] = true; none.runAnimationId = -1;
+        Entity none = walker(1); none.pathRunFlags[0] = true; none.runAnimationId = -1;
         g.advanceEntityAlongWalkingPath(none);
         assertEquals(1352, none.x); assertEquals(20, none.movementAnimationId);
     }

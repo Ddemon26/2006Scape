@@ -4,41 +4,41 @@
 
 public class Entity extends Animable {
 
-	public final void setPos(int i, int j, boolean flag) {
+	public final void setPos(int tileX, int tileY, boolean teleport) {
 		if (anim != -1 && Animation.anims[anim].idlePrecedence == 1) {
 			anim = -1;
 		}
-		if (!flag) {
-			int k = i - smallX[0];
-			int l = j - smallY[0];
-			if (k >= -8 && k <= 8 && l >= -8 && l <= 8) {
+		if (!teleport) {
+			int deltaX = tileX - smallX[0];
+			int deltaY = tileY - smallY[0];
+			if (deltaX >= -8 && deltaX <= 8 && deltaY >= -8 && deltaY <= 8) {
 				if (smallXYIndex < 9) {
 					smallXYIndex++;
 				}
-				for (int i1 = smallXYIndex; i1 > 0; i1--) {
-					smallX[i1] = smallX[i1 - 1];
-					smallY[i1] = smallY[i1 - 1];
-					aBooleanArray1553[i1] = aBooleanArray1553[i1 - 1];
+				for (int queueIndex = smallXYIndex; queueIndex > 0; queueIndex--) {
+					smallX[queueIndex] = smallX[queueIndex - 1];
+					smallY[queueIndex] = smallY[queueIndex - 1];
+					pathRunFlags[queueIndex] = pathRunFlags[queueIndex - 1];
 				}
 
-				smallX[0] = i;
-				smallY[0] = j;
-				aBooleanArray1553[0] = false;
+				smallX[0] = tileX;
+				smallY[0] = tileY;
+				pathRunFlags[0] = false;
 				return;
 			}
 		}
 		smallXYIndex = 0;
-		anInt1542 = 0;
+		stepsQueuedBeforeAnimation = 0;
 		deferredMovementTicks = 0;
-		smallX[0] = i;
-		smallY[0] = j;
+		smallX[0] = tileX;
+		smallY[0] = tileY;
 		x = smallX[0] * 128 + tileSize * 64;
 		y = smallY[0] * 128 + tileSize * 64;
 	}
 
-	public final void method446() {
+	public final void resetPath() {
 		smallXYIndex = 0;
-		anInt1542 = 0;
+		stepsQueuedBeforeAnimation = 0;
 	}
 
 	public final void updateHitData(int j, int k, int l) {
@@ -52,36 +52,36 @@ public class Entity extends Animable {
 		}
 	}
 
-	public final void moveInDir(boolean flag, int i) {
-		int j = smallX[0];
-		int k = smallY[0];
-		if (i == 0) {
-			j--;
-			k++;
+	public final void moveInDir(boolean run, int direction) {
+		int nextX = smallX[0];
+		int nextY = smallY[0];
+		if (direction == 0) {
+			nextX--;
+			nextY++;
 		}
-		if (i == 1) {
-			k++;
+		if (direction == 1) {
+			nextY++;
 		}
-		if (i == 2) {
-			j++;
-			k++;
+		if (direction == 2) {
+			nextX++;
+			nextY++;
 		}
-		if (i == 3) {
-			j--;
+		if (direction == 3) {
+			nextX--;
 		}
-		if (i == 4) {
-			j++;
+		if (direction == 4) {
+			nextX++;
 		}
-		if (i == 5) {
-			j--;
-			k--;
+		if (direction == 5) {
+			nextX--;
+			nextY--;
 		}
-		if (i == 6) {
-			k--;
+		if (direction == 6) {
+			nextY--;
 		}
-		if (i == 7) {
-			j++;
-			k--;
+		if (direction == 7) {
+			nextX++;
+			nextY--;
 		}
 		if (anim != -1 && Animation.anims[anim].idlePrecedence == 1) {
 			anim = -1;
@@ -89,14 +89,14 @@ public class Entity extends Animable {
 		if (smallXYIndex < 9) {
 			smallXYIndex++;
 		}
-		for (int l = smallXYIndex; l > 0; l--) {
-			smallX[l] = smallX[l - 1];
-			smallY[l] = smallY[l - 1];
-			aBooleanArray1553[l] = aBooleanArray1553[l - 1];
+		for (int queueIndex = smallXYIndex; queueIndex > 0; queueIndex--) {
+			smallX[queueIndex] = smallX[queueIndex - 1];
+			smallY[queueIndex] = smallY[queueIndex - 1];
+			pathRunFlags[queueIndex] = pathRunFlags[queueIndex - 1];
 		}
-		smallX[0] = j;
-		smallY[0] = k;
-		aBooleanArray1553[0] = flag;
+		smallX[0] = nextX;
+		smallY[0] = nextY;
+		pathRunFlags[0] = run;
 	}
 
 	public int entScreenX;
@@ -124,8 +124,8 @@ public class Entity extends Animable {
 		loopCycleStatus = -1000;
 		textCycle = 100;
 		tileSize = 1;
-		aBoolean1541 = false;
-		aBooleanArray1553 = new boolean[10];
+		animExtendByYaw = false;
+		pathRunFlags = new boolean[10];
 		walkAnimationId = -1;
 		reverseWalkAnimationId = -1;
 		sidestepNegativeAnimationId = -1;
@@ -160,29 +160,29 @@ public class Entity extends Animable {
 	int animFrame;
 	int animFrameTimer;
 	int animationDelay;
-	int anInt1530;
+	int animLoopCount;
 	int anInt1531;
 	public int loopCycleStatus;
 	public int currentHealth;
 	public int maxHealth;
 	int textCycle;
-	int anInt1537;
-	int anInt1538;
-	int anInt1539;
+	int lastUpdateCycle;
+	int faceHalfTileX;
+	int faceHalfTileY;
 	int tileSize;
-	boolean aBoolean1541;
-	int anInt1542;
-	int anInt1543;
-	int anInt1544;
-	int anInt1545;
-	int anInt1546;
-	int anInt1547;
-	int anInt1548;
-	int anInt1549;
+	boolean animExtendByYaw;
+	int stepsQueuedBeforeAnimation;
+	int forceMoveStartX;
+	int forceMoveEndX;
+	int forceMoveStartY;
+	int forceMoveEndY;
+	int forceMoveStartCycle;
+	int forceMoveEndCycle;
+	int forceMoveDirection;
 	public int x;
 	public int y;
 	int facingDirection;
-	final boolean[] aBooleanArray1553;
+	final boolean[] pathRunFlags;
 	int walkAnimationId;
 	int reverseWalkAnimationId;
 	int sidestepNegativeAnimationId;
