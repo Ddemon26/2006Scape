@@ -1171,10 +1171,10 @@ final class WorldController {
 					} else {
 						class30_sub3_1.anInt1325 = 0;
 					}
-					if ((class10_3.orientation & j2) != 0 && !method321(l, i, j, class10_3.orientation)) {
+					if ((class10_3.orientation & j2) != 0 && !isWallOccluded(l, i, j, class10_3.orientation)) {
 						class10_3.aClass30_Sub2_Sub4_278.method443(0, pitchSine, pitchCosine, yawSine, yawCosine, class10_3.anInt274 - cameraWorldX, class10_3.anInt273 - cameraWorldHeight, class10_3.anInt275 - cameraWorldY, class10_3.uid);
 					}
-					if ((class10_3.orientation1 & j2) != 0 && !method321(l, i, j, class10_3.orientation1)) {
+					if ((class10_3.orientation1 & j2) != 0 && !isWallOccluded(l, i, j, class10_3.orientation1)) {
 						class10_3.aClass30_Sub2_Sub4_279.method443(0, pitchSine, pitchCosine, yawSine, yawCosine, class10_3.anInt274 - cameraWorldX, class10_3.anInt273 - cameraWorldHeight, class10_3.anInt275 - cameraWorldY, class10_3.uid);
 					}
 				}
@@ -1268,7 +1268,7 @@ final class WorldController {
 
 				if (flag2) {
 					Object1 class10_1 = class30_sub3_1.obj1;
-					if (!method321(l, i, j, class10_1.orientation)) {
+					if (!isWallOccluded(l, i, j, class10_1.orientation)) {
 						class10_1.aClass30_Sub2_Sub4_278.method443(0, pitchSine, pitchCosine, yawSine, yawCosine, class10_1.anInt274 - cameraWorldX, class10_1.anInt273 - cameraWorldHeight, class10_1.anInt275 - cameraWorldY, class10_1.uid);
 					}
 					class30_sub3_1.anInt1325 = 0;
@@ -1457,10 +1457,10 @@ final class WorldController {
 				}
 				Object1 class10_2 = class30_sub3_1.obj1;
 				if (class10_2 != null) {
-					if ((class10_2.orientation1 & class30_sub3_1.anInt1328) != 0 && !method321(l, i, j, class10_2.orientation1)) {
+					if ((class10_2.orientation1 & class30_sub3_1.anInt1328) != 0 && !isWallOccluded(l, i, j, class10_2.orientation1)) {
 						class10_2.aClass30_Sub2_Sub4_279.method443(0, pitchSine, pitchCosine, yawSine, yawCosine, class10_2.anInt274 - cameraWorldX, class10_2.anInt273 - cameraWorldHeight, class10_2.anInt275 - cameraWorldY, class10_2.uid);
 					}
-					if ((class10_2.orientation & class30_sub3_1.anInt1328) != 0 && !method321(l, i, j, class10_2.orientation)) {
+					if ((class10_2.orientation & class30_sub3_1.anInt1328) != 0 && !isWallOccluded(l, i, j, class10_2.orientation)) {
 						class10_2.aClass30_Sub2_Sub4_278.method443(0, pitchSine, pitchCosine, yawSine, yawCosine, class10_2.anInt274 - cameraWorldX, class10_2.anInt273 - cameraWorldHeight, class10_2.anInt275 - cameraWorldY, class10_2.uid);
 					}
 				}
@@ -1839,108 +1839,108 @@ final class WorldController {
 		}
 	}
 
-	private boolean method321(int i, int j, int k, int l) {
-		if (!isTileOccluded(i, j, k)) {
+	private boolean isWallOccluded(int plane, int tileX, int tileY, int orientation) {
+		if (!isTileOccluded(plane, tileX, tileY)) {
 			return false;
 		}
-		int i1 = j << 7;
-		int j1 = k << 7;
-		int k1 = tileHeights[i][j][k] - 1;
-		int l1 = k1 - 120;
-		int i2 = k1 - 230;
-		int j2 = k1 - 238;
-		if (l < 16) {
-			if (l == 1) {
-				if (i1 > cameraWorldX) {
-					if (!isPointOccluded(i1, k1, j1)) {
+		int worldX = tileX << 7;
+		int worldY = tileY << 7;
+		int baseHeight = tileHeights[plane][tileX][tileY] - 1;
+		int heightMinus120 = baseHeight - 120;
+		int heightMinus230 = baseHeight - 230;
+		int heightMinus238 = baseHeight - 238;
+		if (orientation < 16) {
+			if (orientation == 1) {
+				if (worldX > cameraWorldX) {
+					if (!isPointOccluded(worldX, baseHeight, worldY)) {
 						return false;
 					}
-					if (!isPointOccluded(i1, k1, j1 + 128)) {
-						return false;
-					}
-				}
-				if (i > 0) {
-					if (!isPointOccluded(i1, l1, j1)) {
-						return false;
-					}
-					if (!isPointOccluded(i1, l1, j1 + 128)) {
+					if (!isPointOccluded(worldX, baseHeight, worldY + 128)) {
 						return false;
 					}
 				}
-				return isPointOccluded(i1, i2, j1) && isPointOccluded(i1, i2, j1 + 128);
+				if (plane > 0) {
+					if (!isPointOccluded(worldX, heightMinus120, worldY)) {
+						return false;
+					}
+					if (!isPointOccluded(worldX, heightMinus120, worldY + 128)) {
+						return false;
+					}
+				}
+				return isPointOccluded(worldX, heightMinus230, worldY) && isPointOccluded(worldX, heightMinus230, worldY + 128);
 			}
-			if (l == 2) {
-				if (j1 < cameraWorldY) {
-					if (!isPointOccluded(i1, k1, j1 + 128)) {
+			if (orientation == 2) {
+				if (worldY < cameraWorldY) {
+					if (!isPointOccluded(worldX, baseHeight, worldY + 128)) {
 						return false;
 					}
-					if (!isPointOccluded(i1 + 128, k1, j1 + 128)) {
-						return false;
-					}
-				}
-				if (i > 0) {
-					if (!isPointOccluded(i1, l1, j1 + 128)) {
-						return false;
-					}
-					if (!isPointOccluded(i1 + 128, l1, j1 + 128)) {
+					if (!isPointOccluded(worldX + 128, baseHeight, worldY + 128)) {
 						return false;
 					}
 				}
-				return isPointOccluded(i1, i2, j1 + 128) && isPointOccluded(i1 + 128, i2, j1 + 128);
+				if (plane > 0) {
+					if (!isPointOccluded(worldX, heightMinus120, worldY + 128)) {
+						return false;
+					}
+					if (!isPointOccluded(worldX + 128, heightMinus120, worldY + 128)) {
+						return false;
+					}
+				}
+				return isPointOccluded(worldX, heightMinus230, worldY + 128) && isPointOccluded(worldX + 128, heightMinus230, worldY + 128);
 			}
-			if (l == 4) {
-				if (i1 < cameraWorldX) {
-					if (!isPointOccluded(i1 + 128, k1, j1)) {
+			if (orientation == 4) {
+				if (worldX < cameraWorldX) {
+					if (!isPointOccluded(worldX + 128, baseHeight, worldY)) {
 						return false;
 					}
-					if (!isPointOccluded(i1 + 128, k1, j1 + 128)) {
-						return false;
-					}
-				}
-				if (i > 0) {
-					if (!isPointOccluded(i1 + 128, l1, j1)) {
-						return false;
-					}
-					if (!isPointOccluded(i1 + 128, l1, j1 + 128)) {
+					if (!isPointOccluded(worldX + 128, baseHeight, worldY + 128)) {
 						return false;
 					}
 				}
-				return isPointOccluded(i1 + 128, i2, j1) && isPointOccluded(i1 + 128, i2, j1 + 128);
+				if (plane > 0) {
+					if (!isPointOccluded(worldX + 128, heightMinus120, worldY)) {
+						return false;
+					}
+					if (!isPointOccluded(worldX + 128, heightMinus120, worldY + 128)) {
+						return false;
+					}
+				}
+				return isPointOccluded(worldX + 128, heightMinus230, worldY) && isPointOccluded(worldX + 128, heightMinus230, worldY + 128);
 			}
-			if (l == 8) {
-				if (j1 > cameraWorldY) {
-					if (!isPointOccluded(i1, k1, j1)) {
+			if (orientation == 8) {
+				if (worldY > cameraWorldY) {
+					if (!isPointOccluded(worldX, baseHeight, worldY)) {
 						return false;
 					}
-					if (!isPointOccluded(i1 + 128, k1, j1)) {
-						return false;
-					}
-				}
-				if (i > 0) {
-					if (!isPointOccluded(i1, l1, j1)) {
-						return false;
-					}
-					if (!isPointOccluded(i1 + 128, l1, j1)) {
+					if (!isPointOccluded(worldX + 128, baseHeight, worldY)) {
 						return false;
 					}
 				}
-				return isPointOccluded(i1, i2, j1) && isPointOccluded(i1 + 128, i2, j1);
+				if (plane > 0) {
+					if (!isPointOccluded(worldX, heightMinus120, worldY)) {
+						return false;
+					}
+					if (!isPointOccluded(worldX + 128, heightMinus120, worldY)) {
+						return false;
+					}
+				}
+				return isPointOccluded(worldX, heightMinus230, worldY) && isPointOccluded(worldX + 128, heightMinus230, worldY);
 			}
 		}
-		if (!isPointOccluded(i1 + 64, j2, j1 + 64)) {
+		if (!isPointOccluded(worldX + 64, heightMinus238, worldY + 64)) {
 			return false;
 		}
-		if (l == 16) {
-			return isPointOccluded(i1, i2, j1 + 128);
+		if (orientation == 16) {
+			return isPointOccluded(worldX, heightMinus230, worldY + 128);
 		}
-		if (l == 32) {
-			return isPointOccluded(i1 + 128, i2, j1 + 128);
+		if (orientation == 32) {
+			return isPointOccluded(worldX + 128, heightMinus230, worldY + 128);
 		}
-		if (l == 64) {
-			return isPointOccluded(i1 + 128, i2, j1);
+		if (orientation == 64) {
+			return isPointOccluded(worldX + 128, heightMinus230, worldY);
 		}
-		if (l == 128) {
-			return isPointOccluded(i1, i2, j1);
+		if (orientation == 128) {
+			return isPointOccluded(worldX, heightMinus230, worldY);
 		} else {
 			System.out.println("Warning unsupported wall type");
 			return true;

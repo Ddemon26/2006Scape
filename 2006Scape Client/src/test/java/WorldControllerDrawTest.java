@@ -62,6 +62,85 @@ public class WorldControllerDrawTest {
         tset("clipScanlines", savedClip);
     }
 
+    @Test public void method321RequiresEveryOrientationSampleAtExactTileCoordinatesAndHeights() throws Exception {
+        Class47[] active = (Class47[]) sget("activeOccluders");
+        Class47[] original = active.clone();
+        try {
+            WorldController wc = scene();
+            int[][][] heights = (int[][][]) get(wc, "tileHeights");
+            int[][][] cache = (int[][][]) get(wc, "tileOcclusionCache");
+            sset("drawCycle", 17);
+            for (int plane : new int[] {0, 2}) for (int tx : new int[] {7, 11}) for (int ty : new int[] {19, 24}) {
+                int h = plane == 0 ? 500 : -600;
+                heights[plane][tx][ty] = h;
+                for (int dx = -1; dx <= 1; dx++) for (int dy = -1; dy <= 1; dy++) {
+                    sset("cameraWorldX", tx * 128 + dx);
+                    sset("cameraWorldY", ty * 128 + dy);
+                    for (int mask : new int[] {1, 2, 4, 8, 16, 32, 64, 128}) {
+                        int[][] points = wallSamples(plane, tx, ty, h, mask, dx, dy);
+                        coverWallSamples(points, -1, -1, 0);
+                        cache[plane][tx][ty] = 17;
+                        assertEquals("all samples covered mask=" + mask, true, call(wc, "isWallOccluded", WALL_QUERY, plane, tx, ty, mask));
+                        cache[plane][tx][ty] = -17;
+                        assertEquals("tile visibility is a prerequisite", false, call(wc, "isWallOccluded", WALL_QUERY, plane, tx, ty, mask));
+                        cache[plane][tx][ty] = 17;
+                        for (int missing = 0; missing < points.length; missing++) {
+                            coverWallSamples(points, missing, -1, 0);
+                            assertEquals("missing sample " + missing + " mask=" + mask, false, call(wc, "isWallOccluded", WALL_QUERY, plane, tx, ty, mask));
+                            for (int axis = 0; axis < 3; axis++) for (int delta : new int[] {-1, 1}) {
+                                coverWallSamples(points, missing, axis, delta);
+                                assertEquals("shifted sample axis=" + axis + " delta=" + delta, false, call(wc, "isWallOccluded", WALL_QUERY, plane, tx, ty, mask));
+                            }
+                        }
+                    }
+                }
+            }
+        } finally { System.arraycopy(original, 0, active, 0, original.length); }
+    }
+
+    private static final Class<?>[] WALL_QUERY = {int.class, int.class, int.class, int.class};
+
+    // Table of wall edge/corner coordinates, independent of the routine's branch structure.
+    private static int[][] wallSamples(int plane, int tx, int ty, int h, int mask, int dx, int dy) {
+        int[][] edges = {{0, 0, 0, 128}, {0, 128, 128, 128}, {128, 0, 128, 128}, {0, 0, 128, 0}};
+        int[][] corners = {{0, 128}, {128, 128}, {128, 0}, {0, 0}};
+        java.util.List<int[]> points = new java.util.ArrayList<int[]>();
+        int bit = Integer.numberOfTrailingZeros(mask);
+        if (bit < 4) {
+            boolean[] facing = {dx < 0, dy > 0, dx > 0, dy < 0};
+            int[] e = edges[bit];
+            for (int offset : new int[] {1, 121, 231}) {
+                if (offset == 1 && !facing[bit] || offset == 121 && plane == 0) continue;
+                points.add(new int[] {tx * 128 + e[0], h - offset, ty * 128 + e[1]});
+                points.add(new int[] {tx * 128 + e[2], h - offset, ty * 128 + e[3]});
+            }
+        } else {
+            points.add(new int[] {tx * 128 + 64, h - 239, ty * 128 + 64});
+            int[] c = corners[bit - 4];
+            points.add(new int[] {tx * 128 + c[0], h - 231, ty * 128 + c[1]});
+        }
+        return points.toArray(new int[points.size()][]);
+    }
+
+    // Zero-width sloping occluders contain only their requested test point among the samples.
+    private static void coverWallSamples(int[][] points, int missing, int axis, int delta) throws Exception {
+        Class47[] occluders = new Class47[500];
+        int count = 0;
+        for (int n = 0; n < points.length; n++) {
+            if (n == missing && axis == -1) continue;
+            int[] p = points[n].clone();
+            if (n == missing) p[axis] += delta;
+            Class47 o = new Class47();
+            o.side = 1; o.minX = p[0] + 1;
+            o.minY = o.maxY = p[2];
+            o.minHeight = o.maxHeight = p[1] - 1;
+            o.minHeightSlope = o.maxHeightSlope = 256;
+            occluders[count++] = o;
+        }
+        System.arraycopy(occluders, 0, (Class47[]) sget("activeOccluders"), 0, occluders.length);
+        sset("activeOccluderCount", count);
+    }
+
     // ---- reflection helpers (original names only) ----
     private static Field field(Class<?> c, String n) throws Exception { Field f = c.getDeclaredField(n); f.setAccessible(true); return f; }
     private static Object sget(String n) throws Exception { return field(WorldController.class, n).get(null); }
