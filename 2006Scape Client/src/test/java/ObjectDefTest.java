@@ -66,8 +66,8 @@ public class ObjectDefTest {
         savedAnims = Animation.anims;
         savedVarBits = VarBit.cache;
         savedMasks = Game.anIntArray1232;
-        savedModelTable = field(Model.class, "aClass21Array1661").get(null);
-        savedModelFetcher = field(Model.class, "aOnDemandFetcherParent_1662").get(null);
+        savedModelTable = field(Model.class, "modelHeaders").get(null);
+        savedModelFetcher = field(Model.class, "modelRequester").get(null);
         savedStream = field(ObjectDef.class, "stream").get(null);
         savedStreamIndices = field(ObjectDef.class, "streamIndices").get(null);
         savedCacheIndex = field(ObjectDef.class, "cacheIndex").getInt(null);
@@ -81,8 +81,8 @@ public class ObjectDefTest {
         Animation.anims = savedAnims;
         VarBit.cache = savedVarBits;
         Game.anIntArray1232 = savedMasks;
-        field(Model.class, "aClass21Array1661").set(null, savedModelTable);
-        field(Model.class, "aOnDemandFetcherParent_1662").set(null, savedModelFetcher);
+        field(Model.class, "modelHeaders").set(null, savedModelTable);
+        field(Model.class, "modelRequester").set(null, savedModelFetcher);
         field(ObjectDef.class, "stream").set(null, savedStream);
         field(ObjectDef.class, "streamIndices").set(null, savedStreamIndices);
         field(ObjectDef.class, "cacheIndex").setInt(null, savedCacheIndex);
@@ -255,14 +255,14 @@ public class ObjectDefTest {
 
     private static class RecordingFetcher extends OnDemandFetcherParent {
         final List<Integer> requested = new ArrayList<Integer>();
-        @Override public void method548(int i) { requested.add(i); }
+        @Override public void requestModel(int i) { requested.add(i); }
     }
 
     private RecordingFetcher modelTable(int size, int... present) throws Exception {
         RecordingFetcher fetcher = new RecordingFetcher();
         Model.method459(size, fetcher);
-        Class21[] table = (Class21[]) field(Model.class, "aClass21Array1661").get(null);
-        for (int id : present) table[id] = new Class21();
+        ModelHeader[] table = (ModelHeader[]) field(Model.class, "modelHeaders").get(null);
+        for (int id : present) table[id] = new ModelHeader();
         return fetcher;
     }
 

@@ -205,7 +205,7 @@ public class ModelAnimationGroupsTest {
 
     @Before public void isolate() throws Exception {
         vertexIds = field("vertexGroupIds"); faceIds = field("faceGroupIds");
-        headers = field("aClass21Array1661"); savedHeaders = headers.get(null);
+        headers = field("modelHeaders"); savedHeaders = headers.get(null);
     }
     @After public void restore() throws Exception { headers.set(null, savedHeaders); }
     private static Field field(String name) throws Exception {
@@ -303,7 +303,7 @@ public class ModelAnimationGroupsTest {
         out.writeShort(5); out.writeShort(5); out.writeByte(0); out.writeByte(0); out.writeByte(0);
         out.writeByte(0); out.writeByte(1); out.writeByte(1); // no alpha, face labels, vertex labels
         for (int i = 0; i < 4; i++) out.writeShort(0);
-        headers.set(null, new Class21[1]); Model.method460(bytes.toByteArray(), 0); Model m = Model.getModel(0);
+        headers.set(null, new ModelHeader[1]); Model.method460(bytes.toByteArray(), 0); Model m = Model.getModel(0);
         assertArrayEquals(v, (int[])vertexIds.get(m)); assertArrayEquals(f, (int[])faceIds.get(m));
         m.buildAnimationGroups(); assertArrayEquals(new int[]{0,4}, m.vertexGroups[255]);
         assertArrayEquals(new int[]{1}, m.faceGroups[255]);

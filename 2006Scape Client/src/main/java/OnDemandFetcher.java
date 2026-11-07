@@ -468,7 +468,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	}
 
 	@Override
-	public void method548(int i) {
+	public void requestModel(int i) {
 		method558(0, i);
 	}
 

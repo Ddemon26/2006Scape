@@ -12,17 +12,17 @@ public class ModelLookupTest {
     private final java.util.List<Integer> requests = new java.util.ArrayList<Integer>();
 
     @Before public void setup() throws Exception {
-        savedHeaders = get("aClass21Array1661");
-        savedFetcher = get("aOnDemandFetcherParent_1662");
+        savedHeaders = get("modelHeaders");
+        savedFetcher = get("modelRequester");
         Model.method459(8, new OnDemandFetcherParent() {
-            @Override public void method548(int i) { requests.add(i); }
+            @Override public void requestModel(int i) { requests.add(i); }
         });
         Model.method460(null, 3);
     }
 
     @After public void restore() throws Exception {
-        set("aClass21Array1661", savedHeaders);
-        set("aOnDemandFetcherParent_1662", savedFetcher);
+        set("modelHeaders", savedHeaders);
+        set("modelRequester", savedFetcher);
     }
 
     @Test public void method463ReportsLoadedModelsAndRequestsTheMissingOnes() {
@@ -48,10 +48,10 @@ public class ModelLookupTest {
     }
 
     @Test public void method462UsesTheIdToSelectTheHeader() throws Exception {
-        Object[] headers = (Object[]) get("aClass21Array1661");
-        Class21 big = new Class21();
-        big.anInt369 = 4;
-        big.aByteArray368 = new byte[64];
+        Object[] headers = (Object[]) get("modelHeaders");
+        ModelHeader big = new ModelHeader();
+        big.vertexCount = 4;
+        big.data = new byte[64];
         headers[1] = big;
         Model small = Model.getModel(3);
         Model large = Model.getModel(1);
@@ -60,7 +60,7 @@ public class ModelLookupTest {
     }
 
     @Test public void method462AndMethod463ReturnNullOrFalseBeforeInitialisation() throws Exception {
-        set("aClass21Array1661", null);
+        set("modelHeaders", null);
         assertNull(Model.getModel(1));
         assertFalse(Model.isModelLoaded(1));
         assertTrue(requests.isEmpty());

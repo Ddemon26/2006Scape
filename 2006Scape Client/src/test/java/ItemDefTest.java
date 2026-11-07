@@ -52,7 +52,7 @@ public class ItemDefTest {
 
     static final class Spy extends OnDemandFetcherParent {
         final List<Integer> requested = new ArrayList<Integer>();
-        @Override public void method548(int i) { requested.add(i); }
+        @Override public void requestModel(int i) { requested.add(i); }
     }
 
     private Object savedArr, savedFetcher;
@@ -60,14 +60,14 @@ public class ItemDefTest {
     private Spy spy;
 
     @Before public void setUp() throws Exception {
-        savedArr = sget(Model.class, "aClass21Array1661"); savedFetcher = sget(Model.class, "aOnDemandFetcherParent_1662");
+        savedArr = sget(Model.class, "modelHeaders"); savedFetcher = sget(Model.class, "modelRequester");
         sd[0] = sget(ItemDef.class, "cache"); sd[1] = sget(ItemDef.class, "cacheIndex"); sd[2] = sget(ItemDef.class, "stream");
         sd[3] = sget(ItemDef.class, "streamIndices"); sd[4] = ItemDef.totalItems;
         spy = new Spy(); Model.method459(64, spy);
         ItemDef.mruNodes1.clear(); ItemDef.mruNodes2.clear();
     }
     @After public void tearDown() throws Exception {
-        sset(Model.class, "aClass21Array1661", savedArr); sset(Model.class, "aOnDemandFetcherParent_1662", savedFetcher);
+        sset(Model.class, "modelHeaders", savedArr); sset(Model.class, "modelRequester", savedFetcher);
         sset(ItemDef.class, "cache", sd[0]); sset(ItemDef.class, "cacheIndex", sd[1]); sset(ItemDef.class, "stream", sd[2]);
         sset(ItemDef.class, "streamIndices", sd[3]); ItemDef.totalItems = (Integer) sd[4];
         ItemDef.mruNodes1.clear(); ItemDef.mruNodes2.clear();
