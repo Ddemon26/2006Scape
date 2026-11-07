@@ -6,22 +6,22 @@ final class ObjectManager {
 
 	public ObjectManager(byte abyte0[][][], int ai[][][]) {
 		anInt145 = 99;
-		anInt146 = 104;
-		anInt147 = 104;
-		anIntArrayArrayArray129 = ai;
-		aByteArrayArrayArray149 = abyte0;
-		aByteArrayArrayArray142 = new byte[4][anInt146][anInt147];
-		aByteArrayArrayArray130 = new byte[4][anInt146][anInt147];
-		aByteArrayArrayArray136 = new byte[4][anInt146][anInt147];
-		aByteArrayArrayArray148 = new byte[4][anInt146][anInt147];
-		occlusionFlags = new int[4][anInt146 + 1][anInt147 + 1];
-		objectShadow = new byte[4][anInt146 + 1][anInt147 + 1];
-		anIntArrayArray139 = new int[anInt146 + 1][anInt147 + 1];
-		anIntArray124 = new int[anInt147];
-		anIntArray125 = new int[anInt147];
-		anIntArray126 = new int[anInt147];
-		anIntArray127 = new int[anInt147];
-		anIntArray128 = new int[anInt147];
+		sizeX = 104;
+		sizeY = 104;
+		tileHeights = ai;
+		tileFlags = abyte0;
+		underlayIds = new byte[4][sizeX][sizeY];
+		overlayIds = new byte[4][sizeX][sizeY];
+		overlayShapes = new byte[4][sizeX][sizeY];
+		overlayRotations = new byte[4][sizeX][sizeY];
+		occlusionFlags = new int[4][sizeX + 1][sizeY + 1];
+		objectShadow = new byte[4][sizeX + 1][sizeY + 1];
+		tileLightLevels = new int[sizeX + 1][sizeY + 1];
+		blendHueSum = new int[sizeY];
+		blendSaturationSum = new int[sizeY];
+		blendLightnessSum = new int[sizeY];
+		blendHueWeightSum = new int[sizeY];
+		blendTileCount = new int[sizeY];
 	}
 
 	private static int hashNoise(int x, int y) {
@@ -31,17 +31,17 @@ final class ObjectManager {
 		return hash >> 19 & 0xff;
 	}
 
-	public final void method171(CollisionMap aclass11[], WorldController worldController) {
-		for (int j = 0; j < 4; j++) {
-			for (int k = 0; k < 104; k++) {
-				for (int i1 = 0; i1 < 104; i1++) {
-					if ((aByteArrayArrayArray149[j][k][i1] & 1) == 1) {
-						int k1 = j;
-						if ((aByteArrayArrayArray149[1][k][i1] & 2) == 2) {
-							k1--;
+	public final void buildTerrainScene(CollisionMap collisionMaps[], WorldController worldController) {
+		for (int plane = 0; plane < 4; plane++) {
+			for (int tileX = 0; tileX < 104; tileX++) {
+				for (int tileY = 0; tileY < 104; tileY++) {
+					if ((tileFlags[plane][tileX][tileY] & 1) == 1) {
+						int collisionPlane = plane;
+						if ((tileFlags[1][tileX][tileY] & 2) == 2) {
+							collisionPlane--;
 						}
-						if (k1 >= 0) {
-							aclass11[k1].blockTile(i1, k);
+						if (collisionPlane >= 0) {
+							collisionMaps[collisionPlane].blockTile(tileY, tileX);
 						}
 					}
 				}
@@ -49,178 +49,178 @@ final class ObjectManager {
 			}
 
 		}
-		anInt123 += (int) (Math.random() * 5D) - 2;
-		if (anInt123 < -8) {
-			anInt123 = -8;
+		hueOffset += (int) (Math.random() * 5D) - 2;
+		if (hueOffset < -8) {
+			hueOffset = -8;
 		}
-		if (anInt123 > 8) {
-			anInt123 = 8;
+		if (hueOffset > 8) {
+			hueOffset = 8;
 		}
-		anInt133 += (int) (Math.random() * 5D) - 2;
-		if (anInt133 < -16) {
-			anInt133 = -16;
+		lightnessOffset += (int) (Math.random() * 5D) - 2;
+		if (lightnessOffset < -16) {
+			lightnessOffset = -16;
 		}
-		if (anInt133 > 16) {
-			anInt133 = 16;
+		if (lightnessOffset > 16) {
+			lightnessOffset = 16;
 		}
-		for (int l = 0; l < 4; l++) {
-			byte abyte0[][] = objectShadow[l];
-			byte byte0 = 96;
-			char c = '\u0300';
-			byte byte1 = -50;
-			byte byte2 = -10;
-			byte byte3 = -50;
-			int j3 = (int) Math.sqrt(byte1 * byte1 + byte2 * byte2 + byte3 * byte3);
-			int l3 = c * j3 >> 8;
-			for (int j4 = 1; j4 < anInt147 - 1; j4++) {
-				for (int j5 = 1; j5 < anInt146 - 1; j5++) {
-					int k6 = anIntArrayArrayArray129[l][j5 + 1][j4] - anIntArrayArrayArray129[l][j5 - 1][j4];
-					int l7 = anIntArrayArrayArray129[l][j5][j4 + 1] - anIntArrayArrayArray129[l][j5][j4 - 1];
-					int j9 = (int) Math.sqrt(k6 * k6 + 0x10000 + l7 * l7);
-					int k12 = (k6 << 8) / j9;
-					int l13 = 0x10000 / j9;
-					int j15 = (l7 << 8) / j9;
-					int j16 = byte0 + (byte1 * k12 + byte2 * l13 + byte3 * j15) / l3;
-					int j17 = (abyte0[j5 - 1][j4] >> 2) + (abyte0[j5 + 1][j4] >> 3) + (abyte0[j5][j4 - 1] >> 2) + (abyte0[j5][j4 + 1] >> 3) + (abyte0[j5][j4] >> 1);
-					anIntArrayArray139[j5][j4] = j16 - j17;
+		for (int plane = 0; plane < 4; plane++) {
+			byte planeShadow[][] = objectShadow[plane];
+			byte baseLight = 96;
+			char contrastBase = '\u0300';
+			byte lightDirX = -50;
+			byte lightDirUp = -10;
+			byte lightDirY = -50;
+			int lightMagnitude = (int) Math.sqrt(lightDirX * lightDirX + lightDirUp * lightDirUp + lightDirY * lightDirY);
+			int lightContrast = contrastBase * lightMagnitude >> 8;
+			for (int tileY = 1; tileY < sizeY - 1; tileY++) {
+				for (int tileX = 1; tileX < sizeX - 1; tileX++) {
+					int heightSlopeX = tileHeights[plane][tileX + 1][tileY] - tileHeights[plane][tileX - 1][tileY];
+					int heightSlopeY = tileHeights[plane][tileX][tileY + 1] - tileHeights[plane][tileX][tileY - 1];
+					int normalLength = (int) Math.sqrt(heightSlopeX * heightSlopeX + 0x10000 + heightSlopeY * heightSlopeY);
+					int normalX = (heightSlopeX << 8) / normalLength;
+					int normalUp = 0x10000 / normalLength;
+					int normalY = (heightSlopeY << 8) / normalLength;
+					int directLight = baseLight + (lightDirX * normalX + lightDirUp * normalUp + lightDirY * normalY) / lightContrast;
+					int shadowShade = (planeShadow[tileX - 1][tileY] >> 2) + (planeShadow[tileX + 1][tileY] >> 3) + (planeShadow[tileX][tileY - 1] >> 2) + (planeShadow[tileX][tileY + 1] >> 3) + (planeShadow[tileX][tileY] >> 1);
+					tileLightLevels[tileX][tileY] = directLight - shadowShade;
 				}
 
 			}
 
-			for (int k5 = 0; k5 < anInt147; k5++) {
-				anIntArray124[k5] = 0;
-				anIntArray125[k5] = 0;
-				anIntArray126[k5] = 0;
-				anIntArray127[k5] = 0;
-				anIntArray128[k5] = 0;
+			for (int column = 0; column < sizeY; column++) {
+				blendHueSum[column] = 0;
+				blendSaturationSum[column] = 0;
+				blendLightnessSum[column] = 0;
+				blendHueWeightSum[column] = 0;
+				blendTileCount[column] = 0;
 			}
 
-			for (int l6 = -5; l6 < anInt146 + 5; l6++) {
-				for (int i8 = 0; i8 < anInt147; i8++) {
-					int k9 = l6 + 5;
-					if (k9 >= 0 && k9 < anInt146) {
-						int l12 = aByteArrayArrayArray142[l][k9][i8] & 0xff;
-						if (l12 > 0) {
-							Flo flo = Flo.cache[l12 - 1];
-							anIntArray124[i8] += flo.anInt397;
-							anIntArray125[i8] += flo.anInt395;
-							anIntArray126[i8] += flo.anInt396;
-							anIntArray127[i8] += flo.anInt398;
-							anIntArray128[i8]++;
+			for (int tileX = -5; tileX < sizeX + 5; tileX++) {
+				for (int tileY = 0; tileY < sizeY; tileY++) {
+					int enterX = tileX + 5;
+					if (enterX >= 0 && enterX < sizeX) {
+						int enterUnderlayId = underlayIds[plane][enterX][tileY] & 0xff;
+						if (enterUnderlayId > 0) {
+							Flo enterFlo = Flo.cache[enterUnderlayId - 1];
+							blendHueSum[tileY] += enterFlo.anInt397;
+							blendSaturationSum[tileY] += enterFlo.anInt395;
+							blendLightnessSum[tileY] += enterFlo.anInt396;
+							blendHueWeightSum[tileY] += enterFlo.anInt398;
+							blendTileCount[tileY]++;
 						}
 					}
-					int i13 = l6 - 5;
-					if (i13 >= 0 && i13 < anInt146) {
-						int i14 = aByteArrayArrayArray142[l][i13][i8] & 0xff;
-						if (i14 > 0) {
-							Flo flo_1 = Flo.cache[i14 - 1];
-							anIntArray124[i8] -= flo_1.anInt397;
-							anIntArray125[i8] -= flo_1.anInt395;
-							anIntArray126[i8] -= flo_1.anInt396;
-							anIntArray127[i8] -= flo_1.anInt398;
-							anIntArray128[i8]--;
+					int exitX = tileX - 5;
+					if (exitX >= 0 && exitX < sizeX) {
+						int exitUnderlayId = underlayIds[plane][exitX][tileY] & 0xff;
+						if (exitUnderlayId > 0) {
+							Flo exitFlo = Flo.cache[exitUnderlayId - 1];
+							blendHueSum[tileY] -= exitFlo.anInt397;
+							blendSaturationSum[tileY] -= exitFlo.anInt395;
+							blendLightnessSum[tileY] -= exitFlo.anInt396;
+							blendHueWeightSum[tileY] -= exitFlo.anInt398;
+							blendTileCount[tileY]--;
 						}
 					}
 				}
 
-				if (l6 >= 1 && l6 < anInt146 - 1) {
-					int l9 = 0;
-					int j13 = 0;
-					int j14 = 0;
-					int k15 = 0;
-					int k16 = 0;
-					for (int k17 = -5; k17 < anInt147 + 5; k17++) {
-						int j18 = k17 + 5;
-						if (j18 >= 0 && j18 < anInt147) {
-							l9 += anIntArray124[j18];
-							j13 += anIntArray125[j18];
-							j14 += anIntArray126[j18];
-							k15 += anIntArray127[j18];
-							k16 += anIntArray128[j18];
+				if (tileX >= 1 && tileX < sizeX - 1) {
+					int windowHueSum = 0;
+					int windowSaturationSum = 0;
+					int windowLightnessSum = 0;
+					int windowHueWeightSum = 0;
+					int windowTileCount = 0;
+					for (int tileY = -5; tileY < sizeY + 5; tileY++) {
+						int enterY = tileY + 5;
+						if (enterY >= 0 && enterY < sizeY) {
+							windowHueSum += blendHueSum[enterY];
+							windowSaturationSum += blendSaturationSum[enterY];
+							windowLightnessSum += blendLightnessSum[enterY];
+							windowHueWeightSum += blendHueWeightSum[enterY];
+							windowTileCount += blendTileCount[enterY];
 						}
-						int k18 = k17 - 5;
-						if (k18 >= 0 && k18 < anInt147) {
-							l9 -= anIntArray124[k18];
-							j13 -= anIntArray125[k18];
-							j14 -= anIntArray126[k18];
-							k15 -= anIntArray127[k18];
-							k16 -= anIntArray128[k18];
+						int exitY = tileY - 5;
+						if (exitY >= 0 && exitY < sizeY) {
+							windowHueSum -= blendHueSum[exitY];
+							windowSaturationSum -= blendSaturationSum[exitY];
+							windowLightnessSum -= blendLightnessSum[exitY];
+							windowHueWeightSum -= blendHueWeightSum[exitY];
+							windowTileCount -= blendTileCount[exitY];
 						}
-						if (k17 >= 1 && k17 < anInt147 - 1 && ((!hideBuggyVarrockSwordShopSnow && !hideRoofs && !lowMem) || (aByteArrayArrayArray149[0][l6][k17] & 2) != 0 || (aByteArrayArrayArray149[l][l6][k17] & 0x10) == 0 && getEffectivePlane(k17, l, l6) == anInt131)) {
-							if (l < anInt145) {
-								anInt145 = l;
+						if (tileY >= 1 && tileY < sizeY - 1 && ((!hideBuggyVarrockSwordShopSnow && !hideRoofs && !lowMem) || (tileFlags[0][tileX][tileY] & 2) != 0 || (tileFlags[plane][tileX][tileY] & 0x10) == 0 && getEffectivePlane(tileY, plane, tileX) == anInt131)) {
+							if (plane < anInt145) {
+								anInt145 = plane;
 							}
-							int l18 = aByteArrayArrayArray142[l][l6][k17] & 0xff;
-							int i19 = aByteArrayArrayArray130[l][l6][k17] & 0xff;
-							if (l18 > 0 || i19 > 0) {
-								int j19 = anIntArrayArrayArray129[l][l6][k17];
-								int k19 = anIntArrayArrayArray129[l][l6 + 1][k17];
-								int l19 = anIntArrayArrayArray129[l][l6 + 1][k17 + 1];
-								int i20 = anIntArrayArrayArray129[l][l6][k17 + 1];
-								int j20 = anIntArrayArray139[l6][k17];
-								int k20 = anIntArrayArray139[l6 + 1][k17];
-								int l20 = anIntArrayArray139[l6 + 1][k17 + 1];
-								int i21 = anIntArrayArray139[l6][k17 + 1];
-								int j21 = -1;
-								int k21 = -1;
-								if (l18 > 0) {
-									int l21 = l9 * 256 / k15;
-									int j22 = j13 / k16;
-									int l22 = j14 / k16;
-									j21 = packHsl(l21, j22, l22);
-									l21 = l21 + anInt123 & 0xff;
-									l22 += anInt133;
-									if (l22 < 0) {
-										l22 = 0;
-									} else if (l22 > 255) {
-										l22 = 255;
+							int underlayId = underlayIds[plane][tileX][tileY] & 0xff;
+							int overlayId = overlayIds[plane][tileX][tileY] & 0xff;
+							if (underlayId > 0 || overlayId > 0) {
+								int heightX0Y0 = tileHeights[plane][tileX][tileY];
+								int heightX1Y0 = tileHeights[plane][tileX + 1][tileY];
+								int heightX1Y1 = tileHeights[plane][tileX + 1][tileY + 1];
+								int heightX0Y1 = tileHeights[plane][tileX][tileY + 1];
+								int lightX0Y0 = tileLightLevels[tileX][tileY];
+								int lightX1Y0 = tileLightLevels[tileX + 1][tileY];
+								int lightX1Y1 = tileLightLevels[tileX + 1][tileY + 1];
+								int lightX0Y1 = tileLightLevels[tileX][tileY + 1];
+								int underlayHsl = -1;
+								int jitteredHsl = -1;
+								if (underlayId > 0) {
+									int hue = windowHueSum * 256 / windowHueWeightSum;
+									int saturation = windowSaturationSum / windowTileCount;
+									int lightness = windowLightnessSum / windowTileCount;
+									underlayHsl = packHsl(hue, saturation, lightness);
+									hue = hue + hueOffset & 0xff;
+									lightness += lightnessOffset;
+									if (lightness < 0) {
+										lightness = 0;
+									} else if (lightness > 255) {
+										lightness = 255;
 									}
-									k21 = packHsl(l21, j22, l22);
+									jitteredHsl = packHsl(hue, saturation, lightness);
 								}
-								if (l > 0) {
-									boolean flag = true;
-									if (l18 == 0 && aByteArrayArrayArray136[l][l6][k17] != 0) {
-										flag = false;
+								if (plane > 0) {
+									boolean canOcclude = true;
+									if (underlayId == 0 && overlayShapes[plane][tileX][tileY] != 0) {
+										canOcclude = false;
 									}
-									if (i19 > 0 && !Flo.cache[i19 - 1].aBoolean393) {
-										flag = false;
+									if (overlayId > 0 && !Flo.cache[overlayId - 1].aBoolean393) {
+										canOcclude = false;
 									}
-									if (flag && j19 == k19 && j19 == l19 && j19 == i20) {
-										occlusionFlags[l][l6][k17] |= 0x924;
+									if (canOcclude && heightX0Y0 == heightX1Y0 && heightX0Y0 == heightX1Y1 && heightX0Y0 == heightX0Y1) {
+										occlusionFlags[plane][tileX][tileY] |= 0x924;
 									}
 								}
-								int i22 = 0;
-								if (j21 != -1) {
-									i22 = Texture.hslToRgbPalette[shadeHsl(k21, 96)];
+								int underlayMapColour = 0;
+								if (underlayHsl != -1) {
+									underlayMapColour = Texture.hslToRgbPalette[shadeHsl(jitteredHsl, 96)];
 								}
-								if (i19 == 0) {
-									worldController.addTile(l, l6, k17, 0, 0, -1, j19, k19, l19, i20, shadeHsl(j21, j20), shadeHsl(j21, k20), shadeHsl(j21, l20), shadeHsl(j21, i21), 0, 0, 0, 0, i22, 0);
+								if (overlayId == 0) {
+									worldController.addTile(plane, tileX, tileY, 0, 0, -1, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, shadeHsl(underlayHsl, lightX0Y0), shadeHsl(underlayHsl, lightX1Y0), shadeHsl(underlayHsl, lightX1Y1), shadeHsl(underlayHsl, lightX0Y1), 0, 0, 0, 0, underlayMapColour, 0);
 								} else {
-									int k22 = aByteArrayArrayArray136[l][l6][k17] + 1;
-									byte byte4 = aByteArrayArrayArray148[l][l6][k17];
-									Flo flo_2 = Flo.cache[i19 - 1];
-									int i23 = flo_2.anInt391;
-									int j23;
-									int k23;
-									if (i23 >= 0) {
-										k23 = Texture.getAverageColor(i23);
-										j23 = -1;
-									} else if (flo_2.anInt390 == 0xff00ff) {
-										/*j23 = -2;
-										i23 = -1;
-										k23 = Texture.hslToRgbPalette[shadeHslOrGrey(flo_2.anInt399, 96)];*/
-										k23 = 0;
-										j23 = -2;
-										i23 = -1;
-									} else if(flo_2.anInt390 == 0x333333) {
-										k23 = Texture.hslToRgbPalette[shadeHslOrGrey(flo_2.anInt399, 96)];
-										j23 = -2;
-										i23 = -1;
+									int shapeId = overlayShapes[plane][tileX][tileY] + 1;
+									byte overlayRotation = overlayRotations[plane][tileX][tileY];
+									Flo overlayFlo = Flo.cache[overlayId - 1];
+									int textureId = overlayFlo.anInt391;
+									int overlayHsl;
+									int overlayMapColour;
+									if (textureId >= 0) {
+										overlayMapColour = Texture.getAverageColor(textureId);
+										overlayHsl = -1;
+									} else if (overlayFlo.anInt390 == 0xff00ff) {
+										/*overlayHsl = -2;
+										textureId = -1;
+										overlayMapColour = Texture.hslToRgbPalette[shadeHslOrGrey(overlayFlo.anInt399, 96)];*/
+										overlayMapColour = 0;
+										overlayHsl = -2;
+										textureId = -1;
+									} else if(overlayFlo.anInt390 == 0x333333) {
+										overlayMapColour = Texture.hslToRgbPalette[shadeHslOrGrey(overlayFlo.anInt399, 96)];
+										overlayHsl = -2;
+										textureId = -1;
 									} else {
-										j23 = packHsl(flo_2.anInt394, flo_2.anInt395, flo_2.anInt396);
-										k23 = Texture.hslToRgbPalette[shadeHslOrGrey(flo_2.anInt399, 96)];
+										overlayHsl = packHsl(overlayFlo.anInt394, overlayFlo.anInt395, overlayFlo.anInt396);
+										overlayMapColour = Texture.hslToRgbPalette[shadeHslOrGrey(overlayFlo.anInt399, 96)];
 									}
-									worldController.addTile(l, l6, k17, k22, byte4, i23, j19, k19, l19, i20, shadeHsl(j21, j20), shadeHsl(j21, k20), shadeHsl(j21, l20), shadeHsl(j21, i21), shadeHslOrGrey(j23, j20), shadeHslOrGrey(j23, k20), shadeHslOrGrey(j23, l20), shadeHslOrGrey(j23, i21), i22, k23);
+									worldController.addTile(plane, tileX, tileY, shapeId, overlayRotation, textureId, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, shadeHsl(underlayHsl, lightX0Y0), shadeHsl(underlayHsl, lightX1Y0), shadeHsl(underlayHsl, lightX1Y1), shadeHsl(underlayHsl, lightX0Y1), shadeHslOrGrey(overlayHsl, lightX0Y0), shadeHslOrGrey(overlayHsl, lightX1Y0), shadeHslOrGrey(overlayHsl, lightX1Y1), shadeHslOrGrey(overlayHsl, lightX0Y1), underlayMapColour, overlayMapColour);
 								}
 							}
 						}
@@ -229,9 +229,9 @@ final class ObjectManager {
 				}
 			}
 
-			for (int j8 = 1; j8 < anInt147 - 1; j8++) {
-				for (int i10 = 1; i10 < anInt146 - 1; i10++) {
-					worldController.setMinCameraPlane(l, i10, j8, getEffectivePlane(j8, l, i10));
+			for (int tileY = 1; tileY < sizeY - 1; tileY++) {
+				for (int tileX = 1; tileX < sizeX - 1; tileX++) {
+					worldController.setMinCameraPlane(plane, tileX, tileY, getEffectivePlane(tileY, plane, tileX));
 				}
 
 			}
@@ -239,150 +239,150 @@ final class ObjectManager {
 		}
 
 		worldController.lightScene(-10, -50, -50);
-		for (int j1 = 0; j1 < anInt146; j1++) {
-			for (int l1 = 0; l1 < anInt147; l1++) {
-				if ((aByteArrayArrayArray149[1][j1][l1] & 2) == 2) {
-					worldController.lowerColumnPlanes(l1, j1);
+		for (int tileX = 0; tileX < sizeX; tileX++) {
+			for (int tileY = 0; tileY < sizeY; tileY++) {
+				if ((tileFlags[1][tileX][tileY] & 2) == 2) {
+					worldController.lowerColumnPlanes(tileY, tileX);
 				}
 			}
 
 		}
 
-		int i2 = 1;
-		int j2 = 2;
-		int k2 = 4;
-		for (int l2 = 0; l2 < 4; l2++) {
-			if (l2 > 0) {
-				i2 <<= 3;
-				j2 <<= 3;
-				k2 <<= 3;
+		int xWallBit = 1;
+		int yWallBit = 2;
+		int roofBit = 4;
+		for (int maxPlane = 0; maxPlane < 4; maxPlane++) {
+			if (maxPlane > 0) {
+				xWallBit <<= 3;
+				yWallBit <<= 3;
+				roofBit <<= 3;
 			}
-			for (int i3 = 0; i3 <= l2; i3++) {
-				for (int k3 = 0; k3 <= anInt147; k3++) {
-					for (int i4 = 0; i4 <= anInt146; i4++) {
-						if ((occlusionFlags[i3][i4][k3] & i2) != 0) {
-							int k4 = k3;
-							int l5 = k3;
-							int i7 = i3;
-							int k8 = i3;
-							for (; k4 > 0 && (occlusionFlags[i3][i4][k4 - 1] & i2) != 0; k4--) {
+			for (int startPlane = 0; startPlane <= maxPlane; startPlane++) {
+				for (int tileY = 0; tileY <= sizeY; tileY++) {
+					for (int tileX = 0; tileX <= sizeX; tileX++) {
+						if ((occlusionFlags[startPlane][tileX][tileY] & xWallBit) != 0) {
+							int wallStartY = tileY;
+							int wallEndY = tileY;
+							int wallLowPlane = startPlane;
+							int wallHighPlane = startPlane;
+							for (; wallStartY > 0 && (occlusionFlags[startPlane][tileX][wallStartY - 1] & xWallBit) != 0; wallStartY--) {
 								;
 							}
-							for (; l5 < anInt147 && (occlusionFlags[i3][i4][l5 + 1] & i2) != 0; l5++) {
+							for (; wallEndY < sizeY && (occlusionFlags[startPlane][tileX][wallEndY + 1] & xWallBit) != 0; wallEndY++) {
 								;
 							}
-							label0 : for (; i7 > 0; i7--) {
-								for (int j10 = k4; j10 <= l5; j10++) {
-									if ((occlusionFlags[i7 - 1][i4][j10] & i2) == 0) {
+							label0 : for (; wallLowPlane > 0; wallLowPlane--) {
+								for (int checkY = wallStartY; checkY <= wallEndY; checkY++) {
+									if ((occlusionFlags[wallLowPlane - 1][tileX][checkY] & xWallBit) == 0) {
 										break label0;
 									}
 								}
 
 							}
 
-							label1 : for (; k8 < l2; k8++) {
-								for (int k10 = k4; k10 <= l5; k10++) {
-									if ((occlusionFlags[k8 + 1][i4][k10] & i2) == 0) {
+							label1 : for (; wallHighPlane < maxPlane; wallHighPlane++) {
+								for (int checkY = wallStartY; checkY <= wallEndY; checkY++) {
+									if ((occlusionFlags[wallHighPlane + 1][tileX][checkY] & xWallBit) == 0) {
 										break label1;
 									}
 								}
 
 							}
 
-							int l10 = (k8 + 1 - i7) * (l5 - k4 + 1);
-							if (l10 >= 8) {
-								char c1 = '\360';
-								int k14 = anIntArrayArrayArray129[k8][i4][k4] - c1;
-								int l15 = anIntArrayArrayArray129[i7][i4][k4];
-								WorldController.addOccluder(l2, i4 * 128, l15, i4 * 128, l5 * 128 + 128, k14, k4 * 128, 1);
-								for (int l16 = i7; l16 <= k8; l16++) {
-									for (int l17 = k4; l17 <= l5; l17++) {
-										occlusionFlags[l16][i4][l17] &= ~i2;
+							int wallArea = (wallHighPlane + 1 - wallLowPlane) * (wallEndY - wallStartY + 1);
+							if (wallArea >= 8) {
+								char wallHeight = '\360';
+								int wallTopHeight = tileHeights[wallHighPlane][tileX][wallStartY] - wallHeight;
+								int wallBottomHeight = tileHeights[wallLowPlane][tileX][wallStartY];
+								WorldController.addOccluder(maxPlane, tileX * 128, wallBottomHeight, tileX * 128, wallEndY * 128 + 128, wallTopHeight, wallStartY * 128, 1);
+								for (int clearPlane = wallLowPlane; clearPlane <= wallHighPlane; clearPlane++) {
+									for (int clearY = wallStartY; clearY <= wallEndY; clearY++) {
+										occlusionFlags[clearPlane][tileX][clearY] &= ~xWallBit;
 									}
 
 								}
 
 							}
 						}
-						if ((occlusionFlags[i3][i4][k3] & j2) != 0) {
-							int l4 = i4;
-							int i6 = i4;
-							int j7 = i3;
-							int l8 = i3;
-							for (; l4 > 0 && (occlusionFlags[i3][l4 - 1][k3] & j2) != 0; l4--) {
+						if ((occlusionFlags[startPlane][tileX][tileY] & yWallBit) != 0) {
+							int wallStartX = tileX;
+							int wallEndX = tileX;
+							int wallLowPlane = startPlane;
+							int wallHighPlane = startPlane;
+							for (; wallStartX > 0 && (occlusionFlags[startPlane][wallStartX - 1][tileY] & yWallBit) != 0; wallStartX--) {
 								;
 							}
-							for (; i6 < anInt146 && (occlusionFlags[i3][i6 + 1][k3] & j2) != 0; i6++) {
+							for (; wallEndX < sizeX && (occlusionFlags[startPlane][wallEndX + 1][tileY] & yWallBit) != 0; wallEndX++) {
 								;
 							}
-							label2 : for (; j7 > 0; j7--) {
-								for (int i11 = l4; i11 <= i6; i11++) {
-									if ((occlusionFlags[j7 - 1][i11][k3] & j2) == 0) {
+							label2 : for (; wallLowPlane > 0; wallLowPlane--) {
+								for (int checkX = wallStartX; checkX <= wallEndX; checkX++) {
+									if ((occlusionFlags[wallLowPlane - 1][checkX][tileY] & yWallBit) == 0) {
 										break label2;
 									}
 								}
 
 							}
 
-							label3 : for (; l8 < l2; l8++) {
-								for (int j11 = l4; j11 <= i6; j11++) {
-									if ((occlusionFlags[l8 + 1][j11][k3] & j2) == 0) {
+							label3 : for (; wallHighPlane < maxPlane; wallHighPlane++) {
+								for (int checkX = wallStartX; checkX <= wallEndX; checkX++) {
+									if ((occlusionFlags[wallHighPlane + 1][checkX][tileY] & yWallBit) == 0) {
 										break label3;
 									}
 								}
 
 							}
 
-							int k11 = (l8 + 1 - j7) * (i6 - l4 + 1);
-							if (k11 >= 8) {
-								char c2 = '\360';
-								int l14 = anIntArrayArrayArray129[l8][l4][k3] - c2;
-								int i16 = anIntArrayArrayArray129[j7][l4][k3];
-								WorldController.addOccluder(l2, l4 * 128, i16, i6 * 128 + 128, k3 * 128, l14, k3 * 128, 2);
-								for (int i17 = j7; i17 <= l8; i17++) {
-									for (int i18 = l4; i18 <= i6; i18++) {
-										occlusionFlags[i17][i18][k3] &= ~j2;
+							int wallArea = (wallHighPlane + 1 - wallLowPlane) * (wallEndX - wallStartX + 1);
+							if (wallArea >= 8) {
+								char wallHeight = '\360';
+								int wallTopHeight = tileHeights[wallHighPlane][wallStartX][tileY] - wallHeight;
+								int wallBottomHeight = tileHeights[wallLowPlane][wallStartX][tileY];
+								WorldController.addOccluder(maxPlane, wallStartX * 128, wallBottomHeight, wallEndX * 128 + 128, tileY * 128, wallTopHeight, tileY * 128, 2);
+								for (int clearPlane = wallLowPlane; clearPlane <= wallHighPlane; clearPlane++) {
+									for (int clearX = wallStartX; clearX <= wallEndX; clearX++) {
+										occlusionFlags[clearPlane][clearX][tileY] &= ~yWallBit;
 									}
 
 								}
 
 							}
 						}
-						if ((occlusionFlags[i3][i4][k3] & k2) != 0) {
-							int i5 = i4;
-							int j6 = i4;
-							int k7 = k3;
-							int i9 = k3;
-							for (; k7 > 0 && (occlusionFlags[i3][i4][k7 - 1] & k2) != 0; k7--) {
+						if ((occlusionFlags[startPlane][tileX][tileY] & roofBit) != 0) {
+							int roofStartX = tileX;
+							int roofEndX = tileX;
+							int roofStartY = tileY;
+							int roofEndY = tileY;
+							for (; roofStartY > 0 && (occlusionFlags[startPlane][tileX][roofStartY - 1] & roofBit) != 0; roofStartY--) {
 								;
 							}
-							for (; i9 < anInt147 && (occlusionFlags[i3][i4][i9 + 1] & k2) != 0; i9++) {
+							for (; roofEndY < sizeY && (occlusionFlags[startPlane][tileX][roofEndY + 1] & roofBit) != 0; roofEndY++) {
 								;
 							}
-							label4 : for (; i5 > 0; i5--) {
-								for (int l11 = k7; l11 <= i9; l11++) {
-									if ((occlusionFlags[i3][i5 - 1][l11] & k2) == 0) {
+							label4 : for (; roofStartX > 0; roofStartX--) {
+								for (int checkY = roofStartY; checkY <= roofEndY; checkY++) {
+									if ((occlusionFlags[startPlane][roofStartX - 1][checkY] & roofBit) == 0) {
 										break label4;
 									}
 								}
 
 							}
 
-							label5 : for (; j6 < anInt146; j6++) {
-								for (int i12 = k7; i12 <= i9; i12++) {
-									if ((occlusionFlags[i3][j6 + 1][i12] & k2) == 0) {
+							label5 : for (; roofEndX < sizeX; roofEndX++) {
+								for (int checkY = roofStartY; checkY <= roofEndY; checkY++) {
+									if ((occlusionFlags[startPlane][roofEndX + 1][checkY] & roofBit) == 0) {
 										break label5;
 									}
 								}
 
 							}
 
-							if ((j6 - i5 + 1) * (i9 - k7 + 1) >= 4) {
-								int j12 = anIntArrayArrayArray129[i3][i5][k7];
-								WorldController.addOccluder(l2, i5 * 128, j12, j6 * 128 + 128, i9 * 128 + 128, j12, k7 * 128, 4);
-								for (int k13 = i5; k13 <= j6; k13++) {
-									for (int i15 = k7; i15 <= i9; i15++) {
-										occlusionFlags[i3][k13][i15] &= ~k2;
+							if ((roofEndX - roofStartX + 1) * (roofEndY - roofStartY + 1) >= 4) {
+								int roofHeight = tileHeights[startPlane][roofStartX][roofStartY];
+								WorldController.addOccluder(maxPlane, roofStartX * 128, roofHeight, roofEndX * 128 + 128, roofEndY * 128 + 128, roofHeight, roofStartY * 128, 4);
+								for (int clearX = roofStartX; clearX <= roofEndX; clearX++) {
+									for (int clearY = roofStartY; clearY <= roofEndY; clearY++) {
+										occlusionFlags[startPlane][clearX][clearY] &= ~roofBit;
 									}
 
 								}
@@ -435,19 +435,19 @@ final class ObjectManager {
 	public final void blankRegionArea(int startY, int spanY, int spanX, int startX) {
 		for (int tileY = startY; tileY <= startY + spanY; tileY++) {
 			for (int tileX = startX; tileX <= startX + spanX; tileX++) {
-				if (tileX >= 0 && tileX < anInt146 && tileY >= 0 && tileY < anInt147) {
+				if (tileX >= 0 && tileX < sizeX && tileY >= 0 && tileY < sizeY) {
 					objectShadow[0][tileX][tileY] = 127;
 					if (tileX == startX && tileX > 0) {
-						anIntArrayArrayArray129[0][tileX][tileY] = anIntArrayArrayArray129[0][tileX - 1][tileY];
+						tileHeights[0][tileX][tileY] = tileHeights[0][tileX - 1][tileY];
 					}
-					if (tileX == startX + spanX && tileX < anInt146 - 1) {
-						anIntArrayArrayArray129[0][tileX][tileY] = anIntArrayArrayArray129[0][tileX + 1][tileY];
+					if (tileX == startX + spanX && tileX < sizeX - 1) {
+						tileHeights[0][tileX][tileY] = tileHeights[0][tileX + 1][tileY];
 					}
 					if (tileY == startY && tileY > 0) {
-						anIntArrayArrayArray129[0][tileX][tileY] = anIntArrayArrayArray129[0][tileX][tileY - 1];
+						tileHeights[0][tileX][tileY] = tileHeights[0][tileX][tileY - 1];
 					}
-					if (tileY == startY + spanY && tileY < anInt147 - 1) {
-						anIntArrayArrayArray129[0][tileX][tileY] = anIntArrayArrayArray129[0][tileX][tileY + 1];
+					if (tileY == startY + spanY && tileY < sizeY - 1) {
+						tileHeights[0][tileX][tileY] = tileHeights[0][tileX][tileY + 1];
 					}
 				}
 			}
@@ -456,8 +456,8 @@ final class ObjectManager {
 	}
 
 	private void placeObject(int tileY, WorldController worldController, CollisionMap collisionMap, int shape, int plane, int tileX, int objectId, int orientation) {
-		if ((hideRoofs || lowMem) && (aByteArrayArrayArray149[0][tileX][tileY] & 2) == 0) {
-			if ((aByteArrayArrayArray149[plane][tileX][tileY] & 0x10) != 0) {
+		if ((hideRoofs || lowMem) && (tileFlags[0][tileX][tileY] & 2) == 0) {
+			if ((tileFlags[plane][tileX][tileY] & 0x10) != 0) {
 				return;
 			}
 			if (getEffectivePlane(tileY, plane, tileX) != anInt131) {
@@ -467,10 +467,10 @@ final class ObjectManager {
 		if (plane < anInt145) {
 			anInt145 = plane;
 		}
-		int heightX0Y0 = anIntArrayArrayArray129[plane][tileX][tileY];
-		int heightX1Y0 = anIntArrayArrayArray129[plane][tileX + 1][tileY];
-		int heightX1Y1 = anIntArrayArrayArray129[plane][tileX + 1][tileY + 1];
-		int heightX0Y1 = anIntArrayArrayArray129[plane][tileX][tileY + 1];
+		int heightX0Y0 = tileHeights[plane][tileX][tileY];
+		int heightX1Y0 = tileHeights[plane][tileX + 1][tileY];
+		int heightX1Y1 = tileHeights[plane][tileX + 1][tileY + 1];
+		int heightX0Y1 = tileHeights[plane][tileX][tileY + 1];
 		int averageHeight = heightX0Y0 + heightX1Y0 + heightX1Y1 + heightX0Y1 >> 2;
 		ObjectDef objectDef = ObjectDef.forID(objectId);
 		int uid = tileX + (tileY << 7) + (objectId << 14) + 0x40000000;
@@ -877,15 +877,15 @@ final class ObjectManager {
 
 	private void readTerrainTile(int tileY, int noiseOffsetY, Stream stream, int tileX, int plane, int rotation, int noiseOffsetX) {
 		if (tileX >= 0 && tileX < 104 && tileY >= 0 && tileY < 104) {
-			aByteArrayArrayArray149[plane][tileX][tileY] = 0;
+			tileFlags[plane][tileX][tileY] = 0;
 			do {
 				int opcode = stream.readUnsignedByte();
 				if (opcode == 0) {
 					if (plane == 0) {
-						anIntArrayArrayArray129[0][tileX][tileY] = -proceduralHeight(0xe3b7b + tileX + noiseOffsetX, 0x87cce + tileY + noiseOffsetY) * 8;
+						tileHeights[0][tileX][tileY] = -proceduralHeight(0xe3b7b + tileX + noiseOffsetX, 0x87cce + tileY + noiseOffsetY) * 8;
 						return;
 					} else {
-						anIntArrayArrayArray129[plane][tileX][tileY] = anIntArrayArrayArray129[plane - 1][tileX][tileY] - 240;
+						tileHeights[plane][tileX][tileY] = tileHeights[plane - 1][tileX][tileY] - 240;
 						return;
 					}
 				}
@@ -895,21 +895,21 @@ final class ObjectManager {
 						explicitHeight = 0;
 					}
 					if (plane == 0) {
-						anIntArrayArrayArray129[0][tileX][tileY] = -explicitHeight * 8;
+						tileHeights[0][tileX][tileY] = -explicitHeight * 8;
 						return;
 					} else {
-						anIntArrayArrayArray129[plane][tileX][tileY] = anIntArrayArrayArray129[plane - 1][tileX][tileY] - explicitHeight * 8;
+						tileHeights[plane][tileX][tileY] = tileHeights[plane - 1][tileX][tileY] - explicitHeight * 8;
 						return;
 					}
 				}
 				if (opcode <= 49) {
-					aByteArrayArrayArray130[plane][tileX][tileY] = stream.readSignedByte();
-					aByteArrayArrayArray136[plane][tileX][tileY] = (byte) ((opcode - 2) / 4);
-					aByteArrayArrayArray148[plane][tileX][tileY] = (byte) (opcode - 2 + rotation & 3);
+					overlayIds[plane][tileX][tileY] = stream.readSignedByte();
+					overlayShapes[plane][tileX][tileY] = (byte) ((opcode - 2) / 4);
+					overlayRotations[plane][tileX][tileY] = (byte) (opcode - 2 + rotation & 3);
 				} else if (opcode <= 81) {
-					aByteArrayArrayArray149[plane][tileX][tileY] = (byte) (opcode - 49);
+					tileFlags[plane][tileX][tileY] = (byte) (opcode - 49);
 				} else {
-					aByteArrayArrayArray142[plane][tileX][tileY] = (byte) (opcode - 81);
+					underlayIds[plane][tileX][tileY] = (byte) (opcode - 81);
 				}
 			} while (true);
 		}
@@ -929,10 +929,10 @@ final class ObjectManager {
 	}
 
 	private int getEffectivePlane(int tileY, int plane, int tileX) {
-		if ((aByteArrayArrayArray149[plane][tileX][tileY] & 8) != 0) {
+		if ((tileFlags[plane][tileX][tileY] & 8) != 0) {
 			return 0;
 		}
-		if (plane > 0 && (aByteArrayArrayArray149[1][tileX][tileY] & 2) != 0) {
+		if (plane > 0 && (tileFlags[1][tileX][tileY] & 2) != 0) {
 			return plane - 1;
 		} else {
 			return plane;
@@ -968,7 +968,7 @@ final class ObjectManager {
 						int destTileY = destY + Class4.method158(localY & 7, objectDef.sizeY, rotation, objectDef.sizeX, localX & 7);
 						if (destTileX > 0 && destTileY > 0 && destTileX < 103 && destTileY < 103) {
 							int collisionPlane = objectPlane;
-							if ((aByteArrayArrayArray149[1][destTileX][destTileY] & 2) == 2) {
+							if ((tileFlags[1][destTileX][destTileY] & 2) == 2) {
 								collisionPlane--;
 							}
 							CollisionMap collisionMap = null;
@@ -1317,7 +1317,7 @@ final class ObjectManager {
 					int tileY = localY + baseY;
 					if (tileX > 0 && tileY > 0 && tileX < 103 && tileY < 103) {
 						int collisionPlane = plane;
-						if ((aByteArrayArrayArray149[1][tileX][tileY] & 2) == 2) {
+						if ((tileFlags[1][tileX][tileY] & 2) == 2) {
 							collisionPlane--;
 						}
 						CollisionMap collisionMap = null;
@@ -1331,29 +1331,29 @@ final class ObjectManager {
 		}
 	}
 
-	private static int anInt123 = (int) (Math.random() * 17D) - 8;
-	private final int[] anIntArray124;
-	private final int[] anIntArray125;
-	private final int[] anIntArray126;
-	private final int[] anIntArray127;
-	private final int[] anIntArray128;
-	private final int[][][] anIntArrayArrayArray129;
-	private final byte[][][] aByteArrayArrayArray130;
+	private static int hueOffset = (int) (Math.random() * 17D) - 8;
+	private final int[] blendHueSum;
+	private final int[] blendSaturationSum;
+	private final int[] blendLightnessSum;
+	private final int[] blendHueWeightSum;
+	private final int[] blendTileCount;
+	private final int[][][] tileHeights;
+	private final byte[][][] overlayIds;
 	static int anInt131;
-	private static int anInt133 = (int) (Math.random() * 33D) - 16;
+	private static int lightnessOffset = (int) (Math.random() * 33D) - 16;
 	private final byte[][][] objectShadow;
 	private final int[][][] occlusionFlags;
-	private final byte[][][] aByteArrayArrayArray136;
+	private final byte[][][] overlayShapes;
 	private static final int anIntArray137[] = {1, 0, -1, 0};
-	private final int[][] anIntArrayArray139;
+	private final int[][] tileLightLevels;
 	private static final int anIntArray140[] = {16, 32, 64, 128};
-	private final byte[][][] aByteArrayArrayArray142;
+	private final byte[][][] underlayIds;
 	private static final int anIntArray144[] = {0, -1, 0, 1};
 	static int anInt145 = 99;
-	private final int anInt146;
-	private final int anInt147;
-	private final byte[][][] aByteArrayArrayArray148;
-	private final byte[][][] aByteArrayArrayArray149;
+	private final int sizeX;
+	private final int sizeY;
+	private final byte[][][] overlayRotations;
+	private final byte[][][] tileFlags;
 	static boolean lowMem = true;
 	
 	static boolean hideRoofs = ClientSettings.HIDE_ROOFS;

@@ -108,7 +108,7 @@ public class ObjectRegionLoadTest {
     }
 
     private static int[][][] heights(ObjectManager m) throws Exception {
-        return (int[][][]) field(ObjectManager.class, "anIntArrayArrayArray129").get(m);
+        return (int[][][]) field(ObjectManager.class, "tileHeights").get(m);
     }
 
     private static CollisionMap[] maps() {
@@ -261,13 +261,13 @@ public class ObjectRegionLoadTest {
         ObjectManager m = new ObjectManager(flags, new int[4][105][105]);
         // opcode 15: signed byte -5, (15-2)/4 = 3, orientation (15-2+3)&3 = 0; opcode 60 -> flag 11; opcode 90 -> 9
         m181(m, 7, 0, bytes(15, 0xfb, 60, 90, 0), 5, 0, 3, 0);
-        assertEquals(-5, f(m, "aByteArrayArrayArray130")[0][5][7]);
-        assertEquals(3, f(m, "aByteArrayArrayArray136")[0][5][7]);
-        assertEquals(0, f(m, "aByteArrayArrayArray148")[0][5][7]);
+        assertEquals(-5, f(m, "overlayIds")[0][5][7]);
+        assertEquals(3, f(m, "overlayShapes")[0][5][7]);
+        assertEquals(0, f(m, "overlayRotations")[0][5][7]);
         assertEquals(11, flags[0][5][7]);
-        assertEquals(9, f(m, "aByteArrayArrayArray142")[0][5][7]);
+        assertEquals(9, f(m, "underlayIds")[0][5][7]);
         m181(m, 8, 0, bytes(15, 0xfb, 0), 5, 0, 0, 0);
-        assertEquals("orientation without rotation", 1, f(m, "aByteArrayArrayArray148")[0][5][8]);
+        assertEquals("orientation without rotation", 1, f(m, "overlayRotations")[0][5][8]);
     }
 
     @Test public void method181OutsideTheMapOnlyConsumesTheTileBytes() throws Exception {

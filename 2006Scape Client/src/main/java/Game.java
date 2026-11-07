@@ -773,7 +773,7 @@ public class Game extends RSApplet {
 
 			}
 			stream.writeEncryptedOpcode(0);
-			objectManager.method171(aClass11Array1230, worldController);
+			objectManager.buildTerrainScene(aClass11Array1230, worldController);
 			if(aRSImageProducer_1165 != null) {
 				aRSImageProducer_1165.setAsDrawingArea();
 				Texture.lineOffsets = chatBoxAreaOffsets;
