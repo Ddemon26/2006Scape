@@ -12631,11 +12631,11 @@ public class Game extends RSApplet {
 
 	}
 
-	void mouseWheelDragged(int i, int j) {
+	void mouseWheelDragged(int dragLeft, int dragDown) {
 		if (!mouseWheelDown)
 			return;
-		this.cameraYawVelocity += i * 3;
-		this.cameraPitchVelocity += (j << 1);
+		this.cameraYawVelocity += dragLeft * 3;
+		this.cameraPitchVelocity += (dragDown << 1);
 	}
 
 	public void handleKeyPressed(int keyCode, char keyChar, boolean isControlDown, boolean isShiftDown)

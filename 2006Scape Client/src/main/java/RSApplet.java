@@ -405,11 +405,11 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 
 	@Override
 	public final void mousePressed(MouseEvent mouseevent) {
-		int i = mouseevent.getX();
-		int j = mouseevent.getY();
+		int x = mouseevent.getX();
+		int y = mouseevent.getY();
 		idleTime = 0;
-		clickX = i;
-		clickY = j;
+		clickX = x;
+		clickY = y;
 		clickTime = System.currentTimeMillis();
 		if (mouseevent.getButton() == MouseEvent.BUTTON2) {
 			mouseWheelDown = true;
@@ -455,8 +455,8 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 		int y = e.getY();
 		if (mouseWheelDown) {
 			y = mouseWheelX - e.getX();
-			int k = mouseWheelY - e.getY();
-			mouseWheelDragged(y, -k);
+			int dragUp = mouseWheelY - e.getY();
+			mouseWheelDragged(y, -dragUp);
 			mouseWheelX = e.getX();
 			mouseWheelY = e.getY();
 			return;
@@ -465,17 +465,17 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 		mouseX = x;
 		mouseY = y;
 	}
-	void mouseWheelDragged(int param1, int param2) {
+	void mouseWheelDragged(int dragLeft, int dragDown) {
 
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent mouseevent) {
-		int i = mouseevent.getX();
-		int j = mouseevent.getY();
+		int x = mouseevent.getX();
+		int y = mouseevent.getY();
 		idleTime = 0;
-		mouseX = i;
-		mouseY = j;
+		mouseX = x;
+		mouseY = y;
 	}
 
 	@Override
