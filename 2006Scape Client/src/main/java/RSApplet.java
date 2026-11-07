@@ -247,99 +247,99 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 		}
 		drawLoadingText(0, "Loading...");
 		startUp();
-		int i = 0;
-		int j = 256;
-		int k = 1;
-		int i1 = 0;
-		int j1 = 0;
-		for (int k1 = 0; k1 < 10; k1++) {
-			aLongArray7[k1] = System.currentTimeMillis();
+		int frameSlot = 0;
+		int speedRatio = 256;
+		int sleepMillis = 1;
+		int tickAccumulator = 0;
+		int interruptCount = 0;
+		for (int slot = 0; slot < 10; slot++) {
+			frameTimes[slot] = System.currentTimeMillis();
 		}
 
 		System.currentTimeMillis();
-		while (anInt4 >= 0) {
-			if (anInt4 > 0) {
-				anInt4--;
-				if (anInt4 == 0) {
+		while (runState >= 0) {
+			if (runState > 0) {
+				runState--;
+				if (runState == 0) {
 					exit();
 					return;
 				}
 			}
-			int i2 = j;
-			int j2 = k;
-			j = 300;
-			k = 1;
-			long l1 = System.currentTimeMillis();
-			if (aLongArray7[i] == 0L) {
-				j = i2;
-				k = j2;
-			} else if (l1 > aLongArray7[i]) {
-				j = (int) (2560 * delayTime / (l1 - aLongArray7[i]));
+			int i2 = speedRatio;
+			int j2 = sleepMillis;
+			speedRatio = 300;
+			sleepMillis = 1;
+			long now = System.currentTimeMillis();
+			if (frameTimes[frameSlot] == 0L) {
+				speedRatio = i2;
+				sleepMillis = j2;
+			} else if (now > frameTimes[frameSlot]) {
+				speedRatio = (int) (2560 * delayTime / (now - frameTimes[frameSlot]));
 			}
-			if (j < 25) {
-				j = 25;
+			if (speedRatio < 25) {
+				speedRatio = 25;
 			}
-			if (j > 256) {
-				j = 256;
-				k = (int) (delayTime - (l1 - aLongArray7[i]) / 10L);
+			if (speedRatio > 256) {
+				speedRatio = 256;
+				sleepMillis = (int) (delayTime - (now - frameTimes[frameSlot]) / 10L);
 			}
-			if (k > delayTime) {
-				k = delayTime;
+			if (sleepMillis > delayTime) {
+				sleepMillis = delayTime;
 			}
-			aLongArray7[i] = l1;
-			i = (i + 1) % 10;
-			if (k > 1) {
-				for (int k2 = 0; k2 < 10; k2++) {
-					if (aLongArray7[k2] != 0L) {
-						aLongArray7[k2] += k;
+			frameTimes[frameSlot] = now;
+			frameSlot = (frameSlot + 1) % 10;
+			if (sleepMillis > 1) {
+				for (int slot = 0; slot < 10; slot++) {
+					if (frameTimes[slot] != 0L) {
+						frameTimes[slot] += sleepMillis;
 					}
 				}
 
 			}
-			if (k < minDelay) {
-				k = minDelay;
+			if (sleepMillis < minDelay) {
+				sleepMillis = minDelay;
 			}
 			try {
-				Thread.sleep(k);
+				Thread.sleep(sleepMillis);
 			} catch (InterruptedException _ex) {
-				j1++;
+				interruptCount++;
 			}
-			for (; i1 < 256; i1 += j) {
+			for (; tickAccumulator < 256; tickAccumulator += speedRatio) {
 				clickMode3 = clickMode1;
 				saveClickX = clickX;
 				saveClickY = clickY;
-				aLong29 = clickTime;
+				saveClickTime = clickTime;
 				clickMode1 = 0;
 				processGameLoop();
 				readIndex = writeIndex;
 			}
 
-			i1 &= 0xff;
+			tickAccumulator &= 0xff;
 			if (delayTime > 0) {
-				fps = 1000 * j / (delayTime * 256);
+				fps = 1000 * speedRatio / (delayTime * 256);
 			}
 			processDrawing();
 			if (shouldDebug) {
-				System.out.println("ntime:" + l1);
-				for (int l2 = 0; l2 < 10; l2++) {
-					int i3 = (i - l2 - 1 + 20) % 10;
-					System.out.println("otim" + i3 + ":" + aLongArray7[i3]);
+				System.out.println("ntime:" + now);
+				for (int age = 0; age < 10; age++) {
+					int slotIndex = (frameSlot - age - 1 + 20) % 10;
+					System.out.println("otim" + slotIndex + ":" + frameTimes[slotIndex]);
 				}
 
-				System.out.println("fps:" + fps + " ratio:" + j + " count:" + i1);
-				System.out.println("del:" + k + " deltime:" + delayTime + " mindel:" + minDelay);
-				System.out.println("intex:" + j1 + " opos:" + i);
+				System.out.println("fps:" + fps + " ratio:" + speedRatio + " count:" + tickAccumulator);
+				System.out.println("del:" + sleepMillis + " deltime:" + delayTime + " mindel:" + minDelay);
+				System.out.println("intex:" + interruptCount + " opos:" + frameSlot);
 				shouldDebug = false;
-				j1 = 0;
+				interruptCount = 0;
 			}
 		}
-		if (anInt4 == -1) {
+		if (runState == -1) {
 			exit();
 		}
 	}
 
 	private void exit() {
-		anInt4 = -2;
+		runState = -2;
 		cleanUpForQuit();
 		if (gameFrame != null) {
 			try {
@@ -353,32 +353,32 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 		}
 	}
 
-	final void method4(int i) {
+	final void setFrameRate(int i) {
 		delayTime = 1000 / i;
 	}
 
 	@Override
 	public final void start() {
-		if (anInt4 >= 0) {
-			anInt4 = 0;
+		if (runState >= 0) {
+			runState = 0;
 		}
 	}
 
 	@Override
 	public final void stop() {
-		if (anInt4 >= 0) {
-			anInt4 = 4000 / delayTime;
+		if (runState >= 0) {
+			runState = 4000 / delayTime;
 		}
 	}
 
 	@Override
 	public final void destroy() {
-		anInt4 = -1;
+		runState = -1;
 		try {
 			Thread.sleep(1000L);
 		} catch (Exception _ex) {
 		}
-		if (anInt4 == -1) {
+		if (runState == -1) {
 			exit();
 		}
 	}
@@ -721,7 +721,7 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 	RSApplet() {
 		delayTime = 20;
 		minDelay = 1;
-		aLongArray7 = new long[10];
+		frameTimes = new long[10];
 		shouldDebug = false;
 		shouldClearScreen = true;
 		awtFocus = true;
@@ -729,10 +729,10 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 		charQueue = new int[128];
 	}
 
-	private int anInt4;
+	private int runState;
 	private int delayTime;
 	int minDelay;
-	private final long[] aLongArray7;
+	private final long[] frameTimes;
 	int fps;
 	boolean shouldDebug;
 	int myWidth;
@@ -753,7 +753,7 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 	int clickMode3;
 	int saveClickX;
 	int saveClickY;
-	long aLong29;
+	long saveClickTime;
 	final int[] keyArray;
 	private final int[] charQueue;
 	private int readIndex;

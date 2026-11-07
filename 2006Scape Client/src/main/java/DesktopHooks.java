@@ -114,7 +114,7 @@ public final class DesktopHooks {
         if (g == null) return;
         g.setColor(Color.black);
         g.fillRect(0, 0, 765, 503);
-        game.method4(1);
+        game.setFrameRate(1);
         if (loadingError) {
             g.setFont(new Font("Helvetica", 1, 16));
             g.setColor(Color.yellow);

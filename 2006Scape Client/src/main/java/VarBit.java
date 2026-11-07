@@ -16,7 +16,7 @@ public final class VarBit {
 			}
 			cache[j].readValues(stream);
 			if (cache[j].aBoolean651) {
-				Varp.cache[cache[j].anInt648].aBoolean713 = true;
+				Varp.cache[cache[j].varpIndex].aBoolean713 = true;
 			}
 		}
 
@@ -32,9 +32,9 @@ public final class VarBit {
 				return;
 			}
 			if (j == 1) {
-				anInt648 = stream.readUnsignedShortBigEndian();
-				anInt649 = stream.readUnsignedByte();
-				anInt650 = stream.readUnsignedByte();
+				varpIndex = stream.readUnsignedShortBigEndian();
+				lowBit = stream.readUnsignedByte();
+				highBit = stream.readUnsignedByte();
 			} else if (j == 10) {
 				stream.readLfTerminatedString();
 			} else if (j == 2) {
@@ -54,8 +54,8 @@ public final class VarBit {
 	}
 
 	public static VarBit cache[];
-	public int anInt648;
-	public int anInt649;
-	public int anInt650;
+	public int varpIndex;
+	public int lowBit;
+	public int highBit;
 	private boolean aBoolean651;
 }

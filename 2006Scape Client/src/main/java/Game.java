@@ -1383,7 +1383,7 @@ public class Game extends RSApplet {
 	}
 
 	public void method33(int i) {
-		int action = Varp.cache[i].anInt709;
+		int action = Varp.cache[i].settingAction;
 		if (action == 0) {
 			return;
 		}
@@ -3076,11 +3076,11 @@ public class Game extends RSApplet {
 			}
 		}
 		if (super.clickMode3 != 0) {
-			long l = (super.aLong29 - aLong1220) / 50L;
+			long l = (super.saveClickTime - aLong1220) / 50L;
 			if (l > 4095L) {
 				l = 4095L;
 			}
-			aLong1220 = super.aLong29;
+			aLong1220 = super.saveClickTime;
 			int k2 = super.saveClickY;
 			if (k2 < 0) {
 				k2 = 0;
@@ -9405,9 +9405,9 @@ public class Game extends RSApplet {
 				if (j1 == 14) {
 					int j2 = ai[l++];
 					VarBit varBit = VarBit.cache[j2];
-					int l3 = varBit.anInt648;
-					int i4 = varBit.anInt649;
-					int j4 = varBit.anInt650;
+					int l3 = varBit.varpIndex;
+					int i4 = varBit.lowBit;
+					int j4 = varBit.highBit;
 					int k4 = anIntArray1232[j4 - i4];
 					k1 = variousSettings[l3] >> i4 & k4;
 				}

@@ -47,9 +47,9 @@ final class AnimatedObject extends Animable {
 		int childIndex = -1;
 		if (varBitId != -1) {
 			VarBit varBit = VarBit.cache[varBitId];
-			int settingIndex = varBit.anInt648;
-			int lowBit = varBit.anInt649;
-			int highBit = varBit.anInt650;
+			int settingIndex = varBit.varpIndex;
+			int lowBit = varBit.lowBit;
+			int highBit = varBit.highBit;
 			int mask = Game.anIntArray1232[highBit - lowBit];
 			childIndex = clientInstance.variousSettings[settingIndex] >> lowBit & mask;
 		} else if (settingId != -1) {

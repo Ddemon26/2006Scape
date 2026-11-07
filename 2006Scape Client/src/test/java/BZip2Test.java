@@ -30,7 +30,7 @@ public class BZip2Test {
         F_BLOCK_SIZE = "blockSize100k", F_BLOCKS = "blockCount", F_ORIG_PTR = "originPointer", F_TPOS = "nextIndex", F_K0 = "lookaheadByte",
         F_UNZFTAB = "byteCounts", F_USED = "blockPosition", F_CFTAB = "cumulativeCounts", F_TT = "inverseBwtTable",
         F_N_IN_USE = "symbolsInUse", F_IN_USE = "byteInUse", F_IN_USE16 = "rangeInUse", F_SEQ = "symbolToByte",
-        F_MTF = "aByteArray592", F_MTF_BASE = "anIntArray593", F_SELECTOR = "selectors", F_SELECTOR_MTF = "selectorMtf",
+        F_MTF = "mtfBuffer", F_MTF_BASE = "mtfGroupStart", F_SELECTOR = "selectors", F_SELECTOR_MTF = "selectorMtf",
         F_LEN = "codeLengths", F_LIMIT = "limit", F_BASE = "base",
         F_PERM = "perm", F_MIN_LEN = "minLengths", F_NBLOCK = "blockLength";
 
@@ -538,4 +538,82 @@ public class BZip2Test {
             assertArrayEquals("perm " + t, p, perm[t]);
         }
     }
+
+    // --- pass 175: move-to-front list (mtfBuffer / mtfGroupStart) and the symbol-decoding loop ---
+    /** Last column of the block (bytes in decoded order) from the translation table's low bytes. */
+    private static int[] lastColumn(Object s) throws Exception {
+        int n = geti(s, F_NBLOCK); int[] tt = (int[]) get(null, F_TT); int[] col = new int[n];
+        for (int i = 0; i < n; i++) col[i] = tt[i] & 0xff;
+        return col;
+    }
+    /** Independent move-to-front over the symbol numbers (index in the used-byte list), returning the MTF indexes. */
+    private static int[] mtfIndexes(int[] col, int[] seqToUnseq) {
+        java.util.ArrayList<Integer> list = new java.util.ArrayList<Integer>();
+        for (int i = 0; i < seqToUnseq.length; i++) list.add(i);
+        int[] out = new int[col.length];
+        for (int k = 0; k < col.length; k++) {
+            int sym = -1;
+            for (int i = 0; i < seqToUnseq.length; i++) if (seqToUnseq[i] == col[k]) sym = i;
+            int pos = list.indexOf(sym);
+            out[k] = pos; list.remove(pos); list.add(0, sym);
+        }
+        return out;
+    }
+    private static int[] finalMtfList(int[] col, int[] seqToUnseq) {
+        java.util.ArrayList<Integer> list = new java.util.ArrayList<Integer>();
+        for (int i = 0; i < seqToUnseq.length; i++) list.add(i);
+        for (int k = 0; k < col.length; k++) {
+            int sym = -1;
+            for (int i = 0; i < seqToUnseq.length; i++) if (seqToUnseq[i] == col[k]) sym = i;
+            list.remove(Integer.valueOf(sym)); list.add(0, sym);
+        }
+        int[] r = new int[list.size()]; for (int i = 0; i < r.length; i++) r[i] = list.get(i);
+        return r;
+    }
+
+    @Test public void moveToFrontListHoldsSymbolNumbersInRecencyOrderAcrossSixteenSlotGroups() throws Exception {
+        for (String name : SINGLE_BLOCK) {
+            Object s = decodeFresh(name, 0);
+            int[] seq = ints(name, "_SEQ_TO_UNSEQ");
+            int[] want = finalMtfList(lastColumn(s), seq);
+            byte[] buf = (byte[]) get(s, F_MTF); int[] start = (int[]) get(s, F_MTF_BASE);
+            assertEquals(4096, buf.length); assertEquals(16, start.length);
+            for (int g = 1; g < 16; g++) assertTrue(name + " groups hold 16 slots each and never overlap", start[g] >= start[g - 1] + 16);
+            assertTrue(name, start[0] >= 0 && start[15] + 16 <= 4096);
+            for (int i = 0; i < want.length; i++)
+                assertEquals(name + " most recent first, position " + i, want[i], buf[start[i / 16] + i % 16] & 0xff);
+        }
+    }
+
+    @Test public void moveToFrontListFrontMovesDownOnePerMoveFromPositionSixteenOrBeyond() throws Exception {
+        boolean deepSeen = false;
+        for (String name : SINGLE_BLOCK) {
+            Object s = decodeFresh(name, 0);
+            int[] idx = mtfIndexes(lastColumn(s), ints(name, "_SEQ_TO_UNSEQ"));
+            int deep = 0; for (int v : idx) if (v >= 16) deep++;
+            if (deep > 0) deepSeen = true;
+            assertEquals(name + " first group starts at 3840 less one per deep move", 3840 - deep, ((int[]) get(s, F_MTF_BASE))[0]);
+        }
+        assertTrue(deepSeen);
+    }
+
+    @Test public void selectorTableChangesEveryFiftySymbolsIncludingEndOfBlock() throws Exception {
+        boolean distinguishes = false;
+        for (String name : SINGLE_BLOCK) {
+            Object s = decodeFresh(name, 0);
+            int[] idx = mtfIndexes(lastColumn(s), ints(name, "_SEQ_TO_UNSEQ"));
+            int symbols = 1; // end-of-block symbol
+            for (int k = 0; k < idx.length; ) {
+                if (idx[k] != 0) { symbols++; k++; continue; }
+                int run = 0; while (k < idx.length && idx[k] == 0) { run++; k++; }
+                int digits = 0; while ((1 << (digits + 1)) <= run + 1) digits++;
+                symbols += digits;
+            }
+            int selectors = facts(name)[4];
+            assertEquals(name + " symbols=" + symbols, (symbols + 49) / 50, selectors);
+            if ((symbols + 48) / 49 != selectors || (symbols + 50) / 51 != selectors) distinguishes = true;
+        }
+        assertTrue("some fixture separates a group size of 50 from 49 or 51", distinguishes);
+    }
+
 }

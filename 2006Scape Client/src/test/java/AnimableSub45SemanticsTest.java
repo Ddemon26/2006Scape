@@ -298,7 +298,7 @@ public class AnimableSub45SemanticsTest {
         for (int k = 0, i = 2; k < 32; k++, i += i) Game.anIntArray1232[k] = i - 1;
         VarBit[] bits = new VarBit[10];
         for (int n = 0; n < bits.length; n++) bits[n] = (VarBit) unsafe().allocateInstance(VarBit.class);
-        bits[7].anInt648 = 3; bits[7].anInt649 = 2; bits[7].anInt650 = 4;
+        bits[7].varpIndex = 3; bits[7].lowBit = 2; bits[7].highBit = 4;
         VarBit.cache = bits;
         AnimatedObject a = new AnimatedObject(605, 0, 10, 0, 0, 0, 0, -1, false);
         AnimatedObject b = new AnimatedObject(606, 0, 10, 0, 0, 0, 0, -1, false);

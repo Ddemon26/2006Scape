@@ -10,8 +10,8 @@ final class BZip2State {
 		byteInUse = new boolean[256];
 		rangeInUse = new boolean[16];
 		symbolToByte = new byte[256];
-		aByteArray592 = new byte[4096];
-		anIntArray593 = new int[16];
+		mtfBuffer = new byte[4096];
+		mtfGroupStart = new int[16];
 		selectors = new byte[18002];
 		selectorMtf = new byte[18002];
 		codeLengths = new byte[6][258];
@@ -49,8 +49,8 @@ final class BZip2State {
 	final boolean[] byteInUse;
 	final boolean[] rangeInUse;
 	final byte[] symbolToByte;
-	final byte[] aByteArray592;
-	final int[] anIntArray593;
+	final byte[] mtfBuffer;
+	final int[] mtfGroupStart;
 	final byte[] selectors;
 	final byte[] selectorMtf;
 	final byte[][] codeLengths;

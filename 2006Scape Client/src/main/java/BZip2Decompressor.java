@@ -269,151 +269,151 @@ final class BZip2Decompressor {
 			}
 
 			int endOfBlockSymbol = state.symbolsInUse + 1;
-			int i5 = -1;
-			int j5 = 0;
+			int selectorIndex = -1;
+			int groupSymbolsLeft = 0;
 			for (int byteValue = 0; byteValue <= 255; byteValue++) {
 				state.byteCounts[byteValue] = 0;
 			}
 
-			int j9 = 4095;
-			for (int l8 = 15; l8 >= 0; l8--) {
-				for (int i9 = 15; i9 >= 0; i9--) {
-					state.aByteArray592[j9] = (byte) (l8 * 16 + i9);
-					j9--;
+			int fillIndex = 4095;
+			for (int initGroup = 15; initGroup >= 0; initGroup--) {
+				for (int initSlot = 15; initSlot >= 0; initSlot--) {
+					state.mtfBuffer[fillIndex] = (byte) (initGroup * 16 + initSlot);
+					fillIndex--;
 				}
 
-				state.anIntArray593[l8] = j9 + 1;
+				state.mtfGroupStart[initGroup] = fillIndex + 1;
 			}
 
 			int blockLength = 0;
-			if (j5 == 0) {
-				i5++;
-				j5 = 50;
-				byte byte12 = state.selectors[i5];
-				minLen = state.minLengths[byte12];
-				limit = state.limit[byte12];
-				perm = state.perm[byte12];
-				base = state.base[byte12];
+			if (groupSymbolsLeft == 0) {
+				selectorIndex++;
+				groupSymbolsLeft = 50;
+				byte groupTable = state.selectors[selectorIndex];
+				minLen = state.minLengths[groupTable];
+				limit = state.limit[groupTable];
+				perm = state.perm[groupTable];
+				base = state.base[groupTable];
 			}
-			j5--;
-			int i7 = minLen;
-			int l7;
-			byte byte9;
-			for (l7 = readBits(i7, state); l7 > limit[i7]; l7 = l7 << 1 | byte9) {
-				i7++;
-				byte9 = readBit(state);
+			groupSymbolsLeft--;
+			int probeLength = minLen;
+			int probeCode;
+			byte probeBit;
+			for (probeCode = readBits(probeLength, state); probeCode > limit[probeLength]; probeCode = probeCode << 1 | probeBit) {
+				probeLength++;
+				probeBit = readBit(state);
 			}
 
-			for (int k5 = perm[l7 - base[i7]]; k5 != endOfBlockSymbol;) {
-				if (k5 == 0 || k5 == 1) {
-					int j6 = -1;
-					int k6 = 1;
+			for (int symbol = perm[probeCode - base[probeLength]]; symbol != endOfBlockSymbol;) {
+				if (symbol == 0 || symbol == 1) {
+					int runLength = -1;
+					int runWeight = 1;
 					do {
-						if (k5 == 0) {
-							j6 += k6;
-						} else if (k5 == 1) {
-							j6 += 2 * k6;
+						if (symbol == 0) {
+							runLength += runWeight;
+						} else if (symbol == 1) {
+							runLength += 2 * runWeight;
 						}
-						k6 *= 2;
-						if (j5 == 0) {
-							i5++;
-							j5 = 50;
-							byte byte13 = state.selectors[i5];
-							minLen = state.minLengths[byte13];
-							limit = state.limit[byte13];
-							perm = state.perm[byte13];
-							base = state.base[byte13];
+						runWeight *= 2;
+						if (groupSymbolsLeft == 0) {
+							selectorIndex++;
+							groupSymbolsLeft = 50;
+							byte groupTable = state.selectors[selectorIndex];
+							minLen = state.minLengths[groupTable];
+							limit = state.limit[groupTable];
+							perm = state.perm[groupTable];
+							base = state.base[groupTable];
 						}
-						j5--;
-						int j7 = minLen;
-						int i8;
-						byte byte10;
-						for (i8 = readBits(j7, state); i8 > limit[j7]; i8 = i8 << 1 | byte10) {
-							j7++;
-							byte10 = readBit(state);
+						groupSymbolsLeft--;
+						int runProbeLength = minLen;
+						int runProbeCode;
+						byte runProbeBit;
+						for (runProbeCode = readBits(runProbeLength, state); runProbeCode > limit[runProbeLength]; runProbeCode = runProbeCode << 1 | runProbeBit) {
+							runProbeLength++;
+							runProbeBit = readBit(state);
 						}
 
-						k5 = perm[i8 - base[j7]];
-					} while (k5 == 0 || k5 == 1);
-					j6++;
-					byte byte5 = state.symbolToByte[state.aByteArray592[state.anIntArray593[0]] & 0xff];
-					state.byteCounts[byte5 & 0xff] += j6;
-					for (; j6 > 0; j6--) {
-						BZip2State.inverseBwtTable[blockLength] = byte5 & 0xff;
+						symbol = perm[runProbeCode - base[runProbeLength]];
+					} while (symbol == 0 || symbol == 1);
+					runLength++;
+					byte runByte = state.symbolToByte[state.mtfBuffer[state.mtfGroupStart[0]] & 0xff];
+					state.byteCounts[runByte & 0xff] += runLength;
+					for (; runLength > 0; runLength--) {
+						BZip2State.inverseBwtTable[blockLength] = runByte & 0xff;
 						blockLength++;
 					}
 
 				} else {
-					int j11 = k5 - 1;
-					byte byte6;
-					if (j11 < 16) {
-						int j10 = state.anIntArray593[0];
-						byte6 = state.aByteArray592[j10 + j11];
-						for (; j11 > 3; j11 -= 4) {
-							int k11 = j10 + j11;
-							state.aByteArray592[k11] = state.aByteArray592[k11 - 1];
-							state.aByteArray592[k11 - 1] = state.aByteArray592[k11 - 2];
-							state.aByteArray592[k11 - 2] = state.aByteArray592[k11 - 3];
-							state.aByteArray592[k11 - 3] = state.aByteArray592[k11 - 4];
+					int mtfPosition = symbol - 1;
+					byte movedSymbol;
+					if (mtfPosition < 16) {
+						int frontStart = state.mtfGroupStart[0];
+						movedSymbol = state.mtfBuffer[frontStart + mtfPosition];
+						for (; mtfPosition > 3; mtfPosition -= 4) {
+							int shiftIndex = frontStart + mtfPosition;
+							state.mtfBuffer[shiftIndex] = state.mtfBuffer[shiftIndex - 1];
+							state.mtfBuffer[shiftIndex - 1] = state.mtfBuffer[shiftIndex - 2];
+							state.mtfBuffer[shiftIndex - 2] = state.mtfBuffer[shiftIndex - 3];
+							state.mtfBuffer[shiftIndex - 3] = state.mtfBuffer[shiftIndex - 4];
 						}
 
-						for (; j11 > 0; j11--) {
-							state.aByteArray592[j10 + j11] = state.aByteArray592[j10 + j11 - 1];
+						for (; mtfPosition > 0; mtfPosition--) {
+							state.mtfBuffer[frontStart + mtfPosition] = state.mtfBuffer[frontStart + mtfPosition - 1];
 						}
 
-						state.aByteArray592[j10] = byte6;
+						state.mtfBuffer[frontStart] = movedSymbol;
 					} else {
-						int l10 = j11 / 16;
-						int i11 = j11 % 16;
-						int k10 = state.anIntArray593[l10] + i11;
-						byte6 = state.aByteArray592[k10];
-						for (; k10 > state.anIntArray593[l10]; k10--) {
-							state.aByteArray592[k10] = state.aByteArray592[k10 - 1];
+						int groupIndex = mtfPosition / 16;
+						int indexInGroup = mtfPosition % 16;
+						int movePosition = state.mtfGroupStart[groupIndex] + indexInGroup;
+						movedSymbol = state.mtfBuffer[movePosition];
+						for (; movePosition > state.mtfGroupStart[groupIndex]; movePosition--) {
+							state.mtfBuffer[movePosition] = state.mtfBuffer[movePosition - 1];
 						}
 
-						state.anIntArray593[l10]++;
-						for (; l10 > 0; l10--) {
-							state.anIntArray593[l10]--;
-							state.aByteArray592[state.anIntArray593[l10]] = state.aByteArray592[state.anIntArray593[l10 - 1] + 16 - 1];
+						state.mtfGroupStart[groupIndex]++;
+						for (; groupIndex > 0; groupIndex--) {
+							state.mtfGroupStart[groupIndex]--;
+							state.mtfBuffer[state.mtfGroupStart[groupIndex]] = state.mtfBuffer[state.mtfGroupStart[groupIndex - 1] + 16 - 1];
 						}
 
-						state.anIntArray593[0]--;
-						state.aByteArray592[state.anIntArray593[0]] = byte6;
-						if (state.anIntArray593[0] == 0) {
+						state.mtfGroupStart[0]--;
+						state.mtfBuffer[state.mtfGroupStart[0]] = movedSymbol;
+						if (state.mtfGroupStart[0] == 0) {
 							int i10 = 4095;
 							for (int k9 = 15; k9 >= 0; k9--) {
 								for (int l9 = 15; l9 >= 0; l9--) {
-									state.aByteArray592[i10] = state.aByteArray592[state.anIntArray593[k9] + l9];
+									state.mtfBuffer[i10] = state.mtfBuffer[state.mtfGroupStart[k9] + l9];
 									i10--;
 								}
 
-								state.anIntArray593[k9] = i10 + 1;
+								state.mtfGroupStart[k9] = i10 + 1;
 							}
 
 						}
 					}
-					state.byteCounts[state.symbolToByte[byte6 & 0xff] & 0xff]++;
-					BZip2State.inverseBwtTable[blockLength] = state.symbolToByte[byte6 & 0xff] & 0xff;
+					state.byteCounts[state.symbolToByte[movedSymbol & 0xff] & 0xff]++;
+					BZip2State.inverseBwtTable[blockLength] = state.symbolToByte[movedSymbol & 0xff] & 0xff;
 					blockLength++;
-					if (j5 == 0) {
-						i5++;
-						j5 = 50;
-						byte byte14 = state.selectors[i5];
-						minLen = state.minLengths[byte14];
-						limit = state.limit[byte14];
-						perm = state.perm[byte14];
-						base = state.base[byte14];
+					if (groupSymbolsLeft == 0) {
+						selectorIndex++;
+						groupSymbolsLeft = 50;
+						byte groupTable = state.selectors[selectorIndex];
+						minLen = state.minLengths[groupTable];
+						limit = state.limit[groupTable];
+						perm = state.perm[groupTable];
+						base = state.base[groupTable];
 					}
-					j5--;
-					int k7 = minLen;
-					int j8;
-					byte byte11;
-					for (j8 = readBits(k7, state); j8 > limit[k7]; j8 = j8 << 1 | byte11) {
-						k7++;
-						byte11 = readBit(state);
+					groupSymbolsLeft--;
+					int nextProbeLength = minLen;
+					int nextProbeCode;
+					byte nextProbeBit;
+					for (nextProbeCode = readBits(nextProbeLength, state); nextProbeCode > limit[nextProbeLength]; nextProbeCode = nextProbeCode << 1 | nextProbeBit) {
+						nextProbeLength++;
+						nextProbeBit = readBit(state);
 					}
 
-					k5 = perm[j8 - base[k7]];
+					symbol = perm[nextProbeCode - base[nextProbeLength]];
 				}
 			}
 

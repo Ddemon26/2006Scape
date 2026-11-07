@@ -39,7 +39,7 @@ public final class Varp {
 				anIntArray703[anInt702++] = i;
 			} else if (j == 4) {
 			} else if (j == 5) {
-				anInt709 = stream.readUnsignedShortBigEndian();
+				settingAction = stream.readUnsignedShortBigEndian();
 			} else if (j == 6) {
 			} else if (j == 7) {
 				stream.readIntBigEndian();
@@ -65,7 +65,7 @@ public final class Varp {
 	public static Varp cache[];
 	private static int anInt702;
 	private static int[] anIntArray703;
-	public int anInt709;
+	public int settingAction;
 	public boolean aBoolean713;
 
 }
