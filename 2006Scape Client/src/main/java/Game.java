@@ -904,7 +904,7 @@ public class Game extends RSApplet {
 		anInt1071 = 0;
 		for (int k2 = 0; k2 < 104; k2++) {
 			for (int l2 = 0; l2 < 104; l2++) {
-				int i3 = worldController.method303(plane, k2, l2);
+				int i3 = worldController.getGroundDecorationUid(plane, k2, l2);
 				if (i3 != 0) {
 					i3 = i3 >> 14 & 0x7fff;
 					int j3 = ObjectDef.forID(i3).anInt746;
@@ -947,7 +947,7 @@ public class Game extends RSApplet {
 	public void spawnGroundItem(int i, int j) {
 		NodeList class19 = groundArray[plane][i][j];
 		if (class19 == null) {
-			worldController.method295(plane, i, j);
+			worldController.removeGroundItemStack(plane, i, j);
 			return;
 		}
 		long k = Long.MIN_VALUE;
@@ -2470,9 +2470,9 @@ public class Game extends RSApplet {
 	}
 
 	public void method50(int i, int k, int l, int i1, int j1) {
-		int k1 = worldController.method300(j1, l, i);
+		int k1 = worldController.getWallUid(j1, l, i);
 		if (k1 != 0) {
-			int l1 = worldController.method304(j1, l, i, k1);
+			int l1 = worldController.getObjectInfo(j1, l, i, k1);
 			int k2 = l1 >> 6 & 3;
 			int i3 = l1 & 0x1f;
 			int k3 = k;
@@ -2550,9 +2550,9 @@ public class Game extends RSApplet {
 				}
 			}
 		}
-		k1 = worldController.method302(j1, l, i);
+		k1 = worldController.getSceneObjectUid(j1, l, i);
 		if (k1 != 0) {
-			int i2 = worldController.method304(j1, l, i, k1);
+			int i2 = worldController.getObjectInfo(j1, l, i, k1);
 			int l2 = i2 >> 6 & 3;
 			int j3 = i2 & 0x1f;
 			int l3 = k1 >> 14 & 0x7fff;
@@ -2584,7 +2584,7 @@ public class Game extends RSApplet {
 				}
 			}
 		}
-		k1 = worldController.method303(j1, l, i);
+		k1 = worldController.getGroundDecorationUid(j1, l, i);
 		if (k1 != 0) {
 			int j2 = k1 >> 14 & 0x7fff;
 			ObjectDef class46 = ObjectDef.forID(j2);
@@ -3413,7 +3413,7 @@ public class Game extends RSApplet {
 
 	public boolean walkToSceneObject(int sceneUid, int targetTileY, int targetTileX) {
 		int objectId = sceneUid >> 14 & 0x7fff;
-		int sceneConfig = worldController.method304(plane, targetTileX, targetTileY, sceneUid);
+		int sceneConfig = worldController.getObjectInfo(plane, targetTileX, targetTileY, sceneUid);
 		if (sceneConfig == -1) {
 			return false;
 		}
@@ -4546,7 +4546,7 @@ public class Game extends RSApplet {
 				continue;
 			}
 			j = l;
-			if (k1 == 2 && worldController.method304(plane, i1, j1, l) >= 0) {
+			if (k1 == 2 && worldController.getObjectInfo(plane, i1, j1, l) >= 0) {
 				ObjectDef class46 = ObjectDef.forID(l1);
 				if (class46.childrenIDs != null) {
 					class46 = class46.method580();
@@ -6850,19 +6850,19 @@ public class Game extends RSApplet {
 		int originalShape = 0;
 		int originalOrientation = 0;
 		if (pendingSceneChange.objectCategory == 0) {
-			sceneUid = worldController.method300(pendingSceneChange.scenePlane, pendingSceneChange.tileX, pendingSceneChange.tileY);
+			sceneUid = worldController.getWallUid(pendingSceneChange.scenePlane, pendingSceneChange.tileX, pendingSceneChange.tileY);
 		}
 		if (pendingSceneChange.objectCategory == 1) {
-			sceneUid = worldController.method301(pendingSceneChange.scenePlane, pendingSceneChange.tileX, pendingSceneChange.tileY);
+			sceneUid = worldController.getWallDecorationUid(pendingSceneChange.scenePlane, pendingSceneChange.tileX, pendingSceneChange.tileY);
 		}
 		if (pendingSceneChange.objectCategory == 2) {
-			sceneUid = worldController.method302(pendingSceneChange.scenePlane, pendingSceneChange.tileX, pendingSceneChange.tileY);
+			sceneUid = worldController.getSceneObjectUid(pendingSceneChange.scenePlane, pendingSceneChange.tileX, pendingSceneChange.tileY);
 		}
 		if (pendingSceneChange.objectCategory == 3) {
-			sceneUid = worldController.method303(pendingSceneChange.scenePlane, pendingSceneChange.tileX, pendingSceneChange.tileY);
+			sceneUid = worldController.getGroundDecorationUid(pendingSceneChange.scenePlane, pendingSceneChange.tileX, pendingSceneChange.tileY);
 		}
 		if (sceneUid != 0) {
-			int sceneMetadata = worldController.method304(pendingSceneChange.scenePlane, pendingSceneChange.tileX, pendingSceneChange.tileY, sceneUid);
+			int sceneMetadata = worldController.getObjectInfo(pendingSceneChange.scenePlane, pendingSceneChange.tileX, pendingSceneChange.tileY, sceneUid);
 			originalObjectId = sceneUid >> 14 & 0x7fff;
 			originalShape = sceneMetadata & 0x1f;
 			originalOrientation = sceneMetadata >> 6;
@@ -10095,7 +10095,7 @@ public class Game extends RSApplet {
 				int l19 = intGroundArray[plane][j4 + 1][i7 + 1];
 				int k20 = intGroundArray[plane][j4][i7 + 1];
 				if (j16 == 0) {
-					Object1 class10 = worldController.method296(plane, j4, i7);
+					Object1 class10 = worldController.getWall(plane, j4, i7);
 					if (class10 != null) {
 						int k21 = class10.uid >> 14 & 0x7fff;
 						if (j12 == 2) {
@@ -10107,13 +10107,13 @@ public class Game extends RSApplet {
 					}
 				}
 				if (j16 == 1) {
-					Object2 class26 = worldController.method297(j4, i7, plane);
+					Object2 class26 = worldController.getWallDecoration(j4, i7, plane);
 					if (class26 != null) {
 						class26.aClass30_Sub2_Sub4_504 = new Animable_Sub5(class26.uid >> 14 & 0x7fff, 0, 4, i19, l19, j18, k20, j17, false);
 					}
 				}
 				if (j16 == 2) {
-					Object5 class28 = worldController.method298(j4, i7, plane);
+					Object5 class28 = worldController.getSceneObject(j4, i7, plane);
 					if (j12 == 11) {
 						j12 = 10;
 					}
@@ -10122,7 +10122,7 @@ public class Game extends RSApplet {
 					}
 				}
 				if (j16 == 3) {
-					Object3 class49 = worldController.method299(i7, j4, plane);
+					Object3 class49 = worldController.getGroundDecoration(i7, j4, plane);
 					if (class49 != null) {
 						class49.aClass30_Sub2_Sub4_814 = new Animable_Sub5(class49.uid >> 14 & 0x7fff, k14, 22, i19, l19, j18, k20, j17, false);
 					}
@@ -10468,34 +10468,34 @@ public class Game extends RSApplet {
 			}
 			int existingPackedUid = 0;
 			if (objectCategory == 0) {
-				existingPackedUid = worldController.method300(scenePlane, tileX, tileY);
+				existingPackedUid = worldController.getWallUid(scenePlane, tileX, tileY);
 			}
 			if (objectCategory == 1) {
-				existingPackedUid = worldController.method301(scenePlane, tileX, tileY);
+				existingPackedUid = worldController.getWallDecorationUid(scenePlane, tileX, tileY);
 			}
 			if (objectCategory == 2) {
-				existingPackedUid = worldController.method302(scenePlane, tileX, tileY);
+				existingPackedUid = worldController.getSceneObjectUid(scenePlane, tileX, tileY);
 			}
 			if (objectCategory == 3) {
-				existingPackedUid = worldController.method303(scenePlane, tileX, tileY);
+				existingPackedUid = worldController.getGroundDecorationUid(scenePlane, tileX, tileY);
 			}
 			if (existingPackedUid != 0) {
-				int existingObjectInfo = worldController.method304(scenePlane, tileX, tileY, existingPackedUid);
+				int existingObjectInfo = worldController.getObjectInfo(scenePlane, tileX, tileY, existingPackedUid);
 				int existingObjectId = existingPackedUid >> 14 & 0x7fff;
 				int existingShape = existingObjectInfo & 0x1f;
 				int existingOrientation = existingObjectInfo >> 6;
 				if (objectCategory == 0) {
-					worldController.method291(tileX, scenePlane, tileY, (byte) -119);
+					worldController.removeWall(tileX, scenePlane, tileY, (byte) -119);
 					ObjectDef existingWallDefinition = ObjectDef.forID(existingObjectId);
 					if (existingWallDefinition.aBoolean767) {
 						aClass11Array1230[scenePlane].method215(existingOrientation, existingShape, existingWallDefinition.aBoolean757, tileX, tileY);
 					}
 				}
 				if (objectCategory == 1) {
-					worldController.method292(tileY, scenePlane, tileX);
+					worldController.removeWallDecoration(tileY, scenePlane, tileX);
 				}
 				if (objectCategory == 2) {
-					worldController.method293(scenePlane, tileX, tileY);
+					worldController.removeSceneObject(scenePlane, tileX, tileY);
 					ObjectDef class46_1 = ObjectDef.forID(existingObjectId);
 					if (tileX + class46_1.anInt744 > 103 || tileY + class46_1.anInt744 > 103 || tileX + class46_1.anInt761 > 103 || tileY + class46_1.anInt761 > 103) {
 						return;
@@ -10505,7 +10505,7 @@ public class Game extends RSApplet {
 					}
 				}
 				if (objectCategory == 3) {
-					worldController.method294(scenePlane, tileY, tileX);
+					worldController.removeGroundDecoration(scenePlane, tileY, tileX);
 					ObjectDef class46_2 = ObjectDef.forID(existingObjectId);
 					if (class46_2.aBoolean767 && class46_2.hasActions) {
 						aClass11Array1230[scenePlane].method218(tileY, tileX);

@@ -605,7 +605,7 @@ final class ObjectManager {
 				class11.method211(i, j1, l, j, class46.aBoolean757);
 			}
 			if (class46.anInt775 != 16) {
-				worldController.method290(i, class46.anInt775, l, k);
+				worldController.scaleWallDecorationOffset(i, class46.anInt775, l, k);
 			}
 			return;
 		}
@@ -664,7 +664,7 @@ final class ObjectManager {
 				class11.method211(i, j1, l, j, class46.aBoolean757);
 			}
 			if (class46.anInt775 != 16) {
-				worldController.method290(i, class46.anInt775, l, k);
+				worldController.scaleWallDecorationOffset(i, class46.anInt775, l, k);
 			}
 			return;
 		}
@@ -739,7 +739,7 @@ final class ObjectManager {
 		}
 		if (j == 5) {
 			int i4 = 16;
-			int k4 = worldController.method300(k, l, i);
+			int k4 = worldController.getWallUid(k, l, i);
 			if (k4 > 0) {
 				i4 = ObjectDef.forID(k4 >> 14 & 0x7fff).anInt775;
 			}
@@ -1199,7 +1199,7 @@ final class ObjectManager {
 		}
 		if (k == 5) {
 			int j4 = 16;
-			int l4 = worldController.method300(k1, i1, j);
+			int l4 = worldController.getWallUid(k1, i1, j);
 			if (l4 > 0) {
 				j4 = ObjectDef.forID(l4 >> 14 & 0x7fff).anInt775;
 			}
