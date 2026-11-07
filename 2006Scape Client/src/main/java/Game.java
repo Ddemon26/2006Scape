@@ -5648,23 +5648,23 @@ public class Game extends RSApplet {
 			DesktopHooks.takeScreenshot(this, sendMessage, subfolders);
 		}
 	}
-	public void pushMessage(String s, int i, String s1) {
-		if (i == 0 && dialogID != -1) {
-			aString844 = s;
+	public void pushMessage(String message, int chatType, String senderName) {
+		if (chatType == 0 && dialogID != -1) {
+			aString844 = message;
 			super.clickMode3 = 0;
 		}
 		if (backDialogID == -1) {
 			inputTaken = true;
 		}
-		for (int j = 99; j > 0; j--) {
-			chatTypes[j] = chatTypes[j - 1];
-			chatNames[j] = chatNames[j - 1];
-			chatMessages[j] = chatMessages[j - 1];
+		for (int slot = 99; slot > 0; slot--) {
+			chatTypes[slot] = chatTypes[slot - 1];
+			chatNames[slot] = chatNames[slot - 1];
+			chatMessages[slot] = chatMessages[slot - 1];
 		}
 
-		chatTypes[0] = i;
-		chatNames[0] = s1;
-		chatMessages[0] = s;
+		chatTypes[0] = chatType;
+		chatNames[0] = senderName;
+		chatMessages[0] = message;
 	}
 	
 	public void processMinimapActions() {
@@ -6658,7 +6658,7 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void buildAtNPCMenu(EntityDef entityDef, int i, int j, int k) {
+	public void buildAtNPCMenu(EntityDef entityDef, int npcIndex, int tileY, int tileX) {
 		if (menuActionRow >= 400) {
 			return;
 		}
@@ -6671,135 +6671,135 @@ public class Game extends RSApplet {
 		if (!entityDef.interactable) {
 			return;
 		}
-		String s = entityDef.name;
+		String label = entityDef.name;
 		if (entityDef.combatLevel != 0) {
-			s = s + combatLevelColorTag(myPlayer.combatLevel, entityDef.combatLevel) + " (level-" + entityDef.combatLevel + ")";
+			label = label + combatLevelColorTag(myPlayer.combatLevel, entityDef.combatLevel) + " (level-" + entityDef.combatLevel + ")";
 		}
 		if (itemSelected == 1) {
-			menuActionName[menuActionRow] = "Use " + selectedItemName + " with @yel@" + s;
+			menuActionName[menuActionRow] = "Use " + selectedItemName + " with @yel@" + label;
 			menuActionID[menuActionRow] = 582;
-			menuActionCmd1[menuActionRow] = i;
-			menuActionCmd2[menuActionRow] = k;
-			menuActionCmd3[menuActionRow] = j;
+			menuActionCmd1[menuActionRow] = npcIndex;
+			menuActionCmd2[menuActionRow] = tileX;
+			menuActionCmd3[menuActionRow] = tileY;
 			menuActionRow++;
 			return;
 		}
 		if (spellSelected == 1) {
 			if ((spellUsableOn & 2) == 2) {
-				menuActionName[menuActionRow] = spellTooltip + " @yel@" + s;
+				menuActionName[menuActionRow] = spellTooltip + " @yel@" + label;
 				menuActionID[menuActionRow] = 413;
-				menuActionCmd1[menuActionRow] = i;
-				menuActionCmd2[menuActionRow] = k;
-				menuActionCmd3[menuActionRow] = j;
+				menuActionCmd1[menuActionRow] = npcIndex;
+				menuActionCmd2[menuActionRow] = tileX;
+				menuActionCmd3[menuActionRow] = tileY;
 				menuActionRow++;
 			}
 		} else {
 			if (entityDef.actions != null) {
-				for (int l = 4; l >= 0; l--) {
-					if (entityDef.actions[l] != null && !entityDef.actions[l].equalsIgnoreCase("attack")) {
-						menuActionName[menuActionRow] = entityDef.actions[l] + " @yel@" + s;
-						if (l == 0) {
+				for (int actionSlot = 4; actionSlot >= 0; actionSlot--) {
+					if (entityDef.actions[actionSlot] != null && !entityDef.actions[actionSlot].equalsIgnoreCase("attack")) {
+						menuActionName[menuActionRow] = entityDef.actions[actionSlot] + " @yel@" + label;
+						if (actionSlot == 0) {
 							menuActionID[menuActionRow] = 20;
 						}
-						if (l == 1) {
+						if (actionSlot == 1) {
 							menuActionID[menuActionRow] = 412;
 						}
-						if (l == 2) {
+						if (actionSlot == 2) {
 							menuActionID[menuActionRow] = 225;
 						}
-						if (l == 3) {
+						if (actionSlot == 3) {
 							menuActionID[menuActionRow] = 965;
 						}
-						if (l == 4) {
+						if (actionSlot == 4) {
 							menuActionID[menuActionRow] = 478;
 						}
-						menuActionCmd1[menuActionRow] = i;
-						menuActionCmd2[menuActionRow] = k;
-						menuActionCmd3[menuActionRow] = j;
+						menuActionCmd1[menuActionRow] = npcIndex;
+						menuActionCmd2[menuActionRow] = tileX;
+						menuActionCmd3[menuActionRow] = tileY;
 						menuActionRow++;
 					}
 				}
 
 			}
 			if (entityDef.actions != null) {
-				for (int i1 = 4; i1 >= 0; i1--) {
-					if (entityDef.actions[i1] != null && entityDef.actions[i1].equalsIgnoreCase("attack")) {
+				for (int actionSlot = 4; actionSlot >= 0; actionSlot--) {
+					if (entityDef.actions[actionSlot] != null && entityDef.actions[actionSlot].equalsIgnoreCase("attack")) {
 						char c = '\0';
 						if (entityDef.combatLevel > myPlayer.combatLevel) {
 							c = '\u07D0';
 						}
-						menuActionName[menuActionRow] = entityDef.actions[i1] + " @yel@" + s;
-						if (i1 == 0) {
+						menuActionName[menuActionRow] = entityDef.actions[actionSlot] + " @yel@" + label;
+						if (actionSlot == 0) {
 							menuActionID[menuActionRow] = 20 + c;
 						}
-						if (i1 == 1) {
+						if (actionSlot == 1) {
 							menuActionID[menuActionRow] = 412 + c;
 						}
-						if (i1 == 2) {
+						if (actionSlot == 2) {
 							menuActionID[menuActionRow] = 225 + c;
 						}
-						if (i1 == 3) {
+						if (actionSlot == 3) {
 							menuActionID[menuActionRow] = 965 + c;
 						}
-						if (i1 == 4) {
+						if (actionSlot == 4) {
 							menuActionID[menuActionRow] = 478 + c;
 						}
-						menuActionCmd1[menuActionRow] = i;
-						menuActionCmd2[menuActionRow] = k;
-						menuActionCmd3[menuActionRow] = j;
+						menuActionCmd1[menuActionRow] = npcIndex;
+						menuActionCmd2[menuActionRow] = tileX;
+						menuActionCmd3[menuActionRow] = tileY;
 						menuActionRow++;
 					}
 				}
 
 			}
-			menuActionName[menuActionRow] = "Examine @yel@" + s + (showInfo ? " @gre@(@whi@" + entityDef.type + "@gre@)" : "");
+			menuActionName[menuActionRow] = "Examine @yel@" + label + (showInfo ? " @gre@(@whi@" + entityDef.type + "@gre@)" : "");
 			menuActionID[menuActionRow] = 1025;
-			menuActionCmd1[menuActionRow] = i;
-			menuActionCmd2[menuActionRow] = k;
-			menuActionCmd3[menuActionRow] = j;
+			menuActionCmd1[menuActionRow] = npcIndex;
+			menuActionCmd2[menuActionRow] = tileX;
+			menuActionCmd3[menuActionRow] = tileY;
 			menuActionRow++;
 		}
 	}
 
-	public void buildAtPlayerMenu(int i, int j, Player player, int k) {
+	public void buildAtPlayerMenu(int tileX, int playerIndex, Player player, int tileY) {
 		if (player == myPlayer) {
 			return;
 		}
 		if (menuActionRow >= 400) {
 			return;
 		}
-		String s;
+		String label;
 		if (player.skill == 0) {
 			if (player.combatLevel > 0) {
-				s = player.name + combatLevelColorTag(myPlayer.combatLevel, player.combatLevel) + " (level-" + player.combatLevel + ")";
+				label = player.name + combatLevelColorTag(myPlayer.combatLevel, player.combatLevel) + " (level-" + player.combatLevel + ")";
 			} else {
-				s = player.name + " @cya@(store)";
+				label = player.name + " @cya@(store)";
 			}
 		} else {
-			s = player.name + " (skill-" + player.skill + ")";
+			label = player.name + " (skill-" + player.skill + ")";
 		}
 		if (itemSelected == 1) {
-			menuActionName[menuActionRow] = "Use " + selectedItemName + " with @whi@" + s;
+			menuActionName[menuActionRow] = "Use " + selectedItemName + " with @whi@" + label;
 			menuActionID[menuActionRow] = 491;
-			menuActionCmd1[menuActionRow] = j;
-			menuActionCmd2[menuActionRow] = i;
-			menuActionCmd3[menuActionRow] = k;
+			menuActionCmd1[menuActionRow] = playerIndex;
+			menuActionCmd2[menuActionRow] = tileX;
+			menuActionCmd3[menuActionRow] = tileY;
 			menuActionRow++;
 		} else if (spellSelected == 1) {
 			if ((spellUsableOn & 8) == 8) {
-				menuActionName[menuActionRow] = spellTooltip + " @whi@" + s;
+				menuActionName[menuActionRow] = spellTooltip + " @whi@" + label;
 				menuActionID[menuActionRow] = 365;
-				menuActionCmd1[menuActionRow] = j;
-				menuActionCmd2[menuActionRow] = i;
-				menuActionCmd3[menuActionRow] = k;
+				menuActionCmd1[menuActionRow] = playerIndex;
+				menuActionCmd2[menuActionRow] = tileX;
+				menuActionCmd3[menuActionRow] = tileY;
 				menuActionRow++;
 			}
 		} else {
-			for (int l = 4; l >= 0; l--) {
-				if (atPlayerActions[l] != null) {
-					menuActionName[menuActionRow] = atPlayerActions[l] + " @whi@" + s;
+			for (int actionSlot = 4; actionSlot >= 0; actionSlot--) {
+				if (atPlayerActions[actionSlot] != null) {
+					menuActionName[menuActionRow] = atPlayerActions[actionSlot] + " @whi@" + label;
 					char c = '\0';
-					if (atPlayerActions[l].equalsIgnoreCase("attack")) {
+					if (atPlayerActions[actionSlot].equalsIgnoreCase("attack")) {
 						if (player.combatLevel > myPlayer.combatLevel) {
 							c = '\u07D0';
 						}
@@ -6810,35 +6810,35 @@ public class Game extends RSApplet {
 								c = '\0';
 							}
 						}
-					} else if (atPlayerArray[l]) {
+					} else if (atPlayerArray[actionSlot]) {
 						c = '\u07D0';
 					}
-					if (l == 0) {
+					if (actionSlot == 0) {
 						menuActionID[menuActionRow] = 561 + c;
 					}
-					if (l == 1) {
+					if (actionSlot == 1) {
 						menuActionID[menuActionRow] = 779 + c;
 					}
-					if (l == 2) {
+					if (actionSlot == 2) {
 						menuActionID[menuActionRow] = 27 + c;
 					}
-					if (l == 3) {
+					if (actionSlot == 3) {
 						menuActionID[menuActionRow] = 577 + c;
 					}
-					if (l == 4) {
+					if (actionSlot == 4) {
 						menuActionID[menuActionRow] = 729 + c;
 					}
-					menuActionCmd1[menuActionRow] = j;
-					menuActionCmd2[menuActionRow] = i;
-					menuActionCmd3[menuActionRow] = k;
+					menuActionCmd1[menuActionRow] = playerIndex;
+					menuActionCmd2[menuActionRow] = tileX;
+					menuActionCmd3[menuActionRow] = tileY;
 					menuActionRow++;
 				}
 			}
 
 		}
-		for (int i1 = 0; i1 < menuActionRow; i1++) {
-			if (menuActionID[i1] == 516) {
-				menuActionName[i1] = "Walk here @whi@" + s;
+		for (int rowIndex = 0; rowIndex < menuActionRow; rowIndex++) {
+			if (menuActionID[rowIndex] == 516) {
+				menuActionName[rowIndex] = "Walk here @whi@" + label;
 				return;
 			}
 		}
@@ -7401,35 +7401,35 @@ public class Game extends RSApplet {
 		loadingError = true;
 	}
 
-	public void method91(Stream stream, int i) {
-		while (stream.bitOffset + 10 < i * 8) {
-			int j = stream.readBitsMsbFirst(11);
-			if (j == 2047) {
+	public void addNewLocalPlayers(Stream stream, int packetSize) {
+		while (stream.bitOffset + 10 < packetSize * 8) {
+			int playerIndex = stream.readBitsMsbFirst(11);
+			if (playerIndex == 2047) {
 				break;
 			}
-			if (playerArray[j] == null) {
-				playerArray[j] = new Player();
-				if (aStreamArray895s[j] != null) {
-					playerArray[j].updatePlayer(aStreamArray895s[j]);
+			if (playerArray[playerIndex] == null) {
+				playerArray[playerIndex] = new Player();
+				if (aStreamArray895s[playerIndex] != null) {
+					playerArray[playerIndex].updatePlayer(aStreamArray895s[playerIndex]);
 				}
 			}
-			playerIndices[playerCount++] = j;
-			Player player = playerArray[j];
+			playerIndices[playerCount++] = playerIndex;
+			Player player = playerArray[playerIndex];
 			player.anInt1537 = loopCycle;
-			int k = stream.readBitsMsbFirst(1);
-			if (k == 1) {
-				maskUpdateIndices[maskUpdateCount++] = j;
+			int needsUpdate = stream.readBitsMsbFirst(1);
+			if (needsUpdate == 1) {
+				maskUpdateIndices[maskUpdateCount++] = playerIndex;
 			}
-			int l = stream.readBitsMsbFirst(1);
-			int i1 = stream.readBitsMsbFirst(5);
-			if (i1 > 15) {
-				i1 -= 32;
+			int snapToPosition = stream.readBitsMsbFirst(1);
+			int offsetY = stream.readBitsMsbFirst(5);
+			if (offsetY > 15) {
+				offsetY -= 32;
 			}
-			int j1 = stream.readBitsMsbFirst(5);
-			if (j1 > 15) {
-				j1 -= 32;
+			int offsetX = stream.readBitsMsbFirst(5);
+			if (offsetX > 15) {
+				offsetX -= 32;
 			}
-			player.setPos(myPlayer.smallX[0] + j1, myPlayer.smallY[0] + i1, l == 1);
+			player.setPos(myPlayer.smallX[0] + offsetX, myPlayer.smallY[0] + offsetY, snapToPosition == 1);
 		}
 		stream.finishBitReading();
 	}
@@ -7495,9 +7495,9 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public String interfaceIntToString(int j) {
-		if (j < 0x3b9ac9ff) {
-			return String.valueOf(j);
+	public String interfaceIntToString(int value) {
+		if (value < 0x3b9ac9ff) {
+			return String.valueOf(value);
 		} else {
 			return "*";
 		}
@@ -8820,8 +8820,8 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void setWaveVolume(int i) {
-		Signlink.wavevol = i;
+	public void setWaveVolume(int volume) {
+		Signlink.wavevol = volume;
 	}
 
 	public void draw3dScreen() {
@@ -10528,7 +10528,7 @@ public class Game extends RSApplet {
 		maskUpdateCount = 0;
 		decodeLocalPlayerMovement(stream);
 		method134(stream);
-		method91(stream, i);
+		addNewLocalPlayers(stream, i);
 		decodePlayerUpdateMasks(stream);
 		for (int k = 0; k < anInt839; k++) {
 			int l = anIntArray840[k];
