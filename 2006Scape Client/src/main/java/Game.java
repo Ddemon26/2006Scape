@@ -2486,9 +2486,9 @@ public class Game extends RSApplet {
 			if (class46_2.anInt758 != -1) {
 				Background background_2 = mapScenes[class46_2.anInt758];
 				if (background_2 != null) {
-					int i6 = (class46_2.anInt744 * 4 - background_2.imageWidth) / 2;
-					int j6 = (class46_2.anInt761 * 4 - background_2.imageHeight) / 2;
-					background_2.drawNonzeroIndexed(48 + l * 4 + i6, 48 + (104 - i - class46_2.anInt761) * 4 + j6);
+					int i6 = (class46_2.sizeX * 4 - background_2.imageWidth) / 2;
+					int j6 = (class46_2.sizeY * 4 - background_2.imageHeight) / 2;
+					background_2.drawNonzeroIndexed(48 + l * 4 + i6, 48 + (104 - i - class46_2.sizeY) * 4 + j6);
 				}
 			} else {
 				if (i3 == 0 || i3 == 2) {
@@ -2560,9 +2560,9 @@ public class Game extends RSApplet {
 			if (class46_1.anInt758 != -1) {
 				Background background_1 = mapScenes[class46_1.anInt758];
 				if (background_1 != null) {
-					int j5 = (class46_1.anInt744 * 4 - background_1.imageWidth) / 2;
-					int k5 = (class46_1.anInt761 * 4 - background_1.imageHeight) / 2;
-					background_1.drawNonzeroIndexed(48 + l * 4 + j5, 48 + (104 - i - class46_1.anInt761) * 4 + k5);
+					int j5 = (class46_1.sizeX * 4 - background_1.imageWidth) / 2;
+					int k5 = (class46_1.sizeY * 4 - background_1.imageHeight) / 2;
+					background_1.drawNonzeroIndexed(48 + l * 4 + j5, 48 + (104 - i - class46_1.sizeY) * 4 + k5);
 				}
 			} else if (j3 == 9) {
 				int l4 = 0xeeeeee;
@@ -2591,9 +2591,9 @@ public class Game extends RSApplet {
 			if (class46.anInt758 != -1) {
 				Background background = mapScenes[class46.anInt758];
 				if (background != null) {
-					int i4 = (class46.anInt744 * 4 - background.imageWidth) / 2;
-					int j4 = (class46.anInt761 * 4 - background.imageHeight) / 2;
-					background.drawNonzeroIndexed(48 + l * 4 + i4, 48 + (104 - i - class46.anInt761) * 4 + j4);
+					int i4 = (class46.sizeX * 4 - background.imageWidth) / 2;
+					int j4 = (class46.sizeY * 4 - background.imageHeight) / 2;
+					background.drawNonzeroIndexed(48 + l * 4 + i4, 48 + (104 - i - class46.sizeY) * 4 + j4);
 				}
 			}
 		}
@@ -3424,13 +3424,13 @@ public class Game extends RSApplet {
 			int orientedSizeX;
 			int orientedSizeY;
 			if (objectOrientation == 0 || objectOrientation == 2) {
-				orientedSizeX = definition.anInt744;
-				orientedSizeY = definition.anInt761;
+				orientedSizeX = definition.sizeX;
+				orientedSizeY = definition.sizeY;
 			} else {
-				orientedSizeX = definition.anInt761;
-				orientedSizeY = definition.anInt744;
+				orientedSizeX = definition.sizeY;
+				orientedSizeY = definition.sizeX;
 			}
-			int rotatedAccessMask = definition.anInt768;
+			int rotatedAccessMask = definition.blockedSidesMask;
 			if (objectOrientation != 0) {
 				rotatedAccessMask = (rotatedAccessMask << objectOrientation & 0xf) + (rotatedAccessMask >> 4 - objectOrientation);
 			}
@@ -4549,7 +4549,7 @@ public class Game extends RSApplet {
 			if (k1 == 2 && worldController.getObjectInfo(plane, i1, j1, l) >= 0) {
 				ObjectDef class46 = ObjectDef.forID(l1);
 				if (class46.childrenIDs != null) {
-					class46 = class46.method580();
+					class46 = class46.resolveMorph();
 				}
 				if (class46 == null) {
 					continue;
@@ -4746,8 +4746,8 @@ public class Game extends RSApplet {
 		byteGroundArray = null;
 		worldController = null;
 		aClass11Array1230 = null;
-		anIntArrayArray901 = null;
-		anIntArrayArray825 = null;
+		pathBackDirection = null;
+		pathDistance = null;
 		bigX = null;
 		bigY = null;
 		aByteArray912 = null;
@@ -6184,7 +6184,7 @@ public class Game extends RSApplet {
 				anInt1175 = 0;
 				anInt1134 = 0;
 				anInt986 = 0;
-				anInt1288 = 0;
+				waypointsSinceKeepAlive = 0;
 				anInt924 = 0;
 				anInt1188 = 0;
 				anInt1155 = 0;
@@ -6356,198 +6356,199 @@ public class Game extends RSApplet {
 		loginMessage2 = "Error connecting to server.";
 	}
 
-	public boolean doWalkTo(int i, int j, int k, int i1, int j1, int k1, int l1, int i2, int j2, boolean flag, int k2) {
-		byte byte0 = 104;
-		byte byte1 = 104;
-		for (int l2 = 0; l2 < byte0; l2++) {
-			for (int i3 = 0; i3 < byte1; i3++) {
-				anIntArrayArray901[l2][i3] = 0;
-				anIntArrayArray825[l2][i3] = 0x5f5e0ff;
+	public boolean doWalkTo(int walkType, int orientation, int sizeY, int shapePlusOne, int startY, int sizeX, int blockedSidesMask, int targetY, int startX, boolean approximate, int targetX) {
+		byte gridWidth = 104;
+		byte gridHeight = 104;
+		for (int clearX = 0; clearX < gridWidth; clearX++) {
+			for (int clearY = 0; clearY < gridHeight; clearY++) {
+				pathBackDirection[clearX][clearY] = 0;
+				pathDistance[clearX][clearY] = 0x5f5e0ff;
 			}
 
 		}
-		int j3 = j2;
-		int k3 = j1;
-		anIntArrayArray901[j2][j1] = 99;
-		anIntArrayArray825[j2][j1] = 0;
-		int l3 = 0;
-		int i4 = 0;
-		bigX[l3] = j2;
-		bigY[l3++] = j1;
-		boolean flag1 = false;
-		int j4 = bigX.length;
-		int ai[][] = aClass11Array1230[plane].tileFlags;
-		while (i4 != l3) {
-			j3 = bigX[i4];
-			k3 = bigY[i4];
-			i4 = (i4 + 1) % j4;
-			if (j3 == k2 && k3 == i2) {
-				flag1 = true;
+		int currentX = startX;
+		int currentY = startY;
+		pathBackDirection[startX][startY] = 99;
+		pathDistance[startX][startY] = 0;
+		int queueTail = 0;
+		int queueHead = 0;
+		bigX[queueTail] = startX;
+		bigY[queueTail++] = startY;
+		boolean reachedTarget = false;
+		int queueCapacity = bigX.length;
+		int tileFlags[][] = aClass11Array1230[plane].tileFlags;
+		while (queueHead != queueTail) {
+			currentX = bigX[queueHead];
+			currentY = bigY[queueHead];
+			queueHead = (queueHead + 1) % queueCapacity;
+			if (currentX == targetX && currentY == targetY) {
+				reachedTarget = true;
 				break;
 			}
-			if (i1 != 0) {
-				if ((i1 < 5 || i1 == 10) && aClass11Array1230[plane].reachedWallObject(k2, j3, k3, j, i1 - 1, i2)) {
-					flag1 = true;
+			if (shapePlusOne != 0) {
+				if ((shapePlusOne < 5 || shapePlusOne == 10) && aClass11Array1230[plane].reachedWallObject(targetX, currentX, currentY, orientation, shapePlusOne - 1, targetY)) {
+					reachedTarget = true;
 					break;
 				}
-				if (i1 < 10 && aClass11Array1230[plane].reachedWallDecoration(k2, i2, k3, i1 - 1, j, j3)) {
-					flag1 = true;
+				if (shapePlusOne < 10 && aClass11Array1230[plane].reachedWallDecoration(targetX, targetY, currentY, shapePlusOne - 1, orientation, currentX)) {
+					reachedTarget = true;
 					break;
 				}
 			}
-			if (k1 != 0 && k != 0 && aClass11Array1230[plane].reachedObjectFootprint(i2, k2, j3, k, l1, k1, k3)) {
-				flag1 = true;
+			if (sizeX != 0 && sizeY != 0 && aClass11Array1230[plane].reachedObjectFootprint(targetY, targetX, currentX, sizeY, blockedSidesMask, sizeX, currentY)) {
+				reachedTarget = true;
 				break;
 			}
-			int l4 = anIntArrayArray825[j3][k3] + 1;
-			if (j3 > 0 && anIntArrayArray901[j3 - 1][k3] == 0 && (ai[j3 - 1][k3] & 0x1280108) == 0) {
-				bigX[l3] = j3 - 1;
-				bigY[l3] = k3;
-				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3 - 1][k3] = 2;
-				anIntArrayArray825[j3 - 1][k3] = l4;
+			int nextDistance = pathDistance[currentX][currentY] + 1;
+			if (currentX > 0 && pathBackDirection[currentX - 1][currentY] == 0 && (tileFlags[currentX - 1][currentY] & 0x1280108) == 0) {
+				bigX[queueTail] = currentX - 1;
+				bigY[queueTail] = currentY;
+				queueTail = (queueTail + 1) % queueCapacity;
+				pathBackDirection[currentX - 1][currentY] = 2;
+				pathDistance[currentX - 1][currentY] = nextDistance;
 			}
-			if (j3 < byte0 - 1 && anIntArrayArray901[j3 + 1][k3] == 0 && (ai[j3 + 1][k3] & 0x1280180) == 0) {
-				bigX[l3] = j3 + 1;
-				bigY[l3] = k3;
-				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3 + 1][k3] = 8;
-				anIntArrayArray825[j3 + 1][k3] = l4;
+			if (currentX < gridWidth - 1 && pathBackDirection[currentX + 1][currentY] == 0 && (tileFlags[currentX + 1][currentY] & 0x1280180) == 0) {
+				bigX[queueTail] = currentX + 1;
+				bigY[queueTail] = currentY;
+				queueTail = (queueTail + 1) % queueCapacity;
+				pathBackDirection[currentX + 1][currentY] = 8;
+				pathDistance[currentX + 1][currentY] = nextDistance;
 			}
-			if (k3 > 0 && anIntArrayArray901[j3][k3 - 1] == 0 && (ai[j3][k3 - 1] & 0x1280102) == 0) {
-				bigX[l3] = j3;
-				bigY[l3] = k3 - 1;
-				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3][k3 - 1] = 1;
-				anIntArrayArray825[j3][k3 - 1] = l4;
+			if (currentY > 0 && pathBackDirection[currentX][currentY - 1] == 0 && (tileFlags[currentX][currentY - 1] & 0x1280102) == 0) {
+				bigX[queueTail] = currentX;
+				bigY[queueTail] = currentY - 1;
+				queueTail = (queueTail + 1) % queueCapacity;
+				pathBackDirection[currentX][currentY - 1] = 1;
+				pathDistance[currentX][currentY - 1] = nextDistance;
 			}
-			if (k3 < byte1 - 1 && anIntArrayArray901[j3][k3 + 1] == 0 && (ai[j3][k3 + 1] & 0x1280120) == 0) {
-				bigX[l3] = j3;
-				bigY[l3] = k3 + 1;
-				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3][k3 + 1] = 4;
-				anIntArrayArray825[j3][k3 + 1] = l4;
+			if (currentY < gridHeight - 1 && pathBackDirection[currentX][currentY + 1] == 0 && (tileFlags[currentX][currentY + 1] & 0x1280120) == 0) {
+				bigX[queueTail] = currentX;
+				bigY[queueTail] = currentY + 1;
+				queueTail = (queueTail + 1) % queueCapacity;
+				pathBackDirection[currentX][currentY + 1] = 4;
+				pathDistance[currentX][currentY + 1] = nextDistance;
 			}
-			if (j3 > 0 && k3 > 0 && anIntArrayArray901[j3 - 1][k3 - 1] == 0 && (ai[j3 - 1][k3 - 1] & 0x128010e) == 0 && (ai[j3 - 1][k3] & 0x1280108) == 0 && (ai[j3][k3 - 1] & 0x1280102) == 0) {
-				bigX[l3] = j3 - 1;
-				bigY[l3] = k3 - 1;
-				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3 - 1][k3 - 1] = 3;
-				anIntArrayArray825[j3 - 1][k3 - 1] = l4;
+			if (currentX > 0 && currentY > 0 && pathBackDirection[currentX - 1][currentY - 1] == 0 && (tileFlags[currentX - 1][currentY - 1] & 0x128010e) == 0 && (tileFlags[currentX - 1][currentY] & 0x1280108) == 0 && (tileFlags[currentX][currentY - 1] & 0x1280102) == 0) {
+				bigX[queueTail] = currentX - 1;
+				bigY[queueTail] = currentY - 1;
+				queueTail = (queueTail + 1) % queueCapacity;
+				pathBackDirection[currentX - 1][currentY - 1] = 3;
+				pathDistance[currentX - 1][currentY - 1] = nextDistance;
 			}
-			if (j3 < byte0 - 1 && k3 > 0 && anIntArrayArray901[j3 + 1][k3 - 1] == 0 && (ai[j3 + 1][k3 - 1] & 0x1280183) == 0 && (ai[j3 + 1][k3] & 0x1280180) == 0 && (ai[j3][k3 - 1] & 0x1280102) == 0) {
-				bigX[l3] = j3 + 1;
-				bigY[l3] = k3 - 1;
-				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3 + 1][k3 - 1] = 9;
-				anIntArrayArray825[j3 + 1][k3 - 1] = l4;
+			if (currentX < gridWidth - 1 && currentY > 0 && pathBackDirection[currentX + 1][currentY - 1] == 0 && (tileFlags[currentX + 1][currentY - 1] & 0x1280183) == 0 && (tileFlags[currentX + 1][currentY] & 0x1280180) == 0 && (tileFlags[currentX][currentY - 1] & 0x1280102) == 0) {
+				bigX[queueTail] = currentX + 1;
+				bigY[queueTail] = currentY - 1;
+				queueTail = (queueTail + 1) % queueCapacity;
+				pathBackDirection[currentX + 1][currentY - 1] = 9;
+				pathDistance[currentX + 1][currentY - 1] = nextDistance;
 			}
-			if (j3 > 0 && k3 < byte1 - 1 && anIntArrayArray901[j3 - 1][k3 + 1] == 0 && (ai[j3 - 1][k3 + 1] & 0x1280138) == 0 && (ai[j3 - 1][k3] & 0x1280108) == 0 && (ai[j3][k3 + 1] & 0x1280120) == 0) {
-				bigX[l3] = j3 - 1;
-				bigY[l3] = k3 + 1;
-				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3 - 1][k3 + 1] = 6;
-				anIntArrayArray825[j3 - 1][k3 + 1] = l4;
+			if (currentX > 0 && currentY < gridHeight - 1 && pathBackDirection[currentX - 1][currentY + 1] == 0 && (tileFlags[currentX - 1][currentY + 1] & 0x1280138) == 0 && (tileFlags[currentX - 1][currentY] & 0x1280108) == 0 && (tileFlags[currentX][currentY + 1] & 0x1280120) == 0) {
+				bigX[queueTail] = currentX - 1;
+				bigY[queueTail] = currentY + 1;
+				queueTail = (queueTail + 1) % queueCapacity;
+				pathBackDirection[currentX - 1][currentY + 1] = 6;
+				pathDistance[currentX - 1][currentY + 1] = nextDistance;
 			}
-			if (j3 < byte0 - 1 && k3 < byte1 - 1 && anIntArrayArray901[j3 + 1][k3 + 1] == 0 && (ai[j3 + 1][k3 + 1] & 0x12801e0) == 0 && (ai[j3 + 1][k3] & 0x1280180) == 0 && (ai[j3][k3 + 1] & 0x1280120) == 0) {
-				bigX[l3] = j3 + 1;
-				bigY[l3] = k3 + 1;
-				l3 = (l3 + 1) % j4;
-				anIntArrayArray901[j3 + 1][k3 + 1] = 12;
-				anIntArrayArray825[j3 + 1][k3 + 1] = l4;
+			if (currentX < gridWidth - 1 && currentY < gridHeight - 1 && pathBackDirection[currentX + 1][currentY + 1] == 0 && (tileFlags[currentX + 1][currentY + 1] & 0x12801e0) == 0 && (tileFlags[currentX + 1][currentY] & 0x1280180) == 0 && (tileFlags[currentX][currentY + 1] & 0x1280120) == 0) {
+				bigX[queueTail] = currentX + 1;
+				bigY[queueTail] = currentY + 1;
+				queueTail = (queueTail + 1) % queueCapacity;
+				pathBackDirection[currentX + 1][currentY + 1] = 12;
+				pathDistance[currentX + 1][currentY + 1] = nextDistance;
 			}
 		}
-		anInt1264 = 0;
-		if (!flag1) {
-			if (flag) {
-				int i5 = 100;
-				for (int k5 = 1; k5 < 2; k5++) {
-					for (int i6 = k2 - k5; i6 <= k2 + k5; i6++) {
-						for (int l6 = i2 - k5; l6 <= i2 + k5; l6++) {
-							if (i6 >= 0 && l6 >= 0 && i6 < 104 && l6 < 104 && anIntArrayArray825[i6][l6] < i5) {
-								i5 = anIntArrayArray825[i6][l6];
-								j3 = i6;
-								k3 = l6;
-								anInt1264 = 1;
-								flag1 = true;
+		walkDestinationAdjusted = 0;
+		if (!reachedTarget) {
+			if (approximate) {
+				int bestDistance = 100;
+				for (int radius = 1; radius < 2; radius++) {
+					for (int searchX = targetX - radius; searchX <= targetX + radius; searchX++) {
+						for (int searchY = targetY - radius; searchY <= targetY + radius; searchY++) {
+							if (searchX >= 0 && searchY >= 0 && searchX < 104 && searchY < 104 && pathDistance[searchX][searchY] < bestDistance) {
+								bestDistance = pathDistance[searchX][searchY];
+								currentX = searchX;
+								currentY = searchY;
+								walkDestinationAdjusted = 1;
+								reachedTarget = true;
 							}
 						}
 
 					}
 
-					if (flag1) {
+					if (reachedTarget) {
 						break;
 					}
 				}
 
 			}
-			if (!flag1) {
+			if (!reachedTarget) {
 				return false;
 			}
 		}
-		i4 = 0;
-		bigX[i4] = j3;
-		bigY[i4++] = k3;
-		int l5;
-		for (int j5 = l5 = anIntArrayArray901[j3][k3]; j3 != j2 || k3 != j1; j5 = anIntArrayArray901[j3][k3]) {
-			if (j5 != l5) {
-				l5 = j5;
-				bigX[i4] = j3;
-				bigY[i4++] = k3;
+		// queueHead is reused from here on as the number of stored waypoints
+		queueHead = 0;
+		bigX[queueHead] = currentX;
+		bigY[queueHead++] = currentY;
+		int previousStepDirection;
+		for (int stepDirection = previousStepDirection = pathBackDirection[currentX][currentY]; currentX != startX || currentY != startY; stepDirection = pathBackDirection[currentX][currentY]) {
+			if (stepDirection != previousStepDirection) {
+				previousStepDirection = stepDirection;
+				bigX[queueHead] = currentX;
+				bigY[queueHead++] = currentY;
 			}
-			if ((j5 & 2) != 0) {
-				j3++;
-			} else if ((j5 & 8) != 0) {
-				j3--;
+			if ((stepDirection & 2) != 0) {
+				currentX++;
+			} else if ((stepDirection & 8) != 0) {
+				currentX--;
 			}
-			if ((j5 & 1) != 0) {
-				k3++;
-			} else if ((j5 & 4) != 0) {
-				k3--;
+			if ((stepDirection & 1) != 0) {
+				currentY++;
+			} else if ((stepDirection & 4) != 0) {
+				currentY--;
 			}
 		}
-		// if(cancelWalk) { return i4 > 0; }
+		// if(cancelWalk) { return queueHead > 0; }
 
-		if (i4 > 0) {
-			int k4 = i4;
-			if (k4 > 25) {
-				k4 = 25;
+		if (queueHead > 0) {
+			int waypointCount = queueHead;
+			if (waypointCount > 25) {
+				waypointCount = 25;
 			}
-			i4--;
-			int k6 = bigX[i4];
-			int i7 = bigY[i4];
-			anInt1288 += k4;
-			if (anInt1288 >= 92) {
+			queueHead--;
+			int firstWaypointX = bigX[queueHead];
+			int firstWaypointY = bigY[queueHead];
+			waypointsSinceKeepAlive += waypointCount;
+			if (waypointsSinceKeepAlive >= 92) {
 				stream.writeEncryptedOpcode(36);
 				stream.writeIntBigEndian(0);
-				anInt1288 = 0;
+				waypointsSinceKeepAlive = 0;
 			}
-			if (i == 0) {
+			if (walkType == 0) {
 				stream.writeEncryptedOpcode(164);
-				stream.writeByte(k4 + k4 + 3);
+				stream.writeByte(waypointCount + waypointCount + 3);
 			}
-			if (i == 1) {
+			if (walkType == 1) {
 				stream.writeEncryptedOpcode(248);
-				stream.writeByte(k4 + k4 + 3 + 14);
+				stream.writeByte(waypointCount + waypointCount + 3 + 14);
 			}
-			if (i == 2) {
+			if (walkType == 2) {
 				stream.writeEncryptedOpcode(98);
-				stream.writeByte(k4 + k4 + 3);
+				stream.writeByte(waypointCount + waypointCount + 3);
 			}
-			stream.writeShortLittleEndianAdd128(k6 + baseX);
+			stream.writeShortLittleEndianAdd128(firstWaypointX + baseX);
 			destX = bigX[0];
 			destY = bigY[0];
-			for (int j7 = 1; j7 < k4; j7++) {
-				i4--;
-				stream.writeByte(bigX[i4] - k6);
-				stream.writeByte(bigY[i4] - i7);
+			for (int waypointIndex = 1; waypointIndex < waypointCount; waypointIndex++) {
+				queueHead--;
+				stream.writeByte(bigX[queueHead] - firstWaypointX);
+				stream.writeByte(bigY[queueHead] - firstWaypointY);
 			}
 
-			stream.writeShortLittleEndian(i7 + baseY);
+			stream.writeShortLittleEndian(firstWaypointY + baseY);
 			stream.writeNegatedByte(super.keyArray[5] != 1 ? 0 : 1);
 			return true;
 		}
-		return i != 1;
+		return walkType != 1;
 	}
 	
 	static final int method77(int i, int i_1_) {
@@ -7463,7 +7464,7 @@ public class Game extends RSApplet {
 					stream.writeByte(89);
 					stream.writeShortBigEndian(myPlayer.x);
 					stream.writeShortBigEndian(myPlayer.y);
-					stream.writeByte(anInt1264);
+					stream.writeByte(walkDestinationAdjusted);
 					stream.writeByte(63);
 				}
 			}
@@ -10164,11 +10165,11 @@ public class Game extends RSApplet {
 					player.anInt1707 = l14 + loopCycle;
 					player.anInt1708 = k17 + loopCycle;
 					player.aModel_1714 = model;
-					int i23 = class46.anInt744;
-					int j23 = class46.anInt761;
+					int i23 = class46.sizeX;
+					int j23 = class46.sizeY;
 					if (i20 == 1 || i20 == 3) {
-						i23 = class46.anInt761;
-						j23 = class46.anInt744;
+						i23 = class46.sizeY;
+						j23 = class46.sizeX;
 					}
 					player.anInt1711 = k4 * 128 + i23 * 64;
 					player.anInt1713 = j7 * 128 + j23 * 64;
@@ -10487,8 +10488,8 @@ public class Game extends RSApplet {
 				if (objectCategory == 0) {
 					worldController.removeWall(tileX, scenePlane, tileY, (byte) -119);
 					ObjectDef existingWallDefinition = ObjectDef.forID(existingObjectId);
-					if (existingWallDefinition.aBoolean767) {
-						aClass11Array1230[scenePlane].removeWall(existingOrientation, existingShape, existingWallDefinition.aBoolean757, tileX, tileY);
+					if (existingWallDefinition.blocksMovement) {
+						aClass11Array1230[scenePlane].removeWall(existingOrientation, existingShape, existingWallDefinition.blocksProjectiles, tileX, tileY);
 					}
 				}
 				if (objectCategory == 1) {
@@ -10497,17 +10498,17 @@ public class Game extends RSApplet {
 				if (objectCategory == 2) {
 					worldController.removeSceneObject(scenePlane, tileX, tileY);
 					ObjectDef class46_1 = ObjectDef.forID(existingObjectId);
-					if (tileX + class46_1.anInt744 > 103 || tileY + class46_1.anInt744 > 103 || tileX + class46_1.anInt761 > 103 || tileY + class46_1.anInt761 > 103) {
+					if (tileX + class46_1.sizeX > 103 || tileY + class46_1.sizeX > 103 || tileX + class46_1.sizeY > 103 || tileY + class46_1.sizeY > 103) {
 						return;
 					}
-					if (class46_1.aBoolean767) {
-						aClass11Array1230[scenePlane].removeObject(existingOrientation, class46_1.anInt744, tileX, tileY, class46_1.anInt761, class46_1.aBoolean757);
+					if (class46_1.blocksMovement) {
+						aClass11Array1230[scenePlane].removeObject(existingOrientation, class46_1.sizeX, tileX, tileY, class46_1.sizeY, class46_1.blocksProjectiles);
 					}
 				}
 				if (objectCategory == 3) {
 					worldController.removeGroundDecoration(scenePlane, tileY, tileX);
 					ObjectDef class46_2 = ObjectDef.forID(existingObjectId);
-					if (class46_2.aBoolean767 && class46_2.hasActions) {
+					if (class46_2.blocksMovement && class46_2.hasActions) {
 						aClass11Array1230[scenePlane].unblockTile(tileY, tileX);
 					}
 				}
@@ -12005,7 +12006,7 @@ public class Game extends RSApplet {
 			DesktopHooks.checkJavaVersion();
 		}
 		server = ClientSettings.SERVER_IP;
-		anIntArrayArray825 = new int[104][104];
+		pathDistance = new int[104][104];
 		friendsNodeIDs = new int[200];
 		groundArray = new NodeList[4][104][104];
 		aBoolean831 = false;
@@ -12033,7 +12034,7 @@ public class Game extends RSApplet {
 		anIntArray894 = new int[maxPlayers];
 		aStreamArray895s = new Stream[maxPlayers];
 		anInt897 = 1;
-		anIntArrayArray901 = new int[104][104];
+		pathBackDirection = new int[104][104];
 		scrollHighlightColor = 0x766654;
 		aByteArray912 = new byte[16384];
 		currentStats = new int[Skills.skillsCount];
@@ -12160,7 +12161,7 @@ public class Game extends RSApplet {
 	public static String server;
 	public int ignoreCount;
 	public long aLong824;
-	public int[][] anIntArrayArray825;
+	public int[][] pathDistance;
 	public int[] friendsNodeIDs;
 	public NodeList[][][] groundArray;
 	public int[] anIntArray828;
@@ -12232,7 +12233,7 @@ public class Game extends RSApplet {
 	public int anInt897;
 	public int friendsCount;
 	public int anInt900;
-	public int[][] anIntArrayArray901;
+	public int[][] pathBackDirection;
 	public final int scrollHighlightColor;
 	public RSImageProducer backLeftIP1;
 	public RSImageProducer backLeftIP2;
@@ -12560,7 +12561,7 @@ public class Game extends RSApplet {
 	public int destX;
 	public int destY;
 	public Sprite aClass30_Sub2_Sub1_Sub1_1263;
-	public int anInt1264;
+	public int walkDestinationAdjusted;
 	public int anInt1265;
 	public String loginMessage1;
 	public String loginMessage2;
@@ -12580,7 +12581,7 @@ public class Game extends RSApplet {
 	public int anInt1284;
 	public int anInt1285;
 	public String selectedItemName;
-	public static int anInt1288;
+	public static int waypointsSinceKeepAlive;
 	public int anInt1289;
 	public static int tiara;
 	public static int anInt1290;

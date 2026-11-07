@@ -4,46 +4,46 @@
 
 public final class ObjectDef {
 
-	public static ObjectDef forID(int i) {
-		for (int j = 0; j < 20; j++) {
-			if (cache[j].type == i) {
-				return cache[j];
+	public static ObjectDef forID(int objectId) {
+		for (int cacheSlot = 0; cacheSlot < 20; cacheSlot++) {
+			if (cache[cacheSlot].type == objectId) {
+				return cache[cacheSlot];
 			}
 		}
 
 		cacheIndex = (cacheIndex + 1) % 20;
-		ObjectDef class46 = cache[cacheIndex];
-		stream.currentOffset = streamIndices[i];
-		class46.type = i;
-		class46.setDefaults();
-		class46.readValues(stream);
-		if (i == 6) {
-			class46.actions[1] = "Load";
-			class46.actions[2] = "Pick-up";
+		ObjectDef definition = cache[cacheIndex];
+		stream.currentOffset = streamIndices[objectId];
+		definition.type = objectId;
+		definition.setDefaults();
+		definition.readValues(stream);
+		if (objectId == 6) {
+			definition.actions[1] = "Load";
+			definition.actions[2] = "Pick-up";
 		}
-		switch (i) {
+		switch (objectId) {
 
 		}
-		return class46;
+		return definition;
 	}
 
 	private void setDefaults() {
-		anIntArray773 = null;
-		anIntArray776 = null;
+		modelIds = null;
+		modelShapes = null;
 		name = null;
 		description = null;
 		modifiedModelColors = null;
 		originalModelColors = null;
-		anInt744 = 1;
-		anInt761 = 1;
-		aBoolean767 = true;
-		aBoolean757 = true;
+		sizeX = 1;
+		sizeY = 1;
+		blocksMovement = true;
+		blocksProjectiles = true;
 		hasActions = false;
 		aBoolean762 = false;
 		aBoolean769 = false;
 		aBoolean764 = false;
-		anInt781 = -1;
-		anInt775 = 16;
+		animationId = -1;
+		wallDecorationOffset = 16;
 		aByte737 = 0;
 		aByte742 = 0;
 		actions = null;
@@ -54,24 +54,24 @@ public final class ObjectDef {
 		anInt748 = 128;
 		anInt772 = 128;
 		anInt740 = 128;
-		anInt768 = 0;
+		blockedSidesMask = 0;
 		anInt738 = 0;
 		anInt745 = 0;
 		anInt783 = 0;
-		aBoolean736 = false;
+		showInLowMemory = false;
 		aBoolean766 = false;
 		anInt760 = -1;
-		anInt774 = -1;
-		anInt749 = -1;
+		varBitId = -1;
+		settingId = -1;
 		childrenIDs = null;
 	}
 
-	public void method574(OnDemandFetcher class42_sub1) {
-		if (anIntArray773 == null) {
+	public void requestModels(OnDemandFetcher fetcher) {
+		if (modelIds == null) {
 			return;
 		}
-		for (int element : anIntArray773) {
-			class42_sub1.method560(element & 0xffff, 0);
+		for (int modelId : modelIds) {
+			fetcher.method560(modelId & 0xffff, 0);
 		}
 	}
 
@@ -103,24 +103,24 @@ public final class ObjectDef {
 
 	}
 
-	public boolean method577(int i) {
-		if (anIntArray776 == null) {
-			if (anIntArray773 == null) {
+	public boolean areModelsLoaded(int shape) {
+		if (modelShapes == null) {
+			if (modelIds == null) {
 				return true;
 			}
-			if (i != 10) {
+			if (shape != 10) {
 				return true;
 			}
-			boolean flag1 = true;
-			for (int element : anIntArray773) {
-				flag1 &= Model.method463(element & 0xffff);
+			boolean allLoaded = true;
+			for (int modelId : modelIds) {
+				allLoaded &= Model.method463(modelId & 0xffff);
 			}
 
-			return flag1;
+			return allLoaded;
 		}
-		for (int j = 0; j < anIntArray776.length; j++) {
-			if (anIntArray776[j] == i) {
-				return Model.method463(anIntArray773[j] & 0xffff);
+		for (int index = 0; index < modelShapes.length; index++) {
+			if (modelShapes[index] == shape) {
+				return Model.method463(modelIds[index] & 0xffff);
 			}
 		}
 
@@ -151,40 +151,40 @@ public final class ObjectDef {
 		return model;
 	}
 
-	public boolean method579() {
-		if (anIntArray773 == null) {
+	public boolean areAllModelsLoaded() {
+		if (modelIds == null) {
 			return true;
 		}
-		boolean flag1 = true;
-		for (int element : anIntArray773) {
-			flag1 &= Model.method463(element & 0xffff);
+		boolean allLoaded = true;
+		for (int modelId : modelIds) {
+			allLoaded &= Model.method463(modelId & 0xffff);
 		}
-		return flag1;
+		return allLoaded;
 	}
 
-	public ObjectDef method580() {
-		int i = -1;
-		if (anInt774 != -1) {
-			VarBit varBit = VarBit.cache[anInt774];
-			int j = varBit.anInt648;
-			int k = varBit.anInt649;
-			int l = varBit.anInt650;
-			int i1 = Game.anIntArray1232[l - k];
-			i = clientInstance.variousSettings[j] >> k & i1;
-		} else if (anInt749 != -1) {
-			i = clientInstance.variousSettings[anInt749];
+	public ObjectDef resolveMorph() {
+		int childIndex = -1;
+		if (varBitId != -1) {
+			VarBit varBit = VarBit.cache[varBitId];
+			int settingIndex = varBit.anInt648;
+			int lowBit = varBit.anInt649;
+			int highBit = varBit.anInt650;
+			int valueMask = Game.anIntArray1232[highBit - lowBit];
+			childIndex = clientInstance.variousSettings[settingIndex] >> lowBit & valueMask;
+		} else if (settingId != -1) {
+			childIndex = clientInstance.variousSettings[settingId];
 		}
-		if (i < 0 || i >= childrenIDs.length || childrenIDs[i] == -1) {
+		if (childIndex < 0 || childIndex >= childrenIDs.length || childrenIDs[childIndex] == -1) {
 			return null;
 		} else {
-			return forID(childrenIDs[i]);
+			return forID(childrenIDs[childIndex]);
 		}
 	}
 
 	private Model method581(int j, int k, int l) {
 		Model model = null;
 		long l1;
-		if (anIntArray776 == null) {
+		if (modelShapes == null) {
 			if (j != 10) {
 				return null;
 			}
@@ -193,13 +193,13 @@ public final class ObjectDef {
 			if (model_1 != null) {
 				return model_1;
 			}
-			if (anIntArray773 == null) {
+			if (modelIds == null) {
 				return null;
 			}
 			boolean flag1 = aBoolean751 ^ l > 3;
-			int k1 = anIntArray773.length;
+			int k1 = modelIds.length;
 			for (int i2 = 0; i2 < k1; i2++) {
-				int l2 = anIntArray773[i2];
+				int l2 = modelIds[i2];
 				if (flag1) {
 					l2 += 0x10000;
 				}
@@ -224,8 +224,8 @@ public final class ObjectDef {
 			}
 		} else {
 			int i1 = -1;
-			for (int j1 = 0; j1 < anIntArray776.length; j1++) {
-				if (anIntArray776[j1] != j) {
+			for (int j1 = 0; j1 < modelShapes.length; j1++) {
+				if (modelShapes[j1] != j) {
 					continue;
 				}
 				i1 = j1;
@@ -240,7 +240,7 @@ public final class ObjectDef {
 			if (model_2 != null) {
 				return model_2;
 			}
-			int j2 = anIntArray773[i1];
+			int j2 = modelIds[i1];
 			boolean flag3 = aBoolean751 ^ l > 3;
 			if (flag3) {
 				j2 += 0x10000;
@@ -292,158 +292,158 @@ public final class ObjectDef {
 	}
 
 	private void readValues(Stream stream) {
-		int i = -1;
+		int interactionByte = -1;
 		label0 : do {
-			int j;
+			int opcode;
 			do {
-				j = stream.readUnsignedByte();
-				if (j == 0) {
+				opcode = stream.readUnsignedByte();
+				if (opcode == 0) {
 					break label0;
 				}
-				if (j == 1) {
-					int k = stream.readUnsignedByte();
-					if (k > 0) {
-						if (anIntArray773 == null || lowMem) {
-							anIntArray776 = new int[k];
-							anIntArray773 = new int[k];
-							for (int k1 = 0; k1 < k; k1++) {
-								anIntArray773[k1] = stream.readUnsignedShortBigEndian();
-								anIntArray776[k1] = stream.readUnsignedByte();
+				if (opcode == 1) {
+					int shapedModelCount = stream.readUnsignedByte();
+					if (shapedModelCount > 0) {
+						if (modelIds == null || lowMem) {
+							modelShapes = new int[shapedModelCount];
+							modelIds = new int[shapedModelCount];
+							for (int modelIndex = 0; modelIndex < shapedModelCount; modelIndex++) {
+								modelIds[modelIndex] = stream.readUnsignedShortBigEndian();
+								modelShapes[modelIndex] = stream.readUnsignedByte();
 							}
 
 						} else {
-							stream.currentOffset += k * 3;
+							stream.currentOffset += shapedModelCount * 3;
 						}
 					}
-				} else if (j == 2) {
+				} else if (opcode == 2) {
 					name = stream.readLfTerminatedString();
-				} else if (j == 3) {
+				} else if (opcode == 3) {
 					description = stream.readLfTerminatedBytes();
-				} else if (j == 5) {
-					int l = stream.readUnsignedByte();
-					if (l > 0) {
-						if (anIntArray773 == null || lowMem) {
-							anIntArray776 = null;
-							anIntArray773 = new int[l];
-							for (int l1 = 0; l1 < l; l1++) {
-								anIntArray773[l1] = stream.readUnsignedShortBigEndian();
+				} else if (opcode == 5) {
+					int modelCount = stream.readUnsignedByte();
+					if (modelCount > 0) {
+						if (modelIds == null || lowMem) {
+							modelShapes = null;
+							modelIds = new int[modelCount];
+							for (int modelIndex = 0; modelIndex < modelCount; modelIndex++) {
+								modelIds[modelIndex] = stream.readUnsignedShortBigEndian();
 							}
 
 						} else {
-							stream.currentOffset += l * 2;
+							stream.currentOffset += modelCount * 2;
 						}
 					}
-				} else if (j == 14) {
-					anInt744 = stream.readUnsignedByte();
-				} else if (j == 15) {
-					anInt761 = stream.readUnsignedByte();
-				} else if (j == 17) {
-					aBoolean767 = false;
-				} else if (j == 18) {
-					aBoolean757 = false;
-				} else if (j == 19) {
-					i = stream.readUnsignedByte();
-					if (i == 1) {
+				} else if (opcode == 14) {
+					sizeX = stream.readUnsignedByte();
+				} else if (opcode == 15) {
+					sizeY = stream.readUnsignedByte();
+				} else if (opcode == 17) {
+					blocksMovement = false;
+				} else if (opcode == 18) {
+					blocksProjectiles = false;
+				} else if (opcode == 19) {
+					interactionByte = stream.readUnsignedByte();
+					if (interactionByte == 1) {
 						hasActions = true;
 					}
-				} else if (j == 21) {
+				} else if (opcode == 21) {
 					aBoolean762 = true;
-				} else if (j == 22) {
+				} else if (opcode == 22) {
 					aBoolean769 = true;
-				} else if (j == 23) {
+				} else if (opcode == 23) {
 					aBoolean764 = true;
-				} else if (j == 24) {
-					anInt781 = stream.readUnsignedShortBigEndian();
-					if (anInt781 == 65535) {
-						anInt781 = -1;
+				} else if (opcode == 24) {
+					animationId = stream.readUnsignedShortBigEndian();
+					if (animationId == 65535) {
+						animationId = -1;
 					}
-				} else if (j == 28) {
-					anInt775 = stream.readUnsignedByte();
-				} else if (j == 29) {
+				} else if (opcode == 28) {
+					wallDecorationOffset = stream.readUnsignedByte();
+				} else if (opcode == 29) {
 					aByte737 = stream.readSignedByte();
-				} else if (j == 39) {
+				} else if (opcode == 39) {
 					aByte742 = stream.readSignedByte();
-				} else if (j >= 30 && j < 39) {
+				} else if (opcode >= 30 && opcode < 39) {
 					if (actions == null) {
 						actions = new String[5];
 					}
-					actions[j - 30] = stream.readLfTerminatedString();
-					if (actions[j - 30].equalsIgnoreCase("hidden")) {
-						actions[j - 30] = null;
+					actions[opcode - 30] = stream.readLfTerminatedString();
+					if (actions[opcode - 30].equalsIgnoreCase("hidden")) {
+						actions[opcode - 30] = null;
 					}
-				} else if (j == 40) {
-					int i1 = stream.readUnsignedByte();
-					modifiedModelColors = new int[i1];
-					originalModelColors = new int[i1];
-					for (int i2 = 0; i2 < i1; i2++) {
-						modifiedModelColors[i2] = stream.readUnsignedShortBigEndian();
-						originalModelColors[i2] = stream.readUnsignedShortBigEndian();
+				} else if (opcode == 40) {
+					int recolorCount = stream.readUnsignedByte();
+					modifiedModelColors = new int[recolorCount];
+					originalModelColors = new int[recolorCount];
+					for (int colorIndex = 0; colorIndex < recolorCount; colorIndex++) {
+						modifiedModelColors[colorIndex] = stream.readUnsignedShortBigEndian();
+						originalModelColors[colorIndex] = stream.readUnsignedShortBigEndian();
 					}
 
-				} else if (j == 60) {
+				} else if (opcode == 60) {
 					anInt746 = stream.readUnsignedShortBigEndian();
-				} else if (j == 62) {
+				} else if (opcode == 62) {
 					aBoolean751 = true;
-				} else if (j == 64) {
+				} else if (opcode == 64) {
 					aBoolean779 = false;
-				} else if (j == 65) {
+				} else if (opcode == 65) {
 					anInt748 = stream.readUnsignedShortBigEndian();
-				} else if (j == 66) {
+				} else if (opcode == 66) {
 					anInt772 = stream.readUnsignedShortBigEndian();
-				} else if (j == 67) {
+				} else if (opcode == 67) {
 					anInt740 = stream.readUnsignedShortBigEndian();
-				} else if (j == 68) {
+				} else if (opcode == 68) {
 					anInt758 = stream.readUnsignedShortBigEndian();
-				} else if (j == 69) {
-					anInt768 = stream.readUnsignedByte();
-				} else if (j == 70) {
+				} else if (opcode == 69) {
+					blockedSidesMask = stream.readUnsignedByte();
+				} else if (opcode == 70) {
 					anInt738 = stream.readSignedShortBigEndian();
-				} else if (j == 71) {
+				} else if (opcode == 71) {
 					anInt745 = stream.readSignedShortBigEndian();
-				} else if (j == 72) {
+				} else if (opcode == 72) {
 					anInt783 = stream.readSignedShortBigEndian();
-				} else if (j == 73) {
-					aBoolean736 = true;
-				} else if (j == 74) {
+				} else if (opcode == 73) {
+					showInLowMemory = true;
+				} else if (opcode == 74) {
 					aBoolean766 = true;
 				} else {
-					if (j != 75) {
+					if (opcode != 75) {
 						continue;
 					}
 					anInt760 = stream.readUnsignedByte();
 				}
 				continue label0;
-			} while (j != 77);
-			anInt774 = stream.readUnsignedShortBigEndian();
-			if (anInt774 == 65535) {
-				anInt774 = -1;
+			} while (opcode != 77);
+			varBitId = stream.readUnsignedShortBigEndian();
+			if (varBitId == 65535) {
+				varBitId = -1;
 			}
-			anInt749 = stream.readUnsignedShortBigEndian();
-			if (anInt749 == 65535) {
-				anInt749 = -1;
+			settingId = stream.readUnsignedShortBigEndian();
+			if (settingId == 65535) {
+				settingId = -1;
 			}
-			int j1 = stream.readUnsignedByte();
-			childrenIDs = new int[j1 + 1];
-			for (int j2 = 0; j2 <= j1; j2++) {
-				childrenIDs[j2] = stream.readUnsignedShortBigEndian();
-				if (childrenIDs[j2] == 65535) {
-					childrenIDs[j2] = -1;
+			int lastChildIndex = stream.readUnsignedByte();
+			childrenIDs = new int[lastChildIndex + 1];
+			for (int childIndex = 0; childIndex <= lastChildIndex; childIndex++) {
+				childrenIDs[childIndex] = stream.readUnsignedShortBigEndian();
+				if (childrenIDs[childIndex] == 65535) {
+					childrenIDs[childIndex] = -1;
 				}
 			}
 
 		} while (true);
-		if (i == -1) {
-			hasActions = anIntArray773 != null && (anIntArray776 == null || anIntArray776[0] == 10);
+		if (interactionByte == -1) {
+			hasActions = modelIds != null && (modelShapes == null || modelShapes[0] == 10);
 			if (actions != null) {
 				hasActions = true;
 			}
 		}
 		if (aBoolean766) {
-			aBoolean767 = false;
-			aBoolean757 = false;
+			blocksMovement = false;
+			blocksProjectiles = false;
 		}
 		if (anInt760 == -1) {
-			anInt760 = aBoolean767 ? 1 : 0;
+			anInt760 = blocksMovement ? 1 : 0;
 		}
 	}
 
@@ -451,47 +451,47 @@ public final class ObjectDef {
 		type = -1;
 	}
 
-	public boolean aBoolean736;
+	public boolean showInLowMemory;
 	private byte aByte737;
 	private int anInt738;
 	public String name;
 	private int anInt740;
 	private static final Model[] aModelArray741s = new Model[4];
 	private byte aByte742;
-	public int anInt744;
+	public int sizeX;
 	private int anInt745;
 	public int anInt746;
 	private int[] originalModelColors;
 	private int anInt748;
-	public int anInt749;
+	public int settingId;
 	private boolean aBoolean751;
 	public static boolean lowMem;
 	private static Stream stream;
 	public int type;
 	private static int[] streamIndices;
-	public boolean aBoolean757;
+	public boolean blocksProjectiles;
 	public int anInt758;
 	public int childrenIDs[];
 	private int anInt760;
-	public int anInt761;
+	public int sizeY;
 	public boolean aBoolean762;
 	public boolean aBoolean764;
 	public static Game clientInstance;
 	private boolean aBoolean766;
-	public boolean aBoolean767;
-	public int anInt768;
+	public boolean blocksMovement;
+	public int blockedSidesMask;
 	private boolean aBoolean769;
 	private static int cacheIndex;
 	private int anInt772;
-	private int[] anIntArray773;
-	public int anInt774;
-	public int anInt775;
-	private int[] anIntArray776;
+	private int[] modelIds;
+	public int varBitId;
+	public int wallDecorationOffset;
+	private int[] modelShapes;
 	public byte description[];
 	public boolean hasActions;
 	public boolean aBoolean779;
 	public static LruCache mruNodes2 = new LruCache(30);
-	public int anInt781;
+	public int animationId;
 	private static ObjectDef[] cache;
 	private int anInt783;
 	private int[] modifiedModelColors;

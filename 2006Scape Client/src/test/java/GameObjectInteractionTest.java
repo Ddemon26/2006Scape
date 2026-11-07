@@ -38,13 +38,13 @@ public class GameObjectInteractionTest {
             definitions[n].type = -1;
         }
         definitions[0].type = 123;
-        definitions[0].anInt744 = 2;
-        definitions[0].anInt761 = 3;
-        definitions[0].anInt768 = 11;
+        definitions[0].sizeX = 2;
+        definitions[0].sizeY = 3;
+        definitions[0].blockedSidesMask = 11;
         definitions[1].type = 124;
-        definitions[1].anInt744 = 4;
-        definitions[1].anInt761 = 5;
-        definitions[1].anInt768 = 3;
+        definitions[1].sizeX = 4;
+        definitions[1].sizeY = 5;
+        definitions[1].blockedSidesMask = 3;
         definitionCache().set(null, definitions);
         Game.myPlayer = new Player();
         Game.myPlayer.smallX[0] = 41;

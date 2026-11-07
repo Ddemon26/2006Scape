@@ -19,9 +19,9 @@ public class PendingSceneChangeTest {
             }
             cache[0].type = 401;
             cache[0].childrenIDs = new int[0];
-            cache[0].anInt781 = -1;
+            cache[0].animationId = -1;
             cache[1].type = 402;
-            cache[1].aBoolean767 = true;
+            cache[1].blocksMovement = true;
             cacheField.set(null, cache);
             Game.lowMem = false;
             Game game = game();
