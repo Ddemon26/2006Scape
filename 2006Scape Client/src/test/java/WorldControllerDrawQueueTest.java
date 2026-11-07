@@ -491,4 +491,300 @@ public class WorldControllerDrawQueueTest {
             assertEquals("near value " + near, (1 & 3) == near, a.objectsPending);
         }
     }
+
+    // ---- pass 154: the neighbour tiles, edge bits, scene object footprint and diagonal decoration values of drawTileQueue ----
+
+    /** Neighbour step dx, dy and the Ground.objectEdgeMask bit that points toward it: x-1 is 1, x+1 is 4, y-1 is 8, y+1 is 2. */
+    private static final int[][] STEP = {{-1, 0, 1}, {1, 0, 4}, {0, -1, 8}, {0, 1, 2}};
+
+    private static Ground[][][] groundOf(WorldController wc) throws Exception { return (Ground[][][]) field(WorldController.class, "groundArray").get(wc); }
+
+    @Test public void firstPassWaitsOnlyForTheFourAdjacentTilesOfItsPlaneOnTheCameraSideAndTheirEdgeBits() throws Exception {
+        for (int d = 0; d < 4; d++) {
+            int nx = 20 + STEP[d][0], ny = 25 + STEP[d][1], bit = STEP[d][2];
+            for (int sc = 0; sc < 8; sc++) {
+                WorldController wc = scene(); LOG.clear();
+                camera(sc == 7 ? 20 + STEP[d][0] * 5 : 20, sc == 7 ? 25 + STEP[d][1] * 5 : 25);
+                Ground t = pending(wc, 0, 20, 25);
+                Ground n = null;
+                if (sc == 0 || sc == 6 || sc == 7) n = pending(wc, 0, nx, ny);
+                else if (sc == 1 || sc == 2 || sc == 3) { n = tile(wc, 0, nx, ny); n.drawPending = true; n.firstPassPending = false; }
+                else if (sc == 4) { n = tile(wc, 0, nx, ny); n.drawPending = false; n.firstPassPending = true; }
+                else if (sc == 5) for (int[] dg : new int[][] {{19, 24}, {21, 24}, {19, 26}, {21, 26}}) pending(wc, 0, dg[0], dg[1]);
+                t.objectEdgeMask = sc == 2 ? bit : sc == 3 ? (15 ^ bit) : sc == 6 ? 15 : 0;
+                draw(wc, t, true);
+                boolean passes = sc == 2 || sc == 4 || sc == 5 || sc == 7;
+                assertEquals("neighbour " + d + " scenario " + sc, passes, !t.firstPassPending);
+            }
+        }
+    }
+
+    @Test public void firstPassAlsoWaitsForTheSameCoordinateTileOfThePlaneBelowOnly() throws Exception {
+        for (int sc = 0; sc < 5; sc++) {
+            WorldController wc = scene(); LOG.clear();
+            camera(20, 25);
+            Ground t = pending(wc, 2, 20, 25);
+            if (sc == 0) pending(wc, 1, 20, 25);
+            if (sc == 1) { pending(wc, 0, 20, 25); }
+            if (sc == 2) pending(wc, 1, 21, 25);
+            if (sc == 3) { Ground low = tile(wc, 1, 20, 25); low.drawPending = false; low.firstPassPending = true; }
+            if (sc == 4) { Ground low = tile(wc, 1, 20, 25); low.drawPending = true; low.firstPassPending = false; }
+            draw(wc, t, true);
+            assertEquals("scenario " + sc, sc == 1 || sc == 2 || sc == 3, !t.firstPassPending);
+        }
+    }
+
+    @Test public void tileFinishesOnlyWhenNoAdjacentTileOnItsCameraSideIsStillPending() throws Exception {
+        for (int d = 0; d < 4; d++) {
+            int nx = 20 + STEP[d][0], ny = 25 + STEP[d][1];
+            for (int sc = 0; sc < 5; sc++) {
+                WorldController wc = scene(); LOG.clear();
+                camera(sc == 4 ? 20 + STEP[d][0] * 5 : 20, sc == 4 ? 25 + STEP[d][1] * 5 : 25);
+                Ground t = pending(wc, 0, 20, 25);
+                if (sc == 0 || sc == 4) { Ground n = tile(wc, 0, nx, ny); n.drawPending = true; n.firstPassPending = false; }
+                if (sc == 1) { Ground n = tile(wc, 0, nx, ny); n.drawPending = false; }
+                if (sc == 3) for (int[] dg : new int[][] {{19, 24}, {21, 24}, {19, 26}, {21, 26}}) { Ground g = tile(wc, 0, dg[0], dg[1]); g.drawPending = true; g.firstPassPending = false; }
+                draw(wc, t, false);
+                boolean finished = sc != 0;
+                assertEquals("neighbour " + d + " scenario " + sc, finished, !t.drawPending);
+            }
+        }
+    }
+
+    @Test public void upperPlaneTileOfTheSameCoordinateIsQueuedWhenTheTileFinishes() throws Exception {
+        WorldController wc = scene(); LOG.clear();
+        camera(20, 25);
+        Ground t = pending(wc, 0, 20, 25);
+        Ground same = pending(wc, 1, 20, 25);
+        Ground other = pending(wc, 1, 22, 25);
+        draw(wc, t, false);
+        assertFalse(t.drawPending);
+        assertFalse("same coordinate of plane+1 was queued and drawn", same.firstPassPending);
+        assertTrue("other coordinate of plane+1 was not queued", other.firstPassPending);
+        wc = scene(); LOG.clear();
+        camera(20, 25);
+        t = pending(wc, 3, 20, 25);
+        draw(wc, t, false);
+        assertFalse("the top plane has no plane above", t.drawPending);
+    }
+
+    /** neighbour dx,dy; camera offset; blocker (pending, not queued) dx,dy; edge bit on the tile; edge bit the neighbour needs to be let through. */
+    private static final int[][] EDGE_QUEUE = {
+        {1, 0, 10, 0, -1, 0, 4, 1}, {0, 1, 0, 15, 0, -1, 2, 8}, {-1, 0, -10, 0, 1, 0, 1, 4}, {0, -1, 0, -15, 0, 1, 8, 2}};
+
+    @Test public void tileEdgeMaskQueuesTheMatchingNeighbourBeforeTheTileFinishesOnlyWhenTheCameraIsBeyondIt() throws Exception {
+        for (int[] e : EDGE_QUEUE) for (int sc = 0; sc < 3; sc++) {
+            WorldController wc = scene(); LOG.clear();
+            camera(sc == 2 ? 20 : 20 + e[2], sc == 2 ? 25 : 25 + e[3]);
+            Ground t = pending(wc, 0, 20, 25);
+            Ground blocker = tile(wc, 0, 20 + e[4], 25 + e[5]);
+            blocker.drawPending = true; blocker.firstPassPending = false;
+            Ground n = pending(wc, 0, 20 + e[0], 25 + e[1]);
+            n.objectEdgeMask = e[7];
+            t.objectEdgeMask = sc == 1 ? 15 ^ e[6] : e[6];
+            draw(wc, t, false);
+            String ctx = Arrays.toString(e) + " scenario " + sc;
+            assertTrue(ctx + ": the blocker keeps the tile pending", t.drawPending);
+            assertEquals(ctx, sc != 0, n.firstPassPending);
+        }
+        WorldController wc = scene(); LOG.clear();
+        camera(30, 40);
+        Ground t = pending(wc, 0, 20, 25);
+        t.objectEdgeMask = 15;
+        Ground xMinus = pending(wc, 0, 19, 25), yMinus = pending(wc, 0, 20, 24), xPlus = pending(wc, 0, 21, 25), yPlus = pending(wc, 0, 20, 26);
+        xPlus.objectEdgeMask = 1; yPlus.objectEdgeMask = 8;
+        draw(wc, t, false);
+        assertFalse("x+1 queued", xPlus.firstPassPending);
+        assertFalse("y+1 queued", yPlus.firstPassPending);
+        assertTrue("x-1 not queued, the camera is not beyond it", xMinus.firstPassPending);
+        assertTrue("y-1 not queued", yMinus.firstPassPending);
+    }
+
+    private static Object5 obj5(String name, int minX, int maxX, int minY, int maxY, int relX, int relY, int uid) throws Exception {
+        Object5 o = new Object5();
+        o.model = new Rec(name);
+        o.minTileX = minX; o.maxTileX = maxX; o.minTileY = minY; o.maxTileY = maxY;
+        o.worldX = sint("cameraWorldX") + relX; o.worldY = sint("cameraWorldY") + relY;
+        o.height = -50; o.rotation = 0; o.uid = uid;
+        return o;
+    }
+
+    private static void attach(Ground g, Object5 o) { g.obj5Array[g.objectCount] = o; g.objectEdgeMasks[g.objectCount] = 0; g.objectCount++; }
+
+    private static void footprint(WorldController wc, int minX, int maxX, int minY, int maxY) throws Exception {
+        Ground[][][] g = groundOf(wc);
+        for (int x = minX; x <= maxX; x++) for (int y = minY; y <= maxY; y++) if (g[0][x][y] == null) tile(wc, 0, x, y);
+    }
+
+    private static Ground objectTile(WorldController wc, int x, int y) throws Exception {
+        Ground t = pending(wc, 0, x, y);
+        t.objectsPending = true;
+        return t;
+    }
+
+    @Test public void lowerGroundSceneObjectsAreDrawnUpToItsObjectCountSkippingNullsWithTheirRotation() throws Exception {
+        WorldController wc = scene(); LOG.clear();
+        camera(20, 25);
+        Ground t = pending(wc, 0, 20, 25);
+        Ground lower = new Ground(0, 20, 25);
+        Object5 a = obj5("A", 20, 20, 25, 25, 7, 9, 61), b = obj5("B", 20, 20, 25, 25, -3, 4, 62), c = obj5("C", 20, 20, 25, 25, 0, 0, 63);
+        a.rotation = 5; b.rotation = 9;
+        lower.obj5Array[0] = a; lower.obj5Array[1] = null; lower.obj5Array[2] = b; lower.obj5Array[3] = c;
+        lower.objectCount = 3;
+        t.lowerGround = lower;
+        t.obj1 = wall("own", 1, 0, null);
+        draw(wc, t, false);
+        int cx = sint("cameraWorldX"), cy = sint("cameraWorldY"), ch = sint("cameraWorldHeight");
+        assertEquals(Arrays.asList("A:5,7," + (-50 - ch) + ",9,61", "B:9,-3," + (-50 - ch) + ",4,62", "own:0," + (20 * 128 + 64 - cx) + "," + (-11 - ch) + "," + (25 * 128 + 64 - cy) + ",7"), LOG);
+    }
+
+    @Test public void readySceneObjectsAreCollectedInScanOrderAndDrawnFarthestFirstWhileDrawnAndBlockedOnesAreLeftOut() throws Exception {
+        WorldController wc = scene(); LOG.clear();
+        camera(30, 40);
+        sset("readyObjectBuffer", new Object5[100]);
+        Ground t = objectTile(wc, 20, 25);
+        Object5 a = obj5("A", 20, 20, 25, 25, 1, 1, 1), b = obj5("B", 20, 20, 25, 25, 3, 4, 2), c = obj5("C", 20, 21, 25, 25, 0, 0, 3), d = obj5("D", 20, 20, 25, 25, 6, 0, 4);
+        a.lastDrawCycle = 1;
+        for (Object5 o : new Object5[] {a, b, c, d}) attach(t, o);
+        Ground u = tile(wc, 0, 21, 25);
+        u.firstPassPending = true; u.drawPending = false;
+        draw(wc, t, false);
+        assertEquals("equal camera distance: the farther by world position first", Arrays.asList("D", "B"), names(LOG));
+        Object5[] buffer = (Object5[]) sget("readyObjectBuffer");
+        assertSame(b, buffer[0]); assertSame(d, buffer[1]); assertNull("exactly the two ready objects were collected", buffer[2]);
+        assertTrue("an object waiting for a first pass keeps the tile's objects pending", t.objectsPending);
+        assertTrue(t.drawPending);
+    }
+
+    @Test public void cameraDistanceIsTheLargerXDistanceToTheFootprintEdgesPlusTheLargerYDistance() throws Exception {
+        int[][] cases = {{20, 25, 3}, {30, 40, 28}, {10, 30, 18}, {21, 20, 9}, {19, 26, 5}};
+        for (int[] c : cases) {
+            WorldController wc = scene(); LOG.clear();
+            camera(c[0], c[1]);
+            Ground t = objectTile(wc, 20, 25);
+            Object5 o = obj5("O", 18, 22, 24, 26, 0, 0, 9);
+            attach(t, o);
+            footprint(wc, 18, 22, 24, 26);
+            draw(wc, t, false);
+            assertEquals("camera " + c[0] + "," + c[1], c[2], o.cameraDistance);
+            assertEquals(Arrays.asList("O"), names(LOG));
+        }
+    }
+
+    @Test public void sceneObjectsWithTheSameCameraDistanceDrawByLargerWorldDistanceThenScanOrderAndLargerCameraDistanceAlwaysWins() throws Exception {
+        int[][][] cases = {
+            {{3, 4}, {6, 0}}, {{6, 0}, {3, 4}}, {{-6, 0}, {3, 4}}, {{5, 0}, {0, 5}}, {{0, 5}, {5, 0}}};
+        String[] want = {"[Q, P]", "[P, Q]", "[P, Q]", "[P, Q]", "[P, Q]"};
+        for (int i = 0; i < cases.length; i++) {
+            WorldController wc = scene(); LOG.clear();
+            camera(30, 40);
+            Ground t = objectTile(wc, 20, 25);
+            attach(t, obj5("P", 20, 20, 25, 25, cases[i][0][0], cases[i][0][1], 1));
+            attach(t, obj5("Q", 20, 20, 25, 25, cases[i][1][0], cases[i][1][1], 2));
+            draw(wc, t, false);
+            assertEquals("case " + i, want[i], names(LOG).toString());
+        }
+        WorldController wc = scene(); LOG.clear();
+        camera(30, 40);
+        Ground t = objectTile(wc, 20, 25);
+        attach(t, obj5("near", 21, 21, 25, 25, 90, 90, 1));
+        attach(t, obj5("far", 20, 20, 25, 25, 0, 0, 2));
+        footprint(wc, 21, 21, 25, 25);
+        draw(wc, t, false);
+        assertEquals("[far, near]", names(LOG).toString());
+    }
+
+    @Test public void sceneObjectWaitsForAnyUnstartedTileOfItsFootprintAndTheFootprintIsXByY() throws Exception {
+        int[][] inside = {{20, 25}, {21, 25}, {22, 25}, {20, 26}, {21, 26}, {22, 26}};
+        int[][] outside = {{23, 25}, {19, 25}, {20, 27}, {22, 24}, {25, 26}, {26, 25}};
+        for (int[][] set : new int[][][] {inside, outside}) for (int[] p : set) {
+            WorldController wc = scene(); LOG.clear();
+            camera(30, 40);
+            Ground t = objectTile(wc, 19, 24);
+            attach(t, obj5("O", 20, 22, 25, 26, 0, 0, 5));
+            footprint(wc, 20, 22, 25, 26);
+            Ground g = tile(wc, 0, p[0], p[1]);
+            g.firstPassPending = true; g.drawPending = false;
+            draw(wc, t, false);
+            boolean waits = set == inside;
+            assertEquals("blocker at " + p[0] + "," + p[1], waits, t.objectsPending);
+            assertEquals("blocker at " + p[0] + "," + p[1], !waits, names(LOG).contains("O"));
+        }
+    }
+
+    @Test public void sceneObjectWaitsWhenAFootprintTileCornerMaskMatchesTheNearValueUsingTheEdgeBitsOfThatTilePositionInTheFootprint() throws Exception {
+        // edge bits of footprint position (xIndex, yIndex) in a 3 by 3 footprint, written out by hand: x-1 is 1, x+1 is 4, y-1 is 8, y+1 is 2.
+        int[][] expected = {{6, 14, 12}, {7, 15, 13}, {3, 11, 9}};
+        for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) for (int variant = 0; variant < 2; variant++) {
+            WorldController wc = scene(); LOG.clear();
+            camera(30, 40);
+            Ground t = objectTile(wc, 19, 24);
+            attach(t, obj5("O", 20, 22, 25, 27, 0, 0, 5));
+            footprint(wc, 20, 22, 25, 27);
+            Ground g = groundOf(wc)[0][20 + i][25 + j];
+            g.cornerWallEdgeMask = 15;
+            t.cornerWallNearEdgeValue = variant == 0 ? expected[i][j] : expected[i][j] ^ 1;
+            draw(wc, t, false);
+            assertEquals("position " + i + "," + j + " variant " + variant, variant == 0, t.objectsPending);
+            assertEquals("position " + i + "," + j + " variant " + variant, variant != 0, names(LOG).contains("O"));
+        }
+    }
+
+    @Test public void everyFootprintTileOfADrawnSceneObjectIsQueuedAndFinishedAfterTheObject() throws Exception {
+        WorldController wc = scene(); LOG.clear();
+        camera(30, 40);
+        Ground t = objectTile(wc, 19, 24);
+        attach(t, obj5("O", 20, 22, 25, 26, 0, 0, 5));
+        footprint(wc, 20, 22, 25, 26);
+        Ground[][] plane0 = groundOf(wc)[0];
+        for (int x = 20; x <= 22; x++) for (int y = 25; y <= 26; y++) { plane0[x][y].drawPending = true; plane0[x][y].firstPassPending = false; }
+        Ground far = tile(wc, 0, 40, 60);
+        far.drawPending = true; far.firstPassPending = false;
+        sset("pendingTileCount", 8);
+        draw(wc, t, false);
+        assertEquals(Arrays.asList("O"), names(LOG));
+        for (int x = 20; x <= 22; x++) for (int y = 25; y <= 26; y++) assertFalse("footprint tile " + x + "," + y, plane0[x][y].drawPending);
+        assertTrue("a pending tile outside the footprint is not queued", far.drawPending);
+        assertEquals(1, sint("pendingTileCount"));
+    }
+
+    /** Wall decoration drawn with only the diagonal bits set: [first diagonal, second diagonal] each E (drawn before the tile finishes) or L (after). Camera offsets (10,30), (30,10), (20,20), (-20,20) by rotation 0-3. */
+    private static final String[][] DIAGONAL = {{"LE", "LE", "EL", "EL"}, {"EL", "LE", "LE", "EL"}, {"LL", "LE", "LL", "EL"}, {"LE", "LL", "EL", "LL"}};
+    private static final int[][] DIAGONAL_OFFSET = {{10, 30}, {30, 10}, {20, 20}, {-20, 20}};
+    private static final int[] FIRST_X = {53, -53, -53, 53}, FIRST_Y = {-53, -53, 53, 53}, SECOND_X = {-45, 45, 45, -45}, SECOND_Y = {45, 45, -45, -45};
+
+    private static String diagonalDraw(String name, int rotation, int dx, int dy, int uid, boolean first) throws Exception {
+        int ch = sint("cameraWorldHeight");
+        return first ? name + ":" + (rotation * 512 + 256) + "," + (dx + FIRST_X[rotation]) + "," + (-55 - ch) + "," + (dy + FIRST_Y[rotation]) + "," + uid
+                : name + ":" + ((rotation * 512 + 1280) & 0x7ff) + "," + (dx + SECOND_X[rotation]) + "," + (-55 - ch) + "," + (dy + SECOND_Y[rotation]) + "," + uid;
+    }
+
+    private static List<String> diagonalRun(int rotation, int dx, int dy, int mask) throws Exception {
+        WorldController wc = scene(); LOG.clear();
+        camera(30, 40);
+        Ground t = pending(wc, 0, 20, 25);
+        Object2 d = new Object2();
+        d.model = new Rec("deco"); d.worldX = sint("cameraWorldX") + dx; d.worldY = sint("cameraWorldY") + dy; d.height = -55; d.rotation = rotation; d.drawMask = mask; d.uid = 77;
+        t.obj2 = d;
+        draw(wc, t, false);
+        return new ArrayList<String>(LOG);
+    }
+
+    @Test public void diagonalWallDecorationsDrawAtTheirRotationOffsetsBeforeOrAfterTheTileAccordingToTheSideOfTheRotatedCameraRelativePosition() throws Exception {
+        camera(30, 40);
+        for (int c = 0; c < 4; c++) for (int r = 0; r < 4; r++) {
+            int dx = DIAGONAL_OFFSET[c][0], dy = DIAGONAL_OFFSET[c][1];
+            String plan = DIAGONAL[c][r];
+            List<String> want = new ArrayList<String>();
+            for (int phase = 0; phase < 2; phase++) {
+                char wanted = phase == 0 ? 'E' : 'L';
+                if (plan.charAt(0) == wanted) want.add(diagonalDraw("deco", r, dx, dy, 77, true));
+                if (plan.charAt(1) == wanted) want.add(diagonalDraw("deco", r, dx, dy, 77, false));
+            }
+            assertEquals("offset " + dx + "," + dy + " rotation " + r, want, diagonalRun(r, dx, dy, 0x300));
+        }
+        assertEquals(Arrays.asList(diagonalDraw("deco", 0, 10, 30, 77, true)), diagonalRun(0, 10, 30, 0x100));
+        assertEquals(Arrays.asList(diagonalDraw("deco", 0, 10, 30, 77, false)), diagonalRun(0, 10, 30, 0x200));
+        assertEquals(new ArrayList<String>(), diagonalRun(0, 10, 30, 0));
+    }
 }

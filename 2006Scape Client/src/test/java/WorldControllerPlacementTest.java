@@ -23,7 +23,7 @@ public class WorldControllerPlacementTest {
         savedLists = sget("occluders");
         sset("occluderCounts", new int[4]);
         sset("occluders", new Class47[4][500]);
-        sset("aClass28Array462", new Object5[100]);
+        sset("readyObjectBuffer", new Object5[100]);
     }
 
     @After public void restore() throws Exception {

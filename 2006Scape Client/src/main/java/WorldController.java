@@ -23,7 +23,7 @@ final class WorldController {
 	}
 
 	public static void nullLoader() {
-		aClass28Array462 = null;
+		readyObjectBuffer = null;
 		occluderCounts = null;
 		occluders = null;
 		drawQueue = null;
@@ -54,8 +54,8 @@ final class WorldController {
 		}
 
 		obj5CacheCurrPos = 0;
-		for (int l1 = 0; l1 < aClass28Array462.length; l1++) {
-			aClass28Array462[l1] = null;
+		for (int l1 = 0; l1 < readyObjectBuffer.length; l1++) {
+			readyObjectBuffer[l1] = null;
 		}
 
 	}
@@ -1067,32 +1067,32 @@ final class WorldController {
 			if (tile.firstPassPending) {
 				if (checkBlockers) {
 					if (plane > 0) {
-						Ground class30_sub3_2 = groundArray[plane - 1][tileX][tileY];
-						if (class30_sub3_2 != null && class30_sub3_2.drawPending) {
+						Ground lowerPlaneTile = groundArray[plane - 1][tileX][tileY];
+						if (lowerPlaneTile != null && lowerPlaneTile.drawPending) {
 							continue;
 						}
 					}
 					if (tileX <= cameraTileX && tileX > drawMinTileX) {
-						Ground class30_sub3_3 = planeTiles[tileX - 1][tileY];
-						if (class30_sub3_3 != null && class30_sub3_3.drawPending && (class30_sub3_3.firstPassPending || (tile.objectEdgeMask & 1) == 0)) {
+						Ground xMinusTile = planeTiles[tileX - 1][tileY];
+						if (xMinusTile != null && xMinusTile.drawPending && (xMinusTile.firstPassPending || (tile.objectEdgeMask & 1) == 0)) {
 							continue;
 						}
 					}
 					if (tileX >= cameraTileX && tileX < drawMaxTileX - 1) {
-						Ground class30_sub3_4 = planeTiles[tileX + 1][tileY];
-						if (class30_sub3_4 != null && class30_sub3_4.drawPending && (class30_sub3_4.firstPassPending || (tile.objectEdgeMask & 4) == 0)) {
+						Ground xPlusTile = planeTiles[tileX + 1][tileY];
+						if (xPlusTile != null && xPlusTile.drawPending && (xPlusTile.firstPassPending || (tile.objectEdgeMask & 4) == 0)) {
 							continue;
 						}
 					}
 					if (tileY <= cameraTileY && tileY > drawMinTileY) {
-						Ground class30_sub3_5 = planeTiles[tileX][tileY - 1];
-						if (class30_sub3_5 != null && class30_sub3_5.drawPending && (class30_sub3_5.firstPassPending || (tile.objectEdgeMask & 8) == 0)) {
+						Ground yMinusTile = planeTiles[tileX][tileY - 1];
+						if (yMinusTile != null && yMinusTile.drawPending && (yMinusTile.firstPassPending || (tile.objectEdgeMask & 8) == 0)) {
 							continue;
 						}
 					}
 					if (tileY >= cameraTileY && tileY < drawMaxTileY - 1) {
-						Ground class30_sub3_6 = planeTiles[tileX][tileY + 1];
-						if (class30_sub3_6 != null && class30_sub3_6.drawPending && (class30_sub3_6.firstPassPending || (tile.objectEdgeMask & 2) == 0)) {
+						Ground yPlusTile = planeTiles[tileX][tileY + 1];
+						if (yPlusTile != null && yPlusTile.drawPending && (yPlusTile.firstPassPending || (tile.objectEdgeMask & 2) == 0)) {
 							continue;
 						}
 					}
@@ -1109,14 +1109,14 @@ final class WorldController {
 					} else if (lowerGround.shapedTile != null && !isTileOccluded(0, tileX, tileY)) {
 						drawShapedTile(tileX, pitchSine, yawSine, lowerGround.shapedTile, pitchCosine, tileY, yawCosine);
 					}
-					Object1 class10 = lowerGround.obj1;
-					if (class10 != null) {
-						class10.model.method443(0, pitchSine, pitchCosine, yawSine, yawCosine, class10.worldX - cameraWorldX, class10.height - cameraWorldHeight, class10.worldY - cameraWorldY, class10.uid);
+					Object1 lowerWall = lowerGround.obj1;
+					if (lowerWall != null) {
+						lowerWall.model.method443(0, pitchSine, pitchCosine, yawSine, yawCosine, lowerWall.worldX - cameraWorldX, lowerWall.height - cameraWorldHeight, lowerWall.worldY - cameraWorldY, lowerWall.uid);
 					}
-					for (int i2 = 0; i2 < lowerGround.objectCount; i2++) {
-						Object5 class28 = lowerGround.obj5Array[i2];
-						if (class28 != null) {
-							class28.model.method443(class28.rotation, pitchSine, pitchCosine, yawSine, yawCosine, class28.worldX - cameraWorldX, class28.height - cameraWorldHeight, class28.worldY - cameraWorldY, class28.uid);
+					for (int lowerObjectIndex = 0; lowerObjectIndex < lowerGround.objectCount; lowerObjectIndex++) {
+						Object5 lowerObject = lowerGround.obj5Array[lowerObjectIndex];
+						if (lowerObject != null) {
+							lowerObject.model.method443(lowerObject.rotation, pitchSine, pitchCosine, yawSine, yawCosine, lowerObject.worldX - cameraWorldX, lowerObject.height - cameraWorldHeight, lowerObject.worldY - cameraWorldY, lowerObject.uid);
 						}
 					}
 
@@ -1182,31 +1182,31 @@ final class WorldController {
 					if ((wallDecoration.drawMask & wallFirstMask) != 0) {
 						wallDecoration.model.method443(wallDecoration.rotation, pitchSine, pitchCosine, yawSine, yawCosine, wallDecoration.worldX - cameraWorldX, wallDecoration.height - cameraWorldHeight, wallDecoration.worldY - cameraWorldY, wallDecoration.uid);
 					} else if ((wallDecoration.drawMask & 0x300) != 0) {
-						int j4 = wallDecoration.worldX - cameraWorldX;
-						int l5 = wallDecoration.height - cameraWorldHeight;
-						int k6 = wallDecoration.worldY - cameraWorldY;
-						int i8 = wallDecoration.rotation;
-						int k9;
-						if (i8 == 1 || i8 == 2) {
-							k9 = -j4;
+						int decorationX = wallDecoration.worldX - cameraWorldX;
+						int decorationHeight = wallDecoration.height - cameraWorldHeight;
+						int decorationY = wallDecoration.worldY - cameraWorldY;
+						int rotation = wallDecoration.rotation;
+						int orientedX;
+						if (rotation == 1 || rotation == 2) {
+							orientedX = -decorationX;
 						} else {
-							k9 = j4;
+							orientedX = decorationX;
 						}
-						int k10;
-						if (i8 == 2 || i8 == 3) {
-							k10 = -k6;
+						int orientedY;
+						if (rotation == 2 || rotation == 3) {
+							orientedY = -decorationY;
 						} else {
-							k10 = k6;
+							orientedY = decorationY;
 						}
-						if ((wallDecoration.drawMask & 0x100) != 0 && k10 < k9) {
-							int i11 = j4 + anIntArray463[i8];
-							int k11 = k6 + anIntArray464[i8];
-							wallDecoration.model.method443(i8 * 512 + 256, pitchSine, pitchCosine, yawSine, yawCosine, i11, l5, k11, wallDecoration.uid);
+						if ((wallDecoration.drawMask & 0x100) != 0 && orientedY < orientedX) {
+							int firstDiagonalX = decorationX + firstDiagonalOffsetX[rotation];
+							int firstDiagonalY = decorationY + firstDiagonalOffsetY[rotation];
+							wallDecoration.model.method443(rotation * 512 + 256, pitchSine, pitchCosine, yawSine, yawCosine, firstDiagonalX, decorationHeight, firstDiagonalY, wallDecoration.uid);
 						}
-						if ((wallDecoration.drawMask & 0x200) != 0 && k10 > k9) {
-							int j11 = j4 + anIntArray465[i8];
-							int l11 = k6 + anIntArray466[i8];
-							wallDecoration.model.method443(i8 * 512 + 1280 & 0x7ff, pitchSine, pitchCosine, yawSine, yawCosine, j11, l5, l11, wallDecoration.uid);
+						if ((wallDecoration.drawMask & 0x200) != 0 && orientedY > orientedX) {
+							int secondDiagonalX = decorationX + secondDiagonalOffsetX[rotation];
+							int secondDiagonalY = decorationY + secondDiagonalOffsetY[rotation];
+							wallDecoration.model.method443(rotation * 512 + 1280 & 0x7ff, pitchSine, pitchCosine, yawSine, yawCosine, secondDiagonalX, decorationHeight, secondDiagonalY, wallDecoration.uid);
 						}
 					}
 				}
@@ -1228,48 +1228,48 @@ final class WorldController {
 						}
 					}
 				}
-				int k4 = tile.objectEdgeMask;
-				if (k4 != 0) {
-					if (tileX < cameraTileX && (k4 & 4) != 0) {
-						Ground class30_sub3_17 = planeTiles[tileX + 1][tileY];
-						if (class30_sub3_17 != null && class30_sub3_17.drawPending) {
-							drawQueue.insertHead(class30_sub3_17);
+				int edgeMask = tile.objectEdgeMask;
+				if (edgeMask != 0) {
+					if (tileX < cameraTileX && (edgeMask & 4) != 0) {
+						Ground xPlusTile = planeTiles[tileX + 1][tileY];
+						if (xPlusTile != null && xPlusTile.drawPending) {
+							drawQueue.insertHead(xPlusTile);
 						}
 					}
-					if (tileY < cameraTileY && (k4 & 2) != 0) {
-						Ground class30_sub3_18 = planeTiles[tileX][tileY + 1];
-						if (class30_sub3_18 != null && class30_sub3_18.drawPending) {
-							drawQueue.insertHead(class30_sub3_18);
+					if (tileY < cameraTileY && (edgeMask & 2) != 0) {
+						Ground yPlusTile = planeTiles[tileX][tileY + 1];
+						if (yPlusTile != null && yPlusTile.drawPending) {
+							drawQueue.insertHead(yPlusTile);
 						}
 					}
-					if (tileX > cameraTileX && (k4 & 1) != 0) {
-						Ground class30_sub3_19 = planeTiles[tileX - 1][tileY];
-						if (class30_sub3_19 != null && class30_sub3_19.drawPending) {
-							drawQueue.insertHead(class30_sub3_19);
+					if (tileX > cameraTileX && (edgeMask & 1) != 0) {
+						Ground xMinusTile = planeTiles[tileX - 1][tileY];
+						if (xMinusTile != null && xMinusTile.drawPending) {
+							drawQueue.insertHead(xMinusTile);
 						}
 					}
-					if (tileY > cameraTileY && (k4 & 8) != 0) {
-						Ground class30_sub3_20 = planeTiles[tileX][tileY - 1];
-						if (class30_sub3_20 != null && class30_sub3_20.drawPending) {
-							drawQueue.insertHead(class30_sub3_20);
+					if (tileY > cameraTileY && (edgeMask & 8) != 0) {
+						Ground yMinusTile = planeTiles[tileX][tileY - 1];
+						if (yMinusTile != null && yMinusTile.drawPending) {
+							drawQueue.insertHead(yMinusTile);
 						}
 					}
 				}
 			}
 			if (tile.cornerWallEdgeMask != 0) {
-				boolean flag2 = true;
-				for (int k1 = 0; k1 < tile.objectCount; k1++) {
-					if (tile.obj5Array[k1].lastDrawCycle == drawCycle || (tile.objectEdgeMasks[k1] & tile.cornerWallEdgeMask) != tile.cornerWallFarEdgeValue) {
+				boolean noObjectBeforeCornerWall = true;
+				for (int objectIndex = 0; objectIndex < tile.objectCount; objectIndex++) {
+					if (tile.obj5Array[objectIndex].lastDrawCycle == drawCycle || (tile.objectEdgeMasks[objectIndex] & tile.cornerWallEdgeMask) != tile.cornerWallFarEdgeValue) {
 						continue;
 					}
-					flag2 = false;
+					noObjectBeforeCornerWall = false;
 					break;
 				}
 
-				if (flag2) {
-					Object1 class10_1 = tile.obj1;
-					if (!isWallOccluded(originalPlane, tileX, tileY, class10_1.orientation)) {
-						class10_1.model.method443(0, pitchSine, pitchCosine, yawSine, yawCosine, class10_1.worldX - cameraWorldX, class10_1.height - cameraWorldHeight, class10_1.worldY - cameraWorldY, class10_1.uid);
+				if (noObjectBeforeCornerWall) {
+					Object1 cornerWall = tile.obj1;
+					if (!isWallOccluded(originalPlane, tileX, tileY, cornerWall.orientation)) {
+						cornerWall.model.method443(0, pitchSine, pitchCosine, yawSine, yawCosine, cornerWall.worldX - cameraWorldX, cornerWall.height - cameraWorldHeight, cornerWall.worldY - cameraWorldY, cornerWall.uid);
 					}
 					tile.cornerWallEdgeMask = 0;
 				}
@@ -1278,95 +1278,95 @@ final class WorldController {
 				try {
 					int objectCount = tile.objectCount;
 					tile.objectsPending = false;
-					int l1 = 0;
-					label0 : for (int k2 = 0; k2 < objectCount; k2++) {
-						Object5 class28_1 = tile.obj5Array[k2];
-						if (class28_1.lastDrawCycle == drawCycle) {
+					int readyObjectCount = 0;
+					objectScan : for (int objectIndex = 0; objectIndex < objectCount; objectIndex++) {
+						Object5 sceneObject = tile.obj5Array[objectIndex];
+						if (sceneObject.lastDrawCycle == drawCycle) {
 							continue;
 						}
-						for (int k3 = class28_1.minTileX; k3 <= class28_1.maxTileX; k3++) {
-							for (int l4 = class28_1.minTileY; l4 <= class28_1.maxTileY; l4++) {
-								Ground class30_sub3_21 = planeTiles[k3][l4];
-								if (class30_sub3_21.firstPassPending) {
+						for (int footprintX = sceneObject.minTileX; footprintX <= sceneObject.maxTileX; footprintX++) {
+							for (int footprintY = sceneObject.minTileY; footprintY <= sceneObject.maxTileY; footprintY++) {
+								Ground footprintTile = planeTiles[footprintX][footprintY];
+								if (footprintTile.firstPassPending) {
 									tile.objectsPending = true;
 								} else {
-									if (class30_sub3_21.cornerWallEdgeMask == 0) {
+									if (footprintTile.cornerWallEdgeMask == 0) {
 										continue;
 									}
-									int l6 = 0;
-									if (k3 > class28_1.minTileX) {
-										l6++;
+									int footprintEdgeMask = 0;
+									if (footprintX > sceneObject.minTileX) {
+										footprintEdgeMask++;
 									}
-									if (k3 < class28_1.maxTileX) {
-										l6 += 4;
+									if (footprintX < sceneObject.maxTileX) {
+										footprintEdgeMask += 4;
 									}
-									if (l4 > class28_1.minTileY) {
-										l6 += 8;
+									if (footprintY > sceneObject.minTileY) {
+										footprintEdgeMask += 8;
 									}
-									if (l4 < class28_1.maxTileY) {
-										l6 += 2;
+									if (footprintY < sceneObject.maxTileY) {
+										footprintEdgeMask += 2;
 									}
-									if ((l6 & class30_sub3_21.cornerWallEdgeMask) != tile.cornerWallNearEdgeValue) {
+									if ((footprintEdgeMask & footprintTile.cornerWallEdgeMask) != tile.cornerWallNearEdgeValue) {
 										continue;
 									}
 									tile.objectsPending = true;
 								}
-								continue label0;
+								continue objectScan;
 							}
 
 						}
 
-						aClass28Array462[l1++] = class28_1;
-						int i5 = cameraTileX - class28_1.minTileX;
-						int i6 = class28_1.maxTileX - cameraTileX;
-						if (i6 > i5) {
-							i5 = i6;
+						readyObjectBuffer[readyObjectCount++] = sceneObject;
+						int farXDistance = cameraTileX - sceneObject.minTileX;
+						int xDistanceToMax = sceneObject.maxTileX - cameraTileX;
+						if (xDistanceToMax > farXDistance) {
+							farXDistance = xDistanceToMax;
 						}
-						int i7 = cameraTileY - class28_1.minTileY;
-						int j8 = class28_1.maxTileY - cameraTileY;
-						if (j8 > i7) {
-							class28_1.cameraDistance = i5 + j8;
+						int yDistanceToMin = cameraTileY - sceneObject.minTileY;
+						int yDistanceToMax = sceneObject.maxTileY - cameraTileY;
+						if (yDistanceToMax > yDistanceToMin) {
+							sceneObject.cameraDistance = farXDistance + yDistanceToMax;
 						} else {
-							class28_1.cameraDistance = i5 + i7;
+							sceneObject.cameraDistance = farXDistance + yDistanceToMin;
 						}
 					}
 
-					while (l1 > 0) {
-						int i3 = -50;
-						int l3 = -1;
-						for (int j5 = 0; j5 < l1; j5++) {
-							Object5 class28_2 = aClass28Array462[j5];
-							if (class28_2.lastDrawCycle != drawCycle) {
-								if (class28_2.cameraDistance > i3) {
-									i3 = class28_2.cameraDistance;
-									l3 = j5;
-								} else if (class28_2.cameraDistance == i3) {
-									int j7 = class28_2.worldX - cameraWorldX;
-									int k8 = class28_2.worldY - cameraWorldY;
-									int l9 = aClass28Array462[l3].worldX - cameraWorldX;
-									int l10 = aClass28Array462[l3].worldY - cameraWorldY;
-									if (j7 * j7 + k8 * k8 > l9 * l9 + l10 * l10) {
-										l3 = j5;
+					while (readyObjectCount > 0) {
+						int farthestDistance = -50;
+						int farthestIndex = -1;
+						for (int readyIndex = 0; readyIndex < readyObjectCount; readyIndex++) {
+							Object5 candidate = readyObjectBuffer[readyIndex];
+							if (candidate.lastDrawCycle != drawCycle) {
+								if (candidate.cameraDistance > farthestDistance) {
+									farthestDistance = candidate.cameraDistance;
+									farthestIndex = readyIndex;
+								} else if (candidate.cameraDistance == farthestDistance) {
+									int candidateRelX = candidate.worldX - cameraWorldX;
+									int candidateRelY = candidate.worldY - cameraWorldY;
+									int farthestRelX = readyObjectBuffer[farthestIndex].worldX - cameraWorldX;
+									int farthestRelY = readyObjectBuffer[farthestIndex].worldY - cameraWorldY;
+									if (candidateRelX * candidateRelX + candidateRelY * candidateRelY > farthestRelX * farthestRelX + farthestRelY * farthestRelY) {
+										farthestIndex = readyIndex;
 									}
 								}
 							}
 						}
 
-						if (l3 == -1) {
+						if (farthestIndex == -1) {
 							break;
 						}
-						Object5 class28_3 = aClass28Array462[l3];
-						class28_3.lastDrawCycle = drawCycle;
-						if (!isFootprintOccluded(originalPlane, class28_3.minTileX, class28_3.maxTileX, class28_3.minTileY, class28_3.maxTileY, class28_3.model.modelHeight)) {
-							class28_3.model.method443(class28_3.rotation, pitchSine, pitchCosine, yawSine, yawCosine, class28_3.worldX - cameraWorldX, class28_3.height - cameraWorldHeight, class28_3.worldY - cameraWorldY, class28_3.uid);
+						Object5 drawnObject = readyObjectBuffer[farthestIndex];
+						drawnObject.lastDrawCycle = drawCycle;
+						if (!isFootprintOccluded(originalPlane, drawnObject.minTileX, drawnObject.maxTileX, drawnObject.minTileY, drawnObject.maxTileY, drawnObject.model.modelHeight)) {
+							drawnObject.model.method443(drawnObject.rotation, pitchSine, pitchCosine, yawSine, yawCosine, drawnObject.worldX - cameraWorldX, drawnObject.height - cameraWorldHeight, drawnObject.worldY - cameraWorldY, drawnObject.uid);
 						}
-						for (int k7 = class28_3.minTileX; k7 <= class28_3.maxTileX; k7++) {
-							for (int l8 = class28_3.minTileY; l8 <= class28_3.maxTileY; l8++) {
-								Ground class30_sub3_22 = planeTiles[k7][l8];
-								if (class30_sub3_22.cornerWallEdgeMask != 0) {
-									drawQueue.insertHead(class30_sub3_22);
-								} else if ((k7 != tileX || l8 != tileY) && class30_sub3_22.drawPending) {
-									drawQueue.insertHead(class30_sub3_22);
+						for (int footprintX = drawnObject.minTileX; footprintX <= drawnObject.maxTileX; footprintX++) {
+							for (int footprintY = drawnObject.minTileY; footprintY <= drawnObject.maxTileY; footprintY++) {
+								Ground footprintTile = planeTiles[footprintX][footprintY];
+								if (footprintTile.cornerWallEdgeMask != 0) {
+									drawQueue.insertHead(footprintTile);
+								} else if ((footprintX != tileX || footprintY != tileY) && footprintTile.drawPending) {
+									drawQueue.insertHead(footprintTile);
 								}
 							}
 
@@ -1384,26 +1384,26 @@ final class WorldController {
 				continue;
 			}
 			if (tileX <= cameraTileX && tileX > drawMinTileX) {
-				Ground class30_sub3_8 = planeTiles[tileX - 1][tileY];
-				if (class30_sub3_8 != null && class30_sub3_8.drawPending) {
+				Ground xMinusTile = planeTiles[tileX - 1][tileY];
+				if (xMinusTile != null && xMinusTile.drawPending) {
 					continue;
 				}
 			}
 			if (tileX >= cameraTileX && tileX < drawMaxTileX - 1) {
-				Ground class30_sub3_9 = planeTiles[tileX + 1][tileY];
-				if (class30_sub3_9 != null && class30_sub3_9.drawPending) {
+				Ground xPlusTile = planeTiles[tileX + 1][tileY];
+				if (xPlusTile != null && xPlusTile.drawPending) {
 					continue;
 				}
 			}
 			if (tileY <= cameraTileY && tileY > drawMinTileY) {
-				Ground class30_sub3_10 = planeTiles[tileX][tileY - 1];
-				if (class30_sub3_10 != null && class30_sub3_10.drawPending) {
+				Ground yMinusTile = planeTiles[tileX][tileY - 1];
+				if (yMinusTile != null && yMinusTile.drawPending) {
 					continue;
 				}
 			}
 			if (tileY >= cameraTileY && tileY < drawMaxTileY - 1) {
-				Ground class30_sub3_11 = planeTiles[tileX][tileY + 1];
-				if (class30_sub3_11 != null && class30_sub3_11.drawPending) {
+				Ground yPlusTile = planeTiles[tileX][tileY + 1];
+				if (yPlusTile != null && yPlusTile.drawPending) {
 					continue;
 				}
 			}
@@ -1427,31 +1427,31 @@ final class WorldController {
 					if ((lateWallDecoration.drawMask & tile.lateWallMask) != 0) {
 						lateWallDecoration.model.method443(lateWallDecoration.rotation, pitchSine, pitchCosine, yawSine, yawCosine, lateWallDecoration.worldX - cameraWorldX, lateWallDecoration.height - cameraWorldHeight, lateWallDecoration.worldY - cameraWorldY, lateWallDecoration.uid);
 					} else if ((lateWallDecoration.drawMask & 0x300) != 0) {
-						int l2 = lateWallDecoration.worldX - cameraWorldX;
-						int j3 = lateWallDecoration.height - cameraWorldHeight;
-						int i4 = lateWallDecoration.worldY - cameraWorldY;
-						int k5 = lateWallDecoration.rotation;
-						int j6;
-						if (k5 == 1 || k5 == 2) {
-							j6 = -l2;
+						int decorationX = lateWallDecoration.worldX - cameraWorldX;
+						int decorationHeight = lateWallDecoration.height - cameraWorldHeight;
+						int decorationY = lateWallDecoration.worldY - cameraWorldY;
+						int rotation = lateWallDecoration.rotation;
+						int orientedX;
+						if (rotation == 1 || rotation == 2) {
+							orientedX = -decorationX;
 						} else {
-							j6 = l2;
+							orientedX = decorationX;
 						}
-						int l7;
-						if (k5 == 2 || k5 == 3) {
-							l7 = -i4;
+						int orientedY;
+						if (rotation == 2 || rotation == 3) {
+							orientedY = -decorationY;
 						} else {
-							l7 = i4;
+							orientedY = decorationY;
 						}
-						if ((lateWallDecoration.drawMask & 0x100) != 0 && l7 >= j6) {
-							int i9 = l2 + anIntArray463[k5];
-							int i10 = i4 + anIntArray464[k5];
-							lateWallDecoration.model.method443(k5 * 512 + 256, pitchSine, pitchCosine, yawSine, yawCosine, i9, j3, i10, lateWallDecoration.uid);
+						if ((lateWallDecoration.drawMask & 0x100) != 0 && orientedY >= orientedX) {
+							int firstDiagonalX = decorationX + firstDiagonalOffsetX[rotation];
+							int firstDiagonalY = decorationY + firstDiagonalOffsetY[rotation];
+							lateWallDecoration.model.method443(rotation * 512 + 256, pitchSine, pitchCosine, yawSine, yawCosine, firstDiagonalX, decorationHeight, firstDiagonalY, lateWallDecoration.uid);
 						}
-						if ((lateWallDecoration.drawMask & 0x200) != 0 && l7 <= j6) {
-							int j9 = l2 + anIntArray465[k5];
-							int j10 = i4 + anIntArray466[k5];
-							lateWallDecoration.model.method443(k5 * 512 + 1280 & 0x7ff, pitchSine, pitchCosine, yawSine, yawCosine, j9, j3, j10, lateWallDecoration.uid);
+						if ((lateWallDecoration.drawMask & 0x200) != 0 && orientedY <= orientedX) {
+							int secondDiagonalX = decorationX + secondDiagonalOffsetX[rotation];
+							int secondDiagonalY = decorationY + secondDiagonalOffsetY[rotation];
+							lateWallDecoration.model.method443(rotation * 512 + 1280 & 0x7ff, pitchSine, pitchCosine, yawSine, yawCosine, secondDiagonalX, decorationHeight, secondDiagonalY, lateWallDecoration.uid);
 						}
 					}
 				}
@@ -1466,33 +1466,33 @@ final class WorldController {
 				}
 			}
 			if (plane < planeCount - 1) {
-				Ground class30_sub3_12 = groundArray[plane + 1][tileX][tileY];
-				if (class30_sub3_12 != null && class30_sub3_12.drawPending) {
-					drawQueue.insertHead(class30_sub3_12);
+				Ground upperPlaneTile = groundArray[plane + 1][tileX][tileY];
+				if (upperPlaneTile != null && upperPlaneTile.drawPending) {
+					drawQueue.insertHead(upperPlaneTile);
 				}
 			}
 			if (tileX < cameraTileX) {
-				Ground class30_sub3_13 = planeTiles[tileX + 1][tileY];
-				if (class30_sub3_13 != null && class30_sub3_13.drawPending) {
-					drawQueue.insertHead(class30_sub3_13);
+				Ground xPlusTile = planeTiles[tileX + 1][tileY];
+				if (xPlusTile != null && xPlusTile.drawPending) {
+					drawQueue.insertHead(xPlusTile);
 				}
 			}
 			if (tileY < cameraTileY) {
-				Ground class30_sub3_14 = planeTiles[tileX][tileY + 1];
-				if (class30_sub3_14 != null && class30_sub3_14.drawPending) {
-					drawQueue.insertHead(class30_sub3_14);
+				Ground yPlusTile = planeTiles[tileX][tileY + 1];
+				if (yPlusTile != null && yPlusTile.drawPending) {
+					drawQueue.insertHead(yPlusTile);
 				}
 			}
 			if (tileX > cameraTileX) {
-				Ground class30_sub3_15 = planeTiles[tileX - 1][tileY];
-				if (class30_sub3_15 != null && class30_sub3_15.drawPending) {
-					drawQueue.insertHead(class30_sub3_15);
+				Ground xMinusTile = planeTiles[tileX - 1][tileY];
+				if (xMinusTile != null && xMinusTile.drawPending) {
+					drawQueue.insertHead(xMinusTile);
 				}
 			}
 			if (tileY > cameraTileY) {
-				Ground class30_sub3_16 = planeTiles[tileX][tileY - 1];
-				if (class30_sub3_16 != null && class30_sub3_16.drawPending) {
-					drawQueue.insertHead(class30_sub3_16);
+				Ground yMinusTile = planeTiles[tileX][tileY - 1];
+				if (yMinusTile != null && yMinusTile.drawPending) {
+					drawQueue.insertHead(yMinusTile);
 				}
 			}
 		} while (true);
@@ -2079,11 +2079,11 @@ final class WorldController {
 	private static int pitchCosine;
 	private static int yawSine;
 	private static int yawCosine;
-	private static Object5[] aClass28Array462 = new Object5[100];
-	private static final int[] anIntArray463 = {53, -53, -53, 53};
-	private static final int[] anIntArray464 = {-53, -53, 53, 53};
-	private static final int[] anIntArray465 = {-45, 45, 45, -45};
-	private static final int[] anIntArray466 = {45, 45, -45, -45};
+	private static Object5[] readyObjectBuffer = new Object5[100];
+	private static final int[] firstDiagonalOffsetX = {53, -53, -53, 53};
+	private static final int[] firstDiagonalOffsetY = {-53, -53, 53, 53};
+	private static final int[] secondDiagonalOffsetX = {-45, 45, 45, -45};
+	private static final int[] secondDiagonalOffsetY = {45, 45, -45, -45};
 	private static boolean tilePickRequested;
 	private static int pickScreenX;
 	private static int pickScreenY;
