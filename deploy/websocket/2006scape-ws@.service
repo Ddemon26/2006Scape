@@ -1,0 +1,36 @@
+# WebSocket -> TCP bridge for one 2006Scape port.
+#
+# The instance name is the game port. Each instance listens on localhost at
+# (port + 10000) and forwards to the game server on localhost:<port>:
+#
+#   2006scape-ws@43594  ->  ws on 127.0.0.1:53594  ->  tcp 127.0.0.1:43594  (game + on-demand)
+#   2006scape-ws@43595  ->  ws on 127.0.0.1:53595  ->  tcp 127.0.0.1:43595  (JAGGRAB)
+#
+# Install:
+#   sudo apt install websockify
+#   sudo cp 2006scape-ws@.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now 2006scape-ws@43594 2006scape-ws@43595
+#
+# Only listens on 127.0.0.1 - nothing is exposed to the network. cloudflared
+# connects to these locally.
+
+[Unit]
+Description=2006Scape WebSocket bridge for port %i
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+# "$$" is systemd's escape for a literal "$", so sh sees $((port + 10000)).
+ExecStart=/bin/sh -c 'exec /usr/bin/websockify 127.0.0.1:$$((%i + 10000)) 127.0.0.1:%i'
+Restart=always
+RestartSec=3
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

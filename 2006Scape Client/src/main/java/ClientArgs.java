@@ -88,6 +88,10 @@ public final class ClientArgs {
                     case "-ip":
                         ClientSettings.SERVER_IP = val;
                         break;
+                    case "-ws":
+                    case "-websocket":
+                        ClientSettings.WEBSOCKET_URL = val;
+                        break;
                     case "-w":
                     case "-world":
                         try {

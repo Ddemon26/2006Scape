@@ -1,0 +1,32 @@
+# cloudflared ingress for the 2006Scape WebSocket gateway.
+#
+# Routes wss://game.damon.nobeggar.com/<port> to the matching websockify
+# bridge on this machine. Cloudflare Tunnel carries WebSockets on the free
+# plan, and the tunnel is outbound-only: no ports are opened.
+#
+# Setup (locally-managed tunnel):
+#   cloudflared tunnel login
+#   cloudflared tunnel create 2006scape
+#   cloudflared tunnel route dns 2006scape game.damon.nobeggar.com
+#   -> put the tunnel ID below, copy this file to /etc/cloudflared/config.yml
+#   sudo cloudflared service install
+#
+# If you manage tunnels from the Zero Trust dashboard instead, add two
+# Public Hostnames with the same hostname, paths and services as below.
+
+tunnel: <TUNNEL_ID>
+credentials-file: /etc/cloudflared/<TUNNEL_ID>.json
+
+ingress:
+  # Game + on-demand cache (client port 43594)
+  - hostname: game.damon.nobeggar.com
+    path: ^/43594$
+    service: http://localhost:53594
+
+  # JAGGRAB startup archives (client port 43595)
+  - hostname: game.damon.nobeggar.com
+    path: ^/43595$
+    service: http://localhost:53595
+
+  # Anything else is refused
+  - service: http_status:404
