@@ -27,9 +27,9 @@ public class GameSoundQueueTest {
         ClientSettings.ANDROID = true; // The Android hook is a no-op in the desktop test JVM.
         oldTime = Game.soundEndReferenceStartMillis;
         oldLength = Game.soundEndReferenceByteLength;
-        oldBuffer = field(Sounds.class, "aByteArray327").get(null);
-        oldStream = field(Sounds.class, "aStream_328").get(null);
-        Object[] sounds = (Object[]) field(Sounds.class, "aSoundsArray325s").get(null);
+        oldBuffer = field(Sounds.class, "waveBuffer").get(null);
+        oldStream = field(Sounds.class, "waveStream").get(null);
+        Object[] sounds = (Object[]) field(Sounds.class, "soundsById").get(null);
         oldSound = sounds[SOUND_ID];
         Sounds.unpack(new Stream(new byte[] {(byte) 255, (byte) 255}));
         Constructor<Sounds> constructor = Sounds.class.getDeclaredConstructor();
@@ -39,8 +39,8 @@ public class GameSoundQueueTest {
         instrument.durationMs = 1;
         instrument.startOffsetMs = 0;
         ((SynthVoice[]) field(Sounds.class, "voices").get(controlledSound))[0] = instrument;
-        field(Sounds.class, "anInt330").setInt(controlledSound, 0);
-        field(Sounds.class, "anInt331").setInt(controlledSound, 1);
+        field(Sounds.class, "loopStartMillis").setInt(controlledSound, 0);
+        field(Sounds.class, "loopEndMillis").setInt(controlledSound, 1);
         sounds[SOUND_ID] = controlledSound;
         Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
         unsafeField.setAccessible(true);
@@ -56,9 +56,9 @@ public class GameSoundQueueTest {
         ClientSettings.ANDROID = android;
         Game.soundEndReferenceStartMillis = oldTime;
         Game.soundEndReferenceByteLength = oldLength;
-        ((Object[]) field(Sounds.class, "aSoundsArray325s").get(null))[SOUND_ID] = oldSound;
-        field(Sounds.class, "aByteArray327").set(null, oldBuffer);
-        field(Sounds.class, "aStream_328").set(null, oldStream);
+        ((Object[]) field(Sounds.class, "soundsById").get(null))[SOUND_ID] = oldSound;
+        field(Sounds.class, "waveBuffer").set(null, oldBuffer);
+        field(Sounds.class, "waveStream").set(null, oldStream);
     }
 
     @Test public void method90UsesSoundIdAndRepeatTypeThenDrainsQueue() {

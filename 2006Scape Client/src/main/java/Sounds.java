@@ -9,149 +9,149 @@ final class Sounds {
 	}
 
 	public static void unpack(Stream stream) {
-		aByteArray327 = new byte[0x6baa8];
-		aStream_328 = new Stream(aByteArray327);
+		waveBuffer = new byte[0x6baa8];
+		waveStream = new Stream(waveBuffer);
 		SynthVoice.initWaveTables();
 		do {
-			int j = stream.readUnsignedShortBigEndian();
-			if (j == 65535) {
+			int soundId = stream.readUnsignedShortBigEndian();
+			if (soundId == 65535) {
 				return;
 			}
-			aSoundsArray325s[j] = new Sounds();
-			aSoundsArray325s[j].method242(stream);
-			anIntArray326[j] = aSoundsArray325s[j].method243();
+			soundsById[soundId] = new Sounds();
+			soundsById[soundId].readFrom(stream);
+			leadingSilence20msUnits[soundId] = soundsById[soundId].trimLeadingSilence();
 		} while (true);
 	}
 
-	public static Stream method241(int i, int j) {
-		if (aSoundsArray325s[j] != null) {
-			Sounds sounds = aSoundsArray325s[j];
-			return sounds.method244(i);
+	public static Stream buildWave(int playCount, int soundId) {
+		if (soundsById[soundId] != null) {
+			Sounds sound = soundsById[soundId];
+			return sound.writeWav(playCount);
 		} else {
 			return null;
 		}
 	}
 
-	private void method242(Stream stream) {
-		for (int i = 0; i < 10; i++) {
-			int j = stream.readUnsignedByte();
-			if (j != 0) {
+	private void readFrom(Stream stream) {
+		for (int instrumentIndex = 0; instrumentIndex < 10; instrumentIndex++) {
+			int flag = stream.readUnsignedByte();
+			if (flag != 0) {
 				stream.currentOffset--;
-				voices[i] = new SynthVoice();
-				voices[i].decode(stream);
+				voices[instrumentIndex] = new SynthVoice();
+				voices[instrumentIndex].decode(stream);
 			}
 		}
-		anInt330 = stream.readUnsignedShortBigEndian();
-		anInt331 = stream.readUnsignedShortBigEndian();
+		loopStartMillis = stream.readUnsignedShortBigEndian();
+		loopEndMillis = stream.readUnsignedShortBigEndian();
 	}
 
-	private int method243() {
-		int j = 0x98967f;
-		for (int k = 0; k < 10; k++) {
-			if (voices[k] != null && voices[k].startOffsetMs / 20 < j) {
-				j = voices[k].startOffsetMs / 20;
+	private int trimLeadingSilence() {
+		int minUnits = 0x98967f;
+		for (int instrumentIndex = 0; instrumentIndex < 10; instrumentIndex++) {
+			if (voices[instrumentIndex] != null && voices[instrumentIndex].startOffsetMs / 20 < minUnits) {
+				minUnits = voices[instrumentIndex].startOffsetMs / 20;
 			}
 		}
 
-		if (anInt330 < anInt331 && anInt330 / 20 < j) {
-			j = anInt330 / 20;
+		if (loopStartMillis < loopEndMillis && loopStartMillis / 20 < minUnits) {
+			minUnits = loopStartMillis / 20;
 		}
-		if (j == 0x98967f || j == 0) {
+		if (minUnits == 0x98967f || minUnits == 0) {
 			return 0;
 		}
-		for (int l = 0; l < 10; l++) {
-			if (voices[l] != null) {
-				voices[l].startOffsetMs -= j * 20;
+		for (int shiftIndex = 0; shiftIndex < 10; shiftIndex++) {
+			if (voices[shiftIndex] != null) {
+				voices[shiftIndex].startOffsetMs -= minUnits * 20;
 			}
 		}
 
-		if (anInt330 < anInt331) {
-			anInt330 -= j * 20;
-			anInt331 -= j * 20;
+		if (loopStartMillis < loopEndMillis) {
+			loopStartMillis -= minUnits * 20;
+			loopEndMillis -= minUnits * 20;
 		}
-		return j;
+		return minUnits;
 	}
 
-	private Stream method244(int i) {
-		int k = method245(i);
-		aStream_328.currentOffset = 0;
-		aStream_328.writeIntBigEndian(0x52494646);
-		aStream_328.writeIntLittleEndian(36 + k);
-		aStream_328.writeIntBigEndian(0x57415645);
-		aStream_328.writeIntBigEndian(0x666d7420);
-		aStream_328.writeIntLittleEndian(16);
-		aStream_328.writeWaveShortLittleEndian(1);
-		aStream_328.writeWaveShortLittleEndian(1);
-		aStream_328.writeIntLittleEndian(22050);
-		aStream_328.writeIntLittleEndian(22050);
-		aStream_328.writeWaveShortLittleEndian(1);
-		aStream_328.writeWaveShortLittleEndian(8);
-		aStream_328.writeIntBigEndian(0x64617461);
-		aStream_328.writeIntLittleEndian(k);
-		aStream_328.currentOffset += k;
-		return aStream_328;
+	private Stream writeWav(int playCount) {
+		int dataLength = renderSamples(playCount);
+		waveStream.currentOffset = 0;
+		waveStream.writeIntBigEndian(0x52494646);
+		waveStream.writeIntLittleEndian(36 + dataLength);
+		waveStream.writeIntBigEndian(0x57415645);
+		waveStream.writeIntBigEndian(0x666d7420);
+		waveStream.writeIntLittleEndian(16);
+		waveStream.writeWaveShortLittleEndian(1);
+		waveStream.writeWaveShortLittleEndian(1);
+		waveStream.writeIntLittleEndian(22050);
+		waveStream.writeIntLittleEndian(22050);
+		waveStream.writeWaveShortLittleEndian(1);
+		waveStream.writeWaveShortLittleEndian(8);
+		waveStream.writeIntBigEndian(0x64617461);
+		waveStream.writeIntLittleEndian(dataLength);
+		waveStream.currentOffset += dataLength;
+		return waveStream;
 	}
 
-	private int method245(int i) {
-		int j = 0;
-		for (int k = 0; k < 10; k++) {
-			if (voices[k] != null && voices[k].durationMs + voices[k].startOffsetMs > j) {
-				j = voices[k].durationMs + voices[k].startOffsetMs;
+	private int renderSamples(int playCount) {
+		int totalMillis = 0;
+		for (int instrumentIndex = 0; instrumentIndex < 10; instrumentIndex++) {
+			if (voices[instrumentIndex] != null && voices[instrumentIndex].durationMs + voices[instrumentIndex].startOffsetMs > totalMillis) {
+				totalMillis = voices[instrumentIndex].durationMs + voices[instrumentIndex].startOffsetMs;
 			}
 		}
 
-		if (j == 0) {
+		if (totalMillis == 0) {
 			return 0;
 		}
-		int l = 22050 * j / 1000;
-		int i1 = 22050 * anInt330 / 1000;
-		int j1 = 22050 * anInt331 / 1000;
-		if (i1 < 0 || i1 > l || j1 < 0 || j1 > l || i1 >= j1) {
-			i = 0;
+		int totalSamples = 22050 * totalMillis / 1000;
+		int loopStartSample = 22050 * loopStartMillis / 1000;
+		int loopEndSample = 22050 * loopEndMillis / 1000;
+		if (loopStartSample < 0 || loopStartSample > totalSamples || loopEndSample < 0 || loopEndSample > totalSamples || loopStartSample >= loopEndSample) {
+			playCount = 0;
 		}
-		int k1 = l + (j1 - i1) * (i - 1);
-		for (int l1 = 44; l1 < k1 + 44; l1++) {
-			aByteArray327[l1] = -128;
+		int outputLength = totalSamples + (loopEndSample - loopStartSample) * (playCount - 1);
+		for (int clearIndex = 44; clearIndex < outputLength + 44; clearIndex++) {
+			waveBuffer[clearIndex] = -128;
 		}
 
-		for (int i2 = 0; i2 < 10; i2++) {
-			if (voices[i2] != null) {
-				int j2 = voices[i2].durationMs * 22050 / 1000;
-				int i3 = voices[i2].startOffsetMs * 22050 / 1000;
-				int ai[] = voices[i2].synthesize(j2, voices[i2].durationMs);
-				for (int l3 = 0; l3 < j2; l3++) {
-					aByteArray327[l3 + i3 + 44] += (byte) (ai[l3] >> 8);
+		for (int voiceIndex = 0; voiceIndex < 10; voiceIndex++) {
+			if (voices[voiceIndex] != null) {
+				int sampleCount = voices[voiceIndex].durationMs * 22050 / 1000;
+				int startSample = voices[voiceIndex].startOffsetMs * 22050 / 1000;
+				int samples[] = voices[voiceIndex].synthesize(sampleCount, voices[voiceIndex].durationMs);
+				for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
+					waveBuffer[sampleIndex + startSample + 44] += (byte) (samples[sampleIndex] >> 8);
 				}
 
 			}
 		}
 
-		if (i > 1) {
-			i1 += 44;
-			j1 += 44;
-			l += 44;
-			int k2 = (k1 += 44) - l;
-			for (int j3 = l - 1; j3 >= j1; j3--) {
-				aByteArray327[j3 + k2] = aByteArray327[j3];
+		if (playCount > 1) {
+			loopStartSample += 44;
+			loopEndSample += 44;
+			totalSamples += 44;
+			int tailShift = (outputLength += 44) - totalSamples;
+			for (int tailIndex = totalSamples - 1; tailIndex >= loopEndSample; tailIndex--) {
+				waveBuffer[tailIndex + tailShift] = waveBuffer[tailIndex];
 			}
 
-			for (int k3 = 1; k3 < i; k3++) {
-				int l2 = (j1 - i1) * k3;
-				System.arraycopy(aByteArray327, i1, aByteArray327, i1 + l2, j1 - i1);
+			for (int repeatIndex = 1; repeatIndex < playCount; repeatIndex++) {
+				int repeatOffset = (loopEndSample - loopStartSample) * repeatIndex;
+				System.arraycopy(waveBuffer, loopStartSample, waveBuffer, loopStartSample + repeatOffset, loopEndSample - loopStartSample);
 
 			}
 
-			k1 -= 44;
+			outputLength -= 44;
 		}
-		return k1;
+		return outputLength;
 	}
 
-	private static final Sounds[] aSoundsArray325s = new Sounds[5000];
-	public static final int[] anIntArray326 = new int[5000];
-	private static byte[] aByteArray327;
-	private static Stream aStream_328;
+	private static final Sounds[] soundsById = new Sounds[5000];
+	public static final int[] leadingSilence20msUnits = new int[5000];
+	private static byte[] waveBuffer;
+	private static Stream waveStream;
 	private final SynthVoice[] voices;
-	private int anInt330;
-	private int anInt331;
+	private int loopStartMillis;
+	private int loopEndMillis;
 
 }

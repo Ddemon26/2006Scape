@@ -2230,7 +2230,7 @@ public class Game extends RSApplet {
 		for (int j = 0; j < 7; j++) {
 			anIntArray1065[j] = -1;
 			for (int k = 0; k < IDK.length; k++) {
-				if (IDK.cache[k].aBoolean662 || IDK.cache[k].anInt657 != j + (aBoolean1047 ? 0 : 7)) {
+				if (IDK.cache[k].notSelectable || IDK.cache[k].bodyPartIndex != j + (aBoolean1047 ? 0 : 7)) {
 					continue;
 				}
 				anIntArray1065[j] = k;
@@ -2402,7 +2402,7 @@ public class Game extends RSApplet {
 					if (j1 == 1 && ++i2 >= IDK.length) {
 						i2 = 0;
 					}
-				} while (IDK.cache[i2].aBoolean662 || IDK.cache[i2].anInt657 != k + (aBoolean1047 ? 0 : 7));
+				} while (IDK.cache[i2].notSelectable || IDK.cache[i2].bodyPartIndex != k + (aBoolean1047 ? 0 : 7));
 				anIntArray1065[k] = i2;
 				aBoolean1031 = true;
 			}
@@ -5445,7 +5445,7 @@ public class Game extends RSApplet {
 			if (aBoolean1031) {
 				for (int k1 = 0; k1 < 7; k1++) {
 					int l1 = anIntArray1065[k1];
-					if (l1 >= 0 && !IDK.cache[l1].method537()) {
+					if (l1 >= 0 && !IDK.cache[l1].areBodyModelsLoaded()) {
 						return;
 					}
 				}
@@ -5456,7 +5456,7 @@ public class Game extends RSApplet {
 				for (int j2 = 0; j2 < 7; j2++) {
 					int k2 = anIntArray1065[j2];
 					if (k2 >= 0) {
-						aclass30_sub2_sub4_sub6s[i2++] = IDK.cache[k2].method538();
+						aclass30_sub2_sub4_sub6s[i2++] = IDK.cache[k2].buildBodyModel();
 					}
 				}
 
@@ -6878,7 +6878,7 @@ public class Game extends RSApplet {
 			//if (soundDelay[index] <= 0) {
 				boolean flag1 = false;
 				try {
-					Stream soundStream = Sounds.method241(soundType[index], sound[index]);
+					Stream soundStream = Sounds.buildWave(soundType[index], sound[index]);
 					if (soundStream != null && soundStream.currentOffset > 0) {
 						if (ClientSettings.ANDROID) {
 							AndroidHooks.playSound(soundStream.buffer, 0, soundStream.currentOffset, soundVolume[index], soundDelay[index]);
@@ -10034,7 +10034,7 @@ public class Game extends RSApplet {
 			if (myPlayer.smallX[0] >= k3 - i14 && myPlayer.smallX[0] <= k3 + i14 && myPlayer.smallY[0] >= j6 - i14 && myPlayer.smallY[0] <= j6 + i14 && aBoolean848 && !lowMem && currentSound < 50) {
 				sound[currentSound] = i9;
 				soundType[currentSound] = i16;
-				soundDelay[currentSound] = Sounds.anIntArray326[i9];
+				soundDelay[currentSound] = Sounds.leadingSilence20msUnits[i9];
 				currentSound++;
 			}
 		}
@@ -11082,7 +11082,7 @@ public class Game extends RSApplet {
 				int volume = inStream.readUnsignedByte();
 				sound[currentSound] = id;
 				soundType[currentSound] = type;
-				soundDelay[currentSound] = delay + Sounds.anIntArray326[id];
+				soundDelay[currentSound] = delay + Sounds.leadingSilence20msUnits[id];
 				soundVolume[currentSound] = volume;
 				currentSound++;
 				pktType = -1;

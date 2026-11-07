@@ -10,126 +10,126 @@ public final class IDK {
 		if (cache == null) {
 			cache = new IDK[length];
 		}
-		for (int j = 0; j < length; j++) {
-			if (cache[j] == null) {
-				cache[j] = new IDK();
+		for (int kitIndex = 0; kitIndex < length; kitIndex++) {
+			if (cache[kitIndex] == null) {
+				cache[kitIndex] = new IDK();
 			}
-			cache[j].readValues(stream);
+			cache[kitIndex].readValues(stream);
 		}
 	}
 
 	private void readValues(Stream stream) {
 		do {
-			int i = stream.readUnsignedByte();
-			if (i == 0) {
+			int opcode = stream.readUnsignedByte();
+			if (opcode == 0) {
 				return;
 			}
-			if (i == 1) {
-				anInt657 = stream.readUnsignedByte();
-			} else if (i == 2) {
-				int j = stream.readUnsignedByte();
-				anIntArray658 = new int[j];
-				for (int k = 0; k < j; k++) {
-					anIntArray658[k] = stream.readUnsignedShortBigEndian();
+			if (opcode == 1) {
+				bodyPartIndex = stream.readUnsignedByte();
+			} else if (opcode == 2) {
+				int modelCount = stream.readUnsignedByte();
+				bodyModelIds = new int[modelCount];
+				for (int modelIndex = 0; modelIndex < modelCount; modelIndex++) {
+					bodyModelIds[modelIndex] = stream.readUnsignedShortBigEndian();
 				}
 
-			} else if (i == 3) {
-				aBoolean662 = true;
-			} else if (i >= 40 && i < 50) {
-				anIntArray659[i - 40] = stream.readUnsignedShortBigEndian();
-			} else if (i >= 50 && i < 60) {
-				anIntArray660[i - 50] = stream.readUnsignedShortBigEndian();
-			} else if (i >= 60 && i < 70) {
-				anIntArray661[i - 60] = stream.readUnsignedShortBigEndian();
+			} else if (opcode == 3) {
+				notSelectable = true;
+			} else if (opcode >= 40 && opcode < 50) {
+				recolourSources[opcode - 40] = stream.readUnsignedShortBigEndian();
+			} else if (opcode >= 50 && opcode < 60) {
+				recolourReplacements[opcode - 50] = stream.readUnsignedShortBigEndian();
+			} else if (opcode >= 60 && opcode < 70) {
+				headModelIds[opcode - 60] = stream.readUnsignedShortBigEndian();
 			} else {
-				System.out.println("Error unrecognised config code: " + i);
+				System.out.println("Error unrecognised config code: " + opcode);
 			}
 		} while (true);
 	}
 
-	public boolean method537() {
-		if (anIntArray658 == null) {
+	public boolean areBodyModelsLoaded() {
+		if (bodyModelIds == null) {
 			return true;
 		}
-		boolean flag = true;
-		for (int j = 0; j < anIntArray658.length; j++) {
-			if (!Model.isModelLoaded(anIntArray658[j])) {
-				flag = false;
+		boolean allLoaded = true;
+		for (int modelIndex = 0; modelIndex < bodyModelIds.length; modelIndex++) {
+			if (!Model.isModelLoaded(bodyModelIds[modelIndex])) {
+				allLoaded = false;
 			}
 		}
 
-		return flag;
+		return allLoaded;
 	}
 
-	public Model method538() {
-		if (anIntArray658 == null) {
+	public Model buildBodyModel() {
+		if (bodyModelIds == null) {
 			return null;
 		}
-		Model aclass30_sub2_sub4_sub6s[] = new Model[anIntArray658.length];
-		for (int i = 0; i < anIntArray658.length; i++) {
-			aclass30_sub2_sub4_sub6s[i] = Model.getModel(anIntArray658[i]);
+		Model partModels[] = new Model[bodyModelIds.length];
+		for (int modelIndex = 0; modelIndex < bodyModelIds.length; modelIndex++) {
+			partModels[modelIndex] = Model.getModel(bodyModelIds[modelIndex]);
 		}
 
-		Model model;
-		if (aclass30_sub2_sub4_sub6s.length == 1) {
-			model = aclass30_sub2_sub4_sub6s[0];
+		Model kitModel;
+		if (partModels.length == 1) {
+			kitModel = partModels[0];
 		} else {
-			model = new Model(aclass30_sub2_sub4_sub6s.length, aclass30_sub2_sub4_sub6s);
+			kitModel = new Model(partModels.length, partModels);
 		}
-		for (int j = 0; j < 6; j++) {
-			if (anIntArray659[j] == 0) {
+		for (int recolourIndex = 0; recolourIndex < 6; recolourIndex++) {
+			if (recolourSources[recolourIndex] == 0) {
 				break;
 			}
-			model.recolor(anIntArray659[j], anIntArray660[j]);
+			kitModel.recolor(recolourSources[recolourIndex], recolourReplacements[recolourIndex]);
 		}
 
-		return model;
+		return kitModel;
 	}
 
-	public boolean method539() {
-		boolean flag1 = true;
-		for (int i = 0; i < 5; i++) {
-			if (anIntArray661[i] != -1 && !Model.isModelLoaded(anIntArray661[i])) {
-				flag1 = false;
+	public boolean areHeadModelsLoaded() {
+		boolean allLoaded = true;
+		for (int modelIndex = 0; modelIndex < 5; modelIndex++) {
+			if (headModelIds[modelIndex] != -1 && !Model.isModelLoaded(headModelIds[modelIndex])) {
+				allLoaded = false;
 			}
 		}
 
-		return flag1;
+		return allLoaded;
 	}
 
-	public Model method540() {
-		Model aclass30_sub2_sub4_sub6s[] = new Model[5];
-		int j = 0;
-		for (int k = 0; k < 5; k++) {
-			if (anIntArray661[k] != -1) {
-				aclass30_sub2_sub4_sub6s[j++] = Model.getModel(anIntArray661[k]);
+	public Model buildHeadModel() {
+		Model partModels[] = new Model[5];
+		int partCount = 0;
+		for (int headIndex = 0; headIndex < 5; headIndex++) {
+			if (headModelIds[headIndex] != -1) {
+				partModels[partCount++] = Model.getModel(headModelIds[headIndex]);
 			}
 		}
 
-		Model model = new Model(j, aclass30_sub2_sub4_sub6s);
-		for (int l = 0; l < 6; l++) {
-			if (anIntArray659[l] == 0) {
+		Model kitModel = new Model(partCount, partModels);
+		for (int recolourIndex = 0; recolourIndex < 6; recolourIndex++) {
+			if (recolourSources[recolourIndex] == 0) {
 				break;
 			}
-			model.recolor(anIntArray659[l], anIntArray660[l]);
+			kitModel.recolor(recolourSources[recolourIndex], recolourReplacements[recolourIndex]);
 		}
 
-		return model;
+		return kitModel;
 	}
 
 	private IDK() {
-		anInt657 = -1;
-		anIntArray659 = new int[6];
-		anIntArray660 = new int[6];
-		aBoolean662 = false;
+		bodyPartIndex = -1;
+		recolourSources = new int[6];
+		recolourReplacements = new int[6];
+		notSelectable = false;
 	}
 
 	public static int length;
 	public static IDK cache[];
-	public int anInt657;
-	private int[] anIntArray658;
-	private final int[] anIntArray659;
-	private final int[] anIntArray660;
-	private final int[] anIntArray661 = {-1, -1, -1, -1, -1};
-	public boolean aBoolean662;
+	public int bodyPartIndex;
+	private int[] bodyModelIds;
+	private final int[] recolourSources;
+	private final int[] recolourReplacements;
+	private final int[] headModelIds = {-1, -1, -1, -1, -1};
+	public boolean notSelectable;
 }

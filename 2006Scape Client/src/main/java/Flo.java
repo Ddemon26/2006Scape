@@ -29,151 +29,151 @@ public final class Flo {
 
 	private void readValues(Stream stream) {
 		do {
-			int i = stream.readUnsignedByte();
-			if (i == 0) {
+			int opcode = stream.readUnsignedByte();
+			if (opcode == 0) {
 				return;
-			} else if (i == 1) {
-				anInt390 = stream.readUnsignedMediumBigEndian();
+			} else if (opcode == 1) {
+				rgb = stream.readUnsignedMediumBigEndian();
 				Calendar date = new GregorianCalendar();
 				if (ClientSettings.SNOW_FLOOR_FORCE_ENABLED || (ClientSettings.SNOW_FLOOR_ENABLED && (date.get(Calendar.MONTH) + 1) == Integer.parseInt(ClientSettings.SNOW_MONTH.substring(1)))) {
-					anInt390 = 0xffffff;
+					rgb = 0xffffff;
 				}
-				method262(anInt390);
-			} else if (i == 2) {
-				anInt391 = stream.readUnsignedByte();
-			} else if (i == 3) {
-			} else if (i == 5) {
-				aBoolean393 = false;
-			} else if (i == 6) {
+				setHslFromRgb(rgb);
+			} else if (opcode == 2) {
+				textureId = stream.readUnsignedByte();
+			} else if (opcode == 3) {
+			} else if (opcode == 5) {
+				occludes = false;
+			} else if (opcode == 6) {
 				stream.readLfTerminatedString();
-			} else if (i == 7) {
-				int j = anInt394;
-				int k = anInt395;
-				int l = anInt396;
-				int i1 = anInt397;
-				int j1 = stream.readUnsignedMediumBigEndian();
-				method262(j1);
-				anInt394 = j;
-				anInt395 = k;
-				anInt396 = l;
-				anInt397 = i1;
-				anInt398 = i1;
+			} else if (opcode == 7) {
+				int savedHue = hue;
+				int savedSaturation = saturation;
+				int savedLightness = lightness;
+				int savedWeightedHue = weightedHue;
+				int secondaryRgb = stream.readUnsignedMediumBigEndian();
+				setHslFromRgb(secondaryRgb);
+				hue = savedHue;
+				saturation = savedSaturation;
+				lightness = savedLightness;
+				weightedHue = savedWeightedHue;
+				hueWeight = savedWeightedHue;
 			} else {
-				System.out.println("Error unrecognised config code: " + i);
+				System.out.println("Error unrecognised config code: " + opcode);
 			}
 		} while (true);
 	}
 
-	private void method262(int i) {
-		double d = (i >> 16 & 0xff) / 256D;
-		double d1 = (i >> 8 & 0xff) / 256D;
-		double d2 = (i & 0xff) / 256D;
-		double d3 = d;
-		if (d1 < d3) {
-			d3 = d1;
+	private void setHslFromRgb(int rgbColour) {
+		double red = (rgbColour >> 16 & 0xff) / 256D;
+		double green = (rgbColour >> 8 & 0xff) / 256D;
+		double blue = (rgbColour & 0xff) / 256D;
+		double minChannel = red;
+		if (green < minChannel) {
+			minChannel = green;
 		}
-		if (d2 < d3) {
-			d3 = d2;
+		if (blue < minChannel) {
+			minChannel = blue;
 		}
-		double d4 = d;
-		if (d1 > d4) {
-			d4 = d1;
+		double maxChannel = red;
+		if (green > maxChannel) {
+			maxChannel = green;
 		}
-		if (d2 > d4) {
-			d4 = d2;
+		if (blue > maxChannel) {
+			maxChannel = blue;
 		}
-		double d5 = 0.0D;
-		double d6 = 0.0D;
-		double d7 = (d3 + d4) / 2D;
-		if (d3 != d4) {
-			if (d7 < 0.5D) {
-				d6 = (d4 - d3) / (d4 + d3);
+		double hueFraction = 0.0D;
+		double saturationFraction = 0.0D;
+		double lightnessFraction = (minChannel + maxChannel) / 2D;
+		if (minChannel != maxChannel) {
+			if (lightnessFraction < 0.5D) {
+				saturationFraction = (maxChannel - minChannel) / (maxChannel + minChannel);
 			}
-			if (d7 >= 0.5D) {
-				d6 = (d4 - d3) / (2D - d4 - d3);
+			if (lightnessFraction >= 0.5D) {
+				saturationFraction = (maxChannel - minChannel) / (2D - maxChannel - minChannel);
 			}
-			if (d == d4) {
-				d5 = (d1 - d2) / (d4 - d3);
-			} else if (d1 == d4) {
-				d5 = 2D + (d2 - d) / (d4 - d3);
-			} else if (d2 == d4) {
-				d5 = 4D + (d - d1) / (d4 - d3);
+			if (red == maxChannel) {
+				hueFraction = (green - blue) / (maxChannel - minChannel);
+			} else if (green == maxChannel) {
+				hueFraction = 2D + (blue - red) / (maxChannel - minChannel);
+			} else if (blue == maxChannel) {
+				hueFraction = 4D + (red - green) / (maxChannel - minChannel);
 			}
 		}
-		d5 /= 6D;
-		anInt394 = (int) (d5 * 256D);
-		anInt395 = (int) (d6 * 256D);
-		anInt396 = (int) (d7 * 256D);
-		if (anInt395 < 0) {
-			anInt395 = 0;
-		} else if (anInt395 > 255) {
-			anInt395 = 255;
+		hueFraction /= 6D;
+		hue = (int) (hueFraction * 256D);
+		saturation = (int) (saturationFraction * 256D);
+		lightness = (int) (lightnessFraction * 256D);
+		if (saturation < 0) {
+			saturation = 0;
+		} else if (saturation > 255) {
+			saturation = 255;
 		}
-		if (anInt396 < 0) {
-			anInt396 = 0;
-		} else if (anInt396 > 255) {
-			anInt396 = 255;
+		if (lightness < 0) {
+			lightness = 0;
+		} else if (lightness > 255) {
+			lightness = 255;
 		}
-		if (d7 > 0.5D) {
-			anInt398 = (int) ((1.0D - d7) * d6 * 512D);
+		if (lightnessFraction > 0.5D) {
+			hueWeight = (int) ((1.0D - lightnessFraction) * saturationFraction * 512D);
 		} else {
-			anInt398 = (int) (d7 * d6 * 512D);
+			hueWeight = (int) (lightnessFraction * saturationFraction * 512D);
 		}
-		if (anInt398 < 1) {
-			anInt398 = 1;
+		if (hueWeight < 1) {
+			hueWeight = 1;
 		}
-		anInt397 = (int) (d5 * anInt398);
-		int k = anInt394 + (int) (Math.random() * 16D) - 8;
-		if (k < 0) {
-			k = 0;
-		} else if (k > 255) {
-			k = 255;
+		weightedHue = (int) (hueFraction * hueWeight);
+		int jitteredHue = hue + (int) (Math.random() * 16D) - 8;
+		if (jitteredHue < 0) {
+			jitteredHue = 0;
+		} else if (jitteredHue > 255) {
+			jitteredHue = 255;
 		}
-		int l = anInt395 + (int) (Math.random() * 48D) - 24;
-		if (l < 0) {
-			l = 0;
-		} else if (l > 255) {
-			l = 255;
+		int jitteredSaturation = saturation + (int) (Math.random() * 48D) - 24;
+		if (jitteredSaturation < 0) {
+			jitteredSaturation = 0;
+		} else if (jitteredSaturation > 255) {
+			jitteredSaturation = 255;
 		}
-		int i1 = anInt396 + (int) (Math.random() * 48D) - 24;
-		if (i1 < 0) {
-			i1 = 0;
-		} else if (i1 > 255) {
-			i1 = 255;
+		int jitteredLightness = lightness + (int) (Math.random() * 48D) - 24;
+		if (jitteredLightness < 0) {
+			jitteredLightness = 0;
+		} else if (jitteredLightness > 255) {
+			jitteredLightness = 255;
 		}
-		anInt399 = method263(k, l, i1);
+		minimapHsl = packHsl(jitteredHue, jitteredSaturation, jitteredLightness);
 	}
 
-	private int method263(int i, int j, int k) {
-		if (k > 179) {
-			j /= 2;
+	private int packHsl(int hue, int saturation, int lightness) {
+		if (lightness > 179) {
+			saturation /= 2;
 		}
-		if (k > 192) {
-			j /= 2;
+		if (lightness > 192) {
+			saturation /= 2;
 		}
-		if (k > 217) {
-			j /= 2;
+		if (lightness > 217) {
+			saturation /= 2;
 		}
-		if (k > 243) {
-			j /= 2;
+		if (lightness > 243) {
+			saturation /= 2;
 		}
-		return (i / 4 << 10) + (j / 32 << 7) + k / 2;
+		return (hue / 4 << 10) + (saturation / 32 << 7) + lightness / 2;
 	}
 
 	private Flo() {
-		anInt391 = -1;
-		aBoolean393 = true;
+		textureId = -1;
+		occludes = true;
 	}
 
 	public static Flo cache[];
-	public int anInt390;
-	public int anInt391;
-	public boolean aBoolean393;
-	public int anInt394;
-	public int anInt395;
-	public int anInt396;
-	public int anInt397;
-	public int anInt398;
-	public int anInt399;
+	public int rgb;
+	public int textureId;
+	public boolean occludes;
+	public int hue;
+	public int saturation;
+	public int lightness;
+	public int weightedHue;
+	public int hueWeight;
+	public int minimapHsl;
 	
 }

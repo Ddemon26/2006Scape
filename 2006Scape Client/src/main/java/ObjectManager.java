@@ -102,10 +102,10 @@ final class ObjectManager {
 						int enterUnderlayId = underlayIds[plane][enterX][tileY] & 0xff;
 						if (enterUnderlayId > 0) {
 							Flo enterFlo = Flo.cache[enterUnderlayId - 1];
-							blendHueSum[tileY] += enterFlo.anInt397;
-							blendSaturationSum[tileY] += enterFlo.anInt395;
-							blendLightnessSum[tileY] += enterFlo.anInt396;
-							blendHueWeightSum[tileY] += enterFlo.anInt398;
+							blendHueSum[tileY] += enterFlo.weightedHue;
+							blendSaturationSum[tileY] += enterFlo.saturation;
+							blendLightnessSum[tileY] += enterFlo.lightness;
+							blendHueWeightSum[tileY] += enterFlo.hueWeight;
 							blendTileCount[tileY]++;
 						}
 					}
@@ -114,10 +114,10 @@ final class ObjectManager {
 						int exitUnderlayId = underlayIds[plane][exitX][tileY] & 0xff;
 						if (exitUnderlayId > 0) {
 							Flo exitFlo = Flo.cache[exitUnderlayId - 1];
-							blendHueSum[tileY] -= exitFlo.anInt397;
-							blendSaturationSum[tileY] -= exitFlo.anInt395;
-							blendLightnessSum[tileY] -= exitFlo.anInt396;
-							blendHueWeightSum[tileY] -= exitFlo.anInt398;
+							blendHueSum[tileY] -= exitFlo.weightedHue;
+							blendSaturationSum[tileY] -= exitFlo.saturation;
+							blendLightnessSum[tileY] -= exitFlo.lightness;
+							blendHueWeightSum[tileY] -= exitFlo.hueWeight;
 							blendTileCount[tileY]--;
 						}
 					}
@@ -182,7 +182,7 @@ final class ObjectManager {
 									if (underlayId == 0 && overlayShapes[plane][tileX][tileY] != 0) {
 										canOcclude = false;
 									}
-									if (overlayId > 0 && !Flo.cache[overlayId - 1].aBoolean393) {
+									if (overlayId > 0 && !Flo.cache[overlayId - 1].occludes) {
 										canOcclude = false;
 									}
 									if (canOcclude && heightX0Y0 == heightX1Y0 && heightX0Y0 == heightX1Y1 && heightX0Y0 == heightX0Y1) {
@@ -199,26 +199,26 @@ final class ObjectManager {
 									int shapeId = overlayShapes[plane][tileX][tileY] + 1;
 									byte overlayRotation = overlayRotations[plane][tileX][tileY];
 									Flo overlayFlo = Flo.cache[overlayId - 1];
-									int textureId = overlayFlo.anInt391;
+									int textureId = overlayFlo.textureId;
 									int overlayHsl;
 									int overlayMapColour;
 									if (textureId >= 0) {
 										overlayMapColour = Texture.getAverageColor(textureId);
 										overlayHsl = -1;
-									} else if (overlayFlo.anInt390 == 0xff00ff) {
+									} else if (overlayFlo.rgb == 0xff00ff) {
 										/*overlayHsl = -2;
 										textureId = -1;
-										overlayMapColour = Texture.hslToRgbPalette[shadeHslOrGrey(overlayFlo.anInt399, 96)];*/
+										overlayMapColour = Texture.hslToRgbPalette[shadeHslOrGrey(overlayFlo.minimapHsl, 96)];*/
 										overlayMapColour = 0;
 										overlayHsl = -2;
 										textureId = -1;
-									} else if(overlayFlo.anInt390 == 0x333333) {
-										overlayMapColour = Texture.hslToRgbPalette[shadeHslOrGrey(overlayFlo.anInt399, 96)];
+									} else if(overlayFlo.rgb == 0x333333) {
+										overlayMapColour = Texture.hslToRgbPalette[shadeHslOrGrey(overlayFlo.minimapHsl, 96)];
 										overlayHsl = -2;
 										textureId = -1;
 									} else {
-										overlayHsl = packHsl(overlayFlo.anInt394, overlayFlo.anInt395, overlayFlo.anInt396);
-										overlayMapColour = Texture.hslToRgbPalette[shadeHslOrGrey(overlayFlo.anInt399, 96)];
+										overlayHsl = packHsl(overlayFlo.hue, overlayFlo.saturation, overlayFlo.lightness);
+										overlayMapColour = Texture.hslToRgbPalette[shadeHslOrGrey(overlayFlo.minimapHsl, 96)];
 									}
 									worldController.addTile(plane, tileX, tileY, shapeId, overlayRotation, textureId, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, shadeHsl(underlayHsl, lightX0Y0), shadeHsl(underlayHsl, lightX1Y0), shadeHsl(underlayHsl, lightX1Y1), shadeHsl(underlayHsl, lightX0Y1), shadeHslOrGrey(overlayHsl, lightX0Y0), shadeHslOrGrey(overlayHsl, lightX1Y0), shadeHslOrGrey(overlayHsl, lightX1Y1), shadeHslOrGrey(overlayHsl, lightX0Y1), underlayMapColour, overlayMapColour);
 								}

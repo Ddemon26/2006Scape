@@ -33,12 +33,12 @@ public class ObjectSceneBuildTest {
 
     private static Flo flo(int sat, int light, int hueSum, int hueWeight) throws Exception {
         Flo f = (Flo) unsafe().allocateInstance(Flo.class);
-        f.anInt391 = -1;
-        f.aBoolean393 = true;
-        f.anInt395 = sat;
-        f.anInt396 = light;
-        f.anInt397 = hueSum;
-        f.anInt398 = hueWeight;
+        f.textureId = -1;
+        f.occludes = true;
+        f.saturation = sat;
+        f.lightness = light;
+        f.weightedHue = hueSum;
+        f.hueWeight = hueWeight;
         return f;
     }
 
@@ -188,7 +188,7 @@ public class ObjectSceneBuildTest {
             s.fillUnderlay(0, id);
             s.run();
             Flo f = Flo.cache[id - 1];
-            assertEquals("floor " + id, expectedMapColour(s, f.anInt397, f.anInt398, f.anInt395, f.anInt396),
+            assertEquals("floor " + id, expectedMapColour(s, f.weightedHue, f.hueWeight, f.saturation, f.lightness),
                     s.plain(0, 50, 50).mapColour);
             // tiles without any floor produce no tile at all
         }
@@ -208,9 +208,9 @@ public class ObjectSceneBuildTest {
             s.underlay[0][50 + offsets[i][0]][50 + offsets[i][1]] = 3;
             s.run();
             // the offsets are re-rolled by every run, so the expectation is computed after it
-            int pure = expectedMapColour(s, a.anInt397, a.anInt398, a.anInt395, a.anInt396);
-            int mixed = expectedMapColour(s, a.anInt397 + c.anInt397, a.anInt398 + c.anInt398,
-                    (a.anInt395 + c.anInt395) / 2, (a.anInt396 + c.anInt396) / 2);
+            int pure = expectedMapColour(s, a.weightedHue, a.hueWeight, a.saturation, a.lightness);
+            int mixed = expectedMapColour(s, a.weightedHue + c.weightedHue, a.hueWeight + c.hueWeight,
+                    (a.saturation + c.saturation) / 2, (a.lightness + c.lightness) / 2);
             assertNotEquals(pure, mixed);
             assertEquals("offset " + offsets[i][0] + "," + offsets[i][1], inside[i] ? mixed : pure, s.plain(0, 50, 50).mapColour);
         }
@@ -407,7 +407,7 @@ public class ObjectSceneBuildTest {
         // the shared array holds plane 3, identical lighting inputs on every plane here
         Class43 t = s.plain(0, 50, 50);
         Flo f = Flo.cache[0];
-        int hsl = packHsl(s.m, f.anInt397 * 256 / f.anInt398, f.anInt395, f.anInt396);
+        int hsl = packHsl(s.m, f.weightedHue * 256 / f.hueWeight, f.saturation, f.lightness);
         assertNotEquals(light[50][50], light[51][50]);
         assertEquals(shadeHsl(hsl, light[50][50]), t.cornerColour0);
         assertEquals(shadeHsl(hsl, light[51][50]), t.cornerColour1);
@@ -418,11 +418,11 @@ public class ObjectSceneBuildTest {
 
     private static Flo overlayFlo(int colourRgb, int texture, boolean occludes) throws Exception {
         Flo f = flo(70, 100, 50, 100);
-        f.anInt394 = 111;
-        f.anInt399 = 5000;
-        f.anInt390 = colourRgb;
-        f.anInt391 = texture;
-        f.aBoolean393 = occludes;
+        f.hue = 111;
+        f.minimapHsl = 5000;
+        f.rgb = colourRgb;
+        f.textureId = texture;
+        f.occludes = occludes;
         return f;
     }
 
@@ -468,7 +468,7 @@ public class ObjectSceneBuildTest {
         clearOccluders();
         a.run();
         assertEquals(1, occluders(1).size());
-        // overlay whose Flo forbids occlusion (aBoolean393 false) suppresses it everywhere
+        // overlay whose Flo forbids occlusion (occludes false) suppresses it everywhere
         Scene b = new Scene();
         b.fillUnderlay(1, 1);
         for (int x = 0; x < 104; x++) {

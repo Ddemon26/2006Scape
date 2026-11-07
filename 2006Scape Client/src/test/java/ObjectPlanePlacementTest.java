@@ -78,12 +78,12 @@ public class ObjectPlanePlacementTest {
 
     private static Flo flo() throws Exception {
         Flo f = (Flo) unsafe().allocateInstance(Flo.class);
-        f.anInt391 = -1;
-        f.aBoolean393 = true;
-        f.anInt395 = 100;
-        f.anInt396 = 80;
-        f.anInt397 = 100;
-        f.anInt398 = 200;
+        f.textureId = -1;
+        f.occludes = true;
+        f.saturation = 100;
+        f.lightness = 80;
+        f.weightedHue = 100;
+        f.hueWeight = 200;
         return f;
     }
 

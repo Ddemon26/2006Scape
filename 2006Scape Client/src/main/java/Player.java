@@ -206,7 +206,7 @@ public final class Player extends Entity {
 				if (slot5Override >= 0 && slot == 5) {
 					equipmentCode = slot5Override;
 				}
-				if (equipmentCode >= 256 && equipmentCode < 512 && !IDK.cache[equipmentCode - 256].method537()) {
+				if (equipmentCode >= 256 && equipmentCode < 512 && !IDK.cache[equipmentCode - 256].areBodyModelsLoaded()) {
 					anyPartNotReady = true;
 				}
 				if (equipmentCode >= 512 && !ItemDef.forID(equipmentCode - 512).isWornModelReady(gender)) {
@@ -235,7 +235,7 @@ public final class Player extends Entity {
 					partEquipmentCode = slot5Override;
 				}
 				if (partEquipmentCode >= 256 && partEquipmentCode < 512) {
-					Model kitPart = IDK.cache[partEquipmentCode - 256].method538();
+					Model kitPart = IDK.cache[partEquipmentCode - 256].buildBodyModel();
 					if (kitPart != null) {
 						parts[partCount++] = kitPart;
 					}
@@ -295,7 +295,7 @@ public final class Player extends Entity {
 		boolean anyPartNotReady = false;
 		for (int slot = 0; slot < 12; slot++) {
 			int equipmentCode = equipment[slot];
-			if (equipmentCode >= 256 && equipmentCode < 512 && !IDK.cache[equipmentCode - 256].method539()) {
+			if (equipmentCode >= 256 && equipmentCode < 512 && !IDK.cache[equipmentCode - 256].areHeadModelsLoaded()) {
 				anyPartNotReady = true;
 			}
 			if (equipmentCode >= 512 && !ItemDef.forID(equipmentCode - 512).isHeadModelReady(gender)) {
@@ -311,7 +311,7 @@ public final class Player extends Entity {
 		for (int partSlot = 0; partSlot < 12; partSlot++) {
 			int equipmentCode = equipment[partSlot];
 			if (equipmentCode >= 256 && equipmentCode < 512) {
-				Model kitPart = IDK.cache[equipmentCode - 256].method540();
+				Model kitPart = IDK.cache[equipmentCode - 256].buildHeadModel();
 				if (kitPart != null) {
 					parts[partCount++] = kitPart;
 				}
