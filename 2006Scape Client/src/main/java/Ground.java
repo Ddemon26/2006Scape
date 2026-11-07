@@ -30,9 +30,9 @@ public final class Ground extends Node {
 	boolean firstPassPending;
 	boolean drawPending;
 	boolean objectsPending;
-	int anInt1325;
-	int anInt1326;
-	int anInt1327;
+	int cornerWallEdgeMask;
+	int cornerWallFarEdgeValue;
+	int cornerWallNearEdgeValue;
 	int lateWallMask;
 	public Ground lowerGround;
 }

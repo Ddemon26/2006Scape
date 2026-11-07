@@ -14,6 +14,8 @@ import org.junit.Test;
 public class WorldControllerDrawQueueTest {
     private static final int SIZE = 104;
     private static final List<String> LOG = new ArrayList<String>();
+    private static Ground SNAP_TILE;
+    private static int[] SNAP;
     private final WorldControllerDrawTest base = new WorldControllerDrawTest();
     private final Object[] saved = new Object[3];
     private int[] px;
@@ -23,6 +25,7 @@ public class WorldControllerDrawQueueTest {
         final String name;
         Rec(String name) { this.name = name; }
         @Override public void method443(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2) {
+            if (SNAP_TILE != null && name.equals("wall")) SNAP = new int[] {SNAP_TILE.cornerWallEdgeMask, SNAP_TILE.cornerWallFarEdgeValue, SNAP_TILE.cornerWallNearEdgeValue};
             LOG.add(name + ":" + i + "," + j1 + "," + k1 + "," + l1 + "," + i2);
         }
     }
@@ -386,5 +389,106 @@ public class WorldControllerDrawQueueTest {
         draw(wc, g, false);
         assertTrue("firstPass already done: contents are not drawn again", LOG.isEmpty());
         assertFalse(g.drawPending);
+    }
+
+    // ---- corner (diagonal) wall ordering: Ground.cornerWallEdgeMask/1326/1327 and tables 479, 481-484 ----
+
+    /** Draw order of a diagonal wall (orientation o) against one single-tile scene object whose edge mask is m, camera at tile offset (dx,dy). */
+    private static String cornerOrder(int o, int m, int dx, int dy) throws Exception {
+        WorldController wc = scene(); LOG.clear();
+        camera(20 + dx, 25 + dy);
+        place(wc, "obj", 20, 20, 25, 3);
+        Ground[][][] tiles = (Ground[][][]) field(WorldController.class, "groundArray").get(wc);
+        Ground g = tiles[0][20][25];
+        g.firstPassPending = true; g.drawPending = true; g.objectsPending = true;
+        sset("pendingTileCount", 1);
+        g.objectEdgeMasks[0] = m;
+        g.obj1 = wall("wall", o, 0, null);
+        draw(wc, g, false);
+        return names(LOG).toString();
+    }
+    private static final int[] CORNER_X = {16, 3, 32, 6, 64, 12, 128, 9};
+    /** Active (orientation, camera dx, camera dy, far value) cases; every other camera offset leaves the diagonal wall without corner ordering. */
+    private static final int[][] CORNER_ACTIVE = {
+        {16, -1, -1, 2}, {16, -1, 0, 2}, {16, 0, 1, 1}, {16, 1, 1, 1},
+        {32, 1, -1, 2}, {32, 1, 0, 2}, {32, 0, 1, 4}, {32, -1, 1, 4},
+        {64, 0, -1, 4}, {64, -1, -1, 4}, {64, 1, 0, 8}, {64, 1, 1, 8},
+        {128, 1, -1, 1}, {128, 0, -1, 1}, {128, -1, 0, 8}, {128, -1, 1, 8}};
+
+    private static int cornerMaskOf(int o) { for (int i = 0; i < CORNER_X.length; i += 2) if (CORNER_X[i] == o) return CORNER_X[i + 1]; throw new AssertionError(); }
+
+    private static int activeValue(int o, int dx, int dy) {
+        for (int[] c : CORNER_ACTIVE) if (c[0] == o && c[1] == dx && c[2] == dy) return c[3];
+        return -1;
+    }
+
+    @Test public void diagonalWallWaitsForSceneObjectsWhoseEdgeBitsHaveTheFarValueAndOnlyForCameraSidesThatNeedIt() throws Exception {
+        for (int o : new int[] {16, 32, 64, 128}) for (int dy = -1; dy <= 1; dy++) for (int dx = -1; dx <= 1; dx++) {
+            int far = activeValue(o, dx, dy), x = cornerMaskOf(o);
+            StringBuilder row = new StringBuilder();
+            for (int m = 0; m < 16; m++) row.append(cornerOrder(o, m, dx, dy).startsWith("[wall") ? 'W' : 'o');
+            String ctx = "wall " + o + " camera offset " + dx + "," + dy + " row " + row;
+            if (far < 0) {
+                assertEquals(ctx + ": no corner ordering, the edge mask is irrelevant", 1, new java.util.HashSet<Character>(java.util.Arrays.asList(toChars(row))).size());
+                continue;
+            }
+            int waits = 0;
+            for (int m = 0; m < 16; m++) {
+                boolean objectFirst = row.charAt(m) == 'o';
+                assertEquals(ctx + " m=" + m, (m & x) == far, objectFirst);
+                if (objectFirst) waits++;
+            }
+            assertEquals(ctx, 4, waits);
+        }
+    }
+
+    private static Character[] toChars(CharSequence s) { Character[] c = new Character[s.length()]; for (int i = 0; i < c.length; i++) c[i] = s.charAt(i); return c; }
+
+    @Test public void groundCornerFieldsHoldTheEdgeMaskTheFarValueAndTheComplementWhenTheWallDraws() throws Exception {
+        for (int o : new int[] {16, 32, 64, 128}) for (int dy = -1; dy <= 1; dy++) for (int dx = -1; dx <= 1; dx++) {
+            WorldController wc = scene(); LOG.clear();
+            camera(20 + dx, 25 + dy);
+            Ground g = pending(wc, 0, 20, 25);
+            g.cornerWallEdgeMask = 99; g.cornerWallFarEdgeValue = 99; g.cornerWallNearEdgeValue = 99;
+            g.obj1 = wall("wall", o, 0, null);
+            SNAP_TILE = g; SNAP = null;
+            try { draw(wc, g, false); } finally { SNAP_TILE = null; }
+            int far = activeValue(o, dx, dy), x = cornerMaskOf(o);
+            String ctx = "wall " + o + " camera offset " + dx + "," + dy;
+            assertNotNull(ctx, SNAP);
+            if (far < 0) { assertEquals(ctx, 0, SNAP[0]); continue; }
+            assertEquals(ctx, x, SNAP[0]);
+            assertEquals(ctx, far, SNAP[1]);
+            assertEquals(ctx, x - far, SNAP[2]);
+            assertEquals(ctx + ": reset once the wall is drawn", 0, g.cornerWallEdgeMask);
+        }
+    }
+
+    @Test public void diagonalWallWithNothingToWaitForDrawsInTheFirstPassAndAnOnlyObjectOfAnotherSideDoesNotDelayIt() throws Exception {
+        // wall 16, camera offset (-1,-1): far value 2 (edge bit 2 set, bit 1 clear). Edge mask 1 is not far, so the wall draws first.
+        assertEquals("[wall, obj]", cornerOrder(16, 1, -1, -1));
+        assertEquals("[obj, wall]", cornerOrder(16, 2, -1, -1));
+        assertEquals("a bit outside the wall's two edges does not matter", "[obj, wall]", cornerOrder(16, 2 + 4 + 8, -1, -1));
+        assertEquals("both wall edges set is not the far value", "[wall, obj]", cornerOrder(16, 3, -1, -1));
+    }
+
+    @Test public void sceneObjectCoveringTwoTilesWaitsWhenAFootprintTileCornerMaskMatchesTheCurrentTilesNearValue() throws Exception {
+        // Object spans (20..21, 25). Current tile (20,25) has first pass done; (21,25) has a corner wall mask 3. The footprint bit for (21,25) seen from
+        // the object is 1 (it is further along x than the minimum), so the object waits exactly when (1 & 3) == current tile's cornerWallNearEdgeValue.
+        for (int near = 0; near <= 3; near++) {
+            WorldController wc = scene(); LOG.clear();
+            camera(30, 40);
+            assertTrue(wc.addEntityInTileBounds(0, 25 * 128 + 64, new Rec("wide"), 0, 25, 20 * 128 + 64, -1, 20, 21, 4, 25));
+            Ground[][][] tiles = (Ground[][][]) field(WorldController.class, "groundArray").get(wc);
+            Ground a = tiles[0][20][25], b = tiles[0][21][25];
+            a.firstPassPending = false; a.drawPending = true; a.objectsPending = true;
+            b.firstPassPending = false; b.drawPending = false; b.objectsPending = false;
+            b.cornerWallEdgeMask = 3;
+            a.cornerWallNearEdgeValue = near;
+            sset("pendingTileCount", 1);
+            draw(wc, a, false);
+            assertEquals("near value " + near, (1 & 3) != near, names(LOG).contains("wide"));
+            assertEquals("near value " + near, (1 & 3) == near, a.objectsPending);
+        }
     }
 }

@@ -752,7 +752,7 @@ public class WorldControllerSceneLightingTest {
 
     private static Ground marked(WorldController wc, int plane, int x, int y, int topPlane) throws Exception {
         Ground g = tile(wc, plane, x, y);
-        g.minCameraPlane = topPlane; g.objectsPending = true; g.anInt1325 = 0;
+        g.minCameraPlane = topPlane; g.objectsPending = true; g.cornerWallEdgeMask = 0;
         g.firstPassPending = true; g.drawPending = true;
         return g;
     }
@@ -772,12 +772,12 @@ public class WorldControllerSceneLightingTest {
         Ground d = marked(wc, 0, cx + 1, cy, 0);  h[0][cx + 1][cy] = 200;            // not in table, terrain 200 above camera
         Ground e = marked(wc, 0, cx + 1, cy + 1, 0); h[0][cx + 1][cy + 1] = 49;      // 49 above camera: still hidden
         Ground f = marked(wc, 0, cx, cy + 1, 0);  h[0][cx][cy + 1] = 50;             // 50 above camera: visible
-        b.anInt1325 = 7; c.anInt1325 = 7; e.anInt1325 = 7;
+        b.cornerWallEdgeMask = 7; c.cornerWallEdgeMask = 7; e.cornerWallEdgeMask = 7;
         draw(wc, cx * 128 + 10, cy * 128 + 10, 640, 0, plane, 160);
         for (Ground g : new Ground[] {a, bq, d, f}) assertFalse("visible tile gets its object flag recomputed", g.objectsPending);
         for (Ground g : new Ground[] {b, c, e}) {
             assertTrue("hidden tile keeps flag", g.objectsPending);
-            assertEquals(0, g.anInt1325); assertFalse(g.firstPassPending); assertFalse(g.drawPending);
+            assertEquals(0, g.cornerWallEdgeMask); assertFalse(g.firstPassPending); assertFalse(g.drawPending);
         }
     }
 
@@ -801,7 +801,7 @@ public class WorldControllerSceneLightingTest {
         draw(wc, cx * 128 + 10, cy * 128 + 10, 640, 0, 0, 160);
         for (int i = 0; i < offs.length; i++) { assertFalse("flag " + i, visible[i].objectsPending); assertFalse("drawn " + i, visible[i].firstPassPending); }
         assertFalse(edge.objectsPending); assertFalse(edge.firstPassPending);
-        assertTrue(outside.objectsPending); assertTrue(outside.firstPassPending); assertEquals(0, outside.anInt1325);
+        assertTrue(outside.objectsPending); assertTrue(outside.firstPassPending); assertEquals(0, outside.cornerWallEdgeMask);
         assertEquals(0, sint("pendingTileCount"));
     }
 }

@@ -936,7 +936,7 @@ final class WorldController {
 						if (tile.minCameraPlane > plane || !cameraTileVisibility[tileX - cameraTileX + drawDistance][tileY - cameraTileY + drawDistance] && tileHeights[planeIndex][tileX][tileY] - cameraZ < 50) {
 							tile.firstPassPending = false;
 							tile.drawPending = false;
-							tile.anInt1325 = 0;
+							tile.cornerWallEdgeMask = 0;
 						} else {
 							tile.firstPassPending = true;
 							tile.drawPending = true;
@@ -1150,26 +1150,26 @@ final class WorldController {
 					tile.lateWallMask = wallLateMasks[cameraRelation];
 				}
 				if (wall != null) {
-					if ((wall.orientation & anIntArray479[cameraRelation]) != 0) {
+					if ((wall.orientation & cornerWallOrderMasks[cameraRelation]) != 0) {
 						if (wall.orientation == 16) {
-							tile.anInt1325 = 3;
-							tile.anInt1326 = anIntArray481[cameraRelation];
-							tile.anInt1327 = 3 - tile.anInt1326;
+							tile.cornerWallEdgeMask = 3;
+							tile.cornerWallFarEdgeValue = cornerWallFarValues16[cameraRelation];
+							tile.cornerWallNearEdgeValue = 3 - tile.cornerWallFarEdgeValue;
 						} else if (wall.orientation == 32) {
-							tile.anInt1325 = 6;
-							tile.anInt1326 = anIntArray482[cameraRelation];
-							tile.anInt1327 = 6 - tile.anInt1326;
+							tile.cornerWallEdgeMask = 6;
+							tile.cornerWallFarEdgeValue = cornerWallFarValues32[cameraRelation];
+							tile.cornerWallNearEdgeValue = 6 - tile.cornerWallFarEdgeValue;
 						} else if (wall.orientation == 64) {
-							tile.anInt1325 = 12;
-							tile.anInt1326 = anIntArray483[cameraRelation];
-							tile.anInt1327 = 12 - tile.anInt1326;
+							tile.cornerWallEdgeMask = 12;
+							tile.cornerWallFarEdgeValue = cornerWallFarValues64[cameraRelation];
+							tile.cornerWallNearEdgeValue = 12 - tile.cornerWallFarEdgeValue;
 						} else {
-							tile.anInt1325 = 9;
-							tile.anInt1326 = anIntArray484[cameraRelation];
-							tile.anInt1327 = 9 - tile.anInt1326;
+							tile.cornerWallEdgeMask = 9;
+							tile.cornerWallFarEdgeValue = cornerWallFarValues128[cameraRelation];
+							tile.cornerWallNearEdgeValue = 9 - tile.cornerWallFarEdgeValue;
 						}
 					} else {
-						tile.anInt1325 = 0;
+						tile.cornerWallEdgeMask = 0;
 					}
 					if ((wall.orientation & wallFirstMask) != 0 && !isWallOccluded(originalPlane, tileX, tileY, wall.orientation)) {
 						wall.model.method443(0, pitchSine, pitchCosine, yawSine, yawCosine, wall.worldX - cameraWorldX, wall.height - cameraWorldHeight, wall.worldY - cameraWorldY, wall.uid);
@@ -1256,10 +1256,10 @@ final class WorldController {
 					}
 				}
 			}
-			if (tile.anInt1325 != 0) {
+			if (tile.cornerWallEdgeMask != 0) {
 				boolean flag2 = true;
 				for (int k1 = 0; k1 < tile.objectCount; k1++) {
-					if (tile.obj5Array[k1].lastDrawCycle == drawCycle || (tile.objectEdgeMasks[k1] & tile.anInt1325) != tile.anInt1326) {
+					if (tile.obj5Array[k1].lastDrawCycle == drawCycle || (tile.objectEdgeMasks[k1] & tile.cornerWallEdgeMask) != tile.cornerWallFarEdgeValue) {
 						continue;
 					}
 					flag2 = false;
@@ -1271,7 +1271,7 @@ final class WorldController {
 					if (!isWallOccluded(originalPlane, tileX, tileY, class10_1.orientation)) {
 						class10_1.model.method443(0, pitchSine, pitchCosine, yawSine, yawCosine, class10_1.worldX - cameraWorldX, class10_1.height - cameraWorldHeight, class10_1.worldY - cameraWorldY, class10_1.uid);
 					}
-					tile.anInt1325 = 0;
+					tile.cornerWallEdgeMask = 0;
 				}
 			}
 			if (tile.objectsPending) {
@@ -1290,7 +1290,7 @@ final class WorldController {
 								if (class30_sub3_21.firstPassPending) {
 									tile.objectsPending = true;
 								} else {
-									if (class30_sub3_21.anInt1325 == 0) {
+									if (class30_sub3_21.cornerWallEdgeMask == 0) {
 										continue;
 									}
 									int l6 = 0;
@@ -1306,7 +1306,7 @@ final class WorldController {
 									if (l4 < class28_1.maxTileY) {
 										l6 += 2;
 									}
-									if ((l6 & class30_sub3_21.anInt1325) != tile.anInt1327) {
+									if ((l6 & class30_sub3_21.cornerWallEdgeMask) != tile.cornerWallNearEdgeValue) {
 										continue;
 									}
 									tile.objectsPending = true;
@@ -1363,7 +1363,7 @@ final class WorldController {
 						for (int k7 = class28_3.minTileX; k7 <= class28_3.maxTileX; k7++) {
 							for (int l8 = class28_3.minTileY; l8 <= class28_3.maxTileY; l8++) {
 								Ground class30_sub3_22 = planeTiles[k7][l8];
-								if (class30_sub3_22.anInt1325 != 0) {
+								if (class30_sub3_22.cornerWallEdgeMask != 0) {
 									drawQueue.insertHead(class30_sub3_22);
 								} else if ((k7 != tileX || l8 != tileY) && class30_sub3_22.drawPending) {
 									drawQueue.insertHead(class30_sub3_22);
@@ -1380,7 +1380,7 @@ final class WorldController {
 					tile.objectsPending = false;
 				}
 			}
-			if (!tile.drawPending || tile.anInt1325 != 0) {
+			if (!tile.drawPending || tile.cornerWallEdgeMask != 0) {
 				continue;
 			}
 			if (tileX <= cameraTileX && tileX > drawMinTileX) {
@@ -2096,12 +2096,12 @@ final class WorldController {
 	private static final Class47[] activeOccluders = new Class47[500];
 	private static NodeList drawQueue = new NodeList();
 	private static final int[] wallFirstMasks = {19, 55, 38, 155, 255, 110, 137, 205, 76};
-	private static final int[] anIntArray479 = {160, 192, 80, 96, 0, 144, 80, 48, 160};
+	private static final int[] cornerWallOrderMasks = {160, 192, 80, 96, 0, 144, 80, 48, 160};
 	private static final int[] wallLateMasks = {76, 8, 137, 4, 0, 1, 38, 2, 19};
-	private static final int[] anIntArray481 = {0, 0, 2, 0, 0, 2, 1, 1, 0};
-	private static final int[] anIntArray482 = {2, 0, 0, 2, 0, 0, 0, 4, 4};
-	private static final int[] anIntArray483 = {0, 4, 4, 8, 0, 0, 8, 0, 0};
-	private static final int[] anIntArray484 = {1, 1, 0, 0, 0, 8, 0, 0, 8};
+	private static final int[] cornerWallFarValues16 = {0, 0, 2, 0, 0, 2, 1, 1, 0};
+	private static final int[] cornerWallFarValues32 = {2, 0, 0, 2, 0, 0, 0, 4, 4};
+	private static final int[] cornerWallFarValues64 = {0, 4, 4, 8, 0, 0, 8, 0, 0};
+	private static final int[] cornerWallFarValues128 = {1, 1, 0, 0, 0, 8, 0, 0, 8};
 	private static final int[] lowMemTextureHsl = {41, 39248, 41, 4643, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 43086, 41, 41, 41, 41, 41, 41, 41, 8602, 41, 28992, 41, 41, 41, 41, 41, 5056, 41, 41, 41, 7079, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 3131, 41, 41, 41};
 	private final int[] modelSharedVertexStamps;
 	private final int[] otherSharedVertexStamps;

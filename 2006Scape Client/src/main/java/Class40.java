@@ -4,211 +4,211 @@
 
 final class Class40 {
 
-	public Class40(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2, int k2, int l2, int i3, int j3, int k3, int l3, int i4, int k4, int l4) {
-		flat = !(i3 != l2 || i3 != l || i3 != k2);
-		shape = j3;
-		rotation = k1;
-		underlayMapColour = i2;
-		overlayMapColour = l4;
-		char c = '\200';
-		int i5 = c / 2;
-		int j5 = c / 4;
-		int k5 = c * 3 / 4;
-		int ai[] = anIntArrayArray696[j3];
-		int l5 = ai.length;
-		vertexX = new int[l5];
-		vertexHeight = new int[l5];
-		vertexY = new int[l5];
-		int ai1[] = new int[l5];
-		int ai2[] = new int[l5];
-		int i6 = k4 * c;
-		int j6 = i * c;
-		for (int k6 = 0; k6 < l5; k6++) {
-			int l6 = ai[k6];
-			if ((l6 & 1) == 0 && l6 <= 8) {
-				l6 = (l6 - k1 - k1 - 1 & 7) + 1;
+	public Class40(int tileY, int overlayColour0, int underlayColour3, int height2, int textureId, int overlayColour2, int rotation, int underlayColour0, int underlayMapColour, int underlayColour2, int height3, int height1, int height0, int shape, int overlayColour3, int overlayColour1, int underlayColour1, int tileX, int overlayMapColour) {
+		flat = !(height0 != height1 || height0 != height2 || height0 != height3);
+		this.shape = shape;
+		this.rotation = rotation;
+		this.underlayMapColour = underlayMapColour;
+		this.overlayMapColour = overlayMapColour;
+		char tileSize = '\200';
+		int halfSize = tileSize / 2;
+		int quarterSize = tileSize / 4;
+		int threeQuarterSize = tileSize * 3 / 4;
+		int pointIds[] = shapeVertexPointIds[shape];
+		int vertexCount = pointIds.length;
+		vertexX = new int[vertexCount];
+		vertexHeight = new int[vertexCount];
+		vertexY = new int[vertexCount];
+		int vertexUnderlayColour[] = new int[vertexCount];
+		int vertexOverlayColour[] = new int[vertexCount];
+		int tileBaseX = tileX * tileSize;
+		int tileBaseY = tileY * tileSize;
+		for (int vertex = 0; vertex < vertexCount; vertex++) {
+			int pointId = pointIds[vertex];
+			if ((pointId & 1) == 0 && pointId <= 8) {
+				pointId = (pointId - rotation - rotation - 1 & 7) + 1;
 			}
-			if (l6 > 8 && l6 <= 12) {
-				l6 = (l6 - 9 - k1 & 3) + 9;
+			if (pointId > 8 && pointId <= 12) {
+				pointId = (pointId - 9 - rotation & 3) + 9;
 			}
-			if (l6 > 12 && l6 <= 16) {
-				l6 = (l6 - 13 - k1 & 3) + 13;
+			if (pointId > 12 && pointId <= 16) {
+				pointId = (pointId - 13 - rotation & 3) + 13;
 			}
-			int i7;
-			int k7;
-			int i8;
-			int k8;
-			int j9;
-			if (l6 == 1) {
-				i7 = i6;
-				k7 = j6;
-				i8 = i3;
-				k8 = l1;
-				j9 = j;
-			} else if (l6 == 2) {
-				i7 = i6 + i5;
-				k7 = j6;
-				i8 = i3 + l2 >> 1;
-				k8 = l1 + i4 >> 1;
-				j9 = j + l3 >> 1;
-			} else if (l6 == 3) {
-				i7 = i6 + c;
-				k7 = j6;
-				i8 = l2;
-				k8 = i4;
-				j9 = l3;
-			} else if (l6 == 4) {
-				i7 = i6 + c;
-				k7 = j6 + i5;
-				i8 = l2 + l >> 1;
-				k8 = i4 + j2 >> 1;
-				j9 = l3 + j1 >> 1;
-			} else if (l6 == 5) {
-				i7 = i6 + c;
-				k7 = j6 + c;
-				i8 = l;
-				k8 = j2;
-				j9 = j1;
-			} else if (l6 == 6) {
-				i7 = i6 + i5;
-				k7 = j6 + c;
-				i8 = l + k2 >> 1;
-				k8 = j2 + k >> 1;
-				j9 = j1 + k3 >> 1;
-			} else if (l6 == 7) {
-				i7 = i6;
-				k7 = j6 + c;
-				i8 = k2;
-				k8 = k;
-				j9 = k3;
-			} else if (l6 == 8) {
-				i7 = i6;
-				k7 = j6 + i5;
-				i8 = k2 + i3 >> 1;
-				k8 = k + l1 >> 1;
-				j9 = k3 + j >> 1;
-			} else if (l6 == 9) {
-				i7 = i6 + i5;
-				k7 = j6 + j5;
-				i8 = i3 + l2 >> 1;
-				k8 = l1 + i4 >> 1;
-				j9 = j + l3 >> 1;
-			} else if (l6 == 10) {
-				i7 = i6 + k5;
-				k7 = j6 + i5;
-				i8 = l2 + l >> 1;
-				k8 = i4 + j2 >> 1;
-				j9 = l3 + j1 >> 1;
-			} else if (l6 == 11) {
-				i7 = i6 + i5;
-				k7 = j6 + k5;
-				i8 = l + k2 >> 1;
-				k8 = j2 + k >> 1;
-				j9 = j1 + k3 >> 1;
-			} else if (l6 == 12) {
-				i7 = i6 + j5;
-				k7 = j6 + i5;
-				i8 = k2 + i3 >> 1;
-				k8 = k + l1 >> 1;
-				j9 = k3 + j >> 1;
-			} else if (l6 == 13) {
-				i7 = i6 + j5;
-				k7 = j6 + j5;
-				i8 = i3;
-				k8 = l1;
-				j9 = j;
-			} else if (l6 == 14) {
-				i7 = i6 + k5;
-				k7 = j6 + j5;
-				i8 = l2;
-				k8 = i4;
-				j9 = l3;
-			} else if (l6 == 15) {
-				i7 = i6 + k5;
-				k7 = j6 + k5;
-				i8 = l;
-				k8 = j2;
-				j9 = j1;
+			int pointX;
+			int pointY;
+			int pointHeight;
+			int pointUnderlayColour;
+			int pointOverlayColour;
+			if (pointId == 1) {
+				pointX = tileBaseX;
+				pointY = tileBaseY;
+				pointHeight = height0;
+				pointUnderlayColour = underlayColour0;
+				pointOverlayColour = overlayColour0;
+			} else if (pointId == 2) {
+				pointX = tileBaseX + halfSize;
+				pointY = tileBaseY;
+				pointHeight = height0 + height1 >> 1;
+				pointUnderlayColour = underlayColour0 + underlayColour1 >> 1;
+				pointOverlayColour = overlayColour0 + overlayColour1 >> 1;
+			} else if (pointId == 3) {
+				pointX = tileBaseX + tileSize;
+				pointY = tileBaseY;
+				pointHeight = height1;
+				pointUnderlayColour = underlayColour1;
+				pointOverlayColour = overlayColour1;
+			} else if (pointId == 4) {
+				pointX = tileBaseX + tileSize;
+				pointY = tileBaseY + halfSize;
+				pointHeight = height1 + height2 >> 1;
+				pointUnderlayColour = underlayColour1 + underlayColour2 >> 1;
+				pointOverlayColour = overlayColour1 + overlayColour2 >> 1;
+			} else if (pointId == 5) {
+				pointX = tileBaseX + tileSize;
+				pointY = tileBaseY + tileSize;
+				pointHeight = height2;
+				pointUnderlayColour = underlayColour2;
+				pointOverlayColour = overlayColour2;
+			} else if (pointId == 6) {
+				pointX = tileBaseX + halfSize;
+				pointY = tileBaseY + tileSize;
+				pointHeight = height2 + height3 >> 1;
+				pointUnderlayColour = underlayColour2 + underlayColour3 >> 1;
+				pointOverlayColour = overlayColour2 + overlayColour3 >> 1;
+			} else if (pointId == 7) {
+				pointX = tileBaseX;
+				pointY = tileBaseY + tileSize;
+				pointHeight = height3;
+				pointUnderlayColour = underlayColour3;
+				pointOverlayColour = overlayColour3;
+			} else if (pointId == 8) {
+				pointX = tileBaseX;
+				pointY = tileBaseY + halfSize;
+				pointHeight = height3 + height0 >> 1;
+				pointUnderlayColour = underlayColour3 + underlayColour0 >> 1;
+				pointOverlayColour = overlayColour3 + overlayColour0 >> 1;
+			} else if (pointId == 9) {
+				pointX = tileBaseX + halfSize;
+				pointY = tileBaseY + quarterSize;
+				pointHeight = height0 + height1 >> 1;
+				pointUnderlayColour = underlayColour0 + underlayColour1 >> 1;
+				pointOverlayColour = overlayColour0 + overlayColour1 >> 1;
+			} else if (pointId == 10) {
+				pointX = tileBaseX + threeQuarterSize;
+				pointY = tileBaseY + halfSize;
+				pointHeight = height1 + height2 >> 1;
+				pointUnderlayColour = underlayColour1 + underlayColour2 >> 1;
+				pointOverlayColour = overlayColour1 + overlayColour2 >> 1;
+			} else if (pointId == 11) {
+				pointX = tileBaseX + halfSize;
+				pointY = tileBaseY + threeQuarterSize;
+				pointHeight = height2 + height3 >> 1;
+				pointUnderlayColour = underlayColour2 + underlayColour3 >> 1;
+				pointOverlayColour = overlayColour2 + overlayColour3 >> 1;
+			} else if (pointId == 12) {
+				pointX = tileBaseX + quarterSize;
+				pointY = tileBaseY + halfSize;
+				pointHeight = height3 + height0 >> 1;
+				pointUnderlayColour = underlayColour3 + underlayColour0 >> 1;
+				pointOverlayColour = overlayColour3 + overlayColour0 >> 1;
+			} else if (pointId == 13) {
+				pointX = tileBaseX + quarterSize;
+				pointY = tileBaseY + quarterSize;
+				pointHeight = height0;
+				pointUnderlayColour = underlayColour0;
+				pointOverlayColour = overlayColour0;
+			} else if (pointId == 14) {
+				pointX = tileBaseX + threeQuarterSize;
+				pointY = tileBaseY + quarterSize;
+				pointHeight = height1;
+				pointUnderlayColour = underlayColour1;
+				pointOverlayColour = overlayColour1;
+			} else if (pointId == 15) {
+				pointX = tileBaseX + threeQuarterSize;
+				pointY = tileBaseY + threeQuarterSize;
+				pointHeight = height2;
+				pointUnderlayColour = underlayColour2;
+				pointOverlayColour = overlayColour2;
 			} else {
-				i7 = i6 + j5;
-				k7 = j6 + k5;
-				i8 = k2;
-				k8 = k;
-				j9 = k3;
+				pointX = tileBaseX + quarterSize;
+				pointY = tileBaseY + threeQuarterSize;
+				pointHeight = height3;
+				pointUnderlayColour = underlayColour3;
+				pointOverlayColour = overlayColour3;
 			}
-			vertexX[k6] = i7;
-			vertexHeight[k6] = i8;
-			vertexY[k6] = k7;
-			ai1[k6] = k8;
-			ai2[k6] = j9;
+			vertexX[vertex] = pointX;
+			vertexHeight[vertex] = pointHeight;
+			vertexY[vertex] = pointY;
+			vertexUnderlayColour[vertex] = pointUnderlayColour;
+			vertexOverlayColour[vertex] = pointOverlayColour;
 		}
 
-		int ai3[] = anIntArrayArray697[j3];
-		int j7 = ai3.length / 4;
-		faceVertexA = new int[j7];
-		faceVertexB = new int[j7];
-		faceVertexC = new int[j7];
-		faceColourA = new int[j7];
-		faceColourB = new int[j7];
-		faceColourC = new int[j7];
-		if (i1 != -1) {
-			faceTexture = new int[j7];
+		int shapeFaceData[] = shapeFaces[shape];
+		int faceCount = shapeFaceData.length / 4;
+		faceVertexA = new int[faceCount];
+		faceVertexB = new int[faceCount];
+		faceVertexC = new int[faceCount];
+		faceColourA = new int[faceCount];
+		faceColourB = new int[faceCount];
+		faceColourC = new int[faceCount];
+		if (textureId != -1) {
+			faceTexture = new int[faceCount];
 		}
-		int l7 = 0;
-		for (int j8 = 0; j8 < j7; j8++) {
-			int l8 = ai3[l7];
-			int k9 = ai3[l7 + 1];
-			int i10 = ai3[l7 + 2];
-			int k10 = ai3[l7 + 3];
-			l7 += 4;
-			if (k9 < 4) {
-				k9 = k9 - k1 & 3;
+		int faceDataIndex = 0;
+		for (int face = 0; face < faceCount; face++) {
+			int faceType = shapeFaceData[faceDataIndex];
+			int vertexA = shapeFaceData[faceDataIndex + 1];
+			int vertexB = shapeFaceData[faceDataIndex + 2];
+			int vertexC = shapeFaceData[faceDataIndex + 3];
+			faceDataIndex += 4;
+			if (vertexA < 4) {
+				vertexA = vertexA - rotation & 3;
 			}
-			if (i10 < 4) {
-				i10 = i10 - k1 & 3;
+			if (vertexB < 4) {
+				vertexB = vertexB - rotation & 3;
 			}
-			if (k10 < 4) {
-				k10 = k10 - k1 & 3;
+			if (vertexC < 4) {
+				vertexC = vertexC - rotation & 3;
 			}
-			faceVertexA[j8] = k9;
-			faceVertexB[j8] = i10;
-			faceVertexC[j8] = k10;
-			if (l8 == 0) {
-				faceColourA[j8] = ai1[k9];
-				faceColourB[j8] = ai1[i10];
-				faceColourC[j8] = ai1[k10];
+			faceVertexA[face] = vertexA;
+			faceVertexB[face] = vertexB;
+			faceVertexC[face] = vertexC;
+			if (faceType == 0) {
+				faceColourA[face] = vertexUnderlayColour[vertexA];
+				faceColourB[face] = vertexUnderlayColour[vertexB];
+				faceColourC[face] = vertexUnderlayColour[vertexC];
 				if (faceTexture != null) {
-					faceTexture[j8] = -1;
+					faceTexture[face] = -1;
 				}
 			} else {
-				faceColourA[j8] = ai2[k9];
-				faceColourB[j8] = ai2[i10];
-				faceColourC[j8] = ai2[k10];
+				faceColourA[face] = vertexOverlayColour[vertexA];
+				faceColourB[face] = vertexOverlayColour[vertexB];
+				faceColourC[face] = vertexOverlayColour[vertexC];
 				if (faceTexture != null) {
-					faceTexture[j8] = i1;
+					faceTexture[face] = textureId;
 				}
 			}
 		}
 
-		int i9 = i3;
-		int l9 = l2;
-		if (l2 < i9) {
-			i9 = l2;
+		int i9 = height0;
+		int l9 = height1;
+		if (height1 < i9) {
+			i9 = height1;
 		}
-		if (l2 > l9) {
-			l9 = l2;
+		if (height1 > l9) {
+			l9 = height1;
 		}
-		if (l < i9) {
-			i9 = l;
+		if (height2 < i9) {
+			i9 = height2;
 		}
-		if (l > l9) {
-			l9 = l;
+		if (height2 > l9) {
+			l9 = height2;
 		}
-		if (k2 < i9) {
-			i9 = k2;
+		if (height3 < i9) {
+			i9 = height3;
 		}
-		if (k2 > l9) {
-			l9 = k2;
+		if (height3 > l9) {
+			l9 = height3;
 		}
 		i9 /= 14;
 		l9 /= 14;
@@ -237,7 +237,7 @@ final class Class40 {
 	static final int[] anIntArray693 = {1, 0};
 	static final int[] anIntArray694 = {2, 1};
 	static final int[] anIntArray695 = {3, 3};
-	private static final int[][] anIntArrayArray696 = {{1, 3, 5, 7}, {1, 3, 5, 7}, {1, 3, 5, 7}, {1, 3, 5, 7, 6}, {1, 3, 5, 7, 6}, {1, 3, 5, 7, 6}, {1, 3, 5, 7, 6}, {1, 3, 5, 7, 2, 6}, {1, 3, 5, 7, 2, 8}, {1, 3, 5, 7, 2, 8}, {1, 3, 5, 7, 11, 12}, {1, 3, 5, 7, 11, 12}, {1, 3, 5, 7, 13, 14}};
-	private static final int[][] anIntArrayArray697 = {{0, 1, 2, 3, 0, 0, 1, 3}, {1, 1, 2, 3, 1, 0, 1, 3}, {0, 1, 2, 3, 1, 0, 1, 3}, {0, 0, 1, 2, 0, 0, 2, 4, 1, 0, 4, 3}, {0, 0, 1, 4, 0, 0, 4, 3, 1, 1, 2, 4}, {0, 0, 4, 3, 1, 0, 1, 2, 1, 0, 2, 4}, {0, 1, 2, 4, 1, 0, 1, 4, 1, 0, 4, 3}, {0, 4, 1, 2, 0, 4, 2, 5, 1, 0, 4, 5, 1, 0, 5, 3}, {0, 4, 1, 2, 0, 4, 2, 3, 0, 4, 3, 5, 1, 0, 4, 5}, {0, 0, 4, 5, 1, 4, 1, 2, 1, 4, 2, 3, 1, 4, 3, 5}, {0, 0, 1, 5, 0, 1, 4, 5, 0, 1, 2, 4, 1, 0, 5, 3, 1, 5, 4, 3, 1, 4, 2, 3}, {1, 0, 1, 5, 1, 1, 4, 5, 1, 1, 2, 4, 0, 0, 5, 3, 0, 5, 4, 3, 0, 4, 2, 3}, {1, 0, 5, 4, 1, 0, 1, 5, 0, 0, 4, 3, 0, 4, 5, 3, 0, 5, 2, 3, 0, 1, 2, 5}};
+	private static final int[][] shapeVertexPointIds = {{1, 3, 5, 7}, {1, 3, 5, 7}, {1, 3, 5, 7}, {1, 3, 5, 7, 6}, {1, 3, 5, 7, 6}, {1, 3, 5, 7, 6}, {1, 3, 5, 7, 6}, {1, 3, 5, 7, 2, 6}, {1, 3, 5, 7, 2, 8}, {1, 3, 5, 7, 2, 8}, {1, 3, 5, 7, 11, 12}, {1, 3, 5, 7, 11, 12}, {1, 3, 5, 7, 13, 14}};
+	private static final int[][] shapeFaces = {{0, 1, 2, 3, 0, 0, 1, 3}, {1, 1, 2, 3, 1, 0, 1, 3}, {0, 1, 2, 3, 1, 0, 1, 3}, {0, 0, 1, 2, 0, 0, 2, 4, 1, 0, 4, 3}, {0, 0, 1, 4, 0, 0, 4, 3, 1, 1, 2, 4}, {0, 0, 4, 3, 1, 0, 1, 2, 1, 0, 2, 4}, {0, 1, 2, 4, 1, 0, 1, 4, 1, 0, 4, 3}, {0, 4, 1, 2, 0, 4, 2, 5, 1, 0, 4, 5, 1, 0, 5, 3}, {0, 4, 1, 2, 0, 4, 2, 3, 0, 4, 3, 5, 1, 0, 4, 5}, {0, 0, 4, 5, 1, 4, 1, 2, 1, 4, 2, 3, 1, 4, 3, 5}, {0, 0, 1, 5, 0, 1, 4, 5, 0, 1, 2, 4, 1, 0, 5, 3, 1, 5, 4, 3, 1, 4, 2, 3}, {1, 0, 1, 5, 1, 1, 4, 5, 1, 1, 2, 4, 0, 0, 5, 3, 0, 5, 4, 3, 0, 4, 2, 3}, {1, 0, 5, 4, 1, 0, 1, 5, 0, 0, 4, 3, 0, 4, 5, 3, 0, 5, 2, 3, 0, 1, 2, 5}};
 
 }
