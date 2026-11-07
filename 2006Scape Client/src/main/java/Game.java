@@ -187,26 +187,26 @@ public class Game extends RSApplet {
 		return true;
 	}
 	
-	final synchronized void method58(int i_30_, int volume,
-		    boolean bool, int music) {
+	final synchronized void requestSongWithFade(int fadeStepPerTick, int volume,
+		    boolean bool, int songId) {
 		if (musicIsntNull()) {
-			nextSong = music;
+			nextSong = songId;
 			onDemandFetcher.method558(2, nextSong);
 			musicVolume2 = volume;
 			anInt139 = -1;
 			aBoolean995 = true;
-			anInt116 = i_30_;
+			pendingSongFadeStep = fadeStepPerTick;
 		}
 	}
 	
-	final synchronized void method56(int i, boolean bool, int music) {
+	final synchronized void requestSongWithoutFade(int volume, boolean bool, int songId) {
 		if (musicIsntNull()) {
-			nextSong = music;
+			nextSong = songId;
 			onDemandFetcher.method558(2, nextSong);
-			musicVolume2 = i;
+			musicVolume2 = volume;
 			anInt139 = -1;
 			aBoolean995 = true;
-		    anInt116 = -1;
+		    pendingSongFadeStep = -1;
 		}
 	}
 	
@@ -225,8 +225,8 @@ public class Game extends RSApplet {
 				if (is != null) {
 					if (ClientSettings.ANDROID)
 						setMusicData(musicVolume2, is, aBoolean995);
-					else if (anInt116 >= 0)
-						method684(aBoolean995, anInt116, musicVolume2, is);
+					else if (pendingSongFadeStep >= 0)
+						method684(aBoolean995, pendingSongFadeStep, musicVolume2, is);
 					else if (anInt139 >= 0)
 						method899(anInt139, -1, aBoolean995, is, musicVolume2);
 					else
@@ -1425,7 +1425,7 @@ public class Game extends RSApplet {
 						previousSong = 0;
 					}
 				} else {
-					method56(volume, false, currentSong);
+					requestSongWithoutFade(volume, false, currentSong);
 					previousSong = 0;//TODO temp music
 				}
 				musicVolume = volume;
@@ -2222,7 +2222,7 @@ public class Game extends RSApplet {
 		currentSong = -1;
 		nextSong = -1;
 		previousSong = 0;
-		method58(10, musicVolume, false, 0);
+		requestSongWithFade(10, musicVolume, false, 0);
 	}
 
 	public void method45() {
@@ -6913,7 +6913,7 @@ public class Game extends RSApplet {
 			if (previousSong < 0)
 				previousSong = 0;
 			if (previousSong == 0 && musicVolume != 0 && currentSong != -1) {
-				method56(musicVolume, false, currentSong);
+				requestSongWithoutFade(musicVolume, false, currentSong);
 			}
 		}
 	}
@@ -7049,7 +7049,7 @@ public class Game extends RSApplet {
 			AnimationFrame.initialize(onDemandFetcher.getAnimCount());
 			Model.method459(onDemandFetcher.getVersionCount(0), onDemandFetcher);
 			if (!lowMem) {
-				method58(10, musicVolume, false, 0);
+				requestSongWithFade(10, musicVolume, false, 0);
 				while (onDemandFetcher.getNodeCount() > 0) {
 					processOnDemandQueue();
 					if (fetchMusic) {
@@ -10777,7 +10777,7 @@ public class Game extends RSApplet {
 				}
 				if (i2 != -1 || previousSong != 0) {
 					if (i2 != -1 && currentSong != i2 && musicVolume != 0 && previousSong == 0)
-						method58(10, musicVolume, false, i2);
+						requestSongWithFade(10, musicVolume, false, i2);
 				} else
 					stopMusic(false);
 				currentSong = i2;
@@ -10790,7 +10790,7 @@ public class Game extends RSApplet {
 				if (i_61_ == 0x00ffff)
 					i_61_ = -1;
 				if (musicVolume != 0 && i_61_ != -1) {
-					method56(musicVolume, false, i_60_);
+					requestSongWithoutFade(musicVolume, false, i_60_);
 					previousSong = i_61_*20;
 				}
 				pktType = -1;
@@ -12599,7 +12599,7 @@ public class Game extends RSApplet {
 	public static int anInt2200 = 0;
 	public static int anInt1478;
 	public static boolean aBoolean475;
-	public static int anInt116;
+	public static int pendingSongFadeStep;
 	public static boolean aBoolean995;
 	public static int anInt139;
 	public static int musicVolume = 255;
