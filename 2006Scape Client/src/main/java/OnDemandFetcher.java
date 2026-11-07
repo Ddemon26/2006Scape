@@ -311,7 +311,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			while (running) {
 				onDemandCycle++;
 				int i = 20;
-				if (anInt1332 == 0 && clientInstance.cacheStores[0] != null) {
+				if (highestPendingPriority == 0 && clientInstance.cacheStores[0] != null) {
 					i = 50;
 				}
 				try {
@@ -374,7 +374,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 					loopCycle = 0;
 					statusString = "";
 				}
-				if (clientInstance.loggedIn && socket != null && outputStream != null && (anInt1332 > 0 || clientInstance.cacheStores[0] == null)) {
+				if (clientInstance.loggedIn && socket != null && outputStream != null && (highestPendingPriority > 0 || clientInstance.cacheStores[0] == null)) {
 					writeLoopCycle++;
 					if (writeLoopCycle > 500) {
 						writeLoopCycle = 0;
@@ -395,25 +395,25 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		}
 	}
 
-	public void method560(int i, int j) {
+	public void requestExtraFile(int fileId, int dataType) {
 		if (clientInstance.cacheStores[0] == null) {
 			return;
 		}
-		if (versions[j][i] == 0) {
+		if (versions[dataType][fileId] == 0) {
 			return;
 		}
-		if (fileStatus[j][i] == 0) {
+		if (fileStatus[dataType][fileId] == 0) {
 			return;
 		}
-		if (anInt1332 == 0) {
+		if (highestPendingPriority == 0) {
 			return;
 		}
 		OnDemandData onDemandData = new OnDemandData();
-		onDemandData.dataType = j;
-		onDemandData.ID = i;
+		onDemandData.dataType = dataType;
+		onDemandData.ID = fileId;
 		onDemandData.incomplete = false;
-		synchronized (aClass19_1344) {
-			aClass19_1344.insertHead(onDemandData);
+		synchronized (extraFileQueue) {
+			extraFileQueue.insertHead(onDemandData);
 		}
 	}
 
@@ -484,8 +484,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			return;
 		}
 		fileStatus[i][j] = byte0;
-		if (byte0 > anInt1332) {
-			anInt1332 = byte0;
+		if (byte0 > highestPendingPriority) {
+			highestPendingPriority = byte0;
 		}
 		totalFiles++;
 	}
@@ -527,8 +527,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	}
 
 	public void method566() {
-		synchronized (aClass19_1344) {
-			aClass19_1344.removeAll();
+		synchronized (extraFileQueue) {
+			extraFileQueue.removeAll();
 		}
 	}
 
@@ -562,12 +562,12 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 
 	private void method568() {
 		while (uncompletedCount == 0 && completedCount < 10) {
-			if (anInt1332 == 0) {
+			if (highestPendingPriority == 0) {
 				break;
 			}
 			OnDemandData onDemandData;
-			synchronized (aClass19_1344) {
-				onDemandData = (OnDemandData) aClass19_1344.popTail();
+			synchronized (extraFileQueue) {
+				onDemandData = (OnDemandData) extraFileQueue.popTail();
 			}
 			while (onDemandData != null) {
 				if (fileStatus[onDemandData.dataType][onDemandData.ID] != 0) {
@@ -584,15 +584,15 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 						return;
 					}
 				}
-				synchronized (aClass19_1344) {
-					onDemandData = (OnDemandData) aClass19_1344.popTail();
+				synchronized (extraFileQueue) {
+					onDemandData = (OnDemandData) extraFileQueue.popTail();
 				}
 			}
 			for (int j = 0; j < 4; j++) {
 				byte abyte0[] = fileStatus[j];
 				int k = abyte0.length;
 				for (int l = 0; l < k; l++) {
-					if (abyte0[l] == anInt1332) {
+					if (abyte0[l] == highestPendingPriority) {
 						abyte0[l] = 0;
 						OnDemandData onDemandData_1 = new OnDemandData();
 						onDemandData_1.dataType = j;
@@ -614,7 +614,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 
 			}
 
-			anInt1332--;
+			highestPendingPriority--;
 		}
 	}
 
@@ -628,7 +628,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		crc32 = new CRC32();
 		ioBuffer = new byte[500];
 		fileStatus = new byte[4][];
-		aClass19_1344 = new NodeList();
+		extraFileQueue = new NodeList();
 		running = true;
 		waiting = false;
 		aClass19_1358 = new NodeList();
@@ -642,7 +642,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 
 	private int totalFiles;
 	private final NodeList requested;
-	private int anInt1332;
+	private int highestPendingPriority;
 	public String statusString;
 	private int writeLoopCycle;
 	private long openSocketTime;
@@ -652,7 +652,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	public int onDemandCycle;
 	private final byte[][] fileStatus;
 	private Game clientInstance;
-	private final NodeList aClass19_1344;
+	private final NodeList extraFileQueue;
 	private int completedSize;
 	private int expectedSize;
 	int[] anIntArray1348;

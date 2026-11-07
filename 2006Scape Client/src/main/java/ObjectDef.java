@@ -71,7 +71,7 @@ public final class ObjectDef {
 			return;
 		}
 		for (int modelId : modelIds) {
-			fetcher.method560(modelId & 0xffff, 0);
+			fetcher.requestExtraFile(modelId & 0xffff, 0);
 		}
 	}
 

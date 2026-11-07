@@ -839,11 +839,11 @@ public class Game extends RSApplet {
 				if (l3 == k || l3 == j1 || j5 == i2 || j5 == l2) {
 					int j7 = onDemandFetcher.method562(0, j5, l3);
 					if (j7 != -1) {
-						onDemandFetcher.method560(j7, 3);
+						onDemandFetcher.requestExtraFile(j7, 3);
 					}
 					int k8 = onDemandFetcher.method562(1, j5, l3);
 					if (k8 != -1) {
-						onDemandFetcher.method560(k8, 3);
+						onDemandFetcher.requestExtraFile(k8, 3);
 					}
 				}
 			}

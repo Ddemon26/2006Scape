@@ -132,13 +132,13 @@ public class ObjectRegionLoadTest {
         Arrays.fill(status[0], (byte) 1);
         field(OnDemandFetcher.class, "versions").set(fetcher, versions);
         field(OnDemandFetcher.class, "fileStatus").set(fetcher, status);
-        field(OnDemandFetcher.class, "anInt1332").setInt(fetcher, 1);
-        field(OnDemandFetcher.class, "aClass19_1344").set(fetcher, new NodeList());
+        field(OnDemandFetcher.class, "highestPendingPriority").setInt(fetcher, 1);
+        field(OnDemandFetcher.class, "extraFileQueue").set(fetcher, new NodeList());
         return fetcher;
     }
 
     private static List<Integer> requested(OnDemandFetcher fetcher) throws Exception {
-        NodeList queue = (NodeList) field(OnDemandFetcher.class, "aClass19_1344").get(fetcher);
+        NodeList queue = (NodeList) field(OnDemandFetcher.class, "extraFileQueue").get(fetcher);
         List<Integer> ids = new ArrayList<Integer>();
         for (OnDemandData d = (OnDemandData) queue.firstFromTail(); d != null; d = (OnDemandData) queue.nextTowardHead()) {
             assertEquals(0, d.dataType);

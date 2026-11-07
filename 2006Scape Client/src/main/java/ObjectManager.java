@@ -838,7 +838,7 @@ final class ObjectManager {
 			for (int regionX = 0; regionX < 64; regionX++) {
 				for (int regionY = 0; regionY < 64; regionY++) {
 					if (plane == sourcePlane && regionX >= sourceX && regionX < sourceX + 8 && regionY >= sourceY && regionY < sourceY + 8) {
-						readTerrainTile(destY + Class4.method156(regionY & 7, rotation, regionX & 7), 0, stream, destX + Class4.method155(rotation, regionY & 7, regionX & 7), destPlane, rotation, 0);
+						readTerrainTile(destY + TileRotation.rotatedY(regionY & 7, rotation, regionX & 7), 0, stream, destX + TileRotation.rotatedX(rotation, regionY & 7, regionX & 7), destPlane, rotation, 0);
 					} else {
 						readTerrainTile(-1, 0, stream, -1, 0, 0, 0);
 					}
@@ -964,8 +964,8 @@ final class ObjectManager {
 					int objectOrientation = attribute & 3;
 					if (objectPlane == sourcePlane && localX >= sourceX && localX < sourceX + 8 && localY >= sourceY && localY < sourceY + 8) {
 						ObjectDef objectDef = ObjectDef.forID(objectId);
-						int destTileX = destX + Class4.method157(rotation, objectDef.sizeY, localX & 7, localY & 7, objectDef.sizeX);
-						int destTileY = destY + Class4.method158(localY & 7, objectDef.sizeY, rotation, objectDef.sizeX, localX & 7);
+						int destTileX = destX + TileRotation.rotatedFootprintMinX(rotation, objectDef.sizeY, localX & 7, localY & 7, objectDef.sizeX);
+						int destTileY = destY + TileRotation.rotatedFootprintMinY(localY & 7, objectDef.sizeY, rotation, objectDef.sizeX, localX & 7);
 						if (destTileX > 0 && destTileY > 0 && destTileX < 103 && destTileY < 103) {
 							int collisionPlane = objectPlane;
 							if ((tileFlags[1][destTileX][destTileY] & 2) == 2) {

@@ -311,7 +311,7 @@ public class ObjectDefTest {
         field(Game.class, "cacheStores").setAccessible(true);
         ((Object[]) field(Game.class, "cacheStores").get(client))[0] = unsafe().allocateInstance(CacheStore.class);
         field(OnDemandFetcher.class, "clientInstance").set(fetcher, client);
-        field(OnDemandFetcher.class, "anInt1332").setInt(fetcher, 1);
+        field(OnDemandFetcher.class, "highestPendingPriority").setInt(fetcher, 1);
         fetcher.versions[0] = new int[40];
         Arrays.fill(fetcher.versions[0], 1);
         byte[][] status = (byte[][]) field(OnDemandFetcher.class, "fileStatus").get(fetcher);
@@ -321,7 +321,7 @@ public class ObjectDefTest {
 
         ObjectDef def = newDef();
         def.requestModels(fetcher);
-        NodeList queue = (NodeList) field(OnDemandFetcher.class, "aClass19_1344").get(fetcher);
+        NodeList queue = (NodeList) field(OnDemandFetcher.class, "extraFileQueue").get(fetcher);
         assertNull("no models: nothing queued", queue.popTail());
 
         field(ObjectDef.class, "modelIds").set(def, new int[] {20, 21, 22 | 0x10000});
