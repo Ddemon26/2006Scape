@@ -5,17 +5,17 @@
 public final class NPC extends Entity {
 
 	private Model buildAnimatedModel() {
-		if (super.anim >= 0 && super.anInt1529 == 0) {
-			int primaryFrameId = Animation.anims[super.anim].frameIds[super.anInt1527];
+		if (super.anim >= 0 && super.animationDelay == 0) {
+			int primaryFrameId = Animation.anims[super.anim].frameIds[super.animFrame];
 			int secondaryFrameId = -1;
 			if (super.movementAnimationId >= 0 && super.movementAnimationId != super.idleAnimationId) {
-				secondaryFrameId = Animation.anims[super.movementAnimationId].frameIds[super.anInt1518];
+				secondaryFrameId = Animation.anims[super.movementAnimationId].frameIds[super.movementFrame];
 			}
 			return desc.getAnimatedModel(secondaryFrameId, primaryFrameId, Animation.anims[super.anim].interleavedTransformIndices);
 		}
 		int movementFrameId = -1;
 		if (super.movementAnimationId >= 0) {
-			movementFrameId = Animation.anims[super.movementAnimationId].frameIds[super.anInt1518];
+			movementFrameId = Animation.anims[super.movementAnimationId].frameIds[super.movementFrame];
 		}
 		return desc.getAnimatedModel(-1, movementFrameId, null);
 	}
@@ -30,13 +30,13 @@ public final class NPC extends Entity {
 			return null;
 		}
 		super.height = model.modelHeight;
-		if (super.anInt1520 != -1 && super.anInt1521 != -1) {
-			SpotAnim spotAnim = SpotAnim.cache[super.anInt1520];
+		if (super.spotAnimId != -1 && super.spotFrame != -1) {
+			SpotAnim spotAnim = SpotAnim.cache[super.spotAnimId];
 			Model spotModel = spotAnim.getModel();
 			if (spotModel != null) {
-				int spotFrameId = spotAnim.animation.frameIds[super.anInt1521];
+				int spotFrameId = spotAnim.animation.frameIds[super.spotFrame];
 				Model spotCopy = new Model(true, AnimationFrame.isMissingFrameId(spotFrameId), false, spotModel);
-				spotCopy.translate(0, -super.anInt1524, 0);
+				spotCopy.translate(0, -super.spotHeight, 0);
 				spotCopy.buildAnimationGroups();
 				spotCopy.applyAnimationFrame(spotFrameId);
 				spotCopy.faceGroups = null;

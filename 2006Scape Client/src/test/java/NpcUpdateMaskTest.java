@@ -51,18 +51,18 @@ public class NpcUpdateMaskTest {
             Stream start = packet(0x10, 0, 0, 5);
             game.decodeNpcUpdateMasks(start);
             assertEquals(4, start.currentOffset); assertEquals(0, npc.anim);
-            assertEquals(5, npc.anInt1529); assertEquals(3, npc.anInt1542);
-            npc.anInt1527 = 9; npc.anInt1530 = 9;
+            assertEquals(5, npc.animationDelay); assertEquals(3, npc.anInt1542);
+            npc.animFrame = 9; npc.anInt1530 = 9;
             game.decodeNpcUpdateMasks(packet(0x10, 0, 0, 2));
-            assertEquals(0, npc.anInt1527); assertEquals(2, npc.anInt1529);
+            assertEquals(0, npc.animFrame); assertEquals(2, npc.animationDelay);
             assertEquals(0, npc.anInt1530);
             game.decodeNpcUpdateMasks(packet(0x10, 1, 0, 7));
-            assertEquals(0, npc.anim); assertEquals(2, npc.anInt1529);
+            assertEquals(0, npc.anim); assertEquals(2, npc.animationDelay);
             game.decodeNpcUpdateMasks(packet(0x10, 255, 255, 8));
-            assertEquals(-1, npc.anim); assertEquals(8, npc.anInt1529);
+            assertEquals(-1, npc.anim); assertEquals(8, npc.animationDelay);
             npc.anim = 1; npc.anInt1530 = 9;
             game.decodeNpcUpdateMasks(packet(0x10, 1, 0, 6));
-            assertEquals(0, npc.anInt1530); assertEquals(8, npc.anInt1529);
+            assertEquals(0, npc.anInt1530); assertEquals(8, npc.animationDelay);
         } finally { Animation.anims = saved; }
     }
 
@@ -84,12 +84,12 @@ public class NpcUpdateMaskTest {
         game.npcArray[2] = npc; game.maskUpdateIndices[0] = 2; game.maskUpdateCount = 1;
         Stream future = packet(0x80, 0, 42, 0, 18, 0, 5);
         game.decodeNpcUpdateMasks(future);
-        assertEquals(7, future.currentOffset); assertEquals(42, npc.anInt1520);
-        assertEquals(18, npc.anInt1524); assertEquals(105, npc.anInt1523);
-        assertEquals(-1, npc.anInt1521);
+        assertEquals(7, future.currentOffset); assertEquals(42, npc.spotAnimId);
+        assertEquals(18, npc.spotHeight); assertEquals(105, npc.spotStartCycle);
+        assertEquals(-1, npc.spotFrame);
         game.decodeNpcUpdateMasks(packet(0x80, 255, 255, 0, 3, 0, 0));
-        assertEquals(-1, npc.anInt1520); assertEquals(3, npc.anInt1524);
-        assertEquals(100, npc.anInt1523); assertEquals(0, npc.anInt1521);
+        assertEquals(-1, npc.spotAnimId); assertEquals(3, npc.spotHeight);
+        assertEquals(100, npc.spotStartCycle); assertEquals(0, npc.spotFrame);
     }
 
     @Test public void targetTextAndFaceCoordinatesUseSeparateMaskBits() throws Exception {

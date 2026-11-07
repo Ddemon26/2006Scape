@@ -612,8 +612,8 @@ public class ItemDefTest {
     }
     private static Player body139(int anim, int hold, int f1527, int a1517, int a1518, int a1511) throws Exception {
         Player p = new Player(); p.visible = true;
-        p.anim = anim; ent139(p, "anInt1529", hold); ent139(p, "anInt1527", f1527);
-        ent139(p, "movementAnimationId", a1517); ent139(p, "anInt1518", a1518); ent139(p, "idleAnimationId", a1511);
+        p.anim = anim; ent139(p, "animationDelay", hold); ent139(p, "animFrame", f1527);
+        ent139(p, "movementAnimationId", a1517); ent139(p, "movementFrame", a1518); ent139(p, "idleAnimationId", a1511);
         f(Player.class, "appearanceKey").setLong(p, 9000L);
         return p;
     }

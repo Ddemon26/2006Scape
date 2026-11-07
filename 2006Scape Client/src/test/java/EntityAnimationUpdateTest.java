@@ -41,32 +41,32 @@ public class EntityAnimationUpdateTest {
         Game game = game();
         Entity entity = new Entity();
         entity.movementAnimationId = 0;
-        entity.anInt1520 = 0;
+        entity.spotAnimId = 0;
         entity.anim = 1;
         game.updateEntityAnimations(entity);
-        assertEquals(0, entity.anInt1518); assertEquals(1, entity.anInt1519);
-        assertEquals(0, entity.anInt1521); assertEquals(1, entity.anInt1522);
-        assertEquals(0, entity.anInt1527); assertEquals(1, entity.anInt1528);
+        assertEquals(0, entity.movementFrame); assertEquals(1, entity.movementFrameTimer);
+        assertEquals(0, entity.spotFrame); assertEquals(1, entity.spotFrameTimer);
+        assertEquals(0, entity.animFrame); assertEquals(1, entity.animFrameTimer);
         game.updateEntityAnimations(entity);
-        assertEquals(0, entity.anInt1518); assertEquals(2, entity.anInt1519);
-        assertEquals(1, entity.anInt1521); assertEquals(1, entity.anInt1522);
-        assertEquals(0, entity.anInt1527); assertEquals(2, entity.anInt1528);
+        assertEquals(0, entity.movementFrame); assertEquals(2, entity.movementFrameTimer);
+        assertEquals(1, entity.spotFrame); assertEquals(1, entity.spotFrameTimer);
+        assertEquals(0, entity.animFrame); assertEquals(2, entity.animFrameTimer);
         game.updateEntityAnimations(entity);
-        assertEquals(1, entity.anInt1518); assertEquals(0, entity.anInt1519);
-        assertEquals(-1, entity.anInt1520);
-        assertEquals(0, entity.anInt1527); assertEquals(3, entity.anInt1528);
+        assertEquals(1, entity.movementFrame); assertEquals(0, entity.movementFrameTimer);
+        assertEquals(-1, entity.spotAnimId);
+        assertEquals(0, entity.animFrame); assertEquals(3, entity.animFrameTimer);
     }
 
     @Test public void spotWaitsForStartCycleAndMissingSlotsStayInactive() throws Exception {
         Animation.anims = new Animation[]{sequence(1)};
         SpotAnim.cache = new SpotAnim[]{spot(sequence(1))};
         Game game = game(); game.loopCycle = 9;
-        Entity entity = new Entity(); entity.anInt1520 = 0; entity.anInt1523 = 10;
-        entity.anInt1521 = -1;
+        Entity entity = new Entity(); entity.spotAnimId = 0; entity.spotStartCycle = 10;
+        entity.spotFrame = -1;
         game.updateEntityAnimations(entity);
-        assertEquals(-1, entity.anInt1521); assertEquals(0, entity.anInt1522);
+        assertEquals(-1, entity.spotFrame); assertEquals(0, entity.spotFrameTimer);
         game.loopCycle = 10; game.updateEntityAnimations(entity);
-        assertEquals(0, entity.anInt1521); assertEquals(1, entity.anInt1522);
+        assertEquals(0, entity.spotFrame); assertEquals(1, entity.spotFrameTimer);
         assertEquals(-1, entity.movementAnimationId); assertEquals(-1, entity.anim);
     }
 
@@ -77,15 +77,15 @@ public class EntityAnimationUpdateTest {
         Entity entity = new Entity(); entity.anim = 0; entity.anInt1542 = 1;
         entity.anInt1547 = 100; entity.anInt1548 = 99;
         game.updateEntityAnimations(entity);
-        assertEquals(1, entity.anInt1529); assertEquals(0, entity.anInt1528);
-        entity.anInt1547 = 101; entity.anInt1529 = 0;
+        assertEquals(1, entity.animationDelay); assertEquals(0, entity.animFrameTimer);
+        entity.anInt1547 = 101; entity.animationDelay = 0;
         game.updateEntityAnimations(entity);
-        assertEquals(0, entity.anInt1529); assertEquals(1, entity.anInt1528);
+        assertEquals(0, entity.animationDelay); assertEquals(1, entity.animFrameTimer);
         game.updateEntityAnimations(entity);
-        assertEquals(1, entity.anInt1527); assertEquals(1, entity.anInt1528);
-        entity.anInt1529 = 2;
+        assertEquals(1, entity.animFrame); assertEquals(1, entity.animFrameTimer);
+        entity.animationDelay = 2;
         game.updateEntityAnimations(entity);
-        assertEquals(1, entity.anInt1529); assertEquals(1, entity.anInt1528);
+        assertEquals(1, entity.animationDelay); assertEquals(1, entity.animFrameTimer);
     }
 
     @Test public void actionSequenceSuppliesLoopLimitAndRenderFlag() throws Exception {
@@ -94,9 +94,9 @@ public class EntityAnimationUpdateTest {
         Animation.anims = new Animation[]{action}; SpotAnim.cache = new SpotAnim[0];
         Game game = game(); Entity entity = new Entity(); entity.anim = 0;
         game.updateEntityAnimations(entity);
-        assertTrue(entity.aBoolean1541); assertEquals(0, entity.anInt1527);
+        assertTrue(entity.aBoolean1541); assertEquals(0, entity.animFrame);
         game.updateEntityAnimations(entity); game.updateEntityAnimations(entity);
-        assertEquals(1, entity.anInt1530); assertEquals(1, entity.anInt1527);
+        assertEquals(1, entity.anInt1530); assertEquals(1, entity.animFrame);
         game.updateEntityAnimations(entity); game.updateEntityAnimations(entity);
         assertEquals(-1, entity.anim); assertEquals(2, entity.anInt1530);
         game.updateEntityAnimations(entity);

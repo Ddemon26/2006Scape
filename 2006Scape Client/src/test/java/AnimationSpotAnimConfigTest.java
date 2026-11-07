@@ -112,7 +112,7 @@ public class AnimationSpotAnimConfigTest {
         Animation a = newSeq(); a.movingPrecedence = precedenceWhileMoving; a.idlePrecedence = precedenceWhenIdle;
         Animation.anims = new Animation[]{a};
         Game game = (Game) unsafe().allocateInstance(Game.class);
-        Entity e = new Entity(); e.anim = 0; e.anInt1529 = 0; e.smallXYIndex = 1; e.anInt1542 = moving; e.x = 0; e.y = 0;
+        Entity e = new Entity(); e.anim = 0; e.animationDelay = 0; e.smallXYIndex = 1; e.anInt1542 = moving; e.x = 0; e.y = 0;
         e.tileSize = 1; e.smallX[0] = 100; e.smallY[0] = 100;
         game.advanceEntityAlongWalkingPath(e);
         boolean teleported = e.x != 0;

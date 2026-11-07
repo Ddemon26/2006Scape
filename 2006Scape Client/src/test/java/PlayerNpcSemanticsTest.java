@@ -127,7 +127,7 @@ public class PlayerNpcSemanticsTest {
     }
     @Test public void staticModelOnlyReturnsThePlainBodyModelWithoutAttachedOrSpotModels() throws Exception {
         installSpot();
-        Player p = attachedPlayer(); p.anInt1520 = 0; p.anInt1521 = 1; p.anInt1524 = 50;
+        Player p = attachedPlayer(); p.spotAnimId = 0; p.spotFrame = 1; p.spotHeight = 50;
         Game.loopCycle = 150;
         assertEquals(6, p.getRotatedModel().vertexCount);         // body + spot + attached
         p.staticModelOnly = true;
@@ -139,7 +139,7 @@ public class PlayerNpcSemanticsTest {
     @Test public void playerSpotModelIsLiftedByAnInt1524AndAnimatedByTheFrameIndexedByAnInt1521() throws Exception {
         installSpot();
         Player p = new Player(); p.visible = true; p.desc = desc(21L, 5);
-        p.anInt1520 = 0; p.anInt1521 = 1; p.anInt1524 = 50;
+        p.spotAnimId = 0; p.spotFrame = 1; p.spotHeight = 50;
         Model m = p.getRotatedModel();
         assertEquals(4, m.vertexCount);
         assertArrayEquals(new int[]{7 - 50, 8 - 50}, Arrays.copyOfRange(ys(m), 2, 4));
@@ -219,7 +219,7 @@ public class PlayerNpcSemanticsTest {
     // ---------- NPC ----------
     private static NPC npc(int anim, int hold, int animEntry, int mov, int idle, int movEntry) throws Exception {
         NPC n = new NPC(); n.desc = desc(31L, 5);
-        n.anim = anim; n.anInt1529 = hold; n.anInt1527 = animEntry; n.movementAnimationId = mov; n.idleAnimationId = idle; n.anInt1518 = movEntry;
+        n.anim = anim; n.animationDelay = hold; n.animFrame = animEntry; n.movementAnimationId = mov; n.idleAnimationId = idle; n.movementFrame = movEntry;
         return n;
     }
     private static int[] npcXs(NPC n) throws Exception {
@@ -249,13 +249,13 @@ public class PlayerNpcSemanticsTest {
     }
     @Test public void npcSpotModelIsLiftedByAnInt1524AndMergedAfterTheBodyModel() throws Exception {
         installSpot();
-        NPC n = new NPC(); n.desc = desc(31L, 5); n.anInt1520 = 0; n.anInt1521 = 1; n.anInt1524 = 50;
+        NPC n = new NPC(); n.desc = desc(31L, 5); n.spotAnimId = 0; n.spotFrame = 1; n.spotHeight = 50;
         Model m = n.getRotatedModel();
         assertEquals(4, m.vertexCount);
         assertArrayEquals(new int[]{10, 20}, Arrays.copyOf(xs(m), 2));
         assertArrayEquals(new int[]{7 - 50, 8 - 50}, Arrays.copyOfRange(ys(m), 2, 4));
         assertArrayEquals(new int[]{109, 209}, Arrays.copyOfRange(xs(m), 2, 4));   // frame id = frameIds[anInt1521] = 6 (dx 9)
-        n.anInt1521 = -1;
+        n.spotFrame = -1;
         assertEquals(2, n.getRotatedModel().vertexCount);
     }
 }

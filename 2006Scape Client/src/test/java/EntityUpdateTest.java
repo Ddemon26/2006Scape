@@ -18,7 +18,7 @@ public class EntityUpdateTest {
     private Entity entity(int x, int y) {
         Entity e = new Entity(); e.x = x; e.y = y;
         e.smallX[0] = 40; e.smallY[0] = 50; e.tileSize = 1;
-        e.anim = 7; e.anInt1520 = 8; e.anInt1547 = 0; e.anInt1548 = 0;
+        e.anim = 7; e.spotAnimId = 8; e.anInt1547 = 0; e.anInt1548 = 0;
         e.smallXYIndex = 3; e.anInt1542 = 2;
         return e;
     }
@@ -27,7 +27,7 @@ public class EntityUpdateTest {
             Probe g = new Probe(); Entity e = entity(position[0], position[1]);
             g.advanceEntityMovementAndAnimation(e);
             assertEquals(40 * 128 + 64, e.x); assertEquals(50 * 128 + 64, e.y);
-            assertEquals(-1, e.anim); assertEquals(-1, e.anInt1520);
+            assertEquals(-1, e.anim); assertEquals(-1, e.spotAnimId);
             assertEquals(0, e.smallXYIndex); assertEquals(0, e.anInt1542);
             assertEquals(Arrays.asList("walk", "turn", "animate"), g.calls);
         }
@@ -40,7 +40,7 @@ public class EntityUpdateTest {
     @Test public void localPlayerHasTighterBoundsButOtherEntitiesDoNot() {
         Probe g = new Probe(); Player p = new Player(); p.x = 1535; p.y = 11776;
         p.smallX[0] = 42; p.smallY[0] = 43; p.tileSize = 1;
-        p.anim = 7; p.anInt1520 = 8; p.smallXYIndex = 2; p.anInt1542 = 3;
+        p.anim = 7; p.spotAnimId = 8; p.smallXYIndex = 2; p.anInt1542 = 3;
         Game.myPlayer = p; g.advanceEntityMovementAndAnimation(p);
         assertEquals(42 * 128 + 64, p.x); assertEquals(43 * 128 + 64, p.y);
         assertEquals(-1, p.anim); assertEquals(0, p.smallXYIndex);

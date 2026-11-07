@@ -1547,9 +1547,9 @@ public class Game extends RSApplet {
 						// Show player names
 						projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
 						aTextDrawingArea_1270.drawCenteredLiteralText(0xffffff, player.name, spriteDrawY - 5, spriteDrawX);
-						if (player.privelage >= 1) {
+						if (player.rights >= 1) {
 							projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
-							int icon = Math.max(0, Math.min(1, player.privelage - 1));
+							int icon = Math.max(0, Math.min(1, player.rights - 1));
 							modIcons[icon].drawNonzeroIndexed( spriteDrawX - player.name.length() * 3 - 16, spriteDrawY - 7);
 						}
 					}
@@ -6584,9 +6584,9 @@ public class Game extends RSApplet {
 				if (animationId == npc.anim && animationId != -1) {
 					int replayMode = Animation.anims[animationId].replayMode;
 					if (replayMode == 1) {
-						npc.anInt1527 = 0;
-						npc.anInt1528 = 0;
-						npc.anInt1529 = animationDelay;
+						npc.animFrame = 0;
+						npc.animFrameTimer = 0;
+						npc.animationDelay = animationDelay;
 						npc.anInt1530 = 0;
 					}
 					if (replayMode == 2) {
@@ -6594,9 +6594,9 @@ public class Game extends RSApplet {
 					}
 				} else if (animationId == -1 || npc.anim == -1 || Animation.anims[animationId].priority >= Animation.anims[npc.anim].priority) {
 					npc.anim = animationId;
-					npc.anInt1527 = 0;
-					npc.anInt1528 = 0;
-					npc.anInt1529 = animationDelay;
+					npc.animFrame = 0;
+					npc.animFrameTimer = 0;
+					npc.animationDelay = animationDelay;
 					npc.anInt1530 = 0;
 					npc.anInt1542 = npc.smallXYIndex;
 				}
@@ -6610,17 +6610,17 @@ public class Game extends RSApplet {
 				npc.maxHealth = packet.readUnsignedByte();
 			}
 			if ((mask & 0x80) != 0) {
-				npc.anInt1520 = packet.readUnsignedShortBigEndian();
+				npc.spotAnimId = packet.readUnsignedShortBigEndian();
 				int graphicTiming = packet.readIntBigEndian();
-				npc.anInt1524 = graphicTiming >> 16;
-				npc.anInt1523 = loopCycle + (graphicTiming & 0xffff);
-				npc.anInt1521 = 0;
-				npc.anInt1522 = 0;
-				if (npc.anInt1523 > loopCycle) {
-					npc.anInt1521 = -1;
+				npc.spotHeight = graphicTiming >> 16;
+				npc.spotStartCycle = loopCycle + (graphicTiming & 0xffff);
+				npc.spotFrame = 0;
+				npc.spotFrameTimer = 0;
+				if (npc.spotStartCycle > loopCycle) {
+					npc.spotFrame = -1;
 				}
-				if (npc.anInt1520 == 0x00ffff) {
-					npc.anInt1520 = -1;
+				if (npc.spotAnimId == 0x00ffff) {
+					npc.spotAnimId = -1;
 				}
 			}
 			if ((mask & 0x20) != 0) {
@@ -7538,7 +7538,7 @@ public class Game extends RSApplet {
 	public void advanceEntityMovementAndAnimation(Entity entity) {
 		if (entity.x < 128 || entity.y < 128 || entity.x >= 13184 || entity.y >= 13184) {
 			entity.anim = -1;
-			entity.anInt1520 = -1;
+			entity.spotAnimId = -1;
 			entity.anInt1547 = 0;
 			entity.anInt1548 = 0;
 			entity.x = entity.smallX[0] * 128 + entity.tileSize * 64;
@@ -7547,7 +7547,7 @@ public class Game extends RSApplet {
 		}
 		if (entity == myPlayer && (entity.x < 1536 || entity.y < 1536 || entity.x >= 11776 || entity.y >= 11776)) {
 			entity.anim = -1;
-			entity.anInt1520 = -1;
+			entity.spotAnimId = -1;
 			entity.anInt1547 = 0;
 			entity.anInt1548 = 0;
 			entity.x = entity.smallX[0] * 128 + entity.tileSize * 64;
@@ -7587,7 +7587,7 @@ public class Game extends RSApplet {
 	}
 
 	public void advanceEntityThroughForcedMovement(Entity entity) {
-		if (entity.anInt1548 == loopCycle || entity.anim == -1 || entity.anInt1529 != 0 || entity.anInt1528 + 1 > Animation.anims[entity.anim].getFrameDelay(entity.anInt1527)) {
+		if (entity.anInt1548 == loopCycle || entity.anim == -1 || entity.animationDelay != 0 || entity.animFrameTimer + 1 > Animation.anims[entity.anim].getFrameDelay(entity.animFrame)) {
 			int movementDurationTicks = entity.anInt1548 - entity.anInt1547;
 			int elapsedMovementTicks = loopCycle - entity.anInt1547;
 			int movementStartX = entity.anInt1543 * 128 + entity.tileSize * 64;
@@ -7619,7 +7619,7 @@ public class Game extends RSApplet {
 			entity.deferredMovementTicks = 0;
 			return;
 		}
-		if (entity.anim != -1 && entity.anInt1529 == 0) {
+		if (entity.anim != -1 && entity.animationDelay == 0) {
 			Animation animation = Animation.anims[entity.anim];
 			if (entity.anInt1542 > 0 && animation.movingPrecedence == 0) {
 				entity.deferredMovementTicks++;
@@ -7787,56 +7787,56 @@ public class Game extends RSApplet {
 		entity.aBoolean1541 = false;
 		if (entity.movementAnimationId != -1) {
 			Animation movementAnimation = Animation.anims[entity.movementAnimationId];
-			entity.anInt1519++;
-			if (entity.anInt1518 < movementAnimation.frameCount && entity.anInt1519 > movementAnimation.getFrameDelay(entity.anInt1518)) {
-				entity.anInt1519 = 0;
-				entity.anInt1518++;
+			entity.movementFrameTimer++;
+			if (entity.movementFrame < movementAnimation.frameCount && entity.movementFrameTimer > movementAnimation.getFrameDelay(entity.movementFrame)) {
+				entity.movementFrameTimer = 0;
+				entity.movementFrame++;
 			}
-			if (entity.anInt1518 >= movementAnimation.frameCount) {
-				entity.anInt1519 = 0;
-				entity.anInt1518 = 0;
+			if (entity.movementFrame >= movementAnimation.frameCount) {
+				entity.movementFrameTimer = 0;
+				entity.movementFrame = 0;
 			}
 		}
-		if (entity.anInt1520 != -1 && loopCycle >= entity.anInt1523) {
-			if (entity.anInt1521 < 0) {
-				entity.anInt1521 = 0;
+		if (entity.spotAnimId != -1 && loopCycle >= entity.spotStartCycle) {
+			if (entity.spotFrame < 0) {
+				entity.spotFrame = 0;
 			}
-			Animation spotAnimation = SpotAnim.cache[entity.anInt1520].animation;
-			for (entity.anInt1522++; entity.anInt1521 < spotAnimation.frameCount && entity.anInt1522 > spotAnimation.getFrameDelay(entity.anInt1521); entity.anInt1521++) {
-				entity.anInt1522 -= spotAnimation.getFrameDelay(entity.anInt1521);
+			Animation spotAnimation = SpotAnim.cache[entity.spotAnimId].animation;
+			for (entity.spotFrameTimer++; entity.spotFrame < spotAnimation.frameCount && entity.spotFrameTimer > spotAnimation.getFrameDelay(entity.spotFrame); entity.spotFrame++) {
+				entity.spotFrameTimer -= spotAnimation.getFrameDelay(entity.spotFrame);
 			}
 
-			if (entity.anInt1521 >= spotAnimation.frameCount && (entity.anInt1521 < 0 || entity.anInt1521 >= spotAnimation.frameCount)) {
-				entity.anInt1520 = -1;
+			if (entity.spotFrame >= spotAnimation.frameCount && (entity.spotFrame < 0 || entity.spotFrame >= spotAnimation.frameCount)) {
+				entity.spotAnimId = -1;
 			}
 		}
-		if (entity.anim != -1 && entity.anInt1529 <= 1) {
+		if (entity.anim != -1 && entity.animationDelay <= 1) {
 			Animation actionDelayAnimation = Animation.anims[entity.anim];
 			if (actionDelayAnimation.movingPrecedence == 1 && entity.anInt1542 > 0 && entity.anInt1547 <= loopCycle && entity.anInt1548 < loopCycle) {
-				entity.anInt1529 = 1;
+				entity.animationDelay = 1;
 				return;
 			}
 		}
-		if (entity.anim != -1 && entity.anInt1529 == 0) {
+		if (entity.anim != -1 && entity.animationDelay == 0) {
 			Animation actionAnimation = Animation.anims[entity.anim];
-			for (entity.anInt1528++; entity.anInt1527 < actionAnimation.frameCount && entity.anInt1528 > actionAnimation.getFrameDelay(entity.anInt1527); entity.anInt1527++) {
-				entity.anInt1528 -= actionAnimation.getFrameDelay(entity.anInt1527);
+			for (entity.animFrameTimer++; entity.animFrame < actionAnimation.frameCount && entity.animFrameTimer > actionAnimation.getFrameDelay(entity.animFrame); entity.animFrame++) {
+				entity.animFrameTimer -= actionAnimation.getFrameDelay(entity.animFrame);
 			}
 
-			if (entity.anInt1527 >= actionAnimation.frameCount) {
-				entity.anInt1527 -= actionAnimation.loopBackFrames;
+			if (entity.animFrame >= actionAnimation.frameCount) {
+				entity.animFrame -= actionAnimation.loopBackFrames;
 				entity.anInt1530++;
 				if (entity.anInt1530 >= actionAnimation.maxLoops) {
 					entity.anim = -1;
 				}
-				if (entity.anInt1527 < 0 || entity.anInt1527 >= actionAnimation.frameCount) {
+				if (entity.animFrame < 0 || entity.animFrame >= actionAnimation.frameCount) {
 					entity.anim = -1;
 				}
 			}
 			entity.aBoolean1541 = actionAnimation.extendByYaw;
 		}
-		if (entity.anInt1529 > 0) {
-			entity.anInt1529--;
+		if (entity.animationDelay > 0) {
+			entity.animationDelay--;
 		}
 	}
 
@@ -8528,19 +8528,19 @@ public class Game extends RSApplet {
 			player.method446();
 		}
 		if ((updateMask & 0x100) != 0) {
-			player.anInt1520 = stream.readUnsignedShortLittleEndian();
+			player.spotAnimId = stream.readUnsignedShortLittleEndian();
 			int packedSpotData = stream.readIntBigEndian();
-			player.anInt1524 = packedSpotData >> 16;
-			player.anInt1523 = loopCycle + (packedSpotData & 0xffff);
-			player.anInt1521 = 0;
-			player.anInt1522 = 0;
-			if (player.anInt1523 > loopCycle) {
-				player.anInt1521 = -1;
+			player.spotHeight = packedSpotData >> 16;
+			player.spotStartCycle = loopCycle + (packedSpotData & 0xffff);
+			player.spotFrame = 0;
+			player.spotFrameTimer = 0;
+			if (player.spotStartCycle > loopCycle) {
+				player.spotFrame = -1;
 			}
-			if (player.anInt1520 == 0x00ffff) {
-				player.anInt1520 = -1;
+			if (player.spotAnimId == 0x00ffff) {
+				player.spotAnimId = -1;
 			}
-			//processSound(player.anInt1520, 0, player, null);
+			//processSound(player.spotAnimId, 0, player, null);
 		}
 		if ((updateMask & 8) != 0) {
 			int animationId = stream.readUnsignedShortLittleEndian();
@@ -8552,9 +8552,9 @@ public class Game extends RSApplet {
 			if (animationId == player.anim && animationId != -1) {
 				int replayMode = Animation.anims[animationId].replayMode;
 				if (replayMode == 1) {
-					player.anInt1527 = 0;
-					player.anInt1528 = 0;
-					player.anInt1529 = animationDelay;
+					player.animFrame = 0;
+					player.animFrameTimer = 0;
+					player.animationDelay = animationDelay;
 					player.anInt1530 = 0;
 				}
 				if (replayMode == 2) {
@@ -8562,9 +8562,9 @@ public class Game extends RSApplet {
 				}
 			} else if (animationId == -1 || player.anim == -1 || Animation.anims[animationId].priority >= Animation.anims[player.anim].priority) {
 				player.anim = animationId;
-				player.anInt1527 = 0;
-				player.anInt1528 = 0;
-				player.anInt1529 = animationDelay;
+				player.animFrame = 0;
+				player.animFrameTimer = 0;
+				player.animationDelay = animationDelay;
 				player.anInt1530 = 0;
 				player.anInt1542 = player.smallXYIndex;
 			}
@@ -8608,7 +8608,7 @@ public class Game extends RSApplet {
 						s = Censor.doCensor(s);
 						player.textSpoken = s;
 						player.anInt1513 = i1 >> 8;
-						player.privelage = j2;
+						player.rights = j2;
 
 						// entityMessage(player);
 

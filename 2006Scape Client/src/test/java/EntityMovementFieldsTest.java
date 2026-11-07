@@ -32,7 +32,7 @@ public class EntityMovementFieldsTest {
         Game g = game();
         Animation.anims = new Animation[]{anim(0, 0), anim(1, 1)};
         // walking queue pending (anInt1542 > 0), animation 0 forbids movement then (movingPrecedence == 0)
-        Entity a = walker(1); a.anim = 0; a.anInt1529 = 0; a.anInt1542 = 2;
+        Entity a = walker(1); a.anim = 0; a.animationDelay = 0; a.anInt1542 = 2;
         g.advanceEntityAlongWalkingPath(a);
         assertEquals(1, a.deferredMovementTicks); assertEquals(1344, a.x);
         g.advanceEntityAlongWalkingPath(a);
@@ -45,7 +45,7 @@ public class EntityMovementFieldsTest {
         Entity c = walker(1); c.anim = 1; c.anInt1542 = 2;
         g.advanceEntityAlongWalkingPath(c);
         assertEquals(0, c.deferredMovementTicks); assertEquals(1348, c.x);
-        Entity d = walker(1); d.anim = 0; d.anInt1529 = 1; d.anInt1542 = 2;
+        Entity d = walker(1); d.anim = 0; d.animationDelay = 1; d.anInt1542 = 2;
         g.advanceEntityAlongWalkingPath(d);
         assertEquals(0, d.deferredMovementTicks); assertEquals(1348, d.x);
         Entity e = walker(1); e.anim = -1; e.anInt1542 = 2;

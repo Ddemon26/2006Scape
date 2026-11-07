@@ -18,14 +18,14 @@ public final class Player extends Entity {
 		if (staticModelOnly) {
 			return model;
 		}
-		if (super.anInt1520 != -1 && super.anInt1521 != -1) {
-			SpotAnim spotAnim = SpotAnim.cache[super.anInt1520];
+		if (super.spotAnimId != -1 && super.spotFrame != -1) {
+			SpotAnim spotAnim = SpotAnim.cache[super.spotAnimId];
 			Model spotModel = spotAnim.getModel();
 			if (spotModel != null) {
-				Model spotCopy = new Model(true, AnimationFrame.isMissingFrameId(super.anInt1521), false, spotModel);
-				spotCopy.translate(0, -super.anInt1524, 0);
+				Model spotCopy = new Model(true, AnimationFrame.isMissingFrameId(super.spotFrame), false, spotModel);
+				spotCopy.translate(0, -super.spotHeight, 0);
 				spotCopy.buildAnimationGroups();
-				spotCopy.applyAnimationFrame(spotAnim.animation.frameIds[super.anInt1521]);
+				spotCopy.applyAnimationFrame(spotAnim.animation.frameIds[super.spotFrame]);
 				spotCopy.faceGroups = null;
 				spotCopy.vertexGroups = null;
 				if (spotAnim.horizontalScale128 != 128 || spotAnim.verticalScale128 != 128) {
@@ -165,10 +165,10 @@ public final class Player extends Entity {
 	private Model buildBodyModel() {
 		if (desc != null) {
 			int frameId = -1;
-			if (super.anim >= 0 && super.anInt1529 == 0) {
-				frameId = Animation.anims[super.anim].frameIds[super.anInt1527];
+			if (super.anim >= 0 && super.animationDelay == 0) {
+				frameId = Animation.anims[super.anim].frameIds[super.animFrame];
 			} else if (super.movementAnimationId >= 0) {
-				frameId = Animation.anims[super.movementAnimationId].frameIds[super.anInt1518];
+				frameId = Animation.anims[super.movementAnimationId].frameIds[super.movementFrame];
 			}
 			Model model = desc.getAnimatedModel(-1, frameId, null);
 			return model;
@@ -178,11 +178,11 @@ public final class Player extends Entity {
 		int secondaryFrameId = -1;
 		int slot5Override = -1;
 		int slot3Override = -1;
-		if (super.anim >= 0 && super.anInt1529 == 0) {
+		if (super.anim >= 0 && super.animationDelay == 0) {
 			Animation animation = Animation.anims[super.anim];
-			primaryFrameId = animation.frameIds[super.anInt1527];
+			primaryFrameId = animation.frameIds[super.animFrame];
 			if (super.movementAnimationId >= 0 && super.movementAnimationId != super.idleAnimationId) {
-				secondaryFrameId = Animation.anims[super.movementAnimationId].frameIds[super.anInt1518];
+				secondaryFrameId = Animation.anims[super.movementAnimationId].frameIds[super.movementFrame];
 			}
 			if (animation.slot5EquipmentOverride >= 0) {
 				slot5Override = animation.slot5EquipmentOverride;
@@ -193,7 +193,7 @@ public final class Player extends Entity {
 				cacheKey += slot3Override - equipment[3] << 48;
 			}
 		} else if (super.movementAnimationId >= 0) {
-			primaryFrameId = Animation.anims[super.movementAnimationId].frameIds[super.anInt1518];
+			primaryFrameId = Animation.anims[super.movementAnimationId].frameIds[super.movementFrame];
 		}
 		Model bodyModel = (Model) mruNodes.insertFromCache(cacheKey);
 		if (bodyModel == null) {
@@ -284,7 +284,7 @@ public final class Player extends Entity {
 		return visible;
 	}
 
-	public int privelage;
+	public int rights;
 	public Model buildHeadModel() {
 		if (!visible) {
 			return null;

@@ -49,13 +49,13 @@ public class PlayerUpdateMaskTest {
         Game game = game(); Player player = new Player(); Game.loopCycle = 100;
         Stream graphic = packet(42, 0, 0, 18, 0, 5);
         game.decodePlayerUpdateMask(0x100, 0, graphic, player);
-        assertEquals(42, player.anInt1520); assertEquals(18, player.anInt1524);
-        assertEquals(105, player.anInt1523); assertEquals(-1, player.anInt1521);
+        assertEquals(42, player.spotAnimId); assertEquals(18, player.spotHeight);
+        assertEquals(105, player.spotStartCycle); assertEquals(-1, player.spotFrame);
         assertEquals(6, graphic.currentOffset);
         Stream sentinel = packet(255, 255, 0, 1, 0, 0);
         game.decodePlayerUpdateMask(0x100, 0, sentinel, player);
-        assertEquals(-1, player.anInt1520); assertEquals(100, player.anInt1523);
-        assertEquals(0, player.anInt1521);
+        assertEquals(-1, player.spotAnimId); assertEquals(100, player.spotStartCycle);
+        assertEquals(0, player.spotFrame);
     }
 
     @Test public void animationIdDelayReplayAndPriorityAreSeparate() throws Exception {
@@ -64,10 +64,10 @@ public class PlayerUpdateMaskTest {
             Animation.anims = new Animation[] {animation(1, 4), animation(2, 2)};
             Game game = game(); Player player = new Player(); player.anim = -1;
             game.decodePlayerUpdateMask(8, 0, packet(0, 0, 251), player);
-            assertEquals(0, player.anim); assertEquals(5, player.anInt1529);
-            player.anInt1527 = 9;
+            assertEquals(0, player.anim); assertEquals(5, player.animationDelay);
+            player.animFrame = 9;
             game.decodePlayerUpdateMask(8, 0, packet(0, 0, 254), player);
-            assertEquals(0, player.anInt1527); assertEquals(2, player.anInt1529);
+            assertEquals(0, player.animFrame); assertEquals(2, player.animationDelay);
             game.decodePlayerUpdateMask(8, 0, packet(1, 0, 250), player);
             assertEquals(0, player.anim); // Lower priority cannot replace it.
             game.decodePlayerUpdateMask(8, 0, packet(255, 255, 249), player);
