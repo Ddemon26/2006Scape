@@ -3579,7 +3579,7 @@ public class Game extends RSApplet {
 			return;
 		}
 		drawTextOnScreen("Please wait - attempting to reestablish", "Connection lost");
-		anInt1021 = 0;
+		minimapState = 0;
 		destX = 0;
 		RSSocket rsSocket = socketStream;
 		loggedIn = false;
@@ -6127,7 +6127,7 @@ public class Game extends RSApplet {
 				minimapInt2 = (int) (Math.random() * 120D) - 60;
 				minimapInt3 = (int) (Math.random() * 30D) - 20;
 				minimapInt1 = (int) (Math.random() * 20D) - 10 & 0x7ff;
-				anInt1021 = 0;
+				minimapState = 0;
 				minimapBuiltPlane = -1;
 				destX = 0;
 				destY = 0;
@@ -7435,7 +7435,7 @@ public class Game extends RSApplet {
 	}
 
 	public void processMainScreenClick() {
-		if (anInt1021 != 0) {
+		if (minimapState != 0) {
 			return;
 		}
 		if (super.clickMode3 == 1) {
@@ -9473,7 +9473,7 @@ public class Game extends RSApplet {
 
 	public void drawMinimap() {
 		aRSImageProducer_1164.setAsDrawingArea();
-		if (anInt1021 == 2) {
+		if (minimapState == 2) {
 			byte backMaskIndices[] = mapBack.paletteIndices;
 			int raster[] = DrawingArea.pixels;
 			int maskLength = backMaskIndices.length;
@@ -11035,15 +11035,15 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 99) {
-				anInt1021 = inStream.readUnsignedByte();
+				minimapState = inStream.readUnsignedByte();
 				pktType = -1;
 				return true;
 			}
 			if (pktType == 75) {
-				int j3 = inStream.readUnsignedShortLittleEndianSubtract128();
-				int j11 = inStream.readUnsignedShortLittleEndianSubtract128();
-				RSInterface.interfaceCache[j11].mediaType = 2;
-				RSInterface.interfaceCache[j11].mediaID = j3;
+				int npcId = inStream.readUnsignedShortLittleEndianSubtract128();
+				int interfaceId = inStream.readUnsignedShortLittleEndianSubtract128();
+				RSInterface.interfaceCache[interfaceId].mediaType = 2;
+				RSInterface.interfaceCache[interfaceId].mediaID = npcId;
 				pktType = -1;
 				return true;
 			}
@@ -12338,7 +12338,7 @@ public class Game extends RSApplet {
 	public boolean aBoolean1017;
 	public int anInt1018;
 	public static final int[] anIntArray1019;
-	public int anInt1021;
+	public int minimapState;
 	public int anInt1022;
 	public int loadingStage;
 	public Background scrollUpArrow;

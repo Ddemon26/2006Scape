@@ -148,7 +148,7 @@ public class MinimapDrawTest {
         back.paletteIndices = new byte[172 * 156];
         back.paletteIndices[5] = 1;
         g.mapBack = back;
-        g.anInt1021 = 2;
+        g.minimapState = 2;
         Arrays.fill(g.aRSImageProducer_1164.pixels, 0x778899);
         g.groundArray[0][3][3] = new NodeList();
         g.drawMinimap();

@@ -540,7 +540,7 @@ public class EntityDefTest {
         try {
             TestGame g = new TestGame();
             g.aRSImageProducer_1164 = producer(172, 156); g.aRSImageProducer_1165 = producer(8, 8);
-            g.anInt1021 = 0; g.compass = new Sprite(1, 1); g.minimapSprite = new Sprite(1, 1); g.mapDotNPC = new Sprite(1, 1);
+            g.minimapState = 0; g.compass = new Sprite(1, 1); g.minimapSprite = new Sprite(1, 1); g.mapDotNPC = new Sprite(1, 1);
             g.groundArray = new NodeList[4][104][104]; g.plane = 0; g.playerCount = 0; g.mapFunctionIconCount = 0; g.anInt855 = 0; g.destX = 0;
             g.variousSettings = new int[10];
             Game.myPlayer = new Player(); Game.myPlayer.x = 0; Game.myPlayer.y = 0;
