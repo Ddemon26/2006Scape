@@ -120,7 +120,7 @@ final class WorldController {
 
 	/**
 	 * Corners are ordered (minX,minY), (maxX,minY), (maxX,maxY), (minX,maxY) in world x/y.
-	 * Shape 0 is a plain underlay-only tile, shape 1 a plain overlay tile, any other shape indexes the Class40 shape tables.
+	 * Shape 0 is a plain underlay-only tile, shape 1 a plain overlay tile, any other shape indexes the ShapedTile shape tables.
 	 */
 	public void addTile(int plane, int tileX, int tileY, int shape, int rotation, int textureId, int height0, int height1, int height2, int height3, int underlayColour0, int underlayColour1, int underlayColour2, int underlayColour3, int overlayColour0, int overlayColour1, int overlayColour2, int overlayColour3, int underlayMapColour, int overlayMapColour) {
 		if (shape == 0) {
@@ -145,7 +145,7 @@ final class WorldController {
 			groundArray[plane][tileX][tileY].plainTile = overlayTile;
 			return;
 		}
-		Class40 shapedTile = new Class40(tileY, overlayColour0, underlayColour3, height2, textureId, overlayColour2, rotation, underlayColour0, underlayMapColour, underlayColour2, height3, height1, height0, shape, overlayColour3, overlayColour1, underlayColour1, tileX, overlayMapColour);
+		ShapedTile shapedTile = new ShapedTile(tileY, overlayColour0, underlayColour3, height2, textureId, overlayColour2, rotation, underlayColour0, underlayMapColour, underlayColour2, height3, height1, height0, shape, overlayColour3, overlayColour1, underlayColour1, tileX, overlayMapColour);
 		for (int planeIndex = plane; planeIndex >= 0; planeIndex--) {
 			if (groundArray[planeIndex][tileX][tileY] == null) {
 				groundArray[planeIndex][tileX][tileY] = new Ground(planeIndex, tileX, tileY);
@@ -752,7 +752,7 @@ final class WorldController {
 
 			return;
 		}
-		Class40 shapedTile = ground.shapedTile;
+		ShapedTile shapedTile = ground.shapedTile;
 		if (shapedTile == null) {
 			return;
 		}
@@ -1598,7 +1598,7 @@ final class WorldController {
 		}
 	}
 
-	private void drawShapedTile(int tileX, int pitchSine, int yawSine, Class40 tile, int pitchCosine, int tileY, int yawCosine) {
+	private void drawShapedTile(int tileX, int pitchSine, int yawSine, ShapedTile tile, int pitchCosine, int tileY, int yawCosine) {
 		int count = tile.vertexX.length;
 		for (int vertex = 0; vertex < count; vertex++) {
 			int x = tile.vertexX[vertex] - cameraWorldX;
@@ -1614,12 +1614,12 @@ final class WorldController {
 				return;
 			}
 			if (tile.faceTexture != null) {
-				Class40.cameraSpaceX[vertex] = x;
-				Class40.cameraSpaceHeight[vertex] = height;
-				Class40.cameraSpaceDepth[vertex] = depth;
+				ShapedTile.cameraSpaceX[vertex] = x;
+				ShapedTile.cameraSpaceHeight[vertex] = height;
+				ShapedTile.cameraSpaceDepth[vertex] = depth;
 			}
-			Class40.projectedX[vertex] = Texture.textureInt1 + (x << 9) / depth;
-			Class40.projectedY[vertex] = Texture.textureInt2 + (height << 9) / depth;
+			ShapedTile.projectedX[vertex] = Texture.textureInt1 + (x << 9) / depth;
+			ShapedTile.projectedY[vertex] = Texture.textureInt2 + (height << 9) / depth;
 		}
 
 		Texture.transparency = 0;
@@ -1628,12 +1628,12 @@ final class WorldController {
 			int vertexA = tile.faceVertexA[face];
 			int vertexB = tile.faceVertexB[face];
 			int vertexC = tile.faceVertexC[face];
-			int screenXA = Class40.projectedX[vertexA];
-			int screenXB = Class40.projectedX[vertexB];
-			int screenXC = Class40.projectedX[vertexC];
-			int screenYA = Class40.projectedY[vertexA];
-			int screenYB = Class40.projectedY[vertexB];
-			int screenYC = Class40.projectedY[vertexC];
+			int screenXA = ShapedTile.projectedX[vertexA];
+			int screenXB = ShapedTile.projectedX[vertexB];
+			int screenXC = ShapedTile.projectedX[vertexC];
+			int screenYA = ShapedTile.projectedY[vertexA];
+			int screenYB = ShapedTile.projectedY[vertexB];
+			int screenYC = ShapedTile.projectedY[vertexC];
 			if ((screenXA - screenXB) * (screenYC - screenYB) - (screenYA - screenYB) * (screenXC - screenXB) > 0) {
 				Texture.clipScanlines = screenXA < 0 || screenXB < 0 || screenXC < 0 || screenXA > DrawingArea.scanlineRightLimit || screenXB > DrawingArea.scanlineRightLimit || screenXC > DrawingArea.scanlineRightLimit;
 				if (tilePickRequested && isPointInTriangle(pickScreenX, pickScreenY, screenYA, screenYB, screenYC, screenXA, screenXB, screenXC)) {
@@ -1646,9 +1646,9 @@ final class WorldController {
 					}
 				} else if (!lowMem) {
 					if (tile.flat) {
-						Texture.drawTexturedTriangle(screenYA, screenYB, screenYC, screenXA, screenXB, screenXC, tile.faceColourA[face], tile.faceColourB[face], tile.faceColourC[face], Class40.cameraSpaceX[0], Class40.cameraSpaceX[1], Class40.cameraSpaceX[3], Class40.cameraSpaceHeight[0], Class40.cameraSpaceHeight[1], Class40.cameraSpaceHeight[3], Class40.cameraSpaceDepth[0], Class40.cameraSpaceDepth[1], Class40.cameraSpaceDepth[3], tile.faceTexture[face]);
+						Texture.drawTexturedTriangle(screenYA, screenYB, screenYC, screenXA, screenXB, screenXC, tile.faceColourA[face], tile.faceColourB[face], tile.faceColourC[face], ShapedTile.cameraSpaceX[0], ShapedTile.cameraSpaceX[1], ShapedTile.cameraSpaceX[3], ShapedTile.cameraSpaceHeight[0], ShapedTile.cameraSpaceHeight[1], ShapedTile.cameraSpaceHeight[3], ShapedTile.cameraSpaceDepth[0], ShapedTile.cameraSpaceDepth[1], ShapedTile.cameraSpaceDepth[3], tile.faceTexture[face]);
 					} else {
-						Texture.drawTexturedTriangle(screenYA, screenYB, screenYC, screenXA, screenXB, screenXC, tile.faceColourA[face], tile.faceColourB[face], tile.faceColourC[face], Class40.cameraSpaceX[vertexA], Class40.cameraSpaceX[vertexB], Class40.cameraSpaceX[vertexC], Class40.cameraSpaceHeight[vertexA], Class40.cameraSpaceHeight[vertexB], Class40.cameraSpaceHeight[vertexC], Class40.cameraSpaceDepth[vertexA], Class40.cameraSpaceDepth[vertexB], Class40.cameraSpaceDepth[vertexC], tile.faceTexture[face]);
+						Texture.drawTexturedTriangle(screenYA, screenYB, screenYC, screenXA, screenXB, screenXC, tile.faceColourA[face], tile.faceColourB[face], tile.faceColourC[face], ShapedTile.cameraSpaceX[vertexA], ShapedTile.cameraSpaceX[vertexB], ShapedTile.cameraSpaceX[vertexC], ShapedTile.cameraSpaceHeight[vertexA], ShapedTile.cameraSpaceHeight[vertexB], ShapedTile.cameraSpaceHeight[vertexC], ShapedTile.cameraSpaceDepth[vertexA], ShapedTile.cameraSpaceDepth[vertexB], ShapedTile.cameraSpaceDepth[vertexC], tile.faceTexture[face]);
 					}
 				} else {
 					int textureHsl = lowMemTextureHsl[tile.faceTexture[face]];

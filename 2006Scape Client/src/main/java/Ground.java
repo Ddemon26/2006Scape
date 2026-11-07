@@ -17,7 +17,7 @@ public final class Ground extends Node {
 	final int tileY;
 	final int originalPlane;
 	public Class43 plainTile;
-	public Class40 shapedTile;
+	public ShapedTile shapedTile;
 	public Object1 obj1;
 	public Object2 obj2;
 	public Object3 obj3;

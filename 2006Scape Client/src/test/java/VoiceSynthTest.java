@@ -89,8 +89,8 @@ public class VoiceSynthTest {
         assertEquals(9, get(c, "echoDelay")); assertEquals(33, get(c, "echoFeedback"));
         assertEquals(321, c.durationMs); assertEquals(45, c.startOffsetMs);
         Object pitch = get(c, "pitchEnvelope"), amp = get(c, "amplitudeEnvelope"), vr = get(c, "vibratoRateEnvelope"), vd = get(c, "vibratoDepthEnvelope");
-        assertEquals(441, ((Class29) pitch).anInt538); assertEquals(0, ((Class29) amp).anInt538);
-        assertEquals(11, ((Class29) vr).anInt538); assertEquals(13, ((Class29) vd).anInt538);
+        assertEquals(441, ((SynthEnvelope) pitch).rangeStart); assertEquals(0, ((SynthEnvelope) amp).rangeStart);
+        assertEquals(11, ((SynthEnvelope) vr).rangeStart); assertEquals(13, ((SynthEnvelope) vd).rangeStart);
         assertNull(get(c, "tremoloRateEnvelope")); assertNull(get(c, "gateSilenceEnvelope"));
         assertEquals(500, new SynthVoice().durationMs); assertEquals(100, get(new SynthVoice(), "echoFeedback"));
     }

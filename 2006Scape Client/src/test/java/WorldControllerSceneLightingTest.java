@@ -432,10 +432,10 @@ public class WorldControllerSceneLightingTest {
 
     private static int[] raster() { int[] r = new int[STRIDE * 6]; java.util.Arrays.fill(r, 0xABCDEF); return r; }
 
-    private static Class40 shaped(int shape, int rotation, int base, int masked) throws Exception {
+    private static ShapedTile shaped(int shape, int rotation, int base, int masked) throws Exception {
         Field f = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
         f.setAccessible(true);
-        Class40 c = (Class40) ((sun.misc.Unsafe) f.get(null)).allocateInstance(Class40.class);
+        ShapedTile c = (ShapedTile) ((sun.misc.Unsafe) f.get(null)).allocateInstance(ShapedTile.class);
         set(c, "shape", shape); set(c, "rotation", rotation); set(c, "underlayMapColour", base); set(c, "overlayMapColour", masked);
         return c;
     }

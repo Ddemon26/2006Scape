@@ -228,7 +228,7 @@ public class WorldControllerDrawQueueTest {
             camera(20, 25);
             Ground g = pending(wc, 0, 20, 25);
             if (kind == 1) g.plainTile = new Class43(0x1150, 0x2900, 0x4a80, 0x6fe0, -1, 77, false);
-            if (kind == 2) g.shapedTile = new Class40(25, 1, 2, 3, -1, 4, 0, 5, 6, 7, 0, 0, 0, 0, 8, 9, 10, 20, 11);
+            if (kind == 2) g.shapedTile = new ShapedTile(25, 1, 2, 3, -1, 4, 0, 5, 6, 7, 0, 0, 0, 0, 8, 9, 10, 20, 11);
             Object3 deco = new Object3();
             deco.model = new Rec("ground"); deco.worldX = 2700; deco.height = -9; deco.worldY = 3300; deco.uid = 5;
             g.obj3 = deco;

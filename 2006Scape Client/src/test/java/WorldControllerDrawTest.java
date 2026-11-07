@@ -167,7 +167,7 @@ public class WorldControllerDrawTest {
     }
 
     private static final Class<?>[] M315 = {Class43.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class};
-    private static final Class<?>[] M316 = {int.class, int.class, int.class, Class40.class, int.class, int.class, int.class};
+    private static final Class<?>[] M316 = {int.class, int.class, int.class, ShapedTile.class, int.class, int.class, int.class};
     private static final Class<?>[] M317 = {int.class, int.class};
     private static final Class<?>[] M318 = {int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class};
     private static final Class<?>[] M319 = {};
@@ -533,15 +533,15 @@ public class WorldControllerDrawTest {
         assertEquals(-1, WorldController.pickedTileY);
     }
 
-    // ================= drawShapedTile: shaped tile (Class40) =================
+    // ================= drawShapedTile: shaped tile (ShapedTile) =================
 
-    private static Class40 shapedTile(WorldController wc, int shape, int rotation, int texture, int[] heights) throws Exception {
+    private static ShapedTile shapedTile(WorldController wc, int shape, int rotation, int texture, int[] heights) throws Exception {
         wc.addTile(1, TX, TY, shape, rotation, texture, heights[0], heights[1], heights[2], heights[3], 0x1150, 0x2900, 0x4a80, 0x6fe0, 21, 60, 100, 30, 77, 88);
         Ground g = ((Ground[][][]) get(wc, "groundArray"))[1][TX][TY];
-        return (Class40) g.shapedTile;
+        return (ShapedTile) g.shapedTile;
     }
 
-    private static void call316(WorldController wc, Class40 t) throws Exception {
+    private static void call316(WorldController wc, ShapedTile t) throws Exception {
         // arguments: tileX, pitchSine, yawSine, tile, pitchCosine, tileY, yawCosine
         call(wc, "drawShapedTile", M316, TX, sint("pitchSine"), sint("yawSine"), t, sint("pitchCosine"), TY, sint("yawCosine"));
     }
@@ -549,7 +549,7 @@ public class WorldControllerDrawTest {
     @Test public void method316DrawsEveryFaceBetweenTheProjectedVerticesWithItsThreeColours() throws Exception {
         for (int shape = 2; shape <= 4; shape++) {
             WorldController wc = scene();
-            Class40 t = shapedTile(wc, shape, shape - 2, -1, new int[] {0, 12, 25, -9});
+            ShapedTile t = shapedTile(wc, shape, shape - 2, -1, new int[] {0, 12, 25, -9});
             camera(TX * 128 + 64, -400, TY * 128 - 700, 128, 0);
             int[] px = raster();
             call316(wc, t);
@@ -570,7 +570,7 @@ public class WorldControllerDrawTest {
 
     @Test public void method316ShadesTexturedFacesFromTheTextureTableInLowMemoryAndSkipsBackFaces() throws Exception {
         WorldController wc = scene();
-        Class40 t = shapedTile(wc, 2, 0, 3, new int[] {0, 0, 0, 0});
+        ShapedTile t = shapedTile(wc, 2, 0, 3, new int[] {0, 0, 0, 0});
         assertNotNull(t.faceTexture);
         camera(TX * 128 + 64, -400, TY * 128 - 700, 128, 0);
         int[] px = raster();
@@ -597,14 +597,14 @@ public class WorldControllerDrawTest {
 
     @Test public void method316SkipsEverythingWhenAnyVertexIsNearerThanFiftyUnitsAndKeepsScratchArraysOfTheLastProjection() throws Exception {
         WorldController wc = scene();
-        Class40 t = shapedTile(wc, 2, 0, -1, new int[] {0, 0, 0, 0});
+        ShapedTile t = shapedTile(wc, 2, 0, -1, new int[] {0, 0, 0, 0});
         camera(TX * 128 + 64, -400, TY * 128 - 700, 128, 0);
         int[] px = raster();
         call316(wc, t);
         for (int v = 0; v < 4; v++) {
             int[] p = project(t.vertexX[v], t.vertexHeight[v], t.vertexY[v]);
-            assertEquals(p[0], Class40.projectedX[v]);
-            assertEquals(p[1], Class40.projectedY[v]);
+            assertEquals(p[0], ShapedTile.projectedX[v]);
+            assertEquals(p[1], ShapedTile.projectedY[v]);
         }
         int[] baseline = px.clone();
         assertFalse(Arrays.equals(raster(), baseline));
@@ -617,7 +617,7 @@ public class WorldControllerDrawTest {
 
     @Test public void method316KeepsCameraSpaceCoordinatesOfTexturedTileVerticesInTheScratchArraysAndFlatFlagIsAllHeightsEqual() throws Exception {
         WorldController wc = scene();
-        Class40 t = shapedTile(wc, 2, 0, 3, new int[] {0, 12, 25, -9});
+        ShapedTile t = shapedTile(wc, 2, 0, 3, new int[] {0, 12, 25, -9});
         assertFalse(t.flat);
         camera(TX * 128 + 64, -400, TY * 128 - 700, 128, 0);
         raster();
@@ -627,9 +627,9 @@ public class WorldControllerDrawTest {
             long ys = sint("yawSine"), yc = sint("yawCosine"), ps = sint("pitchSine"), pc = sint("pitchCosine");
             long x1 = Math.floorDiv(dy * ys + dx * yc, 65536L), d1 = Math.floorDiv(dy * yc - dx * ys, 65536L);
             long h2 = Math.floorDiv(dh * pc - d1 * ps, 65536L), d2 = Math.floorDiv(dh * ps + d1 * pc, 65536L);
-            assertEquals(x1, Class40.cameraSpaceX[v]);
-            assertEquals(h2, Class40.cameraSpaceHeight[v]);
-            assertEquals(d2, Class40.cameraSpaceDepth[v]);
+            assertEquals(x1, ShapedTile.cameraSpaceX[v]);
+            assertEquals(h2, ShapedTile.cameraSpaceHeight[v]);
+            assertEquals(d2, ShapedTile.cameraSpaceDepth[v]);
         }
         for (int mask = 0; mask < 16; mask++) {
             int[] h = new int[4];
@@ -642,7 +642,7 @@ public class WorldControllerDrawTest {
 
     @Test public void method316PicksTheTileFromTheRequestedPointInsideAFace() throws Exception {
         WorldController wc = scene();
-        Class40 t = shapedTile(wc, 2, 0, -1, new int[] {0, 0, 0, 0});
+        ShapedTile t = shapedTile(wc, 2, 0, -1, new int[] {0, 0, 0, 0});
         raster();
         camera(TX * 128 + 64, -400, TY * 128 - 700, 128, 0);
         int f = 0;

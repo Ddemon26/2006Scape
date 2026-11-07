@@ -2,9 +2,9 @@
 // Jad home page: http://www.kpdus.com/jad.html
 // Decompiler options: packimports(3) 
 
-final class Class40 {
+final class ShapedTile {
 
-	public Class40(int tileY, int overlayColour0, int underlayColour3, int height2, int textureId, int overlayColour2, int rotation, int underlayColour0, int underlayMapColour, int underlayColour2, int height3, int height1, int height0, int shape, int overlayColour3, int overlayColour1, int underlayColour1, int tileX, int overlayMapColour) {
+	public ShapedTile(int tileY, int overlayColour0, int underlayColour3, int height2, int textureId, int overlayColour2, int rotation, int underlayColour0, int underlayMapColour, int underlayColour2, int height3, int height1, int height0, int shape, int overlayColour3, int overlayColour1, int underlayColour1, int tileX, int overlayMapColour) {
 		flat = !(height0 != height1 || height0 != height2 || height0 != height3);
 		this.shape = shape;
 		this.rotation = rotation;

@@ -3,7 +3,7 @@ import static org.junit.Assert.*;
 import java.util.Arrays;
 import org.junit.Test;
 
-/** Original-name semantic tests for the Class40 constructor (19 int parameters, positional) and its shape tables. */
+/** Original-name semantic tests for the ShapedTile constructor (19 int parameters, positional) and its shape tables. */
 public class Class40ShapeTest {
     // Positions of the constructor arguments (original parameter order i,j,k,l,i1,j1,k1,l1,i2,j2,k2,l2,i3,j3,k3,l3,i4,k4,l4).
     static final int I = 0, J = 1, K = 2, L = 3, I1 = 4, J1 = 5, K1 = 6, L1 = 7, I2 = 8, J2 = 9, K2 = 10, L2 = 11, I3 = 12, J3 = 13, K3 = 14, L3 = 15, I4 = 16, K4 = 17, L4 = 18;
@@ -22,8 +22,8 @@ public class Class40ShapeTest {
         return new int[] {25, 101, 103, 20, 7, 105, 0, 107, 4321, 109, 40, 60, 10, 0, 111, 113, 115, 30, 8765};
     }
 
-    static Class40 make(int[] a) {
-        return new Class40(a[I], a[J], a[K], a[L], a[I1], a[J1], a[K1], a[L1], a[I2], a[J2], a[K2], a[L2], a[I3], a[J3], a[K3], a[L3], a[I4], a[K4], a[L4]);
+    static ShapedTile make(int[] a) {
+        return new ShapedTile(a[I], a[J], a[K], a[L], a[I1], a[J1], a[K1], a[L1], a[I2], a[J2], a[K2], a[L2], a[I3], a[J3], a[K3], a[L3], a[I4], a[K4], a[L4]);
     }
 
     /** One quarter turn per step: (x, y) -> (y, 128 - x). */
@@ -41,7 +41,7 @@ public class Class40ShapeTest {
 
     private static void check(int[] a) {
         int shape = a[J3], rot = a[K1];
-        Class40 t = make(a);
+        ShapedTile t = make(a);
         int[] ids = VERTS[shape];
         assertEquals(ids.length, t.vertexX.length);
         assertEquals(ids.length, t.vertexY.length);
@@ -86,10 +86,10 @@ public class Class40ShapeTest {
 
     @Test public void eachArgumentMovesOnlyTheOutputsItClaims() {
         int[] a = base(); a[J3] = 12;
-        Class40 ref = make(a);
+        ShapedTile ref = make(a);
         for (int p : new int[] {I, K4}) {
             int[] b = a.clone(); b[p] += 3;
-            Class40 t = make(b);
+            ShapedTile t = make(b);
             for (int k = 0; k < ref.vertexX.length; k++) {
                 assertEquals(ref.vertexX[k] + (p == K4 ? 384 : 0), t.vertexX[k]);
                 assertEquals(ref.vertexY[k] + (p == I ? 384 : 0), t.vertexY[k]);
@@ -99,7 +99,7 @@ public class Class40ShapeTest {
         }
         for (int p : HEIGHT) {
             int[] b = a.clone(); b[p] += 100;
-            Class40 t = make(b);
+            ShapedTile t = make(b);
             assertFalse(Arrays.equals(ref.vertexHeight, t.vertexHeight));
             assertArrayEquals(ref.faceColourA, t.faceColourA); assertArrayEquals(ref.faceColourB, t.faceColourB); assertArrayEquals(ref.faceColourC, t.faceColourC);
         }
@@ -108,7 +108,7 @@ public class Class40ShapeTest {
             for (int shape = 0; shape < 13; shape++) {
                 int[] c = a.clone(); c[J3] = shape;
                 int[] b = c.clone(); b[p] += 2000;
-                Class40 r = make(c), t = make(b);
+                ShapedTile r = make(c), t = make(b);
                 assertArrayEquals(r.vertexHeight, t.vertexHeight);
                 assertArrayEquals(r.vertexX, t.vertexX);
                 changed |= !(Arrays.equals(r.faceColourA, t.faceColourA) && Arrays.equals(r.faceColourB, t.faceColourB) && Arrays.equals(r.faceColourC, t.faceColourC));

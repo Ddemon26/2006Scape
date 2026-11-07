@@ -261,11 +261,11 @@ public class WorldControllerPlacementTest {
         }
     }
 
-    private static int[] vertex(Class40 c, int index) throws Exception {
+    private static int[] vertex(ShapedTile c, int index) throws Exception {
         return new int[] {c.vertexX[index], c.vertexY[index], c.vertexHeight[index]};
     }
 
-    private static int vertexAt(Class40 c, int x, int y) {
+    private static int vertexAt(ShapedTile c, int x, int y) {
         for (int i = 0; i < c.vertexX.length; i++) if (c.vertexX[i] == x && c.vertexY[i] == y) return i;
         return -1;
     }
@@ -274,7 +274,7 @@ public class WorldControllerPlacementTest {
         WorldController wc = scene();
         // shape 2 (argument l), rotation 0 (i1), texture 9 (j1)
         wc.addTile(1, 5, 6, 2, 0, 9, 1001, 1002, 1003, 1004, 11, 12, 13, 14, 21, 22, 23, 24, 77, 88);
-        Class40 c = (Class40) tileGround(wc, "shapedTile", 1, 5, 6);
+        ShapedTile c = (ShapedTile) tileGround(wc, "shapedTile", 1, 5, 6);
         assertNull(tileGround(wc, "plainTile", 1, 5, 6));
         assertEquals(4, c.vertexX.length);
         int x0 = 5 * 128, y0 = 6 * 128;
@@ -301,7 +301,7 @@ public class WorldControllerPlacementTest {
         for (int rot = 0; rot < 4; rot++) {
             WorldController wc = scene();
             wc.addTile(0, 5, 6, 2, rot, -1, 1001, 1002, 1003, 1004, 11, 12, 13, 14, 21, 22, 23, 24, 77, 88);
-            Class40 c = (Class40) tileGround(wc, "shapedTile", 0, 5, 6);
+            ShapedTile c = (ShapedTile) tileGround(wc, "shapedTile", 0, 5, 6);
             assertEquals(rot, c.rotation);
             assertEquals((1 - rot) & 3, c.faceVertexA[0]); assertEquals((2 - rot) & 3, c.faceVertexB[0]); assertEquals((3 - rot) & 3, c.faceVertexC[0]);
             assertNull(c.faceTexture);
