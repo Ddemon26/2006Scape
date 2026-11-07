@@ -88,6 +88,14 @@ public class ClientSettings {
      */
     public static boolean SINGLE_ONDEMAND = true;
 
+    /**
+     * WebSocket gateway for the server, e.g. "wss://game.example.com".
+     * When set, every connection the client makes (game, on-demand, JAGGRAB) is tunnelled
+     * over WebSocket to {@code WEBSOCKET_URL + "/" + port} instead of a direct TCP socket,
+     * and SERVER_IP is ignored. Leave null for normal TCP. Can also be set with "-ws <url>".
+     */
+    public static String WEBSOCKET_URL = null;
+
     public static boolean SHOW_NAVBAR = true;
     public static final String NAV_MAINMENU_LINK = SERVER_WEBSITE;
     public static final String NAV_WORLDMAP_LINK = SERVER_WEBSITE + "img/worldmap.jpg";

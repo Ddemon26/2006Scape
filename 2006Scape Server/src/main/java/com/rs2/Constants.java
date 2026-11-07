@@ -39,6 +39,8 @@ public class Constants {
      * WEBSITE_INTEGRATION Enables/Disables Website Features(Total Accounts Registered & Players Online)
      */
     public static String SERVER_NAME = "2006Scape", WEBSITE_LINK = "https://2006Scape.org";
+    /** Address the game, HTTP and JAGGRAB listeners bind to. Use 127.0.0.1 behind a local gateway (e.g. websockify/Cloudflare Tunnel). */
+    public static String BIND_ADDRESS = "0.0.0.0";
     public static int WORLD = 1, HTTP_PORT = 8080, JAGGRAB_PORT = 43595, MAX_PLAYERS = 200, SAVE_TIMER = 120, TIMEOUT = 60, RESPAWN_X = 3222, RESPAWN_Y = 3218,  CYCLE_LOGGING_TICK = 10;
     public static boolean GUI_ENABLED = false, FILE_SERVER = true, SERVER_DEBUG = false, MEMBERS_ONLY = false, TUTORIAL_ISLAND = false,
             PARTY_ROOM_DISABLED = false, CLUES_ENABLED = true, ITEM_REQUIREMENTS = true,

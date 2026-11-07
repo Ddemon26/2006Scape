@@ -7,6 +7,7 @@
   "file_server": true,
   "http_port": 8080,
   "jaggrab_port": 43595,
+  "bind_address": "0.0.0.0",
   "world_id": 1,
   "xp_rate": 1.0,
   "variable_xp_rate": false,

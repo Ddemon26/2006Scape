@@ -32,6 +32,8 @@ public class ConfigLoader {
             Constants.HTTP_PORT = obj.getInt("http_port");
         if (obj.has("jaggrab_port"))
             Constants.JAGGRAB_PORT = obj.getInt("jaggrab_port");
+        if (obj.has("bind_address"))
+            Constants.BIND_ADDRESS = obj.getString("bind_address");
         if (obj.has("world_id"))
             Constants.WORLD = obj.getInt("world_id");
         if (obj.has("members_only"))

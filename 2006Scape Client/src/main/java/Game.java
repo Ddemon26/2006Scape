@@ -526,6 +526,10 @@ public class Game extends RSApplet {
 	}
 
 	public Socket openSocket(int i) throws IOException {
+		if (ClientSettings.WEBSOCKET_URL != null && !ClientSettings.WEBSOCKET_URL.trim().isEmpty()) {
+			// Tunnel every connection (game, on-demand, JAGGRAB) over WebSocket: <url>/<port>
+			return WebSocketSocket.connect(WebSocketSocket.urlForPort(ClientSettings.WEBSOCKET_URL, i));
+		}
 		if (Signlink.mainapp != null) {
 			return Signlink.opensocket(i);
 		} else {
