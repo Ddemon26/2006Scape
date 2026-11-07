@@ -10,7 +10,7 @@ final class StreamLoader {
 		int packedArchiveSize = header.readUnsignedMediumBigEndian();
 		if (packedArchiveSize != unpackedArchiveSize) {
 			byte unpackedData[] = new byte[unpackedArchiveSize];
-			Class13.method225(unpackedData, unpackedArchiveSize, encodedArchive, packedArchiveSize, 6);
+			BZip2Decompressor.decompress(unpackedData, unpackedArchiveSize, encodedArchive, packedArchiveSize, 6);
 			archiveData = unpackedData;
 			header = new Stream(archiveData);
 			archiveDecompressed = true;
@@ -47,7 +47,7 @@ final class StreamLoader {
 					entryData = new byte[entryUnpackedSizes[entryIndex]];
 				}
 				if (!archiveDecompressed) {
-					Class13.method225(entryData, entryUnpackedSizes[entryIndex], archiveData, entryPackedSizes[entryIndex], entryOffsets[entryIndex]);
+					BZip2Decompressor.decompress(entryData, entryUnpackedSizes[entryIndex], archiveData, entryPackedSizes[entryIndex], entryOffsets[entryIndex]);
 				} else {
 					System.arraycopy(archiveData, entryOffsets[entryIndex], entryData, 0, entryUnpackedSizes[entryIndex]);
 
