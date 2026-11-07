@@ -218,19 +218,19 @@ public class Game extends RSApplet {
 	
 	public static byte[] musicData;
 	
-	static final synchronized void method49() {
+	static final synchronized void updateMusic() {
 		if (musicIsntNull()) {
 			if (fetchMusic) {
-				byte[] is = musicData;
-				if (is != null) {
+				byte[] fetchedSongData = musicData;
+				if (fetchedSongData != null) {
 					if (ClientSettings.ANDROID)
-						setMusicData(musicVolume2, is, aBoolean995);
+						setMusicData(musicVolume2, fetchedSongData, aBoolean995);
 					else if (pendingSongFadeStep >= 0)
-						method684(aBoolean995, pendingSongFadeStep, musicVolume2, is);
+						method684(aBoolean995, pendingSongFadeStep, musicVolume2, fetchedSongData);
 					else if (anInt139 >= 0)
-						method899(anInt139, -1, aBoolean995, is, musicVolume2);
+						method899(anInt139, -1, aBoolean995, fetchedSongData, musicVolume2);
 					else
-						setMusicData(musicVolume2, is, aBoolean995);
+						setMusicData(musicVolume2, fetchedSongData, aBoolean995);
 					fetchMusic = false;
 				}
 			}
@@ -2290,7 +2290,7 @@ public class Game extends RSApplet {
 			mainGameProcessor();
 		}
 		processOnDemandQueue();
-		method49();
+		updateMusic();
 	}
 
 	public void method47(boolean flag) {
@@ -7053,7 +7053,7 @@ public class Game extends RSApplet {
 				while (onDemandFetcher.getNodeCount() > 0) {
 					processOnDemandQueue();
 					if (fetchMusic) {
-						method49();
+						updateMusic();
 					}
 					try {
 						Thread.sleep(100L);

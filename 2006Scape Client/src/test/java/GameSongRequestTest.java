@@ -87,7 +87,7 @@ public class GameSongRequestTest {
         Game.anInt155 = 0;
         game.requestSongWithFade(10, 96, false, 2);
         Game.musicData = data;
-        Game.method49();
+        Game.updateMusic();
         int firstStep = Game.anInt720;
         assertTrue(firstStep > 0);
         assertEquals(0, player.plays);
@@ -98,14 +98,14 @@ public class GameSongRequestTest {
         Game.anInt720 = 0;
         Game.fetchMusic = true;
         game.requestSongWithFade(20, 96, false, 2);
-        Game.method49();
+        Game.updateMusic();
         assertTrue(Game.anInt720 < firstStep);
 
         Game.anInt478 = -1;
         Game.anInt720 = 0;
         Game.fetchMusic = true;
         game.requestSongWithoutFade(127, false, 1);
-        Game.method49();
+        Game.updateMusic();
         assertEquals(1, player.plays);
         assertEquals(127, player.volume);
         assertSame(data, player.data);
@@ -120,8 +120,45 @@ public class GameSongRequestTest {
         assertEquals(-1, game.nextSong);
     }
 
+    @Test public void method49UsesAvailableDataAndAdvancesPlayerOncePerCall() {
+        Game.pendingSongFadeStep = -1;
+        Game.anInt139 = -1;
+        Game.musicVolume2 = 73;
+        Game.aBoolean995 = false;
+        Game.updateMusic();
+        assertEquals(0, player.plays);
+        assertTrue(Game.fetchMusic);
+        assertEquals(1, player.ticks);
+        assertEquals(-122, player.lastTick);
+
+        byte[] data = {4, 5, 6};
+        Game.musicData = data;
+        Game.updateMusic();
+        assertEquals(1, player.plays);
+        assertSame(data, player.data);
+        assertEquals(73, player.volume);
+        assertFalse(player.loop);
+        assertFalse(Game.fetchMusic);
+        assertEquals(2, player.ticks);
+
+        Game.updateMusic();
+        assertEquals(1, player.plays);
+        assertEquals(3, player.ticks);
+    }
+
+    @Test public void method49RequiresPlayerEvenWithFetchedData() {
+        byte[] data = {7};
+        Game.musicData = data;
+        Game.aClass56_749 = null;
+        Game.updateMusic();
+        assertTrue(Game.fetchMusic);
+        assertSame(data, Game.musicData);
+        assertEquals(0, player.plays);
+        assertEquals(0, player.ticks);
+    }
+
     private static final class PlayerProbe extends Class56 {
-        int plays, volume;
+        int plays, volume, ticks, lastTick;
         byte[] data;
         boolean loop;
         void method827(int value, byte[] bytes, int ignored, boolean repeat) {
@@ -130,7 +167,7 @@ public class GameSongRequestTest {
         void method828() { }
         void method830(int a, int b) { }
         void method831(int value) { }
-        void method832(int value) { }
+        void method832(int value) { ticks++; lastTick = value; }
         void method833() { }
     }
 }
