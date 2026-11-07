@@ -23,7 +23,7 @@ public class ExistingPlayerMovementBitsTest {
     }
     private void seed(int... ids) {
         g.playerCount = ids.length;
-        g.anInt839 = g.maskUpdateCount = 0;
+        g.removedEntityCount = g.maskUpdateCount = 0;
         for (int n = 0; n < ids.length; n++) {
             g.playerIndices[n] = ids[n];
             Player p = new Player();
@@ -55,9 +55,9 @@ public class ExistingPlayerMovementBitsTest {
         Stream s = apply(8, 2, 1, 0, 1, 0);
         list(41, 7);
         assertEquals(10, s.bitOffset);
-        assertEquals(2, g.anInt839);
-        assertEquals(93, g.anIntArray840[0]);
-        assertEquals(12, g.anIntArray840[1]);
+        assertEquals(2, g.removedEntityCount);
+        assertEquals(93, g.removedEntityIndices[0]);
+        assertEquals(12, g.removedEntityIndices[1]);
         assertEquals(731, g.playerArray[41].anInt1537);
         assertEquals(731, g.playerArray[7].anInt1537);
         assertEquals(-1, g.playerArray[93].anInt1537);
@@ -66,8 +66,8 @@ public class ExistingPlayerMovementBitsTest {
         s = apply(8, 0, 1, 1);
         list();
         assertEquals(8, s.bitOffset);
-        assertEquals(4, g.anInt839);
-        assertArrayEquals(new int[]{41, 7, 93, 12}, java.util.Arrays.copyOf(g.anIntArray840, 4));
+        assertEquals(4, g.removedEntityCount);
+        assertArrayEquals(new int[]{41, 7, 93, 12}, java.util.Arrays.copyOf(g.removedEntityIndices, 4));
     }
     @Test public void oversizedCountRejectsBeforeRebuildingList() {
         Stream s = bits(8, 5);
@@ -75,7 +75,7 @@ public class ExistingPlayerMovementBitsTest {
         catch (RuntimeException expected) { assertEquals("eek", expected.getMessage()); }
         list(41, 7, 93, 12);
         assertEquals(8, s.bitOffset);
-        assertEquals(0, g.anInt839);
+        assertEquals(0, g.removedEntityCount);
     }
     @Test public void absentChangeConsumesOneBitAndDoesNotReadFollowingKind() {
         seed(93);
@@ -87,7 +87,7 @@ public class ExistingPlayerMovementBitsTest {
         assertEquals(60, p.smallY[0]);
         assertEquals(731, p.anInt1537);
         assertEquals(0, g.maskUpdateCount);
-        assertEquals(0, g.anInt839);
+        assertEquals(0, g.removedEntityCount);
     }
     @Test public void kindZeroAddsMaskWithoutMovingAndAppendsToExistingQueue() {
         seed(7);
@@ -102,7 +102,7 @@ public class ExistingPlayerMovementBitsTest {
         assertEquals(50, g.playerArray[7].smallX[0]);
         assertEquals(60, g.playerArray[7].smallY[0]);
         assertEquals(731, g.playerArray[7].anInt1537);
-        assertEquals(0, g.anInt839);
+        assertEquals(0, g.removedEntityCount);
     }
     @Test public void allWalkDirectionsAndBothMaskValuesAreIndependent() {
         for (int d = 0; d < 8; d++) for (int b = 0; b < 2; b++) {
@@ -119,7 +119,7 @@ public class ExistingPlayerMovementBitsTest {
             assertEquals(731, p.anInt1537);
             assertEquals(b, g.maskUpdateCount);
             if (b == 1) assertEquals(93, g.maskUpdateIndices[0]);
-            assertEquals(0, g.anInt839);
+            assertEquals(0, g.removedEntityCount);
         }
     }
     @Test public void allRunPairsPreserveFirstStepInHistoryAndSecondAtHead() {
@@ -138,18 +138,18 @@ public class ExistingPlayerMovementBitsTest {
             assertEquals(731, p.anInt1537);
             assertEquals(c, g.maskUpdateCount);
             if (c == 1) assertEquals(12, g.maskUpdateIndices[0]);
-            assertEquals(0, g.anInt839);
+            assertEquals(0, g.removedEntityCount);
         }
     }
     @Test public void removalsCompactSlotsWithoutConfusingSlotsWithPlayerIds() {
-        g.anIntArray840[0] = 305;
-        g.anInt839 = 1;
+        g.removedEntityIndices[0] = 305;
+        g.removedEntityCount = 1;
         Player p = g.playerArray[7];
         Stream s = apply(8, 3, 1, 1, 2, 3, 1, 1, 2, 1, 3, 4, 1, 1, 1, 0);
         list(7, 93);
         assertEquals(19, s.bitOffset);
-        assertEquals(3, g.anInt839);
-        assertArrayEquals(new int[]{305, 12, 41}, java.util.Arrays.copyOf(g.anIntArray840, 3));
+        assertEquals(3, g.removedEntityCount);
+        assertArrayEquals(new int[]{305, 12, 41}, java.util.Arrays.copyOf(g.removedEntityIndices, 3));
         assertEquals(-1, g.playerArray[41].anInt1537);
         assertEquals(-1, g.playerArray[12].anInt1537);
         assertEquals(731, g.playerArray[7].anInt1537);
@@ -170,7 +170,7 @@ public class ExistingPlayerMovementBitsTest {
         list(ids);
         assertEquals(263, s.bitOffset);
         assertEquals(731, g.playerArray[510].anInt1537);
-        assertEquals(0, g.anInt839);
+        assertEquals(0, g.removedEntityCount);
         assertEquals(0, g.maskUpdateCount);
     }
 }

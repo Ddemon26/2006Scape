@@ -1284,27 +1284,27 @@ public class Game extends RSApplet {
 		DrawingArea.drawHorizontalLine(topY + 14 + thumbOffset + thumbHeight, scrollShadowColor, 15, leftX + 1);
 	}
 
-	public void updateNPCs(Stream stream, int i) {
-		anInt839 = 0;
+	public void updateNPCs(Stream stream, int packetSize) {
+		removedEntityCount = 0;
 		maskUpdateCount = 0;
 		decodeExistingNpcMovement(stream);
-		addNewNpcs(i, stream);
+		addNewNpcs(packetSize, stream);
 		decodeNpcUpdateMasks(stream);
-		for (int k = 0; k < anInt839; k++) {
-			int l = anIntArray840[k];
-			if (npcArray[l].anInt1537 != loopCycle) {
-				npcArray[l].desc = null;
-				npcArray[l] = null;
+		for (int removalListIndex = 0; removalListIndex < removedEntityCount; removalListIndex++) {
+			int removedNpcIndex = removedEntityIndices[removalListIndex];
+			if (npcArray[removedNpcIndex].anInt1537 != loopCycle) {
+				npcArray[removedNpcIndex].desc = null;
+				npcArray[removedNpcIndex] = null;
 			}
 		}
 
-		if (stream.currentOffset != i) {
-			Signlink.reporterror(myUsername + " size mismatch in getnpcpos - pos:" + stream.currentOffset + " psize:" + i);
+		if (stream.currentOffset != packetSize) {
+			Signlink.reporterror(myUsername + " size mismatch in getnpcpos - pos:" + stream.currentOffset + " psize:" + packetSize);
 			throw new RuntimeException("eek");
 		}
-		for (int i1 = 0; i1 < npcCount; i1++) {
-			if (npcArray[npcIndices[i1]] == null) {
-				Signlink.reporterror(myUsername + " null entry in npc list - pos:" + i1 + " size:" + npcCount);
+		for (int npcListIndex = 0; npcListIndex < npcCount; npcListIndex++) {
+			if (npcArray[npcIndices[npcListIndex]] == null) {
+				Signlink.reporterror(myUsername + " null entry in npc list - pos:" + npcListIndex + " size:" + npcCount);
 				throw new RuntimeException("eek");
 			}
 		}
@@ -4802,7 +4802,7 @@ public class Game extends RSApplet {
 		playerIndices = null;
 		maskUpdateIndices = null;
 		aStreamArray895s = null;
-		anIntArray840 = null;
+		removedEntityIndices = null;
 		npcArray = null;
 		npcIndices = null;
 		groundArray = null;
@@ -9843,7 +9843,7 @@ public class Game extends RSApplet {
 		int reportedPlayerCount = stream.readBitsMsbFirst(8);
 		if (reportedPlayerCount < playerCount) {
 			for (int removedTailIndex = reportedPlayerCount; removedTailIndex < playerCount; removedTailIndex++) {
-				anIntArray840[anInt839++] = playerIndices[removedTailIndex];
+				removedEntityIndices[removedEntityCount++] = playerIndices[removedTailIndex];
 			}
 
 		}
@@ -9886,7 +9886,7 @@ public class Game extends RSApplet {
 						maskUpdateIndices[maskUpdateCount++] = playerIndex;
 					}
 				} else if (movementType == 3) {
-					anIntArray840[anInt839++] = playerIndex;
+					removedEntityIndices[removedEntityCount++] = playerIndex;
 				}
 			}
 		}
@@ -10292,7 +10292,7 @@ public class Game extends RSApplet {
 		int reportedNpcCount = stream.readBitsMsbFirst(8);
 		if (reportedNpcCount < npcCount) {
 			for (int removedTailIndex = reportedNpcCount; removedTailIndex < npcCount; removedTailIndex++) {
-				anIntArray840[anInt839++] = npcIndices[removedTailIndex];
+				removedEntityIndices[removedEntityCount++] = npcIndices[removedTailIndex];
 			}
 
 		}
@@ -10335,7 +10335,7 @@ public class Game extends RSApplet {
 						maskUpdateIndices[maskUpdateCount++] = npcIndex;
 					}
 				} else if (movementType == 3) {
-					anIntArray840[anInt839++] = npcIndex;
+					removedEntityIndices[removedEntityCount++] = npcIndex;
 				}
 			}
 		}
@@ -10523,27 +10523,27 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void updatePlayers(int i, Stream stream) {
-		anInt839 = 0;
+	public void updatePlayers(int packetSize, Stream stream) {
+		removedEntityCount = 0;
 		maskUpdateCount = 0;
 		decodeLocalPlayerMovement(stream);
 		decodeExistingPlayerMovement(stream);
-		addNewLocalPlayers(stream, i);
+		addNewLocalPlayers(stream, packetSize);
 		decodePlayerUpdateMasks(stream);
-		for (int k = 0; k < anInt839; k++) {
-			int l = anIntArray840[k];
-			if (playerArray[l].anInt1537 != loopCycle) {
-				playerArray[l] = null;
+		for (int removalListIndex = 0; removalListIndex < removedEntityCount; removalListIndex++) {
+			int removedPlayerIndex = removedEntityIndices[removalListIndex];
+			if (playerArray[removedPlayerIndex].anInt1537 != loopCycle) {
+				playerArray[removedPlayerIndex] = null;
 			}
 		}
 
-		if (stream.currentOffset != i) {
-			Signlink.reporterror("Error packet size mismatch in getplayer pos:" + stream.currentOffset + " psize:" + i);
+		if (stream.currentOffset != packetSize) {
+			Signlink.reporterror("Error packet size mismatch in getplayer pos:" + stream.currentOffset + " psize:" + packetSize);
 			throw new RuntimeException("eek");
 		}
-		for (int i1 = 0; i1 < playerCount; i1++) {
-			if (playerArray[playerIndices[i1]] == null) {
-				Signlink.reporterror(myUsername + " null entry in pl list - pos:" + i1 + " size:" + playerCount);
+		for (int playerListIndex = 0; playerListIndex < playerCount; playerListIndex++) {
+			if (playerArray[playerIndices[playerListIndex]] == null) {
+				Signlink.reporterror(myUsername + " null entry in pl list - pos:" + playerListIndex + " size:" + playerCount);
 				throw new RuntimeException("eek");
 			}
 		}
@@ -12013,7 +12013,7 @@ public class Game extends RSApplet {
 		aStream_834 = new Stream(new byte[5000]);
 		npcArray = new NPC[16384];
 		npcIndices = new int[16384];
-		anIntArray840 = new int[1000];
+		removedEntityIndices = new int[1000];
 		aStream_847 = Stream.acquire();
 		aBoolean848 = true;
 		openInterfaceID = -1;
@@ -12173,8 +12173,8 @@ public class Game extends RSApplet {
 	public NPC[] npcArray;
 	public int npcCount;
 	public int[] npcIndices;
-	public int anInt839;
-	public int[] anIntArray840;
+	public int removedEntityCount;
+	public int[] removedEntityIndices;
 	public int anInt841;
 	public int prevPktType;
 	public int prevPktType2;
