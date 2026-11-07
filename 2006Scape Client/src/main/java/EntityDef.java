@@ -174,7 +174,7 @@ public final class EntityDef {
 		animatedModel.faceGroups = null;
 		animatedModel.vertexGroups = null;
 		if (aByte68 == 1) {
-			animatedModel.aBoolean1659 = true;
+			animatedModel.pickByBounds = true;
 		}
 		return animatedModel;
 	}

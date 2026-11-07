@@ -65,37 +65,37 @@ public class WorldControllerSceneLightingTest {
         java.lang.reflect.Constructor<Model> c = Model.class.getDeclaredConstructor();
         c.setAccessible(true);
         Model m = c.newInstance();
-        m.anInt1626 = verts.length;
-        m.anIntArray1627 = new int[verts.length];
-        m.anIntArray1628 = new int[verts.length];
-        m.anIntArray1629 = new int[verts.length];
-        m.aClass33Array1425 = new VertexNormal[verts.length];
-        m.aClass33Array1660 = new VertexNormal[verts.length];
+        m.vertexCount = verts.length;
+        m.vertexX = new int[verts.length];
+        m.vertexY = new int[verts.length];
+        m.vertexZ = new int[verts.length];
+        m.vertexNormals = new VertexNormal[verts.length];
+        m.originalVertexNormals = new VertexNormal[verts.length];
         for (int i = 0; i < verts.length; i++) {
-            m.anIntArray1627[i] = verts[i][0];
-            m.anIntArray1628[i] = verts[i][1];
-            m.anIntArray1629[i] = verts[i][2];
-            m.aClass33Array1425[i] = normal(0, 0, 0, 1);
-            m.aClass33Array1660[i] = normal(0, 0, 0, 1);
+            m.vertexX[i] = verts[i][0];
+            m.vertexY[i] = verts[i][1];
+            m.vertexZ[i] = verts[i][2];
+            m.vertexNormals[i] = normal(0, 0, 0, 1);
+            m.originalVertexNormals[i] = normal(0, 0, 0, 1);
         }
         m.minX = m.minZ = -100000; m.maxX = m.maxZ = m.maxY = 100000;
-        m.anInt1630 = 0;
-        m.anIntArray1631 = new int[0]; m.anIntArray1632 = new int[0]; m.anIntArray1633 = new int[0];
+        m.faceCount = 0;
+        m.faceVertexA = new int[0]; m.faceVertexB = new int[0]; m.faceVertexC = new int[0];
         return m;
     }
 
     private static void faces(Model m, int[]... f) {
-        m.anInt1630 = f.length;
-        m.anIntArray1631 = new int[f.length]; m.anIntArray1632 = new int[f.length]; m.anIntArray1633 = new int[f.length];
-        m.anIntArray1637 = new int[f.length];
-        m.anIntArray1640 = new int[f.length];
-        for (int i = 0; i < f.length; i++) { m.anIntArray1631[i] = f[i][0]; m.anIntArray1632[i] = f[i][1]; m.anIntArray1633[i] = f[i][2]; m.anIntArray1640[i] = 64; }
+        m.faceCount = f.length;
+        m.faceVertexA = new int[f.length]; m.faceVertexB = new int[f.length]; m.faceVertexC = new int[f.length];
+        m.faceRenderFlags = new int[f.length];
+        m.faceColors = new int[f.length];
+        for (int i = 0; i < f.length; i++) { m.faceVertexA[i] = f[i][0]; m.faceVertexB[i] = f[i][1]; m.faceVertexC[i] = f[i][2]; m.faceColors[i] = 64; }
         try {
             for (String n : new String[] {"faceShadeA", "faceShadeB", "faceShadeC"}) set(m, n, new int[f.length]);
         } catch (Exception e) { throw new RuntimeException(e); }
     }
 
-    private static int count(Model m, int v) { return m.aClass33Array1425[v].faceCount; }
+    private static int count(Model m, int v) { return m.vertexNormals[v].faceCount; }
 
     // ================= mergeSharedVertexNormals: shared-vertex normal merge =================
 
@@ -103,15 +103,15 @@ public class WorldControllerSceneLightingTest {
         WorldController wc = scene();
         Model a = model(new int[] {128 + 5, -60 + 6, 64 + 7}, new int[] {1000, 0, 0});
         Model b = model(new int[] {5, 6, 7}, new int[] {-1000, 0, 0});
-        a.aClass33Array1660[0] = normal(10, 20, 30, 4); a.aClass33Array1425[0] = normal(11, 21, 31, 5);
-        b.aClass33Array1660[0] = normal(100, 200, 300, 7); b.aClass33Array1425[0] = normal(101, 201, 301, 8);
+        a.originalVertexNormals[0] = normal(10, 20, 30, 4); a.vertexNormals[0] = normal(11, 21, 31, 5);
+        b.originalVertexNormals[0] = normal(100, 200, 300, 7); b.vertexNormals[0] = normal(101, 201, 301, 8);
         call(wc, "mergeSharedVertexNormals", M308, a, b, 128, -60, 64, false);
-        VertexNormal aw = a.aClass33Array1425[0], bw = b.aClass33Array1425[0];
+        VertexNormal aw = a.vertexNormals[0], bw = b.vertexNormals[0];
         assertArrayEquals(new int[] {111, 221, 331, 12}, new int[] {aw.normalX, aw.normalY, aw.normalZ, aw.faceCount});
         assertArrayEquals(new int[] {111, 221, 331, 12}, new int[] {bw.normalX, bw.normalY, bw.normalZ, bw.faceCount});
         // originals untouched; the non-coinciding vertex untouched
-        assertEquals(4, a.aClass33Array1660[0].faceCount);
-        assertEquals(7, b.aClass33Array1660[0].faceCount);
+        assertEquals(4, a.originalVertexNormals[0].faceCount);
+        assertEquals(7, b.originalVertexNormals[0].faceCount);
         assertEquals(1, count(a, 1));
         assertEquals(1, count(b, 1));
     }
@@ -137,13 +137,13 @@ public class WorldControllerSceneLightingTest {
         WorldController wc = scene();
         Model a = model(new int[] {0, 0, 0});
         Model b = model(new int[] {0, 0, 0});
-        a.aClass33Array1660[0].faceCount = 0;
+        a.originalVertexNormals[0].faceCount = 0;
         call(wc, "mergeSharedVertexNormals", M308, a, b, 0, 0, 0, false);
         assertEquals(1, count(a, 0)); assertEquals(1, count(b, 0));
-        a.aClass33Array1660[0].faceCount = 1; b.aClass33Array1660[0].faceCount = 0;
+        a.originalVertexNormals[0].faceCount = 1; b.originalVertexNormals[0].faceCount = 0;
         call(wc, "mergeSharedVertexNormals", M308, a, b, 0, 0, 0, false);
         assertEquals(1, count(a, 0)); assertEquals(1, count(b, 0));
-        b.aClass33Array1660[0].faceCount = 1;
+        b.originalVertexNormals[0].faceCount = 1;
         call(wc, "mergeSharedVertexNormals", M308, a, b, 0, 0, 0, false);
         assertEquals(2, count(a, 0)); assertEquals(2, count(b, 0));
     }
@@ -177,16 +177,16 @@ public class WorldControllerSceneLightingTest {
         WorldController wc = scene();
         Model a = triangleModel(null), b = triangleModel(null);
         call(wc, "mergeSharedVertexNormals", M308, a, b, 0, 0, 0, false);     // flag off: merged, nothing hidden
-        assertEquals(0, a.anIntArray1637[0]); assertEquals(0, b.anIntArray1637[0]);
+        assertEquals(0, a.faceRenderFlags[0]); assertEquals(0, b.faceRenderFlags[0]);
         assertEquals(2, count(a, 0));
         a = triangleModel(null); b = triangleModel(null);
         call(wc, "mergeSharedVertexNormals", M308, a, b, 0, 0, 0, true);      // 3 shared, flag on: hidden in both
-        assertEquals(-1, a.anIntArray1637[0]); assertEquals(-1, b.anIntArray1637[0]);
+        assertEquals(-1, a.faceRenderFlags[0]); assertEquals(-1, b.faceRenderFlags[0]);
         // only two shared vertices: merged but not hidden
         a = triangleModel(null); b = model(new int[] {0, 0, 0}, new int[] {10, 0, 0}, new int[] {500, 0, 500});
         faces(b, new int[] {0, 1, 2});
         call(wc, "mergeSharedVertexNormals", M308, a, b, 0, 0, 0, true);
-        assertEquals(0, a.anIntArray1637[0]); assertEquals(0, b.anIntArray1637[0]);
+        assertEquals(0, a.faceRenderFlags[0]); assertEquals(0, b.faceRenderFlags[0]);
         assertEquals(2, count(a, 0)); assertEquals(2, count(a, 1)); assertEquals(1, count(a, 2));
     }
 
@@ -206,9 +206,9 @@ public class WorldControllerSceneLightingTest {
         Model b2 = model(new int[] {10, 0, 0}, new int[] {0, 0, 10}, new int[] {10, 0, 10});
         faces(b2, new int[] {0, 1, 2});
         call(wc, "mergeSharedVertexNormals", M308, a, b2, 0, 0, 0, true);
-        assertEquals(0, a.anIntArray1637[0]);
-        assertEquals(-1, a.anIntArray1637[1]);
-        assertEquals(-1, b2.anIntArray1637[0]);
+        assertEquals(0, a.faceRenderFlags[0]);
+        assertEquals(-1, a.faceRenderFlags[1]);
+        assertEquals(-1, b2.faceRenderFlags[0]);
         assertEquals(stamp + 1, ((Integer) get(wc, "mergeStamp")).intValue());
     }
 
@@ -246,7 +246,7 @@ public class WorldControllerSceneLightingTest {
         WorldController wc = scene();
         Model m = model(new int[] {128, 0, 0});
         Model noNormals = model(new int[] {0, 0, 0});
-        noNormals.aClass33Array1425 = null;
+        noNormals.vertexNormals = null;
         tile(wc, 1, 51, 50).obj3 = decoration(noNormals);              // present but not lit-able: skipped without error
         call(wc, "mergeGroundDecorationNormals", M306, 50, 1, m, 50);
         assertEquals(1, count(m, 0));
@@ -354,10 +354,10 @@ public class WorldControllerSceneLightingTest {
     private static Model litModel() throws Exception {
         Model m = model(new int[] {0, 0, 0}, new int[] {10, 0, 0}, new int[] {0, 0, 10});
         faces(m, new int[] {0, 1, 2});
-        m.aClass33Array1425[0] = normal(256, 0, 0, 1);
-        m.aClass33Array1425[1] = normal(0, 256, 0, 1);
-        m.aClass33Array1425[2] = normal(0, 0, 256, 1);
-        m.anIntArray1637 = null;
+        m.vertexNormals[0] = normal(256, 0, 0, 1);
+        m.vertexNormals[1] = normal(0, 256, 0, 1);
+        m.vertexNormals[2] = normal(0, 0, 256, 1);
+        m.faceRenderFlags = null;
         return m;
     }
 
@@ -369,7 +369,7 @@ public class WorldControllerSceneLightingTest {
         call(wc, "lightScene", new Class<?>[] {int.class, int.class, int.class}, 4, 3, 0);
         // |L|=5, contrast 768*5>>8=15, ambient 64: x-normal 64+768/15=115, y-normal 64+1024/15=132, z-normal 64; colour 64 halves
         assertArrayEquals(new int[] {115 * 64 >> 7, 132 * 64 >> 7, 64 * 64 >> 7}, shades(m, 0));
-        assertNull(m.aClass33Array1425); assertNull(m.aClass33Array1660);
+        assertNull(m.vertexNormals); assertNull(m.originalVertexNormals);
         // swapped first/second argument gives a different answer for x and y normals
         Model s = litModel();
         tiles(wc)[0][10][10].obj3 = decoration(s);
@@ -387,9 +387,9 @@ public class WorldControllerSceneLightingTest {
         g.obj3 = decoration(deco);
         g.obj2 = new Object2(); g.obj2.model = wallDeco;
         call(wc, "lightScene", new Class<?>[] {int.class, int.class, int.class}, -10, -50, -50);
-        assertNull(wall.aClass33Array1425); assertNull(wall2.aClass33Array1425);
-        assertNull(scene.aClass33Array1425); assertNull(deco.aClass33Array1425);
-        assertNotNull(wallDeco.aClass33Array1425);
+        assertNull(wall.vertexNormals); assertNull(wall2.vertexNormals);
+        assertNull(scene.vertexNormals); assertNull(deco.vertexNormals);
+        assertNotNull(wallDeco.vertexNormals);
     }
 
     @Test public void method305MergesWallPrimaryWithSecondaryAtZeroOffsetBeforeLightingAndLightsAModelOnlyOnce() throws Exception {
@@ -398,9 +398,9 @@ public class WorldControllerSceneLightingTest {
         faces(a, new int[] {0, 1, 2});
         Model b = model(new int[] {0, 0, 0}, new int[] {10, 0, 0}, new int[] {0, 0, 10});
         faces(b, new int[] {0, 1, 2});
-        a.anIntArray1637 = null; b.anIntArray1637 = null;
-        a.aClass33Array1425[0] = normal(256, 0, 0, 1); a.aClass33Array1660[0] = normal(256, 0, 0, 1);
-        b.aClass33Array1425[0] = normal(0, 256, 0, 1); b.aClass33Array1660[0] = normal(0, 256, 0, 1);
+        a.faceRenderFlags = null; b.faceRenderFlags = null;
+        a.vertexNormals[0] = normal(256, 0, 0, 1); a.originalVertexNormals[0] = normal(256, 0, 0, 1);
+        b.vertexNormals[0] = normal(0, 256, 0, 1); b.originalVertexNormals[0] = normal(0, 256, 0, 1);
         Ground g = tile(wc, 0, 30, 30);
         g.obj1 = new Object1(); g.obj1.model = a; g.obj1.secondaryModel = b;
         call(wc, "lightScene", new Class<?>[] {int.class, int.class, int.class}, 4, 3, 0);
@@ -412,13 +412,13 @@ public class WorldControllerSceneLightingTest {
         Object5 o = new Object5(); o.minTileX = 40; o.maxTileX = 41; o.minTileY = 40; o.maxTileY = 40; o.model = so;
         for (int tx = 40; tx <= 41; tx++) { Ground t = tile(wc, 0, tx, 40); t.obj5Array[t.objectCount++] = o; }
         call(wc, "lightScene", new Class<?>[] {int.class, int.class, int.class}, 4, 3, 0);
-        assertNull(so.aClass33Array1425);
+        assertNull(so.vertexNormals);
     }
 
     @Test public void method305SkipsModelsWithoutNormalsAndEmptyTiles() throws Exception {
         WorldController wc = scene();
         Model m = litModel();
-        m.aClass33Array1425 = null;
+        m.vertexNormals = null;
         Ground g = tile(wc, 1, 5, 5);
         g.obj3 = decoration(m);
         tile(wc, 1, 6, 5);

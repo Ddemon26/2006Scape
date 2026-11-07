@@ -391,11 +391,11 @@ public class ObjectPlacementTest {
         Constructor<Model> c = Model.class.getDeclaredConstructor();
         c.setAccessible(true);
         Model m = c.newInstance();
-        m.anInt1626 = 5;
-        m.anIntArray1627 = new int[] {-64, 64, 64, -64, 0};
-        m.anIntArray1628 = new int[] {0, 0, 0, 0, 7};
-        m.anIntArray1629 = new int[] {-64, -64, 64, 64, 0};
-        m.anInt1630 = 0;
+        m.vertexCount = 5;
+        m.vertexX = new int[] {-64, 64, 64, -64, 0};
+        m.vertexY = new int[] {0, 0, 0, 0, 7};
+        m.vertexZ = new int[] {-64, -64, 64, 64, 0};
+        m.faceCount = 0;
         return m;
     }
 
@@ -412,8 +412,8 @@ public class ObjectPlacementTest {
         // heights k=0 at (-x,-z), l=100 at (+x,-z), i1=300 at (+x,+z), j1=200 at (-x,+z); mean 150
         Model out = d.getModel(10, 0, 0, 100, 300, 200, -1);
         assertNotSame("a private copy is returned", source, out);
-        assertArrayEquals(new int[] {-150, -50, 150, 50, 7}, out.anIntArray1628.length == 5 ? out.anIntArray1628 : null);
-        assertArrayEquals("source vertices are not mutated", new int[] {0, 0, 0, 0, 7}, source.anIntArray1628);
+        assertArrayEquals(new int[] {-150, -50, 150, 50, 7}, out.vertexY.length == 5 ? out.vertexY : null);
+        assertArrayEquals("source vertices are not mutated", new int[] {0, 0, 0, 0, 7}, source.vertexY);
     }
 
     @Test public void method578LeavesHeightsAloneWithoutAboolean762() throws Exception {

@@ -6,7 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-/** Original-name observations of Model.method460 (header parsing), Model(int) decoding and requestModel. */
+/** Original-name observations of Model.loadModelHeader (header parsing), Model(int) decoding and requestModel. */
 public class ModelHeaderLayoutTest {
     private Object savedHeaders, savedFetcher;
     private final java.util.List<Integer> requests = new java.util.ArrayList<Integer>();
@@ -14,7 +14,7 @@ public class ModelHeaderLayoutTest {
     @Before public void setup() throws Exception {
         savedHeaders = get(Model.class, "modelHeaders");
         savedFetcher = get(Model.class, "modelRequester");
-        Model.method459(8, new OnDemandFetcherParent() {
+        Model.initModelHeaders(8, new OnDemandFetcherParent() {
             @Override public void requestModel(int i) { requests.add(i); }
         });
     }
@@ -67,7 +67,7 @@ public class ModelHeaderLayoutTest {
 
     @Test public void method460FullHeaderLocatesEverySection() throws Exception {
         byte[] data = full();
-        Model.method460(data, 2);
+        Model.loadModelHeader(data, 2);
         ModelHeader h = ((ModelHeader[]) get(Model.class, "modelHeaders"))[2];
         assertSame(data, h.data);
         assertEquals(3, h.vertexCount); assertEquals(2, h.faceCount); assertEquals(1, h.texturedFaceCount);
@@ -78,7 +78,7 @@ public class ModelHeaderLayoutTest {
     }
 
     @Test public void method460AbsentSectionsAreMinusOneAndUniformPriorityIsEncoded() throws Exception {
-        Model.method460(bare(), 4);
+        Model.loadModelHeader(bare(), 4);
         ModelHeader h = ((ModelHeader[]) get(Model.class, "modelHeaders"))[4];
         assertEquals(3, h.vertexCount); assertEquals(2, h.faceCount); assertEquals(0, h.texturedFaceCount);
         assertEquals(0, h.vertexFlagsOffset); assertEquals(3, h.faceTypesOffset); assertEquals(5, h.faceVertexDataOffset); assertEquals(9, h.faceColoursOffset);
@@ -114,7 +114,7 @@ public class ModelHeaderLayoutTest {
             // rf, pr, al, fg, vg -> offsets: 380 381 382 383 376 ; 377 (face data start)
             {1, 0, 0, 0, 0}, {0, 1, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 0, 1, 0}, {0, 0, 0, 0, 1}, {0, 0, 0, 0, 0}};
         for (int[] e : expect) {
-            Model.method460(custom(e[0] == 1, e[1] == 1, e[2] == 1, e[3] == 1, e[4] == 1), 1);
+            Model.loadModelHeader(custom(e[0] == 1, e[1] == 1, e[2] == 1, e[3] == 1, e[4] == 1), 1);
             ModelHeader h = ((ModelHeader[]) get(Model.class, "modelHeaders"))[1];
             int at = 5;
             int pr = e[1] == 1 ? at : -8; if (e[1] == 1) at += 2;
@@ -131,10 +131,10 @@ public class ModelHeaderLayoutTest {
             assertEquals(tag, at + 10, h.vertexYOffset);
             assertEquals(tag, at + 13, h.vertexZOffset);
             Model m = Model.getModel(1);
-            assertArrayEquals(tag, new int[] {10, 15, 15}, m.anIntArray1627);
-            assertArrayEquals(tag, new int[] {3, 1, 3}, m.anIntArray1628);
-            assertArrayEquals(tag, new int[] {7, 7, 7}, m.anIntArray1629);
-            assertEquals(tag, e[0] == 1, m.anIntArray1637 != null);
+            assertArrayEquals(tag, new int[] {10, 15, 15}, m.vertexX);
+            assertArrayEquals(tag, new int[] {3, 1, 3}, m.vertexY);
+            assertArrayEquals(tag, new int[] {7, 7, 7}, m.vertexZ);
+            assertEquals(tag, e[0] == 1, m.faceRenderFlags != null);
             assertEquals(tag, e[1] == 1, get(m, "facePriorities") != null);
             assertEquals(tag, e[2] == 1, get(m, "faceAlphas") != null);
             assertEquals(tag, e[3] == 1, get(m, "faceGroupIds") != null);
@@ -143,7 +143,7 @@ public class ModelHeaderLayoutTest {
     }
 
     @Test public void method460NullDataStoresAnEmptyHeader()throws Exception {
-        Model.method460(null, 5);
+        Model.loadModelHeader(null, 5);
         ModelHeader h = ((ModelHeader[]) get(Model.class, "modelHeaders"))[5];
         assertNotNull(h); assertNull(h.data);
         assertEquals(0, h.vertexCount); assertEquals(0, h.faceCount); assertEquals(0, h.texturedFaceCount);
@@ -151,24 +151,24 @@ public class ModelHeaderLayoutTest {
     }
 
     @Test public void modelConstructorDecodesVertexSections() throws Exception {
-        Model.method460(full(), 2);
+        Model.loadModelHeader(full(), 2);
         Model m = Model.getModel(2);
-        assertEquals(3, m.anInt1626); assertEquals(2, m.anInt1630);
+        assertEquals(3, m.vertexCount); assertEquals(2, m.faceCount);
         assertEquals(1, ((Integer) get(m, "texturedFaceCount")).intValue());
-        assertArrayEquals(new int[] {10, 15, 15}, m.anIntArray1627);
-        assertArrayEquals(new int[] {3, 3, 1}, m.anIntArray1628);
-        assertArrayEquals(new int[] {7, 7, 7}, m.anIntArray1629);
+        assertArrayEquals(new int[] {10, 15, 15}, m.vertexX);
+        assertArrayEquals(new int[] {3, 3, 1}, m.vertexY);
+        assertArrayEquals(new int[] {7, 7, 7}, m.vertexZ);
         assertArrayEquals(new int[] {9, 8, 7}, (int[]) get(m, "vertexGroupIds"));
     }
 
     @Test public void modelConstructorDecodesFaceSections() throws Exception {
-        Model.method460(full(), 2);
+        Model.loadModelHeader(full(), 2);
         Model m = Model.getModel(2);
-        assertArrayEquals(new int[] {0, 0}, m.anIntArray1631);
-        assertArrayEquals(new int[] {1, 2}, m.anIntArray1632);
-        assertArrayEquals(new int[] {2, 1}, m.anIntArray1633);
-        assertArrayEquals(new int[] {0x1234, 0x0abc}, m.anIntArray1640);
-        assertArrayEquals(new int[] {4, 8}, m.anIntArray1637);
+        assertArrayEquals(new int[] {0, 0}, m.faceVertexA);
+        assertArrayEquals(new int[] {1, 2}, m.faceVertexB);
+        assertArrayEquals(new int[] {2, 1}, m.faceVertexC);
+        assertArrayEquals(new int[] {0x1234, 0x0abc}, m.faceColors);
+        assertArrayEquals(new int[] {4, 8}, m.faceRenderFlags);
         assertArrayEquals(new int[] {11, 12}, (int[]) get(m, "facePriorities"));
         assertArrayEquals(new int[] {100, 200}, (int[]) get(m, "faceAlphas"));
         assertArrayEquals(new int[] {21, 22}, (int[]) get(m, "faceGroupIds"));
@@ -178,15 +178,15 @@ public class ModelHeaderLayoutTest {
     }
 
     @Test public void modelConstructorWithoutOptionalSections() throws Exception {
-        Model.method460(bare(), 4);
+        Model.loadModelHeader(bare(), 4);
         Model m = Model.getModel(4);
-        assertNull(m.anIntArray1637); assertNull(get(m, "facePriorities")); assertNull(get(m, "faceAlphas"));
+        assertNull(m.faceRenderFlags); assertNull(get(m, "facePriorities")); assertNull(get(m, "faceAlphas"));
         assertNull(get(m, "vertexGroupIds")); assertNull(get(m, "faceGroupIds"));
         assertEquals(7, ((Integer) get(m, "uniformFacePriority")).intValue());
-        assertArrayEquals(new int[] {10, 15, 15}, m.anIntArray1627);
-        assertArrayEquals(new int[] {0x1234, 0x0abc}, m.anIntArray1640);
-        assertArrayEquals(new int[] {0, 0}, m.anIntArray1631);
-        assertArrayEquals(new int[] {1, 2}, m.anIntArray1632);
+        assertArrayEquals(new int[] {10, 15, 15}, m.vertexX);
+        assertArrayEquals(new int[] {0x1234, 0x0abc}, m.faceColors);
+        assertArrayEquals(new int[] {0, 0}, m.faceVertexA);
+        assertArrayEquals(new int[] {1, 2}, m.faceVertexB);
     }
 
     @Test public void modelConstructorDecodesAllFourFaceVertexEncodings() throws Exception {
@@ -198,19 +198,19 @@ public class ModelHeaderLayoutTest {
         s(o, 7); s(o, 4); b(o, 0);
         b(o, 0, 7, 0, 0, 0);
         s(o, 0); s(o, 0); s(o, 0); s(o, 6);
-        Model.method460(o.toByteArray(), 5);
+        Model.loadModelHeader(o.toByteArray(), 5);
         Model m = Model.getModel(5);
-        assertArrayEquals(new int[] {0, 0, 3, 2}, m.anIntArray1631);
-        assertArrayEquals(new int[] {1, 2, 2, 3}, m.anIntArray1632);
-        assertArrayEquals(new int[] {2, 3, 5, 6}, m.anIntArray1633);
+        assertArrayEquals(new int[] {0, 0, 3, 2}, m.faceVertexA);
+        assertArrayEquals(new int[] {1, 2, 2, 3}, m.faceVertexB);
+        assertArrayEquals(new int[] {2, 3, 5, 6}, m.faceVertexC);
     }
 
     @Test public void tableIsIndexedByModelIdAndUnloadClearsTheSlot() throws Exception {
-        Model.method460(bare(), 4);
+        Model.loadModelHeader(bare(), 4);
         assertTrue(Model.isModelLoaded(4));
         assertFalse(Model.isModelLoaded(6));
         assertEquals(java.util.Collections.singletonList(6), requests);
-        Model.method461(4);
+        Model.unloadModelHeader(4);
         assertFalse(Model.isModelLoaded(4));
         assertEquals(java.util.Arrays.asList(6, 4), requests);
     }

@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 public class ModelFaceColorTest {
     private static Model model(int count, int... colors) throws Exception {
         Constructor<Model> c = Model.class.getDeclaredConstructor(); c.setAccessible(true);
-        Model m = c.newInstance(); m.anInt1630 = count; m.anIntArray1640 = colors;
+        Model m = c.newInstance(); m.faceCount = count; m.faceColors = colors;
         return m;
     }
     private static int shade(int color, int light, int flags) throws Exception {
@@ -14,40 +14,40 @@ public class ModelFaceColorTest {
     }
     @Test public void recoloringReplacesExactMatchesAcrossActiveFacesWithoutTouchingTailOrGeometry() throws Exception {
         Model m = model(5, 500, 501, 500, -500, 900, 500);
-        m.anInt1626 = 1; m.anIntArray1627 = new int[]{500};
-        m.anIntArray1631 = new int[]{0,1,2,3,4}; m.anIntArray1637 = new int[]{0,1,2,3,0};
-        int[] colors = m.anIntArray1640;
+        m.vertexCount = 1; m.vertexX = new int[]{500};
+        m.faceVertexA = new int[]{0,1,2,3,4}; m.faceRenderFlags = new int[]{0,1,2,3,0};
+        int[] colors = m.faceColors;
         m.recolor(500, 900);
-        assertSame(colors, m.anIntArray1640);
+        assertSame(colors, m.faceColors);
         assertArrayEquals(new int[]{900,501,900,-500,900,500}, colors);
-        assertArrayEquals(new int[]{500}, m.anIntArray1627);
-        assertArrayEquals(new int[]{0,1,2,3,4}, m.anIntArray1631);
-        assertArrayEquals(new int[]{0,1,2,3,0}, m.anIntArray1637);
-        assertEquals(5, m.anInt1630); assertEquals(1, m.anInt1626);
+        assertArrayEquals(new int[]{500}, m.vertexX);
+        assertArrayEquals(new int[]{0,1,2,3,4}, m.faceVertexA);
+        assertArrayEquals(new int[]{0,1,2,3,0}, m.faceRenderFlags);
+        assertEquals(5, m.faceCount); assertEquals(1, m.vertexCount);
     }
     @Test public void replacementIsDirectionalAndSequentialCallsCanCascade() throws Exception {
         Model m = model(4, 10,20,10,30);
-        m.recolor(10,20); assertArrayEquals(new int[]{20,20,20,30},m.anIntArray1640);
-        m.recolor(20,30); assertArrayEquals(new int[]{30,30,30,30},m.anIntArray1640);
-        m.recolor(30,30); assertArrayEquals(new int[]{30,30,30,30},m.anIntArray1640);
-        m.recolor(99,0); assertArrayEquals(new int[]{30,30,30,30},m.anIntArray1640);
+        m.recolor(10,20); assertArrayEquals(new int[]{20,20,20,30},m.faceColors);
+        m.recolor(20,30); assertArrayEquals(new int[]{30,30,30,30},m.faceColors);
+        m.recolor(30,30); assertArrayEquals(new int[]{30,30,30,30},m.faceColors);
+        m.recolor(99,0); assertArrayEquals(new int[]{30,30,30,30},m.faceColors);
     }
     @Test public void replacementUsesFullSignedIntegersAndIgnoresRenderFlags() throws Exception {
         Model m = model(4, -1,65535,Integer.MIN_VALUE,Integer.MAX_VALUE);
-        m.anIntArray1637 = new int[]{0,1,2,3};
+        m.faceRenderFlags = new int[]{0,1,2,3};
         m.recolor(-1,Integer.MAX_VALUE); m.recolor(Integer.MIN_VALUE,-1);
-        assertArrayEquals(new int[]{Integer.MAX_VALUE,65535,-1,Integer.MAX_VALUE},m.anIntArray1640);
+        assertArrayEquals(new int[]{Integer.MAX_VALUE,65535,-1,Integer.MAX_VALUE},m.faceColors);
         m.recolor(65535,0x12345678);
-        assertEquals(0x12345678,m.anIntArray1640[1]);
+        assertEquals(0x12345678,m.faceColors[1]);
     }
     @Test public void nonpositiveCountsDoNotReadNullButMalformedPositiveCountsRetainPartialWrites() throws Exception {
-        Model m = model(0); m.anIntArray1640 = null; m.recolor(1,2);
-        m.anInt1630 = -1; m.recolor(1,2);
-        m.anInt1630 = 1;
+        Model m = model(0); m.faceColors = null; m.recolor(1,2);
+        m.faceCount = -1; m.recolor(1,2);
+        m.faceCount = 1;
         try { m.recolor(1,2); fail(); } catch (NullPointerException expected) { }
         m = model(3, 7,8);
         try { m.recolor(7,9); fail(); } catch (ArrayIndexOutOfBoundsException expected) { }
-        assertArrayEquals(new int[]{9,8},m.anIntArray1640);
+        assertArrayEquals(new int[]{9,8},m.faceColors);
     }
     @Test public void untexturedShadeScalesLowSevenBitsAndRetainsUpperPackedColor() throws Exception {
         assertEquals(0x1240,shade(0x1240,128,0));

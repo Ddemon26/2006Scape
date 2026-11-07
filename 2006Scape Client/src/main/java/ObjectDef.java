@@ -137,13 +137,13 @@ public final class ObjectDef {
 		}
 		if (adjustsToTerrain) {
 			int meanHeight = (heightX0Z0 + heightX1Z0 + heightX1Z1 + heightX0Z1) / 4;
-			for (int vertexIndex = 0; vertexIndex < model.anInt1626; vertexIndex++) {
-				int vertexX = model.anIntArray1627[vertexIndex];
-				int vertexZ = model.anIntArray1629[vertexIndex];
+			for (int vertexIndex = 0; vertexIndex < model.vertexCount; vertexIndex++) {
+				int vertexX = model.vertexX[vertexIndex];
+				int vertexZ = model.vertexZ[vertexIndex];
 				int lowZHeight = heightX0Z0 + (heightX1Z0 - heightX0Z0) * (vertexX + 64) / 128;
 				int highZHeight = heightX0Z1 + (heightX1Z1 - heightX0Z1) * (vertexX + 64) / 128;
 				int vertexHeight = lowZHeight + (highZHeight - lowZHeight) * (vertexZ + 64) / 128;
-				model.anIntArray1628[vertexIndex] += vertexHeight - meanHeight;
+				model.vertexY[vertexIndex] += vertexHeight - meanHeight;
 			}
 
 			model.recalculateYBounds();
@@ -285,7 +285,7 @@ public final class ObjectDef {
 		}
 		builtModel.applyLighting(64 + aByte737, 768 + aByte742 * 5, -50, -10, -50, !keepsVertexNormals);
 		if (anInt760 == 1) {
-			builtModel.anInt1654 = builtModel.modelHeight;
+			builtModel.stackSurfaceHeight = builtModel.modelHeight;
 		}
 		mruNodes2.removeFromCache(builtModel, cacheKey);
 		return builtModel;

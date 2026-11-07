@@ -260,7 +260,7 @@ public class ObjectDefTest {
 
     private RecordingFetcher modelTable(int size, int... present) throws Exception {
         RecordingFetcher fetcher = new RecordingFetcher();
-        Model.method459(size, fetcher);
+        Model.initModelHeaders(size, fetcher);
         ModelHeader[] table = (ModelHeader[]) field(Model.class, "modelHeaders").get(null);
         for (int id : present) table[id] = new ModelHeader();
         return fetcher;

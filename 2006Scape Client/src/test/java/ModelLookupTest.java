@@ -14,10 +14,10 @@ public class ModelLookupTest {
     @Before public void setup() throws Exception {
         savedHeaders = get("modelHeaders");
         savedFetcher = get("modelRequester");
-        Model.method459(8, new OnDemandFetcherParent() {
+        Model.initModelHeaders(8, new OnDemandFetcherParent() {
             @Override public void requestModel(int i) { requests.add(i); }
         });
-        Model.method460(null, 3);
+        Model.loadModelHeader(null, 3);
     }
 
     @After public void restore() throws Exception {
@@ -32,7 +32,7 @@ public class ModelLookupTest {
         assertEquals(java.util.Collections.singletonList(5), requests);
         assertFalse(Model.isModelLoaded(2));
         assertEquals(java.util.Arrays.asList(5, 2), requests);
-        Model.method461(3);
+        Model.unloadModelHeader(3);
         assertFalse(Model.isModelLoaded(3));
         assertEquals(3, (int) requests.get(2));
     }
@@ -55,8 +55,8 @@ public class ModelLookupTest {
         headers[1] = big;
         Model small = Model.getModel(3);
         Model large = Model.getModel(1);
-        assertEquals(0, small.anInt1626);
-        assertEquals(4, large.anInt1626);
+        assertEquals(0, small.vertexCount);
+        assertEquals(4, large.vertexCount);
     }
 
     @Test public void method462AndMethod463ReturnNullOrFalseBeforeInitialisation() throws Exception {

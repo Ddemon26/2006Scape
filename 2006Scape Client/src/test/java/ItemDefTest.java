@@ -30,7 +30,7 @@ public class ItemDefTest {
         byte[] done() { o.write(0); return o.toByteArray(); }
     }
 
-    // ---- synthetic model data in the cache format read by Model.method460 ----
+    // ---- synthetic model data in the cache format read by Model.loadModelHeader ----
     /** Triangle (X,0,0) (X+10,0,0) (X,10,10) with X=20+id; one face of colour `color`. */
     static byte[] triangle(int id, int color, boolean reversed) {
         ByteArrayOutputStream o = new ByteArrayOutputStream();
@@ -63,7 +63,7 @@ public class ItemDefTest {
         savedArr = sget(Model.class, "modelHeaders"); savedFetcher = sget(Model.class, "modelRequester");
         sd[0] = sget(ItemDef.class, "cache"); sd[1] = sget(ItemDef.class, "cacheIndex"); sd[2] = sget(ItemDef.class, "stream");
         sd[3] = sget(ItemDef.class, "streamIndices"); sd[4] = ItemDef.totalItems;
-        spy = new Spy(); Model.method459(64, spy);
+        spy = new Spy(); Model.initModelHeaders(64, spy);
         ItemDef.mruNodes1.clear(); ItemDef.mruNodes2.clear();
     }
     @After public void tearDown() throws Exception {
@@ -73,12 +73,12 @@ public class ItemDefTest {
         ItemDef.mruNodes1.clear(); ItemDef.mruNodes2.clear();
     }
 
-    private static void load(int id) { Model.method460(triangle(id, 40000, false), id); }
+    private static void load(int id) { Model.loadModelHeader(triangle(id, 40000, false), id); }
     private static void loadAll(int... ids) { for (int id : ids) load(id); }
     private static int[] sh(Model m, int n) throws Exception { return (int[]) f(Model.class, "faceShade" + (char) ('A' + n - 4)).get(m); }
-    private static int[] xs(Model m) { return Arrays.copyOf(m.anIntArray1627, m.anInt1626); }
-    private static int[] ys(Model m) { return Arrays.copyOf(m.anIntArray1628, m.anInt1626); }
-    private static int[] zs(Model m) { return Arrays.copyOf(m.anIntArray1629, m.anInt1626); }
+    private static int[] xs(Model m) { return Arrays.copyOf(m.vertexX, m.vertexCount); }
+    private static int[] ys(Model m) { return Arrays.copyOf(m.vertexY, m.vertexCount); }
+    private static int[] zs(Model m) { return Arrays.copyOf(m.vertexZ, m.vertexCount); }
     private static int[] x3(int... ids) { int[] r = new int[ids.length * 3]; for (int i = 0; i < ids.length; i++) { r[i * 3] = 20 + ids[i]; r[i * 3 + 1] = 30 + ids[i]; r[i * 3 + 2] = 20 + ids[i]; } return r; }
 
     /** Installs records as the item database. Record i is item id i. */
@@ -161,7 +161,7 @@ public class ItemDefTest {
         loadAll(41, 42); assertTrue((Boolean) call(d, "isHeadModelReady", I, 1)); assertTrue((Boolean) call(d, "isHeadModelReady", I, 3));
         d = withModels(11, 12, 13, 21, 22, 23, -1, 32, -1, 42);
         assertTrue((Boolean) call(d, "isHeadModelReady", I, 0)); assertTrue((Boolean) call(d, "isHeadModelReady", I, 1));
-        d = withModels(11, 12, 13, 21, 22, 23, 31, -1, 41, -1); spy.requested.clear(); Model.method461(31);
+        d = withModels(11, 12, 13, 21, 22, 23, 31, -1, 41, -1); spy.requested.clear(); Model.unloadModelHeader(31);
         assertFalse((Boolean) call(d, "isHeadModelReady", I, 0)); assertEquals(Arrays.asList(31), spy.requested);
     }
 
@@ -208,14 +208,14 @@ public class ItemDefTest {
         ItemDef d = withModels(11, 12, -1, -1, -1, -1, 11, -1, -1, -1);
         seti(d, "modelID", 21);
         set(d, "modifiedModelColors", new int[]{40000, 5}); set(d, "originalModelColors", new int[]{123, 6});
-        assertArrayEquals(new int[]{123, 123}, Arrays.copyOf(((Model) call(d, "getWornModel", I, 0)).anIntArray1640, 2));
-        assertEquals(123, ((Model) call(d, "getHeadModel", I, 0)).anIntArray1640[0]);
+        assertArrayEquals(new int[]{123, 123}, Arrays.copyOf(((Model) call(d, "getWornModel", I, 0)).faceColors, 2));
+        assertEquals(123, ((Model) call(d, "getHeadModel", I, 0)).faceColors[0]);
         Model ref = Model.getModel(21); ref.recolor(40000, 123); ref.applyLighting(64, 768, -50, -10, -50, true);
         Model lit = (Model) call(d, "getLitModel", I, 1);
         assertArrayEquals(sh(ref, 4), sh(lit, 4));
         Model plainRef = Model.getModel(21); plainRef.applyLighting(64, 768, -50, -10, -50, true);
         assertFalse(Arrays.equals(sh(plainRef, 4), sh(lit, 4)));
-        assertEquals(123, ((Model) call(d, "getUnlitModel", I, 1)).anIntArray1640[0]);
+        assertEquals(123, ((Model) call(d, "getUnlitModel", I, 1)).faceColors[0]);
     }
 
     // ================= getLitModel / getUnlitModel =================
@@ -245,11 +245,11 @@ public class ItemDefTest {
         assertArrayEquals(new int[]{20, 25, 20}, xs(a));            // x 41,51,41 * 64 / 128
         assertArrayEquals(new int[]{0, 0, 20}, ys(a));              // y 10 * 256 / 128
         assertArrayEquals(new int[]{0, 0, 2}, zs(a));               // z 10 * 32 / 128
-        assertTrue(a.aBoolean1659); assertNotNull(sh(a, 4));
+        assertTrue(a.pickByBounds); assertNotNull(sh(a, 4));
         Model u1 = ItemDef.forID(3).getUnlitModel(1), u2 = ItemDef.forID(3).getUnlitModel(1);
         assertNotSame(u1, u2); assertNotSame(a, u1);
         assertArrayEquals(x3(21), xs(u1)); assertArrayEquals(new int[]{0, 0, 10}, ys(u1)); assertArrayEquals(new int[]{0, 0, 10}, zs(u1));
-        assertFalse(u1.aBoolean1659); assertNull(sh(u1, 4));
+        assertFalse(u1.pickByBounds); assertNull(sh(u1, 4));
         // cache is keyed by item id: another item gets its own model
         r[4] = plain(22); install(r); loadAll(21, 22);
         assertNotSame(ItemDef.forID(3).getLitModel(1), ItemDef.forID(4).getLitModel(1));
@@ -271,7 +271,7 @@ public class ItemDefTest {
         for (int[] ab : new int[][]{{0, 0}, {-5, 15}, {20, 0}, {0, -30}, {-10, 45}}) {
             byte[][] r = new byte[6][]; for (int i = 0; i < 6; i++) r[i] = blank();
             r[3] = new Rec().b(1).s(21).b(113).b(ab[0] & 0xff).b(114).b(ab[1] / 5 & 0xff).done();
-            install(r); ItemDef.mruNodes2.clear(); Model.method460(triangle(21, 0x2A7F, false), 21);
+            install(r); ItemDef.mruNodes2.clear(); Model.loadModelHeader(triangle(21, 0x2A7F, false), 21);
             Model m = ItemDef.forID(3).getLitModel(1);
             Model ref = Model.getModel(21); ref.applyLighting(64 + ab[0], 768 + ab[1], -50, -10, -50, true);
             assertArrayEquals(Arrays.toString(ab), sh(ref, 4), sh(m, 4));
@@ -283,7 +283,7 @@ public class ItemDefTest {
         assertFalse(Arrays.equals(sh(base, 4), sh(amb, 4))); assertFalse(Arrays.equals(sh(base, 4), sh(div, 4)));
     }
     @Test public void firstLightingArgumentIsAdditiveAmbientAndSecondDividesTheDirectionalTerm() throws Exception {
-        Model.method460(triangle(21, 0x2A7F, false), 21); Model.method460(triangle(22, 0x2A7F, true), 22);
+        Model.loadModelHeader(triangle(21, 0x2A7F, false), 21); Model.loadModelHeader(triangle(22, 0x2A7F, true), 22);
         int[] amb = new int[2], dim = new int[2], bright = new int[2];
         for (int k = 0; k < 2; k++) {
             Model m0 = Model.getModel(21 + k); m0.applyLighting(64, 768, -50, -10, -50, true);
@@ -320,7 +320,7 @@ public class ItemDefTest {
             assertArrayEquals(gender == 0 ? x3(31, 32) : x3(41, 42), xs(p.buildHeadModel()));
         }
         Player p = new Player(); p.visible = true; seti(p, "gender", 1); p.equipment[0] = 512 + 3;
-        Model.method461(41); assertNull(p.buildHeadModel());
+        Model.unloadModelHeader(41); assertNull(p.buildHeadModel());
     }
     @Test public void playerBodyModelUsesTheWornSetOfTheAppearanceGender() throws Exception {
         byte[][] r = new byte[8][]; for (int i = 0; i < 8; i++) r[i] = blank();
@@ -379,7 +379,7 @@ public class ItemDefTest {
     private int[] savedPalette;
     private void paletteOn() { savedPalette = Texture.hslToRgbPalette.clone(); Arrays.fill(Texture.hslToRgbPalette, PAL); }
     private void paletteOff() { if (savedPalette != null) System.arraycopy(savedPalette, 0, Texture.hslToRgbPalette, 0, savedPalette.length); }
-    private static void loadRev(int... ids) { for (int id : ids) Model.method460(triangle(id, 0x2A7F, true), id); }
+    private static void loadRev(int... ids) { for (int id : ids) Model.loadModelHeader(triangle(id, 0x2A7F, true), id); }
     private static Rec spriteRec(int model) { return spriteRec(model, 0); }
     private static Rec spriteRec(int model, int shift) {
         int off = 4 * (20 + model) + 20 + shift;
@@ -447,7 +447,7 @@ public class ItemDefTest {
             // only the item id keys the cache
             assertNotSame(ItemDef.getSprite(4, 1, 0), ItemDef.getSprite(12, 1, 0));
             // model not loaded: nothing drawn, nothing cached
-            Model.method461(22); ItemDef.mruNodes1.clear(); ItemDef.mruNodes2.clear(); assertNull(ItemDef.getSprite(4, 1, 0));
+            Model.unloadModelHeader(22); ItemDef.mruNodes1.clear(); ItemDef.mruNodes2.clear(); assertNull(ItemDef.getSprite(4, 1, 0));
         } finally { paletteOff(); }
     }
     @Test public void spriteOutlineParameterSelectsColouredRingShadowOrNothingAndTheZoomRules() throws Exception {
@@ -501,7 +501,7 @@ public class ItemDefTest {
             assertTrue(count(base.pixels, PAL) > 0); assertFalse(Arrays.equals(base.pixels, templ.pixels));
             assertEquals(33, note.trimWidth); assertEquals(-1, note.trimHeight);
             assertEquals(-1, base.trimHeight); assertEquals(32, base.trimWidth);   // the base sprite keeps its own trim fields
-            Model.method461(21); ItemDef.mruNodes1.clear(); ItemDef.mruNodes2.clear(); assertNull(ItemDef.getSprite(2, 1, 0));
+            Model.unloadModelHeader(21); ItemDef.mruNodes1.clear(); ItemDef.mruNodes2.clear(); assertNull(ItemDef.getSprite(2, 1, 0));
         } finally { paletteOff(); }
     }
 
@@ -673,7 +673,7 @@ public class ItemDefTest {
     }
     private static int[] bodyXs139(Player p, Animation[] anims) throws Exception {
         Constructor<Model> c = Model.class.getDeclaredConstructor(); c.setAccessible(true); Model m = c.newInstance();
-        m.anInt1626 = 2; m.anInt1630 = 0; m.anIntArray1627 = new int[]{10, 20}; m.anIntArray1628 = new int[]{0, 0}; m.anIntArray1629 = new int[]{0, 0};
+        m.vertexCount = 2; m.faceCount = 0; m.vertexX = new int[]{10, 20}; m.vertexY = new int[]{0, 0}; m.vertexZ = new int[]{0, 0};
         m.vertexGroups = new int[][]{{0}, {1}};
         Player.mruNodes.clear(); Player.mruNodes.removeFromCache(m, 9000L);
         Animation.anims = anims;
@@ -730,8 +730,8 @@ public class ItemDefTest {
 
     private void headSetup144() throws Exception {
         install(blanks(8));
-        Model.method460(triangle(1, 40000, false), 1); Model.method460(triangle(12, 40001, false), 12);
-        Model.method460(triangle(23, 40002, false), 23); Model.method460(triangle(34, 40003, false), 34);
+        Model.loadModelHeader(triangle(1, 40000, false), 1); Model.loadModelHeader(triangle(12, 40001, false), 12);
+        Model.loadModelHeader(triangle(23, 40002, false), 23); Model.loadModelHeader(triangle(34, 40003, false), 34);
         ItemDef[] cache = (ItemDef[]) sget(ItemDef.class, "cache");
         cache[0] = withModels(-1, -1, -1, -1, -1, -1, 1, 12, -1, -1); seti(cache[0], "id", 3);
         cache[1] = withModels(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1); seti(cache[1], "id", 4);
@@ -747,17 +747,17 @@ public class ItemDefTest {
             p.equipment[0] = 512 + 3; p.equipment[2] = 512 + 4; p.equipment[5] = 0; p.equipment[11] = 512 + 5;
             Model plain = p.buildHeadModel();
             assertArrayEquals(x3(1, 12, 23, 34), xs(plain));
-            assertArrayEquals(new int[]{40000, 40001, 40002, 40003}, Arrays.copyOf(plain.anIntArray1640, 4));
+            assertArrayEquals(new int[]{40000, 40001, 40002, 40003}, Arrays.copyOf(plain.faceColors, 4));
             int[] src = {40000, 40001, 40002, 40003, 39999};
             for (int j = 0; j < 5; j++) { pal[j][0] = src[j]; pal[j][1] = 100 + j; pal[j][2] = 200 + j; }
             pal1204[0] = 40003; pal1204[1] = 555; pal1204[2] = 556;
             int[] colours = {1, 1, 2, 0, 1};
             System.arraycopy(colours, 0, (int[]) get(p, "anIntArray1700"), 0, 5);
-            assertArrayEquals(new int[]{100, 101, 202, 555}, Arrays.copyOf(p.buildHeadModel().anIntArray1640, 4));
+            assertArrayEquals(new int[]{100, 101, 202, 555}, Arrays.copyOf(p.buildHeadModel().faceColors, 4));
             colours[1] = 2; System.arraycopy(colours, 0, (int[]) get(p, "anIntArray1700"), 0, 5);
-            assertArrayEquals(new int[]{100, 201, 202, 556}, Arrays.copyOf(p.buildHeadModel().anIntArray1640, 4));
+            assertArrayEquals(new int[]{100, 201, 202, 556}, Arrays.copyOf(p.buildHeadModel().faceColors, 4));
             p.equipment[0] = 0; p.equipment[11] = 0;
-            assertEquals(0, p.buildHeadModel().anInt1626);
+            assertEquals(0, p.buildHeadModel().vertexCount);
         } finally {
             for (int i = 0; i < 5; i++) System.arraycopy(savedPal[i], 0, pal[i], 0, savedPal[i].length);
             System.arraycopy(saved1204, 0, pal1204, 0, saved1204.length);
@@ -766,7 +766,7 @@ public class ItemDefTest {
 
     private static int[] descXs144(Player p, EntityDef d, Animation[] anims) throws Exception {
         Constructor<Model> c = Model.class.getDeclaredConstructor(); c.setAccessible(true); Model m = c.newInstance();
-        m.anInt1626 = 2; m.anInt1630 = 0; m.anIntArray1627 = new int[]{10, 20}; m.anIntArray1628 = new int[]{0, 0}; m.anIntArray1629 = new int[]{0, 0};
+        m.vertexCount = 2; m.faceCount = 0; m.vertexX = new int[]{10, 20}; m.vertexY = new int[]{0, 0}; m.vertexZ = new int[]{0, 0};
         m.vertexGroups = new int[][]{{0}, {1}};
         EntityDef.mruNodes.clear(); EntityDef.mruNodes.removeFromCache(m, d.type);
         Animation.anims = anims;

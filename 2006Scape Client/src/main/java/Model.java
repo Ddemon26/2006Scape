@@ -11,9 +11,9 @@ public final class Model extends Animable {
 		screenX = null;
 		screenY = null;
 		vertexDepth = null;
-		anIntArray1668 = null;
-		anIntArray1669 = null;
-		anIntArray1670 = null;
+		vertexCameraX = null;
+		vertexCameraY = null;
+		vertexCameraZ = null;
 		depthBucketFaceCounts = null;
 		depthBucketFaces = null;
 		priorityFaceCounts = null;
@@ -27,12 +27,12 @@ public final class Model extends Animable {
 		reciprocalTable16 = null;
 	}
 
-	public static void method459(int i, OnDemandFetcherParent onDemandFetcherParent) {
+	public static void initModelHeaders(int i, OnDemandFetcherParent onDemandFetcherParent) {
 		modelHeaders = new ModelHeader[i];
 		modelRequester = onDemandFetcherParent;
 	}
 
-	public static void method460(byte data[], int modelId) {
+	public static void loadModelHeader(byte data[], int modelId) {
 		if (data == null) {
 			ModelHeader header = modelHeaders[modelId] = new ModelHeader();
 			header.vertexCount = 0;
@@ -105,7 +105,7 @@ public final class Model extends Animable {
 		offset += zDataLength;
 	}
 
-	public static void method461(int modelId) {
+	public static void unloadModelHeader(int modelId) {
 		modelHeaders[modelId] = null;
 	}
 
@@ -136,42 +136,42 @@ public final class Model extends Animable {
 	}
 
 	private Model() {
-		aBoolean1659 = false;
+		pickByBounds = false;
 	}
 
 	private Model(int modelId) {
-		aBoolean1659 = false;
+		pickByBounds = false;
 		ModelHeader header = modelHeaders[modelId];
-		anInt1626 = header.vertexCount;
-		anInt1630 = header.faceCount;
+		vertexCount = header.vertexCount;
+		faceCount = header.faceCount;
 		texturedFaceCount = header.texturedFaceCount;
-		anIntArray1627 = new int[anInt1626];
-		anIntArray1628 = new int[anInt1626];
-		anIntArray1629 = new int[anInt1626];
-		anIntArray1631 = new int[anInt1630];
-		anIntArray1632 = new int[anInt1630];
-		anIntArray1633 = new int[anInt1630];
+		vertexX = new int[vertexCount];
+		vertexY = new int[vertexCount];
+		vertexZ = new int[vertexCount];
+		faceVertexA = new int[faceCount];
+		faceVertexB = new int[faceCount];
+		faceVertexC = new int[faceCount];
 		texturedFaceVertexA = new int[texturedFaceCount];
 		texturedFaceVertexB = new int[texturedFaceCount];
 		texturedFaceVertexC = new int[texturedFaceCount];
 		if (header.vertexGroupIdsOffset >= 0) {
-			vertexGroupIds = new int[anInt1626];
+			vertexGroupIds = new int[vertexCount];
 		}
 		if (header.faceRenderFlagsOffset >= 0) {
-			anIntArray1637 = new int[anInt1630];
+			faceRenderFlags = new int[faceCount];
 		}
 		if (header.facePrioritiesOffset >= 0) {
-			facePriorities = new int[anInt1630];
+			facePriorities = new int[faceCount];
 		} else {
 			uniformFacePriority = -header.facePrioritiesOffset - 1;
 		}
 		if (header.faceAlphasOffset >= 0) {
-			faceAlphas = new int[anInt1630];
+			faceAlphas = new int[faceCount];
 		}
 		if (header.faceGroupIdsOffset >= 0) {
-			faceGroupIds = new int[anInt1630];
+			faceGroupIds = new int[faceCount];
 		}
-		anIntArray1640 = new int[anInt1630];
+		faceColors = new int[faceCount];
 		Stream stream = new Stream(header.data);
 		stream.currentOffset = header.vertexFlagsOffset;
 		Stream stream_1 = new Stream(header.data);
@@ -185,7 +185,7 @@ public final class Model extends Animable {
 		int previousX = 0;
 		int previousY = 0;
 		int previousZ = 0;
-		for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
+		for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++) {
 			int vertexFlags = stream.readUnsignedByte();
 			int deltaX = 0;
 			if ((vertexFlags & 1) != 0) {
@@ -199,12 +199,12 @@ public final class Model extends Animable {
 			if ((vertexFlags & 4) != 0) {
 				deltaZ = stream_3.readSignedSmart();
 			}
-			anIntArray1627[vertexIndex] = previousX + deltaX;
-			anIntArray1628[vertexIndex] = previousY + deltaY;
-			anIntArray1629[vertexIndex] = previousZ + deltaZ;
-			previousX = anIntArray1627[vertexIndex];
-			previousY = anIntArray1628[vertexIndex];
-			previousZ = anIntArray1629[vertexIndex];
+			vertexX[vertexIndex] = previousX + deltaX;
+			vertexY[vertexIndex] = previousY + deltaY;
+			vertexZ[vertexIndex] = previousZ + deltaZ;
+			previousX = vertexX[vertexIndex];
+			previousY = vertexY[vertexIndex];
+			previousZ = vertexZ[vertexIndex];
 			if (vertexGroupIds != null) {
 				vertexGroupIds[vertexIndex] = stream_4.readUnsignedByte();
 			}
@@ -215,10 +215,10 @@ public final class Model extends Animable {
 		stream_2.currentOffset = header.facePrioritiesOffset;
 		stream_3.currentOffset = header.faceAlphasOffset;
 		stream_4.currentOffset = header.faceGroupIdsOffset;
-		for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
-			anIntArray1640[faceIndex] = stream.readUnsignedShortBigEndian();
-			if (anIntArray1637 != null) {
-				anIntArray1637[faceIndex] = stream_1.readUnsignedByte();
+		for (int faceIndex = 0; faceIndex < faceCount; faceIndex++) {
+			faceColors[faceIndex] = stream.readUnsignedShortBigEndian();
+			if (faceRenderFlags != null) {
+				faceRenderFlags[faceIndex] = stream_1.readUnsignedByte();
 			}
 			if (facePriorities != null) {
 				facePriorities[faceIndex] = stream_2.readUnsignedByte();
@@ -237,7 +237,7 @@ public final class Model extends Animable {
 		int vertexB = 0;
 		int vertexC = 0;
 		int previousVertex = 0;
-		for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
+		for (int faceIndex = 0; faceIndex < faceCount; faceIndex++) {
 			int faceType = stream_1.readUnsignedByte();
 			if (faceType == 1) {
 				vertexA = stream.readSignedSmart() + previousVertex;
@@ -246,25 +246,25 @@ public final class Model extends Animable {
 				previousVertex = vertexB;
 				vertexC = stream.readSignedSmart() + previousVertex;
 				previousVertex = vertexC;
-				anIntArray1631[faceIndex] = vertexA;
-				anIntArray1632[faceIndex] = vertexB;
-				anIntArray1633[faceIndex] = vertexC;
+				faceVertexA[faceIndex] = vertexA;
+				faceVertexB[faceIndex] = vertexB;
+				faceVertexC[faceIndex] = vertexC;
 			}
 			if (faceType == 2) {
 				vertexB = vertexC;
 				vertexC = stream.readSignedSmart() + previousVertex;
 				previousVertex = vertexC;
-				anIntArray1631[faceIndex] = vertexA;
-				anIntArray1632[faceIndex] = vertexB;
-				anIntArray1633[faceIndex] = vertexC;
+				faceVertexA[faceIndex] = vertexA;
+				faceVertexB[faceIndex] = vertexB;
+				faceVertexC[faceIndex] = vertexC;
 			}
 			if (faceType == 3) {
 				vertexA = vertexC;
 				vertexC = stream.readSignedSmart() + previousVertex;
 				previousVertex = vertexC;
-				anIntArray1631[faceIndex] = vertexA;
-				anIntArray1632[faceIndex] = vertexB;
-				anIntArray1633[faceIndex] = vertexC;
+				faceVertexA[faceIndex] = vertexA;
+				faceVertexB[faceIndex] = vertexB;
+				faceVertexC[faceIndex] = vertexC;
 			}
 			if (faceType == 4) {
 				int swapTemp = vertexA;
@@ -272,9 +272,9 @@ public final class Model extends Animable {
 				vertexB = swapTemp;
 				vertexC = stream.readSignedSmart() + previousVertex;
 				previousVertex = vertexC;
-				anIntArray1631[faceIndex] = vertexA;
-				anIntArray1632[faceIndex] = vertexB;
-				anIntArray1633[faceIndex] = vertexC;
+				faceVertexA[faceIndex] = vertexA;
+				faceVertexB[faceIndex] = vertexB;
+				faceVertexC[faceIndex] = vertexC;
 			}
 		}
 
@@ -288,22 +288,22 @@ public final class Model extends Animable {
 	}
 
 	public Model(int partCount, Model parts[]) {
-		aBoolean1659 = false;
+		pickByBounds = false;
 		boolean needsFaceRenderFlags = false;
 		boolean needsFacePriorities = false;
 		boolean needsFaceAlpha = false;
 		boolean needsFaceGroupIds = false;
-		anInt1626 = 0;
-		anInt1630 = 0;
+		vertexCount = 0;
+		faceCount = 0;
 		texturedFaceCount = 0;
 		uniformFacePriority = -1;
 		for (int partIndex = 0; partIndex < partCount; partIndex++) {
 			Model sourcePart = parts[partIndex];
 			if (sourcePart != null) {
-				anInt1626 += sourcePart.anInt1626;
-				anInt1630 += sourcePart.anInt1630;
+				vertexCount += sourcePart.vertexCount;
+				faceCount += sourcePart.faceCount;
 				texturedFaceCount += sourcePart.texturedFaceCount;
-				needsFaceRenderFlags |= sourcePart.anIntArray1637 != null;
+				needsFaceRenderFlags |= sourcePart.faceRenderFlags != null;
 				if (sourcePart.facePriorities != null) {
 					needsFacePriorities = true;
 				} else {
@@ -319,70 +319,70 @@ public final class Model extends Animable {
 			}
 		}
 
-		anIntArray1627 = new int[anInt1626];
-		anIntArray1628 = new int[anInt1626];
-		anIntArray1629 = new int[anInt1626];
-		vertexGroupIds = new int[anInt1626];
-		anIntArray1631 = new int[anInt1630];
-		anIntArray1632 = new int[anInt1630];
-		anIntArray1633 = new int[anInt1630];
+		vertexX = new int[vertexCount];
+		vertexY = new int[vertexCount];
+		vertexZ = new int[vertexCount];
+		vertexGroupIds = new int[vertexCount];
+		faceVertexA = new int[faceCount];
+		faceVertexB = new int[faceCount];
+		faceVertexC = new int[faceCount];
 		texturedFaceVertexA = new int[texturedFaceCount];
 		texturedFaceVertexB = new int[texturedFaceCount];
 		texturedFaceVertexC = new int[texturedFaceCount];
 		if (needsFaceRenderFlags) {
-			anIntArray1637 = new int[anInt1630];
+			faceRenderFlags = new int[faceCount];
 		}
 		if (needsFacePriorities) {
-			facePriorities = new int[anInt1630];
+			facePriorities = new int[faceCount];
 		}
 		if (needsFaceAlpha) {
-			faceAlphas = new int[anInt1630];
+			faceAlphas = new int[faceCount];
 		}
 		if (needsFaceGroupIds) {
-			faceGroupIds = new int[anInt1630];
+			faceGroupIds = new int[faceCount];
 		}
-		anIntArray1640 = new int[anInt1630];
-		anInt1626 = 0;
-		anInt1630 = 0;
+		faceColors = new int[faceCount];
+		vertexCount = 0;
+		faceCount = 0;
 		texturedFaceCount = 0;
 		int textureTriangleOffset = 0;
 		for (int partIndex = 0; partIndex < partCount; partIndex++) {
 			Model sourcePart = parts[partIndex];
 			if (sourcePart != null) {
-				for (int faceIndex = 0; faceIndex < sourcePart.anInt1630; faceIndex++) {
+				for (int faceIndex = 0; faceIndex < sourcePart.faceCount; faceIndex++) {
 					if (needsFaceRenderFlags) {
-						if (sourcePart.anIntArray1637 == null) {
-							anIntArray1637[anInt1630] = 0;
+						if (sourcePart.faceRenderFlags == null) {
+							faceRenderFlags[faceCount] = 0;
 						} else {
-							int faceRenderFlags = sourcePart.anIntArray1637[faceIndex];
-							if ((faceRenderFlags & 2) == 2) {
-								faceRenderFlags += textureTriangleOffset << 2;
+							int renderFlags = sourcePart.faceRenderFlags[faceIndex];
+							if ((renderFlags & 2) == 2) {
+								renderFlags += textureTriangleOffset << 2;
 							}
-							anIntArray1637[anInt1630] = faceRenderFlags;
+							faceRenderFlags[faceCount] = renderFlags;
 						}
 					}
 					if (needsFacePriorities) {
 						if (sourcePart.facePriorities == null) {
-							facePriorities[anInt1630] = sourcePart.uniformFacePriority;
+							facePriorities[faceCount] = sourcePart.uniformFacePriority;
 						} else {
-							facePriorities[anInt1630] = sourcePart.facePriorities[faceIndex];
+							facePriorities[faceCount] = sourcePart.facePriorities[faceIndex];
 						}
 					}
 					if (needsFaceAlpha) {
 						if (sourcePart.faceAlphas == null) {
-							faceAlphas[anInt1630] = 0;
+							faceAlphas[faceCount] = 0;
 						} else {
-							faceAlphas[anInt1630] = sourcePart.faceAlphas[faceIndex];
+							faceAlphas[faceCount] = sourcePart.faceAlphas[faceIndex];
 						}
 					}
 					if (needsFaceGroupIds && sourcePart.faceGroupIds != null) {
-						faceGroupIds[anInt1630] = sourcePart.faceGroupIds[faceIndex];
+						faceGroupIds[faceCount] = sourcePart.faceGroupIds[faceIndex];
 					}
-					anIntArray1640[anInt1630] = sourcePart.anIntArray1640[faceIndex];
-					anIntArray1631[anInt1630] = getOrAddVertex(sourcePart, sourcePart.anIntArray1631[faceIndex]);
-					anIntArray1632[anInt1630] = getOrAddVertex(sourcePart, sourcePart.anIntArray1632[faceIndex]);
-					anIntArray1633[anInt1630] = getOrAddVertex(sourcePart, sourcePart.anIntArray1633[faceIndex]);
-					anInt1630++;
+					faceColors[faceCount] = sourcePart.faceColors[faceIndex];
+					faceVertexA[faceCount] = getOrAddVertex(sourcePart, sourcePart.faceVertexA[faceIndex]);
+					faceVertexB[faceCount] = getOrAddVertex(sourcePart, sourcePart.faceVertexB[faceIndex]);
+					faceVertexC[faceCount] = getOrAddVertex(sourcePart, sourcePart.faceVertexC[faceIndex]);
+					faceCount++;
 				}
 
 				for (int textureTriangleIndex = 0; textureTriangleIndex < sourcePart.texturedFaceCount; textureTriangleIndex++) {
@@ -400,22 +400,22 @@ public final class Model extends Animable {
 
 	public Model(Model parts[]) {
 		int partCount = 2;// was parameter
-		aBoolean1659 = false;
+		pickByBounds = false;
 		boolean needsFaceRenderFlags = false;
 		boolean needsFacePriorities = false;
 		boolean needsFaceAlpha = false;
 		boolean needsFaceValues = false;
-		anInt1626 = 0;
-		anInt1630 = 0;
+		vertexCount = 0;
+		faceCount = 0;
 		texturedFaceCount = 0;
 		uniformFacePriority = -1;
 		for (int partIndex = 0; partIndex < partCount; partIndex++) {
 			Model sourcePart = parts[partIndex];
 			if (sourcePart != null) {
-				anInt1626 += sourcePart.anInt1626;
-				anInt1630 += sourcePart.anInt1630;
+				vertexCount += sourcePart.vertexCount;
+				faceCount += sourcePart.faceCount;
 				texturedFaceCount += sourcePart.texturedFaceCount;
-				needsFaceRenderFlags |= sourcePart.anIntArray1637 != null;
+				needsFaceRenderFlags |= sourcePart.faceRenderFlags != null;
 				if (sourcePart.facePriorities != null) {
 					needsFacePriorities = true;
 				} else {
@@ -427,85 +427,85 @@ public final class Model extends Animable {
 					}
 				}
 				needsFaceAlpha |= sourcePart.faceAlphas != null;
-				needsFaceValues |= sourcePart.anIntArray1640 != null;
+				needsFaceValues |= sourcePart.faceColors != null;
 			}
 		}
 
-		anIntArray1627 = new int[anInt1626];
-		anIntArray1628 = new int[anInt1626];
-		anIntArray1629 = new int[anInt1626];
-		anIntArray1631 = new int[anInt1630];
-		anIntArray1632 = new int[anInt1630];
-		anIntArray1633 = new int[anInt1630];
-		faceShadeA = new int[anInt1630];
-		faceShadeB = new int[anInt1630];
-		faceShadeC = new int[anInt1630];
+		vertexX = new int[vertexCount];
+		vertexY = new int[vertexCount];
+		vertexZ = new int[vertexCount];
+		faceVertexA = new int[faceCount];
+		faceVertexB = new int[faceCount];
+		faceVertexC = new int[faceCount];
+		faceShadeA = new int[faceCount];
+		faceShadeB = new int[faceCount];
+		faceShadeC = new int[faceCount];
 		texturedFaceVertexA = new int[texturedFaceCount];
 		texturedFaceVertexB = new int[texturedFaceCount];
 		texturedFaceVertexC = new int[texturedFaceCount];
 		if (needsFaceRenderFlags) {
-			anIntArray1637 = new int[anInt1630];
+			faceRenderFlags = new int[faceCount];
 		}
 		if (needsFacePriorities) {
-			facePriorities = new int[anInt1630];
+			facePriorities = new int[faceCount];
 		}
 		if (needsFaceAlpha) {
-			faceAlphas = new int[anInt1630];
+			faceAlphas = new int[faceCount];
 		}
 		if (needsFaceValues) {
-			anIntArray1640 = new int[anInt1630];
+			faceColors = new int[faceCount];
 		}
-		anInt1626 = 0;
-		anInt1630 = 0;
+		vertexCount = 0;
+		faceCount = 0;
 		texturedFaceCount = 0;
 		int textureTriangleOffset = 0;
 		for (int partIndex = 0; partIndex < partCount; partIndex++) {
 			Model sourcePart = parts[partIndex];
 			if (sourcePart != null) {
-				int vertexOffset = anInt1626;
-				for (int vertexIndex = 0; vertexIndex < sourcePart.anInt1626; vertexIndex++) {
-					anIntArray1627[anInt1626] = sourcePart.anIntArray1627[vertexIndex];
-					anIntArray1628[anInt1626] = sourcePart.anIntArray1628[vertexIndex];
-					anIntArray1629[anInt1626] = sourcePart.anIntArray1629[vertexIndex];
-					anInt1626++;
+				int vertexOffset = vertexCount;
+				for (int vertexIndex = 0; vertexIndex < sourcePart.vertexCount; vertexIndex++) {
+					vertexX[vertexCount] = sourcePart.vertexX[vertexIndex];
+					vertexY[vertexCount] = sourcePart.vertexY[vertexIndex];
+					vertexZ[vertexCount] = sourcePart.vertexZ[vertexIndex];
+					vertexCount++;
 				}
 
-				for (int faceIndex = 0; faceIndex < sourcePart.anInt1630; faceIndex++) {
-					anIntArray1631[anInt1630] = sourcePart.anIntArray1631[faceIndex] + vertexOffset;
-					anIntArray1632[anInt1630] = sourcePart.anIntArray1632[faceIndex] + vertexOffset;
-					anIntArray1633[anInt1630] = sourcePart.anIntArray1633[faceIndex] + vertexOffset;
-					faceShadeA[anInt1630] = sourcePart.faceShadeA[faceIndex];
-					faceShadeB[anInt1630] = sourcePart.faceShadeB[faceIndex];
-					faceShadeC[anInt1630] = sourcePart.faceShadeC[faceIndex];
+				for (int faceIndex = 0; faceIndex < sourcePart.faceCount; faceIndex++) {
+					faceVertexA[faceCount] = sourcePart.faceVertexA[faceIndex] + vertexOffset;
+					faceVertexB[faceCount] = sourcePart.faceVertexB[faceIndex] + vertexOffset;
+					faceVertexC[faceCount] = sourcePart.faceVertexC[faceIndex] + vertexOffset;
+					faceShadeA[faceCount] = sourcePart.faceShadeA[faceIndex];
+					faceShadeB[faceCount] = sourcePart.faceShadeB[faceIndex];
+					faceShadeC[faceCount] = sourcePart.faceShadeC[faceIndex];
 					if (needsFaceRenderFlags) {
-						if (sourcePart.anIntArray1637 == null) {
-							anIntArray1637[anInt1630] = 0;
+						if (sourcePart.faceRenderFlags == null) {
+							faceRenderFlags[faceCount] = 0;
 						} else {
-							int faceRenderFlags = sourcePart.anIntArray1637[faceIndex];
-							if ((faceRenderFlags & 2) == 2) {
-								faceRenderFlags += textureTriangleOffset << 2;
+							int renderFlags = sourcePart.faceRenderFlags[faceIndex];
+							if ((renderFlags & 2) == 2) {
+								renderFlags += textureTriangleOffset << 2;
 							}
-							anIntArray1637[anInt1630] = faceRenderFlags;
+							faceRenderFlags[faceCount] = renderFlags;
 						}
 					}
 					if (needsFacePriorities) {
 						if (sourcePart.facePriorities == null) {
-							facePriorities[anInt1630] = sourcePart.uniformFacePriority;
+							facePriorities[faceCount] = sourcePart.uniformFacePriority;
 						} else {
-							facePriorities[anInt1630] = sourcePart.facePriorities[faceIndex];
+							facePriorities[faceCount] = sourcePart.facePriorities[faceIndex];
 						}
 					}
 					if (needsFaceAlpha) {
 						if (sourcePart.faceAlphas == null) {
-							faceAlphas[anInt1630] = 0;
+							faceAlphas[faceCount] = 0;
 						} else {
-							faceAlphas[anInt1630] = sourcePart.faceAlphas[faceIndex];
+							faceAlphas[faceCount] = sourcePart.faceAlphas[faceIndex];
 						}
 					}
-					if (needsFaceValues && sourcePart.anIntArray1640 != null) {
-						anIntArray1640[anInt1630] = sourcePart.anIntArray1640[faceIndex];
+					if (needsFaceValues && sourcePart.faceColors != null) {
+						faceColors[faceCount] = sourcePart.faceColors[faceIndex];
 					}
-					anInt1630++;
+					faceCount++;
 				}
 
 				for (int textureTriangleIndex = 0; textureTriangleIndex < sourcePart.texturedFaceCount; textureTriangleIndex++) {
@@ -523,52 +523,52 @@ public final class Model extends Animable {
 	}
 
 	public Model(boolean shareFaceValues, boolean shareFaceAlpha, boolean shareVertices, Model sourceModel) {
-		aBoolean1659 = false;
-		anInt1626 = sourceModel.anInt1626;
-		anInt1630 = sourceModel.anInt1630;
+		pickByBounds = false;
+		vertexCount = sourceModel.vertexCount;
+		faceCount = sourceModel.faceCount;
 		texturedFaceCount = sourceModel.texturedFaceCount;
 		if (shareVertices) {
-			anIntArray1627 = sourceModel.anIntArray1627;
-			anIntArray1628 = sourceModel.anIntArray1628;
-			anIntArray1629 = sourceModel.anIntArray1629;
+			vertexX = sourceModel.vertexX;
+			vertexY = sourceModel.vertexY;
+			vertexZ = sourceModel.vertexZ;
 		} else {
-			anIntArray1627 = new int[anInt1626];
-			anIntArray1628 = new int[anInt1626];
-			anIntArray1629 = new int[anInt1626];
-			for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
-				anIntArray1627[vertexIndex] = sourceModel.anIntArray1627[vertexIndex];
-				anIntArray1628[vertexIndex] = sourceModel.anIntArray1628[vertexIndex];
-				anIntArray1629[vertexIndex] = sourceModel.anIntArray1629[vertexIndex];
+			vertexX = new int[vertexCount];
+			vertexY = new int[vertexCount];
+			vertexZ = new int[vertexCount];
+			for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++) {
+				vertexX[vertexIndex] = sourceModel.vertexX[vertexIndex];
+				vertexY[vertexIndex] = sourceModel.vertexY[vertexIndex];
+				vertexZ[vertexIndex] = sourceModel.vertexZ[vertexIndex];
 			}
 
 		}
 		if (shareFaceValues) {
-			anIntArray1640 = sourceModel.anIntArray1640;
+			faceColors = sourceModel.faceColors;
 		} else {
-			anIntArray1640 = new int[anInt1630];
-			System.arraycopy(sourceModel.anIntArray1640, 0, anIntArray1640, 0, anInt1630);
+			faceColors = new int[faceCount];
+			System.arraycopy(sourceModel.faceColors, 0, faceColors, 0, faceCount);
 
 		}
 		if (shareFaceAlpha) {
 			faceAlphas = sourceModel.faceAlphas;
 		} else {
-			faceAlphas = new int[anInt1630];
+			faceAlphas = new int[faceCount];
 			if (sourceModel.faceAlphas == null) {
-				for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
+				for (int faceIndex = 0; faceIndex < faceCount; faceIndex++) {
 					faceAlphas[faceIndex] = 0;
 				}
 
 			} else {
-				System.arraycopy(sourceModel.faceAlphas, 0, faceAlphas, 0, anInt1630);
+				System.arraycopy(sourceModel.faceAlphas, 0, faceAlphas, 0, faceCount);
 
 			}
 		}
 		vertexGroupIds = sourceModel.vertexGroupIds;
 		faceGroupIds = sourceModel.faceGroupIds;
-		anIntArray1637 = sourceModel.anIntArray1637;
-		anIntArray1631 = sourceModel.anIntArray1631;
-		anIntArray1632 = sourceModel.anIntArray1632;
-		anIntArray1633 = sourceModel.anIntArray1633;
+		faceRenderFlags = sourceModel.faceRenderFlags;
+		faceVertexA = sourceModel.faceVertexA;
+		faceVertexB = sourceModel.faceVertexB;
+		faceVertexC = sourceModel.faceVertexC;
 		facePriorities = sourceModel.facePriorities;
 		uniformFacePriority = sourceModel.uniformFacePriority;
 		texturedFaceVertexA = sourceModel.texturedFaceVertexA;
@@ -577,63 +577,63 @@ public final class Model extends Animable {
 	}
 
 	public Model(boolean copyVertexY, boolean copyLightingData, Model sourceModel) {
-		aBoolean1659 = false;
-		anInt1626 = sourceModel.anInt1626;
-		anInt1630 = sourceModel.anInt1630;
+		pickByBounds = false;
+		vertexCount = sourceModel.vertexCount;
+		faceCount = sourceModel.faceCount;
 		texturedFaceCount = sourceModel.texturedFaceCount;
 		if (copyVertexY) {
-			anIntArray1628 = new int[anInt1626];
-			System.arraycopy(sourceModel.anIntArray1628, 0, anIntArray1628, 0, anInt1626);
+			vertexY = new int[vertexCount];
+			System.arraycopy(sourceModel.vertexY, 0, vertexY, 0, vertexCount);
 
 		} else {
-			anIntArray1628 = sourceModel.anIntArray1628;
+			vertexY = sourceModel.vertexY;
 		}
 		if (copyLightingData) {
-			faceShadeA = new int[anInt1630];
-			faceShadeB = new int[anInt1630];
-			faceShadeC = new int[anInt1630];
-			for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
+			faceShadeA = new int[faceCount];
+			faceShadeB = new int[faceCount];
+			faceShadeC = new int[faceCount];
+			for (int faceIndex = 0; faceIndex < faceCount; faceIndex++) {
 				faceShadeA[faceIndex] = sourceModel.faceShadeA[faceIndex];
 				faceShadeB[faceIndex] = sourceModel.faceShadeB[faceIndex];
 				faceShadeC[faceIndex] = sourceModel.faceShadeC[faceIndex];
 			}
 
-			anIntArray1637 = new int[anInt1630];
-			if (sourceModel.anIntArray1637 == null) {
-				for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
-					anIntArray1637[faceIndex] = 0;
+			faceRenderFlags = new int[faceCount];
+			if (sourceModel.faceRenderFlags == null) {
+				for (int faceIndex = 0; faceIndex < faceCount; faceIndex++) {
+					faceRenderFlags[faceIndex] = 0;
 				}
 
 			} else {
-				System.arraycopy(sourceModel.anIntArray1637, 0, anIntArray1637, 0, anInt1630);
+				System.arraycopy(sourceModel.faceRenderFlags, 0, faceRenderFlags, 0, faceCount);
 
 			}
-			super.aClass33Array1425 = new VertexNormal[anInt1626];
-			for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
-				VertexNormal copiedNormal = super.aClass33Array1425[vertexIndex] = new VertexNormal();
-				VertexNormal sourceNormal = sourceModel.aClass33Array1425[vertexIndex];
+			super.vertexNormals = new VertexNormal[vertexCount];
+			for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++) {
+				VertexNormal copiedNormal = super.vertexNormals[vertexIndex] = new VertexNormal();
+				VertexNormal sourceNormal = sourceModel.vertexNormals[vertexIndex];
 				copiedNormal.normalX = sourceNormal.normalX;
 				copiedNormal.normalY = sourceNormal.normalY;
 				copiedNormal.normalZ = sourceNormal.normalZ;
 				copiedNormal.faceCount = sourceNormal.faceCount;
 			}
 
-			aClass33Array1660 = sourceModel.aClass33Array1660;
+			originalVertexNormals = sourceModel.originalVertexNormals;
 		} else {
 			faceShadeA = sourceModel.faceShadeA;
 			faceShadeB = sourceModel.faceShadeB;
 			faceShadeC = sourceModel.faceShadeC;
-			anIntArray1637 = sourceModel.anIntArray1637;
+			faceRenderFlags = sourceModel.faceRenderFlags;
 		}
-		anIntArray1627 = sourceModel.anIntArray1627;
-		anIntArray1629 = sourceModel.anIntArray1629;
-		anIntArray1640 = sourceModel.anIntArray1640;
+		vertexX = sourceModel.vertexX;
+		vertexZ = sourceModel.vertexZ;
+		faceColors = sourceModel.faceColors;
 		faceAlphas = sourceModel.faceAlphas;
 		facePriorities = sourceModel.facePriorities;
 		uniformFacePriority = sourceModel.uniformFacePriority;
-		anIntArray1631 = sourceModel.anIntArray1631;
-		anIntArray1632 = sourceModel.anIntArray1632;
-		anIntArray1633 = sourceModel.anIntArray1633;
+		faceVertexA = sourceModel.faceVertexA;
+		faceVertexB = sourceModel.faceVertexB;
+		faceVertexC = sourceModel.faceVertexC;
 		texturedFaceVertexA = sourceModel.texturedFaceVertexA;
 		texturedFaceVertexB = sourceModel.texturedFaceVertexB;
 		texturedFaceVertexC = sourceModel.texturedFaceVertexC;
@@ -649,49 +649,49 @@ public final class Model extends Animable {
 	}
 
 	public void copyIntoAnimationScratch(Model sourceModel, boolean shareFaceAlpha) {
-		anInt1626 = sourceModel.anInt1626;
-		anInt1630 = sourceModel.anInt1630;
+		vertexCount = sourceModel.vertexCount;
+		faceCount = sourceModel.faceCount;
 		texturedFaceCount = sourceModel.texturedFaceCount;
-		if (animationScratchX.length < anInt1626) {
-			animationScratchX = new int[anInt1626 + 100];
-			animationScratchY = new int[anInt1626 + 100];
-			animationScratchZ = new int[anInt1626 + 100];
+		if (animationScratchX.length < vertexCount) {
+			animationScratchX = new int[vertexCount + 100];
+			animationScratchY = new int[vertexCount + 100];
+			animationScratchZ = new int[vertexCount + 100];
 		}
-		anIntArray1627 = animationScratchX;
-		anIntArray1628 = animationScratchY;
-		anIntArray1629 = animationScratchZ;
-		for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
-			anIntArray1627[vertexIndex] = sourceModel.anIntArray1627[vertexIndex];
-			anIntArray1628[vertexIndex] = sourceModel.anIntArray1628[vertexIndex];
-			anIntArray1629[vertexIndex] = sourceModel.anIntArray1629[vertexIndex];
+		vertexX = animationScratchX;
+		vertexY = animationScratchY;
+		vertexZ = animationScratchZ;
+		for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++) {
+			vertexX[vertexIndex] = sourceModel.vertexX[vertexIndex];
+			vertexY[vertexIndex] = sourceModel.vertexY[vertexIndex];
+			vertexZ[vertexIndex] = sourceModel.vertexZ[vertexIndex];
 		}
 
 		if (shareFaceAlpha) {
 			faceAlphas = sourceModel.faceAlphas;
 		} else {
-			if (animationScratchAlpha.length < anInt1630) {
-				animationScratchAlpha = new int[anInt1630 + 100];
+			if (animationScratchAlpha.length < faceCount) {
+				animationScratchAlpha = new int[faceCount + 100];
 			}
 			faceAlphas = animationScratchAlpha;
 			if (sourceModel.faceAlphas == null) {
-				for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
+				for (int faceIndex = 0; faceIndex < faceCount; faceIndex++) {
 					faceAlphas[faceIndex] = 0;
 				}
 
 			} else {
-				System.arraycopy(sourceModel.faceAlphas, 0, faceAlphas, 0, anInt1630);
+				System.arraycopy(sourceModel.faceAlphas, 0, faceAlphas, 0, faceCount);
 
 			}
 		}
-		anIntArray1637 = sourceModel.anIntArray1637;
-		anIntArray1640 = sourceModel.anIntArray1640;
+		faceRenderFlags = sourceModel.faceRenderFlags;
+		faceColors = sourceModel.faceColors;
 		facePriorities = sourceModel.facePriorities;
 		uniformFacePriority = sourceModel.uniformFacePriority;
 		faceGroups = sourceModel.faceGroups;
 		vertexGroups = sourceModel.vertexGroups;
-		anIntArray1631 = sourceModel.anIntArray1631;
-		anIntArray1632 = sourceModel.anIntArray1632;
-		anIntArray1633 = sourceModel.anIntArray1633;
+		faceVertexA = sourceModel.faceVertexA;
+		faceVertexB = sourceModel.faceVertexB;
+		faceVertexC = sourceModel.faceVertexC;
 		faceShadeA = sourceModel.faceShadeA;
 		faceShadeB = sourceModel.faceShadeB;
 		faceShadeC = sourceModel.faceShadeC;
@@ -702,11 +702,11 @@ public final class Model extends Animable {
 
 	private int getOrAddVertex(Model sourceModel, int sourceVertexIndex) {
 		int destinationVertexIndex = -1;
-		int vertexX = sourceModel.anIntArray1627[sourceVertexIndex];
-		int vertexY = sourceModel.anIntArray1628[sourceVertexIndex];
-		int vertexZ = sourceModel.anIntArray1629[sourceVertexIndex];
-		for (int existingVertexIndex = 0; existingVertexIndex < anInt1626; existingVertexIndex++) {
-			if (vertexX != anIntArray1627[existingVertexIndex] || vertexY != anIntArray1628[existingVertexIndex] || vertexZ != anIntArray1629[existingVertexIndex]) {
+		int pointX = sourceModel.vertexX[sourceVertexIndex];
+		int pointY = sourceModel.vertexY[sourceVertexIndex];
+		int pointZ = sourceModel.vertexZ[sourceVertexIndex];
+		for (int existingVertexIndex = 0; existingVertexIndex < vertexCount; existingVertexIndex++) {
+			if (pointX != vertexX[existingVertexIndex] || pointY != vertexY[existingVertexIndex] || pointZ != vertexZ[existingVertexIndex]) {
 				continue;
 			}
 			destinationVertexIndex = existingVertexIndex;
@@ -714,13 +714,13 @@ public final class Model extends Animable {
 		}
 
 		if (destinationVertexIndex == -1) {
-			anIntArray1627[anInt1626] = vertexX;
-			anIntArray1628[anInt1626] = vertexY;
-			anIntArray1629[anInt1626] = vertexZ;
+			vertexX[vertexCount] = pointX;
+			vertexY[vertexCount] = pointY;
+			vertexZ[vertexCount] = pointZ;
 			if (sourceModel.vertexGroupIds != null) {
-				vertexGroupIds[anInt1626] = sourceModel.vertexGroupIds[sourceVertexIndex];
+				vertexGroupIds[vertexCount] = sourceModel.vertexGroupIds[sourceVertexIndex];
 			}
-			destinationVertexIndex = anInt1626++;
+			destinationVertexIndex = vertexCount++;
 		}
 		return destinationVertexIndex;
 	}
@@ -729,17 +729,17 @@ public final class Model extends Animable {
 		super.modelHeight = 0;
 		radiusXZ = 0;
 		maxY = 0;
-		for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
-			int vertexX = anIntArray1627[vertexIndex];
-			int vertexY = anIntArray1628[vertexIndex];
-			int vertexZ = anIntArray1629[vertexIndex];
-			if (-vertexY > super.modelHeight) {
-				super.modelHeight = -vertexY;
+		for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++) {
+			int pointX = vertexX[vertexIndex];
+			int pointY = vertexY[vertexIndex];
+			int pointZ = vertexZ[vertexIndex];
+			if (-pointY > super.modelHeight) {
+				super.modelHeight = -pointY;
 			}
-			if (vertexY > maxY) {
-				maxY = vertexY;
+			if (pointY > maxY) {
+				maxY = pointY;
 			}
-			int radiusSquaredXZ = vertexX * vertexX + vertexZ * vertexZ;
+			int radiusSquaredXZ = pointX * pointX + pointZ * pointZ;
 			if (radiusSquaredXZ > radiusXZ) {
 				radiusXZ = radiusSquaredXZ;
 			}
@@ -752,13 +752,13 @@ public final class Model extends Animable {
 	public void recalculateYBounds() {
 		super.modelHeight = 0;
 		maxY = 0;
-		for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
-			int vertexY = anIntArray1628[vertexIndex];
-			if (-vertexY > super.modelHeight) {
-				super.modelHeight = -vertexY;
+		for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++) {
+			int pointY = vertexY[vertexIndex];
+			if (-pointY > super.modelHeight) {
+				super.modelHeight = -pointY;
 			}
-			if (vertexY > maxY) {
-				maxY = vertexY;
+			if (pointY > maxY) {
+				maxY = pointY;
 			}
 		}
 
@@ -774,29 +774,29 @@ public final class Model extends Animable {
 		maxX = 0xfff0bdc1;
 		maxZ = 0xfffe7961;
 		minZ = 0x1869f;
-		for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
-			int vertexX = anIntArray1627[vertexIndex];
-			int vertexY = anIntArray1628[vertexIndex];
-			int vertexZ = anIntArray1629[vertexIndex];
-			if (vertexX < minX) {
-				minX = vertexX;
+		for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++) {
+			int pointX = vertexX[vertexIndex];
+			int pointY = vertexY[vertexIndex];
+			int pointZ = vertexZ[vertexIndex];
+			if (pointX < minX) {
+				minX = pointX;
 			}
-			if (vertexX > maxX) {
-				maxX = vertexX;
+			if (pointX > maxX) {
+				maxX = pointX;
 			}
-			if (vertexZ < minZ) {
-				minZ = vertexZ;
+			if (pointZ < minZ) {
+				minZ = pointZ;
 			}
-			if (vertexZ > maxZ) {
-				maxZ = vertexZ;
+			if (pointZ > maxZ) {
+				maxZ = pointZ;
 			}
-			if (-vertexY > super.modelHeight) {
-				super.modelHeight = -vertexY;
+			if (-pointY > super.modelHeight) {
+				super.modelHeight = -pointY;
 			}
-			if (vertexY > maxY) {
-				maxY = vertexY;
+			if (pointY > maxY) {
+				maxY = pointY;
 			}
-			int radiusSquaredXZ = vertexX * vertexX + vertexZ * vertexZ;
+			int radiusSquaredXZ = pointX * pointX + pointZ * pointZ;
 			if (radiusSquaredXZ > radiusXZ) {
 				radiusXZ = radiusSquaredXZ;
 			}
@@ -811,7 +811,7 @@ public final class Model extends Animable {
 		if (vertexGroupIds != null) {
 			int vertexGroupCounts[] = new int[256];
 			int maxVertexGroupId = 0;
-			for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
+			for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++) {
 				int vertexGroupId = vertexGroupIds[vertexIndex];
 				vertexGroupCounts[vertexGroupId]++;
 				if (vertexGroupId > maxVertexGroupId) {
@@ -825,7 +825,7 @@ public final class Model extends Animable {
 				vertexGroupCounts[vertexGroupId] = 0;
 			}
 
-			for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
+			for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++) {
 				int vertexGroupId = vertexGroupIds[vertexIndex];
 				vertexGroups[vertexGroupId][vertexGroupCounts[vertexGroupId]++] = vertexIndex;
 			}
@@ -835,7 +835,7 @@ public final class Model extends Animable {
 		if (faceGroupIds != null) {
 			int faceGroupCounts[] = new int[256];
 			int maxFaceGroupId = 0;
-			for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
+			for (int faceIndex = 0; faceIndex < faceCount; faceIndex++) {
 				int faceGroupId = faceGroupIds[faceIndex];
 				faceGroupCounts[faceGroupId]++;
 				if (faceGroupId > maxFaceGroupId) {
@@ -849,7 +849,7 @@ public final class Model extends Animable {
 				faceGroupCounts[faceGroupId] = 0;
 			}
 
-			for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
+			for (int faceIndex = 0; faceIndex < faceCount; faceIndex++) {
 				int faceGroupId = faceGroupIds[faceIndex];
 				faceGroups[faceGroupId][faceGroupCounts[faceGroupId]++] = faceIndex;
 			}
@@ -942,9 +942,9 @@ public final class Model extends Animable {
 				if (vertexGroupId < vertexGroups.length) {
 					int vertexIndices[] = vertexGroups[vertexGroupId];
 					for (int vertexIndex : vertexIndices) {
-						animationPivotX += anIntArray1627[vertexIndex];
-						animationPivotY += anIntArray1628[vertexIndex];
-						animationPivotZ += anIntArray1629[vertexIndex];
+						animationPivotX += vertexX[vertexIndex];
+						animationPivotY += vertexY[vertexIndex];
+						animationPivotZ += vertexZ[vertexIndex];
 						selectedVertexCount++;
 					}
 
@@ -970,9 +970,9 @@ public final class Model extends Animable {
 					int vertexIndices[] = vertexGroups[vertexGroupId];
 					for (int groupVertexIndex : vertexIndices) {
 						int vertexIndex = groupVertexIndex;
-						anIntArray1627[vertexIndex] += x;
-						anIntArray1628[vertexIndex] += y;
-						anIntArray1629[vertexIndex] += z;
+						vertexX[vertexIndex] += x;
+						vertexY[vertexIndex] += y;
+						vertexZ[vertexIndex] += z;
 					}
 
 				}
@@ -987,36 +987,36 @@ public final class Model extends Animable {
 					int vertexIndices[] = vertexGroups[vertexGroupId];
 					for (int groupVertexIndex : vertexIndices) {
 						int vertexIndex = groupVertexIndex;
-						anIntArray1627[vertexIndex] -= animationPivotX;
-						anIntArray1628[vertexIndex] -= animationPivotY;
-						anIntArray1629[vertexIndex] -= animationPivotZ;
+						vertexX[vertexIndex] -= animationPivotX;
+						vertexY[vertexIndex] -= animationPivotY;
+						vertexZ[vertexIndex] -= animationPivotZ;
 						int rotationX2048 = (x & 0xff) * 8;
 						int rotationY2048 = (y & 0xff) * 8;
 						int rotationZ2048 = (z & 0xff) * 8;
 						if (rotationZ2048 != 0) {
 							int sineZ16 = sineTable16[rotationZ2048];
 							int cosineZ16 = cosineTable16[rotationZ2048];
-							int rotatedX = anIntArray1628[vertexIndex] * sineZ16 + anIntArray1627[vertexIndex] * cosineZ16 >> 16;
-							anIntArray1628[vertexIndex] = anIntArray1628[vertexIndex] * cosineZ16 - anIntArray1627[vertexIndex] * sineZ16 >> 16;
-							anIntArray1627[vertexIndex] = rotatedX;
+							int rotatedX = vertexY[vertexIndex] * sineZ16 + vertexX[vertexIndex] * cosineZ16 >> 16;
+							vertexY[vertexIndex] = vertexY[vertexIndex] * cosineZ16 - vertexX[vertexIndex] * sineZ16 >> 16;
+							vertexX[vertexIndex] = rotatedX;
 						}
 						if (rotationX2048 != 0) {
 							int sineX16 = sineTable16[rotationX2048];
 							int cosineX16 = cosineTable16[rotationX2048];
-							int rotatedY = anIntArray1628[vertexIndex] * cosineX16 - anIntArray1629[vertexIndex] * sineX16 >> 16;
-							anIntArray1629[vertexIndex] = anIntArray1628[vertexIndex] * sineX16 + anIntArray1629[vertexIndex] * cosineX16 >> 16;
-							anIntArray1628[vertexIndex] = rotatedY;
+							int rotatedY = vertexY[vertexIndex] * cosineX16 - vertexZ[vertexIndex] * sineX16 >> 16;
+							vertexZ[vertexIndex] = vertexY[vertexIndex] * sineX16 + vertexZ[vertexIndex] * cosineX16 >> 16;
+							vertexY[vertexIndex] = rotatedY;
 						}
 						if (rotationY2048 != 0) {
 							int sineY16 = sineTable16[rotationY2048];
 							int cosineY16 = cosineTable16[rotationY2048];
-							int rotatedX = anIntArray1629[vertexIndex] * sineY16 + anIntArray1627[vertexIndex] * cosineY16 >> 16;
-							anIntArray1629[vertexIndex] = anIntArray1629[vertexIndex] * cosineY16 - anIntArray1627[vertexIndex] * sineY16 >> 16;
-							anIntArray1627[vertexIndex] = rotatedX;
+							int rotatedX = vertexZ[vertexIndex] * sineY16 + vertexX[vertexIndex] * cosineY16 >> 16;
+							vertexZ[vertexIndex] = vertexZ[vertexIndex] * cosineY16 - vertexX[vertexIndex] * sineY16 >> 16;
+							vertexX[vertexIndex] = rotatedX;
 						}
-						anIntArray1627[vertexIndex] += animationPivotX;
-						anIntArray1628[vertexIndex] += animationPivotY;
-						anIntArray1629[vertexIndex] += animationPivotZ;
+						vertexX[vertexIndex] += animationPivotX;
+						vertexY[vertexIndex] += animationPivotY;
+						vertexZ[vertexIndex] += animationPivotZ;
 					}
 
 				}
@@ -1031,15 +1031,15 @@ public final class Model extends Animable {
 					int vertexIndices[] = vertexGroups[vertexGroupId];
 					for (int groupVertexIndex : vertexIndices) {
 						int vertexIndex = groupVertexIndex;
-						anIntArray1627[vertexIndex] -= animationPivotX;
-						anIntArray1628[vertexIndex] -= animationPivotY;
-						anIntArray1629[vertexIndex] -= animationPivotZ;
-						anIntArray1627[vertexIndex] = anIntArray1627[vertexIndex] * x / 128;
-						anIntArray1628[vertexIndex] = anIntArray1628[vertexIndex] * y / 128;
-						anIntArray1629[vertexIndex] = anIntArray1629[vertexIndex] * z / 128;
-						anIntArray1627[vertexIndex] += animationPivotX;
-						anIntArray1628[vertexIndex] += animationPivotY;
-						anIntArray1629[vertexIndex] += animationPivotZ;
+						vertexX[vertexIndex] -= animationPivotX;
+						vertexY[vertexIndex] -= animationPivotY;
+						vertexZ[vertexIndex] -= animationPivotZ;
+						vertexX[vertexIndex] = vertexX[vertexIndex] * x / 128;
+						vertexY[vertexIndex] = vertexY[vertexIndex] * y / 128;
+						vertexZ[vertexIndex] = vertexZ[vertexIndex] * z / 128;
+						vertexX[vertexIndex] += animationPivotX;
+						vertexY[vertexIndex] += animationPivotY;
+						vertexZ[vertexIndex] += animationPivotZ;
 					}
 
 				}
@@ -1070,10 +1070,10 @@ public final class Model extends Animable {
 	}
 
 	public void rotateYQuarterTurn() {
-		for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
-			int originalX = anIntArray1627[vertexIndex];
-			anIntArray1627[vertexIndex] = anIntArray1629[vertexIndex];
-			anIntArray1629[vertexIndex] = -originalX;
+		for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++) {
+			int originalX = vertexX[vertexIndex];
+			vertexX[vertexIndex] = vertexZ[vertexIndex];
+			vertexZ[vertexIndex] = -originalX;
 		}
 
 	}
@@ -1081,48 +1081,48 @@ public final class Model extends Animable {
 	public void rotateX(int angle2048) {
 		int sine16 = sineTable16[angle2048];
 		int cosine16 = cosineTable16[angle2048];
-		for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
-			int rotatedY = anIntArray1628[vertexIndex] * cosine16 - anIntArray1629[vertexIndex] * sine16 >> 16;
-			anIntArray1629[vertexIndex] = anIntArray1628[vertexIndex] * sine16 + anIntArray1629[vertexIndex] * cosine16 >> 16;
-			anIntArray1628[vertexIndex] = rotatedY;
+		for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++) {
+			int rotatedY = vertexY[vertexIndex] * cosine16 - vertexZ[vertexIndex] * sine16 >> 16;
+			vertexZ[vertexIndex] = vertexY[vertexIndex] * sine16 + vertexZ[vertexIndex] * cosine16 >> 16;
+			vertexY[vertexIndex] = rotatedY;
 		}
 	}
 
 	public void translate(int deltaX, int deltaY, int deltaZ) {
-		for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
-			anIntArray1627[vertexIndex] += deltaX;
-			anIntArray1628[vertexIndex] += deltaY;
-			anIntArray1629[vertexIndex] += deltaZ;
+		for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++) {
+			vertexX[vertexIndex] += deltaX;
+			vertexY[vertexIndex] += deltaY;
+			vertexZ[vertexIndex] += deltaZ;
 		}
 
 	}
 
 	public void recolor(int sourceValue, int replacementValue) {
-		for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
-			if (anIntArray1640[faceIndex] == sourceValue) {
-				anIntArray1640[faceIndex] = replacementValue;
+		for (int faceIndex = 0; faceIndex < faceCount; faceIndex++) {
+			if (faceColors[faceIndex] == sourceValue) {
+				faceColors[faceIndex] = replacementValue;
 			}
 		}
 
 	}
 
 	public void reflectZAndReverseWinding() {
-		for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
-			anIntArray1629[vertexIndex] = -anIntArray1629[vertexIndex];
+		for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++) {
+			vertexZ[vertexIndex] = -vertexZ[vertexIndex];
 		}
 
-		for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
-			int originalFirstVertex = anIntArray1631[faceIndex];
-			anIntArray1631[faceIndex] = anIntArray1633[faceIndex];
-			anIntArray1633[faceIndex] = originalFirstVertex;
+		for (int faceIndex = 0; faceIndex < faceCount; faceIndex++) {
+			int originalFirstVertex = faceVertexA[faceIndex];
+			faceVertexA[faceIndex] = faceVertexC[faceIndex];
+			faceVertexC[faceIndex] = originalFirstVertex;
 		}
 	}
 
 	public void scale(int scaleX128, int scaleZ128, int scaleY128) {
-		for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
-			anIntArray1627[vertexIndex] = anIntArray1627[vertexIndex] * scaleX128 / 128;
-			anIntArray1628[vertexIndex] = anIntArray1628[vertexIndex] * scaleY128 / 128;
-			anIntArray1629[vertexIndex] = anIntArray1629[vertexIndex] * scaleZ128 / 128;
+		for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++) {
+			vertexX[vertexIndex] = vertexX[vertexIndex] * scaleX128 / 128;
+			vertexY[vertexIndex] = vertexY[vertexIndex] * scaleY128 / 128;
+			vertexZ[vertexIndex] = vertexZ[vertexIndex] * scaleZ128 / 128;
 		}
 
 	}
@@ -1131,27 +1131,27 @@ public final class Model extends Animable {
 		int lightLength = (int) Math.sqrt(lightX * lightX + lightY * lightY + lightZ * lightZ);
 		int lightDivisor = lightDivisorScale * lightLength >> 8;
 		if (faceShadeA == null) {
-			faceShadeA = new int[anInt1630];
-			faceShadeB = new int[anInt1630];
-			faceShadeC = new int[anInt1630];
+			faceShadeA = new int[faceCount];
+			faceShadeB = new int[faceCount];
+			faceShadeC = new int[faceCount];
 		}
-		if (super.aClass33Array1425 == null) {
-			super.aClass33Array1425 = new VertexNormal[anInt1626];
-			for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
-				super.aClass33Array1425[vertexIndex] = new VertexNormal();
+		if (super.vertexNormals == null) {
+			super.vertexNormals = new VertexNormal[vertexCount];
+			for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++) {
+				super.vertexNormals[vertexIndex] = new VertexNormal();
 			}
 
 		}
-		for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
-			int vertexA = anIntArray1631[faceIndex];
-			int vertexB = anIntArray1632[faceIndex];
-			int vertexC = anIntArray1633[faceIndex];
-			int abX = anIntArray1627[vertexB] - anIntArray1627[vertexA];
-			int abY = anIntArray1628[vertexB] - anIntArray1628[vertexA];
-			int abZ = anIntArray1629[vertexB] - anIntArray1629[vertexA];
-			int acX = anIntArray1627[vertexC] - anIntArray1627[vertexA];
-			int acY = anIntArray1628[vertexC] - anIntArray1628[vertexA];
-			int acZ = anIntArray1629[vertexC] - anIntArray1629[vertexA];
+		for (int faceIndex = 0; faceIndex < faceCount; faceIndex++) {
+			int vertexA = faceVertexA[faceIndex];
+			int vertexB = faceVertexB[faceIndex];
+			int vertexC = faceVertexC[faceIndex];
+			int abX = vertexX[vertexB] - vertexX[vertexA];
+			int abY = vertexY[vertexB] - vertexY[vertexA];
+			int abZ = vertexZ[vertexB] - vertexZ[vertexA];
+			int acX = vertexX[vertexC] - vertexX[vertexA];
+			int acY = vertexY[vertexC] - vertexY[vertexA];
+			int acZ = vertexZ[vertexC] - vertexZ[vertexA];
 			int normalX = abY * acZ - acY * abZ;
 			int normalY = abZ * acX - acZ * abX;
 			int normalZ;
@@ -1167,35 +1167,35 @@ public final class Model extends Animable {
 			normalX = normalX * 256 / normalLength;
 			normalY = normalY * 256 / normalLength;
 			normalZ = normalZ * 256 / normalLength;
-			if (anIntArray1637 == null || (anIntArray1637[faceIndex] & 1) == 0) {
-				VertexNormal vertexNormal = super.aClass33Array1425[vertexA];
+			if (faceRenderFlags == null || (faceRenderFlags[faceIndex] & 1) == 0) {
+				VertexNormal vertexNormal = super.vertexNormals[vertexA];
 				vertexNormal.normalX += normalX;
 				vertexNormal.normalY += normalY;
 				vertexNormal.normalZ += normalZ;
 				vertexNormal.faceCount++;
-				vertexNormal = super.aClass33Array1425[vertexB];
+				vertexNormal = super.vertexNormals[vertexB];
 				vertexNormal.normalX += normalX;
 				vertexNormal.normalY += normalY;
 				vertexNormal.normalZ += normalZ;
 				vertexNormal.faceCount++;
-				vertexNormal = super.aClass33Array1425[vertexC];
+				vertexNormal = super.vertexNormals[vertexC];
 				vertexNormal.normalX += normalX;
 				vertexNormal.normalY += normalY;
 				vertexNormal.normalZ += normalZ;
 				vertexNormal.faceCount++;
 			} else {
 				int flatIntensity = ambientLight + (lightX * normalX + lightY * normalY + lightZ * normalZ) / (lightDivisor + lightDivisor / 2);
-				faceShadeA[faceIndex] = calculateFaceShade(anIntArray1640[faceIndex], flatIntensity, anIntArray1637[faceIndex]);
+				faceShadeA[faceIndex] = calculateFaceShade(faceColors[faceIndex], flatIntensity, faceRenderFlags[faceIndex]);
 			}
 		}
 
 		if (bakeShading) {
 			applyVertexLighting(ambientLight, lightDivisor, lightX, lightY, lightZ);
 		} else {
-			aClass33Array1660 = new VertexNormal[anInt1626];
-			for (int normalIndex = 0; normalIndex < anInt1626; normalIndex++) {
-				VertexNormal sourceNormal = super.aClass33Array1425[normalIndex];
-				VertexNormal copiedNormal = aClass33Array1660[normalIndex] = new VertexNormal();
+			originalVertexNormals = new VertexNormal[vertexCount];
+			for (int normalIndex = 0; normalIndex < vertexCount; normalIndex++) {
+				VertexNormal sourceNormal = super.vertexNormals[normalIndex];
+				VertexNormal copiedNormal = originalVertexNormals[normalIndex] = new VertexNormal();
 				copiedNormal.normalX = sourceNormal.normalX;
 				copiedNormal.normalY = sourceNormal.normalY;
 				copiedNormal.normalZ = sourceNormal.normalZ;
@@ -1211,53 +1211,53 @@ public final class Model extends Animable {
 	}
 
 	public void applyVertexLighting(int ambientLight, int lightDivisor, int lightX, int lightY, int lightZ) {
-		for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
-			int vertexA = anIntArray1631[faceIndex];
-			int vertexB = anIntArray1632[faceIndex];
-			int vertexC = anIntArray1633[faceIndex];
-			if (anIntArray1637 == null) {
-				int faceColor = anIntArray1640[faceIndex];
-				VertexNormal vertexNormal = super.aClass33Array1425[vertexA];
+		for (int faceIndex = 0; faceIndex < faceCount; faceIndex++) {
+			int vertexA = faceVertexA[faceIndex];
+			int vertexB = faceVertexB[faceIndex];
+			int vertexC = faceVertexC[faceIndex];
+			if (faceRenderFlags == null) {
+				int faceColor = faceColors[faceIndex];
+				VertexNormal vertexNormal = super.vertexNormals[vertexA];
 				int intensity = ambientLight + (lightX * vertexNormal.normalX + lightY * vertexNormal.normalY + lightZ * vertexNormal.normalZ) / (lightDivisor * vertexNormal.faceCount);
 				faceShadeA[faceIndex] = calculateFaceShade(faceColor, intensity, 0);
-				vertexNormal = super.aClass33Array1425[vertexB];
+				vertexNormal = super.vertexNormals[vertexB];
 				intensity = ambientLight + (lightX * vertexNormal.normalX + lightY * vertexNormal.normalY + lightZ * vertexNormal.normalZ) / (lightDivisor * vertexNormal.faceCount);
 				faceShadeB[faceIndex] = calculateFaceShade(faceColor, intensity, 0);
-				vertexNormal = super.aClass33Array1425[vertexC];
+				vertexNormal = super.vertexNormals[vertexC];
 				intensity = ambientLight + (lightX * vertexNormal.normalX + lightY * vertexNormal.normalY + lightZ * vertexNormal.normalZ) / (lightDivisor * vertexNormal.faceCount);
 				faceShadeC[faceIndex] = calculateFaceShade(faceColor, intensity, 0);
-			} else if ((anIntArray1637[faceIndex] & 1) == 0) {
-				int faceColor = anIntArray1640[faceIndex];
-				int faceFlags = anIntArray1637[faceIndex];
-				VertexNormal vertexNormal = super.aClass33Array1425[vertexA];
+			} else if ((faceRenderFlags[faceIndex] & 1) == 0) {
+				int faceColor = faceColors[faceIndex];
+				int faceFlags = faceRenderFlags[faceIndex];
+				VertexNormal vertexNormal = super.vertexNormals[vertexA];
 				int intensity = ambientLight + (lightX * vertexNormal.normalX + lightY * vertexNormal.normalY + lightZ * vertexNormal.normalZ) / (lightDivisor * vertexNormal.faceCount);
 				faceShadeA[faceIndex] = calculateFaceShade(faceColor, intensity, faceFlags);
-				vertexNormal = super.aClass33Array1425[vertexB];
+				vertexNormal = super.vertexNormals[vertexB];
 				intensity = ambientLight + (lightX * vertexNormal.normalX + lightY * vertexNormal.normalY + lightZ * vertexNormal.normalZ) / (lightDivisor * vertexNormal.faceCount);
 				faceShadeB[faceIndex] = calculateFaceShade(faceColor, intensity, faceFlags);
-				vertexNormal = super.aClass33Array1425[vertexC];
+				vertexNormal = super.vertexNormals[vertexC];
 				intensity = ambientLight + (lightX * vertexNormal.normalX + lightY * vertexNormal.normalY + lightZ * vertexNormal.normalZ) / (lightDivisor * vertexNormal.faceCount);
 				faceShadeC[faceIndex] = calculateFaceShade(faceColor, intensity, faceFlags);
 			}
 		}
 
-		super.aClass33Array1425 = null;
-		aClass33Array1660 = null;
+		super.vertexNormals = null;
+		originalVertexNormals = null;
 		vertexGroupIds = null;
 		faceGroupIds = null;
-		if (anIntArray1637 != null) {
-			for (int checkIndex = 0; checkIndex < anInt1630; checkIndex++) {
-				if ((anIntArray1637[checkIndex] & 2) == 2) {
+		if (faceRenderFlags != null) {
+			for (int checkIndex = 0; checkIndex < faceCount; checkIndex++) {
+				if ((faceRenderFlags[checkIndex] & 2) == 2) {
 					return;
 				}
 			}
 
 		}
-		anIntArray1640 = null;
+		faceColors = null;
 	}
 
-	private static int calculateFaceShade(int colorValue, int lightIntensity, int faceRenderFlags) {
-		if ((faceRenderFlags & 2) == 2) {
+	private static int calculateFaceShade(int colorValue, int lightIntensity, int renderFlags) {
+		if ((renderFlags & 2) == 2) {
 			if (lightIntensity < 0) {
 				lightIntensity = 0;
 			} else if (lightIntensity > 127) {
@@ -1288,10 +1288,10 @@ public final class Model extends Animable {
 		int pitchSine = sineTable16[cameraPitch];
 		int pitchCosine = cosineTable16[cameraPitch];
 		int originDepth = offsetY * pitchSine + offsetZ * pitchCosine >> 16;
-		for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
-			int x = anIntArray1627[vertexIndex];
-			int y = anIntArray1628[vertexIndex];
-			int z = anIntArray1629[vertexIndex];
+		for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++) {
+			int x = vertexX[vertexIndex];
+			int y = vertexY[vertexIndex];
+			int z = vertexZ[vertexIndex];
 			if (roll != 0) {
 				int rolledX = y * rollSine + x * rollCosine >> 16;
 				y = y * rollCosine - x * rollSine >> 16;
@@ -1317,9 +1317,9 @@ public final class Model extends Animable {
 			screenX[vertexIndex] = screenCenterX + (x << 9) / z;
 			screenY[vertexIndex] = screenCenterY + (y << 9) / z;
 			if (texturedFaceCount > 0) {
-				anIntArray1668[vertexIndex] = x;
-				anIntArray1669[vertexIndex] = y;
-				anIntArray1670[vertexIndex] = z;
+				vertexCameraX[vertexIndex] = x;
+				vertexCameraY[vertexIndex] = y;
+				vertexCameraZ[vertexIndex] = z;
 			}
 		}
 
@@ -1330,115 +1330,115 @@ public final class Model extends Animable {
 	}
 
 	@Override
-	public void method443(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2) {
-		int j2 = l1 * i1 - j1 * l >> 16;
-		int k2 = k1 * j + j2 * k >> 16;
-		int l2 = radiusXZ * k >> 16;
-		int i3 = k2 + l2;
+	public void method443(int modelRotation, int pitchSine, int pitchCosine, int yawSine, int yawCosine, int offsetX, int offsetY, int offsetZ, int pickId) {
+		int yawedDepth = offsetZ * yawCosine - offsetX * yawSine >> 16;
+		int centerDepth = offsetY * pitchSine + yawedDepth * pitchCosine >> 16;
+		int radiusDepth = radiusXZ * pitchCosine >> 16;
+		int farDepth = centerDepth + radiusDepth;
 		// Check distance of model to camera for rendering (default 3500)
 		int distance = WorldController.drawDistance * 256;
 		distance *= 1 + (Game.zoom / 10);
-		if (i3 <= 50 || k2 >= distance) {
+		if (farDepth <= 50 || centerDepth >= distance) {
 			return;
 		}
-		int j3 = l1 * l + j1 * i1 >> 16;
-		int k3 = j3 - radiusXZ << 9;
-		if (k3 / i3 >= DrawingArea.clipRightHalf) {
+		int yawedX = offsetZ * yawSine + offsetX * yawCosine >> 16;
+		int leftEdge = yawedX - radiusXZ << 9;
+		if (leftEdge / farDepth >= DrawingArea.clipRightHalf) {
 			return;
 		}
-		int l3 = j3 + radiusXZ << 9;
-		if (l3 / i3 <= -DrawingArea.clipRightHalf) {
+		int rightEdge = yawedX + radiusXZ << 9;
+		if (rightEdge / farDepth <= -DrawingArea.clipRightHalf) {
 			return;
 		}
-		int i4 = k1 * k - j2 * j >> 16;
-		int j4 = radiusXZ * j >> 16;
-		int k4 = i4 + j4 << 9;
-		if (k4 / i3 <= -DrawingArea.clipBottomHalf) {
+		int pitchedY = offsetY * pitchCosine - yawedDepth * pitchSine >> 16;
+		int radiusHeight = radiusXZ * pitchSine >> 16;
+		int bottomEdge = pitchedY + radiusHeight << 9;
+		if (bottomEdge / farDepth <= -DrawingArea.clipBottomHalf) {
 			return;
 		}
-		int l4 = j4 + (super.modelHeight * k >> 16);
-		int i5 = i4 - l4 << 9;
-		if (i5 / i3 >= DrawingArea.clipBottomHalf) {
+		int heightExtent = radiusHeight + (super.modelHeight * pitchCosine >> 16);
+		int topEdge = pitchedY - heightExtent << 9;
+		if (topEdge / farDepth >= DrawingArea.clipBottomHalf) {
 			return;
 		}
-		int j5 = l2 + (super.modelHeight * j >> 16);
-		boolean flag = false;
-		if (k2 - j5 <= 50) {
-			flag = true;
+		int nearExtent = radiusDepth + (super.modelHeight * pitchSine >> 16);
+		boolean nearPlaneClipping = false;
+		if (centerDepth - nearExtent <= 50) {
+			nearPlaneClipping = true;
 		}
-		boolean flag1 = false;
-		if (i2 > 0 && aBoolean1684) {
-			int k5 = k2 - l2;
-			if (k5 <= 50) {
-				k5 = 50;
+		boolean facePick = false;
+		if (pickId > 0 && pickingEnabled) {
+			int nearDepth = centerDepth - radiusDepth;
+			if (nearDepth <= 50) {
+				nearDepth = 50;
 			}
-			if (j3 > 0) {
-				k3 /= i3;
-				l3 /= k5;
+			if (yawedX > 0) {
+				leftEdge /= farDepth;
+				rightEdge /= nearDepth;
 			} else {
-				l3 /= i3;
-				k3 /= k5;
+				rightEdge /= farDepth;
+				leftEdge /= nearDepth;
 			}
-			if (i4 > 0) {
-				i5 /= i3;
-				k4 /= k5;
+			if (pitchedY > 0) {
+				topEdge /= farDepth;
+				bottomEdge /= nearDepth;
 			} else {
-				k4 /= i3;
-				i5 /= k5;
+				bottomEdge /= farDepth;
+				topEdge /= nearDepth;
 			}
-			int i6 = anInt1685 - Texture.textureInt1;
-			int k6 = anInt1686 - Texture.textureInt2;
-			if (i6 > k3 && i6 < l3 && k6 > i5 && k6 < k4) {
-				if (aBoolean1659) {
-					anIntArray1688[anInt1687++] = i2;
+			int mouseOffsetX = pickMouseX - Texture.textureInt1;
+			int mouseOffsetY = pickMouseY - Texture.textureInt2;
+			if (mouseOffsetX > leftEdge && mouseOffsetX < rightEdge && mouseOffsetY > topEdge && mouseOffsetY < bottomEdge) {
+				if (pickByBounds) {
+					pickedIds[pickedCount++] = pickId;
 				} else {
-					flag1 = true;
+					facePick = true;
 				}
 			}
 		}
-		int l5 = Texture.textureInt1;
-		int j6 = Texture.textureInt2;
-		int l6 = 0;
-		int i7 = 0;
-		if (i != 0) {
-			l6 = sineTable16[i];
-			i7 = cosineTable16[i];
+		int screenCenterX = Texture.textureInt1;
+		int screenCenterY = Texture.textureInt2;
+		int rotationSine = 0;
+		int rotationCosine = 0;
+		if (modelRotation != 0) {
+			rotationSine = sineTable16[modelRotation];
+			rotationCosine = cosineTable16[modelRotation];
 		}
-		for (int j7 = 0; j7 < anInt1626; j7++) {
-			int k7 = anIntArray1627[j7];
-			int l7 = anIntArray1628[j7];
-			int i8 = anIntArray1629[j7];
-			if (i != 0) {
-				int j8 = i8 * l6 + k7 * i7 >> 16;
-				i8 = i8 * i7 - k7 * l6 >> 16;
-				k7 = j8;
+		for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++) {
+			int x = vertexX[vertexIndex];
+			int y = vertexY[vertexIndex];
+			int z = vertexZ[vertexIndex];
+			if (modelRotation != 0) {
+				int rotatedX = z * rotationSine + x * rotationCosine >> 16;
+				z = z * rotationCosine - x * rotationSine >> 16;
+				x = rotatedX;
 			}
-			k7 += j1;
-			l7 += k1;
-			i8 += l1;
-			int k8 = i8 * l + k7 * i1 >> 16;
-			i8 = i8 * i1 - k7 * l >> 16;
-			k7 = k8;
-			k8 = l7 * k - i8 * j >> 16;
-			i8 = l7 * j + i8 * k >> 16;
-			l7 = k8;
-			vertexDepth[j7] = i8 - k2;
-			if (i8 >= 50) {
-				screenX[j7] = l5 + (k7 << 9) / i8;
-				screenY[j7] = j6 + (l7 << 9) / i8;
+			x += offsetX;
+			y += offsetY;
+			z += offsetZ;
+			int temp = z * yawSine + x * yawCosine >> 16;
+			z = z * yawCosine - x * yawSine >> 16;
+			x = temp;
+			temp = y * pitchCosine - z * pitchSine >> 16;
+			z = y * pitchSine + z * pitchCosine >> 16;
+			y = temp;
+			vertexDepth[vertexIndex] = z - centerDepth;
+			if (z >= 50) {
+				screenX[vertexIndex] = screenCenterX + (x << 9) / z;
+				screenY[vertexIndex] = screenCenterY + (y << 9) / z;
 			} else {
-				screenX[j7] = -5000;
-				flag = true;
+				screenX[vertexIndex] = -5000;
+				nearPlaneClipping = true;
 			}
-			if (flag || texturedFaceCount > 0) {
-				anIntArray1668[j7] = k7;
-				anIntArray1669[j7] = l7;
-				anIntArray1670[j7] = i8;
+			if (nearPlaneClipping || texturedFaceCount > 0) {
+				vertexCameraX[vertexIndex] = x;
+				vertexCameraY[vertexIndex] = y;
+				vertexCameraZ[vertexIndex] = z;
 			}
 		}
 
 		try {
-			drawFacesByDepthAndPriority(flag, flag1, i2);
+			drawFacesByDepthAndPriority(nearPlaneClipping, facePick, pickId);
 		} catch (Exception _ex) {
 		}
 	}
@@ -1448,11 +1448,11 @@ public final class Model extends Animable {
 			depthBucketFaceCounts[bucketIndex] = 0;
 		}
 
-		for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
-			if (anIntArray1637 == null || anIntArray1637[faceIndex] != -1) {
-				int vertexA = anIntArray1631[faceIndex];
-				int vertexB = anIntArray1632[faceIndex];
-				int vertexC = anIntArray1633[faceIndex];
+		for (int faceIndex = 0; faceIndex < faceCount; faceIndex++) {
+			if (faceRenderFlags == null || faceRenderFlags[faceIndex] != -1) {
+				int vertexA = faceVertexA[faceIndex];
+				int vertexB = faceVertexB[faceIndex];
+				int vertexC = faceVertexC[faceIndex];
 				int screenXA = screenX[vertexA];
 				int screenXB = screenX[vertexB];
 				int screenXC = screenX[vertexC];
@@ -1461,8 +1461,8 @@ public final class Model extends Animable {
 					int depthBucket = (vertexDepth[vertexA] + vertexDepth[vertexB] + vertexDepth[vertexC]) / 3 + depthBucketOffset;
 					depthBucketFaces[depthBucket][depthBucketFaceCounts[depthBucket]++] = faceIndex;
 				} else {
-					if (pickEnabled && isPointWithinFaceBounds(anInt1685, anInt1686, screenY[vertexA], screenY[vertexB], screenY[vertexC], screenXA, screenXB, screenXC)) {
-						anIntArray1688[anInt1687++] = pickId;
+					if (pickEnabled && isPointWithinFaceBounds(pickMouseX, pickMouseY, screenY[vertexA], screenY[vertexB], screenY[vertexC], screenXA, screenXB, screenXC)) {
+						pickedIds[pickedCount++] = pickId;
 						pickEnabled = false;
 					}
 					if ((screenXA - screenXB) * (screenY[vertexC] - screenY[vertexB]) - (screenY[vertexA] - screenY[vertexB]) * (screenXC - screenXB) > 0) {
@@ -1615,9 +1615,9 @@ public final class Model extends Animable {
 			drawFaceClippedToNearPlane(faceIndex);
 			return;
 		}
-		int vertexA = anIntArray1631[faceIndex];
-		int vertexB = anIntArray1632[faceIndex];
-		int vertexC = anIntArray1633[faceIndex];
+		int vertexA = faceVertexA[faceIndex];
+		int vertexB = faceVertexB[faceIndex];
+		int vertexC = faceVertexC[faceIndex];
 		Texture.clipScanlines = faceNeedsHorizontalClip[faceIndex];
 		if (faceAlphas == null) {
 			Texture.transparency = 0;
@@ -1625,10 +1625,10 @@ public final class Model extends Animable {
 			Texture.transparency = faceAlphas[faceIndex];
 		}
 		int renderType;
-		if (anIntArray1637 == null) {
+		if (faceRenderFlags == null) {
 			renderType = 0;
 		} else {
-			renderType = anIntArray1637[faceIndex] & 3;
+			renderType = faceRenderFlags[faceIndex] & 3;
 		}
 		if (renderType == 0) {
 			Texture.drawShadedTriangle(screenY[vertexA], screenY[vertexB], screenY[vertexC], screenX[vertexA], screenX[vertexB], screenX[vertexC], faceShadeA[faceIndex], faceShadeB[faceIndex], faceShadeC[faceIndex]);
@@ -1639,19 +1639,19 @@ public final class Model extends Animable {
 			return;
 		}
 		if (renderType == 2) {
-			int textureFaceIndex = anIntArray1637[faceIndex] >> 2;
+			int textureFaceIndex = faceRenderFlags[faceIndex] >> 2;
 			int mappingVertexA = texturedFaceVertexA[textureFaceIndex];
 			int mappingVertexB = texturedFaceVertexB[textureFaceIndex];
 			int mappingVertexC = texturedFaceVertexC[textureFaceIndex];
-			Texture.drawTexturedTriangle(screenY[vertexA], screenY[vertexB], screenY[vertexC], screenX[vertexA], screenX[vertexB], screenX[vertexC], faceShadeA[faceIndex], faceShadeB[faceIndex], faceShadeC[faceIndex], anIntArray1668[mappingVertexA], anIntArray1668[mappingVertexB], anIntArray1668[mappingVertexC], anIntArray1669[mappingVertexA], anIntArray1669[mappingVertexB], anIntArray1669[mappingVertexC], anIntArray1670[mappingVertexA], anIntArray1670[mappingVertexB], anIntArray1670[mappingVertexC], anIntArray1640[faceIndex]);
+			Texture.drawTexturedTriangle(screenY[vertexA], screenY[vertexB], screenY[vertexC], screenX[vertexA], screenX[vertexB], screenX[vertexC], faceShadeA[faceIndex], faceShadeB[faceIndex], faceShadeC[faceIndex], vertexCameraX[mappingVertexA], vertexCameraX[mappingVertexB], vertexCameraX[mappingVertexC], vertexCameraY[mappingVertexA], vertexCameraY[mappingVertexB], vertexCameraY[mappingVertexC], vertexCameraZ[mappingVertexA], vertexCameraZ[mappingVertexB], vertexCameraZ[mappingVertexC], faceColors[faceIndex]);
 			return;
 		}
 		if (renderType == 3) {
-			int textureFaceIndex = anIntArray1637[faceIndex] >> 2;
+			int textureFaceIndex = faceRenderFlags[faceIndex] >> 2;
 			int mappingVertexA = texturedFaceVertexA[textureFaceIndex];
 			int mappingVertexB = texturedFaceVertexB[textureFaceIndex];
 			int mappingVertexC = texturedFaceVertexC[textureFaceIndex];
-			Texture.drawTexturedTriangle(screenY[vertexA], screenY[vertexB], screenY[vertexC], screenX[vertexA], screenX[vertexB], screenX[vertexC], faceShadeA[faceIndex], faceShadeA[faceIndex], faceShadeA[faceIndex], anIntArray1668[mappingVertexA], anIntArray1668[mappingVertexB], anIntArray1668[mappingVertexC], anIntArray1669[mappingVertexA], anIntArray1669[mappingVertexB], anIntArray1669[mappingVertexC], anIntArray1670[mappingVertexA], anIntArray1670[mappingVertexB], anIntArray1670[mappingVertexC], anIntArray1640[faceIndex]);
+			Texture.drawTexturedTriangle(screenY[vertexA], screenY[vertexB], screenY[vertexC], screenX[vertexA], screenX[vertexB], screenX[vertexC], faceShadeA[faceIndex], faceShadeA[faceIndex], faceShadeA[faceIndex], vertexCameraX[mappingVertexA], vertexCameraX[mappingVertexB], vertexCameraX[mappingVertexC], vertexCameraY[mappingVertexA], vertexCameraY[mappingVertexB], vertexCameraY[mappingVertexC], vertexCameraZ[mappingVertexA], vertexCameraZ[mappingVertexB], vertexCameraZ[mappingVertexC], faceColors[faceIndex]);
 		}
 	}
 
@@ -1659,30 +1659,30 @@ public final class Model extends Animable {
 		int screenCenterX = Texture.textureInt1;
 		int screenCenterY = Texture.textureInt2;
 		int clippedPointCount = 0;
-		int vertexA = anIntArray1631[faceIndex];
-		int vertexB = anIntArray1632[faceIndex];
-		int vertexC = anIntArray1633[faceIndex];
-		int depthA = anIntArray1670[vertexA];
-		int depthB = anIntArray1670[vertexB];
-		int depthC = anIntArray1670[vertexC];
+		int vertexA = faceVertexA[faceIndex];
+		int vertexB = faceVertexB[faceIndex];
+		int vertexC = faceVertexC[faceIndex];
+		int depthA = vertexCameraZ[vertexA];
+		int depthB = vertexCameraZ[vertexB];
+		int depthC = vertexCameraZ[vertexC];
 		if (depthA >= 50) {
 			clippedX[clippedPointCount] = screenX[vertexA];
 			clippedY[clippedPointCount] = screenY[vertexA];
 			clippedShade[clippedPointCount++] = faceShadeA[faceIndex];
 		} else {
-			int cameraXA = anIntArray1668[vertexA];
-			int cameraYA = anIntArray1669[vertexA];
+			int cameraXA = vertexCameraX[vertexA];
+			int cameraYA = vertexCameraY[vertexA];
 			int shadeA = faceShadeA[faceIndex];
 			if (depthC >= 50) {
 				int fractionAToC = (50 - depthA) * reciprocalTable16[depthC - depthA];
-				clippedX[clippedPointCount] = screenCenterX + (cameraXA + ((anIntArray1668[vertexC] - cameraXA) * fractionAToC >> 16) << 9) / 50;
-				clippedY[clippedPointCount] = screenCenterY + (cameraYA + ((anIntArray1669[vertexC] - cameraYA) * fractionAToC >> 16) << 9) / 50;
+				clippedX[clippedPointCount] = screenCenterX + (cameraXA + ((vertexCameraX[vertexC] - cameraXA) * fractionAToC >> 16) << 9) / 50;
+				clippedY[clippedPointCount] = screenCenterY + (cameraYA + ((vertexCameraY[vertexC] - cameraYA) * fractionAToC >> 16) << 9) / 50;
 				clippedShade[clippedPointCount++] = shadeA + ((faceShadeC[faceIndex] - shadeA) * fractionAToC >> 16);
 			}
 			if (depthB >= 50) {
 				int fractionAToB = (50 - depthA) * reciprocalTable16[depthB - depthA];
-				clippedX[clippedPointCount] = screenCenterX + (cameraXA + ((anIntArray1668[vertexB] - cameraXA) * fractionAToB >> 16) << 9) / 50;
-				clippedY[clippedPointCount] = screenCenterY + (cameraYA + ((anIntArray1669[vertexB] - cameraYA) * fractionAToB >> 16) << 9) / 50;
+				clippedX[clippedPointCount] = screenCenterX + (cameraXA + ((vertexCameraX[vertexB] - cameraXA) * fractionAToB >> 16) << 9) / 50;
+				clippedY[clippedPointCount] = screenCenterY + (cameraYA + ((vertexCameraY[vertexB] - cameraYA) * fractionAToB >> 16) << 9) / 50;
 				clippedShade[clippedPointCount++] = shadeA + ((faceShadeB[faceIndex] - shadeA) * fractionAToB >> 16);
 			}
 		}
@@ -1691,19 +1691,19 @@ public final class Model extends Animable {
 			clippedY[clippedPointCount] = screenY[vertexB];
 			clippedShade[clippedPointCount++] = faceShadeB[faceIndex];
 		} else {
-			int cameraXB = anIntArray1668[vertexB];
-			int cameraYB = anIntArray1669[vertexB];
+			int cameraXB = vertexCameraX[vertexB];
+			int cameraYB = vertexCameraY[vertexB];
 			int shadeB = faceShadeB[faceIndex];
 			if (depthA >= 50) {
 				int fractionBToA = (50 - depthB) * reciprocalTable16[depthA - depthB];
-				clippedX[clippedPointCount] = screenCenterX + (cameraXB + ((anIntArray1668[vertexA] - cameraXB) * fractionBToA >> 16) << 9) / 50;
-				clippedY[clippedPointCount] = screenCenterY + (cameraYB + ((anIntArray1669[vertexA] - cameraYB) * fractionBToA >> 16) << 9) / 50;
+				clippedX[clippedPointCount] = screenCenterX + (cameraXB + ((vertexCameraX[vertexA] - cameraXB) * fractionBToA >> 16) << 9) / 50;
+				clippedY[clippedPointCount] = screenCenterY + (cameraYB + ((vertexCameraY[vertexA] - cameraYB) * fractionBToA >> 16) << 9) / 50;
 				clippedShade[clippedPointCount++] = shadeB + ((faceShadeA[faceIndex] - shadeB) * fractionBToA >> 16);
 			}
 			if (depthC >= 50) {
 				int fractionBToC = (50 - depthB) * reciprocalTable16[depthC - depthB];
-				clippedX[clippedPointCount] = screenCenterX + (cameraXB + ((anIntArray1668[vertexC] - cameraXB) * fractionBToC >> 16) << 9) / 50;
-				clippedY[clippedPointCount] = screenCenterY + (cameraYB + ((anIntArray1669[vertexC] - cameraYB) * fractionBToC >> 16) << 9) / 50;
+				clippedX[clippedPointCount] = screenCenterX + (cameraXB + ((vertexCameraX[vertexC] - cameraXB) * fractionBToC >> 16) << 9) / 50;
+				clippedY[clippedPointCount] = screenCenterY + (cameraYB + ((vertexCameraY[vertexC] - cameraYB) * fractionBToC >> 16) << 9) / 50;
 				clippedShade[clippedPointCount++] = shadeB + ((faceShadeC[faceIndex] - shadeB) * fractionBToC >> 16);
 			}
 		}
@@ -1712,19 +1712,19 @@ public final class Model extends Animable {
 			clippedY[clippedPointCount] = screenY[vertexC];
 			clippedShade[clippedPointCount++] = faceShadeC[faceIndex];
 		} else {
-			int cameraXC = anIntArray1668[vertexC];
-			int cameraYC = anIntArray1669[vertexC];
+			int cameraXC = vertexCameraX[vertexC];
+			int cameraYC = vertexCameraY[vertexC];
 			int shadeC = faceShadeC[faceIndex];
 			if (depthB >= 50) {
 				int fractionCToB = (50 - depthC) * reciprocalTable16[depthB - depthC];
-				clippedX[clippedPointCount] = screenCenterX + (cameraXC + ((anIntArray1668[vertexB] - cameraXC) * fractionCToB >> 16) << 9) / 50;
-				clippedY[clippedPointCount] = screenCenterY + (cameraYC + ((anIntArray1669[vertexB] - cameraYC) * fractionCToB >> 16) << 9) / 50;
+				clippedX[clippedPointCount] = screenCenterX + (cameraXC + ((vertexCameraX[vertexB] - cameraXC) * fractionCToB >> 16) << 9) / 50;
+				clippedY[clippedPointCount] = screenCenterY + (cameraYC + ((vertexCameraY[vertexB] - cameraYC) * fractionCToB >> 16) << 9) / 50;
 				clippedShade[clippedPointCount++] = shadeC + ((faceShadeB[faceIndex] - shadeC) * fractionCToB >> 16);
 			}
 			if (depthA >= 50) {
 				int fractionCToA = (50 - depthC) * reciprocalTable16[depthA - depthC];
-				clippedX[clippedPointCount] = screenCenterX + (cameraXC + ((anIntArray1668[vertexA] - cameraXC) * fractionCToA >> 16) << 9) / 50;
-				clippedY[clippedPointCount] = screenCenterY + (cameraYC + ((anIntArray1669[vertexA] - cameraYC) * fractionCToA >> 16) << 9) / 50;
+				clippedX[clippedPointCount] = screenCenterX + (cameraXC + ((vertexCameraX[vertexA] - cameraXC) * fractionCToA >> 16) << 9) / 50;
+				clippedY[clippedPointCount] = screenCenterY + (cameraYC + ((vertexCameraY[vertexA] - cameraYC) * fractionCToA >> 16) << 9) / 50;
 				clippedShade[clippedPointCount++] = shadeC + ((faceShadeA[faceIndex] - shadeC) * fractionCToA >> 16);
 			}
 		}
@@ -1741,27 +1741,27 @@ public final class Model extends Animable {
 					Texture.clipScanlines = true;
 				}
 				int renderType;
-				if (anIntArray1637 == null) {
+				if (faceRenderFlags == null) {
 					renderType = 0;
 				} else {
-					renderType = anIntArray1637[faceIndex] & 3;
+					renderType = faceRenderFlags[faceIndex] & 3;
 				}
 				if (renderType == 0) {
 					Texture.drawShadedTriangle(screenY0, screenY1, screenY2, screenX0, screenX1, screenX2, clippedShade[0], clippedShade[1], clippedShade[2]);
 				} else if (renderType == 1) {
 					Texture.drawFlatTriangle(screenY0, screenY1, screenY2, screenX0, screenX1, screenX2, hslToRgbPalette[faceShadeA[faceIndex]]);
 				} else if (renderType == 2) {
-					int textureFaceIndex = anIntArray1637[faceIndex] >> 2;
+					int textureFaceIndex = faceRenderFlags[faceIndex] >> 2;
 					int mappingVertexA = texturedFaceVertexA[textureFaceIndex];
 					int mappingVertexB = texturedFaceVertexB[textureFaceIndex];
 					int mappingVertexC = texturedFaceVertexC[textureFaceIndex];
-					Texture.drawTexturedTriangle(screenY0, screenY1, screenY2, screenX0, screenX1, screenX2, clippedShade[0], clippedShade[1], clippedShade[2], anIntArray1668[mappingVertexA], anIntArray1668[mappingVertexB], anIntArray1668[mappingVertexC], anIntArray1669[mappingVertexA], anIntArray1669[mappingVertexB], anIntArray1669[mappingVertexC], anIntArray1670[mappingVertexA], anIntArray1670[mappingVertexB], anIntArray1670[mappingVertexC], anIntArray1640[faceIndex]);
+					Texture.drawTexturedTriangle(screenY0, screenY1, screenY2, screenX0, screenX1, screenX2, clippedShade[0], clippedShade[1], clippedShade[2], vertexCameraX[mappingVertexA], vertexCameraX[mappingVertexB], vertexCameraX[mappingVertexC], vertexCameraY[mappingVertexA], vertexCameraY[mappingVertexB], vertexCameraY[mappingVertexC], vertexCameraZ[mappingVertexA], vertexCameraZ[mappingVertexB], vertexCameraZ[mappingVertexC], faceColors[faceIndex]);
 				} else if (renderType == 3) {
-					int textureFaceIndex = anIntArray1637[faceIndex] >> 2;
+					int textureFaceIndex = faceRenderFlags[faceIndex] >> 2;
 					int mappingVertexA = texturedFaceVertexA[textureFaceIndex];
 					int mappingVertexB = texturedFaceVertexB[textureFaceIndex];
 					int mappingVertexC = texturedFaceVertexC[textureFaceIndex];
-					Texture.drawTexturedTriangle(screenY0, screenY1, screenY2, screenX0, screenX1, screenX2, faceShadeA[faceIndex], faceShadeA[faceIndex], faceShadeA[faceIndex], anIntArray1668[mappingVertexA], anIntArray1668[mappingVertexB], anIntArray1668[mappingVertexC], anIntArray1669[mappingVertexA], anIntArray1669[mappingVertexB], anIntArray1669[mappingVertexC], anIntArray1670[mappingVertexA], anIntArray1670[mappingVertexB], anIntArray1670[mappingVertexC], anIntArray1640[faceIndex]);
+					Texture.drawTexturedTriangle(screenY0, screenY1, screenY2, screenX0, screenX1, screenX2, faceShadeA[faceIndex], faceShadeA[faceIndex], faceShadeA[faceIndex], vertexCameraX[mappingVertexA], vertexCameraX[mappingVertexB], vertexCameraX[mappingVertexC], vertexCameraY[mappingVertexA], vertexCameraY[mappingVertexB], vertexCameraY[mappingVertexC], vertexCameraZ[mappingVertexA], vertexCameraZ[mappingVertexB], vertexCameraZ[mappingVertexC], faceColors[faceIndex]);
 				}
 			}
 			if (clippedPointCount == 4) {
@@ -1769,10 +1769,10 @@ public final class Model extends Animable {
 					Texture.clipScanlines = true;
 				}
 				int renderType;
-				if (anIntArray1637 == null) {
+				if (faceRenderFlags == null) {
 					renderType = 0;
 				} else {
-					renderType = anIntArray1637[faceIndex] & 3;
+					renderType = faceRenderFlags[faceIndex] & 3;
 				}
 				if (renderType == 0) {
 					Texture.drawShadedTriangle(screenY0, screenY1, screenY2, screenX0, screenX1, screenX2, clippedShade[0], clippedShade[1], clippedShade[2]);
@@ -1786,21 +1786,21 @@ public final class Model extends Animable {
 					return;
 				}
 				if (renderType == 2) {
-					int textureFaceIndex = anIntArray1637[faceIndex] >> 2;
+					int textureFaceIndex = faceRenderFlags[faceIndex] >> 2;
 					int mappingVertexA = texturedFaceVertexA[textureFaceIndex];
 					int mappingVertexB = texturedFaceVertexB[textureFaceIndex];
 					int mappingVertexC = texturedFaceVertexC[textureFaceIndex];
-					Texture.drawTexturedTriangle(screenY0, screenY1, screenY2, screenX0, screenX1, screenX2, clippedShade[0], clippedShade[1], clippedShade[2], anIntArray1668[mappingVertexA], anIntArray1668[mappingVertexB], anIntArray1668[mappingVertexC], anIntArray1669[mappingVertexA], anIntArray1669[mappingVertexB], anIntArray1669[mappingVertexC], anIntArray1670[mappingVertexA], anIntArray1670[mappingVertexB], anIntArray1670[mappingVertexC], anIntArray1640[faceIndex]);
-					Texture.drawTexturedTriangle(screenY0, screenY2, clippedY[3], screenX0, screenX2, clippedX[3], clippedShade[0], clippedShade[2], clippedShade[3], anIntArray1668[mappingVertexA], anIntArray1668[mappingVertexB], anIntArray1668[mappingVertexC], anIntArray1669[mappingVertexA], anIntArray1669[mappingVertexB], anIntArray1669[mappingVertexC], anIntArray1670[mappingVertexA], anIntArray1670[mappingVertexB], anIntArray1670[mappingVertexC], anIntArray1640[faceIndex]);
+					Texture.drawTexturedTriangle(screenY0, screenY1, screenY2, screenX0, screenX1, screenX2, clippedShade[0], clippedShade[1], clippedShade[2], vertexCameraX[mappingVertexA], vertexCameraX[mappingVertexB], vertexCameraX[mappingVertexC], vertexCameraY[mappingVertexA], vertexCameraY[mappingVertexB], vertexCameraY[mappingVertexC], vertexCameraZ[mappingVertexA], vertexCameraZ[mappingVertexB], vertexCameraZ[mappingVertexC], faceColors[faceIndex]);
+					Texture.drawTexturedTriangle(screenY0, screenY2, clippedY[3], screenX0, screenX2, clippedX[3], clippedShade[0], clippedShade[2], clippedShade[3], vertexCameraX[mappingVertexA], vertexCameraX[mappingVertexB], vertexCameraX[mappingVertexC], vertexCameraY[mappingVertexA], vertexCameraY[mappingVertexB], vertexCameraY[mappingVertexC], vertexCameraZ[mappingVertexA], vertexCameraZ[mappingVertexB], vertexCameraZ[mappingVertexC], faceColors[faceIndex]);
 					return;
 				}
 				if (renderType == 3) {
-					int textureFaceIndex = anIntArray1637[faceIndex] >> 2;
+					int textureFaceIndex = faceRenderFlags[faceIndex] >> 2;
 					int mappingVertexA = texturedFaceVertexA[textureFaceIndex];
 					int mappingVertexB = texturedFaceVertexB[textureFaceIndex];
 					int mappingVertexC = texturedFaceVertexC[textureFaceIndex];
-					Texture.drawTexturedTriangle(screenY0, screenY1, screenY2, screenX0, screenX1, screenX2, faceShadeA[faceIndex], faceShadeA[faceIndex], faceShadeA[faceIndex], anIntArray1668[mappingVertexA], anIntArray1668[mappingVertexB], anIntArray1668[mappingVertexC], anIntArray1669[mappingVertexA], anIntArray1669[mappingVertexB], anIntArray1669[mappingVertexC], anIntArray1670[mappingVertexA], anIntArray1670[mappingVertexB], anIntArray1670[mappingVertexC], anIntArray1640[faceIndex]);
-					Texture.drawTexturedTriangle(screenY0, screenY2, clippedY[3], screenX0, screenX2, clippedX[3], faceShadeA[faceIndex], faceShadeA[faceIndex], faceShadeA[faceIndex], anIntArray1668[mappingVertexA], anIntArray1668[mappingVertexB], anIntArray1668[mappingVertexC], anIntArray1669[mappingVertexA], anIntArray1669[mappingVertexB], anIntArray1669[mappingVertexC], anIntArray1670[mappingVertexA], anIntArray1670[mappingVertexB], anIntArray1670[mappingVertexC], anIntArray1640[faceIndex]);
+					Texture.drawTexturedTriangle(screenY0, screenY1, screenY2, screenX0, screenX1, screenX2, faceShadeA[faceIndex], faceShadeA[faceIndex], faceShadeA[faceIndex], vertexCameraX[mappingVertexA], vertexCameraX[mappingVertexB], vertexCameraX[mappingVertexC], vertexCameraY[mappingVertexA], vertexCameraY[mappingVertexB], vertexCameraY[mappingVertexC], vertexCameraZ[mappingVertexA], vertexCameraZ[mappingVertexB], vertexCameraZ[mappingVertexC], faceColors[faceIndex]);
+					Texture.drawTexturedTriangle(screenY0, screenY2, clippedY[3], screenX0, screenX2, clippedX[3], faceShadeA[faceIndex], faceShadeA[faceIndex], faceShadeA[faceIndex], vertexCameraX[mappingVertexA], vertexCameraX[mappingVertexB], vertexCameraX[mappingVertexC], vertexCameraY[mappingVertexA], vertexCameraY[mappingVertexB], vertexCameraY[mappingVertexC], vertexCameraZ[mappingVertexA], vertexCameraZ[mappingVertexB], vertexCameraZ[mappingVertexC], faceColors[faceIndex]);
 				}
 			}
 		}
@@ -1821,21 +1821,21 @@ public final class Model extends Animable {
 	private static int[] animationScratchY = new int[2000];
 	private static int[] animationScratchZ = new int[2000];
 	private static int[] animationScratchAlpha = new int[2000];
-	public int anInt1626;
-	public int anIntArray1627[];
-	public int anIntArray1628[];
-	public int anIntArray1629[];
-	public int anInt1630;
-	public int anIntArray1631[];
-	public int anIntArray1632[];
-	public int anIntArray1633[];
+	public int vertexCount;
+	public int vertexX[];
+	public int vertexY[];
+	public int vertexZ[];
+	public int faceCount;
+	public int faceVertexA[];
+	public int faceVertexB[];
+	public int faceVertexC[];
 	private int[] faceShadeA;
 	private int[] faceShadeB;
 	private int[] faceShadeC;
-	public int anIntArray1637[];
+	public int faceRenderFlags[];
 	private int[] facePriorities;
 	private int[] faceAlphas;
-	public int anIntArray1640[];
+	public int faceColors[];
 	private int uniformFacePriority;
 	private int texturedFaceCount;
 	private int[] texturedFaceVertexA;
@@ -1849,13 +1849,13 @@ public final class Model extends Animable {
 	public int maxY;
 	private int depthBucketCount;
 	private int depthBucketOffset;
-	public int anInt1654;
+	public int stackSurfaceHeight;
 	private int[] vertexGroupIds;
 	private int[] faceGroupIds;
 	public int vertexGroups[][];
 	public int faceGroups[][];
-	public boolean aBoolean1659;
-	VertexNormal aClass33Array1660[];
+	public boolean pickByBounds;
+	VertexNormal originalVertexNormals[];
 	private static ModelHeader[] modelHeaders;
 	private static OnDemandFetcherParent modelRequester;
 	private static boolean[] faceNeedsHorizontalClip = new boolean[4096];
@@ -1863,9 +1863,9 @@ public final class Model extends Animable {
 	private static int[] screenX = new int[4096];
 	private static int[] screenY = new int[4096];
 	private static int[] vertexDepth = new int[4096];
-	private static int[] anIntArray1668 = new int[4096];
-	private static int[] anIntArray1669 = new int[4096];
-	private static int[] anIntArray1670 = new int[4096];
+	private static int[] vertexCameraX = new int[4096];
+	private static int[] vertexCameraY = new int[4096];
+	private static int[] vertexCameraZ = new int[4096];
 	private static int[] depthBucketFaceCounts = new int[1500];
 	private static int[][] depthBucketFaces = new int[1500][512];
 	private static int[] priorityFaceCounts = new int[12];
@@ -1879,11 +1879,11 @@ public final class Model extends Animable {
 	private static int animationPivotX;
 	private static int animationPivotY;
 	private static int animationPivotZ;
-	public static boolean aBoolean1684;
-	public static int anInt1685;
-	public static int anInt1686;
-	public static int anInt1687;
-	public static final int[] anIntArray1688 = new int[1000];
+	public static boolean pickingEnabled;
+	public static int pickMouseX;
+	public static int pickMouseY;
+	public static int pickedCount;
+	public static final int[] pickedIds = new int[1000];
 	public static int sineTable16[];
 	public static int cosineTable16[];
 	private static int[] hslToRgbPalette;

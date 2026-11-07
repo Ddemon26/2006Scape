@@ -196,17 +196,17 @@ public class AnimationFrameDelayTest {
         AnimationFrame.initialize(4);
         AnimationFrame.decodeFile(fixture(new int[]{1,5},new int[][]{{1},{2}},new int[]{4},new int[]{9},new int[][]{{7,1}},new int[][][]{ {{7,-2,5},{2,0,0}} },0));
         Constructor<Model> c=Model.class.getDeclaredConstructor(); c.setAccessible(true); Model m=c.newInstance();
-        m.anInt1626=3; m.anInt1630=3; m.anIntArray1627=new int[]{10,20,30}; m.anIntArray1628=new int[]{40,50,60}; m.anIntArray1629=new int[]{70,80,90};
+        m.vertexCount=3; m.faceCount=3; m.vertexX=new int[]{10,20,30}; m.vertexY=new int[]{40,50,60}; m.vertexZ=new int[]{70,80,90};
         m.vertexGroups=new int[][]{{2},{0},{1}}; m.faceGroups=new int[][]{{1},{2},{0}};
         Field alpha=Model.class.getDeclaredField("faceAlphas"); alpha.setAccessible(true); alpha.set(m,new int[]{11,22,33});
         int[] old=new int[3]; Field[] pivots=new Field[3];
         for(int i=0;i<3;i++){pivots[i]=Model.class.getDeclaredField("animationPivot"+"XYZ".charAt(i));pivots[i].setAccessible(true);old[i]=pivots[i].getInt(null);}
-        try {m.applyAnimationFrame(4); assertArrayEquals(new int[]{17,20,30},m.anIntArray1627); assertArrayEquals(new int[]{38,50,60},m.anIntArray1628); assertArrayEquals(new int[]{75,80,90},m.anIntArray1629); assertArrayEquals(new int[]{27,22,33},(int[])alpha.get(m));
+        try {m.applyAnimationFrame(4); assertArrayEquals(new int[]{17,20,30},m.vertexX); assertArrayEquals(new int[]{38,50,60},m.vertexY); assertArrayEquals(new int[]{75,80,90},m.vertexZ); assertArrayEquals(new int[]{27,22,33},(int[])alpha.get(m));
             // Nearest skipped zero row selects vertex0 as the centroid; row0 would select vertex2.
             AnimationFrame.decodeFile(fixture(new int[]{0,0,3},new int[][]{{0},{1},{2}},new int[]{2},new int[]{1},new int[][]{{0,0,1}},new int[][][]{ {{0,0,0},{0,0,0},{256,0,0}} },0));
-            m.anIntArray1627=new int[]{10,20,30}; m.anIntArray1628=new int[]{40,50,60}; m.anIntArray1629=new int[]{70,80,90};
-            m.applyAnimationFrame(2); assertArrayEquals(new int[]{10,30,30},m.anIntArray1627);
-            assertArrayEquals(new int[]{40,50,60},m.anIntArray1628); assertArrayEquals(new int[]{70,80,90},m.anIntArray1629);
+            m.vertexX=new int[]{10,20,30}; m.vertexY=new int[]{40,50,60}; m.vertexZ=new int[]{70,80,90};
+            m.applyAnimationFrame(2); assertArrayEquals(new int[]{10,30,30},m.vertexX);
+            assertArrayEquals(new int[]{40,50,60},m.vertexY); assertArrayEquals(new int[]{70,80,90},m.vertexZ);
         }
         finally {for(int i=0;i<3;i++)pivots[i].setInt(null,old[i]);}
     }

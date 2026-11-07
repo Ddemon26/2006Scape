@@ -60,7 +60,7 @@ public class WorldControllerPlacementTest {
         return c.newInstance();
     }
 
-    private static Model modelWithHeight(int h) throws Exception { Model m = model(); m.anInt1654 = h; return m; }
+    private static Model modelWithHeight(int h) throws Exception { Model m = model(); m.stackSurfaceHeight = h; return m; }
 
     // ================= addOccluder: occluder list =================
 

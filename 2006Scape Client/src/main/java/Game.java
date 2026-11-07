@@ -816,7 +816,7 @@ public class Game extends RSApplet {
 			for (int i1 = 0; i1 < j; i1++) {
 				int l1 = onDemandFetcher.getModelIndex(i1);
 				if ((l1 & 0x79) == 0) {
-					Model.method461(i1);
+					Model.unloadModelHeader(i1);
 				}
 			}
 
@@ -2852,7 +2852,7 @@ public class Game extends RSApplet {
 					return;
 				}
 				if (onDemandData.dataType == 0) {
-					Model.method460(onDemandData.buffer, onDemandData.ID);
+					Model.loadModelHeader(onDemandData.buffer, onDemandData.ID);
 					if ((onDemandFetcher.getModelIndex(onDemandData.ID) & 0x62) != 0) {
 						needDrawTabArea = true;
 						if (backDialogID != -1) {
@@ -4536,8 +4536,8 @@ public class Game extends RSApplet {
 			menuActionRow++;
 		}
 		int j = -1;
-		for (int k = 0; k < Model.anInt1687; k++) {
-			int l = Model.anIntArray1688[k];
+		for (int k = 0; k < Model.pickedCount; k++) {
+			int l = Model.pickedIds[k];
 			int i1 = l & 0x7f;
 			int j1 = l >> 7 & 0x7f;
 			int k1 = l >> 29 & 3;
@@ -7048,7 +7048,7 @@ public class Game extends RSApplet {
 			onDemandFetcher.start(streamLoader_6, this);
 //			musics();
 			AnimationFrame.initialize(onDemandFetcher.getAnimCount());
-			Model.method459(onDemandFetcher.getVersionCount(0), onDemandFetcher);
+			Model.initModelHeaders(onDemandFetcher.getVersionCount(0), onDemandFetcher);
 			if (!lowMem) {
 				requestSongWithFade(10, musicVolume, false, 0);
 				while (onDemandFetcher.getNodeCount() > 0) {
@@ -11890,10 +11890,10 @@ public class Game extends RSApplet {
 		}
 
 		int k2 = Texture.useCounter;
-		Model.aBoolean1684 = true;
-		Model.anInt1687 = 0;
-		Model.anInt1685 = super.mouseX - 4;
-		Model.anInt1686 = super.mouseY - 4;
+		Model.pickingEnabled = true;
+		Model.pickedCount = 0;
+		Model.pickMouseX = super.mouseX - 4;
+		Model.pickMouseY = super.mouseY - 4;
 		DrawingArea.clearRaster();
 		if(graphicsEnabled){
 			worldController.drawScene(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);

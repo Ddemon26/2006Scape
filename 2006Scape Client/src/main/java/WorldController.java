@@ -186,7 +186,7 @@ final class WorldController {
 		if (tile != null) {
 			for (int index = 0; index < tile.objectCount; index++) {
 				if (tile.obj5Array[index].model instanceof Model) {
-					int objectHeight = ((Model) tile.obj5Array[index].model).anInt1654;
+					int objectHeight = ((Model) tile.obj5Array[index].model).stackSurfaceHeight;
 					if (objectHeight > tallestObjectHeight) {
 						tallestObjectHeight = objectHeight;
 					}
@@ -571,9 +571,9 @@ final class WorldController {
 					Ground ground = groundArray[plane][tileX][tileY];
 					if (ground != null) {
 						Object1 wall = ground.obj1;
-						if (wall != null && wall.model != null && wall.model.aClass33Array1425 != null) {
+						if (wall != null && wall.model != null && wall.model.vertexNormals != null) {
 							mergeNeighbourNormals(plane, 1, 1, tileX, tileY, (Model) wall.model);
-							if (wall.secondaryModel != null && wall.secondaryModel.aClass33Array1425 != null) {
+							if (wall.secondaryModel != null && wall.secondaryModel.vertexNormals != null) {
 								mergeNeighbourNormals(plane, 1, 1, tileX, tileY, (Model) wall.secondaryModel);
 								mergeSharedVertexNormals((Model) wall.model, (Model) wall.secondaryModel, 0, 0, 0, false);
 								((Model) wall.secondaryModel).applyVertexLighting(ambientLight, lightContrast, lightX, lightY, lightZ);
@@ -582,14 +582,14 @@ final class WorldController {
 						}
 						for (int objectIndex = 0; objectIndex < ground.objectCount; objectIndex++) {
 							Object5 sceneObject = ground.obj5Array[objectIndex];
-							if (sceneObject != null && sceneObject.model != null && sceneObject.model.aClass33Array1425 != null) {
+							if (sceneObject != null && sceneObject.model != null && sceneObject.model.vertexNormals != null) {
 								mergeNeighbourNormals(plane, sceneObject.maxTileX - sceneObject.minTileX + 1, sceneObject.maxTileY - sceneObject.minTileY + 1, tileX, tileY, (Model) sceneObject.model);
 								((Model) sceneObject.model).applyVertexLighting(ambientLight, lightContrast, lightX, lightY, lightZ);
 							}
 						}
 
 						Object3 groundDecoration = ground.obj3;
-						if (groundDecoration != null && groundDecoration.model.aClass33Array1425 != null) {
+						if (groundDecoration != null && groundDecoration.model.vertexNormals != null) {
 							mergeGroundDecorationNormals(tileX, plane, (Model) groundDecoration.model, tileY);
 							((Model) groundDecoration.model).applyVertexLighting(ambientLight, lightContrast, lightX, lightY, lightZ);
 						}
@@ -605,25 +605,25 @@ final class WorldController {
 	private void mergeGroundDecorationNormals(int tileX, int plane, Model model, int tileY) {
 		if (tileX < tileCountX) {
 			Ground neighbourPlusX = groundArray[plane][tileX + 1][tileY];
-			if (neighbourPlusX != null && neighbourPlusX.obj3 != null && neighbourPlusX.obj3.model.aClass33Array1425 != null) {
+			if (neighbourPlusX != null && neighbourPlusX.obj3 != null && neighbourPlusX.obj3.model.vertexNormals != null) {
 				mergeSharedVertexNormals(model, (Model) neighbourPlusX.obj3.model, 128, 0, 0, true);
 			}
 		}
 		if (tileY < tileCountX) {
 			Ground neighbourPlusY = groundArray[plane][tileX][tileY + 1];
-			if (neighbourPlusY != null && neighbourPlusY.obj3 != null && neighbourPlusY.obj3.model.aClass33Array1425 != null) {
+			if (neighbourPlusY != null && neighbourPlusY.obj3 != null && neighbourPlusY.obj3.model.vertexNormals != null) {
 				mergeSharedVertexNormals(model, (Model) neighbourPlusY.obj3.model, 0, 0, 128, true);
 			}
 		}
 		if (tileX < tileCountX && tileY < tileCountY) {
 			Ground neighbourPlusXPlusY = groundArray[plane][tileX + 1][tileY + 1];
-			if (neighbourPlusXPlusY != null && neighbourPlusXPlusY.obj3 != null && neighbourPlusXPlusY.obj3.model.aClass33Array1425 != null) {
+			if (neighbourPlusXPlusY != null && neighbourPlusXPlusY.obj3 != null && neighbourPlusXPlusY.obj3.model.vertexNormals != null) {
 				mergeSharedVertexNormals(model, (Model) neighbourPlusXPlusY.obj3.model, 128, 0, 128, true);
 			}
 		}
 		if (tileX < tileCountX && tileY > 0) {
 			Ground neighbourPlusXMinusY = groundArray[plane][tileX + 1][tileY - 1];
-			if (neighbourPlusXMinusY != null && neighbourPlusXMinusY.obj3 != null && neighbourPlusXMinusY.obj3.model.aClass33Array1425 != null) {
+			if (neighbourPlusXMinusY != null && neighbourPlusXMinusY.obj3 != null && neighbourPlusXMinusY.obj3.model.vertexNormals != null) {
 				mergeSharedVertexNormals(model, (Model) neighbourPlusXMinusY.obj3.model, 128, 0, -128, true);
 			}
 		}
@@ -645,15 +645,15 @@ final class WorldController {
 								if (neighbour != null) {
 									int heightOffset = (tileHeights[scanPlane][scanX][scanY] + tileHeights[scanPlane][scanX + 1][scanY] + tileHeights[scanPlane][scanX][scanY + 1] + tileHeights[scanPlane][scanX + 1][scanY + 1]) / 4 - (tileHeights[plane][tileX][tileY] + tileHeights[plane][tileX + 1][tileY] + tileHeights[plane][tileX][tileY + 1] + tileHeights[plane][tileX + 1][tileY + 1]) / 4;
 									Object1 wall = neighbour.obj1;
-									if (wall != null && wall.model != null && wall.model.aClass33Array1425 != null) {
+									if (wall != null && wall.model != null && wall.model.vertexNormals != null) {
 										mergeSharedVertexNormals(model, (Model) wall.model, (scanX - tileX) * 128 + (1 - sizeX) * 64, heightOffset, (scanY - tileY) * 128 + (1 - sizeY) * 64, onOwnPlane);
 									}
-									if (wall != null && wall.secondaryModel != null && wall.secondaryModel.aClass33Array1425 != null) {
+									if (wall != null && wall.secondaryModel != null && wall.secondaryModel.vertexNormals != null) {
 										mergeSharedVertexNormals(model, (Model) wall.secondaryModel, (scanX - tileX) * 128 + (1 - sizeX) * 64, heightOffset, (scanY - tileY) * 128 + (1 - sizeY) * 64, onOwnPlane);
 									}
 									for (int objectIndex = 0; objectIndex < neighbour.objectCount; objectIndex++) {
 										Object5 sceneObject = neighbour.obj5Array[objectIndex];
-										if (sceneObject != null && sceneObject.model != null && sceneObject.model.aClass33Array1425 != null) {
+										if (sceneObject != null && sceneObject.model != null && sceneObject.model.vertexNormals != null) {
 											int otherSizeX = sceneObject.maxTileX - sceneObject.minTileX + 1;
 											int otherSizeY = sceneObject.maxTileY - sceneObject.minTileY + 1;
 											mergeSharedVertexNormals(model, (Model) sceneObject.model, (sceneObject.minTileX - tileX) * 128 + (otherSizeX - sizeX) * 64, heightOffset, (sceneObject.minTileY - tileY) * 128 + (otherSizeY - sizeY) * 64, onOwnPlane);
@@ -677,22 +677,22 @@ final class WorldController {
 	private void mergeSharedVertexNormals(Model model, Model other, int offsetX, int offsetY, int offsetZ, boolean hideSharedFaces) {
 		mergeStamp++;
 		int sharedCount = 0;
-		int otherX[] = other.anIntArray1627;
-		int otherVertexCount = other.anInt1626;
-		for (int vertexIndex = 0; vertexIndex < model.anInt1626; vertexIndex++) {
-			VertexNormal normal = model.aClass33Array1425[vertexIndex];
-			VertexNormal originalNormal = model.aClass33Array1660[vertexIndex];
+		int otherX[] = other.vertexX;
+		int otherVertexCount = other.vertexCount;
+		for (int vertexIndex = 0; vertexIndex < model.vertexCount; vertexIndex++) {
+			VertexNormal normal = model.vertexNormals[vertexIndex];
+			VertexNormal originalNormal = model.originalVertexNormals[vertexIndex];
 			if (originalNormal.faceCount != 0) {
-				int shiftedY = model.anIntArray1628[vertexIndex] - offsetY;
+				int shiftedY = model.vertexY[vertexIndex] - offsetY;
 				if (shiftedY <= other.maxY) {
-					int shiftedX = model.anIntArray1627[vertexIndex] - offsetX;
+					int shiftedX = model.vertexX[vertexIndex] - offsetX;
 					if (shiftedX >= other.minX && shiftedX <= other.maxX) {
-						int shiftedZ = model.anIntArray1629[vertexIndex] - offsetZ;
+						int shiftedZ = model.vertexZ[vertexIndex] - offsetZ;
 						if (shiftedZ >= other.minZ && shiftedZ <= other.maxZ) {
 							for (int otherVertexIndex = 0; otherVertexIndex < otherVertexCount; otherVertexIndex++) {
-								VertexNormal otherNormal = other.aClass33Array1425[otherVertexIndex];
-								VertexNormal otherOriginalNormal = other.aClass33Array1660[otherVertexIndex];
-								if (shiftedX == otherX[otherVertexIndex] && shiftedZ == other.anIntArray1629[otherVertexIndex] && shiftedY == other.anIntArray1628[otherVertexIndex] && otherOriginalNormal.faceCount != 0) {
+								VertexNormal otherNormal = other.vertexNormals[otherVertexIndex];
+								VertexNormal otherOriginalNormal = other.originalVertexNormals[otherVertexIndex];
+								if (shiftedX == otherX[otherVertexIndex] && shiftedZ == other.vertexZ[otherVertexIndex] && shiftedY == other.vertexY[otherVertexIndex] && otherOriginalNormal.faceCount != 0) {
 									normal.normalX += otherOriginalNormal.normalX;
 									normal.normalY += otherOriginalNormal.normalY;
 									normal.normalZ += otherOriginalNormal.normalZ;
@@ -716,15 +716,15 @@ final class WorldController {
 		if (sharedCount < 3 || !hideSharedFaces) {
 			return;
 		}
-		for (int faceIndex = 0; faceIndex < model.anInt1630; faceIndex++) {
-			if (modelSharedVertexStamps[model.anIntArray1631[faceIndex]] == mergeStamp && modelSharedVertexStamps[model.anIntArray1632[faceIndex]] == mergeStamp && modelSharedVertexStamps[model.anIntArray1633[faceIndex]] == mergeStamp) {
-				model.anIntArray1637[faceIndex] = -1;
+		for (int faceIndex = 0; faceIndex < model.faceCount; faceIndex++) {
+			if (modelSharedVertexStamps[model.faceVertexA[faceIndex]] == mergeStamp && modelSharedVertexStamps[model.faceVertexB[faceIndex]] == mergeStamp && modelSharedVertexStamps[model.faceVertexC[faceIndex]] == mergeStamp) {
+				model.faceRenderFlags[faceIndex] = -1;
 			}
 		}
 
-		for (int otherFaceIndex = 0; otherFaceIndex < other.anInt1630; otherFaceIndex++) {
-			if (otherSharedVertexStamps[other.anIntArray1631[otherFaceIndex]] == mergeStamp && otherSharedVertexStamps[other.anIntArray1632[otherFaceIndex]] == mergeStamp && otherSharedVertexStamps[other.anIntArray1633[otherFaceIndex]] == mergeStamp) {
-				other.anIntArray1637[otherFaceIndex] = -1;
+		for (int otherFaceIndex = 0; otherFaceIndex < other.faceCount; otherFaceIndex++) {
+			if (otherSharedVertexStamps[other.faceVertexA[otherFaceIndex]] == mergeStamp && otherSharedVertexStamps[other.faceVertexB[otherFaceIndex]] == mergeStamp && otherSharedVertexStamps[other.faceVertexC[otherFaceIndex]] == mergeStamp) {
+				other.faceRenderFlags[otherFaceIndex] = -1;
 			}
 		}
 

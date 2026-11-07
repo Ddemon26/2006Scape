@@ -13,7 +13,7 @@ public class ModelFaceDrawOrderTest {
     private static final int W = 48, H = 40, BG = 0x7f7f7f;
     private static final int N = 4;
     private static final String[] MODEL_STATIC = {"faceNeedsHorizontalClip", "faceNearPlaneClipped", "screenX",
-            "screenY", "vertexDepth", "anIntArray1668", "anIntArray1669", "anIntArray1670"};
+            "screenY", "vertexDepth", "vertexCameraX", "vertexCameraY", "vertexCameraZ"};
     private static final String[] TEXTURE_STATIC = {"clipScanlines", "transparency", "lowMem", "blockShading"};
     private final Object[] savedModel = new Object[MODEL_STATIC.length];
     private final Object[] savedTexture = new Object[TEXTURE_STATIC.length];
@@ -30,7 +30,7 @@ public class ModelFaceDrawOrderTest {
                 DrawingArea.bottomX, DrawingArea.bottomY, DrawingArea.scanlineRightLimit,
                 DrawingArea.clipRightHalf, DrawingArea.clipBottomHalf};
         palette = Texture.hslToRgbPalette.clone();
-        savedPickX = Model.anInt1685; savedPickY = Model.anInt1686; savedPickCount = Model.anInt1687;
+        savedPickX = Model.pickMouseX; savedPickY = Model.pickMouseY; savedPickCount = Model.pickedCount;
         full = ClientSettings.FULL_512PX_VIEWPORT;
         ClientSettings.FULL_512PX_VIEWPORT = true;
         set(Texture.class, "lowMem", null, true);
@@ -43,11 +43,11 @@ public class ModelFaceDrawOrderTest {
         model = ctor.newInstance();
         int[] a = new int[N], b = new int[N], c = new int[N], col = new int[N];
         for (int f = 0; f < N; f++) { a[f] = 3 * f; b[f] = 3 * f + 1; c[f] = 3 * f + 2; col[f] = color(f); }
-        set(Model.class, "anIntArray1631", model, a);
-        set(Model.class, "anIntArray1632", model, b);
-        set(Model.class, "anIntArray1633", model, c);
+        set(Model.class, "faceVertexA", model, a);
+        set(Model.class, "faceVertexB", model, b);
+        set(Model.class, "faceVertexC", model, c);
         set(Model.class, "faceShadeA", model, col);
-        set(Model.class, "anInt1630", model, N);
+        set(Model.class, "faceCount", model, N);
         set(Model.class, "depthBucketCount", model, 40);
         set(Model.class, "depthBucketOffset", model, 5);
         int[] x = (int[]) get(Model.class, "screenX", null);
@@ -58,7 +58,7 @@ public class ModelFaceDrawOrderTest {
         }
         int[] flags = new int[N];
         Arrays.fill(flags, 1);
-        set(Model.class, "anIntArray1637", model, flags);
+        set(Model.class, "faceRenderFlags", model, flags);
         depths(0, 0, 0, 0);
     }
 
@@ -72,7 +72,7 @@ public class ModelFaceDrawOrderTest {
         DrawingArea.bottomX = drawing[4]; DrawingArea.bottomY = drawing[5];
         DrawingArea.scanlineRightLimit = drawing[6]; DrawingArea.clipRightHalf = drawing[7];
         DrawingArea.clipBottomHalf = drawing[8];
-        Model.anInt1685 = savedPickX; Model.anInt1686 = savedPickY; Model.anInt1687 = savedPickCount;
+        Model.pickMouseX = savedPickX; Model.pickMouseY = savedPickY; Model.pickedCount = savedPickCount;
         ClientSettings.FULL_512PX_VIEWPORT = full;
     }
 
@@ -85,7 +85,7 @@ public class ModelFaceDrawOrderTest {
     }
 
     private void hide(int... faces) throws Exception {
-        int[] t = (int[]) get(Model.class, "anIntArray1637", model);
+        int[] t = (int[]) get(Model.class, "faceRenderFlags", model);
         for (int f : faces) t[f] = -1;
     }
 
@@ -172,16 +172,16 @@ public class ModelFaceDrawOrderTest {
     @Test public void pickRecordsTheIdOnceWhenTheCursorIsInsideAFace() throws Exception {
         hide(2, 3);
         depths(10, 5);
-        Model.anInt1685 = 20; Model.anInt1686 = 10; Model.anInt1687 = 0;
+        Model.pickMouseX = 20; Model.pickMouseY = 10; Model.pickedCount = 0;
         top(false, true, 77);
-        assertEquals(1, Model.anInt1687);
-        assertEquals(77, Model.anIntArray1688[0]);
-        Model.anInt1687 = 0;
+        assertEquals(1, Model.pickedCount);
+        assertEquals(77, Model.pickedIds[0]);
+        Model.pickedCount = 0;
         top(false, false, 78);
-        assertEquals(0, Model.anInt1687);
-        Model.anInt1685 = 45; Model.anInt1686 = 35;
+        assertEquals(0, Model.pickedCount);
+        Model.pickMouseX = 45; Model.pickMouseY = 35;
         top(false, true, 79);
-        assertEquals(0, Model.anInt1687);
+        assertEquals(0, Model.pickedCount);
     }
 
     @Test public void lowerPriorityNumbersDrawFirstRegardlessOfDepth() throws Exception {
@@ -212,11 +212,11 @@ public class ModelFaceDrawOrderTest {
         priorities(10, 1, 3);
         hide(2, 3);
         assertEquals(color(0), top());      // 6 not > mean(1,2)=8, so drawn after face 1
-        set(Model.class, "anIntArray1637", model, new int[] {1, 1, 1, 1});
+        set(Model.class, "faceRenderFlags", model, new int[] {1, 1, 1, 1});
         hide(3);
         assertEquals(color(2), top());      // 6 not > mean(1,2)=8 but > mean(3,4)=3: drawn before face 2, which ends on top
         depths(2, 8, 3);
-        set(Model.class, "anIntArray1637", model, new int[] {1, 1, 1, 1});
+        set(Model.class, "faceRenderFlags", model, new int[] {1, 1, 1, 1});
         hide(3);
         assertEquals(color(0), top());      // 2 not > 8, not > mean(3,4)=3, > 6/8 mean 0: drawn after face 2
     }

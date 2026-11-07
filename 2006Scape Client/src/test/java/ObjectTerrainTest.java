@@ -332,15 +332,15 @@ public class ObjectTerrainTest {
         Constructor<Model> c = Model.class.getDeclaredConstructor();
         c.setAccessible(true);
         Model m = c.newInstance();
-        m.anInt1626 = 3;
-        m.anIntArray1627 = new int[] {xOffset, xOffset + 64, xOffset};
-        m.anIntArray1628 = new int[] {0, 0, 40};
-        m.anIntArray1629 = new int[] {0, 0, 0};
-        m.anInt1630 = 1;
-        m.anIntArray1631 = new int[] {0};
-        m.anIntArray1632 = new int[] {1};
-        m.anIntArray1633 = new int[] {2};
-        m.anIntArray1640 = new int[] {1234};
+        m.vertexCount = 3;
+        m.vertexX = new int[] {xOffset, xOffset + 64, xOffset};
+        m.vertexY = new int[] {0, 0, 40};
+        m.vertexZ = new int[] {0, 0, 0};
+        m.faceCount = 1;
+        m.faceVertexA = new int[] {0};
+        m.faceVertexB = new int[] {1};
+        m.faceVertexC = new int[] {2};
+        m.faceColors = new int[] {1234};
         return m;
     }
 
@@ -362,8 +362,8 @@ public class ObjectTerrainTest {
 
     private static int maxAbsXZ(Model m) {
         int max = 0;
-        for (int v = 0; v < m.anInt1626; v++) {
-            max = Math.max(max, Math.max(Math.abs(m.anIntArray1627[v]), Math.abs(m.anIntArray1629[v])));
+        for (int v = 0; v < m.vertexCount; v++) {
+            max = Math.max(max, Math.max(Math.abs(m.vertexX[v]), Math.abs(m.vertexZ[v])));
         }
         return max;
     }
@@ -391,20 +391,20 @@ public class ObjectTerrainTest {
         int id = 7300;
         Model source = triangle(0);
         ObjectDef.mruNodes1.removeFromCache(source, id);
-        assertSame("nothing to change: vertex array shared", source.anIntArray1627,
-                build(withModel(9400, id), 10, -1, 0).anIntArray1627);
+        assertSame("nothing to change: vertex array shared", source.vertexX,
+                build(withModel(9400, id), 10, -1, 0).vertexX);
         int n = 1;
         for (String f : scaled) {
             ObjectDef d = withModel(9400 + n++, id);
             field(ObjectDef.class, f).setInt(d, 256);
-            assertNotSame(f + " forces a private vertex copy", source.anIntArray1627, build(d, 10, -1, 0).anIntArray1627);
+            assertNotSame(f + " forces a private vertex copy", source.vertexX, build(d, 10, -1, 0).vertexX);
         }
         for (String f : translated) {
             ObjectDef d = withModel(9400 + n++, id);
             field(ObjectDef.class, f).setInt(d, 5);
-            assertNotSame(f + " forces a private vertex copy", source.anIntArray1627, build(d, 10, -1, 0).anIntArray1627);
+            assertNotSame(f + " forces a private vertex copy", source.vertexX, build(d, 10, -1, 0).vertexX);
         }
-        assertNotSame("orientation forces a copy", source.anIntArray1627, build(withModel(9400 + n++, id), 10, -1, 1).anIntArray1627);
+        assertNotSame("orientation forces a copy", source.vertexX, build(withModel(9400 + n++, id), 10, -1, 1).vertexX);
         // scale(anInt748 -> x), then translate(anInt738 -> x, anInt745 -> y, anInt783 -> z)
         ObjectDef both = withModel(9400 + n, id);
         field(ObjectDef.class, "anInt748").setInt(both, 256);
@@ -412,9 +412,9 @@ public class ObjectTerrainTest {
         field(ObjectDef.class, "anInt745").setInt(both, 4);
         field(ObjectDef.class, "anInt783").setInt(both, 5);
         Model out = build(both, 10, -1, 0);
-        assertArrayEquals(new int[] {3, 64 * 2 + 3, 3}, out.anIntArray1627);
-        assertArrayEquals(new int[] {4, 4, 44}, out.anIntArray1628);
-        assertArrayEquals(new int[] {5, 5, 5}, out.anIntArray1629);
+        assertArrayEquals(new int[] {3, 64 * 2 + 3, 3}, out.vertexX);
+        assertArrayEquals(new int[] {4, 4, 44}, out.vertexY);
+        assertArrayEquals(new int[] {5, 5, 5}, out.vertexZ);
     }
 
     @Test public void aBoolean769KeepsVertexNormalsInsteadOfBakingVertexShading() throws Exception {
@@ -426,9 +426,9 @@ public class ObjectTerrainTest {
             Model out = build(d, 10, -1, 0);
             assertNotNull(shade(out));
             if (flag) {
-                assertNotNull("normals are kept for later lighting", out.aClass33Array1660);
+                assertNotNull("normals are kept for later lighting", out.originalVertexNormals);
             } else {
-                assertNull("normals are consumed into per-vertex shading", out.aClass33Array1660);
+                assertNull("normals are consumed into per-vertex shading", out.originalVertexNormals);
             }
         }
     }

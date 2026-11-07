@@ -2219,7 +2219,7 @@ public final class ItemDef {
 
 		}
 		model.applyLighting(64 + ambientLightOffset, 768 + lightDivisorOffset, -50, -10, -50, true);
-		model.aBoolean1659 = true;
+		model.pickByBounds = true;
 		mruNodes2.removeFromCache(model, id);
 		return model;
 	}

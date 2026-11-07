@@ -8,8 +8,8 @@ import org.junit.Test;
 
 /** Controlled original-name observations of Model.method479/method480/method482 and the modelIntArray tables. */
 public class ModelLightingProjectionTest {
-    private static final String[] STATICS = {"screenX", "screenY", "vertexDepth", "anIntArray1668",
-            "anIntArray1669", "anIntArray1670"};
+    private static final String[] STATICS = {"screenX", "screenY", "vertexDepth", "vertexCameraX",
+            "vertexCameraY", "vertexCameraZ"};
     private final Object[] saved = new Object[STATICS.length];
     private int savedC1, savedC2;
 
@@ -27,9 +27,9 @@ public class ModelLightingProjectionTest {
 
     private static Model model(int[] x, int[] y, int[] z, int[] a, int[] b, int[] c, int[] flags, int color) throws Exception {
         Constructor<Model> k = Model.class.getDeclaredConstructor(); k.setAccessible(true);
-        Model m = k.newInstance(); m.anInt1626 = x.length; m.anIntArray1627 = x; m.anIntArray1628 = y; m.anIntArray1629 = z;
-        m.anInt1630 = a.length; m.anIntArray1631 = a; m.anIntArray1632 = b; m.anIntArray1633 = c; m.anIntArray1637 = flags;
-        m.anIntArray1640 = new int[a.length]; java.util.Arrays.fill(m.anIntArray1640, color);
+        Model m = k.newInstance(); m.vertexCount = x.length; m.vertexX = x; m.vertexY = y; m.vertexZ = z;
+        m.faceCount = a.length; m.faceVertexA = a; m.faceVertexB = b; m.faceVertexC = c; m.faceRenderFlags = flags;
+        m.faceColors = new int[a.length]; java.util.Arrays.fill(m.faceColors, color);
         m.minX = 12345;
         return m;
     }
@@ -60,29 +60,29 @@ public class ModelLightingProjectionTest {
     @Test public void divisorIsOnlyUsedWhenLightIsApplied() throws Exception {
         try { Model m = flatTriangle(1); m.applyLighting(200, 0, 0, 0, -100, true); fail(); } catch (ArithmeticException expected) { }
         Model m = flatTriangle(0); m.applyLighting(200, 0, 0, 0, -100, false); // normals only; no division yet
-        assertEquals(256, m.aClass33Array1425[0].normalZ);
+        assertEquals(256, m.vertexNormals[0].normalZ);
     }
     @Test public void bitZeroOfFaceFlagSelectsFlatShadingAndOtherBitsAccumulateNormals() throws Exception {
         for (int flag : new int[]{0, 2, 4}) {
             Model m = flatTriangle(flag); m.applyLighting(200, 256, 0, 0, -100, false);
-            for (int v = 0; v < 3; v++) { assertEquals(1, m.aClass33Array1425[v].faceCount); assertEquals(256, m.aClass33Array1425[v].normalZ); }
+            for (int v = 0; v < 3; v++) { assertEquals(1, m.vertexNormals[v].faceCount); assertEquals(256, m.vertexNormals[v].normalZ); }
             assertEquals(0, shade0(m));
         }
         for (int flag : new int[]{1, 3}) {
             Model m = flatTriangle(flag); m.applyLighting(200, 256, 0, 0, -100, false);
-            for (int v = 0; v < 3; v++) assertEquals(0, m.aClass33Array1425[v].faceCount);
+            for (int v = 0; v < 3; v++) assertEquals(0, m.vertexNormals[v].faceCount);
             if (flag == 1) assertEquals(29, shade0(m));
         }
     }
     @Test public void faceNormalIsReducedByCommonShiftAndScaledToLength256() throws Exception {
         Model m = model(new int[]{0,20000,0}, new int[]{0,0,20000}, new int[]{0,0,20000}, new int[]{0}, new int[]{1}, new int[]{2}, null, 5);
         m.applyLighting(0, 256, 0, 0, -100, false);
-        VertexNormal n = m.aClass33Array1425[0]; assertEquals(0, n.normalX); assertTrue(Math.abs(n.normalY + 181) <= 1); assertTrue(Math.abs(n.normalZ - 181) <= 1);
+        VertexNormal n = m.vertexNormals[0]; assertEquals(0, n.normalX); assertTrue(Math.abs(n.normalY + 181) <= 1); assertTrue(Math.abs(n.normalZ - 181) <= 1);
         m = model(new int[]{0,20000,0}, new int[]{0,0,20000}, new int[]{0,0,0}, new int[]{0}, new int[]{1}, new int[]{2}, null, 5);
-        m.applyLighting(0, 256, 0, 0, -100, false); assertEquals(256, m.aClass33Array1425[0].normalZ);
+        m.applyLighting(0, 256, 0, 0, -100, false); assertEquals(256, m.vertexNormals[0].normalZ);
         m = model(new int[]{0,0,0}, new int[]{0,0,0}, new int[]{0,0,0}, new int[]{0}, new int[]{1}, new int[]{2}, null, 5); // zero-area face
         m.applyLighting(0, 256, 0, 0, -100, false);
-        assertEquals(0, m.aClass33Array1425[0].normalZ); assertEquals(1, m.aClass33Array1425[0].faceCount);
+        assertEquals(0, m.vertexNormals[0].normalZ); assertEquals(1, m.vertexNormals[0].faceCount);
     }
     private static Model twoTriangles() throws Exception {
         return model(new int[]{0,10,0,0}, new int[]{0,0,10,0}, new int[]{0,0,0,10}, new int[]{0,0}, new int[]{1,2}, new int[]{2,3}, null, 127);
@@ -91,7 +91,7 @@ public class ModelLightingProjectionTest {
         Model m = twoTriangles(); m.applyLighting(300, 256, -60, 0, -80, false);
         int[][] sum = {{256,0,256,2},{0,0,256,1},{256,0,256,2},{256,0,0,1}};
         for (int v = 0; v < 4; v++) {
-            VertexNormal a = m.aClass33Array1425[v], b = m.aClass33Array1660[v];
+            VertexNormal a = m.vertexNormals[v], b = m.originalVertexNormals[v];
             assertEquals(sum[v][0], a.normalX); assertEquals(sum[v][1], a.normalY); assertEquals(sum[v][2], a.normalZ); assertEquals(sum[v][3], a.faceCount);
             assertNotSame(a, b); assertEquals(a.normalZ, b.normalZ); assertEquals(a.faceCount, b.faceCount);
         }
@@ -102,20 +102,20 @@ public class ModelLightingProjectionTest {
         Model m = twoTriangles(); m.applyLighting(300, 256, -60, 0, -80, true);
         assertArrayEquals(new int[]{120, 95, 120}, new int[]{ints(m, "faceShadeA")[0], ints(m, "faceShadeB")[0], ints(m, "faceShadeC")[0]});
         assertArrayEquals(new int[]{120, 120, 126}, new int[]{ints(m, "faceShadeA")[1], ints(m, "faceShadeB")[1], ints(m, "faceShadeC")[1]});
-        assertNull(m.aClass33Array1425); assertNull(m.aClass33Array1660); assertNull(m.anIntArray1640);
+        assertNull(m.vertexNormals); assertNull(m.originalVertexNormals); assertNull(m.faceColors);
         assertEquals(12345, m.minX); // rounded bounds routine leaves extents alone
     }
     @Test public void method480SkipsFlatFacesUsesDivisorDirectlyAndKeepsColoursOnlyForBitOneFaces() throws Exception {
         Model m = twoTriangles(); m.applyLighting(300, 256, -60, 0, -80, false);
-        ints(m, "faceShadeA")[1] = 777; m.anIntArray1637 = new int[]{0, 1};
+        ints(m, "faceShadeA")[1] = 777; m.faceRenderFlags = new int[]{0, 1};
         m.applyVertexLighting(300, 100, -60, 0, -80);
         assertEquals(120, ints(m, "faceShadeA")[0]); assertEquals(777, ints(m, "faceShadeA")[1]);
-        assertNull(m.anIntArray1640);
+        assertNull(m.faceColors);
         m = twoTriangles(); m.applyLighting(300, 256, -60, 0, -80, false);
         m.applyVertexLighting(300, 200, -60, 0, -80); // doubled divisor halves the light term: 300-89=211 -> clamp
         assertEquals(126, ints(m, "faceShadeC")[1]);
-        m = twoTriangles(); m.applyLighting(300, 256, -60, 0, -80, false); m.anIntArray1637 = new int[]{2, 0};
-        m.applyVertexLighting(300, 100, -60, 0, -80); assertNotNull(m.anIntArray1640);
+        m = twoTriangles(); m.applyLighting(300, 256, -60, 0, -80, false); m.faceRenderFlags = new int[]{2, 0};
+        m.applyVertexLighting(300, 100, -60, 0, -80); assertNotNull(m.faceColors);
     }
 
     // ---- method482 ----
@@ -169,12 +169,12 @@ public class ModelLightingProjectionTest {
     }
     @Test public void onlyActiveVertexPrefixAndOptionalCameraSpaceCopies() throws Exception {
         Texture.textureInt1 = 0; Texture.textureInt2 = 0;
-        Model m = verts(new int[]{10, 20, 30}, new int[]{0, 0, 0}, new int[]{0, 0, 0}); m.anInt1626 = 2;
+        Model m = verts(new int[]{10, 20, 30}, new int[]{0, 0, 0}, new int[]{0, 0, 0}); m.vertexCount = 2;
         for (String n : STATICS) java.util.Arrays.fill(stat(n), -99);
         m.projectRotated(0, 0, 0, 0, 0, 512);
         assertEquals(10, stat("screenX")[0]); assertEquals(20, stat("screenX")[1]); assertEquals(-99, stat("screenX")[2]);
-        assertEquals(-99, stat("anIntArray1668")[0]);
+        assertEquals(-99, stat("vertexCameraX")[0]);
         f("texturedFaceCount").setInt(m, 1); m.projectRotated(0, 0, 0, 0, 0, 512);
-        assertEquals(10, stat("anIntArray1668")[0]); assertEquals(0, stat("anIntArray1669")[0]); assertEquals(512, stat("anIntArray1670")[0]);
+        assertEquals(10, stat("vertexCameraX")[0]); assertEquals(0, stat("vertexCameraY")[0]); assertEquals(512, stat("vertexCameraZ")[0]);
     }
 }

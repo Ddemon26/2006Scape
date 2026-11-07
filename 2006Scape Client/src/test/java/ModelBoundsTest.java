@@ -5,8 +5,8 @@ import static org.junit.Assert.*;
 public class ModelBoundsTest {
     private static Model model(int[] x, int[] y, int[] z) throws Exception {
         Constructor<Model> c = Model.class.getDeclaredConstructor(); c.setAccessible(true);
-        Model m = c.newInstance(); m.anInt1626 = x.length;
-        m.anIntArray1627 = x.clone(); m.anIntArray1628 = y.clone(); m.anIntArray1629 = z.clone();
+        Model m = c.newInstance(); m.vertexCount = x.length;
+        m.vertexX = x.clone(); m.vertexY = y.clone(); m.vertexZ = z.clone();
         return m;
     }
     private static int field(Model m, String name) throws Exception {
@@ -20,11 +20,11 @@ public class ModelBoundsTest {
         assertEquals(offset, field(m,"depthBucketOffset")); assertEquals(buckets, field(m,"depthBucketCount"));
     }
     @Test public void independentAxesUseOriginCenteredXZRadiusAndSignedYExtents() throws Exception {
-        Model m = model(new int[]{3,0,900},new int[]{-12,8,-900},new int[]{4,0,900}); m.anInt1626=2;
+        Model m = model(new int[]{3,0,900},new int[]{-12,8,-900},new int[]{4,0,900}); m.vertexCount=2;
         m.calculateBounds(); bounds(m,5,12,8,13,23);
-        assertArrayEquals(new int[]{3,0,900},m.anIntArray1627);
-        assertArrayEquals(new int[]{-12,8,-900},m.anIntArray1628);
-        assertArrayEquals(new int[]{4,0,900},m.anIntArray1629);
+        assertArrayEquals(new int[]{3,0,900},m.vertexX);
+        assertArrayEquals(new int[]{-12,8,-900},m.vertexY);
+        assertArrayEquals(new int[]{4,0,900},m.vertexZ);
         // A second point on the opposite side does not turn radius into diameter or box half-width.
         m = model(new int[]{-3,3},new int[]{0,0},new int[]{-4,4}); m.calculateBounds(); bounds(m,5,0,0,5,10);
         m = model(new int[]{0},new int[]{7},new int[]{0}); m.calculateBounds(); bounds(m,0,0,7,0,7);
@@ -38,14 +38,14 @@ public class ModelBoundsTest {
     }
     @Test public void yOnlyRefreshUsesCachedRadiusAndNeverReadsXZ() throws Exception {
         Model m=model(new int[]{3,0},new int[]{-12,8},new int[]{4,0}); m.calculateBounds();
-        m.anIntArray1627=null; m.anIntArray1629=null; m.anIntArray1628=new int[]{-24,7};
+        m.vertexX=null; m.vertexZ=null; m.vertexY=new int[]{-24,7};
         m.minX=91; m.maxX=92; m.maxZ=93; m.minZ=94;
         m.recalculateYBounds(); bounds(m,5,24,7,25,34);
         assertEquals(91,m.minX); assertEquals(92,m.maxX); assertEquals(93,m.maxZ); assertEquals(94,m.minZ);
         m.radiusXZ=0; m.recalculateYBounds(); bounds(m,0,24,7,24,31);
     }
     @Test public void fullExtentsTrackXAndZSeparatelyAndTruncateDepthRadii() throws Exception {
-        Model m=model(new int[]{-3,6,999},new int[]{-12,8,-999},new int[]{4,-8,999}); m.anInt1626=2;
+        Model m=model(new int[]{-3,6,999},new int[]{-12,8,-999},new int[]{4,-8,999}); m.vertexCount=2;
         extents(m); bounds(m,10,12,8,15,27);
         assertEquals(-3,m.minX); assertEquals(6,m.maxX); assertEquals(-8,m.minZ); assertEquals(4,m.maxZ);
         m.calculateBounds(); bounds(m,10,12,8,16,29);
@@ -54,7 +54,7 @@ public class ModelBoundsTest {
     }
     @Test public void emptyAndNegativeCountsResetBoundsButRetainExtentSentinels() throws Exception {
         for(int count:new int[]{0,-1}) {
-            Model m=model(new int[]{5},new int[]{6},new int[]{7}); m.anInt1626=count;
+            Model m=model(new int[]{5},new int[]{6},new int[]{7}); m.vertexCount=count;
             m.modelHeight=81; m.radiusXZ=82; m.maxY=83; m.calculateBounds(); bounds(m,0,0,0,0,0);
             m.radiusXZ=5; m.recalculateYBounds(); bounds(m,5,0,0,5,10);
             extents(m); bounds(m,0,0,0,0,0);

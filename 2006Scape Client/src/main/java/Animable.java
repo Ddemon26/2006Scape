@@ -20,6 +20,6 @@ public class Animable extends NodeSub {
 		modelHeight = 1000;
 	}
 
-	VertexNormal aClass33Array1425[];
+	VertexNormal vertexNormals[];
 	public int modelHeight;
 }

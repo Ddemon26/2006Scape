@@ -12,7 +12,7 @@ import org.junit.Test;
 public class ModelFaceRasterTest {
     private static final int W = 48, H = 40, BG = 0x7f7f7f;
     private static final String[] MODEL_STATIC = {"faceNeedsHorizontalClip", "faceNearPlaneClipped", "screenX",
-            "screenY", "anIntArray1668", "anIntArray1669", "anIntArray1670"};
+            "screenY", "vertexCameraX", "vertexCameraY", "vertexCameraZ"};
     private static final String[] TEXTURE_STATIC = {"clipScanlines", "transparency", "lineOffsets", "lowMem",
             "blockShading", "textureInt1", "textureInt2"};
     private final Object[] savedModel = new Object[MODEL_STATIC.length];
@@ -41,22 +41,22 @@ public class ModelFaceRasterTest {
                 (savedModel[java.util.Arrays.asList(MODEL_STATIC).indexOf(name)] instanceof boolean[]) ? new boolean[6] : new int[6]);
         set(Model.class, "screenX", null, new int[] {4, 36, 20, 4, 36, 20});
         set(Model.class, "screenY", null, new int[] {3, 3, 27, 3, 3, 27});
-        set(Model.class, "anIntArray1668", null, new int[] {-24, 40, -24, -24, 40, -24});
-        set(Model.class, "anIntArray1669", null, new int[] {-20, -20, 44, -20, -20, 44});
-        set(Model.class, "anIntArray1670", null, new int[] {512, 512, 512, 512, 512, 512});
+        set(Model.class, "vertexCameraX", null, new int[] {-24, 40, -24, -24, 40, -24});
+        set(Model.class, "vertexCameraY", null, new int[] {-20, -20, 44, -20, -20, 44});
+        set(Model.class, "vertexCameraZ", null, new int[] {512, 512, 512, 512, 512, 512});
         Constructor<Model> ctor = Model.class.getDeclaredConstructor();
         ctor.setAccessible(true);
         model = ctor.newInstance();
-        set(Model.class, "anIntArray1631", model, new int[] {0, 3});
-        set(Model.class, "anIntArray1632", model, new int[] {1, 4});
-        set(Model.class, "anIntArray1633", model, new int[] {2, 5});
+        set(Model.class, "faceVertexA", model, new int[] {0, 3});
+        set(Model.class, "faceVertexB", model, new int[] {1, 4});
+        set(Model.class, "faceVertexC", model, new int[] {2, 5});
         set(Model.class, "faceShadeA", model, new int[] {0x1234, 0x3456});
         set(Model.class, "faceShadeB", model, new int[] {0x2345, 0x4567});
         set(Model.class, "faceShadeC", model, new int[] {0x3456, 0x5678});
         set(Model.class, "texturedFaceVertexA", model, new int[] {0, 2});
         set(Model.class, "texturedFaceVertexB", model, new int[] {1, 1});
         set(Model.class, "texturedFaceVertexC", model, new int[] {2, 0});
-        set(Model.class, "anIntArray1640", model, new int[] {4, 4});
+        set(Model.class, "faceColors", model, new int[] {4, 4});
         int[] texture = new int[16384];
         for (int level = 0; level < 4; level++) for (int row = 0; row < 64; row++) for (int col = 0; col < 64; col++)
             texture[level * 4096 + row * 64 + col] = ((level + 1) << 20) | (row << 10) | col;
@@ -106,7 +106,7 @@ public class ModelFaceRasterTest {
 
     @Test public void lowBitsSelectShadedFlatAndTwoTexturedVariants() throws Exception {
         int[] implicit = render(0);
-        set(Model.class, "anIntArray1637", model, new int[] {0, 0});
+        set(Model.class, "faceRenderFlags", model, new int[] {0, 0});
         assertArrayEquals(implicit, render(0));
         int[] flat = renderWithType(1);
         assertEquals(0x1234, flat[10 * W + 20]);
@@ -164,9 +164,9 @@ public class ModelFaceRasterTest {
     private void clipSetup(int zA, int zB, int zC) throws Exception {
         Texture.setScreenSize(W, H);
         int[] z = {zA, zB, zC, 512, 512, 512};
-        set(Model.class, "anIntArray1668", null, CAM_X.clone());
-        set(Model.class, "anIntArray1669", null, CAM_Y.clone());
-        set(Model.class, "anIntArray1670", null, z);
+        set(Model.class, "vertexCameraX", null, CAM_X.clone());
+        set(Model.class, "vertexCameraY", null, CAM_Y.clone());
+        set(Model.class, "vertexCameraZ", null, z);
         int[] px = new int[6], py = new int[6];
         for (int v = 0; v < 3; v++) {
             if (z[v] >= 50) {
@@ -179,7 +179,7 @@ public class ModelFaceRasterTest {
         set(Model.class, "faceShadeA", model, new int[] {SHADES[0], 7});
         set(Model.class, "faceShadeB", model, new int[] {SHADES[1], 7});
         set(Model.class, "faceShadeC", model, new int[] {SHADES[2], 7});
-        set(Model.class, "anIntArray1637", model, null);
+        set(Model.class, "faceRenderFlags", model, null);
         for (String name : new String[] {"clippedX", "clippedY", "clippedShade"})
             Arrays.fill((int[]) get(Model.class, name, null), SENTINEL);
     }
@@ -201,7 +201,7 @@ public class ModelFaceRasterTest {
     }
 
     private int[] depths() throws Exception {
-        return (int[]) get(Model.class, "anIntArray1670", null);
+        return (int[]) get(Model.class, "vertexCameraZ", null);
     }
 
     private double[] front(int v) throws Exception {
@@ -262,7 +262,7 @@ public class ModelFaceRasterTest {
 
     @Test public void faceWithAllVerticesBehindDrawsNothing() throws Exception {
         clipSetup(-14, 10, 30);
-        set(Model.class, "anIntArray1637", model, new int[] {1, 0});
+        set(Model.class, "faceRenderFlags", model, new int[] {1, 0});
         assertArrayEquals(blank(), clipRender(0));
         assertEquals(SENTINEL, ((int[]) get(Model.class, "clippedX", null))[0]);
     }
@@ -306,7 +306,7 @@ public class ModelFaceRasterTest {
 
     @Test public void flatColourComesFromThePaletteEntryOfTheFirstShade() throws Exception {
         clipSetup(-14, 114, 114);
-        set(Model.class, "anIntArray1637", model, new int[] {1, 0});
+        set(Model.class, "faceRenderFlags", model, new int[] {1, 0});
         int[] savedPalette = Texture.hslToRgbPalette.clone();
         try {
             Texture.hslToRgbPalette[100] = 0xABCDEF;
@@ -323,15 +323,15 @@ public class ModelFaceRasterTest {
 
     @Test public void backFacingClippedPolygonIsCulled() throws Exception {
         clipSetup(-14, 114, 114);
-        set(Model.class, "anIntArray1637", model, new int[] {1, 0});
-        set(Model.class, "anIntArray1632", model, new int[] {2, 4});
-        set(Model.class, "anIntArray1633", model, new int[] {1, 5});
+        set(Model.class, "faceRenderFlags", model, new int[] {1, 0});
+        set(Model.class, "faceVertexB", model, new int[] {2, 4});
+        set(Model.class, "faceVertexC", model, new int[] {1, 5});
         assertArrayEquals(blank(), clipRender(0));
     }
 
     @Test public void shadedClippedQuadDrawsBothTriangles() throws Exception {
         clipSetup(-14, 114, 114);
-        set(Model.class, "anIntArray1637", model, new int[] {0, 0});
+        set(Model.class, "faceRenderFlags", model, new int[] {0, 0});
         int[] px = clipRender(0);
         int[] xs = (int[]) get(Model.class, "clippedX", null);
         int[] ys = (int[]) get(Model.class, "clippedY", null);
@@ -344,12 +344,12 @@ public class ModelFaceRasterTest {
             for (int base : new int[] {2, 3}) {
                 String label = behind + "/" + base;
                 clipSetup(behind == 1 ? -14 : 114, 114, 114);
-                set(Model.class, "anIntArray1637", model, new int[] {base, 0});
+                set(Model.class, "faceRenderFlags", model, new int[] {base, 0});
                 int[] first = clipRender(0);
                 assertFalse(label + " drawn", Arrays.equals(blank(), first));
-                set(Model.class, "anIntArray1637", model, new int[] {base + 4, 0});
+                set(Model.class, "faceRenderFlags", model, new int[] {base + 4, 0});
                 assertFalse("face index " + label, Arrays.equals(first, clipRender(0)));
-                set(Model.class, "anIntArray1637", model, new int[] {base, 0});
+                set(Model.class, "faceRenderFlags", model, new int[] {base, 0});
                 int[] a = (int[]) get(Model.class, "texturedFaceVertexA", model);
                 int[] b = (int[]) get(Model.class, "texturedFaceVertexB", model);
                 int[] c = (int[]) get(Model.class, "texturedFaceVertexC", model);
@@ -362,14 +362,14 @@ public class ModelFaceRasterTest {
             }
         }
         clipSetup(-14, 114, 114);
-        set(Model.class, "anIntArray1637", model, new int[] {2, 0});
+        set(Model.class, "faceRenderFlags", model, new int[] {2, 0});
         int[] graded = clipRender(0);
-        set(Model.class, "anIntArray1637", model, new int[] {3, 0});
+        set(Model.class, "faceRenderFlags", model, new int[] {3, 0});
         assertFalse(Arrays.equals(graded, clipRender(0)));
     }
 
     private int[] renderWithType(int type) throws Exception {
-        set(Model.class, "anIntArray1637", model, new int[] {type, 0});
+        set(Model.class, "faceRenderFlags", model, new int[] {type, 0});
         return render(0);
     }
 

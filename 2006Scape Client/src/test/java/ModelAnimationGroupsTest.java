@@ -24,10 +24,10 @@ public class ModelAnimationGroupsTest {
         Field f = c.getDeclaredField(n); f.setAccessible(true); return f;
     }
     private Model m78() throws Exception {
-        Model m = model(null, null); m.anInt1626 = 3; m.anInt1630 = 3;
-        m.anIntArray1627 = new int[]{10,21,-9,999};
-        m.anIntArray1628 = new int[]{20,-5,12,998};
-        m.anIntArray1629 = new int[]{30,7,-18,997};
+        Model m = model(null, null); m.vertexCount = 3; m.faceCount = 3;
+        m.vertexX = new int[]{10,21,-9,999};
+        m.vertexY = new int[]{20,-5,12,998};
+        m.vertexZ = new int[]{30,7,-18,997};
         m.vertexGroups = new int[][]{{2,0},{},{1}};
         m.faceGroups = new int[][]{{1},{},{2,0}};
         field("faceAlphas").set(m, new int[]{8,100,250,996});
@@ -38,7 +38,7 @@ public class ModelAnimationGroupsTest {
         for (int b = 0; b < 3; b++) assertEquals(names78[b], a[b], field(names78[b]).getInt(null));
     }
     private static void xyz78(Model m, int[] a, int[] b, int[] c) {
-        assertArrayEquals(a,m.anIntArray1627); assertArrayEquals(b,m.anIntArray1628); assertArrayEquals(c,m.anIntArray1629);
+        assertArrayEquals(a,m.vertexX); assertArrayEquals(b,m.vertexY); assertArrayEquals(c,m.vertexZ);
     }
     private static AnimationTransformTable t78(int[] a, int[][] b) throws Exception {
         ByteArrayOutputStream o = new ByteArrayOutputStream(); o.write(a.length);
@@ -71,10 +71,10 @@ public class ModelAnimationGroupsTest {
         p78(0,0,0); assertArrayEquals(new int[]{8,100,250,996},(int[])field("faceAlphas").get(m));
         transform(m,4,new int[]{-1},1,2,3); // Unsupported type does not dereference members.
         transform(m,1,new int[]{1,99},100,100,100);
-        assertEquals(35,m.anIntArray1627[1]);
+        assertEquals(35,m.vertexX[1]);
         try {transform(m,1,new int[]{2,-1},1,0,0); fail();}
         catch (InvocationTargetException ex) {assertTrue(ex.getCause() instanceof ArrayIndexOutOfBoundsException);}
-        assertEquals(36,m.anIntArray1627[1]);
+        assertEquals(36,m.vertexX[1]);
     }
     @Test public void application78T04() throws Exception {
         // Independent externally specified fixed-point expectations for 45 degrees.
@@ -82,14 +82,14 @@ public class ModelAnimationGroupsTest {
         for(int n=0;n<3;n++) {
             Model m=m78(); int[] a=new int[3]; a[n]=32;
             transform(m,2,new int[]{2},a[0],a[1],a[2]);
-            assertEquals(b[n][0],m.anIntArray1627[1]); assertEquals(b[n][1],m.anIntArray1628[1]); assertEquals(b[n][2],m.anIntArray1629[1]);
+            assertEquals(b[n][0],m.vertexX[1]); assertEquals(b[n][1],m.vertexY[1]); assertEquals(b[n][2],m.vertexZ[1]);
         }
         for(int n : new int[]{0,1,31,32,63,64,127,128,192,255}) {
             Model a=m78(),b0=m78(),c=m78(); transform(a,2,new int[]{0,2},n,n,n);
             transform(b0,2,new int[]{0,2},n+256,n-256,n+512);
             transform(c,2,new int[]{0,2},n-512,n+512,n-256);
-            xyz78(b0,a.anIntArray1627,a.anIntArray1628,a.anIntArray1629);
-            xyz78(c,a.anIntArray1627,a.anIntArray1628,a.anIntArray1629);
+            xyz78(b0,a.vertexX,a.vertexY,a.vertexZ);
+            xyz78(c,a.vertexX,a.vertexY,a.vertexZ);
         }
     }
     @Test public void application78T05() throws Exception {
@@ -99,8 +99,8 @@ public class ModelAnimationGroupsTest {
         m=m78(); transform(m,3,new int[]{2},0,128,128);
         xyz78(m,new int[]{10,0,-9,999},new int[]{20,-5,12,998},new int[]{30,7,-18,997});
         m=m78(); transform(m,3,new int[]{2},127,-127,129);
-        assertEquals(20,m.anIntArray1627[1]); assertEquals(4,m.anIntArray1628[1]); assertEquals(7,m.anIntArray1629[1]);
-        m=m78(); m.anIntArray1627[1]=Integer.MAX_VALUE; transform(m,3,new int[]{2},2,128,128); assertEquals(0,m.anIntArray1627[1]);
+        assertEquals(20,m.vertexX[1]); assertEquals(4,m.vertexY[1]); assertEquals(7,m.vertexZ[1]);
+        m=m78(); m.vertexX[1]=Integer.MAX_VALUE; transform(m,3,new int[]{2},2,128,128); assertEquals(0,m.vertexX[1]);
     }
     @Test public void application78T06() throws Exception {
         Model m=m78(); transform(m,5,new int[]{1,2,99,0,2},2,999,-999);
@@ -140,7 +140,7 @@ public class ModelAnimationGroupsTest {
         AnimationTransformTable u=t78(new int[]{4,4,4,1,4,1},new int[][]{{},{},{},{2},{},{0}});
         put78(8,a78(u,new int[]{3,5},new int[]{7,11},new int[]{0,0},new int[]{0,0},2));
         put78(5,a78(u,new int[]{3,5},new int[]{70,110},new int[]{0,0},new int[]{0,0},2));
-        m=m78(); m.applyInterleavedFrames(new int[]{0,1,3,4,1000},5,8); assertArrayEquals(new int[]{21,91,2,999},m.anIntArray1627);
+        m=m78(); m.applyInterleavedFrames(new int[]{0,1,3,4,1000},5,8); assertArrayEquals(new int[]{21,91,2,999},m.vertexX);
     }
     @Test public void application78T11() throws Exception {
         AnimationFrame.initialize(9); AnimationTransformTable t=t78(new int[]{1},new int[][]{{2}});
@@ -174,7 +174,7 @@ public class ModelAnimationGroupsTest {
             int[][] v={{21,-5,-1},{8,-5,-9},{2,-12,7}};
             for(int n=0;n<3;n++) {
                 m=m78(); int[] q=new int[3];q[n]=64;transform(m,2,new int[]{2},q[0],q[1],q[2]);
-                assertEquals(v[n][0],m.anIntArray1627[1]);assertEquals(v[n][1],m.anIntArray1628[1]);assertEquals(v[n][2],m.anIntArray1629[1]);
+                assertEquals(v[n][0],m.vertexX[1]);assertEquals(v[n][1],m.vertexY[1]);assertEquals(v[n][2],m.vertexZ[1]);
             }
         } finally {Model.sineTable16=a;Model.cosineTable16=b;}
     }
@@ -188,16 +188,16 @@ public class ModelAnimationGroupsTest {
         // Original 21 plus primary row 3 (9), secondary row 2 (80).
         xyz78(m,new int[]{17,110,-2,999},new int[]{20,-5,12,998},new int[]{30,7,-18,997});
         assertArrayEquals(new int[]{8,116,250,996},(int[])field("faceAlphas").get(m));p78(100,200,300);
-        m=m78();m.applyInterleavedFrames(new int[]{1000},7,11);assertArrayEquals(new int[]{17,38,-2,999},m.anIntArray1627);p78(100,200,300);
-        m=m78();m.applyInterleavedFrames(new int[]{0,1,2,3,4,5,1000},7,11);assertArrayEquals(new int[]{80,191,61,999},m.anIntArray1627);p78(100,200,300);
+        m=m78();m.applyInterleavedFrames(new int[]{1000},7,11);assertArrayEquals(new int[]{17,38,-2,999},m.vertexX);p78(100,200,300);
+        m=m78();m.applyInterleavedFrames(new int[]{0,1,2,3,4,5,1000},7,11);assertArrayEquals(new int[]{80,191,61,999},m.vertexX);p78(100,200,300);
     }
     @Test public void application78T15() throws Exception {
         Model m=m78();transform(m,0,new int[]{0},0,0,0);p78(0,16,6);
         Model n=m78();transform(m,0,new int[0],3,4,5);transform(n,3,new int[]{2,2},256,128,128);
-        assertEquals(75,n.anIntArray1627[1]);p78(3,4,5);
-        Model q=m78();q.anIntArray1627[1]=75;transform(m,0,new int[0],3,4,5);
+        assertEquals(75,n.vertexX[1]);p78(3,4,5);
+        Model q=m78();q.vertexX[1]=75;transform(m,0,new int[0],3,4,5);
         transform(n,2,new int[]{2,2},32,17,9);transform(q,2,new int[]{2},32,17,9);transform(q,2,new int[]{2},32,17,9);
-        xyz78(n,q.anIntArray1627,q.anIntArray1628,q.anIntArray1629);
+        xyz78(n,q.vertexX,q.vertexY,q.vertexZ);
         m=m78();m.vertexGroups=null;transform(m,5,new int[]{0},1,0,0);assertEquals(108,((int[])field("faceAlphas").get(m))[1]);
         try {transform(m,0,null,0,0,0);fail();}catch(InvocationTargetException ex){assertTrue(ex.getCause() instanceof NullPointerException);}
         transform(m,0,new int[0],1,2,3);p78(1,2,3);
@@ -213,8 +213,8 @@ public class ModelAnimationGroupsTest {
     }
     private Model model(int[] vertices, int[] faces) throws Exception {
         Constructor<Model> c = Model.class.getDeclaredConstructor(); c.setAccessible(true);
-        Model m = c.newInstance(); m.anInt1626 = vertices == null ? 0 : vertices.length;
-        m.anInt1630 = faces == null ? 0 : faces.length;
+        Model m = c.newInstance(); m.vertexCount = vertices == null ? 0 : vertices.length;
+        m.faceCount = faces == null ? 0 : faces.length;
         vertexIds.set(m, vertices); faceIds.set(m, faces); return m;
     }
     private static void groups(int[][] actual, int[]... expected) {
@@ -253,13 +253,13 @@ public class ModelAnimationGroupsTest {
     @Test public void vertexAndFaceBranchesRunIndependentlyAndRepeatIsIdentityNoOp() throws Exception {
         Model m = model(new int[]{2,2}, null); int[][] oldFaces = {{7}}; m.faceGroups = oldFaces;
         m.buildAnimationGroups(); assertSame(oldFaces, m.faceGroups);
-        int[][] v = m.vertexGroups; faceIds.set(m, new int[]{0}); m.anInt1630 = 1; m.buildAnimationGroups();
+        int[][] v = m.vertexGroups; faceIds.set(m, new int[]{0}); m.faceCount = 1; m.buildAnimationGroups();
         assertSame(v, m.vertexGroups); groups(m.faceGroups, new int[]{0});
         int[][] f = m.faceGroups; m.buildAnimationGroups();
         assertSame(v, m.vertexGroups); assertSame(f, m.faceGroups);
     }
     @Test public void activeCountsExcludeUnusedArrayTails() throws Exception {
-        Model m = model(new int[]{2,0,255}, new int[]{1,256}); m.anInt1626 = 2; m.anInt1630 = 1;
+        Model m = model(new int[]{2,0,255}, new int[]{1,256}); m.vertexCount = 2; m.faceCount = 1;
         m.buildAnimationGroups(); groups(m.vertexGroups, new int[]{1}, new int[0], new int[]{0});
         groups(m.faceGroups, new int[0], new int[]{0});
     }
@@ -272,26 +272,26 @@ public class ModelAnimationGroupsTest {
             try { m.buildAnimationGroups(); fail(); } catch (ArrayIndexOutOfBoundsException expected) { }
             assertNull(vertexIds.get(m)); groups(m.vertexGroups, new int[]{0}); assertNotNull(faceIds.get(m));
         }
-        Model m = model(new int[]{0}, null); m.anInt1626 = 2;
+        Model m = model(new int[]{0}, null); m.vertexCount = 2;
         try { m.buildAnimationGroups(); fail(); } catch (ArrayIndexOutOfBoundsException expected) { }
         assertNotNull(vertexIds.get(m)); assertNull(m.vertexGroups);
     }
     @Test public void vertexGroupsSelectTranslationTargetsWithoutChangingOtherVerticesOrFaces() throws Exception {
         Model m = model(new int[]{2,0,2}, new int[]{2,0});
-        m.anIntArray1627 = new int[]{10,20,30}; m.anIntArray1628 = new int[]{1,2,3};
-        m.anIntArray1629 = new int[]{4,5,6}; field("faceAlphas").set(m, new int[]{40,50}); m.buildAnimationGroups();
+        m.vertexX = new int[]{10,20,30}; m.vertexY = new int[]{1,2,3};
+        m.vertexZ = new int[]{4,5,6}; field("faceAlphas").set(m, new int[]{40,50}); m.buildAnimationGroups();
         transform(m, 1, new int[]{2}, 7, -3, 11);
-        assertArrayEquals(new int[]{17,20,37}, m.anIntArray1627);
-        assertArrayEquals(new int[]{-2,2,0}, m.anIntArray1628);
-        assertArrayEquals(new int[]{15,5,17}, m.anIntArray1629); assertArrayEquals(new int[]{40,50}, (int[])field("faceAlphas").get(m));
-        transform(m, 1, new int[]{1,255}, 99,99,99); assertArrayEquals(new int[]{17,20,37}, m.anIntArray1627);
+        assertArrayEquals(new int[]{17,20,37}, m.vertexX);
+        assertArrayEquals(new int[]{-2,2,0}, m.vertexY);
+        assertArrayEquals(new int[]{15,5,17}, m.vertexZ); assertArrayEquals(new int[]{40,50}, (int[])field("faceAlphas").get(m));
+        transform(m, 1, new int[]{1,255}, 99,99,99); assertArrayEquals(new int[]{17,20,37}, m.vertexX);
     }
     @Test public void faceGroupsSelectAlphaTargetsIndependentlyAndPreserveClampBehavior() throws Exception {
-        Model m = model(new int[]{0,2}, new int[]{2,0,2}); m.anIntArray1627 = new int[]{10,20};
+        Model m = model(new int[]{0,2}, new int[]{2,0,2}); m.vertexX = new int[]{10,20};
         field("faceAlphas").set(m, new int[]{8,100,250}); m.buildAnimationGroups();
         transform(m, 5, new int[]{2}, 2,999,999); assertArrayEquals(new int[]{24,100,255}, (int[])field("faceAlphas").get(m));
         transform(m, 5, new int[]{0}, -20,0,0); assertArrayEquals(new int[]{24,0,255}, (int[])field("faceAlphas").get(m));
-        assertArrayEquals(new int[]{10,20}, m.anIntArray1627);
+        assertArrayEquals(new int[]{10,20}, m.vertexX);
     }
     @Test public void binaryModelLabelsDecodeAsIndependentUnsignedBytes() throws Exception {
         // Five coincident vertices and five degenerate faces; no coordinate/index deltas.
@@ -303,7 +303,7 @@ public class ModelAnimationGroupsTest {
         out.writeShort(5); out.writeShort(5); out.writeByte(0); out.writeByte(0); out.writeByte(0);
         out.writeByte(0); out.writeByte(1); out.writeByte(1); // no alpha, face labels, vertex labels
         for (int i = 0; i < 4; i++) out.writeShort(0);
-        headers.set(null, new ModelHeader[1]); Model.method460(bytes.toByteArray(), 0); Model m = Model.getModel(0);
+        headers.set(null, new ModelHeader[1]); Model.loadModelHeader(bytes.toByteArray(), 0); Model m = Model.getModel(0);
         assertArrayEquals(v, (int[])vertexIds.get(m)); assertArrayEquals(f, (int[])faceIds.get(m));
         m.buildAnimationGroups(); assertArrayEquals(new int[]{0,4}, m.vertexGroups[255]);
         assertArrayEquals(new int[]{1}, m.faceGroups[255]);

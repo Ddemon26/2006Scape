@@ -301,7 +301,7 @@ public final class RSInterface {
 		if (model == null) {
 			return null;
 		}
-		if (k == -1 && j == -1 && model.anIntArray1640 == null) {
+		if (k == -1 && j == -1 && model.faceColors == null) {
 			return model;
 		}
 		Model model_1 = new Model(true, AnimationFrame.isMissingFrameId(k) & AnimationFrame.isMissingFrameId(j), false, model);

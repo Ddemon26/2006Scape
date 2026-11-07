@@ -50,7 +50,7 @@ public final class NPC extends Entity {
 			}
 		}
 		if (desc.aByte68 == 1) {
-			model.aBoolean1659 = true;
+			model.pickByBounds = true;
 		}
 		return model;
 	}

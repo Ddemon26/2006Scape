@@ -12,9 +12,9 @@ public class EntityDefTest {
     private static void sset(Class<?> c, String n, Object v) throws Exception { f(c, n).set(null, v); }
     private static Object sget(Class<?> c, String n) throws Exception { return f(c, n).get(null); }
     private static EntityDef newDef() throws Exception { Constructor<EntityDef> c = EntityDef.class.getDeclaredConstructor(); c.setAccessible(true); return c.newInstance(); }
-    private static int[] xs(Model m) { return Arrays.copyOf(m.anIntArray1627, m.anInt1626); }
-    private static int[] ys(Model m) { return Arrays.copyOf(m.anIntArray1628, m.anInt1626); }
-    private static int[] zs(Model m) { return Arrays.copyOf(m.anIntArray1629, m.anInt1626); }
+    private static int[] xs(Model m) { return Arrays.copyOf(m.vertexX, m.vertexCount); }
+    private static int[] ys(Model m) { return Arrays.copyOf(m.vertexY, m.vertexCount); }
+    private static int[] zs(Model m) { return Arrays.copyOf(m.vertexZ, m.vertexCount); }
     private static int[] sh(Model m, int n) throws Exception { return (int[]) f(Model.class, "faceShade" + "ABC".charAt(n - 4)).get(m); }
 
     /** Triangle (X,0,0) (X+10,0,0) (X,10,10) with X=20+id; one face of colour `color`. */
@@ -41,7 +41,7 @@ public class EntityDefTest {
     private Object savedArr, savedFetcher; private Spy spy;
     @Before public void setUp() throws Exception {
         savedArr = sget(Model.class, "modelHeaders"); savedFetcher = sget(Model.class, "modelRequester");
-        spy = new Spy(); Model.method459(64, spy); EntityDef.mruNodes.clear();
+        spy = new Spy(); Model.initModelHeaders(64, spy); EntityDef.mruNodes.clear();
     }
     @After public void tearDown() throws Exception {
         sset(Model.class, "modelHeaders", savedArr); sset(Model.class, "modelRequester", savedFetcher); EntityDef.mruNodes.clear();
@@ -52,12 +52,12 @@ public class EntityDefTest {
         EntityDef d = newDef();
         assertNull(d.getHeadModel());
         set(d, "headModelIds", new int[]{5, 6, 7});
-        Model.method460(triangle(6, 40000), 6);
+        Model.loadModelHeader(triangle(6, 40000), 6);
         assertNull(d.getHeadModel());                                  // 5 and 7 absent: nothing built, even though 6 is loaded
         assertEquals(Arrays.asList(5, 7), spy.requested);
     }
     @Test public void method160ReturnsTheSingleModelOrTheListConcatenatedInOrderAndIsNotLit() throws Exception {
-        Model.method460(triangle(5, 40000), 5); Model.method460(triangle(6, 40000), 6);
+        Model.loadModelHeader(triangle(5, 40000), 5); Model.loadModelHeader(triangle(6, 40000), 6);
         EntityDef d = newDef();
         set(d, "headModelIds", new int[]{5});
         Model one = d.getHeadModel();
@@ -71,18 +71,18 @@ public class EntityDefTest {
         assertArrayEquals(new int[]{26, 36, 26}, xs(body.getHeadModel()));   // uses the 73 list, not the 94 list
     }
     @Test public void method160RecolorsFacesWhoseColourEqualsTheFirstArrayWithTheSecond() throws Exception {
-        Model.method460(triangle(5, 40000), 5);
+        Model.loadModelHeader(triangle(5, 40000), 5);
         EntityDef d = newDef(); set(d, "headModelIds", new int[]{5});
-        assertEquals(40000, d.getHeadModel().anIntArray1640[0]);
+        assertEquals(40000, d.getHeadModel().faceColors[0]);
         set(d, "recolorSources", new int[]{123, 40000}); set(d, "recolorReplacements", new int[]{77, 555});
-        assertEquals(555, d.getHeadModel().anIntArray1640[0]);        // 40000 -> 555 (76 = source, 70 = replacement)
+        assertEquals(555, d.getHeadModel().faceColors[0]);        // 40000 -> 555 (76 = source, 70 = replacement)
         set(d, "recolorSources", new int[]{555}); set(d, "recolorReplacements", new int[]{1});
-        assertEquals(40000, d.getHeadModel().anIntArray1640[0]);      // reversed roles: no face has colour 555
+        assertEquals(40000, d.getHeadModel().faceColors[0]);      // reversed roles: no face has colour 555
     }
 
     // ---------------- method164 ----------------
     @Test public void method164BuildsFromTheNinetyFourListLightsItWithOffsetsAndCachesItUnderType() throws Exception {
-        Model.method460(triangle(5, 40000), 5); Model.method460(triangle(6, 40000), 6);
+        Model.loadModelHeader(triangle(5, 40000), 5); Model.loadModelHeader(triangle(6, 40000), 6);
         for (int[] ab : new int[][]{{0, 0}, {-5, 15}, {20, -30}}) {
             EntityDef.mruNodes.clear();
             EntityDef d = newDef(); d.type = 77L;
@@ -108,7 +108,7 @@ public class EntityDefTest {
         assertArrayEquals(new int[]{26, 36, 26}, xs(e3.getAnimatedModel(-1, -1, null)));
     }
     @Test public void method164ScalesXAndZByAnInt91AndYByAnInt86ThenRecolors() throws Exception {
-        Model.method460(triangle(5, 40000), 5);
+        Model.loadModelHeader(triangle(5, 40000), 5);
         EntityDef d = newDef(); d.type = 3L; set(d, "bodyModelIds", new int[]{5});
         set(d, "recolorSources", new int[]{40000}); set(d, "recolorReplacements", new int[]{321});
         seti(d, "horizontalScale", 256); seti(d, "verticalScale", 64);
@@ -128,7 +128,7 @@ public class EntityDefTest {
     }
     @Test public void method164UnloadedModelIsNullAndRequested() throws Exception {
         EntityDef d = newDef(); d.type = 11L; set(d, "bodyModelIds", new int[]{5, 6});
-        Model.method460(triangle(6, 40000), 6);
+        Model.loadModelHeader(triangle(6, 40000), 6);
         assertNull(d.getAnimatedModel(-1, -1, null)); assertEquals(Arrays.asList(5), spy.requested);
     }
 
@@ -140,7 +140,7 @@ public class EntityDefTest {
     }
     private static int[] animated(EntityDef d, int j, int k, int[] ai) throws Exception {
         Constructor<Model> c = Model.class.getDeclaredConstructor(); c.setAccessible(true); Model m = c.newInstance();
-        m.anInt1626 = 2; m.anInt1630 = 0; m.anIntArray1627 = new int[]{10, 20}; m.anIntArray1628 = new int[]{0, 0}; m.anIntArray1629 = new int[]{0, 0};
+        m.vertexCount = 2; m.faceCount = 0; m.vertexX = new int[]{10, 20}; m.vertexY = new int[]{0, 0}; m.vertexZ = new int[]{0, 0};
         m.vertexGroups = new int[][]{{0}, {1}};
         EntityDef.mruNodes.clear(); EntityDef.mruNodes.removeFromCache(m, d.type);
         return xs(d.getAnimatedModel(j, k, ai));

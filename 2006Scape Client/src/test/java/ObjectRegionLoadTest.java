@@ -420,11 +420,11 @@ public class ObjectRegionLoadTest {
         Constructor<Model> c = Model.class.getDeclaredConstructor();
         c.setAccessible(true);
         Model m = c.newInstance();
-        m.anInt1626 = 1;
-        m.anIntArray1627 = new int[] {0};
-        m.anIntArray1628 = new int[] {0};
-        m.anIntArray1629 = new int[] {0};
-        m.anInt1630 = 0;
+        m.vertexCount = 1;
+        m.vertexX = new int[] {0};
+        m.vertexY = new int[] {0};
+        m.vertexZ = new int[] {0};
+        m.faceCount = 0;
         m.radiusXZ = radius;
         return m;
     }
@@ -469,15 +469,15 @@ public class ObjectRegionLoadTest {
         Constructor<Model> c = Model.class.getDeclaredConstructor();
         c.setAccessible(true);
         Model m = c.newInstance();
-        m.anInt1626 = 3;
-        m.anIntArray1627 = new int[] {xOffset, xOffset + 64, xOffset};
-        m.anIntArray1628 = new int[] {0, 0, 40};
-        m.anIntArray1629 = new int[] {0, 0, 0};
-        m.anInt1630 = 1;
-        m.anIntArray1631 = new int[] {0};
-        m.anIntArray1632 = new int[] {1};
-        m.anIntArray1633 = new int[] {2};
-        m.anIntArray1640 = new int[] {1234};
+        m.vertexCount = 3;
+        m.vertexX = new int[] {xOffset, xOffset + 64, xOffset};
+        m.vertexY = new int[] {0, 0, 40};
+        m.vertexZ = new int[] {0, 0, 0};
+        m.faceCount = 1;
+        m.faceVertexA = new int[] {0};
+        m.faceVertexB = new int[] {1};
+        m.faceVertexC = new int[] {2};
+        m.faceColors = new int[] {1234};
         return m;
     }
 
@@ -489,7 +489,7 @@ public class ObjectRegionLoadTest {
 
     private static int maxX(Model m) {
         int max = Integer.MIN_VALUE;
-        for (int v = 0; v < m.anInt1626; v++) max = Math.max(max, m.anIntArray1627[v]);
+        for (int v = 0; v < m.vertexCount; v++) max = Math.max(max, m.vertexX[v]);
         return max;
     }
 
@@ -531,7 +531,7 @@ public class ObjectRegionLoadTest {
 
     private static int minAbs(Model m) {
         int min = Integer.MAX_VALUE;
-        for (int v = 0; v < m.anInt1626; v++) min = Math.min(min, Math.abs(m.anIntArray1629[v]) + Math.abs(m.anIntArray1627[v]));
+        for (int v = 0; v < m.vertexCount; v++) min = Math.min(min, Math.abs(m.vertexZ[v]) + Math.abs(m.vertexX[v]));
         return min;
     }
 
@@ -543,13 +543,13 @@ public class ObjectRegionLoadTest {
         field(ObjectDef.class, "originalModelColors").set(d, new int[] {5, 777});
         ObjectDef.mruNodes1.removeFromCache(triangle(0), 8301);
         Model out = build(d, 10, -1, 0);
-        assertEquals("the second pair applies (index 1)", 777, out.anIntArray1640[0]);
+        assertEquals("the second pair applies (index 1)", 777, out.faceColors[0]);
         ObjectDef e = newDef(9802);
         field(ObjectDef.class, "keepsVertexNormals").setBoolean(e, true);
         field(ObjectDef.class, "modelIds").set(e, new int[] {8301});
         field(ObjectDef.class, "modifiedModelColors").set(e, new int[] {1234, 999});
         field(ObjectDef.class, "originalModelColors").set(e, new int[] {5, 777});
-        assertEquals("the first pair applies (index 0)", 5, build(e, 10, -1, 0).anIntArray1640[0]);
+        assertEquals("the first pair applies (index 0)", 5, build(e, 10, -1, 0).faceColors[0]);
     }
 
     @Test public void buildModelJoinsAllModelIdsIntoOneModelWhenThereAreSeveral() throws Exception {
@@ -559,11 +559,11 @@ public class ObjectRegionLoadTest {
         ObjectDef.mruNodes1.removeFromCache(triangle(1000), 8402);
         ObjectDef.mruNodes1.removeFromCache(triangle(2000), 8403);
         Model out = build(d, 10, -1, 0);
-        assertEquals("three triangles", 9, out.anInt1626);
-        assertEquals(3, out.anInt1630);
+        assertEquals("three triangles", 9, out.vertexCount);
+        assertEquals(3, out.faceCount);
         assertTrue(maxX(out) >= 2064);
         ObjectDef single = newDef(9902);
         field(ObjectDef.class, "modelIds").set(single, new int[] {8402});
-        assertEquals(3, build(single, 10, -1, 0).anInt1626);
+        assertEquals(3, build(single, 10, -1, 0).vertexCount);
     }
 }

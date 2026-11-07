@@ -14,7 +14,7 @@ public final class Player extends Entity {
 			return null;
 		}
 		super.height = model.modelHeight;
-		model.aBoolean1659 = true;
+		model.pickByBounds = true;
 		if (aBoolean1699) {
 			return model;
 		}
@@ -68,7 +68,7 @@ public final class Player extends Entity {
 				model_1.translate(super.x - anInt1711, anInt1709 - anInt1712, super.y - anInt1713);
 			}
 		}
-		model.aBoolean1659 = true;
+		model.pickByBounds = true;
 		return model;
 	}
 
