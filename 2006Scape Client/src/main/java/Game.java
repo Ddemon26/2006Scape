@@ -10002,8 +10002,8 @@ public class Game extends RSApplet {
 	public void method137(Stream stream, int j) {
 		if (j == 84) {
 			int k = stream.readUnsignedByte();
-			int j3 = anInt1268 + (k >> 4 & 7);
-			int i6 = anInt1269 + (k & 7);
+			int j3 = updateBlockX + (k >> 4 & 7);
+			int i6 = updateBlockY + (k & 7);
 			int l8 = stream.readUnsignedShortBigEndian();
 			int k11 = stream.readUnsignedShortBigEndian();
 			int l13 = stream.readUnsignedShortBigEndian();
@@ -10025,8 +10025,8 @@ public class Game extends RSApplet {
 		}
 		if (j == 105) {
 			int l = stream.readUnsignedByte();
-			int k3 = anInt1268 + (l >> 4 & 7);
-			int j6 = anInt1269 + (l & 7);
+			int k3 = updateBlockX + (l >> 4 & 7);
+			int j6 = updateBlockY + (l & 7);
 			int i9 = stream.readUnsignedShortBigEndian();
 			int l11 = stream.readUnsignedByte();
 			int i14 = l11 >> 4 & 0xf;
@@ -10041,8 +10041,8 @@ public class Game extends RSApplet {
 		if (j == 215) {
 			int i1 = stream.readUnsignedShortBigEndianSubtract128();
 			int l3 = stream.readUnsignedByte128MinusValue();
-			int k6 = anInt1268 + (l3 >> 4 & 7);
-			int j9 = anInt1269 + (l3 & 7);
+			int k6 = updateBlockX + (l3 >> 4 & 7);
+			int j9 = updateBlockY + (l3 & 7);
 			int i12 = stream.readUnsignedShortBigEndianSubtract128();
 			int j14 = stream.readUnsignedShortBigEndian();
 			if (k6 >= 0 && j9 >= 0 && k6 < 104 && j9 < 104 && i12 != unknownInt10) {
@@ -10059,8 +10059,8 @@ public class Game extends RSApplet {
 		}
 		if (j == 156) {
 			int j1 = stream.readUnsignedByteSubtract128();
-			int i4 = anInt1268 + (j1 >> 4 & 7);
-			int l6 = anInt1269 + (j1 & 7);
+			int i4 = updateBlockX + (j1 >> 4 & 7);
+			int l6 = updateBlockY + (j1 & 7);
 			int k9 = stream.readUnsignedShortBigEndian();
 			if (i4 >= 0 && l6 >= 0 && i4 < 104 && l6 < 104) {
 				NodeList class19 = groundArray[plane][i4][l6];
@@ -10083,8 +10083,8 @@ public class Game extends RSApplet {
 		}
 		if (j == 160) {
 			int k1 = stream.readUnsignedByte128MinusValue();
-			int j4 = anInt1268 + (k1 >> 4 & 7);
-			int i7 = anInt1269 + (k1 & 7);
+			int j4 = updateBlockX + (k1 >> 4 & 7);
+			int i7 = updateBlockY + (k1 & 7);
 			int l9 = stream.readUnsignedByte128MinusValue();
 			int j12 = l9 >> 2;
 			int k14 = l9 & 3;
@@ -10133,8 +10133,8 @@ public class Game extends RSApplet {
 		}
 		if (j == 147) {
 			int l1 = stream.readUnsignedByte128MinusValue();
-			int k4 = anInt1268 + (l1 >> 4 & 7);
-			int j7 = anInt1269 + (l1 & 7);
+			int k4 = updateBlockX + (l1 >> 4 & 7);
+			int j7 = updateBlockY + (l1 & 7);
 			int i10 = stream.readUnsignedShortBigEndian();
 			byte byte0 = stream.readSignedByte128MinusValue();
 			int l14 = stream.readUnsignedShortLittleEndian();
@@ -10197,8 +10197,8 @@ public class Game extends RSApplet {
 			int j8 = l2 & 3;
 			int i11 = anIntArray1177[k5];
 			int j13 = stream.readUnsignedByte();
-			int k15 = anInt1268 + (j13 >> 4 & 7);
-			int l16 = anInt1269 + (j13 & 7);
+			int k15 = updateBlockX + (j13 >> 4 & 7);
+			int l16 = updateBlockY + (j13 & 7);
 
 			if (k15 >= 0 && l16 >= 0 && k15 < 104 && l16 < 104) {
 				queueSceneObjectChange(-1, -1, j8, i11, l16, k5, plane, k15, 0);
@@ -10207,14 +10207,14 @@ public class Game extends RSApplet {
 		}
 		if (j == 151) {
 			int i2 = stream.readUnsignedByteSubtract128Duplicate();
-			int l4 = anInt1268 + (i2 >> 4 & 7);
-			int k7 = anInt1269 + (i2 & 7);
+			int l4 = updateBlockX + (i2 >> 4 & 7);
+			int k7 = updateBlockY + (i2 & 7);
 			int j10 = stream.readUnsignedShortLittleEndian();
 			int k12 = stream.readUnsignedByte128MinusValue();
 			int i15 = k12 >> 2;
 			int k16 = k12 & 3;
 			int l17 = anIntArray1177[i15];
-			//System.out.println("id: " + j10 + " x:" + (this.baseX + anInt1268) + " y:" + (this.baseY + anInt1269));
+			//System.out.println("id: " + j10 + " x:" + (this.baseX + updateBlockX) + " y:" + (this.baseY + updateBlockY));
 			if (l4 >= 0 && k7 >= 0 && l4 < 104 && k7 < 104)
 				queueSceneObjectChange(-1, j10, k16, l17, k7, i15, plane, l4, 0);
 			return;
@@ -10222,8 +10222,8 @@ public class Game extends RSApplet {
 
 		if (j == 4) {
 			int j2 = stream.readUnsignedByte();
-			int i5 = anInt1268 + (j2 >> 4 & 7);
-			int l7 = anInt1269 + (j2 & 7);
+			int i5 = updateBlockX + (j2 >> 4 & 7);
+			int l7 = updateBlockY + (j2 & 7);
 			int k10 = stream.readUnsignedShortBigEndian();
 			int l12 = stream.readUnsignedByte();
 			int j15 = stream.readUnsignedShortBigEndian();
@@ -10239,8 +10239,8 @@ public class Game extends RSApplet {
 			int itemID = stream.readUnsignedShortLittleEndianSubtract128();
 			int itemAmount = stream.readUnsignedShortBigEndian();
 			int i8 = stream.readUnsignedByte();
-			int l10 = anInt1268 + (i8 >> 4 & 7);
-			int i13 = anInt1269 + (i8 & 7);
+			int l10 = updateBlockX + (i8 >> 4 & 7);
+			int i13 = updateBlockY + (i8 & 7);
 			if (l10 >= 0 && i13 >= 0 && l10 < 104 && i13 < 104) {
 				Item gItem = new Item();
 				gItem.ID = itemID;
@@ -10255,8 +10255,8 @@ public class Game extends RSApplet {
 		}
 		if (j == 117) {
 			int i3 = stream.readUnsignedByte();
-			int l5 = anInt1268 + (i3 >> 4 & 7);
-			int k8 = anInt1269 + (i3 & 7);
+			int l5 = updateBlockX + (i3 >> 4 & 7);
+			int k8 = updateBlockY + (i3 & 7);
 			int j11 = l5 + stream.readSignedByte();
 			int k13 = k8 + stream.readSignedByte();
 			int l15 = stream.readSignedShortBigEndian();
@@ -10662,10 +10662,10 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 64) {
-				anInt1268 = inStream.readUnsignedNegatedByte();
-				anInt1269 = inStream.readUnsignedByte128MinusValue();
-				for (int j = anInt1268; j < anInt1268 + 8; j++) {
-					for (int l9 = anInt1269; l9 < anInt1269 + 8; l9++) {
+				updateBlockX = inStream.readUnsignedNegatedByte();
+				updateBlockY = inStream.readUnsignedByte128MinusValue();
+				for (int j = updateBlockX; j < updateBlockX + 8; j++) {
+					for (int l9 = updateBlockY; l9 < updateBlockY + 8; l9++) {
 						if (groundArray[plane][j][l9] != null) {
 							groundArray[plane][j][l9] = null;
 							spawnGroundItem(j, l9);
@@ -10675,7 +10675,7 @@ public class Game extends RSApplet {
 				}
 
 				for (Class30_Sub1 class30_sub1 = (Class30_Sub1) pendingSceneChanges.firstFromTail(); class30_sub1 != null; class30_sub1 = (Class30_Sub1) pendingSceneChanges.nextTowardHead()) {
-					if (class30_sub1.tileX >= anInt1268 && class30_sub1.tileX < anInt1268 + 8 && class30_sub1.tileY >= anInt1269 && class30_sub1.tileY < anInt1269 + 8 && class30_sub1.scenePlane == plane) {
+					if (class30_sub1.tileX >= updateBlockX && class30_sub1.tileX < updateBlockX + 8 && class30_sub1.tileY >= updateBlockY && class30_sub1.tileY < updateBlockY + 8 && class30_sub1.scenePlane == plane) {
 						class30_sub1.restoreDelayTicks = 0;
 					}
 				}
@@ -11053,11 +11053,11 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 60) {
-				anInt1269 = inStream.readUnsignedByte();
-				anInt1268 = inStream.readUnsignedNegatedByte();
+				updateBlockY = inStream.readUnsignedByte();
+				updateBlockX = inStream.readUnsignedNegatedByte();
 				while (inStream.currentOffset < pktSize) {
-					int k3 = inStream.readUnsignedByte();
-					method137(inStream, k3);
+					int subOpcode = inStream.readUnsignedByte();
+					method137(inStream, subOpcode);
 				}
 				pktType = -1;
 				return true;
@@ -11398,8 +11398,8 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 85) {
-				anInt1269 = inStream.readUnsignedNegatedByte();
-				anInt1268 = inStream.readUnsignedNegatedByte();
+				updateBlockY = inStream.readUnsignedNegatedByte();
+				updateBlockX = inStream.readUnsignedNegatedByte();
 				pktType = -1;
 				return true;
 			}
@@ -12565,8 +12565,8 @@ public class Game extends RSApplet {
 	public int anInt1265;
 	public String loginMessage1;
 	public String loginMessage2;
-	public int anInt1268;
-	public int anInt1269;
+	public int updateBlockX;
+	public int updateBlockY;
 	public TextDrawingArea aTextDrawingArea_1270;
 	public TextDrawingArea aTextDrawingArea_1271;
 	public TextDrawingArea chatTextDrawingArea;
