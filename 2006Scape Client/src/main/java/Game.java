@@ -704,7 +704,7 @@ public class Game extends RSApplet {
 					if (abyte1 != null) {
 						int l8 = (anIntArray1234[i6] >> 8) * 64 - baseX;
 						int k9 = (anIntArray1234[i6] & 0xff) * 64 - baseY;
-						objectManager.method190(l8, aClass11Array1230, k9, worldController, abyte1);
+						objectManager.loadObjects(l8, aClass11Array1230, k9, worldController, abyte1);
 					}
 				}
 
@@ -10159,7 +10159,7 @@ public class Game extends RSApplet {
 				int j22 = intGroundArray[plane][k4 + 1][j7];
 				int k22 = intGroundArray[plane][k4 + 1][j7 + 1];
 				int l22 = intGroundArray[plane][k4][j7 + 1];
-				Model model = class46.method578(j19, i20, i22, j22, k22, l22, -1);
+				Model model = class46.getModel(j19, i20, i22, j22, k22, l22, -1);
 				if (model != null) {
 					method130(k17 + 1, -1, 0, l20, j7, 0, plane, k4, l14 + 1);
 					player.anInt1707 = l14 + loopCycle;
@@ -10518,7 +10518,7 @@ public class Game extends RSApplet {
 				if (heightPlane < 3 && (byteGroundArray[1][tileX][tileY] & 2) == 2) {
 					heightPlane++;
 				}
-				ObjectManager.method188(worldController, orientation, tileY, shape, heightPlane, aClass11Array1230[scenePlane], intGroundArray, tileX, objectId, scenePlane);
+				ObjectManager.placeObjectWithoutShading(worldController, orientation, tileY, shape, heightPlane, aClass11Array1230[scenePlane], intGroundArray, tileX, objectId, scenePlane);
 			}
 		}
 	}

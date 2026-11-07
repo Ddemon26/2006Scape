@@ -394,7 +394,7 @@ public class ObjectDefTest {
         }
     }
 
-    // ---------------------------------------------------------------- placement (ObjectManager.method188)
+    // ---------------------------------------------------------------- placement (ObjectManager.placeObjectWithoutShading)
 
     private static final int[] WALL_SHAPES = {0, 1, 2, 3};
     private static final int[] OBJECT_SHAPES = {9, 10, 11, 12};
@@ -414,7 +414,7 @@ public class ObjectDefTest {
     private static CollisionMap place(ObjectDef def, int shape, int orientation, int x, int y) throws Exception {
         CollisionMap map = blank();
         WorldController world = new WorldController(new int[4][105][105]);
-        ObjectManager.method188(world, orientation, y, shape, 0, map, new int[4][105][105], x, def.type, 0);
+        ObjectManager.placeObjectWithoutShading(world, orientation, y, shape, 0, map, new int[4][105][105], x, def.type, 0);
         return map;
     }
 
@@ -518,19 +518,19 @@ public class ObjectDefTest {
         d.animationId = 3;
         installCache(d);
         WorldController world = new WorldController(new int[4][105][105]);
-        ObjectManager.method188(world, 0, 41, 10, 0, blank(), new int[4][105][105], 40, 604, 0);
+        ObjectManager.placeObjectWithoutShading(world, 0, 41, 10, 0, blank(), new int[4][105][105], 40, 604, 0);
         Animable placed = placedObject(world, 0, 40, 41);
         assertTrue(placed instanceof Animable_Sub5);
         assertSame("animation table entry at the object's animation id", anims[3], get(placed, "aAnimation_1607"));
 
         d.animationId = -1;
         world = new WorldController(new int[4][105][105]);
-        ObjectManager.method188(world, 0, 41, 10, 0, blank(), new int[4][105][105], 40, 604, 0);
+        ObjectManager.placeObjectWithoutShading(world, 0, 41, 10, 0, blank(), new int[4][105][105], 40, 604, 0);
         assertNull("no animation, no children, no models: nothing to place", placedObject(world, 0, 40, 41));
 
         d.childrenIDs = new int[] {604};
         world = new WorldController(new int[4][105][105]);
-        ObjectManager.method188(world, 0, 41, 10, 0, blank(), new int[4][105][105], 40, 604, 0);
+        ObjectManager.placeObjectWithoutShading(world, 0, 41, 10, 0, blank(), new int[4][105][105], 40, 604, 0);
         placed = placedObject(world, 0, 40, 41);
         assertTrue(placed instanceof Animable_Sub5);
         assertNull(get(placed, "aAnimation_1607"));
@@ -562,7 +562,7 @@ public class ObjectDefTest {
         installCache(d);
         for (int orientation = 0; orientation < 4; orientation++) {
             WorldController world = new WorldController(new int[4][105][105]);
-            ObjectManager.method188(world, orientation, 30, 10, 0, blank(), new int[4][105][105], 20, 606, 0);
+            ObjectManager.placeObjectWithoutShading(world, orientation, 30, 10, 0, blank(), new int[4][105][105], 20, 606, 0);
             Ground[][][] grounds = (Ground[][][]) field(WorldController.class, "groundArray").get(world);
             Object5 object = grounds[0][20][30].obj5Array[0];
             int wide = orientation % 2 == 0 ? 3 : 2;
@@ -597,7 +597,7 @@ public class ObjectDefTest {
                     ground.obj1.uid = wallIds[n] << 14;
                     grounds[0][20][30] = ground;
                 }
-                ObjectManager.method188(world, orientation, 30, 5, 0, blank(), new int[4][105][105], 20, 607, 0);
+                ObjectManager.placeObjectWithoutShading(world, orientation, 30, 5, 0, blank(), new int[4][105][105], 20, 607, 0);
                 Ground[][][] grounds = (Ground[][][]) field(WorldController.class, "groundArray").get(world);
                 Object2 placed = grounds[0][20][30].obj2;
                 int dx = placed.anInt500 - (20 * 128 + 64);

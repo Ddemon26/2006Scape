@@ -39,7 +39,7 @@ final class Animable_Sub5 extends Animable {
 		if (class46 == null) {
 			return null;
 		} else {
-			return class46.method578(anInt1611, anInt1612, anInt1603, anInt1604, anInt1605, anInt1606, j);
+			return class46.getModel(anInt1611, anInt1612, anInt1603, anInt1604, anInt1605, anInt1606, j);
 		}
 	}
 

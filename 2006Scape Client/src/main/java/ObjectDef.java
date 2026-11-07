@@ -39,9 +39,9 @@ public final class ObjectDef {
 		blocksMovement = true;
 		blocksProjectiles = true;
 		hasActions = false;
-		aBoolean762 = false;
+		adjustsToTerrain = false;
 		aBoolean769 = false;
-		aBoolean764 = false;
+		occludes = false;
 		animationId = -1;
 		wallDecorationOffset = 16;
 		aByte737 = 0;
@@ -50,7 +50,7 @@ public final class ObjectDef {
 		anInt746 = -1;
 		anInt758 = -1;
 		aBoolean751 = false;
-		aBoolean779 = true;
+		castsShadow = true;
 		anInt748 = 128;
 		anInt772 = 128;
 		anInt740 = 128;
@@ -127,23 +127,23 @@ public final class ObjectDef {
 		return true;
 	}
 
-	public Model method578(int i, int j, int k, int l, int i1, int j1, int k1) {
-		Model model = method581(i, k1, j);
+	public Model getModel(int shape, int orientation, int heightX0Z0, int heightX1Z0, int heightX1Z1, int heightX0Z1, int frameId) {
+		Model model = buildModel(shape, frameId, orientation);
 		if (model == null) {
 			return null;
 		}
-		if (aBoolean762 || aBoolean769) {
-			model = new Model(aBoolean762, aBoolean769, model);
+		if (adjustsToTerrain || aBoolean769) {
+			model = new Model(adjustsToTerrain, aBoolean769, model);
 		}
-		if (aBoolean762) {
-			int l1 = (k + l + i1 + j1) / 4;
-			for (int i2 = 0; i2 < model.anInt1626; i2++) {
-				int j2 = model.anIntArray1627[i2];
-				int k2 = model.anIntArray1629[i2];
-				int l2 = k + (l - k) * (j2 + 64) / 128;
-				int i3 = j1 + (i1 - j1) * (j2 + 64) / 128;
-				int j3 = l2 + (i3 - l2) * (k2 + 64) / 128;
-				model.anIntArray1628[i2] += j3 - l1;
+		if (adjustsToTerrain) {
+			int meanHeight = (heightX0Z0 + heightX1Z0 + heightX1Z1 + heightX0Z1) / 4;
+			for (int vertexIndex = 0; vertexIndex < model.anInt1626; vertexIndex++) {
+				int vertexX = model.anIntArray1627[vertexIndex];
+				int vertexZ = model.anIntArray1629[vertexIndex];
+				int lowZHeight = heightX0Z0 + (heightX1Z0 - heightX0Z0) * (vertexX + 64) / 128;
+				int highZHeight = heightX0Z1 + (heightX1Z1 - heightX0Z1) * (vertexX + 64) / 128;
+				int vertexHeight = lowZHeight + (highZHeight - lowZHeight) * (vertexZ + 64) / 128;
+				model.anIntArray1628[vertexIndex] += vertexHeight - meanHeight;
 			}
 
 			model.recalculateYBounds();
@@ -181,22 +181,22 @@ public final class ObjectDef {
 		}
 	}
 
-	private Model method581(int j, int k, int l) {
+	private Model buildModel(int shape, int frameId, int orientation) {
 		Model model = null;
-		long l1;
+		long cacheKey;
 		if (modelShapes == null) {
-			if (j != 10) {
+			if (shape != 10) {
 				return null;
 			}
-			l1 = (type << 6) + l + ((long) (k + 1) << 32);
-			Model model_1 = (Model) mruNodes2.insertFromCache(l1);
+			cacheKey = (type << 6) + orientation + ((long) (frameId + 1) << 32);
+			Model model_1 = (Model) mruNodes2.insertFromCache(cacheKey);
 			if (model_1 != null) {
 				return model_1;
 			}
 			if (modelIds == null) {
 				return null;
 			}
-			boolean flag1 = aBoolean751 ^ l > 3;
+			boolean flag1 = aBoolean751 ^ orientation > 3;
 			int k1 = modelIds.length;
 			for (int i2 = 0; i2 < k1; i2++) {
 				int l2 = modelIds[i2];
@@ -225,7 +225,7 @@ public final class ObjectDef {
 		} else {
 			int i1 = -1;
 			for (int j1 = 0; j1 < modelShapes.length; j1++) {
-				if (modelShapes[j1] != j) {
+				if (modelShapes[j1] != shape) {
 					continue;
 				}
 				i1 = j1;
@@ -235,13 +235,13 @@ public final class ObjectDef {
 			if (i1 == -1) {
 				return null;
 			}
-			l1 = (type << 6) + (i1 << 3) + l + ((long) (k + 1) << 32);
-			Model model_2 = (Model) mruNodes2.insertFromCache(l1);
+			cacheKey = (type << 6) + (i1 << 3) + orientation + ((long) (frameId + 1) << 32);
+			Model model_2 = (Model) mruNodes2.insertFromCache(cacheKey);
 			if (model_2 != null) {
 				return model_2;
 			}
 			int j2 = modelIds[i1];
-			boolean flag3 = aBoolean751 ^ l > 3;
+			boolean flag3 = aBoolean751 ^ orientation > 3;
 			if (flag3) {
 				j2 += 0x10000;
 			}
@@ -261,14 +261,14 @@ public final class ObjectDef {
 		flag = anInt748 != 128 || anInt772 != 128 || anInt740 != 128;
 		boolean flag2;
 		flag2 = anInt738 != 0 || anInt745 != 0 || anInt783 != 0;
-		Model model_3 = new Model(modifiedModelColors == null, AnimationFrame.isMissingFrameId(k), l == 0 && k == -1 && !flag && !flag2, model);
-		if (k != -1) {
+		Model model_3 = new Model(modifiedModelColors == null, AnimationFrame.isMissingFrameId(frameId), orientation == 0 && frameId == -1 && !flag && !flag2, model);
+		if (frameId != -1) {
 			model_3.buildAnimationGroups();
-			model_3.applyAnimationFrame(k);
+			model_3.applyAnimationFrame(frameId);
 			model_3.faceGroups = null;
 			model_3.vertexGroups = null;
 		}
-		while (l-- > 0) {
+		while (orientation-- > 0) {
 			model_3.rotateYQuarterTurn();
 		}
 		if (modifiedModelColors != null) {
@@ -287,7 +287,7 @@ public final class ObjectDef {
 		if (anInt760 == 1) {
 			model_3.anInt1654 = model_3.modelHeight;
 		}
-		mruNodes2.removeFromCache(model_3, l1);
+		mruNodes2.removeFromCache(model_3, cacheKey);
 		return model_3;
 	}
 
@@ -347,11 +347,11 @@ public final class ObjectDef {
 						hasActions = true;
 					}
 				} else if (opcode == 21) {
-					aBoolean762 = true;
+					adjustsToTerrain = true;
 				} else if (opcode == 22) {
 					aBoolean769 = true;
 				} else if (opcode == 23) {
-					aBoolean764 = true;
+					occludes = true;
 				} else if (opcode == 24) {
 					animationId = stream.readUnsignedShortBigEndian();
 					if (animationId == 65535) {
@@ -385,7 +385,7 @@ public final class ObjectDef {
 				} else if (opcode == 62) {
 					aBoolean751 = true;
 				} else if (opcode == 64) {
-					aBoolean779 = false;
+					castsShadow = false;
 				} else if (opcode == 65) {
 					anInt748 = stream.readUnsignedShortBigEndian();
 				} else if (opcode == 66) {
@@ -474,8 +474,8 @@ public final class ObjectDef {
 	public int childrenIDs[];
 	private int anInt760;
 	public int sizeY;
-	public boolean aBoolean762;
-	public boolean aBoolean764;
+	public boolean adjustsToTerrain;
+	public boolean occludes;
 	public static Game clientInstance;
 	private boolean aBoolean766;
 	public boolean blocksMovement;
@@ -489,7 +489,7 @@ public final class ObjectDef {
 	private int[] modelShapes;
 	public byte description[];
 	public boolean hasActions;
-	public boolean aBoolean779;
+	public boolean castsShadow;
 	public static LruCache mruNodes2 = new LruCache(30);
 	public int animationId;
 	private static ObjectDef[] cache;

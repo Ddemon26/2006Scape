@@ -14,8 +14,8 @@ final class ObjectManager {
 		aByteArrayArrayArray130 = new byte[4][anInt146][anInt147];
 		aByteArrayArrayArray136 = new byte[4][anInt146][anInt147];
 		aByteArrayArrayArray148 = new byte[4][anInt146][anInt147];
-		anIntArrayArrayArray135 = new int[4][anInt146 + 1][anInt147 + 1];
-		aByteArrayArrayArray134 = new byte[4][anInt146 + 1][anInt147 + 1];
+		occlusionFlags = new int[4][anInt146 + 1][anInt147 + 1];
+		objectShadow = new byte[4][anInt146 + 1][anInt147 + 1];
 		anIntArrayArray139 = new int[anInt146 + 1][anInt147 + 1];
 		anIntArray124 = new int[anInt147];
 		anIntArray125 = new int[anInt147];
@@ -64,7 +64,7 @@ final class ObjectManager {
 			anInt133 = 16;
 		}
 		for (int l = 0; l < 4; l++) {
-			byte abyte0[][] = aByteArrayArrayArray134[l];
+			byte abyte0[][] = objectShadow[l];
 			byte byte0 = 96;
 			char c = '\u0300';
 			byte byte1 = -50;
@@ -186,7 +186,7 @@ final class ObjectManager {
 										flag = false;
 									}
 									if (flag && j19 == k19 && j19 == l19 && j19 == i20) {
-										anIntArrayArrayArray135[l][l6][k17] |= 0x924;
+										occlusionFlags[l][l6][k17] |= 0x924;
 									}
 								}
 								int i22 = 0;
@@ -260,20 +260,20 @@ final class ObjectManager {
 			for (int i3 = 0; i3 <= l2; i3++) {
 				for (int k3 = 0; k3 <= anInt147; k3++) {
 					for (int i4 = 0; i4 <= anInt146; i4++) {
-						if ((anIntArrayArrayArray135[i3][i4][k3] & i2) != 0) {
+						if ((occlusionFlags[i3][i4][k3] & i2) != 0) {
 							int k4 = k3;
 							int l5 = k3;
 							int i7 = i3;
 							int k8 = i3;
-							for (; k4 > 0 && (anIntArrayArrayArray135[i3][i4][k4 - 1] & i2) != 0; k4--) {
+							for (; k4 > 0 && (occlusionFlags[i3][i4][k4 - 1] & i2) != 0; k4--) {
 								;
 							}
-							for (; l5 < anInt147 && (anIntArrayArrayArray135[i3][i4][l5 + 1] & i2) != 0; l5++) {
+							for (; l5 < anInt147 && (occlusionFlags[i3][i4][l5 + 1] & i2) != 0; l5++) {
 								;
 							}
 							label0 : for (; i7 > 0; i7--) {
 								for (int j10 = k4; j10 <= l5; j10++) {
-									if ((anIntArrayArrayArray135[i7 - 1][i4][j10] & i2) == 0) {
+									if ((occlusionFlags[i7 - 1][i4][j10] & i2) == 0) {
 										break label0;
 									}
 								}
@@ -282,7 +282,7 @@ final class ObjectManager {
 
 							label1 : for (; k8 < l2; k8++) {
 								for (int k10 = k4; k10 <= l5; k10++) {
-									if ((anIntArrayArrayArray135[k8 + 1][i4][k10] & i2) == 0) {
+									if ((occlusionFlags[k8 + 1][i4][k10] & i2) == 0) {
 										break label1;
 									}
 								}
@@ -297,27 +297,27 @@ final class ObjectManager {
 								WorldController.addOccluder(l2, i4 * 128, l15, i4 * 128, l5 * 128 + 128, k14, k4 * 128, 1);
 								for (int l16 = i7; l16 <= k8; l16++) {
 									for (int l17 = k4; l17 <= l5; l17++) {
-										anIntArrayArrayArray135[l16][i4][l17] &= ~i2;
+										occlusionFlags[l16][i4][l17] &= ~i2;
 									}
 
 								}
 
 							}
 						}
-						if ((anIntArrayArrayArray135[i3][i4][k3] & j2) != 0) {
+						if ((occlusionFlags[i3][i4][k3] & j2) != 0) {
 							int l4 = i4;
 							int i6 = i4;
 							int j7 = i3;
 							int l8 = i3;
-							for (; l4 > 0 && (anIntArrayArrayArray135[i3][l4 - 1][k3] & j2) != 0; l4--) {
+							for (; l4 > 0 && (occlusionFlags[i3][l4 - 1][k3] & j2) != 0; l4--) {
 								;
 							}
-							for (; i6 < anInt146 && (anIntArrayArrayArray135[i3][i6 + 1][k3] & j2) != 0; i6++) {
+							for (; i6 < anInt146 && (occlusionFlags[i3][i6 + 1][k3] & j2) != 0; i6++) {
 								;
 							}
 							label2 : for (; j7 > 0; j7--) {
 								for (int i11 = l4; i11 <= i6; i11++) {
-									if ((anIntArrayArrayArray135[j7 - 1][i11][k3] & j2) == 0) {
+									if ((occlusionFlags[j7 - 1][i11][k3] & j2) == 0) {
 										break label2;
 									}
 								}
@@ -326,7 +326,7 @@ final class ObjectManager {
 
 							label3 : for (; l8 < l2; l8++) {
 								for (int j11 = l4; j11 <= i6; j11++) {
-									if ((anIntArrayArrayArray135[l8 + 1][j11][k3] & j2) == 0) {
+									if ((occlusionFlags[l8 + 1][j11][k3] & j2) == 0) {
 										break label3;
 									}
 								}
@@ -341,27 +341,27 @@ final class ObjectManager {
 								WorldController.addOccluder(l2, l4 * 128, i16, i6 * 128 + 128, k3 * 128, l14, k3 * 128, 2);
 								for (int i17 = j7; i17 <= l8; i17++) {
 									for (int i18 = l4; i18 <= i6; i18++) {
-										anIntArrayArrayArray135[i17][i18][k3] &= ~j2;
+										occlusionFlags[i17][i18][k3] &= ~j2;
 									}
 
 								}
 
 							}
 						}
-						if ((anIntArrayArrayArray135[i3][i4][k3] & k2) != 0) {
+						if ((occlusionFlags[i3][i4][k3] & k2) != 0) {
 							int i5 = i4;
 							int j6 = i4;
 							int k7 = k3;
 							int i9 = k3;
-							for (; k7 > 0 && (anIntArrayArrayArray135[i3][i4][k7 - 1] & k2) != 0; k7--) {
+							for (; k7 > 0 && (occlusionFlags[i3][i4][k7 - 1] & k2) != 0; k7--) {
 								;
 							}
-							for (; i9 < anInt147 && (anIntArrayArrayArray135[i3][i4][i9 + 1] & k2) != 0; i9++) {
+							for (; i9 < anInt147 && (occlusionFlags[i3][i4][i9 + 1] & k2) != 0; i9++) {
 								;
 							}
 							label4 : for (; i5 > 0; i5--) {
 								for (int l11 = k7; l11 <= i9; l11++) {
-									if ((anIntArrayArrayArray135[i3][i5 - 1][l11] & k2) == 0) {
+									if ((occlusionFlags[i3][i5 - 1][l11] & k2) == 0) {
 										break label4;
 									}
 								}
@@ -370,7 +370,7 @@ final class ObjectManager {
 
 							label5 : for (; j6 < anInt146; j6++) {
 								for (int i12 = k7; i12 <= i9; i12++) {
-									if ((anIntArrayArrayArray135[i3][j6 + 1][i12] & k2) == 0) {
+									if ((occlusionFlags[i3][j6 + 1][i12] & k2) == 0) {
 										break label5;
 									}
 								}
@@ -382,7 +382,7 @@ final class ObjectManager {
 								WorldController.addOccluder(l2, i5 * 128, j12, j6 * 128 + 128, i9 * 128 + 128, j12, k7 * 128, 4);
 								for (int k13 = i5; k13 <= j6; k13++) {
 									for (int i15 = k7; i15 <= i9; i15++) {
-										anIntArrayArrayArray135[i3][k13][i15] &= ~k2;
+										occlusionFlags[i3][k13][i15] &= ~k2;
 									}
 
 								}
@@ -436,7 +436,7 @@ final class ObjectManager {
 		for (int j1 = i; j1 <= i + j; j1++) {
 			for (int k1 = i1; k1 <= i1 + l; k1++) {
 				if (k1 >= 0 && k1 < anInt146 && j1 >= 0 && j1 < anInt147) {
-					aByteArrayArrayArray134[0][k1][j1] = 127;
+					objectShadow[0][k1][j1] = 127;
 					if (k1 == i1 && k1 > 0) {
 						anIntArrayArrayArray129[0][k1][j1] = anIntArrayArrayArray129[0][k1 - 1][j1];
 					}
@@ -455,72 +455,72 @@ final class ObjectManager {
 		}
 	}
 
-	private void method175(int i, WorldController worldController, CollisionMap class11, int j, int k, int l, int i1, int j1) {
-		if ((hideRoofs || lowMem) && (aByteArrayArrayArray149[0][l][i] & 2) == 0) {
-			if ((aByteArrayArrayArray149[k][l][i] & 0x10) != 0) {
+	private void placeObject(int tileY, WorldController worldController, CollisionMap collisionMap, int shape, int plane, int tileX, int objectId, int orientation) {
+		if ((hideRoofs || lowMem) && (aByteArrayArrayArray149[0][tileX][tileY] & 2) == 0) {
+			if ((aByteArrayArrayArray149[plane][tileX][tileY] & 0x10) != 0) {
 				return;
 			}
-			if (method182(i, k, l) != anInt131) {
+			if (method182(tileY, plane, tileX) != anInt131) {
 				return;
 			}
 		}
-		if (k < anInt145) {
-			anInt145 = k;
+		if (plane < anInt145) {
+			anInt145 = plane;
 		}
-		int k1 = anIntArrayArrayArray129[k][l][i];
-		int l1 = anIntArrayArrayArray129[k][l + 1][i];
-		int i2 = anIntArrayArrayArray129[k][l + 1][i + 1];
-		int j2 = anIntArrayArrayArray129[k][l][i + 1];
-		int k2 = k1 + l1 + i2 + j2 >> 2;
-		ObjectDef class46 = ObjectDef.forID(i1);
-		int l2 = l + (i << 7) + (i1 << 14) + 0x40000000;
-		if (!class46.hasActions) {
-			l2 += 0x80000000;
+		int k1 = anIntArrayArrayArray129[plane][tileX][tileY];
+		int l1 = anIntArrayArrayArray129[plane][tileX + 1][tileY];
+		int i2 = anIntArrayArrayArray129[plane][tileX + 1][tileY + 1];
+		int j2 = anIntArrayArrayArray129[plane][tileX][tileY + 1];
+		int averageHeight = k1 + l1 + i2 + j2 >> 2;
+		ObjectDef objectDef = ObjectDef.forID(objectId);
+		int uid = tileX + (tileY << 7) + (objectId << 14) + 0x40000000;
+		if (!objectDef.hasActions) {
+			uid += 0x80000000;
 		}
-		byte byte0 = (byte) ((j1 << 6) + j);
-		if (j == 22) {
-			if (lowMem && !class46.hasActions && !class46.showInLowMemory) {
+		byte shapeAndOrientation = (byte) ((orientation << 6) + shape);
+		if (shape == 22) {
+			if (lowMem && !objectDef.hasActions && !objectDef.showInLowMemory) {
 				return;
 			}
 			Object obj;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj = class46.method578(22, j1, k1, l1, i2, j2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj = objectDef.getModel(22, orientation, k1, l1, i2, j2, -1);
 			} else {
-				obj = new Animable_Sub5(i1, j1, 22, l1, i2, k1, j2, class46.animationId, true);
+				obj = new Animable_Sub5(objectId, orientation, 22, l1, i2, k1, j2, objectDef.animationId, true);
 			}
-			worldController.addGroundDecoration(k, k2, i, ((Animable) obj), byte0, l2, l);
-			if (class46.blocksMovement && class46.hasActions && class11 != null) {
-				class11.blockTile(i, l);
+			worldController.addGroundDecoration(plane, averageHeight, tileY, ((Animable) obj), shapeAndOrientation, uid, tileX);
+			if (objectDef.blocksMovement && objectDef.hasActions && collisionMap != null) {
+				collisionMap.blockTile(tileY, tileX);
 			}
 			return;
 		}
-		if (j == 10 || j == 11) {
+		if (shape == 10 || shape == 11) {
 			Object obj1;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj1 = class46.method578(10, j1, k1, l1, i2, j2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj1 = objectDef.getModel(10, orientation, k1, l1, i2, j2, -1);
 			} else {
-				obj1 = new Animable_Sub5(i1, j1, 10, l1, i2, k1, j2, class46.animationId, true);
+				obj1 = new Animable_Sub5(objectId, orientation, 10, l1, i2, k1, j2, objectDef.animationId, true);
 			}
 			if (obj1 != null) {
 				int i5 = 0;
-				if (j == 11) {
+				if (shape == 11) {
 					i5 += 256;
 				}
 				int j4;
 				int l4;
-				if (j1 == 1 || j1 == 3) {
-					j4 = class46.sizeY;
-					l4 = class46.sizeX;
+				if (orientation == 1 || orientation == 3) {
+					j4 = objectDef.sizeY;
+					l4 = objectDef.sizeX;
 				} else {
-					j4 = class46.sizeX;
-					l4 = class46.sizeY;
+					j4 = objectDef.sizeX;
+					l4 = objectDef.sizeY;
 				}
-				if (worldController.addSceneObject(l2, byte0, k2, l4, ((Animable) obj1), j4, k, i5, i, l) && class46.aBoolean779) {
+				if (worldController.addSceneObject(uid, shapeAndOrientation, averageHeight, l4, ((Animable) obj1), j4, plane, i5, tileY, tileX) && objectDef.castsShadow) {
 					Model model;
 					if (obj1 instanceof Model) {
 						model = (Model) obj1;
 					} else {
-						model = class46.method578(10, j1, k1, l1, i2, j2, -1);
+						model = objectDef.getModel(10, orientation, k1, l1, i2, j2, -1);
 					}
 					if (model != null) {
 						for (int j5 = 0; j5 <= j4; j5++) {
@@ -529,8 +529,8 @@ final class ObjectManager {
 								if (l5 > 30) {
 									l5 = 30;
 								}
-								if (l5 > aByteArrayArrayArray134[k][l + j5][i + k5]) {
-									aByteArrayArrayArray134[k][l + j5][i + k5] = (byte) l5;
+								if (l5 > objectShadow[plane][tileX + j5][tileY + k5]) {
+									objectShadow[plane][tileX + j5][tileY + k5] = (byte) l5;
 								}
 							}
 
@@ -539,187 +539,187 @@ final class ObjectManager {
 					}
 				}
 			}
-			if (class46.blocksMovement && class11 != null) {
-				class11.addObject(class46.blocksProjectiles, class46.sizeX, class46.sizeY, l, i, j1);
+			if (objectDef.blocksMovement && collisionMap != null) {
+				collisionMap.addObject(objectDef.blocksProjectiles, objectDef.sizeX, objectDef.sizeY, tileX, tileY, orientation);
 			}
 			return;
 		}
-		if (j >= 12) {
+		if (shape >= 12) {
 			Object obj2;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj2 = class46.method578(j, j1, k1, l1, i2, j2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj2 = objectDef.getModel(shape, orientation, k1, l1, i2, j2, -1);
 			} else {
-				obj2 = new Animable_Sub5(i1, j1, j, l1, i2, k1, j2, class46.animationId, true);
+				obj2 = new Animable_Sub5(objectId, orientation, shape, l1, i2, k1, j2, objectDef.animationId, true);
 			}
-			worldController.addSceneObject(l2, byte0, k2, 1, ((Animable) obj2), 1, k, 0, i, l);
-			if (j >= 12 && j <= 17 && j != 13 && k > 0) {
-				anIntArrayArrayArray135[k][l][i] |= 0x924;
+			worldController.addSceneObject(uid, shapeAndOrientation, averageHeight, 1, ((Animable) obj2), 1, plane, 0, tileY, tileX);
+			if (shape >= 12 && shape <= 17 && shape != 13 && plane > 0) {
+				occlusionFlags[plane][tileX][tileY] |= 0x924;
 			}
-			if (class46.blocksMovement && class11 != null) {
-				class11.addObject(class46.blocksProjectiles, class46.sizeX, class46.sizeY, l, i, j1);
+			if (objectDef.blocksMovement && collisionMap != null) {
+				collisionMap.addObject(objectDef.blocksProjectiles, objectDef.sizeX, objectDef.sizeY, tileX, tileY, orientation);
 			}
 			return;
 		}
-		if (j == 0) {
+		if (shape == 0) {
 			Object obj3;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj3 = class46.method578(0, j1, k1, l1, i2, j2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj3 = objectDef.getModel(0, orientation, k1, l1, i2, j2, -1);
 			} else {
-				obj3 = new Animable_Sub5(i1, j1, 0, l1, i2, k1, j2, class46.animationId, true);
+				obj3 = new Animable_Sub5(objectId, orientation, 0, l1, i2, k1, j2, objectDef.animationId, true);
 			}
-			worldController.addWall(anIntArray152[j1], ((Animable) obj3), l2, i, byte0, l, null, k2, 0, k);
-			if (j1 == 0) {
-				if (class46.aBoolean779) {
-					aByteArrayArrayArray134[k][l][i] = 50;
-					aByteArrayArrayArray134[k][l][i + 1] = 50;
+			worldController.addWall(anIntArray152[orientation], ((Animable) obj3), uid, tileY, shapeAndOrientation, tileX, null, averageHeight, 0, plane);
+			if (orientation == 0) {
+				if (objectDef.castsShadow) {
+					objectShadow[plane][tileX][tileY] = 50;
+					objectShadow[plane][tileX][tileY + 1] = 50;
 				}
-				if (class46.aBoolean764) {
-					anIntArrayArrayArray135[k][l][i] |= 0x249;
+				if (objectDef.occludes) {
+					occlusionFlags[plane][tileX][tileY] |= 0x249;
 				}
-			} else if (j1 == 1) {
-				if (class46.aBoolean779) {
-					aByteArrayArrayArray134[k][l][i + 1] = 50;
-					aByteArrayArrayArray134[k][l + 1][i + 1] = 50;
+			} else if (orientation == 1) {
+				if (objectDef.castsShadow) {
+					objectShadow[plane][tileX][tileY + 1] = 50;
+					objectShadow[plane][tileX + 1][tileY + 1] = 50;
 				}
-				if (class46.aBoolean764) {
-					anIntArrayArrayArray135[k][l][i + 1] |= 0x492;
+				if (objectDef.occludes) {
+					occlusionFlags[plane][tileX][tileY + 1] |= 0x492;
 				}
-			} else if (j1 == 2) {
-				if (class46.aBoolean779) {
-					aByteArrayArrayArray134[k][l + 1][i] = 50;
-					aByteArrayArrayArray134[k][l + 1][i + 1] = 50;
+			} else if (orientation == 2) {
+				if (objectDef.castsShadow) {
+					objectShadow[plane][tileX + 1][tileY] = 50;
+					objectShadow[plane][tileX + 1][tileY + 1] = 50;
 				}
-				if (class46.aBoolean764) {
-					anIntArrayArrayArray135[k][l + 1][i] |= 0x249;
+				if (objectDef.occludes) {
+					occlusionFlags[plane][tileX + 1][tileY] |= 0x249;
 				}
-			} else if (j1 == 3) {
-				if (class46.aBoolean779) {
-					aByteArrayArrayArray134[k][l][i] = 50;
-					aByteArrayArrayArray134[k][l + 1][i] = 50;
+			} else if (orientation == 3) {
+				if (objectDef.castsShadow) {
+					objectShadow[plane][tileX][tileY] = 50;
+					objectShadow[plane][tileX + 1][tileY] = 50;
 				}
-				if (class46.aBoolean764) {
-					anIntArrayArrayArray135[k][l][i] |= 0x492;
+				if (objectDef.occludes) {
+					occlusionFlags[plane][tileX][tileY] |= 0x492;
 				}
 			}
-			if (class46.blocksMovement && class11 != null) {
-				class11.addWall(i, j1, l, j, class46.blocksProjectiles);
+			if (objectDef.blocksMovement && collisionMap != null) {
+				collisionMap.addWall(tileY, orientation, tileX, shape, objectDef.blocksProjectiles);
 			}
-			if (class46.wallDecorationOffset != 16) {
-				worldController.scaleWallDecorationOffset(i, class46.wallDecorationOffset, l, k);
+			if (objectDef.wallDecorationOffset != 16) {
+				worldController.scaleWallDecorationOffset(tileY, objectDef.wallDecorationOffset, tileX, plane);
 			}
 			return;
 		}
-		if (j == 1) {
+		if (shape == 1) {
 			Object obj4;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj4 = class46.method578(1, j1, k1, l1, i2, j2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj4 = objectDef.getModel(1, orientation, k1, l1, i2, j2, -1);
 			} else {
-				obj4 = new Animable_Sub5(i1, j1, 1, l1, i2, k1, j2, class46.animationId, true);
+				obj4 = new Animable_Sub5(objectId, orientation, 1, l1, i2, k1, j2, objectDef.animationId, true);
 			}
-			worldController.addWall(anIntArray140[j1], ((Animable) obj4), l2, i, byte0, l, null, k2, 0, k);
-			if (class46.aBoolean779) {
-				if (j1 == 0) {
-					aByteArrayArrayArray134[k][l][i + 1] = 50;
-				} else if (j1 == 1) {
-					aByteArrayArrayArray134[k][l + 1][i + 1] = 50;
-				} else if (j1 == 2) {
-					aByteArrayArrayArray134[k][l + 1][i] = 50;
-				} else if (j1 == 3) {
-					aByteArrayArrayArray134[k][l][i] = 50;
+			worldController.addWall(anIntArray140[orientation], ((Animable) obj4), uid, tileY, shapeAndOrientation, tileX, null, averageHeight, 0, plane);
+			if (objectDef.castsShadow) {
+				if (orientation == 0) {
+					objectShadow[plane][tileX][tileY + 1] = 50;
+				} else if (orientation == 1) {
+					objectShadow[plane][tileX + 1][tileY + 1] = 50;
+				} else if (orientation == 2) {
+					objectShadow[plane][tileX + 1][tileY] = 50;
+				} else if (orientation == 3) {
+					objectShadow[plane][tileX][tileY] = 50;
 				}
 			}
-			if (class46.blocksMovement && class11 != null) {
-				class11.addWall(i, j1, l, j, class46.blocksProjectiles);
+			if (objectDef.blocksMovement && collisionMap != null) {
+				collisionMap.addWall(tileY, orientation, tileX, shape, objectDef.blocksProjectiles);
 			}
 			return;
 		}
-		if (j == 2) {
-			int i3 = j1 + 1 & 3;
+		if (shape == 2) {
+			int i3 = orientation + 1 & 3;
 			Object obj11;
 			Object obj12;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj11 = class46.method578(2, 4 + j1, k1, l1, i2, j2, -1);
-				obj12 = class46.method578(2, i3, k1, l1, i2, j2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj11 = objectDef.getModel(2, 4 + orientation, k1, l1, i2, j2, -1);
+				obj12 = objectDef.getModel(2, i3, k1, l1, i2, j2, -1);
 			} else {
-				obj11 = new Animable_Sub5(i1, 4 + j1, 2, l1, i2, k1, j2, class46.animationId, true);
-				obj12 = new Animable_Sub5(i1, i3, 2, l1, i2, k1, j2, class46.animationId, true);
+				obj11 = new Animable_Sub5(objectId, 4 + orientation, 2, l1, i2, k1, j2, objectDef.animationId, true);
+				obj12 = new Animable_Sub5(objectId, i3, 2, l1, i2, k1, j2, objectDef.animationId, true);
 			}
-			worldController.addWall(anIntArray152[j1], ((Animable) obj11), l2, i, byte0, l, ((Animable) obj12), k2, anIntArray152[i3], k);
-			if (class46.aBoolean764) {
-				if (j1 == 0) {
-					anIntArrayArrayArray135[k][l][i] |= 0x249;
-					anIntArrayArrayArray135[k][l][i + 1] |= 0x492;
-				} else if (j1 == 1) {
-					anIntArrayArrayArray135[k][l][i + 1] |= 0x492;
-					anIntArrayArrayArray135[k][l + 1][i] |= 0x249;
-				} else if (j1 == 2) {
-					anIntArrayArrayArray135[k][l + 1][i] |= 0x249;
-					anIntArrayArrayArray135[k][l][i] |= 0x492;
-				} else if (j1 == 3) {
-					anIntArrayArrayArray135[k][l][i] |= 0x492;
-					anIntArrayArrayArray135[k][l][i] |= 0x249;
+			worldController.addWall(anIntArray152[orientation], ((Animable) obj11), uid, tileY, shapeAndOrientation, tileX, ((Animable) obj12), averageHeight, anIntArray152[i3], plane);
+			if (objectDef.occludes) {
+				if (orientation == 0) {
+					occlusionFlags[plane][tileX][tileY] |= 0x249;
+					occlusionFlags[plane][tileX][tileY + 1] |= 0x492;
+				} else if (orientation == 1) {
+					occlusionFlags[plane][tileX][tileY + 1] |= 0x492;
+					occlusionFlags[plane][tileX + 1][tileY] |= 0x249;
+				} else if (orientation == 2) {
+					occlusionFlags[plane][tileX + 1][tileY] |= 0x249;
+					occlusionFlags[plane][tileX][tileY] |= 0x492;
+				} else if (orientation == 3) {
+					occlusionFlags[plane][tileX][tileY] |= 0x492;
+					occlusionFlags[plane][tileX][tileY] |= 0x249;
 				}
 			}
-			if (class46.blocksMovement && class11 != null) {
-				class11.addWall(i, j1, l, j, class46.blocksProjectiles);
+			if (objectDef.blocksMovement && collisionMap != null) {
+				collisionMap.addWall(tileY, orientation, tileX, shape, objectDef.blocksProjectiles);
 			}
-			if (class46.wallDecorationOffset != 16) {
-				worldController.scaleWallDecorationOffset(i, class46.wallDecorationOffset, l, k);
+			if (objectDef.wallDecorationOffset != 16) {
+				worldController.scaleWallDecorationOffset(tileY, objectDef.wallDecorationOffset, tileX, plane);
 			}
 			return;
 		}
-		if (j == 3) {
+		if (shape == 3) {
 			Object obj5;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj5 = class46.method578(3, j1, k1, l1, i2, j2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj5 = objectDef.getModel(3, orientation, k1, l1, i2, j2, -1);
 			} else {
-				obj5 = new Animable_Sub5(i1, j1, 3, l1, i2, k1, j2, class46.animationId, true);
+				obj5 = new Animable_Sub5(objectId, orientation, 3, l1, i2, k1, j2, objectDef.animationId, true);
 			}
-			worldController.addWall(anIntArray140[j1], ((Animable) obj5), l2, i, byte0, l, null, k2, 0, k);
-			if (class46.aBoolean779) {
-				if (j1 == 0) {
-					aByteArrayArrayArray134[k][l][i + 1] = 50;
-				} else if (j1 == 1) {
-					aByteArrayArrayArray134[k][l + 1][i + 1] = 50;
-				} else if (j1 == 2) {
-					aByteArrayArrayArray134[k][l + 1][i] = 50;
-				} else if (j1 == 3) {
-					aByteArrayArrayArray134[k][l][i] = 50;
+			worldController.addWall(anIntArray140[orientation], ((Animable) obj5), uid, tileY, shapeAndOrientation, tileX, null, averageHeight, 0, plane);
+			if (objectDef.castsShadow) {
+				if (orientation == 0) {
+					objectShadow[plane][tileX][tileY + 1] = 50;
+				} else if (orientation == 1) {
+					objectShadow[plane][tileX + 1][tileY + 1] = 50;
+				} else if (orientation == 2) {
+					objectShadow[plane][tileX + 1][tileY] = 50;
+				} else if (orientation == 3) {
+					objectShadow[plane][tileX][tileY] = 50;
 				}
 			}
-			if (class46.blocksMovement && class11 != null) {
-				class11.addWall(i, j1, l, j, class46.blocksProjectiles);
+			if (objectDef.blocksMovement && collisionMap != null) {
+				collisionMap.addWall(tileY, orientation, tileX, shape, objectDef.blocksProjectiles);
 			}
 			return;
 		}
-		if (j == 9) {
+		if (shape == 9) {
 			Object obj6;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj6 = class46.method578(j, j1, k1, l1, i2, j2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj6 = objectDef.getModel(shape, orientation, k1, l1, i2, j2, -1);
 			} else {
-				obj6 = new Animable_Sub5(i1, j1, j, l1, i2, k1, j2, class46.animationId, true);
+				obj6 = new Animable_Sub5(objectId, orientation, shape, l1, i2, k1, j2, objectDef.animationId, true);
 			}
-			worldController.addSceneObject(l2, byte0, k2, 1, ((Animable) obj6), 1, k, 0, i, l);
-			if (class46.blocksMovement && class11 != null) {
-				class11.addObject(class46.blocksProjectiles, class46.sizeX, class46.sizeY, l, i, j1);
+			worldController.addSceneObject(uid, shapeAndOrientation, averageHeight, 1, ((Animable) obj6), 1, plane, 0, tileY, tileX);
+			if (objectDef.blocksMovement && collisionMap != null) {
+				collisionMap.addObject(objectDef.blocksProjectiles, objectDef.sizeX, objectDef.sizeY, tileX, tileY, orientation);
 			}
 			return;
 		}
-		if (class46.aBoolean762) {
-			if (j1 == 1) {
+		if (objectDef.adjustsToTerrain) {
+			if (orientation == 1) {
 				int j3 = j2;
 				j2 = i2;
 				i2 = l1;
 				l1 = k1;
 				k1 = j3;
-			} else if (j1 == 2) {
+			} else if (orientation == 2) {
 				int k3 = j2;
 				j2 = l1;
 				l1 = k3;
 				k3 = i2;
 				i2 = k1;
 				k1 = k3;
-			} else if (j1 == 3) {
+			} else if (orientation == 3) {
 				int l3 = j2;
 				j2 = k1;
 				k1 = l1;
@@ -727,59 +727,59 @@ final class ObjectManager {
 				i2 = l3;
 			}
 		}
-		if (j == 4) {
+		if (shape == 4) {
 			Object obj7;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj7 = class46.method578(4, 0, k1, l1, i2, j2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj7 = objectDef.getModel(4, 0, k1, l1, i2, j2, -1);
 			} else {
-				obj7 = new Animable_Sub5(i1, 0, 4, l1, i2, k1, j2, class46.animationId, true);
+				obj7 = new Animable_Sub5(objectId, 0, 4, l1, i2, k1, j2, objectDef.animationId, true);
 			}
-			worldController.addWallDecoration(l2, i, j1 * 512, k, 0, k2, ((Animable) obj7), l, byte0, 0, anIntArray152[j1]);
+			worldController.addWallDecoration(uid, tileY, orientation * 512, plane, 0, averageHeight, ((Animable) obj7), tileX, shapeAndOrientation, 0, anIntArray152[orientation]);
 			return;
 		}
-		if (j == 5) {
+		if (shape == 5) {
 			int i4 = 16;
-			int k4 = worldController.getWallUid(k, l, i);
+			int k4 = worldController.getWallUid(plane, tileX, tileY);
 			if (k4 > 0) {
 				i4 = ObjectDef.forID(k4 >> 14 & 0x7fff).wallDecorationOffset;
 			}
 			Object obj13;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj13 = class46.method578(4, 0, k1, l1, i2, j2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj13 = objectDef.getModel(4, 0, k1, l1, i2, j2, -1);
 			} else {
-				obj13 = new Animable_Sub5(i1, 0, 4, l1, i2, k1, j2, class46.animationId, true);
+				obj13 = new Animable_Sub5(objectId, 0, 4, l1, i2, k1, j2, objectDef.animationId, true);
 			}
-			worldController.addWallDecoration(l2, i, j1 * 512, k, anIntArray137[j1] * i4, k2, ((Animable) obj13), l, byte0, anIntArray144[j1] * i4, anIntArray152[j1]);
+			worldController.addWallDecoration(uid, tileY, orientation * 512, plane, anIntArray137[orientation] * i4, averageHeight, ((Animable) obj13), tileX, shapeAndOrientation, anIntArray144[orientation] * i4, anIntArray152[orientation]);
 			return;
 		}
-		if (j == 6) {
+		if (shape == 6) {
 			Object obj8;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj8 = class46.method578(4, 0, k1, l1, i2, j2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj8 = objectDef.getModel(4, 0, k1, l1, i2, j2, -1);
 			} else {
-				obj8 = new Animable_Sub5(i1, 0, 4, l1, i2, k1, j2, class46.animationId, true);
+				obj8 = new Animable_Sub5(objectId, 0, 4, l1, i2, k1, j2, objectDef.animationId, true);
 			}
-			worldController.addWallDecoration(l2, i, j1, k, 0, k2, ((Animable) obj8), l, byte0, 0, 256);
+			worldController.addWallDecoration(uid, tileY, orientation, plane, 0, averageHeight, ((Animable) obj8), tileX, shapeAndOrientation, 0, 256);
 			return;
 		}
-		if (j == 7) {
+		if (shape == 7) {
 			Object obj9;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj9 = class46.method578(4, 0, k1, l1, i2, j2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj9 = objectDef.getModel(4, 0, k1, l1, i2, j2, -1);
 			} else {
-				obj9 = new Animable_Sub5(i1, 0, 4, l1, i2, k1, j2, class46.animationId, true);
+				obj9 = new Animable_Sub5(objectId, 0, 4, l1, i2, k1, j2, objectDef.animationId, true);
 			}
-			worldController.addWallDecoration(l2, i, j1, k, 0, k2, ((Animable) obj9), l, byte0, 0, 512);
+			worldController.addWallDecoration(uid, tileY, orientation, plane, 0, averageHeight, ((Animable) obj9), tileX, shapeAndOrientation, 0, 512);
 			return;
 		}
-		if (j == 8) {
+		if (shape == 8) {
 			Object obj10;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj10 = class46.method578(4, 0, k1, l1, i2, j2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj10 = objectDef.getModel(4, 0, k1, l1, i2, j2, -1);
 			} else {
-				obj10 = new Animable_Sub5(i1, 0, 4, l1, i2, k1, j2, class46.animationId, true);
+				obj10 = new Animable_Sub5(objectId, 0, 4, l1, i2, k1, j2, objectDef.animationId, true);
 			}
-			worldController.addWallDecoration(l2, i, j1, k, 0, k2, ((Animable) obj10), l, byte0, 0, 768);
+			worldController.addWallDecoration(uid, tileY, orientation, plane, 0, averageHeight, ((Animable) obj10), tileX, shapeAndOrientation, 0, 768);
 		}
 	}
 
@@ -975,7 +975,7 @@ final class ObjectManager {
 							if (l4 >= 0) {
 								class11 = aclass11[l4];
 							}
-							method175(k4, worldController, class11, l3, l, j4, l1, i4 + j1 & 3);
+							placeObject(k4, worldController, class11, l3, l, j4, l1, i4 + j1 & 3);
 						}
 					}
 				} while (true);
@@ -1030,156 +1030,156 @@ final class ObjectManager {
 		return (i & 0xff80) + j;
 	}
 
-	public static void method188(WorldController worldController, int i, int j, int k, int l, CollisionMap class11, int ai[][][], int i1, int j1, int k1) {
-		int l1 = ai[l][i1][j];
-		int i2 = ai[l][i1 + 1][j];
-		int j2 = ai[l][i1 + 1][j + 1];
-		int k2 = ai[l][i1][j + 1];
-		int l2 = l1 + i2 + j2 + k2 >> 2;
-		ObjectDef class46 = ObjectDef.forID(j1);
-		int i3 = i1 + (j << 7) + (j1 << 14) + 0x40000000;
-		if (!class46.hasActions) {
-			i3 += 0x80000000;
+	public static void placeObjectWithoutShading(WorldController worldController, int orientation, int tileY, int shape, int heightPlane, CollisionMap collisionMap, int groundHeights[][][], int tileX, int objectId, int plane) {
+		int l1 = groundHeights[heightPlane][tileX][tileY];
+		int i2 = groundHeights[heightPlane][tileX + 1][tileY];
+		int j2 = groundHeights[heightPlane][tileX + 1][tileY + 1];
+		int k2 = groundHeights[heightPlane][tileX][tileY + 1];
+		int averageHeight = l1 + i2 + j2 + k2 >> 2;
+		ObjectDef objectDef = ObjectDef.forID(objectId);
+		int uid = tileX + (tileY << 7) + (objectId << 14) + 0x40000000;
+		if (!objectDef.hasActions) {
+			uid += 0x80000000;
 		}
-		byte byte1 = (byte) ((i << 6) + k);
-		if (k == 22) {
+		byte shapeAndOrientation = (byte) ((orientation << 6) + shape);
+		if (shape == 22) {
 			Object obj;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj = class46.method578(22, i, l1, i2, j2, k2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj = objectDef.getModel(22, orientation, l1, i2, j2, k2, -1);
 			} else {
-				obj = new Animable_Sub5(j1, i, 22, i2, j2, l1, k2, class46.animationId, true);
+				obj = new Animable_Sub5(objectId, orientation, 22, i2, j2, l1, k2, objectDef.animationId, true);
 			}
-			worldController.addGroundDecoration(k1, l2, j, ((Animable) obj), byte1, i3, i1);
-			if (class46.blocksMovement && class46.hasActions) {
-				class11.blockTile(j, i1);
+			worldController.addGroundDecoration(plane, averageHeight, tileY, ((Animable) obj), shapeAndOrientation, uid, tileX);
+			if (objectDef.blocksMovement && objectDef.hasActions) {
+				collisionMap.blockTile(tileY, tileX);
 			}
 			return;
 		}
-		if (k == 10 || k == 11) {
+		if (shape == 10 || shape == 11) {
 			Object obj1;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj1 = class46.method578(10, i, l1, i2, j2, k2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj1 = objectDef.getModel(10, orientation, l1, i2, j2, k2, -1);
 			} else {
-				obj1 = new Animable_Sub5(j1, i, 10, i2, j2, l1, k2, class46.animationId, true);
+				obj1 = new Animable_Sub5(objectId, orientation, 10, i2, j2, l1, k2, objectDef.animationId, true);
 			}
 			if (obj1 != null) {
 				int j5 = 0;
-				if (k == 11) {
+				if (shape == 11) {
 					j5 += 256;
 				}
 				int k4;
 				int i5;
-				if (i == 1 || i == 3) {
-					k4 = class46.sizeY;
-					i5 = class46.sizeX;
+				if (orientation == 1 || orientation == 3) {
+					k4 = objectDef.sizeY;
+					i5 = objectDef.sizeX;
 				} else {
-					k4 = class46.sizeX;
-					i5 = class46.sizeY;
+					k4 = objectDef.sizeX;
+					i5 = objectDef.sizeY;
 				}
-				worldController.addSceneObject(i3, byte1, l2, i5, ((Animable) obj1), k4, k1, j5, j, i1);
+				worldController.addSceneObject(uid, shapeAndOrientation, averageHeight, i5, ((Animable) obj1), k4, plane, j5, tileY, tileX);
 			}
-			if (class46.blocksMovement) {
-				class11.addObject(class46.blocksProjectiles, class46.sizeX, class46.sizeY, i1, j, i);
+			if (objectDef.blocksMovement) {
+				collisionMap.addObject(objectDef.blocksProjectiles, objectDef.sizeX, objectDef.sizeY, tileX, tileY, orientation);
 			}
 			return;
 		}
-		if (k >= 12) {
+		if (shape >= 12) {
 			Object obj2;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj2 = class46.method578(k, i, l1, i2, j2, k2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj2 = objectDef.getModel(shape, orientation, l1, i2, j2, k2, -1);
 			} else {
-				obj2 = new Animable_Sub5(j1, i, k, i2, j2, l1, k2, class46.animationId, true);
+				obj2 = new Animable_Sub5(objectId, orientation, shape, i2, j2, l1, k2, objectDef.animationId, true);
 			}
-			worldController.addSceneObject(i3, byte1, l2, 1, ((Animable) obj2), 1, k1, 0, j, i1);
-			if (class46.blocksMovement) {
-				class11.addObject(class46.blocksProjectiles, class46.sizeX, class46.sizeY, i1, j, i);
+			worldController.addSceneObject(uid, shapeAndOrientation, averageHeight, 1, ((Animable) obj2), 1, plane, 0, tileY, tileX);
+			if (objectDef.blocksMovement) {
+				collisionMap.addObject(objectDef.blocksProjectiles, objectDef.sizeX, objectDef.sizeY, tileX, tileY, orientation);
 			}
 			return;
 		}
-		if (k == 0) {
+		if (shape == 0) {
 			Object obj3;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj3 = class46.method578(0, i, l1, i2, j2, k2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj3 = objectDef.getModel(0, orientation, l1, i2, j2, k2, -1);
 			} else {
-				obj3 = new Animable_Sub5(j1, i, 0, i2, j2, l1, k2, class46.animationId, true);
+				obj3 = new Animable_Sub5(objectId, orientation, 0, i2, j2, l1, k2, objectDef.animationId, true);
 			}
-			worldController.addWall(anIntArray152[i], ((Animable) obj3), i3, j, byte1, i1, null, l2, 0, k1);
-			if (class46.blocksMovement) {
-				class11.addWall(j, i, i1, k, class46.blocksProjectiles);
+			worldController.addWall(anIntArray152[orientation], ((Animable) obj3), uid, tileY, shapeAndOrientation, tileX, null, averageHeight, 0, plane);
+			if (objectDef.blocksMovement) {
+				collisionMap.addWall(tileY, orientation, tileX, shape, objectDef.blocksProjectiles);
 			}
 			return;
 		}
-		if (k == 1) {
+		if (shape == 1) {
 			Object obj4;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj4 = class46.method578(1, i, l1, i2, j2, k2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj4 = objectDef.getModel(1, orientation, l1, i2, j2, k2, -1);
 			} else {
-				obj4 = new Animable_Sub5(j1, i, 1, i2, j2, l1, k2, class46.animationId, true);
+				obj4 = new Animable_Sub5(objectId, orientation, 1, i2, j2, l1, k2, objectDef.animationId, true);
 			}
-			worldController.addWall(anIntArray140[i], ((Animable) obj4), i3, j, byte1, i1, null, l2, 0, k1);
-			if (class46.blocksMovement) {
-				class11.addWall(j, i, i1, k, class46.blocksProjectiles);
+			worldController.addWall(anIntArray140[orientation], ((Animable) obj4), uid, tileY, shapeAndOrientation, tileX, null, averageHeight, 0, plane);
+			if (objectDef.blocksMovement) {
+				collisionMap.addWall(tileY, orientation, tileX, shape, objectDef.blocksProjectiles);
 			}
 			return;
 		}
-		if (k == 2) {
-			int j3 = i + 1 & 3;
+		if (shape == 2) {
+			int j3 = orientation + 1 & 3;
 			Object obj11;
 			Object obj12;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj11 = class46.method578(2, 4 + i, l1, i2, j2, k2, -1);
-				obj12 = class46.method578(2, j3, l1, i2, j2, k2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj11 = objectDef.getModel(2, 4 + orientation, l1, i2, j2, k2, -1);
+				obj12 = objectDef.getModel(2, j3, l1, i2, j2, k2, -1);
 			} else {
-				obj11 = new Animable_Sub5(j1, 4 + i, 2, i2, j2, l1, k2, class46.animationId, true);
-				obj12 = new Animable_Sub5(j1, j3, 2, i2, j2, l1, k2, class46.animationId, true);
+				obj11 = new Animable_Sub5(objectId, 4 + orientation, 2, i2, j2, l1, k2, objectDef.animationId, true);
+				obj12 = new Animable_Sub5(objectId, j3, 2, i2, j2, l1, k2, objectDef.animationId, true);
 			}
-			worldController.addWall(anIntArray152[i], ((Animable) obj11), i3, j, byte1, i1, ((Animable) obj12), l2, anIntArray152[j3], k1);
-			if (class46.blocksMovement) {
-				class11.addWall(j, i, i1, k, class46.blocksProjectiles);
+			worldController.addWall(anIntArray152[orientation], ((Animable) obj11), uid, tileY, shapeAndOrientation, tileX, ((Animable) obj12), averageHeight, anIntArray152[j3], plane);
+			if (objectDef.blocksMovement) {
+				collisionMap.addWall(tileY, orientation, tileX, shape, objectDef.blocksProjectiles);
 			}
 			return;
 		}
-		if (k == 3) {
+		if (shape == 3) {
 			Object obj5;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj5 = class46.method578(3, i, l1, i2, j2, k2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj5 = objectDef.getModel(3, orientation, l1, i2, j2, k2, -1);
 			} else {
-				obj5 = new Animable_Sub5(j1, i, 3, i2, j2, l1, k2, class46.animationId, true);
+				obj5 = new Animable_Sub5(objectId, orientation, 3, i2, j2, l1, k2, objectDef.animationId, true);
 			}
-			worldController.addWall(anIntArray140[i], ((Animable) obj5), i3, j, byte1, i1, null, l2, 0, k1);
-			if (class46.blocksMovement) {
-				class11.addWall(j, i, i1, k, class46.blocksProjectiles);
+			worldController.addWall(anIntArray140[orientation], ((Animable) obj5), uid, tileY, shapeAndOrientation, tileX, null, averageHeight, 0, plane);
+			if (objectDef.blocksMovement) {
+				collisionMap.addWall(tileY, orientation, tileX, shape, objectDef.blocksProjectiles);
 			}
 			return;
 		}
-		if (k == 9) {
+		if (shape == 9) {
 			Object obj6;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj6 = class46.method578(k, i, l1, i2, j2, k2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj6 = objectDef.getModel(shape, orientation, l1, i2, j2, k2, -1);
 			} else {
-				obj6 = new Animable_Sub5(j1, i, k, i2, j2, l1, k2, class46.animationId, true);
+				obj6 = new Animable_Sub5(objectId, orientation, shape, i2, j2, l1, k2, objectDef.animationId, true);
 			}
-			worldController.addSceneObject(i3, byte1, l2, 1, ((Animable) obj6), 1, k1, 0, j, i1);
-			if (class46.blocksMovement) {
-				class11.addObject(class46.blocksProjectiles, class46.sizeX, class46.sizeY, i1, j, i);
+			worldController.addSceneObject(uid, shapeAndOrientation, averageHeight, 1, ((Animable) obj6), 1, plane, 0, tileY, tileX);
+			if (objectDef.blocksMovement) {
+				collisionMap.addObject(objectDef.blocksProjectiles, objectDef.sizeX, objectDef.sizeY, tileX, tileY, orientation);
 			}
 			return;
 		}
-		if (class46.aBoolean762) {
-			if (i == 1) {
+		if (objectDef.adjustsToTerrain) {
+			if (orientation == 1) {
 				int k3 = k2;
 				k2 = j2;
 				j2 = i2;
 				i2 = l1;
 				l1 = k3;
-			} else if (i == 2) {
+			} else if (orientation == 2) {
 				int l3 = k2;
 				k2 = i2;
 				i2 = l3;
 				l3 = j2;
 				j2 = l1;
 				l1 = l3;
-			} else if (i == 3) {
+			} else if (orientation == 3) {
 				int i4 = k2;
 				k2 = l1;
 				l1 = i2;
@@ -1187,59 +1187,59 @@ final class ObjectManager {
 				j2 = i4;
 			}
 		}
-		if (k == 4) {
+		if (shape == 4) {
 			Object obj7;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj7 = class46.method578(4, 0, l1, i2, j2, k2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj7 = objectDef.getModel(4, 0, l1, i2, j2, k2, -1);
 			} else {
-				obj7 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.animationId, true);
+				obj7 = new Animable_Sub5(objectId, 0, 4, i2, j2, l1, k2, objectDef.animationId, true);
 			}
-			worldController.addWallDecoration(i3, j, i * 512, k1, 0, l2, ((Animable) obj7), i1, byte1, 0, anIntArray152[i]);
+			worldController.addWallDecoration(uid, tileY, orientation * 512, plane, 0, averageHeight, ((Animable) obj7), tileX, shapeAndOrientation, 0, anIntArray152[orientation]);
 			return;
 		}
-		if (k == 5) {
+		if (shape == 5) {
 			int j4 = 16;
-			int l4 = worldController.getWallUid(k1, i1, j);
+			int l4 = worldController.getWallUid(plane, tileX, tileY);
 			if (l4 > 0) {
 				j4 = ObjectDef.forID(l4 >> 14 & 0x7fff).wallDecorationOffset;
 			}
 			Object obj13;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj13 = class46.method578(4, 0, l1, i2, j2, k2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj13 = objectDef.getModel(4, 0, l1, i2, j2, k2, -1);
 			} else {
-				obj13 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.animationId, true);
+				obj13 = new Animable_Sub5(objectId, 0, 4, i2, j2, l1, k2, objectDef.animationId, true);
 			}
-			worldController.addWallDecoration(i3, j, i * 512, k1, anIntArray137[i] * j4, l2, ((Animable) obj13), i1, byte1, anIntArray144[i] * j4, anIntArray152[i]);
+			worldController.addWallDecoration(uid, tileY, orientation * 512, plane, anIntArray137[orientation] * j4, averageHeight, ((Animable) obj13), tileX, shapeAndOrientation, anIntArray144[orientation] * j4, anIntArray152[orientation]);
 			return;
 		}
-		if (k == 6) {
+		if (shape == 6) {
 			Object obj8;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj8 = class46.method578(4, 0, l1, i2, j2, k2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj8 = objectDef.getModel(4, 0, l1, i2, j2, k2, -1);
 			} else {
-				obj8 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.animationId, true);
+				obj8 = new Animable_Sub5(objectId, 0, 4, i2, j2, l1, k2, objectDef.animationId, true);
 			}
-			worldController.addWallDecoration(i3, j, i, k1, 0, l2, ((Animable) obj8), i1, byte1, 0, 256);
+			worldController.addWallDecoration(uid, tileY, orientation, plane, 0, averageHeight, ((Animable) obj8), tileX, shapeAndOrientation, 0, 256);
 			return;
 		}
-		if (k == 7) {
+		if (shape == 7) {
 			Object obj9;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj9 = class46.method578(4, 0, l1, i2, j2, k2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj9 = objectDef.getModel(4, 0, l1, i2, j2, k2, -1);
 			} else {
-				obj9 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.animationId, true);
+				obj9 = new Animable_Sub5(objectId, 0, 4, i2, j2, l1, k2, objectDef.animationId, true);
 			}
-			worldController.addWallDecoration(i3, j, i, k1, 0, l2, ((Animable) obj9), i1, byte1, 0, 512);
+			worldController.addWallDecoration(uid, tileY, orientation, plane, 0, averageHeight, ((Animable) obj9), tileX, shapeAndOrientation, 0, 512);
 			return;
 		}
-		if (k == 8) {
+		if (shape == 8) {
 			Object obj10;
-			if (class46.animationId == -1 && class46.childrenIDs == null) {
-				obj10 = class46.method578(4, 0, l1, i2, j2, k2, -1);
+			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
+				obj10 = objectDef.getModel(4, 0, l1, i2, j2, k2, -1);
 			} else {
-				obj10 = new Animable_Sub5(j1, 0, 4, i2, j2, l1, k2, class46.animationId, true);
+				obj10 = new Animable_Sub5(objectId, 0, 4, i2, j2, l1, k2, objectDef.animationId, true);
 			}
-			worldController.addWallDecoration(i3, j, i, k1, 0, l2, ((Animable) obj10), i1, byte1, 0, 768);
+			worldController.addWallDecoration(uid, tileY, orientation, plane, 0, averageHeight, ((Animable) obj10), tileX, shapeAndOrientation, 0, 768);
 		}
 	}
 
@@ -1290,41 +1290,41 @@ final class ObjectManager {
 		return bool;
 	}
 
-	public final void method190(int i, CollisionMap aclass11[], int j, WorldController worldController, byte abyte0[]) {
+	public final void loadObjects(int baseX, CollisionMap collisionMaps[], int baseY, WorldController worldController, byte objectData[]) {
 		label0 : {
-			Stream stream = new Stream(abyte0);
-			int l = -1;
+			Stream stream = new Stream(objectData);
+			int objectId = -1;
 			do {
-				int i1 = stream.readUnsignedSmart();
-				if (i1 == 0) {
+				int idDelta = stream.readUnsignedSmart();
+				if (idDelta == 0) {
 					break label0;
 				}
-				l += i1;
-				int j1 = 0;
+				objectId += idDelta;
+				int packedPosition = 0;
 				do {
-					int k1 = stream.readUnsignedSmart();
-					if (k1 == 0) {
+					int positionDelta = stream.readUnsignedSmart();
+					if (positionDelta == 0) {
 						break;
 					}
-					j1 += k1 - 1;
-					int l1 = j1 & 0x3f;
-					int i2 = j1 >> 6 & 0x3f;
-					int j2 = j1 >> 12;
-					int k2 = stream.readUnsignedByte();
-					int l2 = k2 >> 2;
-					int i3 = k2 & 3;
-					int j3 = i2 + i;
-					int k3 = l1 + j;
-					if (j3 > 0 && k3 > 0 && j3 < 103 && k3 < 103) {
-						int l3 = j2;
-						if ((aByteArrayArrayArray149[1][j3][k3] & 2) == 2) {
-							l3--;
+					packedPosition += positionDelta - 1;
+					int localY = packedPosition & 0x3f;
+					int localX = packedPosition >> 6 & 0x3f;
+					int plane = packedPosition >> 12;
+					int typeAndOrientation = stream.readUnsignedByte();
+					int shape = typeAndOrientation >> 2;
+					int orientation = typeAndOrientation & 3;
+					int tileX = localX + baseX;
+					int tileY = localY + baseY;
+					if (tileX > 0 && tileY > 0 && tileX < 103 && tileY < 103) {
+						int collisionPlane = plane;
+						if ((aByteArrayArrayArray149[1][tileX][tileY] & 2) == 2) {
+							collisionPlane--;
 						}
-						CollisionMap class11 = null;
-						if (l3 >= 0) {
-							class11 = aclass11[l3];
+						CollisionMap collisionMap = null;
+						if (collisionPlane >= 0) {
+							collisionMap = collisionMaps[collisionPlane];
 						}
-						method175(k3, worldController, class11, l2, j2, j3, l, i3);
+						placeObject(tileY, worldController, collisionMap, shape, plane, tileX, objectId, orientation);
 					}
 				} while (true);
 			} while (true);
@@ -1341,8 +1341,8 @@ final class ObjectManager {
 	private final byte[][][] aByteArrayArrayArray130;
 	static int anInt131;
 	private static int anInt133 = (int) (Math.random() * 33D) - 16;
-	private final byte[][][] aByteArrayArrayArray134;
-	private final int[][][] anIntArrayArrayArray135;
+	private final byte[][][] objectShadow;
+	private final int[][][] occlusionFlags;
 	private final byte[][][] aByteArrayArrayArray136;
 	private static final int anIntArray137[] = {1, 0, -1, 0};
 	private final int[][] anIntArrayArray139;
