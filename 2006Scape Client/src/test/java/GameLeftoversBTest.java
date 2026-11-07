@@ -187,7 +187,7 @@ public class GameLeftoversBTest {
         Player p = new Player(); s.myPlayer = p;
         p.textSpoken = "AB"; p.overheadChatColorCode = 0; p.overheadChatEffectCode = effect; p.textCycle = 100; p.headIcon = -1; p.visible = true;
         try { s.updateEntities(); } catch (RuntimeException e) { }
-        return new int[]{s.anIntArray977[1], s.anIntArray978[1], s.anIntArray979[1]};
+        return new int[]{s.overheadChatDrawY[1], s.overheadChatHeights[1], s.overheadChatHalfWidths[1]};
     }
     @Test public void anInt1249ZeroEnablesChatEffectMetricsNonzeroDisablesThem() throws Exception {
         int[] base = overhead(0, 0);

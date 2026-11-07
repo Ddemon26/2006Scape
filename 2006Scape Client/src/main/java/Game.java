@@ -1511,15 +1511,15 @@ public class Game extends RSApplet {
 				}
 			}
 			// Entity stuff
-			int anInt974 = 0;
-			for (int j = -1; j < playerCount + npcCount; j++) {
+			int overheadChatCount = 0;
+			for (int entityListIndex = -1; entityListIndex < playerCount + npcCount; entityListIndex++) {
 				Object obj;
-				if (j == -1) {
+				if (entityListIndex == -1) {
 					obj = myPlayer;
-				} else if (j < playerCount) {
-					obj = playerArray[playerIndices[j]];
+				} else if (entityListIndex < playerCount) {
+					obj = playerArray[playerIndices[entityListIndex]];
 				} else {
-					obj = npcArray[npcIndices[j - playerCount]];
+					obj = npcArray[npcIndices[entityListIndex - playerCount]];
 				}
 				if (obj == null || !((Entity) obj).isVisible()) {
 					continue;
@@ -1533,14 +1533,14 @@ public class Game extends RSApplet {
 						continue;
 					}
 				}
-				if (j < playerCount) {
-					int l = 30;
+				if (entityListIndex < playerCount) {
+					int iconStackOffset = 30;
 					Player player = (Player) obj;
 					if (player.combatLevel == 0) {
 						if (customSettingVisiblePlayerNames) {
 							// Show shops
 							projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
-							// ItemDef.getSprite(995, 1000, 0xffff00).drawSprite(spriteDrawX - 16, spriteDrawY - l);
+							// ItemDef.getSprite(995, 1000, 0xffff00).drawSprite(spriteDrawX - 16, spriteDrawY - iconStackOffset);
 							aTextDrawingArea_1270.drawCenteredLiteralText(0x00ffff, "[SHOP]", spriteDrawY - 5, spriteDrawX);
 						}
 					} else if (customSettingVisiblePlayerNames) {
@@ -1557,19 +1557,19 @@ public class Game extends RSApplet {
 						projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
 							if (player.skullIcon < 2) {
-								skullIcons[player.skullIcon].drawSprite(spriteDrawX - 12, spriteDrawY - l);
-								l += 25;
+								skullIcons[player.skullIcon].drawSprite(spriteDrawX - 12, spriteDrawY - iconStackOffset);
+								iconStackOffset += 25;
 							}
 							if (player.headIcon < 7) {
-								headIcons[player.headIcon].drawSprite(spriteDrawX - 12, spriteDrawY - l);
-								l += 18;
+								headIcons[player.headIcon].drawSprite(spriteDrawX - 12, spriteDrawY - iconStackOffset);
+								iconStackOffset += 18;
 							}
 						}
 					}
-					if (j >= 0 && anInt855 == 10 && anInt933 == playerIndices[j]) {
+					if (entityListIndex >= 0 && anInt855 == 10 && anInt933 == playerIndices[entityListIndex]) {
 						projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
-							headIconsHint[1].drawSprite(spriteDrawX - 12, spriteDrawY - l);
+							headIconsHint[1].drawSprite(spriteDrawX - 12, spriteDrawY - iconStackOffset);
 						}
 					}
 				} else {
@@ -1580,7 +1580,7 @@ public class Game extends RSApplet {
 							headIcons[entityDef_1.headIconId].drawSprite(spriteDrawX - 12, spriteDrawY - 30);
 						}
 					}
-					if (anInt855 == 1 && anInt1222 == npcIndices[j - playerCount] && loopCycle % 20 < 10) {
+					if (anInt855 == 1 && anInt1222 == npcIndices[entityListIndex - playerCount] && loopCycle % 20 < 10) {
 						projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
 							headIconsHint[0].drawSprite(spriteDrawX - 12, spriteDrawY - 28);
@@ -1588,26 +1588,26 @@ public class Game extends RSApplet {
 					}
 				}
 				// Chat messages sent
-				if (((Entity) obj).textSpoken != null && (j >= playerCount || publicChatMode == 0 || publicChatMode == 3 || publicChatMode == 1 && isFriendOrSelf(((Player) obj).name))) {
+				if (((Entity) obj).textSpoken != null && (entityListIndex >= playerCount || publicChatMode == 0 || publicChatMode == 3 || publicChatMode == 1 && isFriendOrSelf(((Player) obj).name))) {
 					projectEntityToScreen(((Entity) obj), ((Entity) obj).height);
-					if (spriteDrawX > -1 && anInt974 < anInt975) {
-						anIntArray979[anInt974] = chatTextDrawingArea.measureLiteralTextWidth(((Entity) obj).textSpoken) / 2;
-						anIntArray978[anInt974] = chatTextDrawingArea.maxAsciiGlyphHeightPixels;
-						anIntArray976[anInt974] = spriteDrawX;
-						anIntArray977[anInt974] = spriteDrawY;
-						anIntArray980[anInt974] = ((Entity) obj).overheadChatColorCode;
-						anIntArray981[anInt974] = ((Entity) obj).overheadChatEffectCode;
-						anIntArray982[anInt974] = ((Entity) obj).textCycle;
-						aStringArray983[anInt974++] = ((Entity) obj).textSpoken;
+					if (spriteDrawX > -1 && overheadChatCount < overheadChatCapacity) {
+						overheadChatHalfWidths[overheadChatCount] = chatTextDrawingArea.measureLiteralTextWidth(((Entity) obj).textSpoken) / 2;
+						overheadChatHeights[overheadChatCount] = chatTextDrawingArea.maxAsciiGlyphHeightPixels;
+						overheadChatDrawX[overheadChatCount] = spriteDrawX;
+						overheadChatDrawY[overheadChatCount] = spriteDrawY;
+						overheadChatColorCodes[overheadChatCount] = ((Entity) obj).overheadChatColorCode;
+						overheadChatEffectCodes[overheadChatCount] = ((Entity) obj).overheadChatEffectCode;
+						overheadChatTextCycles[overheadChatCount] = ((Entity) obj).textCycle;
+						overheadChatTexts[overheadChatCount++] = ((Entity) obj).textSpoken;
 						if (chatEffectsMode == 0 && ((Entity) obj).overheadChatEffectCode >= 1 && ((Entity) obj).overheadChatEffectCode <= 3) {
-							anIntArray978[anInt974] += 10;
-							anIntArray977[anInt974] += 5;
+							overheadChatHeights[overheadChatCount] += 10;
+							overheadChatDrawY[overheadChatCount] += 5;
 						}
 						if (chatEffectsMode == 0 && ((Entity) obj).overheadChatEffectCode == 4) {
-							anIntArray979[anInt974] = 60;
+							overheadChatHalfWidths[overheadChatCount] = 60;
 						}
 						if (chatEffectsMode == 0 && ((Entity) obj).overheadChatEffectCode == 5) {
-							anIntArray978[anInt974] += 5;
+							overheadChatHeights[overheadChatCount] += 5;
 						}
 					}
 				}
@@ -1616,143 +1616,143 @@ public class Game extends RSApplet {
 					try {
 						projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
-							int i1 = ((Entity) obj).currentHealth * 30 / ((Entity) obj).maxHealth;
-							if (i1 > 30) {
-								i1 = 30;
+							int healthBarFillWidth = ((Entity) obj).currentHealth * 30 / ((Entity) obj).maxHealth;
+							if (healthBarFillWidth > 30) {
+								healthBarFillWidth = 30;
 							}
-							DrawingArea.fillRectangle(5, spriteDrawY - 3, 0x00ff00, i1, spriteDrawX - 15);
-							DrawingArea.fillRectangle(5, spriteDrawY - 3, 0xff0000, 30 - i1, spriteDrawX - 15 + i1);
+							DrawingArea.fillRectangle(5, spriteDrawY - 3, 0x00ff00, healthBarFillWidth, spriteDrawX - 15);
+							DrawingArea.fillRectangle(5, spriteDrawY - 3, 0xff0000, 30 - healthBarFillWidth, spriteDrawX - 15 + healthBarFillWidth);
 						}
 					} catch (Exception e) {
 					}
 				}
 				// Hit markers
-				for (int j1 = 0; j1 < 4; j1++) {
-					if (((Entity) obj).hitsLoopCycle[j1] > loopCycle) {
+				for (int hitSlot = 0; hitSlot < 4; hitSlot++) {
+					if (((Entity) obj).hitsLoopCycle[hitSlot] > loopCycle) {
 						projectEntityToScreen(((Entity) obj), ((Entity) obj).height / 2);
 						if (spriteDrawX > -1) {
-							if (j1 == 1) {
+							if (hitSlot == 1) {
 								spriteDrawY -= 20;
 							}
-							if (j1 == 2) {
+							if (hitSlot == 2) {
 								spriteDrawX -= 15;
 								spriteDrawY -= 10;
 							}
-							if (j1 == 3) {
+							if (hitSlot == 3) {
 								spriteDrawX += 15;
 								spriteDrawY -= 10;
 							}
-							hitMarks[((Entity) obj).hitMarkTypes[j1]].drawSprite(spriteDrawX - 12, spriteDrawY - 12);
-							aTextDrawingArea_1270.drawCenteredLiteralText(0, String.valueOf(((Entity) obj).hitArray[j1]), spriteDrawY + 4, spriteDrawX);
-							aTextDrawingArea_1270.drawCenteredLiteralText(0xffffff, String.valueOf(((Entity) obj).hitArray[j1]), spriteDrawY + 3, spriteDrawX - 1);
+							hitMarks[((Entity) obj).hitMarkTypes[hitSlot]].drawSprite(spriteDrawX - 12, spriteDrawY - 12);
+							aTextDrawingArea_1270.drawCenteredLiteralText(0, String.valueOf(((Entity) obj).hitArray[hitSlot]), spriteDrawY + 4, spriteDrawX);
+							aTextDrawingArea_1270.drawCenteredLiteralText(0xffffff, String.valueOf(((Entity) obj).hitArray[hitSlot]), spriteDrawY + 3, spriteDrawX - 1);
 						}
 					}
 				}
 			}
 			// Hit markers
-			for (int k = 0; k < anInt974; k++) {
-				int k1 = anIntArray976[k];
-				int l1 = anIntArray977[k];
-				int j2 = anIntArray979[k];
-				int k2 = anIntArray978[k];
-				boolean flag = true;
-				while (flag) {
-					flag = false;
-					for (int l2 = 0; l2 < k; l2++) {
-						if (l1 + 2 > anIntArray977[l2] - anIntArray978[l2] && l1 - k2 < anIntArray977[l2] + 2 && k1 - j2 < anIntArray976[l2] + anIntArray979[l2] && k1 + j2 > anIntArray976[l2] - anIntArray979[l2] && anIntArray977[l2] - anIntArray978[l2] < l1) {
-							l1 = anIntArray977[l2] - anIntArray978[l2];
-							flag = true;
+			for (int chatSlot = 0; chatSlot < overheadChatCount; chatSlot++) {
+				int chatX = overheadChatDrawX[chatSlot];
+				int chatY = overheadChatDrawY[chatSlot];
+				int chatHalfWidth = overheadChatHalfWidths[chatSlot];
+				int chatHeight = overheadChatHeights[chatSlot];
+				boolean movedUp = true;
+				while (movedUp) {
+					movedUp = false;
+					for (int placedSlot = 0; placedSlot < chatSlot; placedSlot++) {
+						if (chatY + 2 > overheadChatDrawY[placedSlot] - overheadChatHeights[placedSlot] && chatY - chatHeight < overheadChatDrawY[placedSlot] + 2 && chatX - chatHalfWidth < overheadChatDrawX[placedSlot] + overheadChatHalfWidths[placedSlot] && chatX + chatHalfWidth > overheadChatDrawX[placedSlot] - overheadChatHalfWidths[placedSlot] && overheadChatDrawY[placedSlot] - overheadChatHeights[placedSlot] < chatY) {
+							chatY = overheadChatDrawY[placedSlot] - overheadChatHeights[placedSlot];
+							movedUp = true;
 						}
 					}
 
 				}
-				spriteDrawX = anIntArray976[k];
-				spriteDrawY = anIntArray977[k] = l1;
-				String s = aStringArray983[k];
+				spriteDrawX = overheadChatDrawX[chatSlot];
+				spriteDrawY = overheadChatDrawY[chatSlot] = chatY;
+				String chatText = overheadChatTexts[chatSlot];
 				if (chatEffectsMode == 0) {
-					int i3 = 0xffff00;
-					if (anIntArray980[k] < 6) {
-						i3 = anIntArray965[anIntArray980[k]];
+					int chatColor = 0xffff00;
+					if (overheadChatColorCodes[chatSlot] < 6) {
+						chatColor = anIntArray965[overheadChatColorCodes[chatSlot]];
 					}
-					if (anIntArray980[k] == 6) {
-						i3 = anInt1265 % 20 >= 10 ? 0xffff00 : 0xff0000;
+					if (overheadChatColorCodes[chatSlot] == 6) {
+						chatColor = anInt1265 % 20 >= 10 ? 0xffff00 : 0xff0000;
 					}
-					if (anIntArray980[k] == 7) {
-						i3 = anInt1265 % 20 >= 10 ? 0x00ffff : 255;
+					if (overheadChatColorCodes[chatSlot] == 7) {
+						chatColor = anInt1265 % 20 >= 10 ? 0x00ffff : 255;
 					}
-					if (anIntArray980[k] == 8) {
-						i3 = anInt1265 % 20 >= 10 ? 0x80ff80 : 45056;
+					if (overheadChatColorCodes[chatSlot] == 8) {
+						chatColor = anInt1265 % 20 >= 10 ? 0x80ff80 : 45056;
 					}
-					if (anIntArray980[k] == 9) {
-						int j3 = 150 - anIntArray982[k];
-						if (j3 < 50) {
-							i3 = 0xff0000 + 1280 * j3;
-						} else if (j3 < 100) {
-							i3 = 0xffff00 - 0x50000 * (j3 - 50);
-						} else if (j3 < 150) {
-							i3 = 0x00ff00 + 5 * (j3 - 100);
+					if (overheadChatColorCodes[chatSlot] == 9) {
+						int chatAge = 150 - overheadChatTextCycles[chatSlot];
+						if (chatAge < 50) {
+							chatColor = 0xff0000 + 1280 * chatAge;
+						} else if (chatAge < 100) {
+							chatColor = 0xffff00 - 0x50000 * (chatAge - 50);
+						} else if (chatAge < 150) {
+							chatColor = 0x00ff00 + 5 * (chatAge - 100);
 						}
 					}
-					if (anIntArray980[k] == 10) {
-						int k3 = 150 - anIntArray982[k];
-						if (k3 < 50) {
-							i3 = 0xff0000 + 5 * k3;
-						} else if (k3 < 100) {
-							i3 = 0xff00ff - 0x50000 * (k3 - 50);
-						} else if (k3 < 150) {
-							i3 = 255 + 0x50000 * (k3 - 100) - 5 * (k3 - 100);
+					if (overheadChatColorCodes[chatSlot] == 10) {
+						int chatAge = 150 - overheadChatTextCycles[chatSlot];
+						if (chatAge < 50) {
+							chatColor = 0xff0000 + 5 * chatAge;
+						} else if (chatAge < 100) {
+							chatColor = 0xff00ff - 0x50000 * (chatAge - 50);
+						} else if (chatAge < 150) {
+							chatColor = 255 + 0x50000 * (chatAge - 100) - 5 * (chatAge - 100);
 						}
 					}
-					if (anIntArray980[k] == 11) {
-						int l3 = 150 - anIntArray982[k];
-						if (l3 < 50) {
-							i3 = 0xffffff - 0x50005 * l3;
-						} else if (l3 < 100) {
-							i3 = 0x00ff00 + 0x50005 * (l3 - 50);
-						} else if (l3 < 150) {
-							i3 = 0xffffff - 0x50000 * (l3 - 100);
+					if (overheadChatColorCodes[chatSlot] == 11) {
+						int chatAge = 150 - overheadChatTextCycles[chatSlot];
+						if (chatAge < 50) {
+							chatColor = 0xffffff - 0x50005 * chatAge;
+						} else if (chatAge < 100) {
+							chatColor = 0x00ff00 + 0x50005 * (chatAge - 50);
+						} else if (chatAge < 150) {
+							chatColor = 0xffffff - 0x50000 * (chatAge - 100);
 						}
 					}
-					if (anIntArray981[k] == 0) {
-						chatTextDrawingArea.drawCenteredLiteralText(0, s, spriteDrawY + 1, spriteDrawX);
-						chatTextDrawingArea.drawCenteredLiteralText(i3, s, spriteDrawY, spriteDrawX);
+					if (overheadChatEffectCodes[chatSlot] == 0) {
+						chatTextDrawingArea.drawCenteredLiteralText(0, chatText, spriteDrawY + 1, spriteDrawX);
+						chatTextDrawingArea.drawCenteredLiteralText(chatColor, chatText, spriteDrawY, spriteDrawX);
 					}
-					if (anIntArray981[k] == 1) {
-						chatTextDrawingArea.drawCenteredVerticalWave(0, s, spriteDrawX, anInt1265, spriteDrawY + 1);
-						chatTextDrawingArea.drawCenteredVerticalWave(i3, s, spriteDrawX, anInt1265, spriteDrawY);
+					if (overheadChatEffectCodes[chatSlot] == 1) {
+						chatTextDrawingArea.drawCenteredVerticalWave(0, chatText, spriteDrawX, anInt1265, spriteDrawY + 1);
+						chatTextDrawingArea.drawCenteredVerticalWave(chatColor, chatText, spriteDrawX, anInt1265, spriteDrawY);
 					}
-					if (anIntArray981[k] == 2) {
-						chatTextDrawingArea.drawCenteredWave(spriteDrawX, s, anInt1265, spriteDrawY + 1, 0);
-						chatTextDrawingArea.drawCenteredWave(spriteDrawX, s, anInt1265, spriteDrawY, i3);
+					if (overheadChatEffectCodes[chatSlot] == 2) {
+						chatTextDrawingArea.drawCenteredWave(spriteDrawX, chatText, anInt1265, spriteDrawY + 1, 0);
+						chatTextDrawingArea.drawCenteredWave(spriteDrawX, chatText, anInt1265, spriteDrawY, chatColor);
 					}
-					if (anIntArray981[k] == 3) {
-						chatTextDrawingArea.drawCenteredShake(150 - anIntArray982[k], s, anInt1265, spriteDrawY + 1, spriteDrawX, 0);
-						chatTextDrawingArea.drawCenteredShake(150 - anIntArray982[k], s, anInt1265, spriteDrawY, spriteDrawX, i3);
+					if (overheadChatEffectCodes[chatSlot] == 3) {
+						chatTextDrawingArea.drawCenteredShake(150 - overheadChatTextCycles[chatSlot], chatText, anInt1265, spriteDrawY + 1, spriteDrawX, 0);
+						chatTextDrawingArea.drawCenteredShake(150 - overheadChatTextCycles[chatSlot], chatText, anInt1265, spriteDrawY, spriteDrawX, chatColor);
 					}
-					if (anIntArray981[k] == 4) {
-						int i4 = chatTextDrawingArea.measureLiteralTextWidth(s);
-						int k4 = (150 - anIntArray982[k]) * (i4 + 100) / 150;
+					if (overheadChatEffectCodes[chatSlot] == 4) {
+						int chatTextWidth = chatTextDrawingArea.measureLiteralTextWidth(chatText);
+						int scrollOffset = (150 - overheadChatTextCycles[chatSlot]) * (chatTextWidth + 100) / 150;
 						DrawingArea.setClip(334, spriteDrawX - 50, spriteDrawX + 50, 0);
-						chatTextDrawingArea.drawLiteralText(0, s, spriteDrawY + 1, spriteDrawX + 50 - k4);
-						chatTextDrawingArea.drawLiteralText(i3, s, spriteDrawY, spriteDrawX + 50 - k4);
+						chatTextDrawingArea.drawLiteralText(0, chatText, spriteDrawY + 1, spriteDrawX + 50 - scrollOffset);
+						chatTextDrawingArea.drawLiteralText(chatColor, chatText, spriteDrawY, spriteDrawX + 50 - scrollOffset);
 						DrawingArea.resetClip();
 					}
-					if (anIntArray981[k] == 5) {
-						int j4 = 150 - anIntArray982[k];
-						int l4 = 0;
-						if (j4 < 25) {
-							l4 = j4 - 25;
-						} else if (j4 > 125) {
-							l4 = j4 - 125;
+					if (overheadChatEffectCodes[chatSlot] == 5) {
+						int chatAge = 150 - overheadChatTextCycles[chatSlot];
+						int slideOffset = 0;
+						if (chatAge < 25) {
+							slideOffset = chatAge - 25;
+						} else if (chatAge > 125) {
+							slideOffset = chatAge - 125;
 						}
 						DrawingArea.setClip(spriteDrawY + 5, 0, 512, spriteDrawY - chatTextDrawingArea.maxAsciiGlyphHeightPixels - 1);
-						chatTextDrawingArea.drawCenteredLiteralText(0, s, spriteDrawY + 1 + l4, spriteDrawX);
-						chatTextDrawingArea.drawCenteredLiteralText(i3, s, spriteDrawY + l4, spriteDrawX);
+						chatTextDrawingArea.drawCenteredLiteralText(0, chatText, spriteDrawY + 1 + slideOffset, spriteDrawX);
+						chatTextDrawingArea.drawCenteredLiteralText(chatColor, chatText, spriteDrawY + slideOffset, spriteDrawX);
 						DrawingArea.resetClip();
 					}
 				} else {
-					chatTextDrawingArea.drawCenteredLiteralText(0, s, spriteDrawY + 1, spriteDrawX);
-					chatTextDrawingArea.drawCenteredLiteralText(0xffff00, s, spriteDrawY, spriteDrawX);
+					chatTextDrawingArea.drawCenteredLiteralText(0, chatText, spriteDrawY + 1, spriteDrawX);
+					chatTextDrawingArea.drawCenteredLiteralText(0xffff00, chatText, spriteDrawY, spriteDrawX);
 				}
 			}
 		} catch (Exception e) {
@@ -12058,15 +12058,15 @@ public class Game extends RSApplet {
 		cacheStores = new CacheStore[5];
 		variousSettings = new int[2000];
 		scrollbarDragging = false;
-		anInt975 = 50;
-		anIntArray976 = new int[anInt975];
-		anIntArray977 = new int[anInt975];
-		anIntArray978 = new int[anInt975];
-		anIntArray979 = new int[anInt975];
-		anIntArray980 = new int[anInt975];
-		anIntArray981 = new int[anInt975];
-		anIntArray982 = new int[anInt975];
-		aStringArray983 = new String[anInt975];
+		overheadChatCapacity = 50;
+		overheadChatDrawX = new int[overheadChatCapacity];
+		overheadChatDrawY = new int[overheadChatCapacity];
+		overheadChatHeights = new int[overheadChatCapacity];
+		overheadChatHalfWidths = new int[overheadChatCapacity];
+		overheadChatColorCodes = new int[overheadChatCapacity];
+		overheadChatEffectCodes = new int[overheadChatCapacity];
+		overheadChatTextCycles = new int[overheadChatCapacity];
+		overheadChatTexts = new String[overheadChatCapacity];
 		minimapBuiltPlane = -1;
 		hitMarks = new Sprite[20];
 		anIntArray990 = new int[5];
@@ -12297,15 +12297,15 @@ public class Game extends RSApplet {
 	final CacheStore[] cacheStores;
 	public int variousSettings[];
 	public boolean scrollbarDragging;
-	public final int anInt975;
-	public final int[] anIntArray976;
-	public final int[] anIntArray977;
-	public final int[] anIntArray978;
-	public final int[] anIntArray979;
-	public final int[] anIntArray980;
-	public final int[] anIntArray981;
-	public final int[] anIntArray982;
-	public final String[] aStringArray983;
+	public final int overheadChatCapacity;
+	public final int[] overheadChatDrawX;
+	public final int[] overheadChatDrawY;
+	public final int[] overheadChatHeights;
+	public final int[] overheadChatHalfWidths;
+	public final int[] overheadChatColorCodes;
+	public final int[] overheadChatEffectCodes;
+	public final int[] overheadChatTextCycles;
+	public final String[] overheadChatTexts;
 	public int cameraTerrainClearance;
 	public int minimapBuiltPlane;
 	public static int anInt986;
