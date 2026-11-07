@@ -21,7 +21,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/** Behaviour of the music player family (Class56, Class56_Sub1, Class56_Sub1_Sub1, Class56_Sub1_Sub2) and the volume state in Game. */
+/** Behaviour of the music player family (MusicPlayer, MidiMusicPlayer, JavaMidiMusicPlayer, BufferedMidiMusicPlayer) and the volume state in Game. */
 public class MusicPlayerTest {
     // Member names are reached by reflection where they are private; kept together so a rename touches only these lines.
     private static final String M_CHANNEL_GAIN = "channelOutputVolume";
@@ -40,7 +40,7 @@ public class MusicPlayerTest {
 
     private int savedMaster;
     private int[] savedChannels;
-    private Class56_Sub1_Sub2 live;
+    private BufferedMidiMusicPlayer live;
 
     @Before public void setUp() {
         savedMaster = Game.musicOutputVolume;
@@ -108,9 +108,9 @@ public class MusicPlayerTest {
         } catch (Exception e) { throw new AssertionError(e); }
     }
 
-    // ---------------------------------------------------------------- Class56_Sub1 fixture
+    // ---------------------------------------------------------------- MidiMusicPlayer fixture
     /** Records every message the shared Sub1 logic sends; the abstract player methods are inert. */
-    static final class Recorder extends Class56_Sub1 {
+    static final class Recorder extends MidiMusicPlayer {
         final List<long[]> sent = new ArrayList<long[]>();
         void sendMessage(int i, int a, int b, long l) { sent.add(new long[] { i, a, b, l }); }
         void play(int i, byte[] is, int j, boolean b) { }
@@ -121,7 +121,7 @@ public class MusicPlayerTest {
         void stop() { }
     }
 
-    private static int channelGain(int channel) { return (Integer) invokeStatic(Class56_Sub1.class, M_CHANNEL_GAIN, channel); }
+    private static int channelGain(int channel) { return (Integer) invokeStatic(MidiMusicPlayer.class, M_CHANNEL_GAIN, channel); }
 
     private static void assertVolumePairs(List<long[]> sent, int from, long time, int coarse, int fine) {
         for (int ch = 0; ch < 16; ch++) {
@@ -242,7 +242,7 @@ public class MusicPlayerTest {
         assertEquals("sent directly, volumes are not touched", 555, Game.channelVolumes[4]);
     }
 
-    // ---------------------------------------------------------------- Class56_Sub1_Sub1 (javax.sound.midi)
+    // ---------------------------------------------------------------- JavaMidiMusicPlayer (javax.sound.midi)
     private static final class Log {
         final List<String> events = new ArrayList<String>();
     }
@@ -274,10 +274,10 @@ public class MusicPlayerTest {
         });
     }
 
-    private static Class56_Sub1_Sub1 javaPlayer(Log log, boolean withSequencer) {
-        Class56_Sub1_Sub1 p = (Class56_Sub1_Sub1) allocate(Class56_Sub1_Sub1.class);
-        set(Class56_Sub1_Sub1.class, null, F_RECEIVER, fakeReceiver(log));
-        set(Class56_Sub1_Sub1.class, null, F_SEQUENCER, withSequencer ? fakeSequencer(log) : null);
+    private static JavaMidiMusicPlayer javaPlayer(Log log, boolean withSequencer) {
+        JavaMidiMusicPlayer p = (JavaMidiMusicPlayer) allocate(JavaMidiMusicPlayer.class);
+        set(JavaMidiMusicPlayer.class, null, F_RECEIVER, fakeReceiver(log));
+        set(JavaMidiMusicPlayer.class, null, F_SEQUENCER, withSequencer ? fakeSequencer(log) : null);
         return p;
     }
 
@@ -289,13 +289,13 @@ public class MusicPlayerTest {
     }
 
     @After public void clearJavaStatics() {
-        set(Class56_Sub1_Sub1.class, null, F_RECEIVER, null);
-        set(Class56_Sub1_Sub1.class, null, F_SEQUENCER, null);
+        set(JavaMidiMusicPlayer.class, null, F_RECEIVER, null);
+        set(JavaMidiMusicPlayer.class, null, F_SEQUENCER, null);
     }
 
     @Test public void javaPlayerSendsEncodedShortMessagesWithTheTimestampAndIgnoresInvalidOnes() {
         Log log = new Log();
-        Class56_Sub1_Sub1 p = javaPlayer(log, true);
+        JavaMidiMusicPlayer p = javaPlayer(log, true);
         p.sendMessage(0x90, 60, 127, 5L);
         p.sendMessage(0xB4, 7, 0, 6L);
         p.sendMessage(0x90, 200, 1, 7L);                // data byte above 127 is invalid MIDI
@@ -304,7 +304,7 @@ public class MusicPlayerTest {
 
     @Test public void javaPlayerReceivesRoutesVolumeControllersThroughTheFilterAndForwardsEverythingElse() throws Exception {
         Log log = new Log();
-        Class56_Sub1_Sub1 p = javaPlayer(log, true);
+        JavaMidiMusicPlayer p = javaPlayer(log, true);
         p.send(new ShortMessage(0x90, 0, 60, 64), 8L);
         p.send(new ShortMessage(0xB0, 1, 7, 100), 9L);
         assertEquals(Arrays.asList("msg:144,60,64,8", "msg:177,7,100,9", "msg:177,39,0,9"), log.events);
@@ -313,7 +313,7 @@ public class MusicPlayerTest {
 
     @Test public void javaPlayerPlayLoadsTheSongSetsTheLoopCountAppliesVolumeThenStarts() {
         Log log = new Log();
-        Class56_Sub1_Sub1 p = javaPlayer(log, true);
+        JavaMidiMusicPlayer p = javaPlayer(log, true);
         p.play(128, standardMidi(), 12345, true);
         assertEquals("sequence", log.events.get(0));
         assertEquals("loop:-1", log.events.get(1));
@@ -332,7 +332,7 @@ public class MusicPlayerTest {
 
     @Test public void javaPlayerStopStopsTheSequencerAndResetsAllChannels() {
         Log log = new Log();
-        Class56_Sub1_Sub1 p = javaPlayer(log, true);
+        JavaMidiMusicPlayer p = javaPlayer(log, true);
         p.stop();
         assertEquals("stop", log.events.get(0));
         assertEquals(97, log.events.size());
@@ -342,7 +342,7 @@ public class MusicPlayerTest {
 
     @Test public void javaPlayerVolumeAndFadeOnlyActWhenTheSequencerExists() {
         Log log = new Log();
-        Class56_Sub1_Sub1 p = javaPlayer(log, true);
+        JavaMidiMusicPlayer p = javaPlayer(log, true);
         p.setVolume(64);
         assertEquals(64, Game.musicOutputVolume);
         assertEquals(32, log.events.size());
@@ -353,7 +353,7 @@ public class MusicPlayerTest {
         assertEquals(32, log.events.size());
 
         Log none = new Log();
-        Class56_Sub1_Sub1 q = javaPlayer(none, false);
+        JavaMidiMusicPlayer q = javaPlayer(none, false);
         resetVolumeState();
         q.setVolume(64);
         q.fade(256, 2000);
@@ -365,7 +365,7 @@ public class MusicPlayerTest {
 
     @Test public void javaPlayerTickDoesNothingUnlessTheGuardArgumentExceedsMinusNinety() {
         Log log = new Log();
-        Class56_Sub1_Sub1 p = javaPlayer(log, true);
+        JavaMidiMusicPlayer p = javaPlayer(log, true);
         p.tick(-122);
         p.tick(-126);
         p.tick(-90);
@@ -377,17 +377,17 @@ public class MusicPlayerTest {
 
     @Test public void javaPlayerShutdownClosesBothDevicesAndIsSafeTwice() {
         Log log = new Log();
-        Class56_Sub1_Sub1 p = javaPlayer(log, true);
+        JavaMidiMusicPlayer p = javaPlayer(log, true);
         p.shutdown();
         assertEquals(Arrays.asList("close", "receiver.close"), log.events);
-        assertNull(get(Class56_Sub1_Sub1.class, null, F_SEQUENCER));
-        assertNull(get(Class56_Sub1_Sub1.class, null, F_RECEIVER));
+        assertNull(get(JavaMidiMusicPlayer.class, null, F_SEQUENCER));
+        assertNull(get(JavaMidiMusicPlayer.class, null, F_RECEIVER));
         p.shutdown();
         assertEquals(2, log.events.size());
     }
 
-    // ---------------------------------------------------------------- Class56_Sub1_Sub2 (event buffer to a sink)
-    static final class Sink implements Runnable_Impl1 {
+    // ---------------------------------------------------------------- BufferedMidiMusicPlayer (event buffer to a sink)
+    static final class Sink implements MidiEventSink {
         final List<int[]> batches = new ArrayList<int[]>();
         int resets, closes, lastInitArg;
         volatile int reading;
@@ -404,7 +404,7 @@ public class MusicPlayerTest {
     }
 
     private static void resetSub2Statics(Sink sink) {
-        Class<?> c = Class56_Sub1_Sub2.class;
+        Class<?> c = BufferedMidiMusicPlayer.class;
         set(c, null, F_SINK, sink);
         set(c, null, F_SHUTDOWN, false);
         set(c, null, F_LOOP, false);
@@ -414,10 +414,10 @@ public class MusicPlayerTest {
     }
 
     /** A player without its pump thread, so ticks are driven only by the test. */
-    private static Class56_Sub1_Sub2 sub2(Sink sink) {
+    private static BufferedMidiMusicPlayer sub2(Sink sink) {
         resetSub2Statics(sink);
-        Class56_Sub1_Sub2 p = (Class56_Sub1_Sub2) allocate(Class56_Sub1_Sub2.class);
-        set(Class56_Sub1_Sub2.class, p, F_READER, new Class11());
+        BufferedMidiMusicPlayer p = (BufferedMidiMusicPlayer) allocate(BufferedMidiMusicPlayer.class);
+        set(BufferedMidiMusicPlayer.class, p, F_READER, new Class11());
         return p;
     }
 
@@ -454,53 +454,53 @@ public class MusicPlayerTest {
 
     @Test public void queueEventStoresDeltaAndPackedMessageAndFlushSendsThemOnce() {
         Sink sink = new Sink();
-        Class56_Sub1_Sub2 p = sub2(sink);
-        invokeStatic(Class56_Sub1_Sub2.class, M_FLUSH);
+        BufferedMidiMusicPlayer p = sub2(sink);
+        invokeStatic(BufferedMidiMusicPlayer.class, M_FLUSH);
         assertTrue("empty buffer is not flushed", sink.batches.isEmpty());
-        invokeStatic(Class56_Sub1_Sub2.class, M_QUEUE, 0x90, 150, 60, 64);
-        invokeStatic(Class56_Sub1_Sub2.class, M_QUEUE, 0x80, 400, 61, 3);
+        invokeStatic(BufferedMidiMusicPlayer.class, M_QUEUE, 0x90, 150, 60, 64);
+        invokeStatic(BufferedMidiMusicPlayer.class, M_QUEUE, 0x80, 400, 61, 3);
         assertTrue("queued only", sink.batches.isEmpty());
-        assertEquals(400, get(Class56_Sub1_Sub2.class, null, F_LAST_TIME));
-        assertEquals(4, get(Class56_Sub1_Sub2.class, null, F_BUF_LEN));
-        invokeStatic(Class56_Sub1_Sub2.class, M_FLUSH);
+        assertEquals(400, get(BufferedMidiMusicPlayer.class, null, F_LAST_TIME));
+        assertEquals(4, get(BufferedMidiMusicPlayer.class, null, F_BUF_LEN));
+        invokeStatic(BufferedMidiMusicPlayer.class, M_FLUSH);
         assertEquals(1, sink.batches.size());
         assertArrayEquals(new int[] { 150, 0x90 | 60 << 8 | 64 << 16, 250, 0x80 | 61 << 8 | 3 << 16 }, sink.batches.get(0));
-        assertEquals(0, get(Class56_Sub1_Sub2.class, null, F_BUF_LEN));
-        invokeStatic(Class56_Sub1_Sub2.class, M_FLUSH);
+        assertEquals(0, get(BufferedMidiMusicPlayer.class, null, F_BUF_LEN));
+        invokeStatic(BufferedMidiMusicPlayer.class, M_FLUSH);
         assertEquals(1, sink.batches.size());
         p.sendMessage(0x91, 10, 20, 500L);               // sendMessage queues (status, data1, data2, time)
-        invokeStatic(Class56_Sub1_Sub2.class, M_FLUSH);
+        invokeStatic(BufferedMidiMusicPlayer.class, M_FLUSH);
         assertArrayEquals(new int[] { 100, 0x91 | 10 << 8 | 20 << 16 }, sink.batches.get(1));
     }
 
     @Test public void theEventBufferIsFlushedBeforeItOverflowsAt256Integers() {
         Sink sink = new Sink();
         sub2(sink);
-        for (int i = 0; i < 128; i++) invokeStatic(Class56_Sub1_Sub2.class, M_QUEUE, 0x90, i, 1, 2);
+        for (int i = 0; i < 128; i++) invokeStatic(BufferedMidiMusicPlayer.class, M_QUEUE, 0x90, i, 1, 2);
         assertTrue(sink.batches.isEmpty());
-        invokeStatic(Class56_Sub1_Sub2.class, M_QUEUE, 0x90, 128, 1, 2);
+        invokeStatic(BufferedMidiMusicPlayer.class, M_QUEUE, 0x90, 128, 1, 2);
         assertEquals(1, sink.batches.size());
         assertEquals(256, sink.batches.get(0).length);
-        assertEquals(2, get(Class56_Sub1_Sub2.class, null, F_BUF_LEN));
+        assertEquals(2, get(BufferedMidiMusicPlayer.class, null, F_BUF_LEN));
     }
 
     @Test public void constructorInitialisesTheSinkResetsAllChannelsAndStartsAPumpThread() throws Exception {
         Sink sink = new Sink();
         resetSub2Statics(sink);
         sink.reading = 100000;
-        live = new Class56_Sub1_Sub2(sink);
+        live = new BufferedMidiMusicPlayer(sink);
         assertEquals(96, sink.lastInitArg);
         assertEquals(1, sink.resets);
         assertEquals(1, sink.batches.size());
         assertEquals(96, decode(sink.batches).size());
         assertArrayEquals(ev(0, 176, 123, 0), decode(sink.batches).get(0));
         assertTrue(pumpThreadAlive());
-        Class56_Sub1_Sub2 p = live;
+        BufferedMidiMusicPlayer p = live;
         live = null;
         p.shutdown();                                // shutdown: waits for the thread, then closes the sink
         assertEquals(1, sink.closes);
         assertTrue(sink.closedWith);
-        assertEquals(false, get(Class56_Sub1_Sub2.class, null, F_SHUTDOWN));
+        assertEquals(false, get(BufferedMidiMusicPlayer.class, null, F_SHUTDOWN));
         assertFalse(pumpThreadAlive());
     }
 
@@ -508,7 +508,7 @@ public class MusicPlayerTest {
         for (int attempt = 0; attempt < 20; attempt++) {
             for (Thread t : Thread.getAllStackTraces().keySet())
                 for (StackTraceElement e : t.getStackTrace())
-                    if (e.getClassName().equals("Class56_Sub1_Sub2") && e.getMethodName().equals("run")) return true;
+                    if (e.getClassName().equals("BufferedMidiMusicPlayer") && e.getMethodName().equals("run")) return true;
             Thread.sleep(25);
         }
         return false;
@@ -516,7 +516,7 @@ public class MusicPlayerTest {
 
     @Test public void playQueuesTheStartOfTheSongAtTimeZeroAndStopsAtTheFirstDelay() {
         Sink sink = new Sink();
-        Class56_Sub1_Sub2 p = sub2(sink);
+        BufferedMidiMusicPlayer p = sub2(sink);
         sink.reading = 100000;
         p.play(256, cacheSong(SONG), 0, false);
         assertEquals(1, sink.resets);
@@ -531,7 +531,7 @@ public class MusicPlayerTest {
 
     @Test public void playAppliesVolumeAndTheThirdArgumentAsFadeBeforeTheSong() {
         Sink sink = new Sink();
-        Class56_Sub1_Sub2 p = sub2(sink);
+        BufferedMidiMusicPlayer p = sub2(sink);
         p.play(128, cacheSong(SONG), 0, false);
         List<long[]> got = decode(sink.batches);
         assertEquals(35, got.size());
@@ -542,7 +542,7 @@ public class MusicPlayerTest {
 
         resetVolumeState();
         Sink sink2 = new Sink();
-        Class56_Sub1_Sub2 q = sub2(sink2);
+        BufferedMidiMusicPlayer q = sub2(sink2);
         q.play(256, cacheSong(SONG), 2000, false);
         got = decode(sink2.batches);
         assertEquals(35, got.size());
@@ -553,7 +553,7 @@ public class MusicPlayerTest {
 
     @Test public void aSongWithNoPlayableEventsLoopsForeverIsRefusedElseItEndsWithAReset() {
         Sink sink = new Sink();
-        Class56_Sub1_Sub2 p = sub2(sink);
+        BufferedMidiMusicPlayer p = sub2(sink);
         byte[] empty = cacheSong(new int[][] { { 0, 0xFF, 0, 0 } });
         try { p.play(256, empty, 0, true); fail("looping an empty song must throw"); }
         catch (RuntimeException expected) { /* guard against an endless loop */ }
@@ -562,7 +562,7 @@ public class MusicPlayerTest {
         p.play(256, empty, 0, false);
         assertEquals(96, decode(sink.batches).size());
         assertArrayEquals(ev(0, 176, 123, 0), decode(sink.batches).get(0));
-        assertFalse("song released", ((Class11) get(Class56_Sub1_Sub2.class, p, F_READER)).isLoaded());
+        assertFalse("song released", ((Class11) get(BufferedMidiMusicPlayer.class, p, F_READER)).isLoaded());
         sink.reading = -1000000;
         int before = sink.batches.size();
         p.tick(-126);                            // nothing loaded: nothing happens
@@ -577,14 +577,14 @@ public class MusicPlayerTest {
 
     private static List<String> strs(long[]... events) { return strs(Arrays.asList(events)); }
 
-    private static void tick(Class56_Sub1_Sub2 p, Sink sink, int reading) {
+    private static void tick(BufferedMidiMusicPlayer p, Sink sink, int reading) {
         sink.reading = reading;
         p.tick(-126);
     }
 
     @Test public void tickQueuesEventsDueWithinTheWindowOfTwoHundredMillisecondsPastTheLastQueuedEventMinusTheSinkReading() {
         Sink sink = new Sink();
-        Class56_Sub1_Sub2 p = sub2(sink);
+        BufferedMidiMusicPlayer p = sub2(sink);
         sink.reading = 100000;
         p.play(256, cacheSong(SONG), 0, false);
         sink.batches.clear();
@@ -611,14 +611,14 @@ public class MusicPlayerTest {
         assertEquals(97, end.size());
         assertArrayEquals(ev(200, 0x80, 62, 0), end.get(0));
         assertArrayEquals(ev(0, 176, 123, 0), end.get(1));
-        assertFalse("song released", ((Class11) get(Class56_Sub1_Sub2.class, p, F_READER)).isLoaded());
+        assertFalse("song released", ((Class11) get(BufferedMidiMusicPlayer.class, p, F_READER)).isLoaded());
         tick(p, sink, -100000);
         assertEquals(4, sink.batches.size());
     }
 
     @Test public void aLoopingSongRestartsAtTheEndInsteadOfResetting() {
         Sink sink = new Sink();
-        Class56_Sub1_Sub2 p = sub2(sink);
+        BufferedMidiMusicPlayer p = sub2(sink);
         sink.reading = 100000;
         p.play(256, cacheSong(SONG), 0, true);
         sink.batches.clear();
@@ -628,15 +628,15 @@ public class MusicPlayerTest {
         tick(p, sink, 0);                             // note off at 500 and end of the song: restart, replaying the start at 500
         List<long[]> got = decode(sink.batches.subList(3, 4));
         assertEquals(strs(ev(200, 0x80, 62, 0), ev(0, 0xC0, 5, 0), ev(0, 0xB0, 7, 100), ev(0, 0xB0, 39, 0)), strs(got));
-        assertTrue("song stays loaded", ((Class11) get(Class56_Sub1_Sub2.class, p, F_READER)).isLoaded());
+        assertTrue("song stays loaded", ((Class11) get(BufferedMidiMusicPlayer.class, p, F_READER)).isLoaded());
         tick(p, sink, 100);                           // the restarted song continues on the same timeline: note on at 500 + 100
         assertEquals(strs(ev(100, 0x90, 60, 64)), strs(decode(sink.batches.subList(4, 5))));
-        assertEquals(true, get(Class56_Sub1_Sub2.class, null, F_LOOP));
+        assertEquals(true, get(BufferedMidiMusicPlayer.class, null, F_LOOP));
     }
     @Test public void setVolumeFlushesAtOnceButFadeOnlyQueues() {
         Sink sink = new Sink();
-        Class56_Sub1_Sub2 p = sub2(sink);
-        set(Class56_Sub1_Sub2.class, null, F_LAST_TIME, 70);
+        BufferedMidiMusicPlayer p = sub2(sink);
+        set(BufferedMidiMusicPlayer.class, null, F_LAST_TIME, 70);
         p.fade(128, 0);
         assertTrue("fade is queued, not flushed", sink.batches.isEmpty());
         assertEquals(128, Game.musicOutputVolume);
@@ -646,12 +646,12 @@ public class MusicPlayerTest {
         assertArrayEquals(ev(0, 176, 7, 70), decode(sink.batches).get(0));
         assertArrayEquals(ev(0, 176, 7, 100), decode(sink.batches).get(32));
         assertEquals(256, Game.musicOutputVolume);
-        assertEquals(0, get(Class56_Sub1_Sub2.class, null, F_BUF_LEN));
+        assertEquals(0, get(BufferedMidiMusicPlayer.class, null, F_BUF_LEN));
     }
 
     @Test public void stopResetsTheSinkQueuesAResetAndReleasesTheSong() {
         Sink sink = new Sink();
-        Class56_Sub1_Sub2 p = sub2(sink);
+        BufferedMidiMusicPlayer p = sub2(sink);
         sink.reading = 100000;
         p.play(256, cacheSong(SONG), 0, false);
         int resetsBefore = sink.resets, batchesBefore = sink.batches.size();
@@ -659,7 +659,7 @@ public class MusicPlayerTest {
         assertEquals(resetsBefore + 1, sink.resets);
         assertEquals(batchesBefore + 1, sink.batches.size());
         assertEquals(96, decode(sink.batches.subList(batchesBefore, batchesBefore + 1)).size());
-        assertFalse(((Class11) get(Class56_Sub1_Sub2.class, p, F_READER)).isLoaded());
+        assertFalse(((Class11) get(BufferedMidiMusicPlayer.class, p, F_READER)).isLoaded());
         sink.reading = -1000000;
         p.tick(-126);
         assertEquals("a stopped song queues nothing more", batchesBefore + 1, sink.batches.size());
@@ -667,26 +667,26 @@ public class MusicPlayerTest {
 
     @Test public void dispatchNextEventQueuesChannelMessagesScaledToMillisecondsAndEndsTracksOnEndOfTrack() {
         Sink sink = new Sink();
-        Class56_Sub1_Sub2 p = sub2(sink);
+        BufferedMidiMusicPlayer p = sub2(sink);
         sink.reading = 100000;
         p.play(256, cacheSong(SONG), 0, false);
         sink.batches.clear();
-        Class11 reader = (Class11) get(Class56_Sub1_Sub2.class, p, F_READER);
+        Class11 reader = (Class11) get(BufferedMidiMusicPlayer.class, p, F_READER);
         reader.restoreTrackPosition(0);                          // rewind track 0 to the saved position (before the note on)
         invoke(p, M_DISPATCH, 0, 123456789L, 0);      // 123456789 / (500 * 1000) = 246 ms
-        invokeStatic(Class56_Sub1_Sub2.class, M_FLUSH);
+        invokeStatic(BufferedMidiMusicPlayer.class, M_FLUSH);
         assertArrayEquals(ev(246, 0x90, 60, 64), decode(sink.batches).get(0));
     }
 
     @Test public void sub2SleepsThroughTickGuardValuesBelowMinusNinety() {
         Sink sink = new Sink();
-        Class56_Sub1_Sub2 p = sub2(sink);
+        BufferedMidiMusicPlayer p = sub2(sink);
         sink.reading = 100000;
         p.play(256, cacheSong(SONG), 0, false);
         p.tick(-90);
-        assertSame(sink, get(Class56_Sub1_Sub2.class, null, F_SINK));
-        assertTrue("song still loaded", ((Class11) get(Class56_Sub1_Sub2.class, p, F_READER)).isLoaded());
+        assertSame(sink, get(BufferedMidiMusicPlayer.class, null, F_SINK));
+        assertTrue("song still loaded", ((Class11) get(BufferedMidiMusicPlayer.class, p, F_READER)).isLoaded());
         p.tick(-89);                             // the guard value that nulls the sink
-        assertNull(get(Class56_Sub1_Sub2.class, null, F_SINK));
+        assertNull(get(BufferedMidiMusicPlayer.class, null, F_SINK));
     }
 }

@@ -1,10 +1,10 @@
-/* Class56_Sub1_Sub2 - Decompiled by JODE
+/* BufferedMidiMusicPlayer - Decompiled by JODE
  * Visit http://jode.sourceforge.net/
  */
 
-final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
+final class BufferedMidiMusicPlayer extends MidiMusicPlayer implements Runnable
 {
-    private static Runnable_Impl1 eventSink;
+    private static MidiEventSink eventSink;
     private static boolean shutdownRequested;
     private static boolean looping;
     private static int lastEventTime;
@@ -166,8 +166,8 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
 		sequenceReader.markTrackEnded();
     }
 
-    Class56_Sub1_Sub2(Runnable_Impl1 runnable_impl1) {
-		eventSink = runnable_impl1;
+    BufferedMidiMusicPlayer(MidiEventSink sink) {
+		eventSink = sink;
 		eventSink.method15((byte) 96);
 		eventSink.method12(false);
 		resetAllChannels((long) lastEventTime);

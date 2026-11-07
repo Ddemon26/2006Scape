@@ -177,10 +177,10 @@ public class Game extends RSApplet {
 		songTransitionTicks = 20;
 		try {
 			if (ClientSettings.ANDROID) {
-				musicPlayer = (Class56) AndroidHooks.getMusicPlayer();
+				musicPlayer = (MusicPlayer) AndroidHooks.getMusicPlayer();
 				return musicPlayer != null;
 			}
-		    musicPlayer = (Class56) Class.forName("Class56_Sub1_Sub1").newInstance();
+		    musicPlayer = (MusicPlayer) Class.forName("JavaMidiMusicPlayer").newInstance();
 		} catch (Throwable throwable) {
 		    return false;
 		}
@@ -12591,7 +12591,7 @@ public class Game extends RSApplet {
 	12800, 12800, 12800, 12800, 12800, 12800,
 	12800, 12800, 12800, 12800 };
 	public static int songTransitionTicks = 0;
-	public static Class56 musicPlayer;
+	public static MusicPlayer musicPlayer;
 	public static boolean fetchMusic = false;
 	public static int musicVolume2;
 	public static int currentSongVolume = -1;

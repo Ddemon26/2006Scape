@@ -5,7 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class GameSongRequestTest {
-    private Class56 oldPlayer;
+    private MusicPlayer oldPlayer;
     private boolean oldFetch, oldLoop, oldAndroid;
     private int oldVolume, oldPending, oldOtherPending, oldFadeVolume, oldFadeStep, oldProgress;
     private byte[] oldData, oldPendingData;
@@ -183,7 +183,7 @@ public class GameSongRequestTest {
         assertNull(Game.musicPlayer);
     }
 
-    private static final class PlayerProbe extends Class56 {
+    private static final class PlayerProbe extends MusicPlayer {
         int plays, volume, ticks, lastTick;
         final StringBuilder events = new StringBuilder();
         byte[] data;

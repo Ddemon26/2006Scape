@@ -1,8 +1,8 @@
-/* Class56_Sub1 - Decompiled by JODE
+/* MidiMusicPlayer - Decompiled by JODE
  * Visit http://jode.sourceforge.net/
  */
 
-abstract class Class56_Sub1 extends Class56
+abstract class MidiMusicPlayer extends MusicPlayer
 {
     final void applyFade(int fadeAttenuation, int volume, long timestamp) {
     	volume = (int) ((double) volume * Math.pow(0.1, (double) fadeAttenuation * 5.0E-4) + 0.5);

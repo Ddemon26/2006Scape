@@ -1,10 +1,10 @@
-abstract class Class56 {
+abstract class MusicPlayer {
     
     abstract void play(int volume, byte[] midiData, int fadeAttenuation, boolean loop);
     
     abstract void shutdown();
     
-  	public Class56() {
+  	public MusicPlayer() {
 	/* empty */
     }
     

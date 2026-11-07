@@ -5,7 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class GameMusicTransitionTest {
-    private Class56 oldPlayer;
+    private MusicPlayer oldPlayer;
     private int oldVolume, oldTicks, oldProgress, oldStep, oldQueuedVolume, oldOtherPending, oldPendingStep, oldMusicVolume2, oldOutput;
     private boolean oldQueuedLoop, oldFetch, oldLoop, oldAndroid;
     private byte[] oldQueued, oldData;
@@ -414,7 +414,7 @@ public class GameMusicTransitionTest {
         assertEquals(300, Game.musicOutputVolume, 1);
     }
 
-    private static final class FadeProbe extends Class56_Sub1 {
+    private static final class FadeProbe extends MidiMusicPlayer {
         void play(int a, byte[] b, int c, boolean d) { }
         void shutdown() { }
         void fade(int a, int b) { }
@@ -424,7 +424,7 @@ public class GameMusicTransitionTest {
         void sendMessage(int a, int b, int c, long d) { }
     }
 
-    private static final class Probe extends Class56 {
+    private static final class Probe extends MusicPlayer {
         int plays, volume, stops;
         byte[] data;
         boolean loop;

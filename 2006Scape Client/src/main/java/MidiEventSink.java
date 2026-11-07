@@ -1,8 +1,8 @@
-/* Runnable_Impl1 - Decompiled by JODE
+/* MidiEventSink - Decompiled by JODE
  * Visit http://jode.sourceforge.net/
  */
 
-public interface Runnable_Impl1 extends Runnable
+public interface MidiEventSink extends Runnable
 {
     public void writeEvents(int[] events, int count);
     

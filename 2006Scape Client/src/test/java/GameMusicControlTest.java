@@ -5,7 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class GameMusicControlTest {
-    private Class56 oldPlayer;
+    private MusicPlayer oldPlayer;
     private boolean oldFetch;
     private int oldVolume, oldFade, oldProgress;
     private byte[] oldData;
@@ -92,7 +92,7 @@ public class GameMusicControlTest {
         assertNull(Game.queuedSongData);
     }
 
-    private static final class FakePlayer extends Class56 {
+    private static final class FakePlayer extends MusicPlayer {
         int stops, plays, volume;
         byte[] data;
         boolean loop;
