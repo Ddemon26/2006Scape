@@ -10803,12 +10803,12 @@ public class Game extends RSApplet {
 				return false;
 			}
 			if (pktType == 70) {
-				int k2 = inStream.readSignedShortBigEndian();
-				int l10 = inStream.readSignedShortLittleEndian();
-				int i16 = inStream.readUnsignedShortLittleEndian();
-				RSInterface class9_5 = RSInterface.interfaceCache[i16];
-				class9_5.offsetX = k2;
-				class9_5.offsetY = l10;
+				int xOffset = inStream.readSignedShortBigEndian();
+				int yOffset = inStream.readSignedShortLittleEndian();
+				int interfaceId = inStream.readUnsignedShortLittleEndian();
+				RSInterface targetInterface = RSInterface.interfaceCache[interfaceId];
+				targetInterface.offsetX = xOffset;
+				targetInterface.offsetY = yOffset;
 				pktType = -1;
 				return true;
 			}
