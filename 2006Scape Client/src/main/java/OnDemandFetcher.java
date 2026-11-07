@@ -12,7 +12,7 @@ import java.util.zip.GZIPInputStream;
 
 public final class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
 
-	/* private boolean crcMatches(int i, int j, byte abyte0[])
+	/* private boolean matchesVersionAndCrc32(int i, int j, byte abyte0[])
     {
             //if(abyte0 == null || abyte0.length < 2)
                     //return false;
@@ -26,17 +26,17 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 
     }*/
 
-	// XXX: Fixed and refactored the crcMatches method. - Ryley
-	private boolean crcMatches(int type, int id, byte[] data) {
-		if (data == null || data.length < 2) {
+	// XXX: Fixed and refactored the matchesVersionAndCrc32 method. - Ryley
+	private boolean matchesVersionAndCrc32(int expectedVersion, int expectedCrc, byte[] fileData) {
+		if (fileData == null || fileData.length < 2) {
 			return false;
 		}
-		int length = data.length - 2;
-		int hash = ((data[length] & 0xFF) << 8) + (data[length + 1] & 0xFF);
+		int payloadLength = fileData.length - 2;
+		int storedVersion = ((fileData[payloadLength] & 0xFF) << 8) + (fileData[payloadLength + 1] & 0xFF);
 		crc32.reset();
-		crc32.update(data, 0, length);
-		int crc = (int) crc32.getValue();
-		return hash == type && crc == id;
+		crc32.update(fileData, 0, payloadLength);
+		int payloadCrc = (int) crc32.getValue();
+		return storedVersion == expectedVersion && payloadCrc == expectedCrc;
 	}
 
 	private void readData() {
@@ -480,7 +480,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			return;
 		}
 		byte cachedData[] = clientInstance.cacheStores[dataType + 1].readFile(fileId);
-		if (crcMatches(versions[dataType][fileId], crcs[dataType][fileId], cachedData)) {
+		if (matchesVersionAndCrc32(versions[dataType][fileId], crcs[dataType][fileId], cachedData)) {
 			return;
 		}
 		fileStatus[dataType][fileId] = priority;
@@ -543,7 +543,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			if (clientInstance.cacheStores[0] != null) {
 				abyte0 = clientInstance.cacheStores[onDemandData.dataType + 1].readFile(onDemandData.ID);
 			}
-			if (!crcMatches(versions[onDemandData.dataType][onDemandData.ID], crcs[onDemandData.dataType][onDemandData.ID], abyte0)) {
+			if (!matchesVersionAndCrc32(versions[onDemandData.dataType][onDemandData.ID], crcs[onDemandData.dataType][onDemandData.ID], abyte0)) {
 				abyte0 = null;
 			}
 			synchronized (aClass19_1370) {
