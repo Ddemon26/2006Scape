@@ -24,7 +24,7 @@ public class WorldControllerSceneLightingTest {
         WorldController.drawDistance = savedDrawDistance;
         sset("tileVisibilityTable", savedTable);
         sset("cameraTileVisibility", null);
-        sset("aBoolean467", false);
+        sset("tilePickRequested", false);
     }
 
     // ---- reflection helpers (original names only) ----
@@ -436,7 +436,7 @@ public class WorldControllerSceneLightingTest {
         Field f = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
         f.setAccessible(true);
         Class40 c = (Class40) ((sun.misc.Unsafe) f.get(null)).allocateInstance(Class40.class);
-        set(c, "anInt684", shape); set(c, "anInt685", rotation); set(c, "anInt686", base); set(c, "anInt687", masked);
+        set(c, "shape", shape); set(c, "rotation", rotation); set(c, "underlayMapColour", base); set(c, "overlayMapColour", masked);
         return c;
     }
 
@@ -670,8 +670,8 @@ public class WorldControllerSceneLightingTest {
     private static void camera(int pitch, int yaw, int w, int h) throws Exception {
         WorldController.drawDistance = 1;
         build(0, 0, w, h, new int[9]);          // sets viewport statics
-        sset("anInt458", Model.sineTable16[pitch]); sset("anInt459", Model.cosineTable16[pitch]);
-        sset("anInt460", Model.sineTable16[yaw]); sset("anInt461", Model.cosineTable16[yaw]);
+        sset("pitchSine", Model.sineTable16[pitch]); sset("pitchCosine", Model.cosineTable16[pitch]);
+        sset("yawSine", Model.sineTable16[yaw]); sset("yawCosine", Model.cosineTable16[yaw]);
     }
 
     @Test public void method311ProjectsDepthWithinFiftyToThirtyFiveHundredAndChecksViewportInclusively() throws Exception {
@@ -700,19 +700,19 @@ public class WorldControllerSceneLightingTest {
 
     @Test public void method312StoresPickPointAndClearsPreviousResult() throws Exception {
         WorldController wc = scene();
-        WorldController.anInt470 = 5; WorldController.anInt471 = 6;
-        sset("aBoolean467", false);
+        WorldController.pickedTileX = 5; WorldController.pickedTileY = 6;
+        sset("tilePickRequested", false);
         wc.requestTilePick(33, 77);
-        assertTrue((Boolean) sget("aBoolean467"));
-        assertEquals(77, sint("anInt468")); assertEquals(33, sint("anInt469"));
-        assertEquals(-1, WorldController.anInt470); assertEquals(-1, WorldController.anInt471);
+        assertTrue((Boolean) sget("tilePickRequested"));
+        assertEquals(77, sint("pickScreenX")); assertEquals(33, sint("pickScreenY"));
+        assertEquals(-1, WorldController.pickedTileX); assertEquals(-1, WorldController.pickedTileY);
         // the stored (468,469) pair is read as (x, y) by the point-in-triangle test the tile drawing uses
-        Method tri = WorldController.class.getDeclaredMethod("method318", int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class);
+        Method tri = WorldController.class.getDeclaredMethod("isPointInTriangle", int.class, int.class, int.class, int.class, int.class, int.class, int.class, int.class);
         tri.setAccessible(true);
         // triangle spanning x 70..90, y 30..40 contains (x=77,y=33) but not (x=33,y=77)
         int[] ys = {30, 30, 40}, xs = {70, 90, 80};
-        assertTrue((Boolean) tri.invoke(wc, sint("anInt468"), sint("anInt469"), ys[0], ys[1], ys[2], xs[0], xs[1], xs[2]));
-        assertFalse((Boolean) tri.invoke(wc, sint("anInt469"), sint("anInt468"), ys[0], ys[1], ys[2], xs[0], xs[1], xs[2]));
+        assertTrue((Boolean) tri.invoke(wc, sint("pickScreenX"), sint("pickScreenY"), ys[0], ys[1], ys[2], xs[0], xs[1], xs[2]));
+        assertFalse((Boolean) tri.invoke(wc, sint("pickScreenY"), sint("pickScreenX"), ys[0], ys[1], ys[2], xs[0], xs[1], xs[2]));
     }
 
     // ================= drawScene: scene setup =================
@@ -728,26 +728,26 @@ public class WorldControllerSceneLightingTest {
         WorldController.drawDistance = 5;
         sset("tileVisibilityTable", new boolean[8][32][256][256]);
         wc.requestTilePick(1, 2);
-        int frame = sint("anInt448");
+        int frame = sint("drawCycle");
         draw(wc, 40 * 128 + 17, 60 * 128 + 99, 640, 250, 2, 160);
-        assertEquals(frame + 1, sint("anInt448"));
-        assertEquals(40 * 128 + 17, sint("anInt455")); assertEquals(250, sint("anInt456")); assertEquals(60 * 128 + 99, sint("anInt457"));
-        assertEquals(40, sint("anInt453")); assertEquals(60, sint("anInt454"));
-        assertEquals(2, sint("anInt447"));
-        assertEquals(Model.sineTable16[160], sint("anInt458")); assertEquals(Model.cosineTable16[160], sint("anInt459"));
-        assertEquals(Model.sineTable16[640], sint("anInt460")); assertEquals(Model.cosineTable16[640], sint("anInt461"));
+        assertEquals(frame + 1, sint("drawCycle"));
+        assertEquals(40 * 128 + 17, sint("cameraWorldX")); assertEquals(250, sint("cameraWorldHeight")); assertEquals(60 * 128 + 99, sint("cameraWorldY"));
+        assertEquals(40, sint("cameraTileX")); assertEquals(60, sint("cameraTileY"));
+        assertEquals(2, sint("cameraPlane"));
+        assertEquals(Model.sineTable16[160], sint("pitchSine")); assertEquals(Model.cosineTable16[160], sint("pitchCosine"));
+        assertEquals(Model.sineTable16[640], sint("yawSine")); assertEquals(Model.cosineTable16[640], sint("yawCosine"));
         assertSame(table()[(160 - 128) / 32][640 / 64], sget("cameraTileVisibility"));
-        assertEquals(35, sint("anInt449")); assertEquals(45, sint("anInt450"));
-        assertEquals(55, sint("anInt451")); assertEquals(65, sint("anInt452"));
-        assertFalse((Boolean) sget("aBoolean467"));
+        assertEquals(35, sint("drawMinTileX")); assertEquals(45, sint("drawMaxTileX"));
+        assertEquals(55, sint("drawMinTileY")); assertEquals(65, sint("drawMaxTileY"));
+        assertFalse((Boolean) sget("tilePickRequested"));
         // clamps: below zero -> 0; at or beyond the far edge -> size*128-1; window clipped to the map
         draw(wc, -5, -9, 0, 0, 0, 128);
-        assertEquals(0, sint("anInt455")); assertEquals(0, sint("anInt457"));
-        assertEquals(0, sint("anInt453")); assertEquals(0, sint("anInt449")); assertEquals(5, sint("anInt450"));
+        assertEquals(0, sint("cameraWorldX")); assertEquals(0, sint("cameraWorldY"));
+        assertEquals(0, sint("cameraTileX")); assertEquals(0, sint("drawMinTileX")); assertEquals(5, sint("drawMaxTileX"));
         draw(wc, SIZE * 128 + 500, SIZE * 128, 0, 0, 0, 128);
-        assertEquals(SIZE * 128 - 1, sint("anInt455")); assertEquals(SIZE * 128 - 1, sint("anInt457"));
-        assertEquals(SIZE - 1, sint("anInt453")); assertEquals(SIZE, sint("anInt450")); assertEquals(SIZE, sint("anInt452"));
-        assertEquals(SIZE - 1 - 5, sint("anInt449"));
+        assertEquals(SIZE * 128 - 1, sint("cameraWorldX")); assertEquals(SIZE * 128 - 1, sint("cameraWorldY"));
+        assertEquals(SIZE - 1, sint("cameraTileX")); assertEquals(SIZE, sint("drawMaxTileX")); assertEquals(SIZE, sint("drawMaxTileY"));
+        assertEquals(SIZE - 1 - 5, sint("drawMinTileX"));
     }
 
     private static Ground marked(WorldController wc, int plane, int x, int y, int topPlane) throws Exception {
@@ -802,6 +802,6 @@ public class WorldControllerSceneLightingTest {
         for (int i = 0; i < offs.length; i++) { assertFalse("flag " + i, visible[i].aBoolean1324); assertFalse("drawn " + i, visible[i].aBoolean1322); }
         assertFalse(edge.aBoolean1324); assertFalse(edge.aBoolean1322);
         assertTrue(outside.aBoolean1324); assertTrue(outside.aBoolean1322); assertEquals(0, outside.anInt1325);
-        assertEquals(0, sint("anInt446"));
+        assertEquals(0, sint("pendingTileCount"));
     }
 }

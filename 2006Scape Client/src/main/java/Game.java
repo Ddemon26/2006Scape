@@ -3216,11 +3216,11 @@ public class Game extends RSApplet {
 				super.clickMode3 = 0;
 			}
 		}
-		if (WorldController.anInt470 != -1) {
-			int k = WorldController.anInt470;
-			int k1 = WorldController.anInt471;
+		if (WorldController.pickedTileX != -1) {
+			int k = WorldController.pickedTileX;
+			int k1 = WorldController.pickedTileY;
 			boolean flag = doWalkTo(0, 0, 0, 0, myPlayer.smallY[0], 0, 0, k1, myPlayer.smallX[0], true, k);
-			WorldController.anInt470 = -1;
+			WorldController.pickedTileX = -1;
 			if (flag) {
 				crossX = super.saveClickX;
 				crossY = super.saveClickY;

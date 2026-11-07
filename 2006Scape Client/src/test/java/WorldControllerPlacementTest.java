@@ -32,7 +32,7 @@ public class WorldControllerPlacementTest {
         sset("occluderCounts", savedCounts);
         sset("occluders", savedLists);
         sset("cameraTileVisibility", null);
-        sset("aBoolean467", false);
+        sset("tilePickRequested", false);
     }
 
     // ---- reflection helpers (original names only) ----
@@ -73,14 +73,14 @@ public class WorldControllerPlacementTest {
         Class47[][] lists = (Class47[][]) sget("occluders");
         Class47 o = lists[2][0];
         // tile bounds are j/128, l/128, l1/128, i1/128
-        assertEquals(1300 / 128, o.anInt787); assertEquals(1700 / 128, o.anInt788);
-        assertEquals(2200 / 128, o.anInt789); assertEquals(2900 / 128, o.anInt790);
-        assertEquals(1, o.anInt791);
-        assertEquals(1300, o.anInt792); assertEquals(1700, o.anInt793);
-        assertEquals(2200, o.anInt794); assertEquals(2900, o.anInt795);
-        assertEquals(-900, o.anInt796); assertEquals(-500, o.anInt797);
-        assertEquals(4, lists[2][1].anInt791);
-        assertEquals(2, lists[0][0].anInt791); assertEquals(640, lists[0][0].anInt792); assertEquals(700, lists[0][0].anInt794);
+        assertEquals(1300 / 128, o.minTileX); assertEquals(1700 / 128, o.maxTileX);
+        assertEquals(2200 / 128, o.minTileY); assertEquals(2900 / 128, o.maxTileY);
+        assertEquals(1, o.type);
+        assertEquals(1300, o.minX); assertEquals(1700, o.maxX);
+        assertEquals(2200, o.minY); assertEquals(2900, o.maxY);
+        assertEquals(-900, o.minHeight); assertEquals(-500, o.maxHeight);
+        assertEquals(4, lists[2][1].type);
+        assertEquals(2, lists[0][0].type); assertEquals(640, lists[0][0].minX); assertEquals(700, lists[0][0].minY);
         assertNull(lists[1][0]); assertNull(lists[3][0]);
     }
 
@@ -88,17 +88,17 @@ public class WorldControllerPlacementTest {
     private static final Class<?>[] M324 = {int.class, int.class, int.class};
 
     private static void camera(WorldController wc, int plane, int camX, int camHeight, int camY) throws Exception {
-        sset("anInt447", plane);
-        sset("anInt453", camX / 128); sset("anInt454", camY / 128);
-        sset("anInt455", camX); sset("anInt456", camHeight); sset("anInt457", camY);
+        sset("cameraPlane", plane);
+        sset("cameraTileX", camX / 128); sset("cameraTileY", camY / 128);
+        sset("cameraWorldX", camX); sset("cameraWorldHeight", camHeight); sset("cameraWorldY", camY);
         boolean[][] vis = new boolean[51][51];
         for (boolean[] r : vis) java.util.Arrays.fill(r, true);
         sset("cameraTileVisibility", vis);
         WorldController.drawDistance = 25;
-        call(wc, "method319", M319);
+        call(wc, "selectActiveOccluders", M319);
     }
 
-    private static boolean blocked(WorldController wc, int x, int height, int y) throws Exception { return (Boolean) call(wc, "method324", M324, x, height, y); }
+    private static boolean blocked(WorldController wc, int x, int height, int y) throws Exception { return (Boolean) call(wc, "isPointOccluded", M324, x, height, y); }
 
     @Test public void method277Type1IsAnXFixedWallHiddenBehindItsRangeInYAndHeight() throws Exception {
         WorldController wc = scene();
@@ -234,10 +234,10 @@ public class WorldControllerPlacementTest {
         WorldController wc = scene();
         wc.addTile(2, 30, 40, 0, 0, 99, 1, 1, 1, 1, 101, 102, 103, 104, 201, 202, 203, 204, 55, 66);
         Class43 c = (Class43) tileGround(wc, "aClass43_1311", 2, 30, 40);
-        assertEquals(101, c.anInt716); assertEquals(102, c.anInt717); assertEquals(103, c.anInt718); assertEquals(104, c.anInt719);
-        assertEquals(-1, c.anInt720);
-        assertEquals(55, c.anInt722);
-        assertFalse(c.aBoolean721);
+        assertEquals(101, c.cornerColour0); assertEquals(102, c.cornerColour1); assertEquals(103, c.cornerColour2); assertEquals(104, c.cornerColour3);
+        assertEquals(-1, c.textureId);
+        assertEquals(55, c.mapColour);
+        assertFalse(c.flat);
         assertNull(tileGround(wc, "aClass40_1312", 2, 30, 40));
         assertNotNull(at(wc, 1, 30, 40)); assertNotNull(at(wc, 0, 30, 40));
         assertNull(at(wc, 3, 30, 40)); assertNull(at(wc, 2, 40, 30)); assertNull(at(wc, 2, 31, 40));
@@ -248,25 +248,25 @@ public class WorldControllerPlacementTest {
         WorldController wc = scene();
         wc.addTile(1, 31, 41, 1, 0, 7, 100, 100, 100, 100, 101, 102, 103, 104, 201, 202, 203, 204, 55, 66);
         Class43 c = (Class43) tileGround(wc, "aClass43_1311", 1, 31, 41);
-        assertEquals(201, c.anInt716); assertEquals(202, c.anInt717); assertEquals(203, c.anInt718); assertEquals(204, c.anInt719);
-        assertEquals(7, c.anInt720);
-        assertEquals(66, c.anInt722);
-        assertTrue("all four heights equal", c.aBoolean721);
+        assertEquals(201, c.cornerColour0); assertEquals(202, c.cornerColour1); assertEquals(203, c.cornerColour2); assertEquals(204, c.cornerColour3);
+        assertEquals(7, c.textureId);
+        assertEquals(66, c.mapColour);
+        assertTrue("all four heights equal", c.flat);
         for (int which = 0; which < 4; which++) {
             int[] h = {100, 100, 100, 100};
             h[which] = 101;
             WorldController w = scene();
             w.addTile(0, 3, 4, 1, 0, 7, h[0], h[1], h[2], h[3], 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-            assertFalse("height " + which + " differs", ((Class43) tileGround(w, "aClass43_1311", 0, 3, 4)).aBoolean721);
+            assertFalse("height " + which + " differs", ((Class43) tileGround(w, "aClass43_1311", 0, 3, 4)).flat);
         }
     }
 
     private static int[] vertex(Class40 c, int index) throws Exception {
-        return new int[] {c.anIntArray673[index], c.anIntArray675[index], c.anIntArray674[index]};
+        return new int[] {c.vertexX[index], c.vertexY[index], c.vertexHeight[index]};
     }
 
     private static int vertexAt(Class40 c, int x, int y) {
-        for (int i = 0; i < c.anIntArray673.length; i++) if (c.anIntArray673[i] == x && c.anIntArray675[i] == y) return i;
+        for (int i = 0; i < c.vertexX.length; i++) if (c.vertexX[i] == x && c.vertexY[i] == y) return i;
         return -1;
     }
 
@@ -276,24 +276,24 @@ public class WorldControllerPlacementTest {
         wc.addTile(1, 5, 6, 2, 0, 9, 1001, 1002, 1003, 1004, 11, 12, 13, 14, 21, 22, 23, 24, 77, 88);
         Class40 c = (Class40) tileGround(wc, "aClass40_1312", 1, 5, 6);
         assertNull(tileGround(wc, "aClass43_1311", 1, 5, 6));
-        assertEquals(4, c.anIntArray673.length);
+        assertEquals(4, c.vertexX.length);
         int x0 = 5 * 128, y0 = 6 * 128;
         int[] expectHeight = {1001, 1002, 1003, 1004};
         int[][] corners = {{x0, y0}, {x0 + 128, y0}, {x0 + 128, y0 + 128}, {x0, y0 + 128}};
         for (int i = 0; i < 4; i++) {
             int v = vertexAt(c, corners[i][0], corners[i][1]);
             assertTrue("corner " + i, v >= 0);
-            assertEquals(expectHeight[i], c.anIntArray674[v]);
+            assertEquals(expectHeight[i], c.vertexHeight[v]);
             assertEquals(i, v);
         }
         // faces for shape 2: face 0 underlay on corners 1,2,3 with the first colour group; face 1 overlay on corners 0,1,3 with the second group and texture
-        assertEquals(2, c.anInt684); assertEquals(0, c.anInt685); assertEquals(77, c.anInt686); assertEquals(88, c.anInt687);
-        assertArrayEquals(new int[] {1, 0}, new int[] {c.anIntArray679[0], c.anIntArray679[1]});
-        assertArrayEquals(new int[] {2, 1}, new int[] {c.anIntArray680[0], c.anIntArray680[1]});
-        assertArrayEquals(new int[] {3, 3}, new int[] {c.anIntArray681[0], c.anIntArray681[1]});
-        assertEquals(12, c.anIntArray676[0]); assertEquals(13, c.anIntArray677[0]); assertEquals(14, c.anIntArray678[0]);
-        assertEquals(21, c.anIntArray676[1]); assertEquals(22, c.anIntArray677[1]); assertEquals(24, c.anIntArray678[1]);
-        assertEquals(-1, c.anIntArray682[0]); assertEquals(9, c.anIntArray682[1]);
+        assertEquals(2, c.shape); assertEquals(0, c.rotation); assertEquals(77, c.underlayMapColour); assertEquals(88, c.overlayMapColour);
+        assertArrayEquals(new int[] {1, 0}, new int[] {c.faceVertexA[0], c.faceVertexA[1]});
+        assertArrayEquals(new int[] {2, 1}, new int[] {c.faceVertexB[0], c.faceVertexB[1]});
+        assertArrayEquals(new int[] {3, 3}, new int[] {c.faceVertexC[0], c.faceVertexC[1]});
+        assertEquals(12, c.faceColourA[0]); assertEquals(13, c.faceColourB[0]); assertEquals(14, c.faceColourC[0]);
+        assertEquals(21, c.faceColourA[1]); assertEquals(22, c.faceColourB[1]); assertEquals(24, c.faceColourC[1]);
+        assertEquals(-1, c.faceTexture[0]); assertEquals(9, c.faceTexture[1]);
         assertNotNull(at(wc, 0, 5, 6));
     }
 
@@ -302,9 +302,9 @@ public class WorldControllerPlacementTest {
             WorldController wc = scene();
             wc.addTile(0, 5, 6, 2, rot, -1, 1001, 1002, 1003, 1004, 11, 12, 13, 14, 21, 22, 23, 24, 77, 88);
             Class40 c = (Class40) tileGround(wc, "aClass40_1312", 0, 5, 6);
-            assertEquals(rot, c.anInt685);
-            assertEquals((1 - rot) & 3, c.anIntArray679[0]); assertEquals((2 - rot) & 3, c.anIntArray680[0]); assertEquals((3 - rot) & 3, c.anIntArray681[0]);
-            assertNull(c.anIntArray682);
+            assertEquals(rot, c.rotation);
+            assertEquals((1 - rot) & 3, c.faceVertexA[0]); assertEquals((2 - rot) & 3, c.faceVertexB[0]); assertEquals((3 - rot) & 3, c.faceVertexC[0]);
+            assertNull(c.faceTexture);
         }
     }
 

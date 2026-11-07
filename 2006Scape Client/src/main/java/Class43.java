@@ -5,21 +5,21 @@
 final class Class43 {
 
 	public Class43(int i, int j, int k, int l, int i1, int j1, boolean flag) {
-		aBoolean721 = true;
-		anInt716 = i;
-		anInt717 = j;
-		anInt718 = k;
-		anInt719 = l;
-		anInt720 = i1;
-		anInt722 = j1;
-		aBoolean721 = flag;
+		flat = true;
+		cornerColour0 = i;
+		cornerColour1 = j;
+		cornerColour2 = k;
+		cornerColour3 = l;
+		textureId = i1;
+		mapColour = j1;
+		flat = flag;
 	}
 
-	final int anInt716;
-	final int anInt717;
-	final int anInt718;
-	final int anInt719;
-	final int anInt720;
-	boolean aBoolean721;
-	final int anInt722;
+	final int cornerColour0;
+	final int cornerColour1;
+	final int cornerColour2;
+	final int cornerColour3;
+	final int textureId;
+	boolean flat;
+	final int mapColour;
 }
