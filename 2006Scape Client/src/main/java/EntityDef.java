@@ -157,7 +157,7 @@ public final class EntityDef {
 
 			}
 			model.buildAnimationGroups();
-			model.method479(64 + anInt85, 850 + anInt92, -30, -50, -30, true);
+			model.applyLighting(64 + anInt85, 850 + anInt92, -30, -50, -30, true);
 			mruNodes.removeFromCache(model, type);
 		}
 		Model model_1 = Model.animationScratchModel;

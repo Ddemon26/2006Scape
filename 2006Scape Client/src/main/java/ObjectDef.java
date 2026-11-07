@@ -283,7 +283,7 @@ public final class ObjectDef {
 		if (flag2) {
 			model_3.translate(anInt738, anInt745, anInt783);
 		}
-		model_3.method479(64 + aByte737, 768 + aByte742 * 5, -50, -10, -50, !aBoolean769);
+		model_3.applyLighting(64 + aByte737, 768 + aByte742 * 5, -50, -10, -50, !aBoolean769);
 		if (anInt760 == 1) {
 			model_3.anInt1654 = model_3.modelHeight;
 		}

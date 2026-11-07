@@ -5472,7 +5472,7 @@ public class Game extends RSApplet {
 
 				model.buildAnimationGroups();
 				model.applyAnimationFrame(Animation.anims[myPlayer.anInt1511].anIntArray353[0]);
-				model.method479(64, 850, -30, -50, -30, true);
+				model.applyLighting(64, 850, -30, -50, -30, true);
 				class9.anInt233 = 5;
 				class9.mediaID = 0;
 				RSInterface.method208(model, 0, 5);
@@ -5917,8 +5917,8 @@ public class Game extends RSApplet {
 		int distanceSquared = offsetX * offsetX + offsetY * offsetY;
 		if (distanceSquared > 4225 && distanceSquared < 90000) {
 			int rotation2048 = minimapInt1 + minimapInt2 & 0x7ff;
-			int scaledSine16 = Model.modelIntArray1[rotation2048];
-			int scaledCosine16 = Model.modelIntArray2[rotation2048];
+			int scaledSine16 = Model.sineTable16[rotation2048];
+			int scaledCosine16 = Model.cosineTable16[rotation2048];
 			scaledSine16 = (scaledSine16 * 256) / (minimapInt3 + 256);
 			scaledCosine16 = (scaledCosine16 * 256) / (minimapInt3 + 256);
 			int rotatedX = offsetY * scaledSine16 + offsetX * scaledCosine16 >> 16;
@@ -8437,7 +8437,7 @@ public class Game extends RSApplet {
 						model = component.method209(animation.anIntArray354[component.modelAnimationFrame], animation.anIntArray353[component.modelAnimationFrame], flag2);
 					}
 					if (model != null) {
-						model.method482(component.anInt271, 0, component.anInt270, 0, i5, l5);
+						model.projectRotated(component.anInt271, 0, component.anInt270, 0, i5, l5);
 					}
 					Texture.textureInt1 = k3;
 					Texture.textureInt2 = j4;
@@ -9608,10 +9608,10 @@ public class Game extends RSApplet {
 		worldX -= xCameraPos;
 		verticalPosition -= zCameraPos;
 		worldY -= yCameraPos;
-		int pitchSine16 = Model.modelIntArray1[yCameraCurve];
-		int pitchCosine16 = Model.modelIntArray2[yCameraCurve];
-		int yawSine16 = Model.modelIntArray1[xCameraCurve];
-		int yawCosine16 = Model.modelIntArray2[xCameraCurve];
+		int pitchSine16 = Model.sineTable16[yCameraCurve];
+		int pitchCosine16 = Model.cosineTable16[yCameraCurve];
+		int yawSine16 = Model.sineTable16[xCameraCurve];
+		int yawCosine16 = Model.cosineTable16[xCameraCurve];
 		int rotatedComponent = worldY * yawSine16 + worldX * yawCosine16 >> 16;
 		worldY = worldY * yawCosine16 - worldX * yawSine16 >> 16;
 		worldX = rotatedComponent;
@@ -10449,8 +10449,8 @@ public class Game extends RSApplet {
 		if (distanceSquared > 6400) {
 			return;
 		}
-		int scaledSine16 = Model.modelIntArray1[rotation2048];
-		int scaledCosine16 = Model.modelIntArray2[rotation2048];
+		int scaledSine16 = Model.sineTable16[rotation2048];
+		int scaledCosine16 = Model.cosineTable16[rotation2048];
 		scaledSine16 = scaledSine16 * 256 / (minimapInt3 + 256);
 		scaledCosine16 = scaledCosine16 * 256 / (minimapInt3 + 256);
 		int rotatedX = offsetY * scaledSine16 + offsetX * scaledCosine16 >> 16;
@@ -10557,8 +10557,8 @@ public class Game extends RSApplet {
 		int k2 = 0;
 		int l2 = j;
 		if (l1 != 0) {
-			int i3 = Model.modelIntArray1[l1];
-			int k3 = Model.modelIntArray2[l1];
+			int i3 = Model.sineTable16[l1];
+			int k3 = Model.cosineTable16[l1];
 			int i4 = k2 * k3 - l2 * i3 >> 16;
 			l2 = k2 * i3 + l2 * k3 >> 16;
 			k2 = i4;
@@ -10569,8 +10569,8 @@ public class Game extends RSApplet {
 			 * lftrit = j2; if(fwdbwd == 0) fwdbwd = l2; k2 = zoom; j2 = lftrit;
 			 * l2 = fwdbwd; }
 			 */
-			int j3 = Model.modelIntArray1[i2];
-			int l3 = Model.modelIntArray2[i2];
+			int j3 = Model.sineTable16[i2];
+			int l3 = Model.cosineTable16[i2];
 			int j4 = l2 * j3 + j2 * l3 >> 16;
 			l2 = l2 * l3 - j2 * j3 >> 16;
 			j2 = j4;

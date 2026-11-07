@@ -2114,7 +2114,7 @@ public final class ItemDef {
 		}
 		int l3 = Texture.sineTable[itemDef.modelRotation1] * viewDistance >> 16;
 		int i4 = Texture.cosineTable[itemDef.modelRotation1] * viewDistance >> 16;
-		model.method482(itemDef.modelRotation2, itemDef.modelRotation3, itemDef.modelRotation1, itemDef.modelOffset1, l3 + model.modelHeight / 2 + itemDef.modelOffset2, i4 + itemDef.modelOffset2);
+		model.projectRotated(itemDef.modelRotation2, itemDef.modelRotation3, itemDef.modelRotation1, itemDef.modelOffset1, l3 + model.modelHeight / 2 + itemDef.modelOffset2, i4 + itemDef.modelOffset2);
 		for (int x = 31; x >= 0; x--) {
 			for (int y = 31; y >= 0; y--) {
 				if (icon.pixels[x + y * 32] == 0) {
@@ -2218,7 +2218,7 @@ public final class ItemDef {
 			}
 
 		}
-		model.method479(64 + ambientLightOffset, 768 + lightDivisorOffset, -50, -10, -50, true);
+		model.applyLighting(64 + ambientLightOffset, 768 + lightDivisorOffset, -50, -10, -50, true);
 		model.aBoolean1659 = true;
 		mruNodes2.removeFromCache(model, id);
 		return model;

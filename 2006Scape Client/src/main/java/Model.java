@@ -21,8 +21,8 @@ public final class Model extends Animable {
 		anIntArray1675 = null;
 		anIntArray1676 = null;
 		anIntArray1677 = null;
-		modelIntArray1 = null;
-		modelIntArray2 = null;
+		sineTable16 = null;
+		cosineTable16 = null;
 		hslToRgbPalette = null;
 		reciprocalTable16 = null;
 	}
@@ -994,22 +994,22 @@ public final class Model extends Animable {
 						int rotationY2048 = (y & 0xff) * 8;
 						int rotationZ2048 = (z & 0xff) * 8;
 						if (rotationZ2048 != 0) {
-							int sineZ16 = modelIntArray1[rotationZ2048];
-							int cosineZ16 = modelIntArray2[rotationZ2048];
+							int sineZ16 = sineTable16[rotationZ2048];
+							int cosineZ16 = cosineTable16[rotationZ2048];
 							int rotatedX = anIntArray1628[vertexIndex] * sineZ16 + anIntArray1627[vertexIndex] * cosineZ16 >> 16;
 							anIntArray1628[vertexIndex] = anIntArray1628[vertexIndex] * cosineZ16 - anIntArray1627[vertexIndex] * sineZ16 >> 16;
 							anIntArray1627[vertexIndex] = rotatedX;
 						}
 						if (rotationX2048 != 0) {
-							int sineX16 = modelIntArray1[rotationX2048];
-							int cosineX16 = modelIntArray2[rotationX2048];
+							int sineX16 = sineTable16[rotationX2048];
+							int cosineX16 = cosineTable16[rotationX2048];
 							int rotatedY = anIntArray1628[vertexIndex] * cosineX16 - anIntArray1629[vertexIndex] * sineX16 >> 16;
 							anIntArray1629[vertexIndex] = anIntArray1628[vertexIndex] * sineX16 + anIntArray1629[vertexIndex] * cosineX16 >> 16;
 							anIntArray1628[vertexIndex] = rotatedY;
 						}
 						if (rotationY2048 != 0) {
-							int sineY16 = modelIntArray1[rotationY2048];
-							int cosineY16 = modelIntArray2[rotationY2048];
+							int sineY16 = sineTable16[rotationY2048];
+							int cosineY16 = cosineTable16[rotationY2048];
 							int rotatedX = anIntArray1629[vertexIndex] * sineY16 + anIntArray1627[vertexIndex] * cosineY16 >> 16;
 							anIntArray1629[vertexIndex] = anIntArray1629[vertexIndex] * cosineY16 - anIntArray1627[vertexIndex] * sineY16 >> 16;
 							anIntArray1627[vertexIndex] = rotatedX;
@@ -1079,8 +1079,8 @@ public final class Model extends Animable {
 	}
 
 	public void rotateX(int angle2048) {
-		int sine16 = modelIntArray1[angle2048];
-		int cosine16 = modelIntArray2[angle2048];
+		int sine16 = sineTable16[angle2048];
+		int cosine16 = cosineTable16[angle2048];
 		for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
 			int rotatedY = anIntArray1628[vertexIndex] * cosine16 - anIntArray1629[vertexIndex] * sine16 >> 16;
 			anIntArray1629[vertexIndex] = anIntArray1628[vertexIndex] * sine16 + anIntArray1629[vertexIndex] * cosine16 >> 16;
@@ -1127,9 +1127,9 @@ public final class Model extends Animable {
 
 	}
 
-	public void method479(int i, int j, int k, int l, int i1, boolean flag) {
-		int j1 = (int) Math.sqrt(k * k + l * l + i1 * i1);
-		int k1 = j * j1 >> 8;
+	public void applyLighting(int ambientLight, int lightDivisorScale, int lightX, int lightY, int lightZ, boolean bakeShading) {
+		int lightLength = (int) Math.sqrt(lightX * lightX + lightY * lightY + lightZ * lightZ);
+		int lightDivisor = lightDivisorScale * lightLength >> 8;
 		if (anIntArray1634 == null) {
 			anIntArray1634 = new int[anInt1630];
 			anIntArray1635 = new int[anInt1630];
@@ -1137,107 +1137,107 @@ public final class Model extends Animable {
 		}
 		if (super.aClass33Array1425 == null) {
 			super.aClass33Array1425 = new Class33[anInt1626];
-			for (int l1 = 0; l1 < anInt1626; l1++) {
-				super.aClass33Array1425[l1] = new Class33();
+			for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
+				super.aClass33Array1425[vertexIndex] = new Class33();
 			}
 
 		}
-		for (int i2 = 0; i2 < anInt1630; i2++) {
-			int j2 = anIntArray1631[i2];
-			int l2 = anIntArray1632[i2];
-			int i3 = anIntArray1633[i2];
-			int j3 = anIntArray1627[l2] - anIntArray1627[j2];
-			int k3 = anIntArray1628[l2] - anIntArray1628[j2];
-			int l3 = anIntArray1629[l2] - anIntArray1629[j2];
-			int i4 = anIntArray1627[i3] - anIntArray1627[j2];
-			int j4 = anIntArray1628[i3] - anIntArray1628[j2];
-			int k4 = anIntArray1629[i3] - anIntArray1629[j2];
-			int l4 = k3 * k4 - j4 * l3;
-			int i5 = l3 * i4 - k4 * j3;
-			int j5;
-			for (j5 = j3 * j4 - i4 * k3; l4 > 8192 || i5 > 8192 || j5 > 8192 || l4 < -8192 || i5 < -8192 || j5 < -8192; j5 >>= 1) {
-				l4 >>= 1;
-				i5 >>= 1;
+		for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
+			int vertexA = anIntArray1631[faceIndex];
+			int vertexB = anIntArray1632[faceIndex];
+			int vertexC = anIntArray1633[faceIndex];
+			int abX = anIntArray1627[vertexB] - anIntArray1627[vertexA];
+			int abY = anIntArray1628[vertexB] - anIntArray1628[vertexA];
+			int abZ = anIntArray1629[vertexB] - anIntArray1629[vertexA];
+			int acX = anIntArray1627[vertexC] - anIntArray1627[vertexA];
+			int acY = anIntArray1628[vertexC] - anIntArray1628[vertexA];
+			int acZ = anIntArray1629[vertexC] - anIntArray1629[vertexA];
+			int normalX = abY * acZ - acY * abZ;
+			int normalY = abZ * acX - acZ * abX;
+			int normalZ;
+			for (normalZ = abX * acY - acX * abY; normalX > 8192 || normalY > 8192 || normalZ > 8192 || normalX < -8192 || normalY < -8192 || normalZ < -8192; normalZ >>= 1) {
+				normalX >>= 1;
+				normalY >>= 1;
 			}
 
-			int k5 = (int) Math.sqrt(l4 * l4 + i5 * i5 + j5 * j5);
-			if (k5 <= 0) {
-				k5 = 1;
+			int normalLength = (int) Math.sqrt(normalX * normalX + normalY * normalY + normalZ * normalZ);
+			if (normalLength <= 0) {
+				normalLength = 1;
 			}
-			l4 = l4 * 256 / k5;
-			i5 = i5 * 256 / k5;
-			j5 = j5 * 256 / k5;
-			if (anIntArray1637 == null || (anIntArray1637[i2] & 1) == 0) {
-				Class33 class33_2 = super.aClass33Array1425[j2];
-				class33_2.anInt602 += l4;
-				class33_2.anInt603 += i5;
-				class33_2.anInt604 += j5;
-				class33_2.anInt605++;
-				class33_2 = super.aClass33Array1425[l2];
-				class33_2.anInt602 += l4;
-				class33_2.anInt603 += i5;
-				class33_2.anInt604 += j5;
-				class33_2.anInt605++;
-				class33_2 = super.aClass33Array1425[i3];
-				class33_2.anInt602 += l4;
-				class33_2.anInt603 += i5;
-				class33_2.anInt604 += j5;
-				class33_2.anInt605++;
+			normalX = normalX * 256 / normalLength;
+			normalY = normalY * 256 / normalLength;
+			normalZ = normalZ * 256 / normalLength;
+			if (anIntArray1637 == null || (anIntArray1637[faceIndex] & 1) == 0) {
+				Class33 vertexNormal = super.aClass33Array1425[vertexA];
+				vertexNormal.anInt602 += normalX;
+				vertexNormal.anInt603 += normalY;
+				vertexNormal.anInt604 += normalZ;
+				vertexNormal.anInt605++;
+				vertexNormal = super.aClass33Array1425[vertexB];
+				vertexNormal.anInt602 += normalX;
+				vertexNormal.anInt603 += normalY;
+				vertexNormal.anInt604 += normalZ;
+				vertexNormal.anInt605++;
+				vertexNormal = super.aClass33Array1425[vertexC];
+				vertexNormal.anInt602 += normalX;
+				vertexNormal.anInt603 += normalY;
+				vertexNormal.anInt604 += normalZ;
+				vertexNormal.anInt605++;
 			} else {
-				int l5 = i + (k * l4 + l * i5 + i1 * j5) / (k1 + k1 / 2);
-				anIntArray1634[i2] = calculateFaceShade(anIntArray1640[i2], l5, anIntArray1637[i2]);
+				int flatIntensity = ambientLight + (lightX * normalX + lightY * normalY + lightZ * normalZ) / (lightDivisor + lightDivisor / 2);
+				anIntArray1634[faceIndex] = calculateFaceShade(anIntArray1640[faceIndex], flatIntensity, anIntArray1637[faceIndex]);
 			}
 		}
 
-		if (flag) {
-			method480(i, k1, k, l, i1);
+		if (bakeShading) {
+			applyVertexLighting(ambientLight, lightDivisor, lightX, lightY, lightZ);
 		} else {
 			aClass33Array1660 = new Class33[anInt1626];
-			for (int k2 = 0; k2 < anInt1626; k2++) {
-				Class33 class33 = super.aClass33Array1425[k2];
-				Class33 class33_1 = aClass33Array1660[k2] = new Class33();
-				class33_1.anInt602 = class33.anInt602;
-				class33_1.anInt603 = class33.anInt603;
-				class33_1.anInt604 = class33.anInt604;
-				class33_1.anInt605 = class33.anInt605;
+			for (int normalIndex = 0; normalIndex < anInt1626; normalIndex++) {
+				Class33 sourceNormal = super.aClass33Array1425[normalIndex];
+				Class33 copiedNormal = aClass33Array1660[normalIndex] = new Class33();
+				copiedNormal.anInt602 = sourceNormal.anInt602;
+				copiedNormal.anInt603 = sourceNormal.anInt603;
+				copiedNormal.anInt604 = sourceNormal.anInt604;
+				copiedNormal.anInt605 = sourceNormal.anInt605;
 			}
 
 		}
-		if (flag) {
+		if (bakeShading) {
 			calculateBounds();
 		} else {
 			calculateBoundsWithExtents();
 		}
 	}
 
-	public void method480(int i, int j, int k, int l, int i1) {
-		for (int j1 = 0; j1 < anInt1630; j1++) {
-			int k1 = anIntArray1631[j1];
-			int i2 = anIntArray1632[j1];
-			int j2 = anIntArray1633[j1];
+	public void applyVertexLighting(int ambientLight, int lightDivisor, int lightX, int lightY, int lightZ) {
+		for (int faceIndex = 0; faceIndex < anInt1630; faceIndex++) {
+			int vertexA = anIntArray1631[faceIndex];
+			int vertexB = anIntArray1632[faceIndex];
+			int vertexC = anIntArray1633[faceIndex];
 			if (anIntArray1637 == null) {
-				int i3 = anIntArray1640[j1];
-				Class33 class33 = super.aClass33Array1425[k1];
-				int k2 = i + (k * class33.anInt602 + l * class33.anInt603 + i1 * class33.anInt604) / (j * class33.anInt605);
-				anIntArray1634[j1] = calculateFaceShade(i3, k2, 0);
-				class33 = super.aClass33Array1425[i2];
-				k2 = i + (k * class33.anInt602 + l * class33.anInt603 + i1 * class33.anInt604) / (j * class33.anInt605);
-				anIntArray1635[j1] = calculateFaceShade(i3, k2, 0);
-				class33 = super.aClass33Array1425[j2];
-				k2 = i + (k * class33.anInt602 + l * class33.anInt603 + i1 * class33.anInt604) / (j * class33.anInt605);
-				anIntArray1636[j1] = calculateFaceShade(i3, k2, 0);
-			} else if ((anIntArray1637[j1] & 1) == 0) {
-				int j3 = anIntArray1640[j1];
-				int k3 = anIntArray1637[j1];
-				Class33 class33_1 = super.aClass33Array1425[k1];
-				int l2 = i + (k * class33_1.anInt602 + l * class33_1.anInt603 + i1 * class33_1.anInt604) / (j * class33_1.anInt605);
-				anIntArray1634[j1] = calculateFaceShade(j3, l2, k3);
-				class33_1 = super.aClass33Array1425[i2];
-				l2 = i + (k * class33_1.anInt602 + l * class33_1.anInt603 + i1 * class33_1.anInt604) / (j * class33_1.anInt605);
-				anIntArray1635[j1] = calculateFaceShade(j3, l2, k3);
-				class33_1 = super.aClass33Array1425[j2];
-				l2 = i + (k * class33_1.anInt602 + l * class33_1.anInt603 + i1 * class33_1.anInt604) / (j * class33_1.anInt605);
-				anIntArray1636[j1] = calculateFaceShade(j3, l2, k3);
+				int faceColor = anIntArray1640[faceIndex];
+				Class33 vertexNormal = super.aClass33Array1425[vertexA];
+				int intensity = ambientLight + (lightX * vertexNormal.anInt602 + lightY * vertexNormal.anInt603 + lightZ * vertexNormal.anInt604) / (lightDivisor * vertexNormal.anInt605);
+				anIntArray1634[faceIndex] = calculateFaceShade(faceColor, intensity, 0);
+				vertexNormal = super.aClass33Array1425[vertexB];
+				intensity = ambientLight + (lightX * vertexNormal.anInt602 + lightY * vertexNormal.anInt603 + lightZ * vertexNormal.anInt604) / (lightDivisor * vertexNormal.anInt605);
+				anIntArray1635[faceIndex] = calculateFaceShade(faceColor, intensity, 0);
+				vertexNormal = super.aClass33Array1425[vertexC];
+				intensity = ambientLight + (lightX * vertexNormal.anInt602 + lightY * vertexNormal.anInt603 + lightZ * vertexNormal.anInt604) / (lightDivisor * vertexNormal.anInt605);
+				anIntArray1636[faceIndex] = calculateFaceShade(faceColor, intensity, 0);
+			} else if ((anIntArray1637[faceIndex] & 1) == 0) {
+				int faceColor = anIntArray1640[faceIndex];
+				int faceFlags = anIntArray1637[faceIndex];
+				Class33 vertexNormal = super.aClass33Array1425[vertexA];
+				int intensity = ambientLight + (lightX * vertexNormal.anInt602 + lightY * vertexNormal.anInt603 + lightZ * vertexNormal.anInt604) / (lightDivisor * vertexNormal.anInt605);
+				anIntArray1634[faceIndex] = calculateFaceShade(faceColor, intensity, faceFlags);
+				vertexNormal = super.aClass33Array1425[vertexB];
+				intensity = ambientLight + (lightX * vertexNormal.anInt602 + lightY * vertexNormal.anInt603 + lightZ * vertexNormal.anInt604) / (lightDivisor * vertexNormal.anInt605);
+				anIntArray1635[faceIndex] = calculateFaceShade(faceColor, intensity, faceFlags);
+				vertexNormal = super.aClass33Array1425[vertexC];
+				intensity = ambientLight + (lightX * vertexNormal.anInt602 + lightY * vertexNormal.anInt603 + lightZ * vertexNormal.anInt604) / (lightDivisor * vertexNormal.anInt605);
+				anIntArray1636[faceIndex] = calculateFaceShade(faceColor, intensity, faceFlags);
 			}
 		}
 
@@ -1246,8 +1246,8 @@ public final class Model extends Animable {
 		vertexGroupIds = null;
 		faceGroupIds = null;
 		if (anIntArray1637 != null) {
-			for (int l1 = 0; l1 < anInt1630; l1++) {
-				if ((anIntArray1637[l1] & 2) == 2) {
+			for (int checkIndex = 0; checkIndex < anInt1630; checkIndex++) {
+				if ((anIntArray1637[checkIndex] & 2) == 2) {
 					return;
 				}
 			}
@@ -1275,51 +1275,51 @@ public final class Model extends Animable {
 		return (colorValue & 0xff80) + lightIntensity;
 	}
 
-	public void method482(int j, int k, int l, int i1, int j1, int k1) {
+	public void projectRotated(int yaw, int roll, int cameraPitch, int offsetX, int offsetY, int offsetZ) {
 		int i = 0; // was a parameter
-		int l1 = Texture.textureInt1;
-		int i2 = Texture.textureInt2;
-		int j2 = modelIntArray1[i];
-		int k2 = modelIntArray2[i];
-		int l2 = modelIntArray1[j];
-		int i3 = modelIntArray2[j];
-		int j3 = modelIntArray1[k];
-		int k3 = modelIntArray2[k];
-		int l3 = modelIntArray1[l];
-		int i4 = modelIntArray2[l];
-		int j4 = j1 * l3 + k1 * i4 >> 16;
-		for (int k4 = 0; k4 < anInt1626; k4++) {
-			int l4 = anIntArray1627[k4];
-			int i5 = anIntArray1628[k4];
-			int j5 = anIntArray1629[k4];
-			if (k != 0) {
-				int k5 = i5 * j3 + l4 * k3 >> 16;
-				i5 = i5 * k3 - l4 * j3 >> 16;
-				l4 = k5;
+		int screenCenterX = Texture.textureInt1;
+		int screenCenterY = Texture.textureInt2;
+		int j2 = sineTable16[i];
+		int k2 = cosineTable16[i];
+		int yawSine = sineTable16[yaw];
+		int yawCosine = cosineTable16[yaw];
+		int rollSine = sineTable16[roll];
+		int rollCosine = cosineTable16[roll];
+		int pitchSine = sineTable16[cameraPitch];
+		int pitchCosine = cosineTable16[cameraPitch];
+		int originDepth = offsetY * pitchSine + offsetZ * pitchCosine >> 16;
+		for (int vertexIndex = 0; vertexIndex < anInt1626; vertexIndex++) {
+			int x = anIntArray1627[vertexIndex];
+			int y = anIntArray1628[vertexIndex];
+			int z = anIntArray1629[vertexIndex];
+			if (roll != 0) {
+				int rolledX = y * rollSine + x * rollCosine >> 16;
+				y = y * rollCosine - x * rollSine >> 16;
+				x = rolledX;
 			}
 			if (i != 0) {
-				int l5 = i5 * k2 - j5 * j2 >> 16;
-				j5 = i5 * j2 + j5 * k2 >> 16;
-				i5 = l5;
+				int l5 = y * k2 - z * j2 >> 16;
+				z = y * j2 + z * k2 >> 16;
+				y = l5;
 			}
-			if (j != 0) {
-				int i6 = j5 * l2 + l4 * i3 >> 16;
-				j5 = j5 * i3 - l4 * l2 >> 16;
-				l4 = i6;
+			if (yaw != 0) {
+				int yawedX = z * yawSine + x * yawCosine >> 16;
+				z = z * yawCosine - x * yawSine >> 16;
+				x = yawedX;
 			}
-			l4 += i1;
-			i5 += j1;
-			j5 += k1;
-			int j6 = i5 * i4 - j5 * l3 >> 16;
-			j5 = i5 * l3 + j5 * i4 >> 16;
-			i5 = j6;
-			anIntArray1667[k4] = j5 - j4;
-			anIntArray1665[k4] = l1 + (l4 << 9) / j5;
-			anIntArray1666[k4] = i2 + (i5 << 9) / j5;
+			x += offsetX;
+			y += offsetY;
+			z += offsetZ;
+			int pitchedY = y * pitchCosine - z * pitchSine >> 16;
+			z = y * pitchSine + z * pitchCosine >> 16;
+			y = pitchedY;
+			anIntArray1667[vertexIndex] = z - originDepth;
+			anIntArray1665[vertexIndex] = screenCenterX + (x << 9) / z;
+			anIntArray1666[vertexIndex] = screenCenterY + (y << 9) / z;
 			if (anInt1642 > 0) {
-				anIntArray1668[k4] = l4;
-				anIntArray1669[k4] = i5;
-				anIntArray1670[k4] = j5;
+				anIntArray1668[vertexIndex] = x;
+				anIntArray1669[vertexIndex] = y;
+				anIntArray1670[vertexIndex] = z;
 			}
 		}
 
@@ -1401,8 +1401,8 @@ public final class Model extends Animable {
 		int l6 = 0;
 		int i7 = 0;
 		if (i != 0) {
-			l6 = modelIntArray1[i];
-			i7 = modelIntArray2[i];
+			l6 = sineTable16[i];
+			i7 = cosineTable16[i];
 		}
 		for (int j7 = 0; j7 < anInt1626; j7++) {
 			int k7 = anIntArray1627[j7];
@@ -1884,14 +1884,14 @@ public final class Model extends Animable {
 	public static int anInt1686;
 	public static int anInt1687;
 	public static final int[] anIntArray1688 = new int[1000];
-	public static int modelIntArray1[];
-	public static int modelIntArray2[];
+	public static int sineTable16[];
+	public static int cosineTable16[];
 	private static int[] hslToRgbPalette;
 	private static int[] reciprocalTable16;
 
 	static {
-		modelIntArray1 = Texture.sineTable;
-		modelIntArray2 = Texture.cosineTable;
+		sineTable16 = Texture.sineTable;
+		cosineTable16 = Texture.cosineTable;
 		hslToRgbPalette = Texture.hslToRgbPalette;
 		reciprocalTable16 = Texture.reciprocalTable16;
 	}

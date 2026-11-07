@@ -576,22 +576,22 @@ final class WorldController {
 							if (wall.aClass30_Sub2_Sub4_279 != null && wall.aClass30_Sub2_Sub4_279.aClass33Array1425 != null) {
 								mergeNeighbourNormals(plane, 1, 1, tileX, tileY, (Model) wall.aClass30_Sub2_Sub4_279);
 								mergeSharedVertexNormals((Model) wall.aClass30_Sub2_Sub4_278, (Model) wall.aClass30_Sub2_Sub4_279, 0, 0, 0, false);
-								((Model) wall.aClass30_Sub2_Sub4_279).method480(ambientLight, lightContrast, lightX, lightY, lightZ);
+								((Model) wall.aClass30_Sub2_Sub4_279).applyVertexLighting(ambientLight, lightContrast, lightX, lightY, lightZ);
 							}
-							((Model) wall.aClass30_Sub2_Sub4_278).method480(ambientLight, lightContrast, lightX, lightY, lightZ);
+							((Model) wall.aClass30_Sub2_Sub4_278).applyVertexLighting(ambientLight, lightContrast, lightX, lightY, lightZ);
 						}
 						for (int objectIndex = 0; objectIndex < ground.anInt1317; objectIndex++) {
 							Object5 sceneObject = ground.obj5Array[objectIndex];
 							if (sceneObject != null && sceneObject.aClass30_Sub2_Sub4_521 != null && sceneObject.aClass30_Sub2_Sub4_521.aClass33Array1425 != null) {
 								mergeNeighbourNormals(plane, sceneObject.anInt524 - sceneObject.anInt523 + 1, sceneObject.anInt526 - sceneObject.anInt525 + 1, tileX, tileY, (Model) sceneObject.aClass30_Sub2_Sub4_521);
-								((Model) sceneObject.aClass30_Sub2_Sub4_521).method480(ambientLight, lightContrast, lightX, lightY, lightZ);
+								((Model) sceneObject.aClass30_Sub2_Sub4_521).applyVertexLighting(ambientLight, lightContrast, lightX, lightY, lightZ);
 							}
 						}
 
 						Object3 groundDecoration = ground.obj3;
 						if (groundDecoration != null && groundDecoration.aClass30_Sub2_Sub4_814.aClass33Array1425 != null) {
 							mergeGroundDecorationNormals(tileX, plane, (Model) groundDecoration.aClass30_Sub2_Sub4_814, tileY);
-							((Model) groundDecoration.aClass30_Sub2_Sub4_814).method480(ambientLight, lightContrast, lightX, lightY, lightZ);
+							((Model) groundDecoration.aClass30_Sub2_Sub4_814).applyVertexLighting(ambientLight, lightContrast, lightX, lightY, lightZ);
 						}
 					}
 				}
@@ -802,10 +802,10 @@ final class WorldController {
 		boolean pointVisible[][][][] = new boolean[9][32][256][256];
 		for (int pitch = 128; pitch <= 384; pitch += 32) {
 			for (int yaw = 0; yaw < 2048; yaw += 64) {
-				anInt458 = Model.modelIntArray1[pitch];
-				anInt459 = Model.modelIntArray2[pitch];
-				anInt460 = Model.modelIntArray1[yaw];
-				anInt461 = Model.modelIntArray2[yaw];
+				anInt458 = Model.sineTable16[pitch];
+				anInt459 = Model.cosineTable16[pitch];
+				anInt460 = Model.sineTable16[yaw];
+				anInt461 = Model.cosineTable16[yaw];
 				int pitchIndex = (pitch - 128) / 32;
 				int yawIndex = yaw / 64;
 				for (int tileOffsetX = -(drawDistance + 1); tileOffsetX <= (drawDistance + 1); tileOffsetX++) {
@@ -898,10 +898,10 @@ final class WorldController {
 			cameraY = tileCountY * 128 - 1;
 		}
 		anInt448++;
-		anInt458 = Model.modelIntArray1[pitch];
-		anInt459 = Model.modelIntArray2[pitch];
-		anInt460 = Model.modelIntArray1[yaw];
-		anInt461 = Model.modelIntArray2[yaw];
+		anInt458 = Model.sineTable16[pitch];
+		anInt459 = Model.cosineTable16[pitch];
+		anInt460 = Model.sineTable16[yaw];
+		anInt461 = Model.cosineTable16[yaw];
 		cameraTileVisibility = tileVisibilityTable[(pitch - 128) / 32][yaw / 64];
 		anInt455 = cameraX;
 		anInt456 = cameraZ;

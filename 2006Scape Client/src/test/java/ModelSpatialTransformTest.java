@@ -40,7 +40,7 @@ public class ModelSpatialTransformTest {
         }
     }
     @Test public void obliqueXRotationUses16BitTrigAndArithmeticShiftRounding() throws Exception {
-        assertEquals(46340, Model.modelIntArray1[256]); assertEquals(46340, Model.modelIntArray2[256]);
+        assertEquals(46340, Model.sineTable16[256]); assertEquals(46340, Model.cosineTable16[256]);
         Model m = model(new int[]{5,6,7},new int[]{1000,0,-1000},new int[]{0,1,0}); m.rotateX(256);
         coordinates(m,new int[]{5,6,7},new int[]{707,-1,-708},new int[]{707,0,-708});
     }

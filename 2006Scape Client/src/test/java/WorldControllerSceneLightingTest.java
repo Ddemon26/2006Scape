@@ -670,8 +670,8 @@ public class WorldControllerSceneLightingTest {
     private static void camera(int pitch, int yaw, int w, int h) throws Exception {
         WorldController.drawDistance = 1;
         build(0, 0, w, h, new int[9]);          // sets viewport statics
-        sset("anInt458", Model.modelIntArray1[pitch]); sset("anInt459", Model.modelIntArray2[pitch]);
-        sset("anInt460", Model.modelIntArray1[yaw]); sset("anInt461", Model.modelIntArray2[yaw]);
+        sset("anInt458", Model.sineTable16[pitch]); sset("anInt459", Model.cosineTable16[pitch]);
+        sset("anInt460", Model.sineTable16[yaw]); sset("anInt461", Model.cosineTable16[yaw]);
     }
 
     @Test public void method311ProjectsDepthWithinFiftyToThirtyFiveHundredAndChecksViewportInclusively() throws Exception {
@@ -734,8 +734,8 @@ public class WorldControllerSceneLightingTest {
         assertEquals(40 * 128 + 17, sint("anInt455")); assertEquals(250, sint("anInt456")); assertEquals(60 * 128 + 99, sint("anInt457"));
         assertEquals(40, sint("anInt453")); assertEquals(60, sint("anInt454"));
         assertEquals(2, sint("anInt447"));
-        assertEquals(Model.modelIntArray1[160], sint("anInt458")); assertEquals(Model.modelIntArray2[160], sint("anInt459"));
-        assertEquals(Model.modelIntArray1[640], sint("anInt460")); assertEquals(Model.modelIntArray2[640], sint("anInt461"));
+        assertEquals(Model.sineTable16[160], sint("anInt458")); assertEquals(Model.cosineTable16[160], sint("anInt459"));
+        assertEquals(Model.sineTable16[640], sint("anInt460")); assertEquals(Model.cosineTable16[640], sint("anInt461"));
         assertSame(table()[(160 - 128) / 32][640 / 64], sget("cameraTileVisibility"));
         assertEquals(35, sint("anInt449")); assertEquals(45, sint("anInt450"));
         assertEquals(55, sint("anInt451")); assertEquals(65, sint("anInt452"));

@@ -68,7 +68,7 @@ public class ModelCopyTest {
         for(boolean reverse:new boolean[]{false,true}) {
             Model a=empty();a.anInt1626=4;a.anInt1630=1;a.anIntArray1627=new int[]{0,10,0,99};a.anIntArray1628=new int[]{0,0,10,99};a.anIntArray1629=new int[]{0,0,0,99};
             a.anIntArray1631=new int[]{0};a.anIntArray1632=new int[]{reverse?2:1};a.anIntArray1633=new int[]{reverse?1:2};a.anIntArray1640=new int[]{500};
-            a.method479(64,850,-30,-50,-30,false);Model b=new Model(false,true,a);
+            a.applyLighting(64,850,-30,-50,-30,false);Model b=new Model(false,true,a);
             for(int j=0;j<4;j++) { Class33 x=b.aClass33Array1425[j];assertEquals(0,x.anInt602);assertEquals(0,x.anInt603);assertEquals(j==3?0:reverse?-256:256,x.anInt604);assertEquals(j==3?0:1,x.anInt605);assertNotSame(a.aClass33Array1425[j],x); }
         }
     }

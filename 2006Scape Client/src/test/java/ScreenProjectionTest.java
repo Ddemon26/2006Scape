@@ -17,8 +17,8 @@ public class ScreenProjectionTest {
     public static int[] stages(Game g,int a,int b,int c){
         int h=TerrainHeightTest.expected(g,g.plane,c,a)-b;
         int dx=a-g.xCameraPos,dy=c-g.yCameraPos,dz=h-g.zCameraPos;
-        int sp=Model.modelIntArray1[g.yCameraCurve],cp=Model.modelIntArray2[g.yCameraCurve];
-        int sy=Model.modelIntArray1[g.xCameraCurve],cc=Model.modelIntArray2[g.xCameraCurve];
+        int sp=Model.sineTable16[g.yCameraCurve],cp=Model.cosineTable16[g.yCameraCurve];
+        int sy=Model.sineTable16[g.xCameraCurve],cc=Model.cosineTable16[g.xCameraCurve];
         int[] v={dx,dy,dz};
         int[] r={dot(new int[]{cc,sy,0},v),dot(new int[]{-sy,cc,0},v),dz};
         int z=dot(new int[]{0,-sp,cp},r),d=dot(new int[]{0,cp,sp},r);
@@ -44,8 +44,8 @@ public class ScreenProjectionTest {
     @Test public void allAngleIndicesAndMixedRotationsMatchIndependentMatrix(){
         Game g=fixture();
         for(int n=0;n<2048;n++){
-            assertEquals(Math.sin(n*Math.PI/1024)*65536,Model.modelIntArray1[n],1.01);
-            assertEquals(Math.cos(n*Math.PI/1024)*65536,Model.modelIntArray2[n],1.01);
+            assertEquals(Math.sin(n*Math.PI/1024)*65536,Model.sineTable16[n],1.01);
+            assertEquals(Math.cos(n*Math.PI/1024)*65536,Model.cosineTable16[n],1.01);
             g.xCameraCurve=n;g.yCameraCurve=0;check(g,3257,37,3025);
             g.xCameraCurve=0;g.yCameraCurve=n;check(g,2743,-19,3025);
         }

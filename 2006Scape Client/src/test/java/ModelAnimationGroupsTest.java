@@ -157,10 +157,10 @@ public class ModelAnimationGroupsTest {
         try {m.applyInterleavedFrames(new int[]{0},5,8); } catch(ArrayIndexOutOfBoundsException unexpected) {fail();}
     }
     @Test public void application78T13() throws Exception {
-        int[] a=Model.modelIntArray1,b=Model.modelIntArray2;
+        int[] a=Model.sineTable16,b=Model.cosineTable16;
         try {
-            Model.modelIntArray1=new int[2048]; Model.modelIntArray2=new int[2048];
-            Model.modelIntArray1[512]=65536; Model.modelIntArray2[512]=0;
+            Model.sineTable16=new int[2048]; Model.cosineTable16=new int[2048];
+            Model.sineTable16[512]=65536; Model.cosineTable16[512]=0;
             int[][] c={{64,0,0},{0,64,0},{0,0,64},{64,64,64}};
             int[][] d={{21,-7,-5},{7,-5,-21},{-5,-21,7},{-21,-7,5}};
             for(int n=0;n<c.length;n++) {
@@ -170,13 +170,13 @@ public class ModelAnimationGroupsTest {
             Model m=m78(); transform(m,0,new int[0],3,4,5); transform(m,2,new int[]{2},0,0,64);
             xyz78(m,new int[]{10,-6,-9,999},new int[]{20,-14,12,998},new int[]{30,7,-18,997}); p78(3,4,5);
             // Distinct coefficients distinguish the two lookup tables and 16-bit shifts.
-            Model.modelIntArray1[512]=32768; Model.modelIntArray2[512]=16384;
+            Model.sineTable16[512]=32768; Model.cosineTable16[512]=16384;
             int[][] v={{21,-5,-1},{8,-5,-9},{2,-12,7}};
             for(int n=0;n<3;n++) {
                 m=m78(); int[] q=new int[3];q[n]=64;transform(m,2,new int[]{2},q[0],q[1],q[2]);
                 assertEquals(v[n][0],m.anIntArray1627[1]);assertEquals(v[n][1],m.anIntArray1628[1]);assertEquals(v[n][2],m.anIntArray1629[1]);
             }
-        } finally {Model.modelIntArray1=a;Model.modelIntArray2=b;}
+        } finally {Model.sineTable16=a;Model.cosineTable16=b;}
     }
     @Test public void application78T14() throws Exception {
         AnimationFrame.initialize(12);

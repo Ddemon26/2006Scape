@@ -46,7 +46,7 @@ final class StationaryGraphic extends Animable {
                 model_1.rotateYQuarterTurn();
             }
         }
-        model_1.method479(64 + spotAnimation.anInt413, 850 + spotAnimation.anInt414, -30, -50, -30, true);
+        model_1.applyLighting(64 + spotAnimation.anInt413, 850 + spotAnimation.anInt414, -30, -50, -30, true);
         return model_1;
     }
 

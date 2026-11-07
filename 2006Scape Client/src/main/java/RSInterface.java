@@ -314,7 +314,7 @@ public final class RSInterface {
 		if (j != -1) {
 			model_1.applyAnimationFrame(j);
 		}
-		model_1.method479(lightness, shading, -50, -10, -50, true);
+		model_1.applyLighting(lightness, shading, -50, -10, -50, true);
 		return model_1;
 	}
 
