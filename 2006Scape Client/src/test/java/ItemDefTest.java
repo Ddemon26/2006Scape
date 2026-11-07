@@ -705,4 +705,129 @@ public class ItemDefTest {
             assertArrayEquals(new int[]{110, 120}, bodyXs139(body139(0, 0, 1, 1, 1, 1), anims));
         } finally { Animation.anims = saved; sset(AnimationFrame.class, "loadedFrames", savedFrames); Player.mruNodes.clear(); }
     }
+
+    // ================= pass 144: getSprite zoom components, Player head model, desc body model, media types 2 and 4 =================
+    private static int spread144(int zoom, int rot1) throws Exception {
+        byte[][] r = blanks(4); r[1] = new Rec().b(1).s(21).b(4).s(zoom).b(5).s(rot1).done();
+        install(r); ItemDef.mruNodes1.clear(); ItemDef.mruNodes2.clear(); loadRev(21);
+        assertNotNull(ItemDef.getSprite(1, 1, 0));
+        int[] sx = arr("screenX");
+        return sx[1] - sx[0];      // screen distance between two vertices 10 apart in x: 5120 / camera depth
+    }
+    @Test public void spriteZoomIsSplitIntoSineAndCosineTermsOfTheFirstRotationThatSetVerticalOffsetAndDepth() throws Exception {
+        paletteOn();
+        try {
+            // camera depth of the model is +-zoom for rotations 0 (cosine = 1), 512 (sine = 1), 1024 (cosine = -1), 1536 (sine = -1)
+            int[][] expect = {{0, 1}, {512, 1}, {1024, -1}, {1536, -1}, {256, 1}, {1792, -1}};
+            for (int[] e : expect) {
+                for (int zoom : new int[]{200, 400}) {
+                    double want = 5120.0 / zoom;   // magnitude only: the sign flips with the side of the camera
+                    assertEquals("rot " + e[0] + " zoom " + zoom, want, Math.abs(spread144(zoom, e[0])), 2.0);
+                }
+            }
+        } finally { paletteOff(); ItemDef.mruNodes1.clear(); ItemDef.mruNodes2.clear(); }
+    }
+
+    private void headSetup144() throws Exception {
+        install(blanks(8));
+        Model.method460(triangle(1, 40000, false), 1); Model.method460(triangle(12, 40001, false), 12);
+        Model.method460(triangle(23, 40002, false), 23); Model.method460(triangle(34, 40003, false), 34);
+        ItemDef[] cache = (ItemDef[]) sget(ItemDef.class, "cache");
+        cache[0] = withModels(-1, -1, -1, -1, -1, -1, 1, 12, -1, -1); seti(cache[0], "id", 3);
+        cache[1] = withModels(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1); seti(cache[1], "id", 4);
+        cache[2] = withModels(-1, -1, -1, -1, -1, -1, 23, 34, -1, -1); seti(cache[2], "id", 5);
+        sset(ItemDef.class, "cacheIndex", 5);
+    }
+    @Test public void headModelSkipsEmptySlotsAndAbsentPartsKeepsSlotOrderAndRecolorsPerColourSlot() throws Exception {
+        headSetup144();
+        int[][] pal = Game.anIntArrayArray1003; int[] pal1204 = Game.anIntArray1204;
+        int[][] savedPal = new int[5][]; for (int i = 0; i < 5; i++) savedPal[i] = pal[i].clone(); int[] saved1204 = pal1204.clone();
+        try {
+            Player p = new Player(); p.visible = true;
+            p.equipment[0] = 512 + 3; p.equipment[2] = 512 + 4; p.equipment[5] = 0; p.equipment[11] = 512 + 5;
+            Model plain = p.buildHeadModel();
+            assertArrayEquals(x3(1, 12, 23, 34), xs(plain));
+            assertArrayEquals(new int[]{40000, 40001, 40002, 40003}, Arrays.copyOf(plain.anIntArray1640, 4));
+            int[] src = {40000, 40001, 40002, 40003, 39999};
+            for (int j = 0; j < 5; j++) { pal[j][0] = src[j]; pal[j][1] = 100 + j; pal[j][2] = 200 + j; }
+            pal1204[0] = 40003; pal1204[1] = 555; pal1204[2] = 556;
+            int[] colours = {1, 1, 2, 0, 1};
+            System.arraycopy(colours, 0, (int[]) get(p, "anIntArray1700"), 0, 5);
+            assertArrayEquals(new int[]{100, 101, 202, 555}, Arrays.copyOf(p.buildHeadModel().anIntArray1640, 4));
+            colours[1] = 2; System.arraycopy(colours, 0, (int[]) get(p, "anIntArray1700"), 0, 5);
+            assertArrayEquals(new int[]{100, 201, 202, 556}, Arrays.copyOf(p.buildHeadModel().anIntArray1640, 4));
+            p.equipment[0] = 0; p.equipment[11] = 0;
+            assertEquals(0, p.buildHeadModel().anInt1626);
+        } finally {
+            for (int i = 0; i < 5; i++) System.arraycopy(savedPal[i], 0, pal[i], 0, savedPal[i].length);
+            System.arraycopy(saved1204, 0, pal1204, 0, saved1204.length);
+        }
+    }
+
+    private static int[] descXs144(Player p, EntityDef d, Animation[] anims) throws Exception {
+        Constructor<Model> c = Model.class.getDeclaredConstructor(); c.setAccessible(true); Model m = c.newInstance();
+        m.anInt1626 = 2; m.anInt1630 = 0; m.anIntArray1627 = new int[]{10, 20}; m.anIntArray1628 = new int[]{0, 0}; m.anIntArray1629 = new int[]{0, 0};
+        m.vertexGroups = new int[][]{{0}, {1}};
+        EntityDef.mruNodes.clear(); EntityDef.mruNodes.removeFromCache(m, d.type);
+        Animation.anims = anims;
+        return xs(invokeBody139(p));
+    }
+    @Test public void npcBodyModelUsesTheDescriptorAndTheAnimationFrameChain() throws Exception {
+        Animation[] saved = Animation.anims; Object savedFrames = sget(AnimationFrame.class, "loadedFrames");
+        try {
+            ByteArrayOutputStream o = new ByteArrayOutputStream();
+            for (int v : new int[]{2, 1, 1, 1, 0, 1, 1}) o.write(v);
+            AnimationTransformTable t = new AnimationTransformTable(new Stream(o.toByteArray()));
+            AnimationFrame[] fr = new AnimationFrame[8]; fr[3] = frame139(t, 7); fr[4] = frame139(t, 100); fr[5] = frame139(t, 3000); fr[6] = frame139(t, 9);
+            sset(AnimationFrame.class, "loadedFrames", fr);
+            Animation[] anims = {anim139(new int[]{3, 4}, -1, -1, null), anim139(new int[]{5, 6}, -1, -1, null)};
+            Constructor<EntityDef> ec = EntityDef.class.getDeclaredConstructor(); ec.setAccessible(true);
+            EntityDef d = ec.newInstance(); d.type = 31L;
+            Player p = body139(0, 0, 1, 1, 0, -1); p.desc = d;
+            assertArrayEquals(new int[]{110, 120}, descXs144(p, d, anims));       // main animation, entry anInt1527
+            p = body139(0, 1, 1, 1, 0, -1); p.desc = d;
+            assertArrayEquals(new int[]{3010, 3020}, descXs144(p, d, anims));     // main held: other animation entry anInt1518
+            p = body139(0, 1, 1, 1, 1, -1); p.desc = d;
+            assertArrayEquals(new int[]{19, 29}, descXs144(p, d, anims));
+            p = body139(-1, 0, 0, -1, 0, -1); p.desc = d;
+            assertArrayEquals(new int[]{10, 20}, descXs144(p, d, anims));         // no animation: untouched
+            p = body139(0, 0, 0, 1, 1, -1); p.desc = d;
+            assertArrayEquals(new int[]{17, 27}, descXs144(p, d, anims));         // other animation ignored while the main one plays
+        } finally { Animation.anims = saved; sset(AnimationFrame.class, "loadedFrames", savedFrames); EntityDef.mruNodes.clear(); }
+    }
+
+    private static void installNpcs144(byte[]... records) throws Exception {
+        ByteArrayOutputStream data = new ByteArrayOutputStream(); data.write(0); data.write(0);
+        int[] idx = new int[records.length];
+        for (int i = 0; i < records.length; i++) { idx[i] = data.size(); data.write(records[i]); }
+        sset(EntityDef.class, "stream", new Stream(data.toByteArray())); sset(EntityDef.class, "streamIndices", idx);
+        Constructor<EntityDef> c = EntityDef.class.getDeclaredConstructor(); c.setAccessible(true);
+        EntityDef[] cache = new EntityDef[20]; for (int i = 0; i < 20; i++) cache[i] = c.newInstance();
+        sset(EntityDef.class, "cache", cache);
+    }
+    @Test public void interfaceMediaTypeTwoIsTheNpcHeadModelListAndTypeFourIsTheItemUnlitModelWithItsLightOffsets() throws Exception {
+        Object[] saved = {sget(EntityDef.class, "stream"), sget(EntityDef.class, "streamIndices"), sget(EntityDef.class, "cache")};
+        try {
+            stackDb(); loadAll(23, 34);
+            LruCache cache = (LruCache) sget(RSInterface.class, "aMRUNodes_264"); cache.clear();
+            // npc 1: opcode 60 head models {62, 61}; opcode 1 body models {11} (ignored by the interface loader)
+            installNpcs144(new Rec().done(), new Rec().b(60).b(2).s(34).s(23).b(1).b(1).s(11).done());
+            RSInterface ri = new RSInterface();
+            Model head = media(ri, 2, 1);
+            assertArrayEquals(x3(34, 23), xs(head));
+            assertSame(head, media(ri, 2, 1));                       // cached under (2 << 16) + 1
+            assertNotSame(head, media(ri, 1, 1));
+            // type 4: ItemDef.forID(id).getUnlitModel(50): stack variant for amount 50 (13), not the base model (11)
+            cache.clear();
+            ItemDef item = ItemDef.forID(10); seti(item, "ambientLightOffset", 7); seti(item, "lightDivisorOffset", 40);
+            RSInterface ri4 = new RSInterface(); seti(ri4, "type", 4); seti(ri4, "id", 10);
+            int l0 = geti(ri4, "lightness"), s0 = geti(ri4, "shading");
+            assertArrayEquals(x3(13), xs(media(ri4, 4, 10)));
+            assertEquals(l0 + 7, geti(ri4, "lightness")); assertEquals(s0 + 40, geti(ri4, "shading"));
+            RSInterface ri3 = new RSInterface(); seti(ri3, "type", 3); seti(ri3, "id", 10); int l3 = geti(ri3, "lightness");
+            media(ri3, 4, 10);
+            assertEquals(l3, geti(ri3, "lightness"));                 // offsets only added when the interface type is 4
+        } finally { sset(EntityDef.class, "stream", saved[0]); sset(EntityDef.class, "streamIndices", saved[1]); sset(EntityDef.class, "cache", saved[2]); cacheClear144(); }
+    }
+    private static void cacheClear144() throws Exception { ((LruCache) sget(RSInterface.class, "aMRUNodes_264")).clear(); }
 }

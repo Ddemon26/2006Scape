@@ -244,7 +244,7 @@ public final class RSInterface {
 		if (modelType == 1)
 			model = Model.getModel(modelId);
 		if (modelType == 2)
-			model = EntityDef.forID(modelId).method160();
+			model = EntityDef.forID(modelId).getHeadModel();
 		if (modelType == 3)
 			model = Game.myPlayer.buildHeadModel();
 		if (modelType == 4)

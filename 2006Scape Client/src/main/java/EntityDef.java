@@ -31,42 +31,42 @@ public final class EntityDef {
 		return entityDef;
 	}
 
-	public Model method160() {
+	public Model getHeadModel() {
 		if (childrenIDs != null) {
 			EntityDef entityDef = method161();
 			if (entityDef == null) {
 				return null;
 			} else {
-				return entityDef.method160();
+				return entityDef.getHeadModel();
 			}
 		}
-		if (anIntArray73 == null) {
+		if (headModelIds == null) {
 			return null;
 		}
-		boolean flag1 = false;
-		for (int i = 0; i < anIntArray73.length; i++) {
-			if (!Model.isModelLoaded(anIntArray73[i])) {
-				flag1 = true;
+		boolean anyModelMissing = false;
+		for (int modelIndex = 0; modelIndex < headModelIds.length; modelIndex++) {
+			if (!Model.isModelLoaded(headModelIds[modelIndex])) {
+				anyModelMissing = true;
 			}
 		}
 
-		if (flag1) {
+		if (anyModelMissing) {
 			return null;
 		}
-		Model aclass30_sub2_sub4_sub6s[] = new Model[anIntArray73.length];
-		for (int j = 0; j < anIntArray73.length; j++) {
-			aclass30_sub2_sub4_sub6s[j] = Model.getModel(anIntArray73[j]);
+		Model models[] = new Model[headModelIds.length];
+		for (int loadIndex = 0; loadIndex < headModelIds.length; loadIndex++) {
+			models[loadIndex] = Model.getModel(headModelIds[loadIndex]);
 		}
 
 		Model model;
-		if (aclass30_sub2_sub4_sub6s.length == 1) {
-			model = aclass30_sub2_sub4_sub6s[0];
+		if (models.length == 1) {
+			model = models[0];
 		} else {
-			model = new Model(aclass30_sub2_sub4_sub6s.length, aclass30_sub2_sub4_sub6s);
+			model = new Model(models.length, models);
 		}
-		if (anIntArray76 != null) {
-			for (int k = 0; k < anIntArray76.length; k++) {
-				model.recolor(anIntArray76[k], anIntArray70[k]);
+		if (recolorSources != null) {
+			for (int recolorIndex = 0; recolorIndex < recolorSources.length; recolorIndex++) {
+				model.recolor(recolorSources[recolorIndex], recolorReplacements[recolorIndex]);
 			}
 
 		}
@@ -119,64 +119,64 @@ public final class EntityDef {
 		stream = null;
 	}
 
-	public Model method164(int j, int k, int ai[]) {
+	public Model getAnimatedModel(int secondaryFrameId, int primaryFrameId, int secondaryTransformIndices[]) {
 		if (childrenIDs != null) {
 			EntityDef entityDef = method161();
 			if (entityDef == null) {
 				return null;
 			} else {
-				return entityDef.method164(j, k, ai);
+				return entityDef.getAnimatedModel(secondaryFrameId, primaryFrameId, secondaryTransformIndices);
 			}
 		}
 		Model model = (Model) mruNodes.insertFromCache(type);
 		if (model == null) {
-			boolean flag = false;
-			for (int i1 = 0; i1 < anIntArray94.length; i1++) {
-				if (!Model.isModelLoaded(anIntArray94[i1])) {
-					flag = true;
+			boolean anyModelMissing = false;
+			for (int modelIndex = 0; modelIndex < bodyModelIds.length; modelIndex++) {
+				if (!Model.isModelLoaded(bodyModelIds[modelIndex])) {
+					anyModelMissing = true;
 				}
 			}
 
-			if (flag) {
+			if (anyModelMissing) {
 				return null;
 			}
-			Model aclass30_sub2_sub4_sub6s[] = new Model[anIntArray94.length];
-			for (int j1 = 0; j1 < anIntArray94.length; j1++) {
-				aclass30_sub2_sub4_sub6s[j1] = Model.getModel(anIntArray94[j1]);
+			Model models[] = new Model[bodyModelIds.length];
+			for (int loadIndex = 0; loadIndex < bodyModelIds.length; loadIndex++) {
+				models[loadIndex] = Model.getModel(bodyModelIds[loadIndex]);
 			}
 
-			if (aclass30_sub2_sub4_sub6s.length == 1) {
-				model = aclass30_sub2_sub4_sub6s[0];
+			if (models.length == 1) {
+				model = models[0];
 			} else {
-				model = new Model(aclass30_sub2_sub4_sub6s.length, aclass30_sub2_sub4_sub6s);
+				model = new Model(models.length, models);
 			}
-			if (anIntArray76 != null) {
-				for (int k1 = 0; k1 < anIntArray76.length; k1++) {
-					model.recolor(anIntArray76[k1], anIntArray70[k1]);
+			if (recolorSources != null) {
+				for (int recolorIndex = 0; recolorIndex < recolorSources.length; recolorIndex++) {
+					model.recolor(recolorSources[recolorIndex], recolorReplacements[recolorIndex]);
 				}
 
 			}
 			model.buildAnimationGroups();
-			model.applyLighting(64 + anInt85, 850 + anInt92, -30, -50, -30, true);
+			model.applyLighting(64 + ambientLightOffset, 850 + lightDivisorOffset, -30, -50, -30, true);
 			mruNodes.removeFromCache(model, type);
 		}
-		Model model_1 = Model.animationScratchModel;
-		model_1.copyIntoAnimationScratch(model, AnimationFrame.isMissingFrameId(k) & AnimationFrame.isMissingFrameId(j));
-		if (k != -1 && j != -1) {
-			model_1.applyInterleavedFrames(ai, j, k);
-		} else if (k != -1) {
-			model_1.applyAnimationFrame(k);
+		Model animatedModel = Model.animationScratchModel;
+		animatedModel.copyIntoAnimationScratch(model, AnimationFrame.isMissingFrameId(primaryFrameId) & AnimationFrame.isMissingFrameId(secondaryFrameId));
+		if (primaryFrameId != -1 && secondaryFrameId != -1) {
+			animatedModel.applyInterleavedFrames(secondaryTransformIndices, secondaryFrameId, primaryFrameId);
+		} else if (primaryFrameId != -1) {
+			animatedModel.applyAnimationFrame(primaryFrameId);
 		}
-		if (anInt91 != 128 || anInt86 != 128) {
-			model_1.scale(anInt91, anInt91, anInt86);
+		if (horizontalScale != 128 || verticalScale != 128) {
+			animatedModel.scale(horizontalScale, horizontalScale, verticalScale);
 		}
-		model_1.calculateBounds();
-		model_1.faceGroups = null;
-		model_1.vertexGroups = null;
+		animatedModel.calculateBounds();
+		animatedModel.faceGroups = null;
+		animatedModel.vertexGroups = null;
 		if (aByte68 == 1) {
-			model_1.aBoolean1659 = true;
+			animatedModel.aBoolean1659 = true;
 		}
-		return model_1;
+		return animatedModel;
 	}
 
 	private void readValues(Stream stream) {
@@ -187,9 +187,9 @@ public final class EntityDef {
 			}
 			if (i == 1) {
 				int j = stream.readUnsignedByte();
-				anIntArray94 = new int[j];
+				bodyModelIds = new int[j];
 				for (int j1 = 0; j1 < j; j1++) {
-					anIntArray94[j1] = stream.readUnsignedShortBigEndian();
+					bodyModelIds[j1] = stream.readUnsignedShortBigEndian();
 				}
 
 			} else if (i == 2) {
@@ -217,18 +217,18 @@ public final class EntityDef {
 				}
 			} else if (i == 40) {
 				int k = stream.readUnsignedByte();
-				anIntArray76 = new int[k];
-				anIntArray70 = new int[k];
+				recolorSources = new int[k];
+				recolorReplacements = new int[k];
 				for (int k1 = 0; k1 < k; k1++) {
-					anIntArray76[k1] = stream.readUnsignedShortBigEndian();
-					anIntArray70[k1] = stream.readUnsignedShortBigEndian();
+					recolorSources[k1] = stream.readUnsignedShortBigEndian();
+					recolorReplacements[k1] = stream.readUnsignedShortBigEndian();
 				}
 
 			} else if (i == 60) {
 				int l = stream.readUnsignedByte();
-				anIntArray73 = new int[l];
+				headModelIds = new int[l];
 				for (int l1 = 0; l1 < l; l1++) {
-					anIntArray73[l1] = stream.readUnsignedShortBigEndian();
+					headModelIds[l1] = stream.readUnsignedShortBigEndian();
 				}
 
 			} else if (i == 90) {
@@ -242,15 +242,15 @@ public final class EntityDef {
 			} else if (i == 95) {
 				combatLevel = stream.readUnsignedShortBigEndian();
 			} else if (i == 97) {
-				anInt91 = stream.readUnsignedShortBigEndian();
+				horizontalScale = stream.readUnsignedShortBigEndian();
 			} else if (i == 98) {
-				anInt86 = stream.readUnsignedShortBigEndian();
+				verticalScale = stream.readUnsignedShortBigEndian();
 			} else if (i == 99) {
 				aBoolean93 = true;
 			} else if (i == 100) {
-				anInt85 = stream.readSignedByte();
+				ambientLightOffset = stream.readSignedByte();
 			} else if (i == 101) {
-				anInt92 = stream.readSignedByte() * 5;
+				lightDivisorOffset = stream.readSignedByte() * 5;
 			} else if (i == 102) {
 				anInt75 = stream.readUnsignedShortBigEndian();
 			} else if (i == 103) {
@@ -293,9 +293,9 @@ public final class EntityDef {
 		anInt79 = 32;
 		anInt83 = -1;
 		aBoolean84 = true;
-		anInt86 = 128;
+		verticalScale = 128;
 		aBoolean87 = true;
-		anInt91 = 128;
+		horizontalScale = 128;
 		aBoolean93 = false;
 	}
 
@@ -310,11 +310,11 @@ public final class EntityDef {
 	public String actions[];
 	public int anInt67;
 	public byte aByte68;
-	private int[] anIntArray70;
+	private int[] recolorReplacements;
 	private static int[] streamIndices;
-	private int[] anIntArray73;
+	private int[] headModelIds;
 	public int anInt75;
-	private int[] anIntArray76;
+	private int[] recolorSources;
 	public int anInt77;
 	public long type;
 	public int anInt79;
@@ -322,15 +322,15 @@ public final class EntityDef {
 	public static Game clientInstance;
 	public int anInt83;
 	public boolean aBoolean84;
-	private int anInt85;
-	private int anInt86;
+	private int ambientLightOffset;
+	private int verticalScale;
 	public boolean aBoolean87;
 	public int childrenIDs[];
 	public byte description[];
-	private int anInt91;
-	private int anInt92;
+	private int horizontalScale;
+	private int lightDivisorOffset;
 	public boolean aBoolean93;
-	private int[] anIntArray94;
+	private int[] bodyModelIds;
 	public static LruCache mruNodes = new LruCache(30);
 
 }

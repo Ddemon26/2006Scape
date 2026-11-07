@@ -164,13 +164,13 @@ public final class Player extends Entity {
 
 	private Model buildBodyModel() {
 		if (desc != null) {
-			int j = -1;
+			int frameId = -1;
 			if (super.anim >= 0 && super.anInt1529 == 0) {
-				j = Animation.anims[super.anim].anIntArray353[super.anInt1527];
+				frameId = Animation.anims[super.anim].anIntArray353[super.anInt1527];
 			} else if (super.anInt1517 >= 0) {
-				j = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
+				frameId = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
 			}
-			Model model = desc.method164(-1, j, null);
+			Model model = desc.getAnimatedModel(-1, frameId, null);
 			return model;
 		}
 		long cacheKey = appearanceKey;
@@ -195,88 +195,88 @@ public final class Player extends Entity {
 		} else if (super.anInt1517 >= 0) {
 			primaryFrameId = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
 		}
-		Model model_1 = (Model) mruNodes.insertFromCache(cacheKey);
-		if (model_1 == null) {
-			boolean flag = false;
-			for (int i2 = 0; i2 < 12; i2++) {
-				int k2 = equipment[i2];
-				if (slot3Override >= 0 && i2 == 3) {
-					k2 = slot3Override;
+		Model bodyModel = (Model) mruNodes.insertFromCache(cacheKey);
+		if (bodyModel == null) {
+			boolean anyPartNotReady = false;
+			for (int slot = 0; slot < 12; slot++) {
+				int equipmentCode = equipment[slot];
+				if (slot3Override >= 0 && slot == 3) {
+					equipmentCode = slot3Override;
 				}
-				if (slot5Override >= 0 && i2 == 5) {
-					k2 = slot5Override;
+				if (slot5Override >= 0 && slot == 5) {
+					equipmentCode = slot5Override;
 				}
-				if (k2 >= 256 && k2 < 512 && !IDK.cache[k2 - 256].method537()) {
-					flag = true;
+				if (equipmentCode >= 256 && equipmentCode < 512 && !IDK.cache[equipmentCode - 256].method537()) {
+					anyPartNotReady = true;
 				}
-				if (k2 >= 512 && !ItemDef.forID(k2 - 512).isWornModelReady(gender)) {
-					flag = true;
+				if (equipmentCode >= 512 && !ItemDef.forID(equipmentCode - 512).isWornModelReady(gender)) {
+					anyPartNotReady = true;
 				}
 			}
 
-			if (flag) {
+			if (anyPartNotReady) {
 				if (aLong1697 != -1L) {
-					model_1 = (Model) mruNodes.insertFromCache(aLong1697);
+					bodyModel = (Model) mruNodes.insertFromCache(aLong1697);
 				}
-				if (model_1 == null) {
+				if (bodyModel == null) {
 					return null;
 				}
 			}
 		}
-		if (model_1 == null) {
-			Model aclass30_sub2_sub4_sub6s[] = new Model[12];
-			int j2 = 0;
-			for (int l2 = 0; l2 < 12; l2++) {
-				int i3 = equipment[l2];
-				if (slot3Override >= 0 && l2 == 3) {
-					i3 = slot3Override;
+		if (bodyModel == null) {
+			Model parts[] = new Model[12];
+			int partCount = 0;
+			for (int partSlot = 0; partSlot < 12; partSlot++) {
+				int partEquipmentCode = equipment[partSlot];
+				if (slot3Override >= 0 && partSlot == 3) {
+					partEquipmentCode = slot3Override;
 				}
-				if (slot5Override >= 0 && l2 == 5) {
-					i3 = slot5Override;
+				if (slot5Override >= 0 && partSlot == 5) {
+					partEquipmentCode = slot5Override;
 				}
-				if (i3 >= 256 && i3 < 512) {
-					Model model_3 = IDK.cache[i3 - 256].method538();
-					if (model_3 != null) {
-						aclass30_sub2_sub4_sub6s[j2++] = model_3;
+				if (partEquipmentCode >= 256 && partEquipmentCode < 512) {
+					Model kitPart = IDK.cache[partEquipmentCode - 256].method538();
+					if (kitPart != null) {
+						parts[partCount++] = kitPart;
 					}
 				}
-				if (i3 >= 512) {
-					Model model_4 = ItemDef.forID(i3 - 512).getWornModel(gender);
-					if (model_4 != null) {
-						aclass30_sub2_sub4_sub6s[j2++] = model_4;
-					}
-				}
-			}
-
-			model_1 = new Model(j2, aclass30_sub2_sub4_sub6s);
-			for (int j3 = 0; j3 < 5; j3++) {
-				if (anIntArray1700[j3] != 0) {
-					model_1.recolor(Game.anIntArrayArray1003[j3][0], Game.anIntArrayArray1003[j3][anIntArray1700[j3]]);
-					if (j3 == 1) {
-						model_1.recolor(Game.anIntArray1204[0], Game.anIntArray1204[anIntArray1700[j3]]);
+				if (partEquipmentCode >= 512) {
+					Model itemPart = ItemDef.forID(partEquipmentCode - 512).getWornModel(gender);
+					if (itemPart != null) {
+						parts[partCount++] = itemPart;
 					}
 				}
 			}
 
-			model_1.buildAnimationGroups();
-			model_1.applyLighting(64, 850, -30, -50, -30, true);
-			mruNodes.removeFromCache(model_1, cacheKey);
+			bodyModel = new Model(partCount, parts);
+			for (int colourSlot = 0; colourSlot < 5; colourSlot++) {
+				if (anIntArray1700[colourSlot] != 0) {
+					bodyModel.recolor(Game.anIntArrayArray1003[colourSlot][0], Game.anIntArrayArray1003[colourSlot][anIntArray1700[colourSlot]]);
+					if (colourSlot == 1) {
+						bodyModel.recolor(Game.anIntArray1204[0], Game.anIntArray1204[anIntArray1700[colourSlot]]);
+					}
+				}
+			}
+
+			bodyModel.buildAnimationGroups();
+			bodyModel.applyLighting(64, 850, -30, -50, -30, true);
+			mruNodes.removeFromCache(bodyModel, cacheKey);
 			aLong1697 = cacheKey;
 		}
 		if (aBoolean1699) {
-			return model_1;
+			return bodyModel;
 		}
-		Model model_2 = Model.animationScratchModel;
-		model_2.copyIntoAnimationScratch(model_1, AnimationFrame.isMissingFrameId(primaryFrameId) & AnimationFrame.isMissingFrameId(secondaryFrameId));
+		Model animatedModel = Model.animationScratchModel;
+		animatedModel.copyIntoAnimationScratch(bodyModel, AnimationFrame.isMissingFrameId(primaryFrameId) & AnimationFrame.isMissingFrameId(secondaryFrameId));
 		if (primaryFrameId != -1 && secondaryFrameId != -1) {
-			model_2.applyInterleavedFrames(Animation.anims[super.anim].anIntArray357, secondaryFrameId, primaryFrameId);
+			animatedModel.applyInterleavedFrames(Animation.anims[super.anim].anIntArray357, secondaryFrameId, primaryFrameId);
 		} else if (primaryFrameId != -1) {
-			model_2.applyAnimationFrame(primaryFrameId);
+			animatedModel.applyAnimationFrame(primaryFrameId);
 		}
-		model_2.calculateBounds();
-		model_2.faceGroups = null;
-		model_2.vertexGroups = null;
-		return model_2;
+		animatedModel.calculateBounds();
+		animatedModel.faceGroups = null;
+		animatedModel.vertexGroups = null;
+		return animatedModel;
 	}
 
 	@Override
@@ -290,46 +290,46 @@ public final class Player extends Entity {
 			return null;
 		}
 		if (desc != null) {
-			return desc.method160();
+			return desc.getHeadModel();
 		}
-		boolean flag = false;
-		for (int i = 0; i < 12; i++) {
-			int j = equipment[i];
-			if (j >= 256 && j < 512 && !IDK.cache[j - 256].method539()) {
-				flag = true;
+		boolean anyPartNotReady = false;
+		for (int slot = 0; slot < 12; slot++) {
+			int equipmentCode = equipment[slot];
+			if (equipmentCode >= 256 && equipmentCode < 512 && !IDK.cache[equipmentCode - 256].method539()) {
+				anyPartNotReady = true;
 			}
-			if (j >= 512 && !ItemDef.forID(j - 512).isHeadModelReady(gender)) {
-				flag = true;
+			if (equipmentCode >= 512 && !ItemDef.forID(equipmentCode - 512).isHeadModelReady(gender)) {
+				anyPartNotReady = true;
 			}
 		}
 
-		if (flag) {
+		if (anyPartNotReady) {
 			return null;
 		}
-		Model aclass30_sub2_sub4_sub6s[] = new Model[12];
-		int k = 0;
-		for (int l = 0; l < 12; l++) {
-			int i1 = equipment[l];
-			if (i1 >= 256 && i1 < 512) {
-				Model model_1 = IDK.cache[i1 - 256].method540();
-				if (model_1 != null) {
-					aclass30_sub2_sub4_sub6s[k++] = model_1;
+		Model parts[] = new Model[12];
+		int partCount = 0;
+		for (int partSlot = 0; partSlot < 12; partSlot++) {
+			int equipmentCode = equipment[partSlot];
+			if (equipmentCode >= 256 && equipmentCode < 512) {
+				Model kitPart = IDK.cache[equipmentCode - 256].method540();
+				if (kitPart != null) {
+					parts[partCount++] = kitPart;
 				}
 			}
-			if (i1 >= 512) {
-				Model model_2 = ItemDef.forID(i1 - 512).getHeadModel(gender);
-				if (model_2 != null) {
-					aclass30_sub2_sub4_sub6s[k++] = model_2;
+			if (equipmentCode >= 512) {
+				Model itemPart = ItemDef.forID(equipmentCode - 512).getHeadModel(gender);
+				if (itemPart != null) {
+					parts[partCount++] = itemPart;
 				}
 			}
 		}
 
-		Model model = new Model(k, aclass30_sub2_sub4_sub6s);
-		for (int j1 = 0; j1 < 5; j1++) {
-			if (anIntArray1700[j1] != 0) {
-				model.recolor(Game.anIntArrayArray1003[j1][0], Game.anIntArrayArray1003[j1][anIntArray1700[j1]]);
-				if (j1 == 1) {
-					model.recolor(Game.anIntArray1204[0], Game.anIntArray1204[anIntArray1700[j1]]);
+		Model model = new Model(partCount, parts);
+		for (int colourSlot = 0; colourSlot < 5; colourSlot++) {
+			if (anIntArray1700[colourSlot] != 0) {
+				model.recolor(Game.anIntArrayArray1003[colourSlot][0], Game.anIntArrayArray1003[colourSlot][anIntArray1700[colourSlot]]);
+				if (colourSlot == 1) {
+					model.recolor(Game.anIntArray1204[0], Game.anIntArray1204[anIntArray1700[colourSlot]]);
 				}
 			}
 		}

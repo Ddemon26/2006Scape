@@ -2112,9 +2112,9 @@ public final class ItemDef {
 		if (outline > 0) {
 			viewDistance = (int) (viewDistance * 1.04D);
 		}
-		int l3 = Texture.sineTable[itemDef.modelRotation1] * viewDistance >> 16;
-		int i4 = Texture.cosineTable[itemDef.modelRotation1] * viewDistance >> 16;
-		model.projectRotated(itemDef.modelRotation2, itemDef.modelRotation3, itemDef.modelRotation1, itemDef.modelOffset1, l3 + model.modelHeight / 2 + itemDef.modelOffset2, i4 + itemDef.modelOffset2);
+		int zoomSine = Texture.sineTable[itemDef.modelRotation1] * viewDistance >> 16;
+		int zoomCosine = Texture.cosineTable[itemDef.modelRotation1] * viewDistance >> 16;
+		model.projectRotated(itemDef.modelRotation2, itemDef.modelRotation3, itemDef.modelRotation1, itemDef.modelOffset1, zoomSine + model.modelHeight / 2 + itemDef.modelOffset2, zoomCosine + itemDef.modelOffset2);
 		for (int x = 31; x >= 0; x--) {
 			for (int y = 31; y >= 0; y--) {
 				if (icon.pixels[x + y * 32] == 0) {
