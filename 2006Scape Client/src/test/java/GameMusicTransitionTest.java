@@ -27,7 +27,7 @@ public class GameMusicTransitionTest {
         oldLoop = Game.aBoolean995;
         oldData = Game.musicData;
         oldAndroid = ClientSettings.ANDROID;
-        oldOutput = Game.anInt1401;
+        oldOutput = Game.musicOutputVolume;
         player = new Probe();
         Game.musicPlayer = player;
         Game.currentSongVolume = -1;
@@ -56,7 +56,7 @@ public class GameMusicTransitionTest {
         Game.aBoolean995 = oldLoop;
         Game.musicData = oldData;
         ClientSettings.ANDROID = oldAndroid;
-        Game.anInt1401 = oldOutput;
+        Game.musicOutputVolume = oldOutput;
     }
 
     // ---- tickSongTransition: idle branch (no song playing) ----
@@ -403,25 +403,25 @@ public class GameMusicTransitionTest {
         for (int volume : new int[] {1, 4, 32, 64, 100, 128, 200, 255}) {
             int offset = Game.volumeToFadeOffset(volume);
             assertTrue("offset negative for " + volume, offset < 0);
-            Game.anInt1401 = -12345;
-            fade.method835(-offset, 256, 0);
-            assertEquals("volume " + volume, volume, Game.anInt1401, 1);
+            Game.musicOutputVolume = -12345;
+            fade.applyFade(-offset, 256, 0);
+            assertEquals("volume " + volume, volume, Game.musicOutputVolume, 1);
         }
         assertTrue(Game.volumeToFadeOffset(128) < Game.volumeToFadeOffset(129));
         assertTrue(Game.volumeToFadeOffset(300) > 0); // above full volume: positive
-        Game.anInt1401 = -12345;
-        fade.method835(-Game.volumeToFadeOffset(300), 256, 0);
-        assertEquals(300, Game.anInt1401, 1);
+        Game.musicOutputVolume = -12345;
+        fade.applyFade(-Game.volumeToFadeOffset(300), 256, 0);
+        assertEquals(300, Game.musicOutputVolume, 1);
     }
 
     private static final class FadeProbe extends Class56_Sub1 {
-        void method827(int a, byte[] b, int c, boolean d) { }
-        void method828() { }
-        void method830(int a, int b) { }
-        void method831(int a) { }
-        void method832(int a) { }
-        void method833() { }
-        void method836(int a, int b, int c, long d) { }
+        void play(int a, byte[] b, int c, boolean d) { }
+        void shutdown() { }
+        void fade(int a, int b) { }
+        void setVolume(int a) { }
+        void tick(int a) { }
+        void stop() { }
+        void sendMessage(int a, int b, int c, long d) { }
     }
 
     private static final class Probe extends Class56 {
@@ -429,14 +429,14 @@ public class GameMusicTransitionTest {
         byte[] data;
         boolean loop;
         final StringBuilder events = new StringBuilder();
-        void method827(int value, byte[] bytes, int ignored, boolean repeat) {
+        void play(int value, byte[] bytes, int ignored, boolean repeat) {
             plays++; volume = value; data = bytes; loop = repeat;
             events.append("play").append(value).append(';');
         }
-        void method828() { events.append("close;"); }
-        void method830(int value, int progress) { events.append("fade").append(value).append(',').append(progress).append(';'); }
-        void method831(int value) { events.append("volume").append(value).append(';'); }
-        void method832(int value) { events.append("tick").append(value).append(';'); }
-        void method833() { stops++; events.append("stop;"); }
+        void shutdown() { events.append("close;"); }
+        void fade(int value, int progress) { events.append("fade").append(value).append(',').append(progress).append(';'); }
+        void setVolume(int value) { events.append("volume").append(value).append(';'); }
+        void tick(int value) { events.append("tick").append(value).append(';'); }
+        void stop() { stops++; events.append("stop;"); }
     }
 }

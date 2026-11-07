@@ -96,11 +96,11 @@ public class GameMusicControlTest {
         int stops, plays, volume;
         byte[] data;
         boolean loop;
-        void method827(int i, byte[] is, int i_2_, boolean bool) { plays++; volume = i; data = is; loop = bool; }
-        void method828() { }
-        void method830(int i, int i_7_) { }
-        void method831(int i) { }
-        void method832(int i) { }
-        void method833() { stops++; }
+        void play(int i, byte[] is, int i_2_, boolean bool) { plays++; volume = i; data = is; loop = bool; }
+        void shutdown() { }
+        void fade(int i, int i_7_) { }
+        void setVolume(int i) { }
+        void tick(int i) { }
+        void stop() { stops++; }
     }
 }

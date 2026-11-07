@@ -188,13 +188,13 @@ public class GameSongRequestTest {
         final StringBuilder events = new StringBuilder();
         byte[] data;
         boolean loop;
-        void method827(int value, byte[] bytes, int ignored, boolean repeat) {
+        void play(int value, byte[] bytes, int ignored, boolean repeat) {
             plays++; volume = value; data = bytes; loop = repeat;
         }
-        void method828() { events.append("close;"); }
-        void method830(int a, int b) { }
-        void method831(int value) { events.append("volume").append(value).append(';'); }
-        void method832(int value) { ticks++; lastTick = value; }
-        void method833() { events.append("stop;"); }
+        void shutdown() { events.append("close;"); }
+        void fade(int a, int b) { }
+        void setVolume(int value) { events.append("volume").append(value).append(';'); }
+        void tick(int value) { ticks++; lastTick = value; }
+        void stop() { events.append("stop;"); }
     }
 }

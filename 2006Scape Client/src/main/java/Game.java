@@ -60,10 +60,10 @@ public class Game extends RSApplet {
 		if (musicPlayer != null) {
 			stopMusicPlayback(false);
 			if (songTransitionTicks > 0) {
-				musicPlayer.method831(256);
+				musicPlayer.setVolume(256);
 				songTransitionTicks = 0;
 			}
-		    musicPlayer.method828();
+		    musicPlayer.shutdown();
 		    musicPlayer = null;
 		}
 	}
@@ -155,7 +155,7 @@ public class Game extends RSApplet {
 			if (songTransitionTicks == 0) {
 				if (currentSongVolume >= 0) {
 					currentSongVolume = i;
-					musicPlayer.method830(i, 0);
+					musicPlayer.fade(i, 0);
 				}
 			} else if (queuedSongData != null)
 				queuedSongVolume = i;
@@ -245,7 +245,7 @@ public class Game extends RSApplet {
 	static final void setMusicData(int volume, byte[] midiData, boolean loopMusic) {
 		if (musicPlayer != null) {
 			if (currentSongVolume >= 0) {
-				musicPlayer.method833();
+				musicPlayer.stop();
 				currentSongVolume = -1;
 				queuedSongData = null;
 				songTransitionTicks = 20;
@@ -253,11 +253,11 @@ public class Game extends RSApplet {
 			}
 			if (midiData != null) {
 				if (songTransitionTicks > 0) {
-					musicPlayer.method831(volume);
+					musicPlayer.setVolume(volume);
 					songTransitionTicks = 0;
 				}
 					currentSongVolume = volume;
-					musicPlayer.method827(volume, midiData, 0, loopMusic);
+					musicPlayer.play(volume, midiData, 0, loopMusic);
 			}
 		}
 	}
@@ -320,11 +320,11 @@ public class Game extends RSApplet {
 					songTransitionTicks--;
 					if (songTransitionTicks == 0) {
 						if (queuedSongData == null)
-							musicPlayer.method831(256);
+							musicPlayer.setVolume(256);
 						else {
-							musicPlayer.method831(queuedSongVolume);
+							musicPlayer.setVolume(queuedSongVolume);
 							currentSongVolume = queuedSongVolume;
-							musicPlayer.method827(queuedSongVolume, queuedSongData, 0, queuedSongLoop);
+							musicPlayer.play(queuedSongVolume, queuedSongData, 0, queuedSongLoop);
 							queuedSongData = null;
 						}
 						fadeProgress = 0;
@@ -332,15 +332,15 @@ public class Game extends RSApplet {
 				}
 			} else if (songTransitionTicks > 0) {
 				fadeProgress += fadeStepPerTick;
-				musicPlayer.method830(currentSongVolume, fadeProgress);
+				musicPlayer.fade(currentSongVolume, fadeProgress);
 				songTransitionTicks--;
 				if (songTransitionTicks == 0) {
-					musicPlayer.method833();
+					musicPlayer.stop();
 					songTransitionTicks = 20;
 					currentSongVolume = -1;
 				}
 			}
-			musicPlayer.method832(i - 122);
+			musicPlayer.tick(i - 122);
 		}
 	}
 
@@ -12585,8 +12585,8 @@ public class Game extends RSApplet {
 	public static int tiara;
 	public static int anInt1290;
 	public boolean showInfo = false;
-	public static int anInt1401 = 256;
-	public static int[] anIntArray385 = new int[] { 12800, 12800, 12800, 12800, 12800, 12800,
+	public static int musicOutputVolume = 256;
+	public static int[] channelVolumes = new int[] { 12800, 12800, 12800, 12800, 12800, 12800,
 	12800, 12800, 12800, 12800, 12800, 12800,
 	12800, 12800, 12800, 12800 };
 	public static int songTransitionTicks = 0;
