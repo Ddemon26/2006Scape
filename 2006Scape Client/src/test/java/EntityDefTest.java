@@ -162,4 +162,134 @@ public class EntityDefTest {
             assertArrayEquals(new int[]{10, 20}, animated(d, -1, -1, null));      // no frames: untouched
         } finally { sset(AnimationFrame.class, "loadedFrames", savedFrames); EntityDef.mruNodes.clear(); }
     }
+
+    // ---------------- pass 149: morph, decoder counts, cache cursor, unpackConfig (original identifiers only) ----------------
+    private static sun.misc.Unsafe unsafe() throws Exception { return (sun.misc.Unsafe) f(sun.misc.Unsafe.class, "theUnsafe").get(null); }
+
+    private static EntityDef decode(int... bytes) throws Exception {
+        byte[] data = new byte[bytes.length];
+        for (int n = 0; n < bytes.length; n++) data[n] = (byte) bytes[n];
+        Stream s = new Stream(data);
+        EntityDef d = newDef();
+        Method m = EntityDef.class.getDeclaredMethod("readValues", Stream.class);
+        m.setAccessible(true);
+        m.invoke(d, s);
+        assertEquals("decoder consumed exactly the bytes", data.length, s.currentOffset);
+        return d;
+    }
+
+    private static EntityDef typed(long type) throws Exception { EntityDef d = newDef(); d.type = type; return d; }
+
+    @Test public void method161PicksChildByVarBitThenSettingAndRejectsBadValues() throws Exception {
+        Object savedCache = sget(EntityDef.class, "cache"); Game savedClient = EntityDef.clientInstance;
+        Object savedMasks = Game.anIntArray1232; VarBit[] savedBits = VarBit.cache;
+        try {
+            EntityDef[] cache = new EntityDef[20];
+            for (int n = 0; n < 20; n++) cache[n] = typed(-1);
+            cache[0] = typed(500); cache[1] = typed(501); cache[2] = typed(502); cache[3] = typed(503);
+            sset(EntityDef.class, "cache", cache);
+            Game game = new Game(); game.variousSettings = new int[50]; EntityDef.clientInstance = game;
+            Game.anIntArray1232 = new int[32];
+            for (int k = 0, i = 2; k < 32; k++, i += i) Game.anIntArray1232[k] = i - 1;
+            VarBit[] bits = new VarBit[10];
+            for (int n = 0; n < bits.length; n++) bits[n] = (VarBit) unsafe().allocateInstance(VarBit.class);
+            bits[7].anInt648 = 3; bits[7].anInt649 = 2; bits[7].anInt650 = 4;
+            VarBit.cache = bits;
+
+            EntityDef def = newDef();
+            def.childrenIDs = new int[] {500, -1, 502, 503};
+            seti(def, "morphVarBitId", 7);
+            game.variousSettings[3] = 12;
+            assertEquals(503, def.method161().type);
+            game.variousSettings[3] = 0b1000; assertEquals(502, def.method161().type);
+            game.variousSettings[3] = 0b0011; assertEquals("bits below the low bit are ignored", 500, def.method161().type);
+            game.variousSettings[3] = 0b0100; assertNull("child id -1", def.method161());
+            game.variousSettings[3] = 0b10000; assertNull("index past the children", def.method161());
+            game.variousSettings[3] = 0b1100000; assertEquals("bits above the high bit are masked off", 500, def.method161().type);
+
+            EntityDef bySetting = newDef();
+            bySetting.childrenIDs = new int[] {500, -1, 502, 503};
+            seti(bySetting, "morphSettingId", 9);
+            game.variousSettings[9] = 2; assertEquals(502, bySetting.method161().type);
+            game.variousSettings[9] = 4; assertNull(bySetting.method161());
+            game.variousSettings[9] = -1; assertNull("negative value", bySetting.method161());
+
+            EntityDef both = newDef();
+            both.childrenIDs = new int[] {500, 501, 502, 503};
+            seti(both, "morphVarBitId", 7); seti(both, "morphSettingId", 9);
+            game.variousSettings[3] = 0b1000; game.variousSettings[9] = 1;
+            assertEquals("varbit wins over the plain setting", 502, both.method161().type);
+
+            EntityDef neither = newDef(); neither.childrenIDs = new int[] {500, 501};
+            assertNull(neither.method161());
+        } finally {
+            sset(EntityDef.class, "cache", savedCache); EntityDef.clientInstance = savedClient;
+            Game.anIntArray1232 = (int[]) savedMasks; VarBit.cache = savedBits;
+        }
+    }
+
+    @Test public void readValuesDecodesCountsAndListsOfOpcodes1_40_60_106() throws Exception {
+        EntityDef d = decode(1, 3, 0, 5, 0, 6, 0, 7,                    // body models 5,6,7
+                60, 2, 1, 0, 2, 0,                                      // head models 256, 512
+                40, 2, 0, 10, 0, 20, 0, 11, 0, 21,                      // recolour (10->20), (11->21)
+                106, 0xFF, 0xFF, 0x00, 0x09, 2, 0, 1, 0xFF, 0xFF, 0, 3, // varbit none, setting 9, 3 children
+                0);
+        assertArrayEquals(new int[] {5, 6, 7}, (int[]) f(EntityDef.class, "bodyModelIds").get(d));
+        assertArrayEquals(new int[] {256, 512}, (int[]) f(EntityDef.class, "headModelIds").get(d));
+        assertArrayEquals(new int[] {10, 11}, (int[]) f(EntityDef.class, "recolorSources").get(d));
+        assertArrayEquals(new int[] {20, 21}, (int[]) f(EntityDef.class, "recolorReplacements").get(d));
+        assertEquals(-1, f(EntityDef.class, "morphVarBitId").getInt(d));
+        assertEquals(9, f(EntityDef.class, "morphSettingId").getInt(d));
+        assertArrayEquals(new int[] {1, -1, 3}, d.childrenIDs);
+        EntityDef v = decode(106, 0, 12, 0xFF, 0xFF, 0, 0, 7, 0);
+        assertEquals(12, f(EntityDef.class, "morphVarBitId").getInt(v));
+        assertEquals(-1, f(EntityDef.class, "morphSettingId").getInt(v));
+        assertArrayEquals(new int[] {7}, v.childrenIDs);
+    }
+
+    @Test public void forIDReturnsCachedDefinitionsAndLoadsMissesIntoRoundRobinSlots() throws Exception {
+        Object sc = sget(EntityDef.class, "cache"), ss = sget(EntityDef.class, "stream"), si = sget(EntityDef.class, "streamIndices");
+        int cursor = f(EntityDef.class, "cacheIndex").getInt(null);
+        try {
+            EntityDef[] cache = new EntityDef[20];
+            for (int n = 0; n < 20; n++) cache[n] = typed(-1);
+            cache[4].type = 77;
+            sset(EntityDef.class, "cache", cache);
+            f(EntityDef.class, "cacheIndex").setInt(null, 18);
+            sset(EntityDef.class, "stream", new Stream(new byte[] {0, 0, 95, 0, 33, 0, 95, 0, 44, 0}));
+            sset(EntityDef.class, "streamIndices", new int[] {0, 0, 2, 6});
+            assertSame("already cached", cache[4], EntityDef.forID(77));
+            assertEquals(18, f(EntityDef.class, "cacheIndex").getInt(null));
+            EntityDef two = EntityDef.forID(2);
+            assertSame("slot after the previous index", cache[19], two);
+            assertEquals(33, two.combatLevel); assertEquals(2, two.type);
+            EntityDef three = EntityDef.forID(3);
+            assertSame("wraps to slot zero", cache[0], three);
+            assertEquals(44, three.combatLevel);
+            assertSame("hit after load", three, EntityDef.forID(3));
+            assertEquals(0, f(EntityDef.class, "cacheIndex").getInt(null));
+        } finally {
+            sset(EntityDef.class, "cache", sc); sset(EntityDef.class, "stream", ss); sset(EntityDef.class, "streamIndices", si);
+            f(EntityDef.class, "cacheIndex").setInt(null, cursor);
+        }
+    }
+
+    @Test public void unpackConfigIndexesRecordsByRunningOffsetAndPreparesTwentyCacheSlots() throws Exception {
+        Object sc = sget(EntityDef.class, "cache"), ss = sget(EntityDef.class, "stream"), si = sget(EntityDef.class, "streamIndices");
+        int total = EntityDef.totalNPCs;
+        try {
+            // npc.dat = 20 bytes; npc.idx = count 3, record lengths 5, 9, 4 (bzip2 entries, built with the generator in the pass folder)
+            String archive = "AAByAAByAAJYwfzcAAAUAAA3WMJGRAAACAAAJTFBWSZTWV1DcboAAABgAH//8AAgADFMmJkGRhBMhoGTEkFjS+MrrfO+Z/xNC7kinChILqG43QAxQVkmU1ky4qb4AAAAQABOICAAIYNBmgpgS4u5IpwoSBlxU3wA";
+            EntityDef.unpackConfig(new StreamLoader(Base64.getDecoder().decode(archive)));
+            assertEquals(3, EntityDef.totalNPCs);
+            assertArrayEquals(new int[] {2, 7, 16}, (int[]) sget(EntityDef.class, "streamIndices")); // 2, then +5, then +9
+            EntityDef[] slots = (EntityDef[]) sget(EntityDef.class, "cache");
+            assertEquals(20, slots.length);
+            for (int i = 0; i < 20; i++) { assertNotNull(slots[i]); assertEquals(-1L, slots[i].type); for (int j = 0; j < i; j++) assertNotSame(slots[i], slots[j]); }
+            assertEquals(20, ((Stream) sget(EntityDef.class, "stream")).buffer.length);
+        } finally {
+            sset(EntityDef.class, "cache", sc); sset(EntityDef.class, "stream", ss); sset(EntityDef.class, "streamIndices", si);
+            EntityDef.totalNPCs = total;
+        }
+    }
 }

@@ -4,19 +4,19 @@
 
 public final class EntityDef {
 	
-	public static EntityDef forID(int i) {
-		for (int j = 0; j < 20; j++) {
-			if (cache[j].type == i) {
-				return cache[j];
+	public static EntityDef forID(int npcId) {
+		for (int cacheSlot = 0; cacheSlot < 20; cacheSlot++) {
+			if (cache[cacheSlot].type == npcId) {
+				return cache[cacheSlot];
 			}
 		}
 
-		anInt56 = (anInt56 + 1) % 20;
-		EntityDef entityDef = cache[anInt56] = new EntityDef();
-		stream.currentOffset = streamIndices[i];
-		entityDef.type = i;
+		cacheIndex = (cacheIndex + 1) % 20;
+		EntityDef entityDef = cache[cacheIndex] = new EntityDef();
+		stream.currentOffset = streamIndices[npcId];
+		entityDef.type = npcId;
 		entityDef.readValues(stream);
-		switch(i) {
+		switch(npcId) {
 			case 2258 :
 				entityDef.actions = new String[5];
 				entityDef.actions[0] = "Talk-to";
@@ -74,21 +74,21 @@ public final class EntityDef {
 	}
 
 	public EntityDef method161() {
-		int j = -1;
-		if (anInt57 != -1) {
-			VarBit varBit = VarBit.cache[anInt57];
-			int k = varBit.anInt648;
-			int l = varBit.anInt649;
-			int i1 = varBit.anInt650;
-			int j1 = Game.anIntArray1232[i1 - l];
-			j = clientInstance.variousSettings[k] >> l & j1;
-		} else if (anInt59 != -1) {
-			j = clientInstance.variousSettings[anInt59];
+		int childIndex = -1;
+		if (morphVarBitId != -1) {
+			VarBit varBit = VarBit.cache[morphVarBitId];
+			int settingIndex = varBit.anInt648;
+			int lowBit = varBit.anInt649;
+			int highBit = varBit.anInt650;
+			int valueMask = Game.anIntArray1232[highBit - lowBit];
+			childIndex = clientInstance.variousSettings[settingIndex] >> lowBit & valueMask;
+		} else if (morphSettingId != -1) {
+			childIndex = clientInstance.variousSettings[morphSettingId];
 		}
-		if (j < 0 || j >= childrenIDs.length || childrenIDs[j] == -1) {
+		if (childIndex < 0 || childIndex >= childrenIDs.length || childrenIDs[childIndex] == -1) {
 			return null;
 		} else {
-			return forID(childrenIDs[j]);
+			return forID(childrenIDs[childIndex]);
 		}
 	}
 
@@ -99,15 +99,15 @@ public final class EntityDef {
 		Stream stream2 = new Stream(streamLoader.getDataForName("npc.idx"));
 		totalNPCs = stream2.readUnsignedShortBigEndian();
 		streamIndices = new int[totalNPCs];
-		int i = 2;
-		for (int j = 0; j < totalNPCs; j++) {
-			streamIndices[j] = i;
-			i += stream2.readUnsignedShortBigEndian();
+		int recordOffset = 2;
+		for (int npcIndex = 0; npcIndex < totalNPCs; npcIndex++) {
+			streamIndices[npcIndex] = recordOffset;
+			recordOffset += stream2.readUnsignedShortBigEndian();
 		}
 
 		cache = new EntityDef[20];
-		for (int k = 0; k < 20; k++) {
-			cache[k] = new EntityDef();
+		for (int cacheSlot = 0; cacheSlot < 20; cacheSlot++) {
+			cache[cacheSlot] = new EntityDef();
 		}
 
 	}
@@ -181,99 +181,99 @@ public final class EntityDef {
 
 	private void readValues(Stream stream) {
 		do {
-			int i = stream.readUnsignedByte();
-			if (i == 0) {
+			int opcode = stream.readUnsignedByte();
+			if (opcode == 0) {
 				return;
 			}
-			if (i == 1) {
-				int j = stream.readUnsignedByte();
-				bodyModelIds = new int[j];
-				for (int j1 = 0; j1 < j; j1++) {
-					bodyModelIds[j1] = stream.readUnsignedShortBigEndian();
+			if (opcode == 1) {
+				int bodyModelCount = stream.readUnsignedByte();
+				bodyModelIds = new int[bodyModelCount];
+				for (int bodyModelIndex = 0; bodyModelIndex < bodyModelCount; bodyModelIndex++) {
+					bodyModelIds[bodyModelIndex] = stream.readUnsignedShortBigEndian();
 				}
 
-			} else if (i == 2) {
+			} else if (opcode == 2) {
 				name = stream.readLfTerminatedString();
-			} else if (i == 3) {
+			} else if (opcode == 3) {
 				description = stream.readLfTerminatedBytes();
-			} else if (i == 12) {
+			} else if (opcode == 12) {
 				aByte68 = stream.readSignedByte();
-			} else if (i == 13) {
+			} else if (opcode == 13) {
 				anInt77 = stream.readUnsignedShortBigEndian();
-			} else if (i == 14) {
+			} else if (opcode == 14) {
 				anInt67 = stream.readUnsignedShortBigEndian();
-			} else if (i == 17) {
+			} else if (opcode == 17) {
 				anInt67 = stream.readUnsignedShortBigEndian();
 				anInt58 = stream.readUnsignedShortBigEndian();
 				anInt83 = stream.readUnsignedShortBigEndian();
 				anInt55 = stream.readUnsignedShortBigEndian();
-			} else if (i >= 30 && i < 40) {
+			} else if (opcode >= 30 && opcode < 40) {
 				if (actions == null) {
 					actions = new String[5];
 				}
-				actions[i - 30] = stream.readLfTerminatedString();
-				if (actions[i - 30].equalsIgnoreCase("hidden")) {
-					actions[i - 30] = null;
+				actions[opcode - 30] = stream.readLfTerminatedString();
+				if (actions[opcode - 30].equalsIgnoreCase("hidden")) {
+					actions[opcode - 30] = null;
 				}
-			} else if (i == 40) {
-				int k = stream.readUnsignedByte();
-				recolorSources = new int[k];
-				recolorReplacements = new int[k];
-				for (int k1 = 0; k1 < k; k1++) {
-					recolorSources[k1] = stream.readUnsignedShortBigEndian();
-					recolorReplacements[k1] = stream.readUnsignedShortBigEndian();
-				}
-
-			} else if (i == 60) {
-				int l = stream.readUnsignedByte();
-				headModelIds = new int[l];
-				for (int l1 = 0; l1 < l; l1++) {
-					headModelIds[l1] = stream.readUnsignedShortBigEndian();
+			} else if (opcode == 40) {
+				int recolorCount = stream.readUnsignedByte();
+				recolorSources = new int[recolorCount];
+				recolorReplacements = new int[recolorCount];
+				for (int recolorIndex = 0; recolorIndex < recolorCount; recolorIndex++) {
+					recolorSources[recolorIndex] = stream.readUnsignedShortBigEndian();
+					recolorReplacements[recolorIndex] = stream.readUnsignedShortBigEndian();
 				}
 
-			} else if (i == 90) {
+			} else if (opcode == 60) {
+				int headModelCount = stream.readUnsignedByte();
+				headModelIds = new int[headModelCount];
+				for (int headModelIndex = 0; headModelIndex < headModelCount; headModelIndex++) {
+					headModelIds[headModelIndex] = stream.readUnsignedShortBigEndian();
+				}
+
+			} else if (opcode == 90) {
 				stream.readUnsignedShortBigEndian();
-			} else if (i == 91) {
+			} else if (opcode == 91) {
 				stream.readUnsignedShortBigEndian();
-			} else if (i == 92) {
+			} else if (opcode == 92) {
 				stream.readUnsignedShortBigEndian();
-			} else if (i == 93) {
+			} else if (opcode == 93) {
 				aBoolean87 = false;
-			} else if (i == 95) {
+			} else if (opcode == 95) {
 				combatLevel = stream.readUnsignedShortBigEndian();
-			} else if (i == 97) {
+			} else if (opcode == 97) {
 				horizontalScale = stream.readUnsignedShortBigEndian();
-			} else if (i == 98) {
+			} else if (opcode == 98) {
 				verticalScale = stream.readUnsignedShortBigEndian();
-			} else if (i == 99) {
+			} else if (opcode == 99) {
 				aBoolean93 = true;
-			} else if (i == 100) {
+			} else if (opcode == 100) {
 				ambientLightOffset = stream.readSignedByte();
-			} else if (i == 101) {
+			} else if (opcode == 101) {
 				lightDivisorOffset = stream.readSignedByte() * 5;
-			} else if (i == 102) {
+			} else if (opcode == 102) {
 				anInt75 = stream.readUnsignedShortBigEndian();
-			} else if (i == 103) {
+			} else if (opcode == 103) {
 				anInt79 = stream.readUnsignedShortBigEndian();
-			} else if (i == 106) {
-				anInt57 = stream.readUnsignedShortBigEndian();
-				if (anInt57 == 65535) {
-					anInt57 = -1;
+			} else if (opcode == 106) {
+				morphVarBitId = stream.readUnsignedShortBigEndian();
+				if (morphVarBitId == 65535) {
+					morphVarBitId = -1;
 				}
-				anInt59 = stream.readUnsignedShortBigEndian();
-				if (anInt59 == 65535) {
-					anInt59 = -1;
+				morphSettingId = stream.readUnsignedShortBigEndian();
+				if (morphSettingId == 65535) {
+					morphSettingId = -1;
 				}
-				int i1 = stream.readUnsignedByte();
-				childrenIDs = new int[i1 + 1];
-				for (int i2 = 0; i2 <= i1; i2++) {
-					childrenIDs[i2] = stream.readUnsignedShortBigEndian();
-					if (childrenIDs[i2] == 65535) {
-						childrenIDs[i2] = -1;
+				int lastChildIndex = stream.readUnsignedByte();
+				childrenIDs = new int[lastChildIndex + 1];
+				for (int childIndex = 0; childIndex <= lastChildIndex; childIndex++) {
+					childrenIDs[childIndex] = stream.readUnsignedShortBigEndian();
+					if (childrenIDs[childIndex] == 65535) {
+						childrenIDs[childIndex] = -1;
 					}
 				}
 
-			} else if (i == 107) {
+			} else if (opcode == 107) {
 				aBoolean84 = false;
 			}
 		} while (true);
@@ -281,9 +281,9 @@ public final class EntityDef {
 
 	private EntityDef() {
 		anInt55 = -1;
-		anInt57 = -1;
+		morphVarBitId = -1;
 		anInt58 = -1;
-		anInt59 = -1;
+		morphSettingId = -1;
 		combatLevel = -1;
 		anInt67 = -1;
 		aByte68 = 1;
@@ -300,10 +300,10 @@ public final class EntityDef {
 	}
 
 	public int anInt55;
-	private static int anInt56;
-	private int anInt57;
+	private static int cacheIndex;
+	private int morphVarBitId;
 	public int anInt58;
-	private int anInt59;
+	private int morphSettingId;
 	private static Stream stream;
 	public int combatLevel;
 	public String name;

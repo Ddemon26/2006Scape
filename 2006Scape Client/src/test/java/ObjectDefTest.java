@@ -609,4 +609,23 @@ public class ObjectDefTest {
             }
         }
     }
+
+    @Test public void unpackConfigIndexesRecordsByRunningOffsetAndPreparesTwentyCacheSlots() throws Exception {
+        Object savedC = field(ObjectDef.class, "cache").get(null), savedS = field(ObjectDef.class, "stream").get(null), savedI = field(ObjectDef.class, "streamIndices").get(null);
+        int total = ObjectDef.totalObjects;
+        try {
+            // loc.dat = 20 bytes; loc.idx = count 3, record lengths 5, 9, 4 (bzip2 entries)
+            String archive = "AAByAAByAAIotWvdAAAUAAA3KLW1RQAACAAAJTFBWSZTWV1DcboAAABgAH//8AAgADFMmJkGRhBMhoGTEkFjS+MrrfO+Z/xNC7kinChILqG43QAxQVkmU1ky4qb4AAAAQABOICAAIYNBmgpgS4u5IpwoSBlxU3wA";
+            ObjectDef.unpackConfig(new StreamLoader(java.util.Base64.getDecoder().decode(archive)));
+            assertEquals(3, ObjectDef.totalObjects);
+            assertArrayEquals(new int[] {2, 7, 16}, (int[]) field(ObjectDef.class, "streamIndices").get(null));
+            ObjectDef[] slots = (ObjectDef[]) field(ObjectDef.class, "cache").get(null);
+            assertEquals(20, slots.length);
+            for (int i = 0; i < 20; i++) { assertNotNull(slots[i]); for (int j = 0; j < i; j++) assertNotSame(slots[i], slots[j]); }
+            assertEquals(20, ((Stream) field(ObjectDef.class, "stream").get(null)).buffer.length);
+        } finally {
+            field(ObjectDef.class, "cache").set(null, savedC); field(ObjectDef.class, "stream").set(null, savedS); field(ObjectDef.class, "streamIndices").set(null, savedI);
+            ObjectDef.totalObjects = total;
+        }
+    }
 }

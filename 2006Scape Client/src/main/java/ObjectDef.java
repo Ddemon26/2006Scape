@@ -44,23 +44,23 @@ public final class ObjectDef {
 		occludes = false;
 		animationId = -1;
 		wallDecorationOffset = 16;
-		aByte737 = 0;
-		aByte742 = 0;
+		ambientLightOffset = 0;
+		lightDivisorSteps = 0;
 		actions = null;
 		anInt746 = -1;
 		anInt758 = -1;
 		mirrored = false;
 		castsShadow = true;
-		anInt748 = 128;
-		anInt772 = 128;
-		anInt740 = 128;
+		modelScaleX = 128;
+		modelScaleY = 128;
+		modelScaleZ = 128;
 		blockedSidesMask = 0;
-		anInt738 = 0;
-		anInt745 = 0;
-		anInt783 = 0;
+		modelOffsetX = 0;
+		modelOffsetY = 0;
+		modelOffsetZ = 0;
 		showInLowMemory = false;
-		aBoolean766 = false;
-		anInt760 = -1;
+		forcesNonSolid = false;
+		raisesItemStacks = -1;
 		varBitId = -1;
 		settingId = -1;
 		childrenIDs = null;
@@ -90,15 +90,15 @@ public final class ObjectDef {
 		Stream stream = new Stream(streamLoader.getDataForName("loc.idx"));
 		totalObjects = stream.readUnsignedShortBigEndian();
 		streamIndices = new int[totalObjects];
-		int i = 2;
-		for (int j = 0; j < totalObjects; j++) {
-			streamIndices[j] = i;
-			i += stream.readUnsignedShortBigEndian();
+		int recordOffset = 2;
+		for (int objectIndex = 0; objectIndex < totalObjects; objectIndex++) {
+			streamIndices[objectIndex] = recordOffset;
+			recordOffset += stream.readUnsignedShortBigEndian();
 		}
 
 		cache = new ObjectDef[20];
-		for (int k = 0; k < 20; k++) {
-			cache[k] = new ObjectDef();
+		for (int cacheSlot = 0; cacheSlot < 20; cacheSlot++) {
+			cache[cacheSlot] = new ObjectDef();
 		}
 
 	}
@@ -258,9 +258,9 @@ public final class ObjectDef {
 			}
 		}
 		boolean scaled;
-		scaled = anInt748 != 128 || anInt772 != 128 || anInt740 != 128;
+		scaled = modelScaleX != 128 || modelScaleY != 128 || modelScaleZ != 128;
 		boolean translated;
-		translated = anInt738 != 0 || anInt745 != 0 || anInt783 != 0;
+		translated = modelOffsetX != 0 || modelOffsetY != 0 || modelOffsetZ != 0;
 		Model builtModel = new Model(modifiedModelColors == null, AnimationFrame.isMissingFrameId(frameId), orientation == 0 && frameId == -1 && !scaled && !translated, model);
 		if (frameId != -1) {
 			builtModel.buildAnimationGroups();
@@ -278,13 +278,13 @@ public final class ObjectDef {
 
 		}
 		if (scaled) {
-			builtModel.scale(anInt748, anInt740, anInt772);
+			builtModel.scale(modelScaleX, modelScaleZ, modelScaleY);
 		}
 		if (translated) {
-			builtModel.translate(anInt738, anInt745, anInt783);
+			builtModel.translate(modelOffsetX, modelOffsetY, modelOffsetZ);
 		}
-		builtModel.applyLighting(64 + aByte737, 768 + aByte742 * 5, -50, -10, -50, !keepsVertexNormals);
-		if (anInt760 == 1) {
+		builtModel.applyLighting(64 + ambientLightOffset, 768 + lightDivisorSteps * 5, -50, -10, -50, !keepsVertexNormals);
+		if (raisesItemStacks == 1) {
 			builtModel.stackSurfaceHeight = builtModel.modelHeight;
 		}
 		mruNodes2.removeFromCache(builtModel, cacheKey);
@@ -360,9 +360,9 @@ public final class ObjectDef {
 				} else if (opcode == 28) {
 					wallDecorationOffset = stream.readUnsignedByte();
 				} else if (opcode == 29) {
-					aByte737 = stream.readSignedByte();
+					ambientLightOffset = stream.readSignedByte();
 				} else if (opcode == 39) {
-					aByte742 = stream.readSignedByte();
+					lightDivisorSteps = stream.readSignedByte();
 				} else if (opcode >= 30 && opcode < 39) {
 					if (actions == null) {
 						actions = new String[5];
@@ -387,30 +387,30 @@ public final class ObjectDef {
 				} else if (opcode == 64) {
 					castsShadow = false;
 				} else if (opcode == 65) {
-					anInt748 = stream.readUnsignedShortBigEndian();
+					modelScaleX = stream.readUnsignedShortBigEndian();
 				} else if (opcode == 66) {
-					anInt772 = stream.readUnsignedShortBigEndian();
+					modelScaleY = stream.readUnsignedShortBigEndian();
 				} else if (opcode == 67) {
-					anInt740 = stream.readUnsignedShortBigEndian();
+					modelScaleZ = stream.readUnsignedShortBigEndian();
 				} else if (opcode == 68) {
 					anInt758 = stream.readUnsignedShortBigEndian();
 				} else if (opcode == 69) {
 					blockedSidesMask = stream.readUnsignedByte();
 				} else if (opcode == 70) {
-					anInt738 = stream.readSignedShortBigEndian();
+					modelOffsetX = stream.readSignedShortBigEndian();
 				} else if (opcode == 71) {
-					anInt745 = stream.readSignedShortBigEndian();
+					modelOffsetY = stream.readSignedShortBigEndian();
 				} else if (opcode == 72) {
-					anInt783 = stream.readSignedShortBigEndian();
+					modelOffsetZ = stream.readSignedShortBigEndian();
 				} else if (opcode == 73) {
 					showInLowMemory = true;
 				} else if (opcode == 74) {
-					aBoolean766 = true;
+					forcesNonSolid = true;
 				} else {
 					if (opcode != 75) {
 						continue;
 					}
-					anInt760 = stream.readUnsignedByte();
+					raisesItemStacks = stream.readUnsignedByte();
 				}
 				continue label0;
 			} while (opcode != 77);
@@ -438,12 +438,12 @@ public final class ObjectDef {
 				hasActions = true;
 			}
 		}
-		if (aBoolean766) {
+		if (forcesNonSolid) {
 			blocksMovement = false;
 			blocksProjectiles = false;
 		}
-		if (anInt760 == -1) {
-			anInt760 = blocksMovement ? 1 : 0;
+		if (raisesItemStacks == -1) {
+			raisesItemStacks = blocksMovement ? 1 : 0;
 		}
 	}
 
@@ -452,17 +452,17 @@ public final class ObjectDef {
 	}
 
 	public boolean showInLowMemory;
-	private byte aByte737;
-	private int anInt738;
+	private byte ambientLightOffset;
+	private int modelOffsetX;
 	public String name;
-	private int anInt740;
+	private int modelScaleZ;
 	private static final Model[] aModelArray741s = new Model[4];
-	private byte aByte742;
+	private byte lightDivisorSteps;
 	public int sizeX;
-	private int anInt745;
+	private int modelOffsetY;
 	public int anInt746;
 	private int[] originalModelColors;
-	private int anInt748;
+	private int modelScaleX;
 	public int settingId;
 	private boolean mirrored;
 	public static boolean lowMem;
@@ -472,17 +472,17 @@ public final class ObjectDef {
 	public boolean blocksProjectiles;
 	public int anInt758;
 	public int childrenIDs[];
-	private int anInt760;
+	private int raisesItemStacks;
 	public int sizeY;
 	public boolean adjustsToTerrain;
 	public boolean occludes;
 	public static Game clientInstance;
-	private boolean aBoolean766;
+	private boolean forcesNonSolid;
 	public boolean blocksMovement;
 	public int blockedSidesMask;
 	private boolean keepsVertexNormals;
 	private static int cacheIndex;
-	private int anInt772;
+	private int modelScaleY;
 	private int[] modelIds;
 	public int varBitId;
 	public int wallDecorationOffset;
@@ -493,7 +493,7 @@ public final class ObjectDef {
 	public static LruCache mruNodes2 = new LruCache(30);
 	public int animationId;
 	private static ObjectDef[] cache;
-	private int anInt783;
+	private int modelOffsetZ;
 	private int[] modifiedModelColors;
 	public static LruCache mruNodes1 = new LruCache(500);
 	public String actions[];

@@ -386,8 +386,8 @@ public class ObjectTerrainTest {
     }
 
     @Test public void buildModelSharesVerticesUnlessScaledTranslatedRotatedOrAnimated() throws Exception {
-        String[] scaled = {"anInt748", "anInt772", "anInt740"};
-        String[] translated = {"anInt738", "anInt745", "anInt783"};
+        String[] scaled = {"modelScaleX", "modelScaleY", "modelScaleZ"};
+        String[] translated = {"modelOffsetX", "modelOffsetY", "modelOffsetZ"};
         int id = 7300;
         Model source = triangle(0);
         ObjectDef.mruNodes1.removeFromCache(source, id);
@@ -407,10 +407,10 @@ public class ObjectTerrainTest {
         assertNotSame("orientation forces a copy", source.vertexX, build(withModel(9400 + n++, id), 10, -1, 1).vertexX);
         // scale(anInt748 -> x), then translate(anInt738 -> x, anInt745 -> y, anInt783 -> z)
         ObjectDef both = withModel(9400 + n, id);
-        field(ObjectDef.class, "anInt748").setInt(both, 256);
-        field(ObjectDef.class, "anInt738").setInt(both, 3);
-        field(ObjectDef.class, "anInt745").setInt(both, 4);
-        field(ObjectDef.class, "anInt783").setInt(both, 5);
+        field(ObjectDef.class, "modelScaleX").setInt(both, 256);
+        field(ObjectDef.class, "modelOffsetX").setInt(both, 3);
+        field(ObjectDef.class, "modelOffsetY").setInt(both, 4);
+        field(ObjectDef.class, "modelOffsetZ").setInt(both, 5);
         Model out = build(both, 10, -1, 0);
         assertArrayEquals(new int[] {3, 64 * 2 + 3, 3}, out.vertexX);
         assertArrayEquals(new int[] {4, 4, 44}, out.vertexY);
@@ -450,5 +450,144 @@ public class ObjectTerrainTest {
                 assertSame(shade(built), shade(out));
             }
         }
+    }
+
+    // ------------------------------------------------ pass 149: ObjectDef scale/offset/lighting/item-stack members (original names only)
+
+    private static Model triangle3() throws Exception {
+        Model m = triangle(0);
+        m.vertexX = new int[] {10, 74, 10};
+        m.vertexY = new int[] {-20, -20, -60};
+        m.vertexZ = new int[] {30, 30, 90};
+        return m;
+    }
+
+    private static ObjectDef decodeObject(boolean solid, int... bytes) throws Exception {
+        ObjectDef d = animated(9900);
+        d.blocksMovement = solid;
+        d.blocksProjectiles = solid;
+        byte[] data = new byte[bytes.length];
+        for (int n = 0; n < bytes.length; n++) data[n] = (byte) bytes[n];
+        Stream stream = new Stream(data);
+        Method read = ObjectDef.class.getDeclaredMethod("readValues", Stream.class);
+        read.setAccessible(true);
+        read.invoke(d, stream);
+        assertEquals(data.length, stream.currentOffset);
+        return d;
+    }
+
+    private static int[][] axes(Model m) {
+        return new int[][] {m.vertexX.clone(), m.vertexY.clone(), m.vertexZ.clone()};
+    }
+
+    @Test public void scaleFieldsScaleExactlyOneAxisEach() throws Exception {
+        String[] names = {"modelScaleX", "modelScaleY", "modelScaleZ"}; // expected axis x, y, z
+        for (int axis = 0; axis < 3; axis++) {
+            for (int scale : new int[] {64, 256, 0}) {
+                int id = 41000 + axis * 10 + scale % 7;
+                ObjectDef d = withModel(9800 + id, id);
+                field(ObjectDef.class, names[axis]).setInt(d, scale);
+                ObjectDef.mruNodes1.removeFromCache(triangle3(), id);
+                int[][] before = axes(triangle3());
+                int[][] after = axes(build(d, 10, -1, 0));
+                for (int a = 0; a < 3; a++) {
+                    for (int v = 0; v < 3; v++) {
+                        int expect = a == axis ? before[a][v] * scale / 128 : before[a][v];
+                        assertEquals(names[axis] + "=" + scale + " axis " + a + " vertex " + v, expect, after[a][v]);
+                    }
+                }
+            }
+        }
+    }
+
+    @Test public void offsetFieldsTranslateExactlyOneAxisEach() throws Exception {
+        String[] names = {"modelOffsetX", "modelOffsetY", "modelOffsetZ"}; // expected axis x, y, z
+        for (int axis = 0; axis < 3; axis++) {
+            for (int delta : new int[] {7, -7}) {
+                int id = 41100 + axis * 10 + (delta > 0 ? 1 : 2);
+                ObjectDef d = withModel(9900 + id, id);
+                field(ObjectDef.class, names[axis]).setInt(d, delta);
+                ObjectDef.mruNodes1.removeFromCache(triangle3(), id);
+                int[][] before = axes(triangle3());
+                int[][] after = axes(build(d, 10, -1, 0));
+                for (int a = 0; a < 3; a++) {
+                    for (int v = 0; v < 3; v++) {
+                        assertEquals(names[axis] + "=" + delta + " axis " + a, before[a][v] + (a == axis ? delta : 0), after[a][v]);
+                    }
+                }
+            }
+        }
+    }
+
+    @Test public void scaleAndOffsetOpcodesDecodeToTheirFields() throws Exception {
+        // 65/66/67 unsigned shorts; 70/71/72 signed shorts; defaults 128 and 0
+        ObjectDef def = animated(9990);
+        assertEquals(128, field(ObjectDef.class, "modelScaleX").getInt(def));
+        assertEquals(128, field(ObjectDef.class, "modelScaleY").getInt(def));
+        assertEquals(128, field(ObjectDef.class, "modelScaleZ").getInt(def));
+        assertEquals(0, field(ObjectDef.class, "modelOffsetX").getInt(def));
+        ObjectDef d = decodeObject(true, 65, 0x01, 0x00, 66, 0x02, 0x00, 67, 0x03, 0x00, 70, 0xFF, 0xFE, 71, 0x00, 0x05, 72, 0xFF, 0xF0, 0);
+        assertEquals(256, field(ObjectDef.class, "modelScaleX").getInt(d));
+        assertEquals(512, field(ObjectDef.class, "modelScaleY").getInt(d));
+        assertEquals(768, field(ObjectDef.class, "modelScaleZ").getInt(d));
+        assertEquals(-2, field(ObjectDef.class, "modelOffsetX").getInt(d));
+        assertEquals(5, field(ObjectDef.class, "modelOffsetY").getInt(d));
+        assertEquals(-16, field(ObjectDef.class, "modelOffsetZ").getInt(d));
+    }
+
+    @Test public void lightingBytesAreTheAmbientAndDivisorOffsetsOfApplyLighting() throws Exception {
+        int[][] cases = {{0, 0}, {10, 0}, {-10, 0}, {0, 10}, {0, -10}, {20, -6}};
+        Set<String> distinct = new HashSet<String>();
+        for (int c = 0; c < cases.length; c++) {
+            int id = 41200 + c;
+            ObjectDef d = withModel(10000 + id, id);
+            field(ObjectDef.class, "ambientLightOffset").setByte(d, (byte) cases[c][0]);
+            field(ObjectDef.class, "lightDivisorSteps").setByte(d, (byte) cases[c][1]);
+            ObjectDef.mruNodes1.removeFromCache(triangle3(), id);
+            Model out = build(d, 10, -1, 0);
+            Model copy = new Model(true, true, false, triangle3());
+            copy.applyLighting(64 + cases[c][0], 768 + cases[c][1] * 5, -50, -10, -50, true);
+            assertArrayEquals("case " + c, shade(copy), shade(out));
+            distinct.add(java.util.Arrays.toString(shade(out)));
+        }
+        assertTrue("different offsets change the lighting", distinct.size() >= 4);
+        // opcode 29 -> ambient byte, opcode 39 -> divisor byte (both signed)
+        ObjectDef d = decodeObject(true, 29, 0xFB, 39, 0x07, 0);
+        assertEquals(-5, field(ObjectDef.class, "ambientLightOffset").getByte(d));
+        assertEquals(7, field(ObjectDef.class, "lightDivisorSteps").getByte(d));
+    }
+
+    @Test public void anInt760SetsTheBuiltModelsItemStackHeightToItsHeightWhenOne() throws Exception {
+        for (int value : new int[] {1, 0, 2}) {
+            int id = 41300 + value;
+            ObjectDef d = withModel(10100 + id, id);
+            field(ObjectDef.class, "raisesItemStacks").setInt(d, value);
+            ObjectDef.mruNodes1.removeFromCache(triangle3(), id);
+            Model out = build(d, 10, -1, 0);
+            assertEquals(60, out.modelHeight);
+            assertEquals("anInt760=" + value, value == 1 ? 60 : 0, out.stackSurfaceHeight);
+        }
+    }
+
+    @Test public void anInt760DefaultsFromMovementBlockingUnlessOpcode75GivesIt() throws Exception {
+        assertEquals(-1, field(ObjectDef.class, "raisesItemStacks").getInt(animated(9991)));
+        assertEquals(1, field(ObjectDef.class, "raisesItemStacks").getInt(decodeObject(true, 0)));
+        assertEquals(0, field(ObjectDef.class, "raisesItemStacks").getInt(decodeObject(false, 17, 0)));
+        assertEquals("explicit value wins over a solid definition", 0, field(ObjectDef.class, "raisesItemStacks").getInt(decodeObject(true, 75, 0, 0)));
+        assertEquals("explicit value wins over a passable definition", 1, field(ObjectDef.class, "raisesItemStacks").getInt(decodeObject(false, 17, 75, 1, 0)));
+    }
+
+    @Test public void opcode74ForcesTheDefinitionNonSolidWhateverElseSetsIt() throws Exception {
+        assertFalse(field(ObjectDef.class, "forcesNonSolid").getBoolean(animated(9996)));
+        ObjectDef without = decodeObject(true, 0);
+        assertTrue(without.blocksMovement && without.blocksProjectiles);
+        ObjectDef with = decodeObject(true, 74, 0);
+        assertTrue(field(ObjectDef.class, "forcesNonSolid").getBoolean(with));
+        assertFalse(with.blocksMovement);
+        assertFalse(with.blocksProjectiles);
+        assertEquals("the item stack default then sees a non-solid definition", 0, field(ObjectDef.class, "raisesItemStacks").getInt(with));
+        ObjectDef set = decodeObject(true, 74, 75, 1, 0);
+        assertFalse(set.blocksMovement);
+        assertEquals(1, field(ObjectDef.class, "raisesItemStacks").getInt(set));
     }
 }
