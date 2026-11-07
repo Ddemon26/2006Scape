@@ -353,7 +353,7 @@ public class ObjectPlanePlacementTest {
     private Probe probe(int plane, int filter) throws Exception {
         Probe g = new Probe();
         g.plane = plane;
-        g.anInt985 = plane;
+        g.minimapBuiltPlane = plane;
         g.loadingStage = 2;
         g.aByteArrayArray1183 = new byte[0][];
         g.aByteArrayArray1247 = new byte[0][];

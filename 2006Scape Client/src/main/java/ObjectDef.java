@@ -47,8 +47,8 @@ public final class ObjectDef {
 		ambientLightOffset = 0;
 		lightDivisorSteps = 0;
 		actions = null;
-		anInt746 = -1;
-		anInt758 = -1;
+		mapFunctionId = -1;
+		mapSceneId = -1;
 		mirrored = false;
 		castsShadow = true;
 		modelScaleX = 128;
@@ -215,12 +215,12 @@ public final class ObjectDef {
 					mruNodes1.removeFromCache(model, modelKey);
 				}
 				if (modelCount > 1) {
-					aModelArray741s[modelIndex] = model;
+					combinedModelParts[modelIndex] = model;
 				}
 			}
 
 			if (modelCount > 1) {
-				model = new Model(modelCount, aModelArray741s);
+				model = new Model(modelCount, combinedModelParts);
 			}
 		} else {
 			int shapeIndex = -1;
@@ -381,7 +381,7 @@ public final class ObjectDef {
 					}
 
 				} else if (opcode == 60) {
-					anInt746 = stream.readUnsignedShortBigEndian();
+					mapFunctionId = stream.readUnsignedShortBigEndian();
 				} else if (opcode == 62) {
 					mirrored = true;
 				} else if (opcode == 64) {
@@ -393,7 +393,7 @@ public final class ObjectDef {
 				} else if (opcode == 67) {
 					modelScaleZ = stream.readUnsignedShortBigEndian();
 				} else if (opcode == 68) {
-					anInt758 = stream.readUnsignedShortBigEndian();
+					mapSceneId = stream.readUnsignedShortBigEndian();
 				} else if (opcode == 69) {
 					blockedSidesMask = stream.readUnsignedByte();
 				} else if (opcode == 70) {
@@ -456,11 +456,11 @@ public final class ObjectDef {
 	private int modelOffsetX;
 	public String name;
 	private int modelScaleZ;
-	private static final Model[] aModelArray741s = new Model[4];
+	private static final Model[] combinedModelParts = new Model[4];
 	private byte lightDivisorSteps;
 	public int sizeX;
 	private int modelOffsetY;
-	public int anInt746;
+	public int mapFunctionId;
 	private int[] originalModelColors;
 	private int modelScaleX;
 	public int settingId;
@@ -470,7 +470,7 @@ public final class ObjectDef {
 	public int type;
 	private static int[] streamIndices;
 	public boolean blocksProjectiles;
-	public int anInt758;
+	public int mapSceneId;
 	public int childrenIDs[];
 	private int raisesItemStacks;
 	public int sizeY;

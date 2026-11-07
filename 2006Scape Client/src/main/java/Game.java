@@ -649,7 +649,7 @@ public class Game extends RSApplet {
 
 	public void method22() {
 		try {
-			anInt985 = -1;
+			minimapBuiltPlane = -1;
 			transientGraphics.removeAll();
 			projectiles.removeAll();
 			Texture.releaseAllTextureBuffers();
@@ -862,37 +862,37 @@ public class Game extends RSApplet {
 		SpotAnim.aMRUNodes_415.clear();
 	}
 
-	public void method24(int i) {
-		int ai[] = aClass30_Sub2_Sub1_Sub1_1263.pixels;
-		int j = ai.length;
-		for (int k = 0; k < j; k++) {
-			ai[k] = 0;
+	public void buildMinimapImage(int tilePlane) {
+		int pixels[] = minimapSprite.pixels;
+		int pixelCount = pixels.length;
+		for (int pixelIndex = 0; pixelIndex < pixelCount; pixelIndex++) {
+			pixels[pixelIndex] = 0;
 		}
 
-		for (int l = 1; l < 103; l++) {
-			int i1 = 24628 + (103 - l) * 512 * 4;
-			for (int k1 = 1; k1 < 103; k1++) {
-				if ((byteGroundArray[i][k1][l] & 0x18) == 0) {
-					worldController.drawMinimapTile(ai, i1, i, k1, l);
+		for (int tileY = 1; tileY < 103; tileY++) {
+			int tilePixelIndex = 24628 + (103 - tileY) * 512 * 4;
+			for (int tileX = 1; tileX < 103; tileX++) {
+				if ((byteGroundArray[tilePlane][tileX][tileY] & 0x18) == 0) {
+					worldController.drawMinimapTile(pixels, tilePixelIndex, tilePlane, tileX, tileY);
 				}
-				if (i < 3 && (byteGroundArray[i + 1][k1][l] & 8) != 0) {
-					worldController.drawMinimapTile(ai, i1, i + 1, k1, l);
+				if (tilePlane < 3 && (byteGroundArray[tilePlane + 1][tileX][tileY] & 8) != 0) {
+					worldController.drawMinimapTile(pixels, tilePixelIndex, tilePlane + 1, tileX, tileY);
 				}
-				i1 += 4;
+				tilePixelIndex += 4;
 			}
 
 		}
 
-		int j1 = (238 + (int) (Math.random() * 20D) - 10 << 16) + (238 + (int) (Math.random() * 20D) - 10 << 8) + 238 + (int) (Math.random() * 20D) - 10;
-		int l1 = 238 + (int) (Math.random() * 20D) - 10 << 16;
-		aClass30_Sub2_Sub1_Sub1_1263.setAsDrawingArea();
-		for (int i2 = 1; i2 < 103; i2++) {
-			for (int j2 = 1; j2 < 103; j2++) {
-				if ((byteGroundArray[i][j2][i2] & 0x18) == 0) {
-					method50(i2, j1, j2, l1, i);
+		int wallColour = (238 + (int) (Math.random() * 20D) - 10 << 16) + (238 + (int) (Math.random() * 20D) - 10 << 8) + 238 + (int) (Math.random() * 20D) - 10;
+		int interactiveWallColour = 238 + (int) (Math.random() * 20D) - 10 << 16;
+		minimapSprite.setAsDrawingArea();
+		for (int tileY = 1; tileY < 103; tileY++) {
+			for (int tileX = 1; tileX < 103; tileX++) {
+				if ((byteGroundArray[tilePlane][tileX][tileY] & 0x18) == 0) {
+					drawMinimapTileObjects(tileY, wallColour, tileX, interactiveWallColour, tilePlane);
 				}
-				if (i < 3 && (byteGroundArray[i + 1][j2][i2] & 8) != 0) {
-					method50(i2, j1, j2, l1, i + 1);
+				if (tilePlane < 3 && (byteGroundArray[tilePlane + 1][tileX][tileY] & 8) != 0) {
+					drawMinimapTileObjects(tileY, wallColour, tileX, interactiveWallColour, tilePlane + 1);
 				}
 			}
 
@@ -901,41 +901,41 @@ public class Game extends RSApplet {
 			aRSImageProducer_1165.setAsDrawingArea();
 			Texture.lineOffsets = chatBoxAreaOffsets;
 		}
-		anInt1071 = 0;
-		for (int k2 = 0; k2 < 104; k2++) {
-			for (int l2 = 0; l2 < 104; l2++) {
-				int i3 = worldController.getGroundDecorationUid(plane, k2, l2);
-				if (i3 != 0) {
-					i3 = i3 >> 14 & 0x7fff;
-					int j3 = ObjectDef.forID(i3).anInt746;
-					if (j3 >= 0) {
-						int k3 = k2;
-						int l3 = l2;
-						if (j3 != 22 && j3 != 29 && j3 != 34 && j3 != 36 && j3 != 46 && j3 != 47 && j3 != 48) {
-							byte byte0 = 104;
-							byte byte1 = 104;
-							int ai1[][] = aClass11Array1230[plane].tileFlags;
-							for (int i4 = 0; i4 < 10; i4++) {
-								int j4 = (int) (Math.random() * 4D);
-								if (j4 == 0 && k3 > 0 && k3 > k2 - 3 && (ai1[k3 - 1][l3] & 0x1280108) == 0) {
-									k3--;
+		mapFunctionIconCount = 0;
+		for (int tileX = 0; tileX < 104; tileX++) {
+			for (int tileY = 0; tileY < 104; tileY++) {
+				int decorationUid = worldController.getGroundDecorationUid(plane, tileX, tileY);
+				if (decorationUid != 0) {
+					int objectId = decorationUid >> 14 & 0x7fff;
+					int mapFunctionId = ObjectDef.forID(objectId).mapFunctionId;
+					if (mapFunctionId >= 0) {
+						int iconTileX = tileX;
+						int iconTileY = tileY;
+						if (mapFunctionId != 22 && mapFunctionId != 29 && mapFunctionId != 34 && mapFunctionId != 36 && mapFunctionId != 46 && mapFunctionId != 47 && mapFunctionId != 48) {
+							byte sceneWidth = 104;
+							byte sceneHeight = 104;
+							int collisionFlags[][] = aClass11Array1230[plane].tileFlags;
+							for (int attempt = 0; attempt < 10; attempt++) {
+								int direction = (int) (Math.random() * 4D);
+								if (direction == 0 && iconTileX > 0 && iconTileX > tileX - 3 && (collisionFlags[iconTileX - 1][iconTileY] & 0x1280108) == 0) {
+									iconTileX--;
 								}
-								if (j4 == 1 && k3 < byte0 - 1 && k3 < k2 + 3 && (ai1[k3 + 1][l3] & 0x1280180) == 0) {
-									k3++;
+								if (direction == 1 && iconTileX < sceneWidth - 1 && iconTileX < tileX + 3 && (collisionFlags[iconTileX + 1][iconTileY] & 0x1280180) == 0) {
+									iconTileX++;
 								}
-								if (j4 == 2 && l3 > 0 && l3 > l2 - 3 && (ai1[k3][l3 - 1] & 0x1280102) == 0) {
-									l3--;
+								if (direction == 2 && iconTileY > 0 && iconTileY > tileY - 3 && (collisionFlags[iconTileX][iconTileY - 1] & 0x1280102) == 0) {
+									iconTileY--;
 								}
-								if (j4 == 3 && l3 < byte1 - 1 && l3 < l2 + 3 && (ai1[k3][l3 + 1] & 0x1280120) == 0) {
-									l3++;
+								if (direction == 3 && iconTileY < sceneHeight - 1 && iconTileY < tileY + 3 && (collisionFlags[iconTileX][iconTileY + 1] & 0x1280120) == 0) {
+									iconTileY++;
 								}
 							}
 
 						}
-						aClass30_Sub2_Sub1_Sub1Array1140[anInt1071] = mapFunctions[j3];
-						anIntArray1072[anInt1071] = k3;
-						anIntArray1073[anInt1071] = l3;
-						anInt1071++;
+						mapFunctionIconSprites[mapFunctionIconCount] = mapFunctions[mapFunctionId];
+						mapFunctionIconTileX[mapFunctionIconCount] = iconTileX;
+						mapFunctionIconTileY[mapFunctionIconCount] = iconTileY;
+						mapFunctionIconCount++;
 					}
 				}
 			}
@@ -2469,131 +2469,131 @@ public class Game extends RSApplet {
 
 	}
 
-	public void method50(int i, int k, int l, int i1, int j1) {
-		int k1 = worldController.getWallUid(j1, l, i);
-		if (k1 != 0) {
-			int l1 = worldController.getObjectInfo(j1, l, i, k1);
-			int k2 = l1 >> 6 & 3;
-			int i3 = l1 & 0x1f;
-			int k3 = k;
-			if (k1 > 0) {
-				k3 = i1;
+	public void drawMinimapTileObjects(int tileY, int wallColour, int tileX, int interactiveWallColour, int tilePlane) {
+		int uid = worldController.getWallUid(tilePlane, tileX, tileY);
+		if (uid != 0) {
+			int wallInfo = worldController.getObjectInfo(tilePlane, tileX, tileY, uid);
+			int rotation = wallInfo >> 6 & 3;
+			int shape = wallInfo & 0x1f;
+			int colour = wallColour;
+			if (uid > 0) {
+				colour = interactiveWallColour;
 			}
-			int ai[] = aClass30_Sub2_Sub1_Sub1_1263.pixels;
-			int k4 = 24624 + l * 4 + (103 - i) * 512 * 4;
-			int i5 = k1 >> 14 & 0x7fff;
-			ObjectDef class46_2 = ObjectDef.forID(i5);
-			if (class46_2.anInt758 != -1) {
-				Background background_2 = mapScenes[class46_2.anInt758];
-				if (background_2 != null) {
-					int i6 = (class46_2.sizeX * 4 - background_2.imageWidth) / 2;
-					int j6 = (class46_2.sizeY * 4 - background_2.imageHeight) / 2;
-					background_2.drawNonzeroIndexed(48 + l * 4 + i6, 48 + (104 - i - class46_2.sizeY) * 4 + j6);
+			int pixels[] = minimapSprite.pixels;
+			int pixelIndex = 24624 + tileX * 4 + (103 - tileY) * 512 * 4;
+			int objectId = uid >> 14 & 0x7fff;
+			ObjectDef objectDef = ObjectDef.forID(objectId);
+			if (objectDef.mapSceneId != -1) {
+				Background mapScene = mapScenes[objectDef.mapSceneId];
+				if (mapScene != null) {
+					int sceneOffsetX = (objectDef.sizeX * 4 - mapScene.imageWidth) / 2;
+					int sceneOffsetY = (objectDef.sizeY * 4 - mapScene.imageHeight) / 2;
+					mapScene.drawNonzeroIndexed(48 + tileX * 4 + sceneOffsetX, 48 + (104 - tileY - objectDef.sizeY) * 4 + sceneOffsetY);
 				}
 			} else {
-				if (i3 == 0 || i3 == 2) {
-					if (k2 == 0) {
-						ai[k4] = k3;
-						ai[k4 + 512] = k3;
-						ai[k4 + 1024] = k3;
-						ai[k4 + 1536] = k3;
-					} else if (k2 == 1) {
-						ai[k4] = k3;
-						ai[k4 + 1] = k3;
-						ai[k4 + 2] = k3;
-						ai[k4 + 3] = k3;
-					} else if (k2 == 2) {
-						ai[k4 + 3] = k3;
-						ai[k4 + 3 + 512] = k3;
-						ai[k4 + 3 + 1024] = k3;
-						ai[k4 + 3 + 1536] = k3;
-					} else if (k2 == 3) {
-						ai[k4 + 1536] = k3;
-						ai[k4 + 1536 + 1] = k3;
-						ai[k4 + 1536 + 2] = k3;
-						ai[k4 + 1536 + 3] = k3;
+				if (shape == 0 || shape == 2) {
+					if (rotation == 0) {
+						pixels[pixelIndex] = colour;
+						pixels[pixelIndex + 512] = colour;
+						pixels[pixelIndex + 1024] = colour;
+						pixels[pixelIndex + 1536] = colour;
+					} else if (rotation == 1) {
+						pixels[pixelIndex] = colour;
+						pixels[pixelIndex + 1] = colour;
+						pixels[pixelIndex + 2] = colour;
+						pixels[pixelIndex + 3] = colour;
+					} else if (rotation == 2) {
+						pixels[pixelIndex + 3] = colour;
+						pixels[pixelIndex + 3 + 512] = colour;
+						pixels[pixelIndex + 3 + 1024] = colour;
+						pixels[pixelIndex + 3 + 1536] = colour;
+					} else if (rotation == 3) {
+						pixels[pixelIndex + 1536] = colour;
+						pixels[pixelIndex + 1536 + 1] = colour;
+						pixels[pixelIndex + 1536 + 2] = colour;
+						pixels[pixelIndex + 1536 + 3] = colour;
 					}
 				}
-				if (i3 == 3) {
-					if (k2 == 0) {
-						ai[k4] = k3;
-					} else if (k2 == 1) {
-						ai[k4 + 3] = k3;
-					} else if (k2 == 2) {
-						ai[k4 + 3 + 1536] = k3;
-					} else if (k2 == 3) {
-						ai[k4 + 1536] = k3;
+				if (shape == 3) {
+					if (rotation == 0) {
+						pixels[pixelIndex] = colour;
+					} else if (rotation == 1) {
+						pixels[pixelIndex + 3] = colour;
+					} else if (rotation == 2) {
+						pixels[pixelIndex + 3 + 1536] = colour;
+					} else if (rotation == 3) {
+						pixels[pixelIndex + 1536] = colour;
 					}
 				}
-				if (i3 == 2) {
-					if (k2 == 3) {
-						ai[k4] = k3;
-						ai[k4 + 512] = k3;
-						ai[k4 + 1024] = k3;
-						ai[k4 + 1536] = k3;
-					} else if (k2 == 0) {
-						ai[k4] = k3;
-						ai[k4 + 1] = k3;
-						ai[k4 + 2] = k3;
-						ai[k4 + 3] = k3;
-					} else if (k2 == 1) {
-						ai[k4 + 3] = k3;
-						ai[k4 + 3 + 512] = k3;
-						ai[k4 + 3 + 1024] = k3;
-						ai[k4 + 3 + 1536] = k3;
-					} else if (k2 == 2) {
-						ai[k4 + 1536] = k3;
-						ai[k4 + 1536 + 1] = k3;
-						ai[k4 + 1536 + 2] = k3;
-						ai[k4 + 1536 + 3] = k3;
+				if (shape == 2) {
+					if (rotation == 3) {
+						pixels[pixelIndex] = colour;
+						pixels[pixelIndex + 512] = colour;
+						pixels[pixelIndex + 1024] = colour;
+						pixels[pixelIndex + 1536] = colour;
+					} else if (rotation == 0) {
+						pixels[pixelIndex] = colour;
+						pixels[pixelIndex + 1] = colour;
+						pixels[pixelIndex + 2] = colour;
+						pixels[pixelIndex + 3] = colour;
+					} else if (rotation == 1) {
+						pixels[pixelIndex + 3] = colour;
+						pixels[pixelIndex + 3 + 512] = colour;
+						pixels[pixelIndex + 3 + 1024] = colour;
+						pixels[pixelIndex + 3 + 1536] = colour;
+					} else if (rotation == 2) {
+						pixels[pixelIndex + 1536] = colour;
+						pixels[pixelIndex + 1536 + 1] = colour;
+						pixels[pixelIndex + 1536 + 2] = colour;
+						pixels[pixelIndex + 1536 + 3] = colour;
 					}
 				}
 			}
 		}
-		k1 = worldController.getSceneObjectUid(j1, l, i);
-		if (k1 != 0) {
-			int i2 = worldController.getObjectInfo(j1, l, i, k1);
-			int l2 = i2 >> 6 & 3;
-			int j3 = i2 & 0x1f;
-			int l3 = k1 >> 14 & 0x7fff;
-			ObjectDef class46_1 = ObjectDef.forID(l3);
-			if (class46_1.anInt758 != -1) {
-				Background background_1 = mapScenes[class46_1.anInt758];
-				if (background_1 != null) {
-					int j5 = (class46_1.sizeX * 4 - background_1.imageWidth) / 2;
-					int k5 = (class46_1.sizeY * 4 - background_1.imageHeight) / 2;
-					background_1.drawNonzeroIndexed(48 + l * 4 + j5, 48 + (104 - i - class46_1.sizeY) * 4 + k5);
+		uid = worldController.getSceneObjectUid(tilePlane, tileX, tileY);
+		if (uid != 0) {
+			int info = worldController.getObjectInfo(tilePlane, tileX, tileY, uid);
+			int rotation = info >> 6 & 3;
+			int shape = info & 0x1f;
+			int objectId = uid >> 14 & 0x7fff;
+			ObjectDef objectDef = ObjectDef.forID(objectId);
+			if (objectDef.mapSceneId != -1) {
+				Background mapScene = mapScenes[objectDef.mapSceneId];
+				if (mapScene != null) {
+					int sceneOffsetX = (objectDef.sizeX * 4 - mapScene.imageWidth) / 2;
+					int sceneOffsetY = (objectDef.sizeY * 4 - mapScene.imageHeight) / 2;
+					mapScene.drawNonzeroIndexed(48 + tileX * 4 + sceneOffsetX, 48 + (104 - tileY - objectDef.sizeY) * 4 + sceneOffsetY);
 				}
-			} else if (j3 == 9) {
-				int l4 = 0xeeeeee;
-				if (k1 > 0) {
-					l4 = 0xee0000;
+			} else if (shape == 9) {
+				int colour = 0xeeeeee;
+				if (uid > 0) {
+					colour = 0xee0000;
 				}
-				int ai1[] = aClass30_Sub2_Sub1_Sub1_1263.pixels;
-				int l5 = 24624 + l * 4 + (103 - i) * 512 * 4;
-				if (l2 == 0 || l2 == 2) {
-					ai1[l5 + 1536] = l4;
-					ai1[l5 + 1024 + 1] = l4;
-					ai1[l5 + 512 + 2] = l4;
-					ai1[l5 + 3] = l4;
+				int pixels[] = minimapSprite.pixels;
+				int pixelIndex = 24624 + tileX * 4 + (103 - tileY) * 512 * 4;
+				if (rotation == 0 || rotation == 2) {
+					pixels[pixelIndex + 1536] = colour;
+					pixels[pixelIndex + 1024 + 1] = colour;
+					pixels[pixelIndex + 512 + 2] = colour;
+					pixels[pixelIndex + 3] = colour;
 				} else {
-					ai1[l5] = l4;
-					ai1[l5 + 512 + 1] = l4;
-					ai1[l5 + 1024 + 2] = l4;
-					ai1[l5 + 1536 + 3] = l4;
+					pixels[pixelIndex] = colour;
+					pixels[pixelIndex + 512 + 1] = colour;
+					pixels[pixelIndex + 1024 + 2] = colour;
+					pixels[pixelIndex + 1536 + 3] = colour;
 				}
 			}
 		}
-		k1 = worldController.getGroundDecorationUid(j1, l, i);
-		if (k1 != 0) {
-			int j2 = k1 >> 14 & 0x7fff;
-			ObjectDef class46 = ObjectDef.forID(j2);
-			if (class46.anInt758 != -1) {
-				Background background = mapScenes[class46.anInt758];
-				if (background != null) {
-					int i4 = (class46.sizeX * 4 - background.imageWidth) / 2;
-					int j4 = (class46.sizeY * 4 - background.imageHeight) / 2;
-					background.drawNonzeroIndexed(48 + l * 4 + i4, 48 + (104 - i - class46.sizeY) * 4 + j4);
+		uid = worldController.getGroundDecorationUid(tilePlane, tileX, tileY);
+		if (uid != 0) {
+			int objectId = uid >> 14 & 0x7fff;
+			ObjectDef objectDef = ObjectDef.forID(objectId);
+			if (objectDef.mapSceneId != -1) {
+				Background mapScene = mapScenes[objectDef.mapSceneId];
+				if (mapScene != null) {
+					int sceneOffsetX = (objectDef.sizeX * 4 - mapScene.imageWidth) / 2;
+					int sceneOffsetY = (objectDef.sizeY * 4 - mapScene.imageHeight) / 2;
+					mapScene.drawNonzeroIndexed(48 + tileX * 4 + sceneOffsetX, 48 + (104 - tileY - objectDef.sizeY) * 4 + sceneOffsetY);
 				}
 			}
 		}
@@ -2711,9 +2711,9 @@ public class Game extends RSApplet {
 				aLong824 = System.currentTimeMillis();
 			}
 		}
-		if (loadingStage == 2 && plane != anInt985) {
-			anInt985 = plane;
-			method24(plane);
+		if (loadingStage == 2 && plane != minimapBuiltPlane) {
+			minimapBuiltPlane = plane;
+			buildMinimapImage(plane);
 		}
 	}
 
@@ -4815,10 +4815,10 @@ public class Game extends RSApplet {
 		menuActionCmd1 = null;
 		menuActionName = null;
 		variousSettings = null;
-		anIntArray1072 = null;
-		anIntArray1073 = null;
-		aClass30_Sub2_Sub1_Sub1Array1140 = null;
-		aClass30_Sub2_Sub1_Sub1_1263 = null;
+		mapFunctionIconTileX = null;
+		mapFunctionIconTileY = null;
+		mapFunctionIconSprites = null;
+		minimapSprite = null;
 		friendsList = null;
 		friendsListAsLongs = null;
 		friendsNodeIDs = null;
@@ -6128,7 +6128,7 @@ public class Game extends RSApplet {
 				minimapInt3 = (int) (Math.random() * 30D) - 20;
 				minimapInt1 = (int) (Math.random() * 20D) - 10 & 0x7ff;
 				anInt1021 = 0;
-				anInt985 = -1;
+				minimapBuiltPlane = -1;
 				destX = 0;
 				destY = 0;
 				playerCount = 0;
@@ -7041,7 +7041,7 @@ public class Game extends RSApplet {
 				aClass11Array1230[j] = new CollisionMap();
 			}
 
-			aClass30_Sub2_Sub1_Sub1_1263 = new Sprite(512, 512);
+			minimapSprite = new Sprite(512, 512);
 			StreamLoader streamLoader_6 = streamLoaderForName(5, "update list", "versionlist", expectedCRCs[5], 60);
 			drawLoadingText(60, "Connecting to update server");
 			onDemandFetcher = new OnDemandFetcher();
@@ -9491,13 +9491,13 @@ public class Game extends RSApplet {
 		int i = minimapInt1 + minimapInt2 & 0x7ff;
 		int j = 48 + myPlayer.x / 32;
 		int l2 = 464 - myPlayer.y / 32;
-		aClass30_Sub2_Sub1_Sub1_1263.drawRotatedScanlines(151, i, anIntArray1229, 256 + minimapInt3, anIntArray1052, l2, 5, 25, 146, j);
+		minimapSprite.drawRotatedScanlines(151, i, anIntArray1229, 256 + minimapInt3, anIntArray1052, l2, 5, 25, 146, j);
 		compass.drawRotatedScanlines(33, minimapInt1, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
 		// Minimap icons (shops, quest etc)
-		for (int j5 = 0; j5 < anInt1071; j5++) {
-			int k = anIntArray1072[j5] * 4 + 2 - myPlayer.x / 32;
-			int i3 = anIntArray1073[j5] * 4 + 2 - myPlayer.y / 32;
-			drawMinimapMarker(aClass30_Sub2_Sub1_Sub1Array1140[j5], k, i3);
+		for (int j5 = 0; j5 < mapFunctionIconCount; j5++) {
+			int k = mapFunctionIconTileX[j5] * 4 + 2 - myPlayer.x / 32;
+			int i3 = mapFunctionIconTileY[j5] * 4 + 2 - myPlayer.y / 32;
+			drawMinimapMarker(mapFunctionIconSprites[j5], k, i3);
 		}
 
 		for (int k5 = 0; k5 < 104; k5++) {
@@ -12067,7 +12067,7 @@ public class Game extends RSApplet {
 		anIntArray981 = new int[anInt975];
 		anIntArray982 = new int[anInt975];
 		aStringArray983 = new String[anInt975];
-		anInt985 = -1;
+		minimapBuiltPlane = -1;
 		hitMarks = new Sprite[20];
 		anIntArray990 = new int[5];
 		scrollTrackColor = 0x23201b;
@@ -12090,8 +12090,8 @@ public class Game extends RSApplet {
 		mapScenes = new Background[100];
 		scrollThumbColor = 0x4d4233;
 		anIntArray1065 = new int[7];
-		anIntArray1072 = new int[1000];
-		anIntArray1073 = new int[1000];
+		mapFunctionIconTileX = new int[1000];
+		mapFunctionIconTileY = new int[1000];
 		aBoolean1080 = false;
 		friendsList = new String[200];
 		inStream = Stream.acquire();
@@ -12109,7 +12109,7 @@ public class Game extends RSApplet {
 		atPlayerArray = new boolean[5];
 		anIntArrayArrayArray1129 = new int[4][13][13];
 		anInt1132 = 2;
-		aClass30_Sub2_Sub1_Sub1Array1140 = new Sprite[1000];
+		mapFunctionIconSprites = new Sprite[1000];
 		aBoolean1141 = false;
 		aBoolean1149 = false;
 		crosses = new Sprite[8];
@@ -12307,7 +12307,7 @@ public class Game extends RSApplet {
 	public final int[] anIntArray982;
 	public final String[] aStringArray983;
 	public int anInt984;
-	public int anInt985;
+	public int minimapBuiltPlane;
 	public static int anInt986;
 	public Sprite[] hitMarks;
 	public int anInt988;
@@ -12384,9 +12384,9 @@ public class Game extends RSApplet {
 	public OnDemandFetcher onDemandFetcher;
 	public int anInt1069;
 	public int anInt1070;
-	public int anInt1071;
-	public int[] anIntArray1072;
-	public int[] anIntArray1073;
+	public int mapFunctionIconCount;
+	public int[] mapFunctionIconTileX;
+	public int[] mapFunctionIconTileY;
 	public Sprite mapDotItem;
 	public Sprite mapDotNPC;
 	public Sprite mapDotPlayer;
@@ -12447,7 +12447,7 @@ public class Game extends RSApplet {
 	public int anInt1137;
 	public int spellUsableOn;
 	public String spellTooltip;
-	public Sprite[] aClass30_Sub2_Sub1_Sub1Array1140;
+	public Sprite[] mapFunctionIconSprites;
 	public boolean aBoolean1141;
 	public static int anInt1142;
 	public Background redStone1;
@@ -12560,7 +12560,7 @@ public class Game extends RSApplet {
 	public int previousSong;
 	public int destX;
 	public int destY;
-	public Sprite aClass30_Sub2_Sub1_Sub1_1263;
+	public Sprite minimapSprite;
 	public int walkDestinationAdjusted;
 	public int anInt1265;
 	public String loginMessage1;
