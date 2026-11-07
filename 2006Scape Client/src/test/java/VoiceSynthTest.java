@@ -234,4 +234,74 @@ public class VoiceSynthTest {
         assertFalse(java.util.Arrays.equals(dry, lo));
         assertFalse(java.util.Arrays.equals(lo, hi));
     }
+
+    // ---- filter stage (pass 174): taps, lookahead, position, update interval ----
+    private static byte[] filterBytes(int n0, int n1, int g1) {
+        ByteArrayOutputStream f = new ByteArrayOutputStream();
+        f.write(n0 << 4 | n1); u16(f, 0); u16(f, g1);
+        int flags = (n0 > 0 ? 1 : 0) | (n1 > 0 ? 16 : 0); f.write(flags);   // pole 0 of each used filter has a distinct end point
+        for (int k = 0; k < n0 + n1; k++) { u16(f, 6000 + 3000 * k); u16(f, 2000); }
+        if (n0 > 0) { u16(f, 30000); u16(f, 2000); }
+        if (n1 > 0) { u16(f, 30000); u16(f, 2000); }
+        return f.toByteArray();
+    }
+    private static byte[] posEnv(int a, int b) {
+        ByteArrayOutputStream e = new ByteArrayOutputStream(); e.write(2); u16(e, 0); u16(e, a); u16(e, 65535); u16(e, b); return e.toByteArray();
+    }
+    private static V filtered(int n0, int n1, byte[] envBytes) {
+        V v = new V(); v.amp = constEnv(2, 0, 0, 20); v.pitch = constEnv(1, 441, 441, 0);
+        v.filter = filterBytes(n0, n1, 1000); v.filterEnv = envBytes; return v;
+    }
+    private static long mul(int x, int c) { return (long) x * (long) c >> 16; }
+
+    @Test public void filterTapCountsAreTwicePoleCountsWithLookaheadFeedforwardAndRecursiveFeedback() {
+        int[][] combos = {{1, 0}, {0, 1}, {2, 0}, {0, 2}, {2, 1}, {1, 2}};
+        for (int[] cb : combos) {
+            int n0 = cb[0], n1 = cb[1];
+            V dryV = new V(); dryV.amp = constEnv(2, 0, 0, 20); dryV.pitch = constEnv(1, 441, 441, 0);
+            int[] d = dryV.render(100);
+            V fv = filtered(n0, n1, posEnv(0, 0));
+            int[] f = fv.render(100);
+            int g = SynthFilter.gainFactorFixed;
+            int[][] c = {SynthFilter.coefficients[0].clone(), SynthFilter.coefficients[1].clone()};
+            int ff = n0 * 2, fb = n1 * 2, n = f.length;
+            assertTrue("clamp-free " + n0 + n1 + " " + absMax(d) + " " + absMax(f), absMax(d) < 20000 && absMax(f) < 32000);
+            for (int j = 0; j < n - ff; j++) {
+                long exp = mul(d[j + ff], g);
+                for (int k = 0; k < ff; k++) exp += mul(d[j + ff - 1 - k], c[0][k]);
+                for (int k = 0; k < fb && k < j; k++) exp -= mul(f[j - 1 - k], c[1][k]);
+                assertEquals("n0=" + n0 + " n1=" + n1 + " j=" + j, (int) exp, f[j]);
+            }
+            SynthFilter ref = new SynthFilter(); ref.decode(new Stream(filterBytesWithEnv(n0, n1)), new SynthEnvelope());
+            assertEquals(ff, ref.computeCoefficients(0, 0f));
+            assertEquals(fb, ref.computeCoefficients(1, 0f));
+        }
+    }
+    private static byte[] filterBytesWithEnv(int n0, int n1) {
+        ByteArrayOutputStream o = new ByteArrayOutputStream(); put(o, filterBytes(n0, n1, 1000)); put(o, posEnv(0, 0)); return o.toByteArray();
+    }
+
+    @Test public void filterEnvelopeValueIsPositionOverSixtyFiveThousandFiveHundredThirtySix() {
+        for (int v : new int[] {0, 16384, 40000, 65535}) {
+            filtered(1, 1, posEnv(v, v)).render(100);
+            int g = SynthFilter.gainFactorFixed;
+            int[][] got = {SynthFilter.coefficients[0].clone(), SynthFilter.coefficients[1].clone()};
+            SynthFilter ref = new SynthFilter(); ref.decode(new Stream(filterBytesWithEnv(1, 1)), new SynthEnvelope());
+            ref.computeCoefficients(0, v / 65536F); ref.computeCoefficients(1, v / 65536F);
+            assertEquals(SynthFilter.gainFactorFixed, g);
+            assertArrayEquals(SynthFilter.coefficients[0], got[0]);
+            assertArrayEquals(SynthFilter.coefficients[1], got[1]);
+            if (v == 0) continue;
+            ref.computeCoefficients(0, 0f); ref.computeCoefficients(1, 0f);
+            assertFalse("position must matter at v=" + v, java.util.Arrays.equals(SynthFilter.coefficients[1], got[1]));
+        }
+    }
+
+    @Test public void filterCoefficientsAreRefreshedEveryOneHundredTwentyEightSamples() {
+        int[] still = filtered(1, 1, posEnv(0, 0)).render(100);
+        int[] ramp = filtered(1, 1, posEnv(0, 60000)).render(100);
+        int firstDiff = -1;
+        for (int i = 0; i < still.length; i++) if (still[i] != ramp[i]) { firstDiff = i; break; }
+        assertTrue("first change after the first 128-sample block: " + firstDiff, firstDiff >= 128 && firstDiff < 256);
+    }
 }

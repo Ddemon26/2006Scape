@@ -121,67 +121,67 @@ final class SynthVoice {
 		}
 		if (filter.pairCounts[0] > 0 || filter.pairCounts[1] > 0) {
 			filterEnvelope.resetValues();
-			int k3 = filterEnvelope.nextValue(sampleCount + 1);
-			int i5 = filter.computeCoefficients(0, k3 / 65536F);
-			int i6 = filter.computeCoefficients(1, k3 / 65536F);
-			if (sampleCount >= i5 + i6) {
-				int j7 = 0;
-				int l7 = i6;
-				if (l7 > sampleCount - i5) {
-					l7 = sampleCount - i5;
+			int filterPosition = filterEnvelope.nextValue(sampleCount + 1);
+			int feedforwardTaps = filter.computeCoefficients(0, filterPosition / 65536F);
+			int feedbackTaps = filter.computeCoefficients(1, filterPosition / 65536F);
+			if (sampleCount >= feedforwardTaps + feedbackTaps) {
+				int sample = 0;
+				int blockEnd = feedbackTaps;
+				if (blockEnd > sampleCount - feedforwardTaps) {
+					blockEnd = sampleCount - feedforwardTaps;
 				}
-				for (; j7 < l7; j7++) {
-					int j8 = (int) ((long) sampleBuffer[j7 + i5] * (long) SynthFilter.gainFactorFixed >> 16);
-					for (int k8 = 0; k8 < i5; k8++) {
-						j8 += (int) ((long) sampleBuffer[j7 + i5 - 1 - k8] * (long) SynthFilter.coefficients[0][k8] >> 16);
+				for (; sample < blockEnd; sample++) {
+					int filtered = (int) ((long) sampleBuffer[sample + feedforwardTaps] * (long) SynthFilter.gainFactorFixed >> 16);
+					for (int feedforwardTap = 0; feedforwardTap < feedforwardTaps; feedforwardTap++) {
+						filtered += (int) ((long) sampleBuffer[sample + feedforwardTaps - 1 - feedforwardTap] * (long) SynthFilter.coefficients[0][feedforwardTap] >> 16);
 					}
 
-					for (int j9 = 0; j9 < j7; j9++) {
-						j8 -= (int) ((long) sampleBuffer[j7 - 1 - j9] * (long) SynthFilter.coefficients[1][j9] >> 16);
+					for (int feedbackTap = 0; feedbackTap < sample; feedbackTap++) {
+						filtered -= (int) ((long) sampleBuffer[sample - 1 - feedbackTap] * (long) SynthFilter.coefficients[1][feedbackTap] >> 16);
 					}
 
-					sampleBuffer[j7] = j8;
-					k3 = filterEnvelope.nextValue(sampleCount + 1);
+					sampleBuffer[sample] = filtered;
+					filterPosition = filterEnvelope.nextValue(sampleCount + 1);
 				}
 
-				char c = '\200';
-				l7 = c;
+				char refreshInterval = '\200';
+				blockEnd = refreshInterval;
 				do {
-					if (l7 > sampleCount - i5) {
-						l7 = sampleCount - i5;
+					if (blockEnd > sampleCount - feedforwardTaps) {
+						blockEnd = sampleCount - feedforwardTaps;
 					}
-					for (; j7 < l7; j7++) {
-						int l8 = (int) ((long) sampleBuffer[j7 + i5] * (long) SynthFilter.gainFactorFixed >> 16);
-						for (int k9 = 0; k9 < i5; k9++) {
-							l8 += (int) ((long) sampleBuffer[j7 + i5 - 1 - k9] * (long) SynthFilter.coefficients[0][k9] >> 16);
+					for (; sample < blockEnd; sample++) {
+						int filtered = (int) ((long) sampleBuffer[sample + feedforwardTaps] * (long) SynthFilter.gainFactorFixed >> 16);
+						for (int feedforwardTap = 0; feedforwardTap < feedforwardTaps; feedforwardTap++) {
+							filtered += (int) ((long) sampleBuffer[sample + feedforwardTaps - 1 - feedforwardTap] * (long) SynthFilter.coefficients[0][feedforwardTap] >> 16);
 						}
 
-						for (int i10 = 0; i10 < i6; i10++) {
-							l8 -= (int) ((long) sampleBuffer[j7 - 1 - i10] * (long) SynthFilter.coefficients[1][i10] >> 16);
+						for (int feedbackTap = 0; feedbackTap < feedbackTaps; feedbackTap++) {
+							filtered -= (int) ((long) sampleBuffer[sample - 1 - feedbackTap] * (long) SynthFilter.coefficients[1][feedbackTap] >> 16);
 						}
 
-						sampleBuffer[j7] = l8;
-						k3 = filterEnvelope.nextValue(sampleCount + 1);
+						sampleBuffer[sample] = filtered;
+						filterPosition = filterEnvelope.nextValue(sampleCount + 1);
 					}
 
-					if (j7 >= sampleCount - i5) {
+					if (sample >= sampleCount - feedforwardTaps) {
 						break;
 					}
-					i5 = filter.computeCoefficients(0, k3 / 65536F);
-					i6 = filter.computeCoefficients(1, k3 / 65536F);
-					l7 += c;
+					feedforwardTaps = filter.computeCoefficients(0, filterPosition / 65536F);
+					feedbackTaps = filter.computeCoefficients(1, filterPosition / 65536F);
+					blockEnd += refreshInterval;
 				} while (true);
-				for (; j7 < sampleCount; j7++) {
-					int i9 = 0;
-					for (int l9 = j7 + i5 - sampleCount; l9 < i5; l9++) {
-						i9 += (int) ((long) sampleBuffer[j7 + i5 - 1 - l9] * (long) SynthFilter.coefficients[0][l9] >> 16);
+				for (; sample < sampleCount; sample++) {
+					int filtered = 0;
+					for (int feedforwardTap = sample + feedforwardTaps - sampleCount; feedforwardTap < feedforwardTaps; feedforwardTap++) {
+						filtered += (int) ((long) sampleBuffer[sample + feedforwardTaps - 1 - feedforwardTap] * (long) SynthFilter.coefficients[0][feedforwardTap] >> 16);
 					}
 
-					for (int j10 = 0; j10 < i6; j10++) {
-						i9 -= (int) ((long) sampleBuffer[j7 - 1 - j10] * (long) SynthFilter.coefficients[1][j10] >> 16);
+					for (int feedbackTap = 0; feedbackTap < feedbackTaps; feedbackTap++) {
+						filtered -= (int) ((long) sampleBuffer[sample - 1 - feedbackTap] * (long) SynthFilter.coefficients[1][feedbackTap] >> 16);
 					}
 
-					sampleBuffer[j7] = i9;
+					sampleBuffer[sample] = filtered;
 					filterEnvelope.nextValue(sampleCount + 1);
 				}
 
