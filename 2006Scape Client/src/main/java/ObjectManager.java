@@ -24,11 +24,11 @@ final class ObjectManager {
 		anIntArray128 = new int[anInt147];
 	}
 
-	private static int method170(int i, int j) {
-		int k = i + j * 57;
-		k = k << 13 ^ k;
-		int l = k * (k * k * 15731 + 0xc0ae5) + 0x5208dd0d & 0x7fffffff;
-		return l >> 19 & 0xff;
+	private static int hashNoise(int x, int y) {
+		int seed = x + y * 57;
+		seed = seed << 13 ^ seed;
+		int hash = seed * (seed * seed * 15731 + 0xc0ae5) + 0x5208dd0d & 0x7fffffff;
+		return hash >> 19 & 0xff;
 	}
 
 	public final void method171(CollisionMap aclass11[], WorldController worldController) {
@@ -146,7 +146,7 @@ final class ObjectManager {
 							k15 -= anIntArray127[k18];
 							k16 -= anIntArray128[k18];
 						}
-						if (k17 >= 1 && k17 < anInt147 - 1 && ((!hideBuggyVarrockSwordShopSnow && !hideRoofs && !lowMem) || (aByteArrayArrayArray149[0][l6][k17] & 2) != 0 || (aByteArrayArrayArray149[l][l6][k17] & 0x10) == 0 && method182(k17, l, l6) == anInt131)) {
+						if (k17 >= 1 && k17 < anInt147 - 1 && ((!hideBuggyVarrockSwordShopSnow && !hideRoofs && !lowMem) || (aByteArrayArrayArray149[0][l6][k17] & 2) != 0 || (aByteArrayArrayArray149[l][l6][k17] & 0x10) == 0 && getEffectivePlane(k17, l, l6) == anInt131)) {
 							if (l < anInt145) {
 								anInt145 = l;
 							}
@@ -167,7 +167,7 @@ final class ObjectManager {
 									int l21 = l9 * 256 / k15;
 									int j22 = j13 / k16;
 									int l22 = j14 / k16;
-									j21 = method177(l21, j22, l22);
+									j21 = packHsl(l21, j22, l22);
 									l21 = l21 + anInt123 & 0xff;
 									l22 += anInt133;
 									if (l22 < 0) {
@@ -175,7 +175,7 @@ final class ObjectManager {
 									} else if (l22 > 255) {
 										l22 = 255;
 									}
-									k21 = method177(l21, j22, l22);
+									k21 = packHsl(l21, j22, l22);
 								}
 								if (l > 0) {
 									boolean flag = true;
@@ -191,10 +191,10 @@ final class ObjectManager {
 								}
 								int i22 = 0;
 								if (j21 != -1) {
-									i22 = Texture.hslToRgbPalette[method187(k21, 96)];
+									i22 = Texture.hslToRgbPalette[shadeHsl(k21, 96)];
 								}
 								if (i19 == 0) {
-									worldController.addTile(l, l6, k17, 0, 0, -1, j19, k19, l19, i20, method187(j21, j20), method187(j21, k20), method187(j21, l20), method187(j21, i21), 0, 0, 0, 0, i22, 0);
+									worldController.addTile(l, l6, k17, 0, 0, -1, j19, k19, l19, i20, shadeHsl(j21, j20), shadeHsl(j21, k20), shadeHsl(j21, l20), shadeHsl(j21, i21), 0, 0, 0, 0, i22, 0);
 								} else {
 									int k22 = aByteArrayArrayArray136[l][l6][k17] + 1;
 									byte byte4 = aByteArrayArrayArray148[l][l6][k17];
@@ -208,19 +208,19 @@ final class ObjectManager {
 									} else if (flo_2.anInt390 == 0xff00ff) {
 										/*j23 = -2;
 										i23 = -1;
-										k23 = Texture.hslToRgbPalette[method185(flo_2.anInt399, 96)];*/
+										k23 = Texture.hslToRgbPalette[shadeHslOrGrey(flo_2.anInt399, 96)];*/
 										k23 = 0;
 										j23 = -2;
 										i23 = -1;
 									} else if(flo_2.anInt390 == 0x333333) {
-										k23 = Texture.hslToRgbPalette[method185(flo_2.anInt399, 96)];								
+										k23 = Texture.hslToRgbPalette[shadeHslOrGrey(flo_2.anInt399, 96)];
 										j23 = -2;
 										i23 = -1;
 									} else {
-										j23 = method177(flo_2.anInt394, flo_2.anInt395, flo_2.anInt396);
-										k23 = Texture.hslToRgbPalette[method185(flo_2.anInt399, 96)];
+										j23 = packHsl(flo_2.anInt394, flo_2.anInt395, flo_2.anInt396);
+										k23 = Texture.hslToRgbPalette[shadeHslOrGrey(flo_2.anInt399, 96)];
 									}
-									worldController.addTile(l, l6, k17, k22, byte4, i23, j19, k19, l19, i20, method187(j21, j20), method187(j21, k20), method187(j21, l20), method187(j21, i21), method185(j23, j20), method185(j23, k20), method185(j23, l20), method185(j23, i21), i22, k23);
+									worldController.addTile(l, l6, k17, k22, byte4, i23, j19, k19, l19, i20, shadeHsl(j21, j20), shadeHsl(j21, k20), shadeHsl(j21, l20), shadeHsl(j21, i21), shadeHslOrGrey(j23, j20), shadeHslOrGrey(j23, k20), shadeHslOrGrey(j23, l20), shadeHslOrGrey(j23, i21), i22, k23);
 								}
 							}
 						}
@@ -231,7 +231,7 @@ final class ObjectManager {
 
 			for (int j8 = 1; j8 < anInt147 - 1; j8++) {
 				for (int i10 = 1; i10 < anInt146 - 1; i10++) {
-					worldController.setMinCameraPlane(l, i10, j8, method182(j8, l, i10));
+					worldController.setMinCameraPlane(l, i10, j8, getEffectivePlane(j8, l, i10));
 				}
 
 			}
@@ -399,15 +399,15 @@ final class ObjectManager {
 
 	}
 
-	private static int method172(int i, int j) {
-		int k = method176(i + 45365, j + 0x16713, 4) - 128 + (method176(i + 10294, j + 37821, 2) - 128 >> 1) + (method176(i, j, 1) - 128 >> 2);
-		k = (int) (k * 0.29999999999999999D) + 35;
-		if (k < 10) {
-			k = 10;
-		} else if (k > 60) {
-			k = 60;
+	private static int proceduralHeight(int x, int y) {
+		int height = interpolatedNoise(x + 45365, y + 0x16713, 4) - 128 + (interpolatedNoise(x + 10294, y + 37821, 2) - 128 >> 1) + (interpolatedNoise(x, y, 1) - 128 >> 2);
+		height = (int) (height * 0.29999999999999999D) + 35;
+		if (height < 10) {
+			height = 10;
+		} else if (height > 60) {
+			height = 60;
 		}
-		return k;
+		return height;
 	}
 
 	public static void method173(Stream stream, OnDemandFetcher class42_sub1) {
@@ -460,18 +460,18 @@ final class ObjectManager {
 			if ((aByteArrayArrayArray149[plane][tileX][tileY] & 0x10) != 0) {
 				return;
 			}
-			if (method182(tileY, plane, tileX) != anInt131) {
+			if (getEffectivePlane(tileY, plane, tileX) != anInt131) {
 				return;
 			}
 		}
 		if (plane < anInt145) {
 			anInt145 = plane;
 		}
-		int k1 = anIntArrayArrayArray129[plane][tileX][tileY];
-		int l1 = anIntArrayArrayArray129[plane][tileX + 1][tileY];
-		int i2 = anIntArrayArrayArray129[plane][tileX + 1][tileY + 1];
-		int j2 = anIntArrayArrayArray129[plane][tileX][tileY + 1];
-		int averageHeight = k1 + l1 + i2 + j2 >> 2;
+		int heightX0Y0 = anIntArrayArrayArray129[plane][tileX][tileY];
+		int heightX1Y0 = anIntArrayArrayArray129[plane][tileX + 1][tileY];
+		int heightX1Y1 = anIntArrayArrayArray129[plane][tileX + 1][tileY + 1];
+		int heightX0Y1 = anIntArrayArrayArray129[plane][tileX][tileY + 1];
+		int averageHeight = heightX0Y0 + heightX1Y0 + heightX1Y1 + heightX0Y1 >> 2;
 		ObjectDef objectDef = ObjectDef.forID(objectId);
 		int uid = tileX + (tileY << 7) + (objectId << 14) + 0x40000000;
 		if (!objectDef.hasActions) {
@@ -484,9 +484,9 @@ final class ObjectManager {
 			}
 			Object obj;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj = objectDef.getModel(22, orientation, k1, l1, i2, j2, -1);
+				obj = objectDef.getModel(22, orientation, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj = new Animable_Sub5(objectId, orientation, 22, l1, i2, k1, j2, objectDef.animationId, true);
+				obj = new Animable_Sub5(objectId, orientation, 22, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addGroundDecoration(plane, averageHeight, tileY, ((Animable) obj), shapeAndOrientation, uid, tileX);
 			if (objectDef.blocksMovement && objectDef.hasActions && collisionMap != null) {
@@ -497,9 +497,9 @@ final class ObjectManager {
 		if (shape == 10 || shape == 11) {
 			Object obj1;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj1 = objectDef.getModel(10, orientation, k1, l1, i2, j2, -1);
+				obj1 = objectDef.getModel(10, orientation, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj1 = new Animable_Sub5(objectId, orientation, 10, l1, i2, k1, j2, objectDef.animationId, true);
+				obj1 = new Animable_Sub5(objectId, orientation, 10, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			if (obj1 != null) {
 				int i5 = 0;
@@ -520,7 +520,7 @@ final class ObjectManager {
 					if (obj1 instanceof Model) {
 						model = (Model) obj1;
 					} else {
-						model = objectDef.getModel(10, orientation, k1, l1, i2, j2, -1);
+						model = objectDef.getModel(10, orientation, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 					}
 					if (model != null) {
 						for (int j5 = 0; j5 <= j4; j5++) {
@@ -547,9 +547,9 @@ final class ObjectManager {
 		if (shape >= 12) {
 			Object obj2;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj2 = objectDef.getModel(shape, orientation, k1, l1, i2, j2, -1);
+				obj2 = objectDef.getModel(shape, orientation, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj2 = new Animable_Sub5(objectId, orientation, shape, l1, i2, k1, j2, objectDef.animationId, true);
+				obj2 = new Animable_Sub5(objectId, orientation, shape, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addSceneObject(uid, shapeAndOrientation, averageHeight, 1, ((Animable) obj2), 1, plane, 0, tileY, tileX);
 			if (shape >= 12 && shape <= 17 && shape != 13 && plane > 0) {
@@ -563,9 +563,9 @@ final class ObjectManager {
 		if (shape == 0) {
 			Object obj3;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj3 = objectDef.getModel(0, orientation, k1, l1, i2, j2, -1);
+				obj3 = objectDef.getModel(0, orientation, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj3 = new Animable_Sub5(objectId, orientation, 0, l1, i2, k1, j2, objectDef.animationId, true);
+				obj3 = new Animable_Sub5(objectId, orientation, 0, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addWall(anIntArray152[orientation], ((Animable) obj3), uid, tileY, shapeAndOrientation, tileX, null, averageHeight, 0, plane);
 			if (orientation == 0) {
@@ -612,9 +612,9 @@ final class ObjectManager {
 		if (shape == 1) {
 			Object obj4;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj4 = objectDef.getModel(1, orientation, k1, l1, i2, j2, -1);
+				obj4 = objectDef.getModel(1, orientation, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj4 = new Animable_Sub5(objectId, orientation, 1, l1, i2, k1, j2, objectDef.animationId, true);
+				obj4 = new Animable_Sub5(objectId, orientation, 1, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addWall(anIntArray140[orientation], ((Animable) obj4), uid, tileY, shapeAndOrientation, tileX, null, averageHeight, 0, plane);
 			if (objectDef.castsShadow) {
@@ -638,11 +638,11 @@ final class ObjectManager {
 			Object obj11;
 			Object obj12;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj11 = objectDef.getModel(2, 4 + orientation, k1, l1, i2, j2, -1);
-				obj12 = objectDef.getModel(2, i3, k1, l1, i2, j2, -1);
+				obj11 = objectDef.getModel(2, 4 + orientation, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
+				obj12 = objectDef.getModel(2, i3, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj11 = new Animable_Sub5(objectId, 4 + orientation, 2, l1, i2, k1, j2, objectDef.animationId, true);
-				obj12 = new Animable_Sub5(objectId, i3, 2, l1, i2, k1, j2, objectDef.animationId, true);
+				obj11 = new Animable_Sub5(objectId, 4 + orientation, 2, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
+				obj12 = new Animable_Sub5(objectId, i3, 2, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addWall(anIntArray152[orientation], ((Animable) obj11), uid, tileY, shapeAndOrientation, tileX, ((Animable) obj12), averageHeight, anIntArray152[i3], plane);
 			if (objectDef.occludes) {
@@ -671,9 +671,9 @@ final class ObjectManager {
 		if (shape == 3) {
 			Object obj5;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj5 = objectDef.getModel(3, orientation, k1, l1, i2, j2, -1);
+				obj5 = objectDef.getModel(3, orientation, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj5 = new Animable_Sub5(objectId, orientation, 3, l1, i2, k1, j2, objectDef.animationId, true);
+				obj5 = new Animable_Sub5(objectId, orientation, 3, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addWall(anIntArray140[orientation], ((Animable) obj5), uid, tileY, shapeAndOrientation, tileX, null, averageHeight, 0, plane);
 			if (objectDef.castsShadow) {
@@ -695,9 +695,9 @@ final class ObjectManager {
 		if (shape == 9) {
 			Object obj6;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj6 = objectDef.getModel(shape, orientation, k1, l1, i2, j2, -1);
+				obj6 = objectDef.getModel(shape, orientation, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj6 = new Animable_Sub5(objectId, orientation, shape, l1, i2, k1, j2, objectDef.animationId, true);
+				obj6 = new Animable_Sub5(objectId, orientation, shape, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addSceneObject(uid, shapeAndOrientation, averageHeight, 1, ((Animable) obj6), 1, plane, 0, tileY, tileX);
 			if (objectDef.blocksMovement && collisionMap != null) {
@@ -707,32 +707,32 @@ final class ObjectManager {
 		}
 		if (objectDef.adjustsToTerrain) {
 			if (orientation == 1) {
-				int j3 = j2;
-				j2 = i2;
-				i2 = l1;
-				l1 = k1;
-				k1 = j3;
+				int j3 = heightX0Y1;
+				heightX0Y1 = heightX1Y1;
+				heightX1Y1 = heightX1Y0;
+				heightX1Y0 = heightX0Y0;
+				heightX0Y0 = j3;
 			} else if (orientation == 2) {
-				int k3 = j2;
-				j2 = l1;
-				l1 = k3;
-				k3 = i2;
-				i2 = k1;
-				k1 = k3;
+				int k3 = heightX0Y1;
+				heightX0Y1 = heightX1Y0;
+				heightX1Y0 = k3;
+				k3 = heightX1Y1;
+				heightX1Y1 = heightX0Y0;
+				heightX0Y0 = k3;
 			} else if (orientation == 3) {
-				int l3 = j2;
-				j2 = k1;
-				k1 = l1;
-				l1 = i2;
-				i2 = l3;
+				int l3 = heightX0Y1;
+				heightX0Y1 = heightX0Y0;
+				heightX0Y0 = heightX1Y0;
+				heightX1Y0 = heightX1Y1;
+				heightX1Y1 = l3;
 			}
 		}
 		if (shape == 4) {
 			Object obj7;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj7 = objectDef.getModel(4, 0, k1, l1, i2, j2, -1);
+				obj7 = objectDef.getModel(4, 0, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj7 = new Animable_Sub5(objectId, 0, 4, l1, i2, k1, j2, objectDef.animationId, true);
+				obj7 = new Animable_Sub5(objectId, 0, 4, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addWallDecoration(uid, tileY, orientation * 512, plane, 0, averageHeight, ((Animable) obj7), tileX, shapeAndOrientation, 0, anIntArray152[orientation]);
 			return;
@@ -745,9 +745,9 @@ final class ObjectManager {
 			}
 			Object obj13;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj13 = objectDef.getModel(4, 0, k1, l1, i2, j2, -1);
+				obj13 = objectDef.getModel(4, 0, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj13 = new Animable_Sub5(objectId, 0, 4, l1, i2, k1, j2, objectDef.animationId, true);
+				obj13 = new Animable_Sub5(objectId, 0, 4, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addWallDecoration(uid, tileY, orientation * 512, plane, anIntArray137[orientation] * i4, averageHeight, ((Animable) obj13), tileX, shapeAndOrientation, anIntArray144[orientation] * i4, anIntArray152[orientation]);
 			return;
@@ -755,9 +755,9 @@ final class ObjectManager {
 		if (shape == 6) {
 			Object obj8;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj8 = objectDef.getModel(4, 0, k1, l1, i2, j2, -1);
+				obj8 = objectDef.getModel(4, 0, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj8 = new Animable_Sub5(objectId, 0, 4, l1, i2, k1, j2, objectDef.animationId, true);
+				obj8 = new Animable_Sub5(objectId, 0, 4, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addWallDecoration(uid, tileY, orientation, plane, 0, averageHeight, ((Animable) obj8), tileX, shapeAndOrientation, 0, 256);
 			return;
@@ -765,9 +765,9 @@ final class ObjectManager {
 		if (shape == 7) {
 			Object obj9;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj9 = objectDef.getModel(4, 0, k1, l1, i2, j2, -1);
+				obj9 = objectDef.getModel(4, 0, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj9 = new Animable_Sub5(objectId, 0, 4, l1, i2, k1, j2, objectDef.animationId, true);
+				obj9 = new Animable_Sub5(objectId, 0, 4, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addWallDecoration(uid, tileY, orientation, plane, 0, averageHeight, ((Animable) obj9), tileX, shapeAndOrientation, 0, 512);
 			return;
@@ -775,42 +775,42 @@ final class ObjectManager {
 		if (shape == 8) {
 			Object obj10;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj10 = objectDef.getModel(4, 0, k1, l1, i2, j2, -1);
+				obj10 = objectDef.getModel(4, 0, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj10 = new Animable_Sub5(objectId, 0, 4, l1, i2, k1, j2, objectDef.animationId, true);
+				obj10 = new Animable_Sub5(objectId, 0, 4, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addWallDecoration(uid, tileY, orientation, plane, 0, averageHeight, ((Animable) obj10), tileX, shapeAndOrientation, 0, 768);
 		}
 	}
 
-	private static int method176(int i, int j, int k) {
-		int l = i / k;
-		int i1 = i & k - 1;
-		int j1 = j / k;
-		int k1 = j & k - 1;
-		int l1 = method186(l, j1);
-		int i2 = method186(l + 1, j1);
-		int j2 = method186(l, j1 + 1);
-		int k2 = method186(l + 1, j1 + 1);
-		int l2 = method184(l1, i2, i1, k);
-		int i3 = method184(j2, k2, i1, k);
-		return method184(l2, i3, k1, k);
+	private static int interpolatedNoise(int x, int y, int period) {
+		int cellX = x / period;
+		int offsetX = x & period - 1;
+		int cellY = y / period;
+		int offsetY = y & period - 1;
+		int noiseX0Y0 = smoothedNoise(cellX, cellY);
+		int noiseX1Y0 = smoothedNoise(cellX + 1, cellY);
+		int noiseX0Y1 = smoothedNoise(cellX, cellY + 1);
+		int noiseX1Y1 = smoothedNoise(cellX + 1, cellY + 1);
+		int rowY0 = cosineInterpolate(noiseX0Y0, noiseX1Y0, offsetX, period);
+		int rowY1 = cosineInterpolate(noiseX0Y1, noiseX1Y1, offsetX, period);
+		return cosineInterpolate(rowY0, rowY1, offsetY, period);
 	}
 
-	private int method177(int i, int j, int k) {
-		if (k > 179) {
-			j /= 2;
+	private int packHsl(int hue, int saturation, int lightness) {
+		if (lightness > 179) {
+			saturation /= 2;
 		}
-		if (k > 192) {
-			j /= 2;
+		if (lightness > 192) {
+			saturation /= 2;
 		}
-		if (k > 217) {
-			j /= 2;
+		if (lightness > 217) {
+			saturation /= 2;
 		}
-		if (k > 243) {
-			j /= 2;
+		if (lightness > 243) {
+			saturation /= 2;
 		}
-		return (i / 4 << 10) + (j / 32 << 7) + k / 2;
+		return (hue / 4 << 10) + (saturation / 32 << 7) + lightness / 2;
 	}
 
 	public static boolean method178(int i, int j) {
@@ -882,7 +882,7 @@ final class ObjectManager {
 				int l1 = stream.readUnsignedByte();
 				if (l1 == 0) {
 					if (l == 0) {
-						anIntArrayArrayArray129[0][k][i] = -method172(0xe3b7b + k + k1, 0x87cce + i + j) * 8;
+						anIntArrayArrayArray129[0][k][i] = -proceduralHeight(0xe3b7b + k + k1, 0x87cce + i + j) * 8;
 						return;
 					} else {
 						anIntArrayArrayArray129[l][k][i] = anIntArrayArrayArray129[l - 1][k][i] - 240;
@@ -928,14 +928,14 @@ final class ObjectManager {
 		} while (true);
 	}
 
-	private int method182(int i, int j, int k) {
-		if ((aByteArrayArrayArray149[j][k][i] & 8) != 0) {
+	private int getEffectivePlane(int tileY, int plane, int tileX) {
+		if ((aByteArrayArrayArray149[plane][tileX][tileY] & 8) != 0) {
 			return 0;
 		}
-		if (j > 0 && (aByteArrayArrayArray149[1][k][i] & 2) != 0) {
-			return j - 1;
+		if (plane > 0 && (aByteArrayArrayArray149[1][tileX][tileY] & 2) != 0) {
+			return plane - 1;
 		} else {
-			return j;
+			return plane;
 		}
 	}
 
@@ -983,59 +983,59 @@ final class ObjectManager {
 		}
 	}
 
-	private static int method184(int i, int j, int k, int l) {
-		int i1 = 0x10000 - Texture.cosineTable[k * 1024 / l] >> 1;
-		return (i * (0x10000 - i1) >> 16) + (j * i1 >> 16);
+	private static int cosineInterpolate(int from, int to, int position, int period) {
+		int blend = 0x10000 - Texture.cosineTable[position * 1024 / period] >> 1;
+		return (from * (0x10000 - blend) >> 16) + (to * blend >> 16);
 	}
 
-	private int method185(int i, int j) {
-		if (i == -2) {
+	private int shadeHslOrGrey(int hsl, int lightLevel) {
+		if (hsl == -2) {
 			return 0xbc614e;
 		}
-		if (i == -1) {
-			if (j < 0) {
-				j = 0;
-			} else if (j > 127) {
-				j = 127;
+		if (hsl == -1) {
+			if (lightLevel < 0) {
+				lightLevel = 0;
+			} else if (lightLevel > 127) {
+				lightLevel = 127;
 			}
-			j = 127 - j;
-			return j;
+			lightLevel = 127 - lightLevel;
+			return lightLevel;
 		}
-		j = j * (i & 0x7f) / 128;
-		if (j < 2) {
-			j = 2;
-		} else if (j > 126) {
-			j = 126;
+		lightLevel = lightLevel * (hsl & 0x7f) / 128;
+		if (lightLevel < 2) {
+			lightLevel = 2;
+		} else if (lightLevel > 126) {
+			lightLevel = 126;
 		}
-		return (i & 0xff80) + j;
+		return (hsl & 0xff80) + lightLevel;
 	}
 
-	private static int method186(int i, int j) {
-		int k = method170(i - 1, j - 1) + method170(i + 1, j - 1) + method170(i - 1, j + 1) + method170(i + 1, j + 1);
-		int l = method170(i - 1, j) + method170(i + 1, j) + method170(i, j - 1) + method170(i, j + 1);
-		int i1 = method170(i, j);
-		return k / 16 + l / 8 + i1 / 4;
+	private static int smoothedNoise(int x, int y) {
+		int cornerSum = hashNoise(x - 1, y - 1) + hashNoise(x + 1, y - 1) + hashNoise(x - 1, y + 1) + hashNoise(x + 1, y + 1);
+		int edgeSum = hashNoise(x - 1, y) + hashNoise(x + 1, y) + hashNoise(x, y - 1) + hashNoise(x, y + 1);
+		int centre = hashNoise(x, y);
+		return cornerSum / 16 + edgeSum / 8 + centre / 4;
 	}
 
-	private static int method187(int i, int j) {
-		if (i == -1) {
+	private static int shadeHsl(int hsl, int lightLevel) {
+		if (hsl == -1) {
 			return 0xbc614e;
 		}
-		j = j * (i & 0x7f) / 128;
-		if (j < 2) {
-			j = 2;
-		} else if (j > 126) {
-			j = 126;
+		lightLevel = lightLevel * (hsl & 0x7f) / 128;
+		if (lightLevel < 2) {
+			lightLevel = 2;
+		} else if (lightLevel > 126) {
+			lightLevel = 126;
 		}
-		return (i & 0xff80) + j;
+		return (hsl & 0xff80) + lightLevel;
 	}
 
 	public static void placeObjectWithoutShading(WorldController worldController, int orientation, int tileY, int shape, int heightPlane, CollisionMap collisionMap, int groundHeights[][][], int tileX, int objectId, int plane) {
-		int l1 = groundHeights[heightPlane][tileX][tileY];
-		int i2 = groundHeights[heightPlane][tileX + 1][tileY];
-		int j2 = groundHeights[heightPlane][tileX + 1][tileY + 1];
-		int k2 = groundHeights[heightPlane][tileX][tileY + 1];
-		int averageHeight = l1 + i2 + j2 + k2 >> 2;
+		int heightX0Y0 = groundHeights[heightPlane][tileX][tileY];
+		int heightX1Y0 = groundHeights[heightPlane][tileX + 1][tileY];
+		int heightX1Y1 = groundHeights[heightPlane][tileX + 1][tileY + 1];
+		int heightX0Y1 = groundHeights[heightPlane][tileX][tileY + 1];
+		int averageHeight = heightX0Y0 + heightX1Y0 + heightX1Y1 + heightX0Y1 >> 2;
 		ObjectDef objectDef = ObjectDef.forID(objectId);
 		int uid = tileX + (tileY << 7) + (objectId << 14) + 0x40000000;
 		if (!objectDef.hasActions) {
@@ -1045,9 +1045,9 @@ final class ObjectManager {
 		if (shape == 22) {
 			Object obj;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj = objectDef.getModel(22, orientation, l1, i2, j2, k2, -1);
+				obj = objectDef.getModel(22, orientation, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj = new Animable_Sub5(objectId, orientation, 22, i2, j2, l1, k2, objectDef.animationId, true);
+				obj = new Animable_Sub5(objectId, orientation, 22, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addGroundDecoration(plane, averageHeight, tileY, ((Animable) obj), shapeAndOrientation, uid, tileX);
 			if (objectDef.blocksMovement && objectDef.hasActions) {
@@ -1058,9 +1058,9 @@ final class ObjectManager {
 		if (shape == 10 || shape == 11) {
 			Object obj1;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj1 = objectDef.getModel(10, orientation, l1, i2, j2, k2, -1);
+				obj1 = objectDef.getModel(10, orientation, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj1 = new Animable_Sub5(objectId, orientation, 10, i2, j2, l1, k2, objectDef.animationId, true);
+				obj1 = new Animable_Sub5(objectId, orientation, 10, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			if (obj1 != null) {
 				int j5 = 0;
@@ -1086,9 +1086,9 @@ final class ObjectManager {
 		if (shape >= 12) {
 			Object obj2;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj2 = objectDef.getModel(shape, orientation, l1, i2, j2, k2, -1);
+				obj2 = objectDef.getModel(shape, orientation, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj2 = new Animable_Sub5(objectId, orientation, shape, i2, j2, l1, k2, objectDef.animationId, true);
+				obj2 = new Animable_Sub5(objectId, orientation, shape, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addSceneObject(uid, shapeAndOrientation, averageHeight, 1, ((Animable) obj2), 1, plane, 0, tileY, tileX);
 			if (objectDef.blocksMovement) {
@@ -1099,9 +1099,9 @@ final class ObjectManager {
 		if (shape == 0) {
 			Object obj3;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj3 = objectDef.getModel(0, orientation, l1, i2, j2, k2, -1);
+				obj3 = objectDef.getModel(0, orientation, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj3 = new Animable_Sub5(objectId, orientation, 0, i2, j2, l1, k2, objectDef.animationId, true);
+				obj3 = new Animable_Sub5(objectId, orientation, 0, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addWall(anIntArray152[orientation], ((Animable) obj3), uid, tileY, shapeAndOrientation, tileX, null, averageHeight, 0, plane);
 			if (objectDef.blocksMovement) {
@@ -1112,9 +1112,9 @@ final class ObjectManager {
 		if (shape == 1) {
 			Object obj4;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj4 = objectDef.getModel(1, orientation, l1, i2, j2, k2, -1);
+				obj4 = objectDef.getModel(1, orientation, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj4 = new Animable_Sub5(objectId, orientation, 1, i2, j2, l1, k2, objectDef.animationId, true);
+				obj4 = new Animable_Sub5(objectId, orientation, 1, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addWall(anIntArray140[orientation], ((Animable) obj4), uid, tileY, shapeAndOrientation, tileX, null, averageHeight, 0, plane);
 			if (objectDef.blocksMovement) {
@@ -1127,11 +1127,11 @@ final class ObjectManager {
 			Object obj11;
 			Object obj12;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj11 = objectDef.getModel(2, 4 + orientation, l1, i2, j2, k2, -1);
-				obj12 = objectDef.getModel(2, j3, l1, i2, j2, k2, -1);
+				obj11 = objectDef.getModel(2, 4 + orientation, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
+				obj12 = objectDef.getModel(2, j3, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj11 = new Animable_Sub5(objectId, 4 + orientation, 2, i2, j2, l1, k2, objectDef.animationId, true);
-				obj12 = new Animable_Sub5(objectId, j3, 2, i2, j2, l1, k2, objectDef.animationId, true);
+				obj11 = new Animable_Sub5(objectId, 4 + orientation, 2, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
+				obj12 = new Animable_Sub5(objectId, j3, 2, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addWall(anIntArray152[orientation], ((Animable) obj11), uid, tileY, shapeAndOrientation, tileX, ((Animable) obj12), averageHeight, anIntArray152[j3], plane);
 			if (objectDef.blocksMovement) {
@@ -1142,9 +1142,9 @@ final class ObjectManager {
 		if (shape == 3) {
 			Object obj5;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj5 = objectDef.getModel(3, orientation, l1, i2, j2, k2, -1);
+				obj5 = objectDef.getModel(3, orientation, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj5 = new Animable_Sub5(objectId, orientation, 3, i2, j2, l1, k2, objectDef.animationId, true);
+				obj5 = new Animable_Sub5(objectId, orientation, 3, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addWall(anIntArray140[orientation], ((Animable) obj5), uid, tileY, shapeAndOrientation, tileX, null, averageHeight, 0, plane);
 			if (objectDef.blocksMovement) {
@@ -1155,9 +1155,9 @@ final class ObjectManager {
 		if (shape == 9) {
 			Object obj6;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj6 = objectDef.getModel(shape, orientation, l1, i2, j2, k2, -1);
+				obj6 = objectDef.getModel(shape, orientation, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj6 = new Animable_Sub5(objectId, orientation, shape, i2, j2, l1, k2, objectDef.animationId, true);
+				obj6 = new Animable_Sub5(objectId, orientation, shape, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addSceneObject(uid, shapeAndOrientation, averageHeight, 1, ((Animable) obj6), 1, plane, 0, tileY, tileX);
 			if (objectDef.blocksMovement) {
@@ -1167,32 +1167,32 @@ final class ObjectManager {
 		}
 		if (objectDef.adjustsToTerrain) {
 			if (orientation == 1) {
-				int k3 = k2;
-				k2 = j2;
-				j2 = i2;
-				i2 = l1;
-				l1 = k3;
+				int k3 = heightX0Y1;
+				heightX0Y1 = heightX1Y1;
+				heightX1Y1 = heightX1Y0;
+				heightX1Y0 = heightX0Y0;
+				heightX0Y0 = k3;
 			} else if (orientation == 2) {
-				int l3 = k2;
-				k2 = i2;
-				i2 = l3;
-				l3 = j2;
-				j2 = l1;
-				l1 = l3;
+				int l3 = heightX0Y1;
+				heightX0Y1 = heightX1Y0;
+				heightX1Y0 = l3;
+				l3 = heightX1Y1;
+				heightX1Y1 = heightX0Y0;
+				heightX0Y0 = l3;
 			} else if (orientation == 3) {
-				int i4 = k2;
-				k2 = l1;
-				l1 = i2;
-				i2 = j2;
-				j2 = i4;
+				int i4 = heightX0Y1;
+				heightX0Y1 = heightX0Y0;
+				heightX0Y0 = heightX1Y0;
+				heightX1Y0 = heightX1Y1;
+				heightX1Y1 = i4;
 			}
 		}
 		if (shape == 4) {
 			Object obj7;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj7 = objectDef.getModel(4, 0, l1, i2, j2, k2, -1);
+				obj7 = objectDef.getModel(4, 0, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj7 = new Animable_Sub5(objectId, 0, 4, i2, j2, l1, k2, objectDef.animationId, true);
+				obj7 = new Animable_Sub5(objectId, 0, 4, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addWallDecoration(uid, tileY, orientation * 512, plane, 0, averageHeight, ((Animable) obj7), tileX, shapeAndOrientation, 0, anIntArray152[orientation]);
 			return;
@@ -1205,9 +1205,9 @@ final class ObjectManager {
 			}
 			Object obj13;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj13 = objectDef.getModel(4, 0, l1, i2, j2, k2, -1);
+				obj13 = objectDef.getModel(4, 0, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj13 = new Animable_Sub5(objectId, 0, 4, i2, j2, l1, k2, objectDef.animationId, true);
+				obj13 = new Animable_Sub5(objectId, 0, 4, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addWallDecoration(uid, tileY, orientation * 512, plane, anIntArray137[orientation] * j4, averageHeight, ((Animable) obj13), tileX, shapeAndOrientation, anIntArray144[orientation] * j4, anIntArray152[orientation]);
 			return;
@@ -1215,9 +1215,9 @@ final class ObjectManager {
 		if (shape == 6) {
 			Object obj8;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj8 = objectDef.getModel(4, 0, l1, i2, j2, k2, -1);
+				obj8 = objectDef.getModel(4, 0, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj8 = new Animable_Sub5(objectId, 0, 4, i2, j2, l1, k2, objectDef.animationId, true);
+				obj8 = new Animable_Sub5(objectId, 0, 4, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addWallDecoration(uid, tileY, orientation, plane, 0, averageHeight, ((Animable) obj8), tileX, shapeAndOrientation, 0, 256);
 			return;
@@ -1225,9 +1225,9 @@ final class ObjectManager {
 		if (shape == 7) {
 			Object obj9;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj9 = objectDef.getModel(4, 0, l1, i2, j2, k2, -1);
+				obj9 = objectDef.getModel(4, 0, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj9 = new Animable_Sub5(objectId, 0, 4, i2, j2, l1, k2, objectDef.animationId, true);
+				obj9 = new Animable_Sub5(objectId, 0, 4, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addWallDecoration(uid, tileY, orientation, plane, 0, averageHeight, ((Animable) obj9), tileX, shapeAndOrientation, 0, 512);
 			return;
@@ -1235,9 +1235,9 @@ final class ObjectManager {
 		if (shape == 8) {
 			Object obj10;
 			if (objectDef.animationId == -1 && objectDef.childrenIDs == null) {
-				obj10 = objectDef.getModel(4, 0, l1, i2, j2, k2, -1);
+				obj10 = objectDef.getModel(4, 0, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 			} else {
-				obj10 = new Animable_Sub5(objectId, 0, 4, i2, j2, l1, k2, objectDef.animationId, true);
+				obj10 = new Animable_Sub5(objectId, 0, 4, heightX1Y0, heightX1Y1, heightX0Y0, heightX0Y1, objectDef.animationId, true);
 			}
 			worldController.addWallDecoration(uid, tileY, orientation, plane, 0, averageHeight, ((Animable) obj10), tileX, shapeAndOrientation, 0, 768);
 		}

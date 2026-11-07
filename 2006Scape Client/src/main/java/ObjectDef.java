@@ -40,7 +40,7 @@ public final class ObjectDef {
 		blocksProjectiles = true;
 		hasActions = false;
 		adjustsToTerrain = false;
-		aBoolean769 = false;
+		keepsVertexNormals = false;
 		occludes = false;
 		animationId = -1;
 		wallDecorationOffset = 16;
@@ -49,7 +49,7 @@ public final class ObjectDef {
 		actions = null;
 		anInt746 = -1;
 		anInt758 = -1;
-		aBoolean751 = false;
+		mirrored = false;
 		castsShadow = true;
 		anInt748 = 128;
 		anInt772 = 128;
@@ -132,8 +132,8 @@ public final class ObjectDef {
 		if (model == null) {
 			return null;
 		}
-		if (adjustsToTerrain || aBoolean769) {
-			model = new Model(adjustsToTerrain, aBoolean769, model);
+		if (adjustsToTerrain || keepsVertexNormals) {
+			model = new Model(adjustsToTerrain, keepsVertexNormals, model);
 		}
 		if (adjustsToTerrain) {
 			int meanHeight = (heightX0Z0 + heightX1Z0 + heightX1Z1 + heightX0Z1) / 4;
@@ -189,30 +189,30 @@ public final class ObjectDef {
 				return null;
 			}
 			cacheKey = (type << 6) + orientation + ((long) (frameId + 1) << 32);
-			Model model_1 = (Model) mruNodes2.insertFromCache(cacheKey);
-			if (model_1 != null) {
-				return model_1;
+			Model cachedModel = (Model) mruNodes2.insertFromCache(cacheKey);
+			if (cachedModel != null) {
+				return cachedModel;
 			}
 			if (modelIds == null) {
 				return null;
 			}
-			boolean flag1 = aBoolean751 ^ orientation > 3;
+			boolean mirrorModel = mirrored ^ orientation > 3;
 			int k1 = modelIds.length;
 			for (int i2 = 0; i2 < k1; i2++) {
-				int l2 = modelIds[i2];
-				if (flag1) {
-					l2 += 0x10000;
+				int modelKey = modelIds[i2];
+				if (mirrorModel) {
+					modelKey += 0x10000;
 				}
-				model = (Model) mruNodes1.insertFromCache(l2);
+				model = (Model) mruNodes1.insertFromCache(modelKey);
 				if (model == null) {
-					model = Model.getModel(l2 & 0xffff);
+					model = Model.getModel(modelKey & 0xffff);
 					if (model == null) {
 						return null;
 					}
-					if (flag1) {
+					if (mirrorModel) {
 						model.reflectZAndReverseWinding();
 					}
-					mruNodes1.removeFromCache(model, l2);
+					mruNodes1.removeFromCache(model, modelKey);
 				}
 				if (k1 > 1) {
 					aModelArray741s[i2] = model;
@@ -241,7 +241,7 @@ public final class ObjectDef {
 				return model_2;
 			}
 			int j2 = modelIds[i1];
-			boolean flag3 = aBoolean751 ^ orientation > 3;
+			boolean flag3 = mirrored ^ orientation > 3;
 			if (flag3) {
 				j2 += 0x10000;
 			}
@@ -257,38 +257,38 @@ public final class ObjectDef {
 				mruNodes1.removeFromCache(model, j2);
 			}
 		}
-		boolean flag;
-		flag = anInt748 != 128 || anInt772 != 128 || anInt740 != 128;
-		boolean flag2;
-		flag2 = anInt738 != 0 || anInt745 != 0 || anInt783 != 0;
-		Model model_3 = new Model(modifiedModelColors == null, AnimationFrame.isMissingFrameId(frameId), orientation == 0 && frameId == -1 && !flag && !flag2, model);
+		boolean scaled;
+		scaled = anInt748 != 128 || anInt772 != 128 || anInt740 != 128;
+		boolean translated;
+		translated = anInt738 != 0 || anInt745 != 0 || anInt783 != 0;
+		Model builtModel = new Model(modifiedModelColors == null, AnimationFrame.isMissingFrameId(frameId), orientation == 0 && frameId == -1 && !scaled && !translated, model);
 		if (frameId != -1) {
-			model_3.buildAnimationGroups();
-			model_3.applyAnimationFrame(frameId);
-			model_3.faceGroups = null;
-			model_3.vertexGroups = null;
+			builtModel.buildAnimationGroups();
+			builtModel.applyAnimationFrame(frameId);
+			builtModel.faceGroups = null;
+			builtModel.vertexGroups = null;
 		}
 		while (orientation-- > 0) {
-			model_3.rotateYQuarterTurn();
+			builtModel.rotateYQuarterTurn();
 		}
 		if (modifiedModelColors != null) {
 			for (int k2 = 0; k2 < modifiedModelColors.length; k2++) {
-				model_3.recolor(modifiedModelColors[k2], originalModelColors[k2]);
+				builtModel.recolor(modifiedModelColors[k2], originalModelColors[k2]);
 			}
 
 		}
-		if (flag) {
-			model_3.scale(anInt748, anInt740, anInt772);
+		if (scaled) {
+			builtModel.scale(anInt748, anInt740, anInt772);
 		}
-		if (flag2) {
-			model_3.translate(anInt738, anInt745, anInt783);
+		if (translated) {
+			builtModel.translate(anInt738, anInt745, anInt783);
 		}
-		model_3.applyLighting(64 + aByte737, 768 + aByte742 * 5, -50, -10, -50, !aBoolean769);
+		builtModel.applyLighting(64 + aByte737, 768 + aByte742 * 5, -50, -10, -50, !keepsVertexNormals);
 		if (anInt760 == 1) {
-			model_3.anInt1654 = model_3.modelHeight;
+			builtModel.anInt1654 = builtModel.modelHeight;
 		}
-		mruNodes2.removeFromCache(model_3, cacheKey);
-		return model_3;
+		mruNodes2.removeFromCache(builtModel, cacheKey);
+		return builtModel;
 	}
 
 	private void readValues(Stream stream) {
@@ -349,7 +349,7 @@ public final class ObjectDef {
 				} else if (opcode == 21) {
 					adjustsToTerrain = true;
 				} else if (opcode == 22) {
-					aBoolean769 = true;
+					keepsVertexNormals = true;
 				} else if (opcode == 23) {
 					occludes = true;
 				} else if (opcode == 24) {
@@ -383,7 +383,7 @@ public final class ObjectDef {
 				} else if (opcode == 60) {
 					anInt746 = stream.readUnsignedShortBigEndian();
 				} else if (opcode == 62) {
-					aBoolean751 = true;
+					mirrored = true;
 				} else if (opcode == 64) {
 					castsShadow = false;
 				} else if (opcode == 65) {
@@ -464,7 +464,7 @@ public final class ObjectDef {
 	private int[] originalModelColors;
 	private int anInt748;
 	public int settingId;
-	private boolean aBoolean751;
+	private boolean mirrored;
 	public static boolean lowMem;
 	private static Stream stream;
 	public int type;
@@ -480,7 +480,7 @@ public final class ObjectDef {
 	private boolean aBoolean766;
 	public boolean blocksMovement;
 	public int blockedSidesMask;
-	private boolean aBoolean769;
+	private boolean keepsVertexNormals;
 	private static int cacheIndex;
 	private int anInt772;
 	private int[] modelIds;
