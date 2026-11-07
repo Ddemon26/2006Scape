@@ -58,7 +58,7 @@ public final class SpotAnim {
 		if (model != null) {
 			return model;
 		}
-		model = Model.method462(anInt405);
+		model = Model.getModel(anInt405);
 		if (model == null) {
 			return null;
 		}

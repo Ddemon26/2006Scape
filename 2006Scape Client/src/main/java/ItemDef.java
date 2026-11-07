@@ -23,10 +23,10 @@ public final class ItemDef {
 			return true;
 		}
 		boolean ready = true;
-		if (!Model.method463(modelID1)) {
+		if (!Model.isModelLoaded(modelID1)) {
 			ready = false;
 		}
-		if (modelID2 != -1 && !Model.method463(modelID2)) {
+		if (modelID2 != -1 && !Model.isModelLoaded(modelID2)) {
 			ready = false;
 		}
 		return ready;
@@ -60,9 +60,9 @@ public final class ItemDef {
 		if (modelID1 == -1) {
 			return null;
 		}
-		Model model = Model.method462(modelID1);
+		Model model = Model.getModel(modelID1);
 		if (modelID2 != -1) {
-			Model model2 = Model.method462(modelID2);
+			Model model2 = Model.getModel(modelID2);
 			Model parts[] = {model, model2};
 			model = new Model(2, parts);
 		}
@@ -88,13 +88,13 @@ public final class ItemDef {
 			return true;
 		}
 		boolean ready = true;
-		if (!Model.method463(modelID1)) {
+		if (!Model.isModelLoaded(modelID1)) {
 			ready = false;
 		}
-		if (modelID2 != -1 && !Model.method463(modelID2)) {
+		if (modelID2 != -1 && !Model.isModelLoaded(modelID2)) {
 			ready = false;
 		}
-		if (modelID3 != -1 && !Model.method463(modelID3)) {
+		if (modelID3 != -1 && !Model.isModelLoaded(modelID3)) {
 			ready = false;
 		}
 		return ready;
@@ -112,15 +112,15 @@ public final class ItemDef {
 		if (modelID1 == -1) {
 			return null;
 		}
-		Model model = Model.method462(modelID1);
+		Model model = Model.getModel(modelID1);
 		if (modelID2 != -1) {
 			if (modelID3 != -1) {
-				Model model2 = Model.method462(modelID2);
-				Model model3 = Model.method462(modelID3);
+				Model model2 = Model.getModel(modelID2);
+				Model model3 = Model.getModel(modelID3);
 				Model parts[] = {model, model2, model3};
 				model = new Model(3, parts);
 			} else {
-				Model model2 = Model.method462(modelID2);
+				Model model2 = Model.getModel(modelID2);
 				Model parts[] = {model, model2};
 				model = new Model(2, parts);
 			}
@@ -2205,7 +2205,7 @@ public final class ItemDef {
 		if (model != null) {
 			return model;
 		}
-		model = Model.method462(modelID);
+		model = Model.getModel(modelID);
 		if (model == null) {
 			return null;
 		}
@@ -2237,7 +2237,7 @@ public final class ItemDef {
 				return forID(variantID).getUnlitModel(1);
 			}
 		}
-		Model model = Model.method462(modelID);
+		Model model = Model.getModel(modelID);
 		if (model == null) {
 			return null;
 		}

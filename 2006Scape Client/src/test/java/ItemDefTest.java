@@ -210,10 +210,10 @@ public class ItemDefTest {
         set(d, "modifiedModelColors", new int[]{40000, 5}); set(d, "originalModelColors", new int[]{123, 6});
         assertArrayEquals(new int[]{123, 123}, Arrays.copyOf(((Model) call(d, "getWornModel", I, 0)).anIntArray1640, 2));
         assertEquals(123, ((Model) call(d, "getHeadModel", I, 0)).anIntArray1640[0]);
-        Model ref = Model.method462(21); ref.recolor(40000, 123); ref.method479(64, 768, -50, -10, -50, true);
+        Model ref = Model.getModel(21); ref.recolor(40000, 123); ref.method479(64, 768, -50, -10, -50, true);
         Model lit = (Model) call(d, "getLitModel", I, 1);
         assertArrayEquals(sh(ref, 4), sh(lit, 4));
-        Model plainRef = Model.method462(21); plainRef.method479(64, 768, -50, -10, -50, true);
+        Model plainRef = Model.getModel(21); plainRef.method479(64, 768, -50, -10, -50, true);
         assertFalse(Arrays.equals(sh(plainRef, 4), sh(lit, 4)));
         assertEquals(123, ((Model) call(d, "getUnlitModel", I, 1)).anIntArray1640[0]);
     }
@@ -273,22 +273,22 @@ public class ItemDefTest {
             r[3] = new Rec().b(1).s(21).b(113).b(ab[0] & 0xff).b(114).b(ab[1] / 5 & 0xff).done();
             install(r); ItemDef.mruNodes2.clear(); Model.method460(triangle(21, 0x2A7F, false), 21);
             Model m = ItemDef.forID(3).getLitModel(1);
-            Model ref = Model.method462(21); ref.method479(64 + ab[0], 768 + ab[1], -50, -10, -50, true);
+            Model ref = Model.getModel(21); ref.method479(64 + ab[0], 768 + ab[1], -50, -10, -50, true);
             assertArrayEquals(Arrays.toString(ab), sh(ref, 4), sh(m, 4));
             assertArrayEquals(sh(ref, 5), sh(m, 5)); assertArrayEquals(sh(ref, 6), sh(m, 6));
         }
-        Model base = Model.method462(21); base.method479(64, 768, -50, -10, -50, true);
-        Model amb = Model.method462(21); amb.method479(84, 768, -50, -10, -50, true);
-        Model div = Model.method462(21); div.method479(64, 1536, -50, -10, -50, true);
+        Model base = Model.getModel(21); base.method479(64, 768, -50, -10, -50, true);
+        Model amb = Model.getModel(21); amb.method479(84, 768, -50, -10, -50, true);
+        Model div = Model.getModel(21); div.method479(64, 1536, -50, -10, -50, true);
         assertFalse(Arrays.equals(sh(base, 4), sh(amb, 4))); assertFalse(Arrays.equals(sh(base, 4), sh(div, 4)));
     }
     @Test public void firstLightingArgumentIsAdditiveAmbientAndSecondDividesTheDirectionalTerm() throws Exception {
         Model.method460(triangle(21, 0x2A7F, false), 21); Model.method460(triangle(22, 0x2A7F, true), 22);
         int[] amb = new int[2], dim = new int[2], bright = new int[2];
         for (int k = 0; k < 2; k++) {
-            Model m0 = Model.method462(21 + k); m0.method479(64, 768, -50, -10, -50, true);
-            Model m1 = Model.method462(21 + k); m1.method479(66, 768, -50, -10, -50, true);
-            Model m2 = Model.method462(21 + k); m2.method479(64, 1536, -50, -10, -50, true);
+            Model m0 = Model.getModel(21 + k); m0.method479(64, 768, -50, -10, -50, true);
+            Model m1 = Model.getModel(21 + k); m1.method479(66, 768, -50, -10, -50, true);
+            Model m2 = Model.getModel(21 + k); m2.method479(64, 1536, -50, -10, -50, true);
             amb[k] = sh(m1, 4)[0] - sh(m0, 4)[0];
             dim[k] = sh(m2, 4)[0] - sh(m0, 4)[0];
             bright[k] = sh(m0, 4)[0];

@@ -45,7 +45,7 @@ public final class EntityDef {
 		}
 		boolean flag1 = false;
 		for (int i = 0; i < anIntArray73.length; i++) {
-			if (!Model.method463(anIntArray73[i])) {
+			if (!Model.isModelLoaded(anIntArray73[i])) {
 				flag1 = true;
 			}
 		}
@@ -55,7 +55,7 @@ public final class EntityDef {
 		}
 		Model aclass30_sub2_sub4_sub6s[] = new Model[anIntArray73.length];
 		for (int j = 0; j < anIntArray73.length; j++) {
-			aclass30_sub2_sub4_sub6s[j] = Model.method462(anIntArray73[j]);
+			aclass30_sub2_sub4_sub6s[j] = Model.getModel(anIntArray73[j]);
 		}
 
 		Model model;
@@ -132,7 +132,7 @@ public final class EntityDef {
 		if (model == null) {
 			boolean flag = false;
 			for (int i1 = 0; i1 < anIntArray94.length; i1++) {
-				if (!Model.method463(anIntArray94[i1])) {
+				if (!Model.isModelLoaded(anIntArray94[i1])) {
 					flag = true;
 				}
 			}
@@ -142,7 +142,7 @@ public final class EntityDef {
 			}
 			Model aclass30_sub2_sub4_sub6s[] = new Model[anIntArray94.length];
 			for (int j1 = 0; j1 < anIntArray94.length; j1++) {
-				aclass30_sub2_sub4_sub6s[j1] = Model.method462(anIntArray94[j1]);
+				aclass30_sub2_sub4_sub6s[j1] = Model.getModel(anIntArray94[j1]);
 			}
 
 			if (aclass30_sub2_sub4_sub6s.length == 1) {

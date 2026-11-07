@@ -23,8 +23,8 @@ public final class Model extends Animable {
 		anIntArray1677 = null;
 		modelIntArray1 = null;
 		modelIntArray2 = null;
-		modelIntArray3 = null;
-		modelIntArray4 = null;
+		hslToRgbPalette = null;
+		reciprocalTable16 = null;
 	}
 
 	public static void method459(int i, OnDemandFetcherParent onDemandFetcherParent) {
@@ -109,26 +109,26 @@ public final class Model extends Animable {
 		aClass21Array1661[j] = null;
 	}
 
-	public static Model method462(int j) {
+	public static Model getModel(int modelId) {
 		if (aClass21Array1661 == null) {
 			return null;
 		}
-		Class21 class21 = aClass21Array1661.length < j  ? null : aClass21Array1661[j];
+		Class21 class21 = aClass21Array1661.length < modelId  ? null : aClass21Array1661[modelId];
 		if (class21 == null) {
-			aOnDemandFetcherParent_1662.method548(j);
+			aOnDemandFetcherParent_1662.method548(modelId);
 			return null;
 		} else {
-			return new Model(j);
+			return new Model(modelId);
 		}
 	}
 
-	public static boolean method463(int i) {
+	public static boolean isModelLoaded(int modelId) {
 		if (aClass21Array1661 == null) {
 			return false;
 		}
-		Class21 class21 = aClass21Array1661[i];
+		Class21 class21 = aClass21Array1661[modelId];
 		if (class21 == null) {
-			aOnDemandFetcherParent_1662.method548(i);
+			aOnDemandFetcherParent_1662.method548(modelId);
 			return false;
 		} else {
 			return true;
@@ -1612,7 +1612,7 @@ public final class Model extends Animable {
 
 	private void drawFace(int faceIndex) {
 		if (aBooleanArray1664[faceIndex]) {
-			method485(faceIndex);
+			drawFaceClippedToNearPlane(faceIndex);
 			return;
 		}
 		int vertexA = anIntArray1631[faceIndex];
@@ -1635,7 +1635,7 @@ public final class Model extends Animable {
 			return;
 		}
 		if (renderType == 1) {
-			Texture.drawFlatTriangle(anIntArray1666[vertexA], anIntArray1666[vertexB], anIntArray1666[vertexC], anIntArray1665[vertexA], anIntArray1665[vertexB], anIntArray1665[vertexC], modelIntArray3[anIntArray1634[faceIndex]]);
+			Texture.drawFlatTriangle(anIntArray1666[vertexA], anIntArray1666[vertexB], anIntArray1666[vertexC], anIntArray1665[vertexA], anIntArray1665[vertexB], anIntArray1665[vertexC], hslToRgbPalette[anIntArray1634[faceIndex]]);
 			return;
 		}
 		if (renderType == 2) {
@@ -1655,152 +1655,152 @@ public final class Model extends Animable {
 		}
 	}
 
-	private void method485(int i) {
-		int j = Texture.textureInt1;
-		int k = Texture.textureInt2;
-		int l = 0;
-		int i1 = anIntArray1631[i];
-		int j1 = anIntArray1632[i];
-		int k1 = anIntArray1633[i];
-		int l1 = anIntArray1670[i1];
-		int i2 = anIntArray1670[j1];
-		int j2 = anIntArray1670[k1];
-		if (l1 >= 50) {
-			anIntArray1678[l] = anIntArray1665[i1];
-			anIntArray1679[l] = anIntArray1666[i1];
-			anIntArray1680[l++] = anIntArray1634[i];
+	private void drawFaceClippedToNearPlane(int faceIndex) {
+		int screenCenterX = Texture.textureInt1;
+		int screenCenterY = Texture.textureInt2;
+		int clippedPointCount = 0;
+		int vertexA = anIntArray1631[faceIndex];
+		int vertexB = anIntArray1632[faceIndex];
+		int vertexC = anIntArray1633[faceIndex];
+		int depthA = anIntArray1670[vertexA];
+		int depthB = anIntArray1670[vertexB];
+		int depthC = anIntArray1670[vertexC];
+		if (depthA >= 50) {
+			clippedX[clippedPointCount] = anIntArray1665[vertexA];
+			clippedY[clippedPointCount] = anIntArray1666[vertexA];
+			clippedShade[clippedPointCount++] = anIntArray1634[faceIndex];
 		} else {
-			int k2 = anIntArray1668[i1];
-			int k3 = anIntArray1669[i1];
-			int k4 = anIntArray1634[i];
-			if (j2 >= 50) {
-				int k5 = (50 - l1) * modelIntArray4[j2 - l1];
-				anIntArray1678[l] = j + (k2 + ((anIntArray1668[k1] - k2) * k5 >> 16) << 9) / 50;
-				anIntArray1679[l] = k + (k3 + ((anIntArray1669[k1] - k3) * k5 >> 16) << 9) / 50;
-				anIntArray1680[l++] = k4 + ((anIntArray1636[i] - k4) * k5 >> 16);
+			int cameraXA = anIntArray1668[vertexA];
+			int cameraYA = anIntArray1669[vertexA];
+			int shadeA = anIntArray1634[faceIndex];
+			if (depthC >= 50) {
+				int fractionAToC = (50 - depthA) * reciprocalTable16[depthC - depthA];
+				clippedX[clippedPointCount] = screenCenterX + (cameraXA + ((anIntArray1668[vertexC] - cameraXA) * fractionAToC >> 16) << 9) / 50;
+				clippedY[clippedPointCount] = screenCenterY + (cameraYA + ((anIntArray1669[vertexC] - cameraYA) * fractionAToC >> 16) << 9) / 50;
+				clippedShade[clippedPointCount++] = shadeA + ((anIntArray1636[faceIndex] - shadeA) * fractionAToC >> 16);
 			}
-			if (i2 >= 50) {
-				int l5 = (50 - l1) * modelIntArray4[i2 - l1];
-				anIntArray1678[l] = j + (k2 + ((anIntArray1668[j1] - k2) * l5 >> 16) << 9) / 50;
-				anIntArray1679[l] = k + (k3 + ((anIntArray1669[j1] - k3) * l5 >> 16) << 9) / 50;
-				anIntArray1680[l++] = k4 + ((anIntArray1635[i] - k4) * l5 >> 16);
+			if (depthB >= 50) {
+				int fractionAToB = (50 - depthA) * reciprocalTable16[depthB - depthA];
+				clippedX[clippedPointCount] = screenCenterX + (cameraXA + ((anIntArray1668[vertexB] - cameraXA) * fractionAToB >> 16) << 9) / 50;
+				clippedY[clippedPointCount] = screenCenterY + (cameraYA + ((anIntArray1669[vertexB] - cameraYA) * fractionAToB >> 16) << 9) / 50;
+				clippedShade[clippedPointCount++] = shadeA + ((anIntArray1635[faceIndex] - shadeA) * fractionAToB >> 16);
 			}
 		}
-		if (i2 >= 50) {
-			anIntArray1678[l] = anIntArray1665[j1];
-			anIntArray1679[l] = anIntArray1666[j1];
-			anIntArray1680[l++] = anIntArray1635[i];
+		if (depthB >= 50) {
+			clippedX[clippedPointCount] = anIntArray1665[vertexB];
+			clippedY[clippedPointCount] = anIntArray1666[vertexB];
+			clippedShade[clippedPointCount++] = anIntArray1635[faceIndex];
 		} else {
-			int l2 = anIntArray1668[j1];
-			int l3 = anIntArray1669[j1];
-			int l4 = anIntArray1635[i];
-			if (l1 >= 50) {
-				int i6 = (50 - i2) * modelIntArray4[l1 - i2];
-				anIntArray1678[l] = j + (l2 + ((anIntArray1668[i1] - l2) * i6 >> 16) << 9) / 50;
-				anIntArray1679[l] = k + (l3 + ((anIntArray1669[i1] - l3) * i6 >> 16) << 9) / 50;
-				anIntArray1680[l++] = l4 + ((anIntArray1634[i] - l4) * i6 >> 16);
+			int cameraXB = anIntArray1668[vertexB];
+			int cameraYB = anIntArray1669[vertexB];
+			int shadeB = anIntArray1635[faceIndex];
+			if (depthA >= 50) {
+				int fractionBToA = (50 - depthB) * reciprocalTable16[depthA - depthB];
+				clippedX[clippedPointCount] = screenCenterX + (cameraXB + ((anIntArray1668[vertexA] - cameraXB) * fractionBToA >> 16) << 9) / 50;
+				clippedY[clippedPointCount] = screenCenterY + (cameraYB + ((anIntArray1669[vertexA] - cameraYB) * fractionBToA >> 16) << 9) / 50;
+				clippedShade[clippedPointCount++] = shadeB + ((anIntArray1634[faceIndex] - shadeB) * fractionBToA >> 16);
 			}
-			if (j2 >= 50) {
-				int j6 = (50 - i2) * modelIntArray4[j2 - i2];
-				anIntArray1678[l] = j + (l2 + ((anIntArray1668[k1] - l2) * j6 >> 16) << 9) / 50;
-				anIntArray1679[l] = k + (l3 + ((anIntArray1669[k1] - l3) * j6 >> 16) << 9) / 50;
-				anIntArray1680[l++] = l4 + ((anIntArray1636[i] - l4) * j6 >> 16);
+			if (depthC >= 50) {
+				int fractionBToC = (50 - depthB) * reciprocalTable16[depthC - depthB];
+				clippedX[clippedPointCount] = screenCenterX + (cameraXB + ((anIntArray1668[vertexC] - cameraXB) * fractionBToC >> 16) << 9) / 50;
+				clippedY[clippedPointCount] = screenCenterY + (cameraYB + ((anIntArray1669[vertexC] - cameraYB) * fractionBToC >> 16) << 9) / 50;
+				clippedShade[clippedPointCount++] = shadeB + ((anIntArray1636[faceIndex] - shadeB) * fractionBToC >> 16);
 			}
 		}
-		if (j2 >= 50) {
-			anIntArray1678[l] = anIntArray1665[k1];
-			anIntArray1679[l] = anIntArray1666[k1];
-			anIntArray1680[l++] = anIntArray1636[i];
+		if (depthC >= 50) {
+			clippedX[clippedPointCount] = anIntArray1665[vertexC];
+			clippedY[clippedPointCount] = anIntArray1666[vertexC];
+			clippedShade[clippedPointCount++] = anIntArray1636[faceIndex];
 		} else {
-			int i3 = anIntArray1668[k1];
-			int i4 = anIntArray1669[k1];
-			int i5 = anIntArray1636[i];
-			if (i2 >= 50) {
-				int k6 = (50 - j2) * modelIntArray4[i2 - j2];
-				anIntArray1678[l] = j + (i3 + ((anIntArray1668[j1] - i3) * k6 >> 16) << 9) / 50;
-				anIntArray1679[l] = k + (i4 + ((anIntArray1669[j1] - i4) * k6 >> 16) << 9) / 50;
-				anIntArray1680[l++] = i5 + ((anIntArray1635[i] - i5) * k6 >> 16);
+			int cameraXC = anIntArray1668[vertexC];
+			int cameraYC = anIntArray1669[vertexC];
+			int shadeC = anIntArray1636[faceIndex];
+			if (depthB >= 50) {
+				int fractionCToB = (50 - depthC) * reciprocalTable16[depthB - depthC];
+				clippedX[clippedPointCount] = screenCenterX + (cameraXC + ((anIntArray1668[vertexB] - cameraXC) * fractionCToB >> 16) << 9) / 50;
+				clippedY[clippedPointCount] = screenCenterY + (cameraYC + ((anIntArray1669[vertexB] - cameraYC) * fractionCToB >> 16) << 9) / 50;
+				clippedShade[clippedPointCount++] = shadeC + ((anIntArray1635[faceIndex] - shadeC) * fractionCToB >> 16);
 			}
-			if (l1 >= 50) {
-				int l6 = (50 - j2) * modelIntArray4[l1 - j2];
-				anIntArray1678[l] = j + (i3 + ((anIntArray1668[i1] - i3) * l6 >> 16) << 9) / 50;
-				anIntArray1679[l] = k + (i4 + ((anIntArray1669[i1] - i4) * l6 >> 16) << 9) / 50;
-				anIntArray1680[l++] = i5 + ((anIntArray1634[i] - i5) * l6 >> 16);
+			if (depthA >= 50) {
+				int fractionCToA = (50 - depthC) * reciprocalTable16[depthA - depthC];
+				clippedX[clippedPointCount] = screenCenterX + (cameraXC + ((anIntArray1668[vertexA] - cameraXC) * fractionCToA >> 16) << 9) / 50;
+				clippedY[clippedPointCount] = screenCenterY + (cameraYC + ((anIntArray1669[vertexA] - cameraYC) * fractionCToA >> 16) << 9) / 50;
+				clippedShade[clippedPointCount++] = shadeC + ((anIntArray1634[faceIndex] - shadeC) * fractionCToA >> 16);
 			}
 		}
-		int j3 = anIntArray1678[0];
-		int j4 = anIntArray1678[1];
-		int j5 = anIntArray1678[2];
-		int i7 = anIntArray1679[0];
-		int j7 = anIntArray1679[1];
-		int k7 = anIntArray1679[2];
-		if ((j3 - j4) * (k7 - j7) - (i7 - j7) * (j5 - j4) > 0) {
+		int screenX0 = clippedX[0];
+		int screenX1 = clippedX[1];
+		int screenX2 = clippedX[2];
+		int screenY0 = clippedY[0];
+		int screenY1 = clippedY[1];
+		int screenY2 = clippedY[2];
+		if ((screenX0 - screenX1) * (screenY2 - screenY1) - (screenY0 - screenY1) * (screenX2 - screenX1) > 0) {
 			Texture.clipScanlines = false;
-			if (l == 3) {
-				if (j3 < 0 || j4 < 0 || j5 < 0 || j3 > DrawingArea.scanlineRightLimit || j4 > DrawingArea.scanlineRightLimit || j5 > DrawingArea.scanlineRightLimit) {
+			if (clippedPointCount == 3) {
+				if (screenX0 < 0 || screenX1 < 0 || screenX2 < 0 || screenX0 > DrawingArea.scanlineRightLimit || screenX1 > DrawingArea.scanlineRightLimit || screenX2 > DrawingArea.scanlineRightLimit) {
 					Texture.clipScanlines = true;
 				}
-				int l7;
+				int renderType;
 				if (anIntArray1637 == null) {
-					l7 = 0;
+					renderType = 0;
 				} else {
-					l7 = anIntArray1637[i] & 3;
+					renderType = anIntArray1637[faceIndex] & 3;
 				}
-				if (l7 == 0) {
-					Texture.drawShadedTriangle(i7, j7, k7, j3, j4, j5, anIntArray1680[0], anIntArray1680[1], anIntArray1680[2]);
-				} else if (l7 == 1) {
-					Texture.drawFlatTriangle(i7, j7, k7, j3, j4, j5, modelIntArray3[anIntArray1634[i]]);
-				} else if (l7 == 2) {
-					int j8 = anIntArray1637[i] >> 2;
-					int k9 = anIntArray1643[j8];
-					int k10 = anIntArray1644[j8];
-					int k11 = anIntArray1645[j8];
-					Texture.drawTexturedTriangle(i7, j7, k7, j3, j4, j5, anIntArray1680[0], anIntArray1680[1], anIntArray1680[2], anIntArray1668[k9], anIntArray1668[k10], anIntArray1668[k11], anIntArray1669[k9], anIntArray1669[k10], anIntArray1669[k11], anIntArray1670[k9], anIntArray1670[k10], anIntArray1670[k11], anIntArray1640[i]);
-				} else if (l7 == 3) {
-					int k8 = anIntArray1637[i] >> 2;
-					int l9 = anIntArray1643[k8];
-					int l10 = anIntArray1644[k8];
-					int l11 = anIntArray1645[k8];
-					Texture.drawTexturedTriangle(i7, j7, k7, j3, j4, j5, anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], anIntArray1668[l9], anIntArray1668[l10], anIntArray1668[l11], anIntArray1669[l9], anIntArray1669[l10], anIntArray1669[l11], anIntArray1670[l9], anIntArray1670[l10], anIntArray1670[l11], anIntArray1640[i]);
+				if (renderType == 0) {
+					Texture.drawShadedTriangle(screenY0, screenY1, screenY2, screenX0, screenX1, screenX2, clippedShade[0], clippedShade[1], clippedShade[2]);
+				} else if (renderType == 1) {
+					Texture.drawFlatTriangle(screenY0, screenY1, screenY2, screenX0, screenX1, screenX2, hslToRgbPalette[anIntArray1634[faceIndex]]);
+				} else if (renderType == 2) {
+					int textureFaceIndex = anIntArray1637[faceIndex] >> 2;
+					int mappingVertexA = anIntArray1643[textureFaceIndex];
+					int mappingVertexB = anIntArray1644[textureFaceIndex];
+					int mappingVertexC = anIntArray1645[textureFaceIndex];
+					Texture.drawTexturedTriangle(screenY0, screenY1, screenY2, screenX0, screenX1, screenX2, clippedShade[0], clippedShade[1], clippedShade[2], anIntArray1668[mappingVertexA], anIntArray1668[mappingVertexB], anIntArray1668[mappingVertexC], anIntArray1669[mappingVertexA], anIntArray1669[mappingVertexB], anIntArray1669[mappingVertexC], anIntArray1670[mappingVertexA], anIntArray1670[mappingVertexB], anIntArray1670[mappingVertexC], anIntArray1640[faceIndex]);
+				} else if (renderType == 3) {
+					int textureFaceIndex = anIntArray1637[faceIndex] >> 2;
+					int mappingVertexA = anIntArray1643[textureFaceIndex];
+					int mappingVertexB = anIntArray1644[textureFaceIndex];
+					int mappingVertexC = anIntArray1645[textureFaceIndex];
+					Texture.drawTexturedTriangle(screenY0, screenY1, screenY2, screenX0, screenX1, screenX2, anIntArray1634[faceIndex], anIntArray1634[faceIndex], anIntArray1634[faceIndex], anIntArray1668[mappingVertexA], anIntArray1668[mappingVertexB], anIntArray1668[mappingVertexC], anIntArray1669[mappingVertexA], anIntArray1669[mappingVertexB], anIntArray1669[mappingVertexC], anIntArray1670[mappingVertexA], anIntArray1670[mappingVertexB], anIntArray1670[mappingVertexC], anIntArray1640[faceIndex]);
 				}
 			}
-			if (l == 4) {
-				if (j3 < 0 || j4 < 0 || j5 < 0 || j3 > DrawingArea.scanlineRightLimit || j4 > DrawingArea.scanlineRightLimit || j5 > DrawingArea.scanlineRightLimit || anIntArray1678[3] < 0 || anIntArray1678[3] > DrawingArea.scanlineRightLimit) {
+			if (clippedPointCount == 4) {
+				if (screenX0 < 0 || screenX1 < 0 || screenX2 < 0 || screenX0 > DrawingArea.scanlineRightLimit || screenX1 > DrawingArea.scanlineRightLimit || screenX2 > DrawingArea.scanlineRightLimit || clippedX[3] < 0 || clippedX[3] > DrawingArea.scanlineRightLimit) {
 					Texture.clipScanlines = true;
 				}
-				int i8;
+				int renderType;
 				if (anIntArray1637 == null) {
-					i8 = 0;
+					renderType = 0;
 				} else {
-					i8 = anIntArray1637[i] & 3;
+					renderType = anIntArray1637[faceIndex] & 3;
 				}
-				if (i8 == 0) {
-					Texture.drawShadedTriangle(i7, j7, k7, j3, j4, j5, anIntArray1680[0], anIntArray1680[1], anIntArray1680[2]);
-					Texture.drawShadedTriangle(i7, k7, anIntArray1679[3], j3, j5, anIntArray1678[3], anIntArray1680[0], anIntArray1680[2], anIntArray1680[3]);
+				if (renderType == 0) {
+					Texture.drawShadedTriangle(screenY0, screenY1, screenY2, screenX0, screenX1, screenX2, clippedShade[0], clippedShade[1], clippedShade[2]);
+					Texture.drawShadedTriangle(screenY0, screenY2, clippedY[3], screenX0, screenX2, clippedX[3], clippedShade[0], clippedShade[2], clippedShade[3]);
 					return;
 				}
-				if (i8 == 1) {
-					int l8 = modelIntArray3[anIntArray1634[i]];
-					Texture.drawFlatTriangle(i7, j7, k7, j3, j4, j5, l8);
-					Texture.drawFlatTriangle(i7, k7, anIntArray1679[3], j3, j5, anIntArray1678[3], l8);
+				if (renderType == 1) {
+					int flatColor = hslToRgbPalette[anIntArray1634[faceIndex]];
+					Texture.drawFlatTriangle(screenY0, screenY1, screenY2, screenX0, screenX1, screenX2, flatColor);
+					Texture.drawFlatTriangle(screenY0, screenY2, clippedY[3], screenX0, screenX2, clippedX[3], flatColor);
 					return;
 				}
-				if (i8 == 2) {
-					int i9 = anIntArray1637[i] >> 2;
-					int i10 = anIntArray1643[i9];
-					int i11 = anIntArray1644[i9];
-					int i12 = anIntArray1645[i9];
-					Texture.drawTexturedTriangle(i7, j7, k7, j3, j4, j5, anIntArray1680[0], anIntArray1680[1], anIntArray1680[2], anIntArray1668[i10], anIntArray1668[i11], anIntArray1668[i12], anIntArray1669[i10], anIntArray1669[i11], anIntArray1669[i12], anIntArray1670[i10], anIntArray1670[i11], anIntArray1670[i12], anIntArray1640[i]);
-					Texture.drawTexturedTriangle(i7, k7, anIntArray1679[3], j3, j5, anIntArray1678[3], anIntArray1680[0], anIntArray1680[2], anIntArray1680[3], anIntArray1668[i10], anIntArray1668[i11], anIntArray1668[i12], anIntArray1669[i10], anIntArray1669[i11], anIntArray1669[i12], anIntArray1670[i10], anIntArray1670[i11], anIntArray1670[i12], anIntArray1640[i]);
+				if (renderType == 2) {
+					int textureFaceIndex = anIntArray1637[faceIndex] >> 2;
+					int mappingVertexA = anIntArray1643[textureFaceIndex];
+					int mappingVertexB = anIntArray1644[textureFaceIndex];
+					int mappingVertexC = anIntArray1645[textureFaceIndex];
+					Texture.drawTexturedTriangle(screenY0, screenY1, screenY2, screenX0, screenX1, screenX2, clippedShade[0], clippedShade[1], clippedShade[2], anIntArray1668[mappingVertexA], anIntArray1668[mappingVertexB], anIntArray1668[mappingVertexC], anIntArray1669[mappingVertexA], anIntArray1669[mappingVertexB], anIntArray1669[mappingVertexC], anIntArray1670[mappingVertexA], anIntArray1670[mappingVertexB], anIntArray1670[mappingVertexC], anIntArray1640[faceIndex]);
+					Texture.drawTexturedTriangle(screenY0, screenY2, clippedY[3], screenX0, screenX2, clippedX[3], clippedShade[0], clippedShade[2], clippedShade[3], anIntArray1668[mappingVertexA], anIntArray1668[mappingVertexB], anIntArray1668[mappingVertexC], anIntArray1669[mappingVertexA], anIntArray1669[mappingVertexB], anIntArray1669[mappingVertexC], anIntArray1670[mappingVertexA], anIntArray1670[mappingVertexB], anIntArray1670[mappingVertexC], anIntArray1640[faceIndex]);
 					return;
 				}
-				if (i8 == 3) {
-					int j9 = anIntArray1637[i] >> 2;
-					int j10 = anIntArray1643[j9];
-					int j11 = anIntArray1644[j9];
-					int j12 = anIntArray1645[j9];
-					Texture.drawTexturedTriangle(i7, j7, k7, j3, j4, j5, anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], anIntArray1668[j10], anIntArray1668[j11], anIntArray1668[j12], anIntArray1669[j10], anIntArray1669[j11], anIntArray1669[j12], anIntArray1670[j10], anIntArray1670[j11], anIntArray1670[j12], anIntArray1640[i]);
-					Texture.drawTexturedTriangle(i7, k7, anIntArray1679[3], j3, j5, anIntArray1678[3], anIntArray1634[i], anIntArray1634[i], anIntArray1634[i], anIntArray1668[j10], anIntArray1668[j11], anIntArray1668[j12], anIntArray1669[j10], anIntArray1669[j11], anIntArray1669[j12], anIntArray1670[j10], anIntArray1670[j11], anIntArray1670[j12], anIntArray1640[i]);
+				if (renderType == 3) {
+					int textureFaceIndex = anIntArray1637[faceIndex] >> 2;
+					int mappingVertexA = anIntArray1643[textureFaceIndex];
+					int mappingVertexB = anIntArray1644[textureFaceIndex];
+					int mappingVertexC = anIntArray1645[textureFaceIndex];
+					Texture.drawTexturedTriangle(screenY0, screenY1, screenY2, screenX0, screenX1, screenX2, anIntArray1634[faceIndex], anIntArray1634[faceIndex], anIntArray1634[faceIndex], anIntArray1668[mappingVertexA], anIntArray1668[mappingVertexB], anIntArray1668[mappingVertexC], anIntArray1669[mappingVertexA], anIntArray1669[mappingVertexB], anIntArray1669[mappingVertexC], anIntArray1670[mappingVertexA], anIntArray1670[mappingVertexB], anIntArray1670[mappingVertexC], anIntArray1640[faceIndex]);
+					Texture.drawTexturedTriangle(screenY0, screenY2, clippedY[3], screenX0, screenX2, clippedX[3], anIntArray1634[faceIndex], anIntArray1634[faceIndex], anIntArray1634[faceIndex], anIntArray1668[mappingVertexA], anIntArray1668[mappingVertexB], anIntArray1668[mappingVertexC], anIntArray1669[mappingVertexA], anIntArray1669[mappingVertexB], anIntArray1669[mappingVertexC], anIntArray1670[mappingVertexA], anIntArray1670[mappingVertexB], anIntArray1670[mappingVertexC], anIntArray1640[faceIndex]);
 				}
 			}
 		}
@@ -1873,9 +1873,9 @@ public final class Model extends Animable {
 	private static int[] anIntArray1675 = new int[2000];
 	private static int[] anIntArray1676 = new int[2000];
 	private static int[] anIntArray1677 = new int[12];
-	private static final int[] anIntArray1678 = new int[10];
-	private static final int[] anIntArray1679 = new int[10];
-	private static final int[] anIntArray1680 = new int[10];
+	private static final int[] clippedX = new int[10];
+	private static final int[] clippedY = new int[10];
+	private static final int[] clippedShade = new int[10];
 	private static int animationPivotX;
 	private static int animationPivotY;
 	private static int animationPivotZ;
@@ -1886,13 +1886,13 @@ public final class Model extends Animable {
 	public static final int[] anIntArray1688 = new int[1000];
 	public static int modelIntArray1[];
 	public static int modelIntArray2[];
-	private static int[] modelIntArray3;
-	private static int[] modelIntArray4;
+	private static int[] hslToRgbPalette;
+	private static int[] reciprocalTable16;
 
 	static {
 		modelIntArray1 = Texture.sineTable;
 		modelIntArray2 = Texture.cosineTable;
-		modelIntArray3 = Texture.hslToRgbPalette;
-		modelIntArray4 = Texture.reciprocalTable16;
+		hslToRgbPalette = Texture.hslToRgbPalette;
+		reciprocalTable16 = Texture.reciprocalTable16;
 	}
 }

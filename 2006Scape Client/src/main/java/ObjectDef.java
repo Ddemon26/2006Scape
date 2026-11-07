@@ -113,14 +113,14 @@ public final class ObjectDef {
 			}
 			boolean allLoaded = true;
 			for (int modelId : modelIds) {
-				allLoaded &= Model.method463(modelId & 0xffff);
+				allLoaded &= Model.isModelLoaded(modelId & 0xffff);
 			}
 
 			return allLoaded;
 		}
 		for (int index = 0; index < modelShapes.length; index++) {
 			if (modelShapes[index] == shape) {
-				return Model.method463(modelIds[index] & 0xffff);
+				return Model.isModelLoaded(modelIds[index] & 0xffff);
 			}
 		}
 
@@ -157,7 +157,7 @@ public final class ObjectDef {
 		}
 		boolean allLoaded = true;
 		for (int modelId : modelIds) {
-			allLoaded &= Model.method463(modelId & 0xffff);
+			allLoaded &= Model.isModelLoaded(modelId & 0xffff);
 		}
 		return allLoaded;
 	}
@@ -205,7 +205,7 @@ public final class ObjectDef {
 				}
 				model = (Model) mruNodes1.insertFromCache(l2);
 				if (model == null) {
-					model = Model.method462(l2 & 0xffff);
+					model = Model.getModel(l2 & 0xffff);
 					if (model == null) {
 						return null;
 					}
@@ -247,7 +247,7 @@ public final class ObjectDef {
 			}
 			model = (Model) mruNodes1.insertFromCache(j2);
 			if (model == null) {
-				model = Model.method462(j2 & 0xffff);
+				model = Model.getModel(j2 & 0xffff);
 				if (model == null) {
 					return null;
 				}
