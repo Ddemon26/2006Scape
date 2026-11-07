@@ -216,9 +216,9 @@ public class AppletVarpVarBitTest {
             field(Varp.class, VARP_ACTION).setInt(cache[2], 99); // unknown action: nothing happens
             Varp.cache = cache;
             g.variousSettings[0] = 1; g.variousSettings[1] = 1; g.variousSettings[2] = 1;
-            g.welcomeScreenRaised = false; g.method33(0); assertFalse("action 0 does nothing", g.welcomeScreenRaised);
-            g.method33(2); assertFalse("unknown action does nothing", g.welcomeScreenRaised);
-            g.method33(1); assertTrue("action 1 reacts", g.welcomeScreenRaised);
+            g.welcomeScreenRaised = false; g.applyVarpSetting(0); assertFalse("action 0 does nothing", g.welcomeScreenRaised);
+            g.applyVarpSetting(2); assertFalse("unknown action does nothing", g.welcomeScreenRaised);
+            g.applyVarpSetting(1); assertTrue("action 1 reacts", g.welcomeScreenRaised);
         } finally { Varp.cache = saved; }
     }
 

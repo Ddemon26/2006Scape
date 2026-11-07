@@ -629,7 +629,7 @@ public class Game extends RSApplet {
 					}
 				}
 			}
-			if (j == 1 && (anInt1253 == 1 || menuHasAddFriend(menuActionRow - 1)) && menuActionRow > 2) {
+			if (j == 1 && (leftClickOpensMenu == 1 || menuHasAddFriend(menuActionRow - 1)) && menuActionRow > 2) {
 				j = 2;
 			}
 			if (j == 1 && menuActionRow > 0) {
@@ -1382,12 +1382,12 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void method33(int i) {
-		int action = Varp.cache[i].settingAction;
+	public void applyVarpSetting(int varpId) {
+		int action = Varp.cache[varpId].settingAction;
 		if (action == 0) {
 			return;
 		}
-		int config = variousSettings[i];
+		int config = variousSettings[varpId];
 		if (action == 1) {
 			if (config == 1) {
 				Texture.buildPalettes(0.90000000000000002D);
@@ -1458,17 +1458,17 @@ public class Game extends RSApplet {
 			}
 		}
 		if (action == 5) {
-			anInt1253 = config;
+			leftClickOpensMenu = config;
 		}
 		if (action == 6) {
-			anInt1249 = config;
+			chatEffectsMode = config;
 		}
 		if (action == 8) {
 			splitpublicChat = config;
 			inputTaken = true;
 		}
 		if (action == 9) {
-			anInt913 = config;
+			insertDragMode = config;
 		}
 	}
 
@@ -1599,14 +1599,14 @@ public class Game extends RSApplet {
 						anIntArray981[anInt974] = ((Entity) obj).anInt1531;
 						anIntArray982[anInt974] = ((Entity) obj).textCycle;
 						aStringArray983[anInt974++] = ((Entity) obj).textSpoken;
-						if (anInt1249 == 0 && ((Entity) obj).anInt1531 >= 1 && ((Entity) obj).anInt1531 <= 3) {
+						if (chatEffectsMode == 0 && ((Entity) obj).anInt1531 >= 1 && ((Entity) obj).anInt1531 <= 3) {
 							anIntArray978[anInt974] += 10;
 							anIntArray977[anInt974] += 5;
 						}
-						if (anInt1249 == 0 && ((Entity) obj).anInt1531 == 4) {
+						if (chatEffectsMode == 0 && ((Entity) obj).anInt1531 == 4) {
 							anIntArray979[anInt974] = 60;
 						}
-						if (anInt1249 == 0 && ((Entity) obj).anInt1531 == 5) {
+						if (chatEffectsMode == 0 && ((Entity) obj).anInt1531 == 5) {
 							anIntArray978[anInt974] += 5;
 						}
 					}
@@ -1669,7 +1669,7 @@ public class Game extends RSApplet {
 				spriteDrawX = anIntArray976[k];
 				spriteDrawY = anIntArray977[k] = l1;
 				String s = aStringArray983[k];
-				if (anInt1249 == 0) {
+				if (chatEffectsMode == 0) {
 					int i3 = 0xffff00;
 					if (anIntArray980[k] < 6) {
 						i3 = anIntArray965[anIntArray980[k]];
@@ -2226,7 +2226,7 @@ public class Game extends RSApplet {
 	}
 
 	public void selectDefaultDesignerKits() {
-		aBoolean1031 = true;
+		designerModelDirty = true;
 		for (int bodyPart = 0; bodyPart < 7; bodyPart++) {
 			designerKitIds[bodyPart] = -1;
 			for (int kitIndex = 0; kitIndex < IDK.length; kitIndex++) {
@@ -2404,7 +2404,7 @@ public class Game extends RSApplet {
 					}
 				} while (IDK.cache[i2].notSelectable || IDK.cache[i2].bodyPartIndex != k + (designerMale ? 0 : 7));
 				designerKitIds[k] = i2;
-				aBoolean1031 = true;
+				designerModelDirty = true;
 			}
 		}
 		if (j >= 314 && j <= 323) {
@@ -2418,7 +2418,7 @@ public class Game extends RSApplet {
 				j2 = 0;
 			}
 			anIntArray990[l] = j2;
-			aBoolean1031 = true;
+			designerModelDirty = true;
 		}
 		if (j == 324 && !designerMale) {
 			designerMale = true;
@@ -3173,7 +3173,7 @@ public class Game extends RSApplet {
 					if (lastActiveInvInterface == anInt1084 && mouseInvInterfaceIndex != anInt1085) {
 						RSInterface class9 = RSInterface.interfaceCache[anInt1084];
 						int j1 = 0;
-						if (anInt913 == 1 && class9.contentType == 206) {
+						if (insertDragMode == 1 && class9.contentType == 206) {
 							j1 = 1;
 						}
 						if (class9.itemIdsPlusOne[mouseInvInterfaceIndex] <= 0) {
@@ -3207,7 +3207,7 @@ public class Game extends RSApplet {
 						stream.writeShortLittleEndianAdd128(anInt1085);
 						stream.writeShortLittleEndian(mouseInvInterfaceIndex);
 					}
-				} else if ((anInt1253 == 1 || menuHasAddFriend(menuActionRow - 1)) && menuActionRow > 2) {
+				} else if ((leftClickOpensMenu == 1 || menuHasAddFriend(menuActionRow - 1)) && menuActionRow > 2) {
 					determineMenuSize();
 				} else if (menuActionRow > 0) {
 					doAction(menuActionRow - 1);
@@ -4104,7 +4104,7 @@ public class Game extends RSApplet {
 				int i2 = class9_2.valueIndexArray[0][1];
 				if (variousSettings[i2] != class9_2.conditionValues[0]) {
 					variousSettings[i2] = class9_2.conditionValues[0];
-					method33(i2);
+					applyVarpSetting(i2);
 					needDrawTabArea = true;
 				}
 			}
@@ -4442,7 +4442,7 @@ public class Game extends RSApplet {
 			if (class9_3.valueIndexArray != null && class9_3.valueIndexArray[0][0] == 5) {
 				int l2 = class9_3.valueIndexArray[0][1];
 				variousSettings[l2] = 1 - variousSettings[l2];
-				method33(l2);
+				applyVarpSetting(l2);
 				needDrawTabArea = true;
 			}
 		}
@@ -5442,7 +5442,7 @@ public class Game extends RSApplet {
 		if (j == 327) {
 			class9.modelPitch = 150;
 			class9.modelYaw = (int) (Math.sin((double) loopCycle / 40D) * 256D) & 0x7ff;
-			if (aBoolean1031) {
+			if (designerModelDirty) {
 				for (int k1 = 0; k1 < 7; k1++) {
 					int l1 = designerKitIds[k1];
 					if (l1 >= 0 && !IDK.cache[l1].areBodyModelsLoaded()) {
@@ -5450,7 +5450,7 @@ public class Game extends RSApplet {
 					}
 				}
 
-				aBoolean1031 = false;
+				designerModelDirty = false;
 				Model aclass30_sub2_sub4_sub6s[] = new Model[7];
 				int i2 = 0;
 				for (int j2 = 0; j2 < 7; j2++) {
@@ -6551,23 +6551,23 @@ public class Game extends RSApplet {
 		return walkType != 1;
 	}
 	
-	static final int method77(int i, int i_1_) {
-		if (i_1_ == -2)
+	static final int scaleHslLightness(int intensity, int hsl) {
+		if (hsl == -2)
 	   		return 12345678;
-		if (i_1_ == -1) {
-			if (i < 0)
-				i = 0;
-			else if (i > 127)
-				i = 127;
-			i = 127 - i;
-			return i;
+		if (hsl == -1) {
+			if (intensity < 0)
+				intensity = 0;
+			else if (intensity > 127)
+				intensity = 127;
+			intensity = 127 - intensity;
+			return intensity;
 		}
-		i = i * (i_1_ & 0x7f) / 128;
-		if (i < 2)
-			i = 2;
-		else if (i > 126)
-			i = 126;
-		return (i_1_ & 0xff80) + i;
+		intensity = intensity * (hsl & 0x7f) / 128;
+		if (intensity < 2)
+			intensity = 2;
+		else if (intensity > 126)
+			intensity = 126;
+		return (hsl & 0xff80) + intensity;
 	}
 
 	public void decodeNpcUpdateMasks(Stream packet) {
@@ -8170,25 +8170,25 @@ public class Game extends RSApplet {
 
 	}
 
-	public void drawInterface(int scrollPos, int k, RSInterface class9, int l) {
-		if (class9.type != 0 || class9.children == null) {
+	public void drawInterface(int scrollPos, int originX, RSInterface container, int originY) {
+		if (container.type != 0 || container.children == null) {
 			return;
 		}
-		if (class9.hidden && anInt1026 != class9.id && anInt1048 != class9.id && anInt1039 != class9.id) {
+		if (container.hidden && anInt1026 != container.id && anInt1048 != container.id && anInt1039 != container.id) {
 			return;
 		}
-		int i1 = DrawingArea.topX;
-		int j1 = DrawingArea.topY;
-		int k1 = DrawingArea.bottomX;
-		int l1 = DrawingArea.bottomY;
-		DrawingArea.setClip(l + class9.height, k, k + class9.width, l);
-		int i2 = class9.children.length;
-		for (int j2 = 0; j2 < i2; j2++) {
-			int k2 = class9.childX[j2] + k;
-			int l2 = class9.childY[j2] + l - scrollPos;
-			RSInterface component = RSInterface.interfaceCache[class9.children[j2]];
-			k2 += component.offsetX;
-			l2 += component.offsetY;
+		int savedTopX = DrawingArea.topX;
+		int savedTopY = DrawingArea.topY;
+		int savedBottomX = DrawingArea.bottomX;
+		int savedBottomY = DrawingArea.bottomY;
+		DrawingArea.setClip(originY + container.height, originX, originX + container.width, originY);
+		int childCount = container.children.length;
+		for (int childIndex = 0; childIndex < childCount; childIndex++) {
+			int drawX = container.childX[childIndex] + originX;
+			int drawY = container.childY[childIndex] + originY - scrollPos;
+			RSInterface component = RSInterface.interfaceCache[container.children[childIndex]];
+			drawX += component.offsetX;
+			drawY += component.offsetY;
 			if (component.contentType > 0) {
 				drawFriendsListOrWelcomeScreen(component);
 			}
@@ -8199,17 +8199,17 @@ public class Game extends RSApplet {
 				if (component.scrollPosition < 0) {
 					component.scrollPosition = 0;
 				}
-				drawInterface(component.scrollPosition, k2, component, l2);
+				drawInterface(component.scrollPosition, drawX, component, drawY);
 				if (component.scrollMax > component.height) {
-					drawScrollbar(component.height, component.scrollPosition, l2, k2 + component.width, component.scrollMax);
+					drawScrollbar(component.height, component.scrollPosition, drawY, drawX + component.width, component.scrollMax);
 				}
 			} else if (component.type != 1) {
 				if (component.type == 2) {
 					int i3 = 0;
 					for (int l3 = 0; l3 < component.height; l3++) {
 						for (int l4 = 0; l4 < component.width; l4++) {
-							int k5 = k2 + l4 * (32 + component.invSpritePadX);
-							int j6 = l2 + l3 * (32 + component.invSpritePadY);
+							int k5 = drawX + l4 * (32 + component.invSpritePadX);
+							int j6 = drawY + l3 * (32 + component.invSpritePadY);
 							if (i3 < 20) {
 								k5 += component.spritesX[i3];
 								j6 += component.spritesY[i3];
@@ -8240,26 +8240,26 @@ public class Game extends RSApplet {
 											}
 											// Draw item being moved
 											class30_sub2_sub1_sub1_2.drawHalfBlended(k5 + k6, j6 + j7);
-											if (j6 + j7 < DrawingArea.topY && class9.scrollPosition > 0) {
+											if (j6 + j7 < DrawingArea.topY && container.scrollPosition > 0) {
 												int i10 = cyclesSinceDraw * (DrawingArea.topY - j6 - j7) / 3;
 												if (i10 > cyclesSinceDraw * 10) {
 													i10 = cyclesSinceDraw * 10;
 												}
-												if (i10 > class9.scrollPosition) {
-													i10 = class9.scrollPosition;
+												if (i10 > container.scrollPosition) {
+													i10 = container.scrollPosition;
 												}
-												class9.scrollPosition -= i10;
+												container.scrollPosition -= i10;
 												anInt1088 += i10;
 											}
-											if (j6 + j7 + 32 > DrawingArea.bottomY && class9.scrollPosition < class9.scrollMax - class9.height) {
+											if (j6 + j7 + 32 > DrawingArea.bottomY && container.scrollPosition < container.scrollMax - container.height) {
 												int j10 = cyclesSinceDraw * (j6 + j7 + 32 - DrawingArea.bottomY) / 3;
 												if (j10 > cyclesSinceDraw * 10) {
 													j10 = cyclesSinceDraw * 10;
 												}
-												if (j10 > class9.scrollMax - class9.height - class9.scrollPosition) {
-													j10 = class9.scrollMax - class9.height - class9.scrollPosition;
+												if (j10 > container.scrollMax - container.height - container.scrollPosition) {
+													j10 = container.scrollMax - container.height - container.scrollPosition;
 												}
-												class9.scrollPosition += j10;
+												container.scrollPosition += j10;
 												anInt1088 -= j10;
 											}
 										} else if (atInventoryInterfaceType != 0 && atInventoryIndex == i3 && atInventoryInterface == component.id) {
@@ -8308,14 +8308,14 @@ public class Game extends RSApplet {
 					}
 					if (component.transparency == 0) {
 						if (component.filled) {
-							DrawingArea.fillRectangle(component.height, l2, 0x2a251e, component.width, k2);
+							DrawingArea.fillRectangle(component.height, drawY, 0x2a251e, component.width, drawX);
 						} else {
-							DrawingArea.drawRectangleOutline(l2, component.height, color, k2, component.width);
+							DrawingArea.drawRectangleOutline(drawY, component.height, color, drawX, component.width);
 						}
 					} else if (component.filled) {
-						DrawingArea.fillBlendedRectangle(color, l2, component.width, component.height, 256 - (component.transparency & 0xff), k2);
+						DrawingArea.fillBlendedRectangle(color, drawY, component.width, component.height, 256 - (component.transparency & 0xff), drawX);
 					} else {
-						DrawingArea.drawBlendedRectangleOutline(l2, component.height, 256 - (component.transparency & 0xff), color, component.width, k2);
+						DrawingArea.drawBlendedRectangleOutline(drawY, component.height, 256 - (component.transparency & 0xff), color, component.width, drawX);
 					}
 				} else if (component.type == 4) {
 					TextDrawingArea textDrawingArea = component.textDrawingAreas;
@@ -8351,7 +8351,7 @@ public class Game extends RSApplet {
 							i4 = 0xffffff;
 						}
 					}
-					for (int l6 = l2 + textDrawingArea.maxAsciiGlyphHeightPixels; s.length() > 0; l6 += textDrawingArea.maxAsciiGlyphHeightPixels) {
+					for (int l6 = drawY + textDrawingArea.maxAsciiGlyphHeightPixels; s.length() > 0; l6 += textDrawingArea.maxAsciiGlyphHeightPixels) {
 						if (s.indexOf("%") != -1) {
 							do {
 								int k7 = s.indexOf("%1");
@@ -8399,9 +8399,9 @@ public class Game extends RSApplet {
 							s = "";
 						}
 						if (component.centeredText) {
-							textDrawingArea.drawCenteredTaggedText(i4, k2 + component.width / 2, s1, l6, component.shadowedText);
+							textDrawingArea.drawCenteredTaggedText(i4, drawX + component.width / 2, s1, l6, component.shadowedText);
 						} else {
-							textDrawingArea.drawTaggedText(component.shadowedText, k2, i4, s1, l6);
+							textDrawingArea.drawTaggedText(component.shadowedText, drawX, i4, s1, l6);
 						}
 					}
 
@@ -8413,13 +8413,13 @@ public class Game extends RSApplet {
 						sprite = component.sprite1;
 					}
 					if (sprite != null) {
-						sprite.drawSprite(k2, l2);
+						sprite.drawSprite(drawX, drawY);
 					}
 				} else if (component.type == 6) {
 					int k3 = Texture.textureInt1;
 					int j4 = Texture.textureInt2;
-					Texture.textureInt1 = k2 + component.width / 2;
-					Texture.textureInt2 = l2 + component.height / 2;
+					Texture.textureInt1 = drawX + component.width / 2;
+					Texture.textureInt2 = drawY + component.height / 2;
 					int i5 = Texture.sineTable[component.modelPitch] * component.modelZoom >> 16;
 					int l5 = Texture.cosineTable[component.modelPitch] * component.modelZoom >> 16;
 					boolean flag2 = interfaceIsSelected(component);
@@ -8452,8 +8452,8 @@ public class Game extends RSApplet {
 								if (itemDef.stackable || component.itemQuantities[k4] != 1) {
 									s2 = s2 + " x" + intToKOrMilLongName(component.itemQuantities[k4]);
 								}
-								int i9 = k2 + i6 * (115 + component.invSpritePadX);
-								int k9 = l2 + j5 * (12 + component.invSpritePadY);
+								int i9 = drawX + i6 * (115 + component.invSpritePadX);
+								int k9 = drawY + j5 * (12 + component.invSpritePadY);
 								if (component.centeredText) {
 									textDrawingArea_1.drawCenteredTaggedText(component.textColor, i9 + component.width / 2, s2, k9, component.shadowedText);
 								} else {
@@ -8471,7 +8471,7 @@ public class Game extends RSApplet {
 			}
 		}
 
-		DrawingArea.setClip(l1, i1, k1, j1);
+		DrawingArea.setClip(savedBottomY, savedTopX, savedBottomX, savedTopY);
 	}
 
 	public void randomizeBackground(Background background) {
@@ -11356,7 +11356,7 @@ public class Game extends RSApplet {
 				for (int k5 = 0; k5 < variousSettings.length; k5++) {
 					if (variousSettings[k5] != anIntArray1045[k5]) {
 						variousSettings[k5] = anIntArray1045[k5];
-						method33(k5);
+						applyVarpSetting(k5);
 						needDrawTabArea = true;
 					}
 				}
@@ -11690,7 +11690,7 @@ public class Game extends RSApplet {
 				anIntArray1045[j8] = l14;
 				if (variousSettings[j8] != l14) {
 					variousSettings[j8] = l14;
-					method33(j8);
+					applyVarpSetting(j8);
 					needDrawTabArea = true;
 					if (dialogID != -1) {
 						inputTaken = true;
@@ -11705,7 +11705,7 @@ public class Game extends RSApplet {
 				anIntArray1045[k8] = byte0;
 				if (variousSettings[k8] != byte0) {
 					variousSettings[k8] = byte0;
-					method33(k8);
+					applyVarpSetting(k8);
 					needDrawTabArea = true;
 					if (dialogID != -1) {
 						inputTaken = true;
@@ -12076,7 +12076,7 @@ public class Game extends RSApplet {
 		aBoolean1017 = false;
 		anInt1018 = -1;
 		anIntArray1030 = new int[5];
-		aBoolean1031 = false;
+		designerModelDirty = false;
 		mapFunctions = new Sprite[100];
 		dialogID = -1;
 		maxStats = new int[Skills.skillsCount];
@@ -12245,7 +12245,7 @@ public class Game extends RSApplet {
 	public RSImageProducer backVmidIP3;
 	public RSImageProducer backVmidIP2_2;
 	public byte[] textureScrollScratch;
-	public int anInt913;
+	public int insertDragMode;
 	public int crossX;
 	public int crossY;
 	public int crossIndex;
@@ -12348,7 +12348,7 @@ public class Game extends RSApplet {
 	public Background backBase2;
 	public Background backHmid1;
 	public final int[] anIntArray1030;
-	public boolean aBoolean1031;
+	public boolean designerModelDirty;
 	public Sprite[] mapFunctions;
 	public int baseX;
 	public int baseY;
@@ -12546,12 +12546,12 @@ public class Game extends RSApplet {
 	public int atInventoryInterfaceType;
 	public byte[][] regionObjectData;
 	public int tradeMode;
-	public int anInt1249;
+	public int chatEffectsMode;
 	public final int[] soundDelay;
 	public final int[] soundVolume;
 	public int chatSuppressionZone;
 	public final boolean rsAlreadyLoaded;
-	public int anInt1253;
+	public int leftClickOpensMenu;
 	public int anInt1254;
 	public boolean welcomeScreenRaised;
 	public boolean messagePromptRaised;
