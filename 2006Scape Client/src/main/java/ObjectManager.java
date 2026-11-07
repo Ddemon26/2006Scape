@@ -238,7 +238,7 @@ final class ObjectManager {
 
 		}
 
-		worldController.method305(-10, -50, -50);
+		worldController.lightScene(-10, -50, -50);
 		for (int j1 = 0; j1 < anInt146; j1++) {
 			for (int l1 = 0; l1 < anInt147; l1++) {
 				if ((aByteArrayArrayArray149[1][j1][l1] & 2) == 2) {

@@ -873,10 +873,10 @@ public class Game extends RSApplet {
 			int i1 = 24628 + (103 - l) * 512 * 4;
 			for (int k1 = 1; k1 < 103; k1++) {
 				if ((byteGroundArray[i][k1][l] & 0x18) == 0) {
-					worldController.method309(ai, i1, i, k1, l);
+					worldController.drawMinimapTile(ai, i1, i, k1, l);
 				}
 				if (i < 3 && (byteGroundArray[i + 1][k1][l] & 8) != 0) {
-					worldController.method309(ai, i1, i + 1, k1, l);
+					worldController.drawMinimapTile(ai, i1, i + 1, k1, l);
 				}
 				i1 += 4;
 			}
@@ -3803,9 +3803,9 @@ public class Game extends RSApplet {
 		}
 		if (l == 516) {
 			if (!menuOpen) {
-				worldController.method312(super.saveClickY - 4, super.saveClickX - 4);
+				worldController.requestTilePick(super.saveClickY - 4, super.saveClickX - 4);
 			} else {
-				worldController.method312(k - 4, j - 4);
+				worldController.requestTilePick(k - 4, j - 4);
 			}
 		}
 		if (l == 1062) { //Fifth click
@@ -7379,7 +7379,7 @@ public class Game extends RSApplet {
 				ai[i8] = l8 * i9 >> 16;
 			}
 
-			WorldController.method310(500, 800, 512, 334, ai);
+			WorldController.buildTileVisibilityTable(500, 800, 512, 334, ai);
 			Censor.loadConfig(streamLoader_4);
 			mouseDetection = new MouseDetection(this);
 			startRunnable(mouseDetection, 10);
@@ -11896,7 +11896,7 @@ public class Game extends RSApplet {
 		Model.anInt1686 = super.mouseY - 4;
 		DrawingArea.clearRaster();
 		if(graphicsEnabled){
-			worldController.method313(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
+			worldController.drawScene(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
 			worldController.clearObj5Cache();
 			updateEntities();
 			drawHeadIcon();
