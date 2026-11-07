@@ -1287,7 +1287,7 @@ public class Game extends RSApplet {
 	public void updateNPCs(Stream stream, int i) {
 		anInt839 = 0;
 		maskUpdateCount = 0;
-		method139(stream);
+		decodeExistingNpcMovement(stream);
 		addNewNpcs(i, stream);
 		decodeNpcUpdateMasks(stream);
 		for (int k = 0; k < anInt839; k++) {
@@ -10287,55 +10287,55 @@ public class Game extends RSApplet {
 		ObjectDef.lowMem = true;
 	}
 
-	public void method139(Stream stream) {
+	public void decodeExistingNpcMovement(Stream stream) {
 		stream.beginBitReading();
-		int k = stream.readBitsMsbFirst(8);
-		if (k < npcCount) {
-			for (int l = k; l < npcCount; l++) {
-				anIntArray840[anInt839++] = npcIndices[l];
+		int reportedNpcCount = stream.readBitsMsbFirst(8);
+		if (reportedNpcCount < npcCount) {
+			for (int removedTailIndex = reportedNpcCount; removedTailIndex < npcCount; removedTailIndex++) {
+				anIntArray840[anInt839++] = npcIndices[removedTailIndex];
 			}
 
 		}
-		if (k > npcCount) {
+		if (reportedNpcCount > npcCount) {
 			Signlink.reporterror(myUsername + " Too many npcs");
 			throw new RuntimeException("eek");
 		}
 		npcCount = 0;
-		for (int i1 = 0; i1 < k; i1++) {
-			int j1 = npcIndices[i1];
-			NPC npc = npcArray[j1];
-			int k1 = stream.readBitsMsbFirst(1);
-			if (k1 == 0) {
-				npcIndices[npcCount++] = j1;
+		for (int npcListIndex = 0; npcListIndex < reportedNpcCount; npcListIndex++) {
+			int npcIndex = npcIndices[npcListIndex];
+			NPC npc = npcArray[npcIndex];
+			int updateFlag = stream.readBitsMsbFirst(1);
+			if (updateFlag == 0) {
+				npcIndices[npcCount++] = npcIndex;
 				npc.anInt1537 = loopCycle;
 			} else {
-				int l1 = stream.readBitsMsbFirst(2);
-				if (l1 == 0) {
-					npcIndices[npcCount++] = j1;
+				int movementType = stream.readBitsMsbFirst(2);
+				if (movementType == 0) {
+					npcIndices[npcCount++] = npcIndex;
 					npc.anInt1537 = loopCycle;
-					maskUpdateIndices[maskUpdateCount++] = j1;
-				} else if (l1 == 1) {
-					npcIndices[npcCount++] = j1;
+					maskUpdateIndices[maskUpdateCount++] = npcIndex;
+				} else if (movementType == 1) {
+					npcIndices[npcCount++] = npcIndex;
 					npc.anInt1537 = loopCycle;
-					int i2 = stream.readBitsMsbFirst(3);
-					npc.moveInDir(false, i2);
-					int k2 = stream.readBitsMsbFirst(1);
-					if (k2 == 1) {
-						maskUpdateIndices[maskUpdateCount++] = j1;
+					int walkDirection = stream.readBitsMsbFirst(3);
+					npc.moveInDir(false, walkDirection);
+					int walkMaskUpdateFlag = stream.readBitsMsbFirst(1);
+					if (walkMaskUpdateFlag == 1) {
+						maskUpdateIndices[maskUpdateCount++] = npcIndex;
 					}
-				} else if (l1 == 2) {
-					npcIndices[npcCount++] = j1;
+				} else if (movementType == 2) {
+					npcIndices[npcCount++] = npcIndex;
 					npc.anInt1537 = loopCycle;
-					int j2 = stream.readBitsMsbFirst(3);
-					npc.moveInDir(true, j2);
-					int l2 = stream.readBitsMsbFirst(3);
-					npc.moveInDir(true, l2);
-					int i3 = stream.readBitsMsbFirst(1);
-					if (i3 == 1) {
-						maskUpdateIndices[maskUpdateCount++] = j1;
+					int firstRunDirection = stream.readBitsMsbFirst(3);
+					npc.moveInDir(true, firstRunDirection);
+					int secondRunDirection = stream.readBitsMsbFirst(3);
+					npc.moveInDir(true, secondRunDirection);
+					int runMaskUpdateFlag = stream.readBitsMsbFirst(1);
+					if (runMaskUpdateFlag == 1) {
+						maskUpdateIndices[maskUpdateCount++] = npcIndex;
 					}
-				} else if (l1 == 3) {
-					anIntArray840[anInt839++] = j1;
+				} else if (movementType == 3) {
+					anIntArray840[anInt839++] = npcIndex;
 				}
 			}
 		}
