@@ -823,7 +823,7 @@ public class Game extends RSApplet {
 		}
 		System.gc();
 		Texture.allocateBufferPool();
-		onDemandFetcher.method566();
+		onDemandFetcher.clearExtraFileQueue();
 		int k = (anInt1069 - 6) / 8 - 1;
 		int j1 = (anInt1069 + 6) / 8 + 1;
 		int i2 = (anInt1070 - 6) / 8 - 1;
@@ -5132,7 +5132,7 @@ public class Game extends RSApplet {
 						}
 						if (inputString.equals("::prefetchmusic")) {
 							for (int j1 = 0; j1 < onDemandFetcher.getVersionCount(2); j1++) {
-								onDemandFetcher.method563((byte) 1, 2, j1);
+								onDemandFetcher.markExtraFileForDownload((byte) 1, 2, j1);
 							}
 						}
 					}
@@ -7158,7 +7158,7 @@ public class Game extends RSApplet {
 					byte0 = 3;
 				}
 				if (byte0 != 0) {
-					onDemandFetcher.method563(byte0, 0, k2);
+					onDemandFetcher.markExtraFileForDownload(byte0, 0, k2);
 				}
 			}
 
@@ -7167,7 +7167,7 @@ public class Game extends RSApplet {
 				int l = onDemandFetcher.getVersionCount(2);
 				for (int i3 = 1; i3 < l; i3++) {
 					if (onDemandFetcher.method569(i3)) {
-						onDemandFetcher.method563((byte) 1, 2, i3);
+						onDemandFetcher.markExtraFileForDownload((byte) 1, 2, i3);
 					}
 				}
 

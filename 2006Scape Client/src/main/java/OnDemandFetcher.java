@@ -216,8 +216,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		int j = mapIndices1.length;
 		for (int k = 0; k < j; k++) {
 			if (flag || mapIndices4[k] != 0) {
-				method563((byte) 2, 3, mapIndices3[k]);
-				method563((byte) 2, 3, mapIndices2[k]);
+				markExtraFileForDownload((byte) 2, 3, mapIndices3[k]);
+				markExtraFileForDownload((byte) 2, 3, mapIndices2[k]);
 			}
 		}
 
@@ -329,7 +329,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 					if (uncompletedCount == 0 && j >= 5) {
 						break;
 					}
-					method568();
+					dispatchExtraFileRequests();
 					if (inputStream != null) {
 						readData();
 					}
@@ -472,20 +472,20 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		method558(0, i);
 	}
 
-	public void method563(byte byte0, int i, int j) {
+	public void markExtraFileForDownload(byte priority, int dataType, int fileId) {
 		if (clientInstance.cacheStores[0] == null) {
 			return;
 		}
-		if (versions[i][j] == 0) {
+		if (versions[dataType][fileId] == 0) {
 			return;
 		}
-		byte abyte0[] = clientInstance.cacheStores[i + 1].readFile(j);
-		if (crcMatches(versions[i][j], crcs[i][j], abyte0)) {
+		byte cachedData[] = clientInstance.cacheStores[dataType + 1].readFile(fileId);
+		if (crcMatches(versions[dataType][fileId], crcs[dataType][fileId], cachedData)) {
 			return;
 		}
-		fileStatus[i][j] = byte0;
-		if (byte0 > highestPendingPriority) {
-			highestPendingPriority = byte0;
+		fileStatus[dataType][fileId] = priority;
+		if (priority > highestPendingPriority) {
+			highestPendingPriority = priority;
 		}
 		totalFiles++;
 	}
@@ -526,7 +526,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		}
 	}
 
-	public void method566() {
+	public void clearExtraFileQueue() {
 		synchronized (extraFileQueue) {
 			extraFileQueue.removeAll();
 		}
@@ -560,20 +560,20 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		}
 	}
 
-	private void method568() {
+	private void dispatchExtraFileRequests() {
 		while (uncompletedCount == 0 && completedCount < 10) {
 			if (highestPendingPriority == 0) {
 				break;
 			}
-			OnDemandData onDemandData;
+			OnDemandData queuedRequest;
 			synchronized (extraFileQueue) {
-				onDemandData = (OnDemandData) extraFileQueue.popTail();
+				queuedRequest = (OnDemandData) extraFileQueue.popTail();
 			}
-			while (onDemandData != null) {
-				if (fileStatus[onDemandData.dataType][onDemandData.ID] != 0) {
-					fileStatus[onDemandData.dataType][onDemandData.ID] = 0;
-					requested.insertHead(onDemandData);
-					closeRequest(onDemandData);
+			while (queuedRequest != null) {
+				if (fileStatus[queuedRequest.dataType][queuedRequest.ID] != 0) {
+					fileStatus[queuedRequest.dataType][queuedRequest.ID] = 0;
+					requested.insertHead(queuedRequest);
+					closeRequest(queuedRequest);
 					waiting = true;
 					if (filesLoaded < totalFiles) {
 						filesLoaded++;
@@ -585,21 +585,21 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 					}
 				}
 				synchronized (extraFileQueue) {
-					onDemandData = (OnDemandData) extraFileQueue.popTail();
+					queuedRequest = (OnDemandData) extraFileQueue.popTail();
 				}
 			}
-			for (int j = 0; j < 4; j++) {
-				byte abyte0[] = fileStatus[j];
-				int k = abyte0.length;
-				for (int l = 0; l < k; l++) {
-					if (abyte0[l] == highestPendingPriority) {
-						abyte0[l] = 0;
-						OnDemandData onDemandData_1 = new OnDemandData();
-						onDemandData_1.dataType = j;
-						onDemandData_1.ID = l;
-						onDemandData_1.incomplete = false;
-						requested.insertHead(onDemandData_1);
-						closeRequest(onDemandData_1);
+			for (int dataType = 0; dataType < 4; dataType++) {
+				byte typePriorities[] = fileStatus[dataType];
+				int fileCount = typePriorities.length;
+				for (int fileId = 0; fileId < fileCount; fileId++) {
+					if (typePriorities[fileId] == highestPendingPriority) {
+						typePriorities[fileId] = 0;
+						OnDemandData scannedRequest = new OnDemandData();
+						scannedRequest.dataType = dataType;
+						scannedRequest.ID = fileId;
+						scannedRequest.incomplete = false;
+						requested.insertHead(scannedRequest);
+						closeRequest(scannedRequest);
 						waiting = true;
 						if (filesLoaded < totalFiles) {
 							filesLoaded++;

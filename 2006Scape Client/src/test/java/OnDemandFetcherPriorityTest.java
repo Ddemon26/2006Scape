@@ -103,20 +103,172 @@ public class OnDemandFetcherPriorityTest {
         versions()[0][4] = 9;
         versions()[0][5] = 9;
         versions()[0][6] = 9;
-        fetcher.method563((byte) 2, 0, 4);
+        fetcher.markExtraFileForDownload((byte) 2, 0, 4);
         assertEquals(2, levelField());
         assertEquals(2, status()[0][4]);
-        fetcher.method563((byte) 5, 0, 5);
+        fetcher.markExtraFileForDownload((byte) 5, 0, 5);
         assertEquals(5, levelField());
-        fetcher.method563((byte) 1, 0, 6);
+        fetcher.markExtraFileForDownload((byte) 1, 0, 6);
         assertEquals(5, levelField());          // lower priority does not lower it
         assertEquals(1, status()[0][6]);
     }
 
     private void drain() throws Exception {
-        Method m = OnDemandFetcher.class.getDeclaredMethod("method568");
+        Method m = OnDemandFetcher.class.getDeclaredMethod("dispatchExtraFileRequests");
         m.setAccessible(true);
         m.invoke(fetcher);
+    }
+
+    private CacheStore[] stores() throws Exception {
+        return (CacheStore[]) field(Game.class, "cacheStores").get(game);
+    }
+
+    private byte[] cached(int type, int id, int version) throws Exception {
+        byte[] bytes = {11, 37, 91, (byte) (version >>> 8), (byte) version};
+        java.util.zip.CRC32 crc = new java.util.zip.CRC32();
+        crc.update(bytes, 0, bytes.length - 2);
+        versions()[type][id] = version;
+        ((int[][]) get("crcs"))[type][id] = (int) crc.getValue();
+        assertTrue(stores()[type + 1].writeFile(bytes.length, bytes, id));
+        return bytes;
+    }
+
+    @Test public void method563ChecksExactStoreAndFileAndBothCacheChecksums() throws Exception {
+        byte[] bytes = cached(2, 13, 0x1234);
+        fetcher.markExtraFileForDownload((byte) 7, 2, 13);
+        assertEquals(0, status()[2][13]);
+        assertEquals(100, get("totalFiles"));
+        // Correct version but wrong payload CRC must mark this exact cell.
+        bytes[0] ^= 1;
+        assertTrue(stores()[3].writeFile(bytes.length, bytes, 13));
+        fetcher.markExtraFileForDownload((byte) 7, 2, 13);
+        assertEquals(7, status()[2][13]);
+        assertEquals(101, get("totalFiles"));
+        // Correct payload CRC but wrong trailing big-endian version also marks.
+        bytes = cached(1, 17, 0x1234);
+        bytes[4] ^= 1;
+        assertTrue(stores()[2].writeFile(bytes.length, bytes, 17));
+        fetcher.markExtraFileForDownload((byte) 3, 1, 17);
+        assertEquals(3, status()[1][17]);
+        assertEquals(7, levelField());
+        // Identical bytes in a different type's store do not satisfy this type.
+        cached(0, 9, 0x1234);
+        versions()[3][9] = 0x1234;
+        ((int[][]) get("crcs"))[3][9] = ((int[][]) get("crcs"))[0][9];
+        fetcher.markExtraFileForDownload((byte) 2, 3, 9);
+        assertEquals(2, status()[3][9]);
+        assertEquals(0, status()[0][9]);
+        assertEquals(103, get("totalFiles"));
+        assertNull(queue().popTail()); // marking alone does not enqueue
+    }
+
+    @Test public void method563GuardsAndSignedByteBoundaries() throws Exception {
+        fetcher.markExtraFileForDownload((byte) 6, 3, 19); // version zero
+        assertEquals(100, get("totalFiles"));
+        versions()[3][19] = 1;
+        CacheStore original = stores()[0];
+        stores()[0] = null;
+        fetcher.markExtraFileForDownload((byte) 6, 3, 19);
+        assertEquals(0, status()[3][19]);
+        assertEquals(0, levelField());
+        assertEquals(100, get("totalFiles"));
+        stores()[0] = original;
+        for (byte b : new byte[] {0, -1, Byte.MIN_VALUE, Byte.MAX_VALUE, 1}) {
+            fetcher.markExtraFileForDownload(b, 3, 19);
+            assertEquals(b, status()[3][19]);
+        }
+        assertEquals(127, levelField()); // signed, not unsigned
+        assertEquals(105, get("totalFiles")); // includes repeated/zero marks
+    }
+
+    @Test public void method566ClearsOnlyExplicitQueueAndIsRepeatable() throws Exception {
+        arm(2, 19);
+        fetcher.requestExtraFile(19, 2);
+        fetcher.requestExtraFile(19, 2);
+        OnDemandData pending = new OnDemandData();
+        requested().insertHead(pending);
+        fetcher.clearExtraFileQueue();
+        fetcher.clearExtraFileQueue();
+        assertNull(queue().popTail());
+        assertSame(pending, requested().popTail());
+        assertEquals(2, status()[2][19]);
+        assertEquals(2, levelField());
+        assertEquals(100, get("totalFiles"));
+    }
+
+    @Test public void method568UsesTypeRowsAndLastFileIndexIncludingEmptyRow() throws Exception {
+        byte[][] cells = status();
+        cells[0] = new byte[] {0, 2};
+        cells[1] = new byte[0];
+        cells[2] = new byte[] {0, 0, 1};
+        cells[3] = new byte[] {0, 0, 0, 2};
+        level(2);
+        drain();
+        int[][] expected = {{0, 1}, {3, 3}, {2, 2}};
+        for (int[] pair : expected) {
+            OnDemandData node = (OnDemandData) requested().popTail();
+            assertNotNull(node);
+            assertEquals(pair[0], node.dataType);
+            assertEquals(pair[1], node.ID);
+            assertFalse(node.incomplete);
+            assertEquals(0, cells[pair[0]][pair[1]]);
+        }
+        assertNull(requested().popTail());
+        assertEquals(3, get("completedCount"));
+        assertEquals(3, get("filesLoaded"));
+        assertEquals("Loading extra files - 3%", fetcher.statusString);
+        assertEquals(0, levelField());
+    }
+
+    @Test public void method568BlocksOnMandatoryRequestsAndStopsAtTenThenResumes() throws Exception {
+        for (int id = 0; id < 12; id++) status()[2][id] = 2;
+        level(2);
+        set("uncompletedCount", 1);
+        drain();
+        assertEquals(2, levelField());
+        assertNull(requested().popTail());
+        set("uncompletedCount", 0);
+        drain();
+        assertEquals(10, get("completedCount"));
+        assertEquals(2, status()[2][10]);
+        for (int id = 0; id < 10; id++) {
+            OnDemandData node = (OnDemandData) requested().popTail();
+            assertEquals(2, node.dataType);
+            assertEquals(id, node.ID);
+        }
+        drain(); // outstanding extra count at ten blocks even with queue empty
+        assertNull(requested().popTail());
+        set("completedCount", 0);
+        drain();
+        assertEquals(10, ((OnDemandData) requested().popTail()).ID);
+        assertEquals(11, ((OnDemandData) requested().popTail()).ID);
+        assertNull(requested().popTail());
+        assertEquals(0, levelField());
+    }
+
+    @Test public void method568SkipsStaleQueuedNodesAndCapsExplicitQueueAtTen() throws Exception {
+        level(1);
+        OnDemandData stale = new OnDemandData();
+        stale.dataType = 3; stale.ID = 19;
+        queue().insertHead(stale); // zero status: must be skipped
+        for (int id = 0; id < 11; id++) {
+            versions()[1][id] = 1;
+            status()[1][id] = 1;
+            fetcher.requestExtraFile(id, 1);
+        }
+        set("filesLoaded", 100); // must not exceed totalFiles
+        drain();
+        assertEquals(10, get("completedCount"));
+        assertEquals(100, get("filesLoaded"));
+        assertEquals("Loading extra files - 100%", fetcher.statusString);
+        for (int id = 0; id < 10; id++) {
+            OnDemandData node = (OnDemandData) requested().popTail();
+            assertEquals(1, node.dataType);
+            assertEquals(id, node.ID);
+        }
+        assertNull(requested().popTail());
+        assertEquals(10, ((OnDemandData) queue().popTail()).ID);
+        assertEquals(1, status()[1][10]);
     }
 
     @Test public void method568ScansFromLevelDownAndDecrementsIt() throws Exception {
