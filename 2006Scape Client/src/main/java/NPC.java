@@ -6,16 +6,16 @@ public final class NPC extends Entity {
 
 	private Model method450() {
 		if (super.anim >= 0 && super.anInt1529 == 0) {
-			int k = Animation.anims[super.anim].anIntArray353[super.anInt1527];
+			int k = Animation.anims[super.anim].frameIds[super.anInt1527];
 			int i1 = -1;
 			if (super.movementAnimationId >= 0 && super.movementAnimationId != super.idleAnimationId) {
-				i1 = Animation.anims[super.movementAnimationId].anIntArray353[super.anInt1518];
+				i1 = Animation.anims[super.movementAnimationId].frameIds[super.anInt1518];
 			}
-			return desc.getAnimatedModel(i1, k, Animation.anims[super.anim].anIntArray357);
+			return desc.getAnimatedModel(i1, k, Animation.anims[super.anim].interleavedTransformIndices);
 		}
 		int l = -1;
 		if (super.movementAnimationId >= 0) {
-			l = Animation.anims[super.movementAnimationId].anIntArray353[super.anInt1518];
+			l = Animation.anims[super.movementAnimationId].frameIds[super.anInt1518];
 		}
 		return desc.getAnimatedModel(-1, l, null);
 	}
@@ -34,17 +34,17 @@ public final class NPC extends Entity {
 			SpotAnim spotAnim = SpotAnim.cache[super.anInt1520];
 			Model model_1 = spotAnim.getModel();
 			if (model_1 != null) {
-				int j = spotAnim.aAnimation_407.anIntArray353[super.anInt1521];
+				int j = spotAnim.animation.frameIds[super.anInt1521];
 				Model model_2 = new Model(true, AnimationFrame.isMissingFrameId(j), false, model_1);
 				model_2.translate(0, -super.anInt1524, 0);
 				model_2.buildAnimationGroups();
 				model_2.applyAnimationFrame(j);
 				model_2.faceGroups = null;
 				model_2.vertexGroups = null;
-				if (spotAnim.anInt410 != 128 || spotAnim.anInt411 != 128) {
-					model_2.scale(spotAnim.anInt410, spotAnim.anInt410, spotAnim.anInt411);
+				if (spotAnim.horizontalScale128 != 128 || spotAnim.verticalScale128 != 128) {
+					model_2.scale(spotAnim.horizontalScale128, spotAnim.horizontalScale128, spotAnim.verticalScale128);
 				}
-				model_2.applyLighting(64 + spotAnim.anInt413, 850 + spotAnim.anInt414, -30, -50, -30, true);
+				model_2.applyLighting(64 + spotAnim.ambientLightOffset, 850 + spotAnim.lightDivisorOffset, -30, -50, -30, true);
 				Model aModel[] = {model, model_2};
 				model = new Model(aModel);
 			}

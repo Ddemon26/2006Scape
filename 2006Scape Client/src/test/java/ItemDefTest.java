@@ -608,7 +608,7 @@ public class ItemDefTest {
     // ================= pass 139: Player.buildBodyModel animation locals =================
     private static Animation anim139(int[] frames, int shield, int weapon, int[] mask) throws Exception {
         Constructor<Animation> c = Animation.class.getDeclaredConstructor(); c.setAccessible(true); Animation a = c.newInstance();
-        a.anIntArray353 = frames; a.slot5EquipmentOverride = shield; a.slot3EquipmentOverride = weapon; a.anIntArray357 = mask; return a;
+        a.frameIds = frames; a.slot5EquipmentOverride = shield; a.slot3EquipmentOverride = weapon; a.interleavedTransformIndices = mask; return a;
     }
     private static Player body139(int anim, int hold, int f1527, int a1517, int a1518, int a1511) throws Exception {
         Player p = new Player(); p.visible = true;

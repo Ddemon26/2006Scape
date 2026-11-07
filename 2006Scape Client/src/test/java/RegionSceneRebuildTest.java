@@ -46,7 +46,7 @@ public class RegionSceneRebuildTest {
         Game.lowMem = false; ObjectManager.lowMem = false; ObjectDef.lowMem = false; ObjectManager.hideRoofs = false;
         Animation[] anims = new Animation[6];
         Animation a = (Animation) unsafe().allocateInstance(Animation.class);
-        a.anInt356 = -1; a.anInt352 = 1; anims[3] = a;
+        a.loopBackFrames = -1; a.frameCount = 1; anims[3] = a;
         Animation.anims = anims;
         install(animated(604), animated(605));
     }

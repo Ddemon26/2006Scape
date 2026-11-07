@@ -15,7 +15,7 @@ public class TransientGraphicTest {
         Constructor<Animation> constructor = Animation.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         Animation result = constructor.newInstance();
-        result.anInt352 = delays.length;
+        result.frameCount = delays.length;
         Field field = Animation.class.getDeclaredField("frameDelays");
         field.setAccessible(true);
         field.set(result, delays);
@@ -26,7 +26,7 @@ public class TransientGraphicTest {
         Constructor<SpotAnim> constructor = SpotAnim.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         SpotAnim result = constructor.newInstance();
-        result.aAnimation_407 = animation;
+        result.animation = animation;
         return result;
     }
 

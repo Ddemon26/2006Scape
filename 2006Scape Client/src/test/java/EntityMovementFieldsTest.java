@@ -17,7 +17,7 @@ public class EntityMovementFieldsTest {
     }
     private static Animation anim(int a363, int a364) throws Exception {
         Constructor<Animation> c = Animation.class.getDeclaredConstructor(); c.setAccessible(true);
-        Animation a = c.newInstance(); a.anInt363 = a363; a.anInt364 = a364; return a;
+        Animation a = c.newInstance(); a.movingPrecedence = a363; a.idlePrecedence = a364; return a;
     }
     private static Entity walker(int queueDepth) {
         Entity e = new Entity();
@@ -31,13 +31,13 @@ public class EntityMovementFieldsTest {
     @Test public void anInt1503CountsTicksHeldBackByAnimationsOnly() throws Exception {
         Game g = game();
         Animation.anims = new Animation[]{anim(0, 0), anim(1, 1)};
-        // walking queue pending (anInt1542 > 0), animation 0 forbids movement then (anInt363 == 0)
+        // walking queue pending (anInt1542 > 0), animation 0 forbids movement then (movingPrecedence == 0)
         Entity a = walker(1); a.anim = 0; a.anInt1529 = 0; a.anInt1542 = 2;
         g.advanceEntityAlongWalkingPath(a);
         assertEquals(1, a.deferredMovementTicks); assertEquals(1344, a.x);
         g.advanceEntityAlongWalkingPath(a);
         assertEquals(2, a.deferredMovementTicks); assertEquals(1344, a.x);
-        // no pending queue (anInt1542 <= 0): governed by anInt364 instead
+        // no pending queue (anInt1542 <= 0): governed by idlePrecedence instead
         Entity b = walker(1); b.anim = 0; b.anInt1542 = 0;
         g.advanceEntityAlongWalkingPath(b);
         assertEquals(1, b.deferredMovementTicks); assertEquals(1344, b.x);

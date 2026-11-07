@@ -23,8 +23,8 @@ public class NpcUpdateMaskTest {
         Constructor<Animation> constructor = Animation.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         Animation result = constructor.newInstance();
-        result.anInt365 = replay;
-        result.anInt359 = priority;
+        result.replayMode = replay;
+        result.priority = priority;
         return result;
     }
 

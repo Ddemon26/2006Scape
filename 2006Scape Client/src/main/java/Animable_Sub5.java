@@ -9,17 +9,17 @@ final class Animable_Sub5 extends Animable {
 		int j = -1;
 		if (aAnimation_1607 != null) {
 			int k = Game.loopCycle - anInt1608;
-			if (k > 100 && aAnimation_1607.anInt356 > 0) {
+			if (k > 100 && aAnimation_1607.loopBackFrames > 0) {
 				k = 100;
 			}
 			while (k > aAnimation_1607.getFrameDelay(anInt1599)) {
 				k -= aAnimation_1607.getFrameDelay(anInt1599);
 				anInt1599++;
-				if (anInt1599 < aAnimation_1607.anInt352) {
+				if (anInt1599 < aAnimation_1607.frameCount) {
 					continue;
 				}
-				anInt1599 -= aAnimation_1607.anInt356;
-				if (anInt1599 >= 0 && anInt1599 < aAnimation_1607.anInt352) {
+				anInt1599 -= aAnimation_1607.loopBackFrames;
+				if (anInt1599 >= 0 && anInt1599 < aAnimation_1607.frameCount) {
 					continue;
 				}
 				aAnimation_1607 = null;
@@ -27,7 +27,7 @@ final class Animable_Sub5 extends Animable {
 			}
 			anInt1608 = Game.loopCycle - k;
 			if (aAnimation_1607 != null) {
-				j = aAnimation_1607.anIntArray353[anInt1599];
+				j = aAnimation_1607.frameIds[anInt1599];
 			}
 		}
 		ObjectDef class46;
@@ -74,8 +74,8 @@ final class Animable_Sub5 extends Animable {
 			aAnimation_1607 = Animation.anims[l1];
 			anInt1599 = 0;
 			anInt1608 = Game.loopCycle;
-			if (flag && aAnimation_1607.anInt356 != -1) {
-				anInt1599 = (int) (Math.random() * aAnimation_1607.anInt352);
+			if (flag && aAnimation_1607.loopBackFrames != -1) {
+				anInt1599 = (int) (Math.random() * aAnimation_1607.frameCount);
 				anInt1608 -= (int) (Math.random() * aAnimation_1607.getFrameDelay(anInt1599));
 			}
 		}

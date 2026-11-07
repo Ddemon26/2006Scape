@@ -21,7 +21,7 @@ public class EntityAnimationUpdateTest {
         Constructor<Animation> constructor = Animation.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         Animation animation = constructor.newInstance();
-        animation.anInt352 = delays.length;
+        animation.frameCount = delays.length;
         Field field = Animation.class.getDeclaredField("frameDelays");
         field.setAccessible(true);
         field.set(animation, delays);
@@ -31,7 +31,7 @@ public class EntityAnimationUpdateTest {
         Constructor<SpotAnim> constructor = SpotAnim.class.getDeclaredConstructor();
         constructor.setAccessible(true);
         SpotAnim result = constructor.newInstance();
-        result.aAnimation_407 = sequence;
+        result.animation = sequence;
         return result;
     }
 
@@ -71,7 +71,7 @@ public class EntityAnimationUpdateTest {
     }
 
     @Test public void actionPrecedenceGatesProgressOnlyDuringMovementWindow() throws Exception {
-        Animation action = sequence(1, 3); action.anInt363 = 1;
+        Animation action = sequence(1, 3); action.movingPrecedence = 1;
         Animation.anims = new Animation[]{action}; SpotAnim.cache = new SpotAnim[0];
         Game game = game(); game.loopCycle = 100;
         Entity entity = new Entity(); entity.anim = 0; entity.anInt1542 = 1;
@@ -89,8 +89,8 @@ public class EntityAnimationUpdateTest {
     }
 
     @Test public void actionSequenceSuppliesLoopLimitAndRenderFlag() throws Exception {
-        Animation action = sequence(1, 1); action.anInt356 = 1; action.anInt362 = 2;
-        action.aBoolean358 = true;
+        Animation action = sequence(1, 1); action.loopBackFrames = 1; action.maxLoops = 2;
+        action.extendByYaw = true;
         Animation.anims = new Animation[]{action}; SpotAnim.cache = new SpotAnim[0];
         Game game = game(); Entity entity = new Entity(); entity.anim = 0;
         game.updateEntityAnimations(entity);

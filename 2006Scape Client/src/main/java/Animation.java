@@ -6,22 +6,22 @@ public final class Animation {
 
 	public static void unpackConfig(StreamLoader streamLoader) {
 		Stream stream = new Stream(streamLoader.getDataForName("seq.dat"));
-		int length = stream.readUnsignedShortBigEndian();
+		int recordCount = stream.readUnsignedShortBigEndian();
 		if (anims == null) {
-			anims = new Animation[length];
+			anims = new Animation[recordCount];
 		}
-		for (int j = 0; j < length; j++) {
-			if (anims[j] == null) {
-				anims[j] = new Animation();
+		for (int index = 0; index < recordCount; index++) {
+			if (anims[index] == null) {
+				anims[index] = new Animation();
 			}
-			anims[j].readValues(stream);
+			anims[index].readValues(stream);
 		}
 	}
 
 	public int getFrameDelay(int frameIndex) {
 		int delay = frameDelays[frameIndex];
 		if (delay == 0) {
-			AnimationFrame frame = AnimationFrame.getFrame(anIntArray353[frameIndex]);
+			AnimationFrame frame = AnimationFrame.getFrame(frameIds[frameIndex]);
 			if (frame != null) {
 				delay = frameDelays[frameIndex] = frame.frameDelay;
 			}
@@ -34,107 +34,107 @@ public final class Animation {
 
 	private void readValues(Stream stream) {
 		do {
-			int i = stream.readUnsignedByte();
-			if (i == 0) {
+			int opcode = stream.readUnsignedByte();
+			if (opcode == 0) {
 				break;
 			}
-			if (i == 1) {
-				anInt352 = stream.readUnsignedByte();
-				anIntArray353 = new int[anInt352];
-				anIntArray354 = new int[anInt352];
-				frameDelays = new int[anInt352];
-				for (int j = 0; j < anInt352; j++) {
-					anIntArray353[j] = stream.readUnsignedShortBigEndian();
-					anIntArray354[j] = stream.readUnsignedShortBigEndian();
-					if (anIntArray354[j] == 65535) {
-						anIntArray354[j] = -1;
+			if (opcode == 1) {
+				frameCount = stream.readUnsignedByte();
+				frameIds = new int[frameCount];
+				secondFrameIds = new int[frameCount];
+				frameDelays = new int[frameCount];
+				for (int frame = 0; frame < frameCount; frame++) {
+					frameIds[frame] = stream.readUnsignedShortBigEndian();
+					secondFrameIds[frame] = stream.readUnsignedShortBigEndian();
+					if (secondFrameIds[frame] == 65535) {
+						secondFrameIds[frame] = -1;
 					}
-					frameDelays[j] = stream.readUnsignedShortBigEndian();
+					frameDelays[frame] = stream.readUnsignedShortBigEndian();
 				}
 
-			} else if (i == 2) {
-				anInt356 = stream.readUnsignedShortBigEndian();
-			} else if (i == 3) {
-				int k = stream.readUnsignedByte();
-				anIntArray357 = new int[k + 1];
-				for (int l = 0; l < k; l++) {
-					anIntArray357[l] = stream.readUnsignedByte();
+			} else if (opcode == 2) {
+				loopBackFrames = stream.readUnsignedShortBigEndian();
+			} else if (opcode == 3) {
+				int maskLength = stream.readUnsignedByte();
+				interleavedTransformIndices = new int[maskLength + 1];
+				for (int maskIndex = 0; maskIndex < maskLength; maskIndex++) {
+					interleavedTransformIndices[maskIndex] = stream.readUnsignedByte();
 				}
 
-				anIntArray357[k] = 0x98967f;
-			} else if (i == 4) {
-				aBoolean358 = true;
-			} else if (i == 5) {
-				anInt359 = stream.readUnsignedByte();
-			} else if (i == 6) {
+				interleavedTransformIndices[maskLength] = 0x98967f;
+			} else if (opcode == 4) {
+				extendByYaw = true;
+			} else if (opcode == 5) {
+				priority = stream.readUnsignedByte();
+			} else if (opcode == 6) {
 				slot5EquipmentOverride = stream.readUnsignedShortBigEndian();
-			} else if (i == 7) {
+			} else if (opcode == 7) {
 				slot3EquipmentOverride = stream.readUnsignedShortBigEndian();
-			} else if (i == 8) {
-				anInt362 = stream.readUnsignedByte();
-			} else if (i == 9) {
-				anInt363 = stream.readUnsignedByte();
-			} else if (i == 10) {
-				anInt364 = stream.readUnsignedByte();
-			} else if (i == 11) {
-				anInt365 = stream.readUnsignedByte();
-			} else if (i == 12) {
+			} else if (opcode == 8) {
+				maxLoops = stream.readUnsignedByte();
+			} else if (opcode == 9) {
+				movingPrecedence = stream.readUnsignedByte();
+			} else if (opcode == 10) {
+				idlePrecedence = stream.readUnsignedByte();
+			} else if (opcode == 11) {
+				replayMode = stream.readUnsignedByte();
+			} else if (opcode == 12) {
 				stream.readIntBigEndian();
 			} else {
-				System.out.println("Error unrecognised seq config code: " + i);
+				System.out.println("Error unrecognised seq config code: " + opcode);
 			}
 		} while (true);
-		if (anInt352 == 0) {
-			anInt352 = 1;
-			anIntArray353 = new int[1];
-			anIntArray353[0] = -1;
-			anIntArray354 = new int[1];
-			anIntArray354[0] = -1;
+		if (frameCount == 0) {
+			frameCount = 1;
+			frameIds = new int[1];
+			frameIds[0] = -1;
+			secondFrameIds = new int[1];
+			secondFrameIds[0] = -1;
 			frameDelays = new int[1];
 			frameDelays[0] = -1;
 		}
-		if (anInt363 == -1) {
-			if (anIntArray357 != null) {
-				anInt363 = 2;
+		if (movingPrecedence == -1) {
+			if (interleavedTransformIndices != null) {
+				movingPrecedence = 2;
 			} else {
-				anInt363 = 0;
+				movingPrecedence = 0;
 			}
 		}
-		if (anInt364 == -1) {
-			if (anIntArray357 != null) {
-				anInt364 = 2;
+		if (idlePrecedence == -1) {
+			if (interleavedTransformIndices != null) {
+				idlePrecedence = 2;
 				return;
 			}
-			anInt364 = 0;
+			idlePrecedence = 0;
 		}
 	}
 
 	private Animation() {
-		anInt356 = -1;
-		aBoolean358 = false;
-		anInt359 = 5;
+		loopBackFrames = -1;
+		extendByYaw = false;
+		priority = 5;
 		slot5EquipmentOverride = -1;
 		slot3EquipmentOverride = -1;
-		anInt362 = 99;
-		anInt363 = -1;
-		anInt364 = -1;
-		anInt365 = 2;
+		maxLoops = 99;
+		movingPrecedence = -1;
+		idlePrecedence = -1;
+		replayMode = 2;
 	}
 
 	public static Animation anims[];
-	public int anInt352;
-	public int anIntArray353[];
-	public int anIntArray354[];
+	public int frameCount;
+	public int frameIds[];
+	public int secondFrameIds[];
 	private int[] frameDelays;
-	public int anInt356;
-	public int anIntArray357[];
-	public boolean aBoolean358;
-	public int anInt359;
+	public int loopBackFrames;
+	public int interleavedTransformIndices[];
+	public boolean extendByYaw;
+	public int priority;
 	public int slot5EquipmentOverride;
 	public int slot3EquipmentOverride;
-	public int anInt362;
-	public int anInt363;
-	public int anInt364;
-	public int anInt365;
+	public int maxLoops;
+	public int movingPrecedence;
+	public int idlePrecedence;
+	public int replayMode;
 	public static int anInt367;
 }

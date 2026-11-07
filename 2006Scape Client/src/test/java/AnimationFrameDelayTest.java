@@ -16,7 +16,7 @@ public class AnimationFrameDelayTest {
     @After public void restore() throws Exception { frames.set(null, savedFrames); hidden("alphaTransformNotSeen").set(null, savedFlags); Animation.anims = savedAnimations; }
     private Animation sequence(int[] ids, int... values) throws Exception {
         Constructor<Animation> c = Animation.class.getDeclaredConstructor(); c.setAccessible(true);
-        Animation a = c.newInstance(); a.anInt352 = values.length; a.anIntArray353 = ids;
+        Animation a = c.newInstance(); a.frameCount = values.length; a.frameIds = ids;
         delays.set(a, values); return a;
     }
     private AnimationFrame frame(int id, int delay) throws Exception {

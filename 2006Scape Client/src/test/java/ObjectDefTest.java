@@ -499,8 +499,8 @@ public class ObjectDefTest {
 
     private static Animation animation() throws Exception {
         Animation a = (Animation) unsafe().allocateInstance(Animation.class);
-        a.anInt356 = -1;
-        a.anInt352 = 1;
+        a.loopBackFrames = -1;
+        a.frameCount = 1;
         return a;
     }
 

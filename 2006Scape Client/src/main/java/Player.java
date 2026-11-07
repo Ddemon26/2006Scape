@@ -25,13 +25,13 @@ public final class Player extends Entity {
 				Model model_3 = new Model(true, AnimationFrame.isMissingFrameId(super.anInt1521), false, model_2);
 				model_3.translate(0, -super.anInt1524, 0);
 				model_3.buildAnimationGroups();
-				model_3.applyAnimationFrame(spotAnim.aAnimation_407.anIntArray353[super.anInt1521]);
+				model_3.applyAnimationFrame(spotAnim.animation.frameIds[super.anInt1521]);
 				model_3.faceGroups = null;
 				model_3.vertexGroups = null;
-				if (spotAnim.anInt410 != 128 || spotAnim.anInt411 != 128) {
-					model_3.scale(spotAnim.anInt410, spotAnim.anInt410, spotAnim.anInt411);
+				if (spotAnim.horizontalScale128 != 128 || spotAnim.verticalScale128 != 128) {
+					model_3.scale(spotAnim.horizontalScale128, spotAnim.horizontalScale128, spotAnim.verticalScale128);
 				}
-				model_3.applyLighting(64 + spotAnim.anInt413, 850 + spotAnim.anInt414, -30, -50, -30, true);
+				model_3.applyLighting(64 + spotAnim.ambientLightOffset, 850 + spotAnim.lightDivisorOffset, -30, -50, -30, true);
 				Model aclass30_sub2_sub4_sub6_1s[] = {model, model_3};
 				model = new Model(aclass30_sub2_sub4_sub6_1s);
 			}
@@ -166,9 +166,9 @@ public final class Player extends Entity {
 		if (desc != null) {
 			int frameId = -1;
 			if (super.anim >= 0 && super.anInt1529 == 0) {
-				frameId = Animation.anims[super.anim].anIntArray353[super.anInt1527];
+				frameId = Animation.anims[super.anim].frameIds[super.anInt1527];
 			} else if (super.movementAnimationId >= 0) {
-				frameId = Animation.anims[super.movementAnimationId].anIntArray353[super.anInt1518];
+				frameId = Animation.anims[super.movementAnimationId].frameIds[super.anInt1518];
 			}
 			Model model = desc.getAnimatedModel(-1, frameId, null);
 			return model;
@@ -180,9 +180,9 @@ public final class Player extends Entity {
 		int slot3Override = -1;
 		if (super.anim >= 0 && super.anInt1529 == 0) {
 			Animation animation = Animation.anims[super.anim];
-			primaryFrameId = animation.anIntArray353[super.anInt1527];
+			primaryFrameId = animation.frameIds[super.anInt1527];
 			if (super.movementAnimationId >= 0 && super.movementAnimationId != super.idleAnimationId) {
-				secondaryFrameId = Animation.anims[super.movementAnimationId].anIntArray353[super.anInt1518];
+				secondaryFrameId = Animation.anims[super.movementAnimationId].frameIds[super.anInt1518];
 			}
 			if (animation.slot5EquipmentOverride >= 0) {
 				slot5Override = animation.slot5EquipmentOverride;
@@ -193,7 +193,7 @@ public final class Player extends Entity {
 				cacheKey += slot3Override - equipment[3] << 48;
 			}
 		} else if (super.movementAnimationId >= 0) {
-			primaryFrameId = Animation.anims[super.movementAnimationId].anIntArray353[super.anInt1518];
+			primaryFrameId = Animation.anims[super.movementAnimationId].frameIds[super.anInt1518];
 		}
 		Model bodyModel = (Model) mruNodes.insertFromCache(cacheKey);
 		if (bodyModel == null) {
@@ -269,7 +269,7 @@ public final class Player extends Entity {
 		Model animatedModel = Model.animationScratchModel;
 		animatedModel.copyIntoAnimationScratch(bodyModel, AnimationFrame.isMissingFrameId(primaryFrameId) & AnimationFrame.isMissingFrameId(secondaryFrameId));
 		if (primaryFrameId != -1 && secondaryFrameId != -1) {
-			animatedModel.applyInterleavedFrames(Animation.anims[super.anim].anIntArray357, secondaryFrameId, primaryFrameId);
+			animatedModel.applyInterleavedFrames(Animation.anims[super.anim].interleavedTransformIndices, secondaryFrameId, primaryFrameId);
 		} else if (primaryFrameId != -1) {
 			animatedModel.applyAnimationFrame(primaryFrameId);
 		}

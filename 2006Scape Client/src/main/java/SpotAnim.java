@@ -6,92 +6,92 @@ public final class SpotAnim {
 
 	public static void unpackConfig(StreamLoader streamLoader) {
 		Stream stream = new Stream(streamLoader.getDataForName("spotanim.dat"));
-		int length = stream.readUnsignedShortBigEndian();
+		int recordCount = stream.readUnsignedShortBigEndian();
 		if (cache == null) {
-			cache = new SpotAnim[length];
+			cache = new SpotAnim[recordCount];
 		}
-		for (int j = 0; j < length; j++) {
-			if (cache[j] == null) {
-				cache[j] = new SpotAnim();
+		for (int index = 0; index < recordCount; index++) {
+			if (cache[index] == null) {
+				cache[index] = new SpotAnim();
 			}
-			cache[j].anInt404 = j;
-			cache[j].readValues(stream);
+			cache[index].recordIndex = index;
+			cache[index].readValues(stream);
 		}
 
 	}
 
 	private void readValues(Stream stream) {
 		do {
-			int i = stream.readUnsignedByte();
-			if (i == 0) {
+			int opcode = stream.readUnsignedByte();
+			if (opcode == 0) {
 				return;
 			}
-			if (i == 1) {
-				anInt405 = stream.readUnsignedShortBigEndian();
-			} else if (i == 2) {
-				anInt406 = stream.readUnsignedShortBigEndian();
+			if (opcode == 1) {
+				modelId = stream.readUnsignedShortBigEndian();
+			} else if (opcode == 2) {
+				animationId = stream.readUnsignedShortBigEndian();
 				if (Animation.anims != null) {
-					aAnimation_407 = Animation.anims[anInt406];
+					animation = Animation.anims[animationId];
 				}
-			} else if (i == 4) {
-				anInt410 = stream.readUnsignedShortBigEndian();
-			} else if (i == 5) {
-				anInt411 = stream.readUnsignedShortBigEndian();
-			} else if (i == 6) {
-				anInt412 = stream.readUnsignedShortBigEndian();
-			} else if (i == 7) {
-				anInt413 = stream.readUnsignedByte();
-			} else if (i == 8) {
-				anInt414 = stream.readUnsignedByte();
-			} else if (i >= 40 && i < 50) {
-				anIntArray408[i - 40] = stream.readUnsignedShortBigEndian();
-			} else if (i >= 50 && i < 60) {
-				anIntArray409[i - 50] = stream.readUnsignedShortBigEndian();
+			} else if (opcode == 4) {
+				horizontalScale128 = stream.readUnsignedShortBigEndian();
+			} else if (opcode == 5) {
+				verticalScale128 = stream.readUnsignedShortBigEndian();
+			} else if (opcode == 6) {
+				rotationDegrees = stream.readUnsignedShortBigEndian();
+			} else if (opcode == 7) {
+				ambientLightOffset = stream.readUnsignedByte();
+			} else if (opcode == 8) {
+				lightDivisorOffset = stream.readUnsignedByte();
+			} else if (opcode >= 40 && opcode < 50) {
+				recolorSources[opcode - 40] = stream.readUnsignedShortBigEndian();
+			} else if (opcode >= 50 && opcode < 60) {
+				recolorReplacements[opcode - 50] = stream.readUnsignedShortBigEndian();
 			} else {
-				System.out.println("Error unrecognised spotanim config code: " + i);
+				System.out.println("Error unrecognised spotanim config code: " + opcode);
 			}
 		} while (true);
 	}
 
 	public Model getModel() {
-		Model model = (Model) aMRUNodes_415.insertFromCache(anInt404);
+		Model model = (Model) modelCache.insertFromCache(recordIndex);
 		if (model != null) {
 			return model;
 		}
-		model = Model.getModel(anInt405);
+		model = Model.getModel(modelId);
 		if (model == null) {
 			return null;
 		}
-		for (int i = 0; i < 6; i++) {
-			if (anIntArray408[0] != 0) {
-				model.recolor(anIntArray408[i], anIntArray409[i]);
+		for (int slot = 0; slot < 6; slot++) {
+			if (recolorSources[0] != 0) {
+				model.recolor(recolorSources[slot], recolorReplacements[slot]);
 			}
 		}
 
-		aMRUNodes_415.removeFromCache(model, anInt404);
+		modelCache.removeFromCache(model, recordIndex);
 		return model;
 	}
 
 	private SpotAnim() {
-		anInt406 = -1;
-		anIntArray408 = new int[6];
-		anIntArray409 = new int[6];
-		anInt410 = 128;
-		anInt411 = 128;
+		animationId = -1;
+		recolorSources = new int[6];
+		recolorReplacements = new int[6];
+		horizontalScale128 = 128;
+		verticalScale128 = 128;
 	}
 
 	public static SpotAnim cache[];
-	private int anInt404;
-	private int anInt405;
-	private int anInt406;
-	public Animation aAnimation_407;
-	private final int[] anIntArray408;
-	private final int[] anIntArray409;
-	public int anInt410;
-	public int anInt411;
-	public int anInt412;
-	public int anInt413;
-	public int anInt414;
-	public static LruCache aMRUNodes_415 = new LruCache(30);
+	private int recordIndex;
+	private int modelId;
+	private int animationId;
+	public Animation animation;
+	private final int[] recolorSources;
+	private final int[] recolorReplacements;
+	public int horizontalScale128;
+	public int verticalScale128;
+	public int rotationDegrees;
+	public int ambientLightOffset;
+	public int lightDivisorOffset;
+	public static LruCache modelCache = new LruCache(30);
 
 }

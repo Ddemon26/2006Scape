@@ -859,7 +859,7 @@ public class Game extends RSApplet {
 		ItemDef.mruNodes2.clear();
 		ItemDef.mruNodes1.clear();
 		Player.mruNodes.clear();
-		SpotAnim.aMRUNodes_415.clear();
+		SpotAnim.modelCache.clear();
 	}
 
 	public void buildMinimapImage(int tilePlane) {
@@ -4842,7 +4842,7 @@ public class Game extends RSApplet {
 		DummyClass.cache = null;
 		Animation.anims = null;
 		SpotAnim.cache = null;
-		SpotAnim.aMRUNodes_415 = null;
+		SpotAnim.modelCache = null;
 		Varp.cache = null;
 		super.fullGameScreen = null;
 		Player.mruNodes = null;
@@ -5471,7 +5471,7 @@ public class Game extends RSApplet {
 				}
 
 				model.buildAnimationGroups();
-				model.applyAnimationFrame(Animation.anims[myPlayer.idleAnimationId].anIntArray353[0]);
+				model.applyAnimationFrame(Animation.anims[myPlayer.idleAnimationId].frameIds[0]);
 				model.applyLighting(64, 850, -30, -50, -30, true);
 				class9.anInt233 = 5;
 				class9.mediaID = 0;
@@ -6582,7 +6582,7 @@ public class Game extends RSApplet {
 				}
 				int animationDelay = packet.readUnsignedByte();
 				if (animationId == npc.anim && animationId != -1) {
-					int replayMode = Animation.anims[animationId].anInt365;
+					int replayMode = Animation.anims[animationId].replayMode;
 					if (replayMode == 1) {
 						npc.anInt1527 = 0;
 						npc.anInt1528 = 0;
@@ -6592,7 +6592,7 @@ public class Game extends RSApplet {
 					if (replayMode == 2) {
 						npc.anInt1530 = 0;
 					}
-				} else if (animationId == -1 || npc.anim == -1 || Animation.anims[animationId].anInt359 >= Animation.anims[npc.anim].anInt359) {
+				} else if (animationId == -1 || npc.anim == -1 || Animation.anims[animationId].priority >= Animation.anims[npc.anim].priority) {
 					npc.anim = animationId;
 					npc.anInt1527 = 0;
 					npc.anInt1528 = 0;
@@ -7621,11 +7621,11 @@ public class Game extends RSApplet {
 		}
 		if (entity.anim != -1 && entity.anInt1529 == 0) {
 			Animation animation = Animation.anims[entity.anim];
-			if (entity.anInt1542 > 0 && animation.anInt363 == 0) {
+			if (entity.anInt1542 > 0 && animation.movingPrecedence == 0) {
 				entity.deferredMovementTicks++;
 				return;
 			}
-			if (entity.anInt1542 <= 0 && animation.anInt364 == 0) {
+			if (entity.anInt1542 <= 0 && animation.idlePrecedence == 0) {
 				entity.deferredMovementTicks++;
 				return;
 			}
@@ -7788,11 +7788,11 @@ public class Game extends RSApplet {
 		if (entity.movementAnimationId != -1) {
 			Animation movementAnimation = Animation.anims[entity.movementAnimationId];
 			entity.anInt1519++;
-			if (entity.anInt1518 < movementAnimation.anInt352 && entity.anInt1519 > movementAnimation.getFrameDelay(entity.anInt1518)) {
+			if (entity.anInt1518 < movementAnimation.frameCount && entity.anInt1519 > movementAnimation.getFrameDelay(entity.anInt1518)) {
 				entity.anInt1519 = 0;
 				entity.anInt1518++;
 			}
-			if (entity.anInt1518 >= movementAnimation.anInt352) {
+			if (entity.anInt1518 >= movementAnimation.frameCount) {
 				entity.anInt1519 = 0;
 				entity.anInt1518 = 0;
 			}
@@ -7801,39 +7801,39 @@ public class Game extends RSApplet {
 			if (entity.anInt1521 < 0) {
 				entity.anInt1521 = 0;
 			}
-			Animation spotAnimation = SpotAnim.cache[entity.anInt1520].aAnimation_407;
-			for (entity.anInt1522++; entity.anInt1521 < spotAnimation.anInt352 && entity.anInt1522 > spotAnimation.getFrameDelay(entity.anInt1521); entity.anInt1521++) {
+			Animation spotAnimation = SpotAnim.cache[entity.anInt1520].animation;
+			for (entity.anInt1522++; entity.anInt1521 < spotAnimation.frameCount && entity.anInt1522 > spotAnimation.getFrameDelay(entity.anInt1521); entity.anInt1521++) {
 				entity.anInt1522 -= spotAnimation.getFrameDelay(entity.anInt1521);
 			}
 
-			if (entity.anInt1521 >= spotAnimation.anInt352 && (entity.anInt1521 < 0 || entity.anInt1521 >= spotAnimation.anInt352)) {
+			if (entity.anInt1521 >= spotAnimation.frameCount && (entity.anInt1521 < 0 || entity.anInt1521 >= spotAnimation.frameCount)) {
 				entity.anInt1520 = -1;
 			}
 		}
 		if (entity.anim != -1 && entity.anInt1529 <= 1) {
 			Animation actionDelayAnimation = Animation.anims[entity.anim];
-			if (actionDelayAnimation.anInt363 == 1 && entity.anInt1542 > 0 && entity.anInt1547 <= loopCycle && entity.anInt1548 < loopCycle) {
+			if (actionDelayAnimation.movingPrecedence == 1 && entity.anInt1542 > 0 && entity.anInt1547 <= loopCycle && entity.anInt1548 < loopCycle) {
 				entity.anInt1529 = 1;
 				return;
 			}
 		}
 		if (entity.anim != -1 && entity.anInt1529 == 0) {
 			Animation actionAnimation = Animation.anims[entity.anim];
-			for (entity.anInt1528++; entity.anInt1527 < actionAnimation.anInt352 && entity.anInt1528 > actionAnimation.getFrameDelay(entity.anInt1527); entity.anInt1527++) {
+			for (entity.anInt1528++; entity.anInt1527 < actionAnimation.frameCount && entity.anInt1528 > actionAnimation.getFrameDelay(entity.anInt1527); entity.anInt1527++) {
 				entity.anInt1528 -= actionAnimation.getFrameDelay(entity.anInt1527);
 			}
 
-			if (entity.anInt1527 >= actionAnimation.anInt352) {
-				entity.anInt1527 -= actionAnimation.anInt356;
+			if (entity.anInt1527 >= actionAnimation.frameCount) {
+				entity.anInt1527 -= actionAnimation.loopBackFrames;
 				entity.anInt1530++;
-				if (entity.anInt1530 >= actionAnimation.anInt362) {
+				if (entity.anInt1530 >= actionAnimation.maxLoops) {
 					entity.anim = -1;
 				}
-				if (entity.anInt1527 < 0 || entity.anInt1527 >= actionAnimation.anInt352) {
+				if (entity.anInt1527 < 0 || entity.anInt1527 >= actionAnimation.frameCount) {
 					entity.anim = -1;
 				}
 			}
-			entity.aBoolean1541 = actionAnimation.aBoolean358;
+			entity.aBoolean1541 = actionAnimation.extendByYaw;
 		}
 		if (entity.anInt1529 > 0) {
 			entity.anInt1529--;
@@ -8434,7 +8434,7 @@ public class Game extends RSApplet {
 						model = component.method209(-1, -1, flag2);
 					} else {
 						Animation animation = Animation.anims[i7];
-						model = component.method209(animation.anIntArray354[component.modelAnimationFrame], animation.anIntArray353[component.modelAnimationFrame], flag2);
+						model = component.method209(animation.secondFrameIds[component.modelAnimationFrame], animation.frameIds[component.modelAnimationFrame], flag2);
 					}
 					if (model != null) {
 						model.projectRotated(component.anInt271, 0, component.anInt270, 0, i5, l5);
@@ -8550,7 +8550,7 @@ public class Game extends RSApplet {
 			//processSound(animationId, 1, player, null);
 			int animationDelay = stream.readUnsignedNegatedByte();
 			if (animationId == player.anim && animationId != -1) {
-				int replayMode = Animation.anims[animationId].anInt365;
+				int replayMode = Animation.anims[animationId].replayMode;
 				if (replayMode == 1) {
 					player.anInt1527 = 0;
 					player.anInt1528 = 0;
@@ -8560,7 +8560,7 @@ public class Game extends RSApplet {
 				if (replayMode == 2) {
 					player.anInt1530 = 0;
 				}
-			} else if (animationId == -1 || player.anim == -1 || Animation.anims[animationId].anInt359 >= Animation.anims[player.anim].anInt359) {
+			} else if (animationId == -1 || player.anim == -1 || Animation.anims[animationId].priority >= Animation.anims[player.anim].priority) {
 				player.anim = animationId;
 				player.anInt1527 = 0;
 				player.anInt1528 = 0;
@@ -9178,9 +9178,9 @@ public class Game extends RSApplet {
 					for (childInterface.modelAnimationTicks += elapsedTicks; childInterface.modelAnimationTicks > animation.getFrameDelay(childInterface.modelAnimationFrame);) {
 						childInterface.modelAnimationTicks -= animation.getFrameDelay(childInterface.modelAnimationFrame) + 1;
 						childInterface.modelAnimationFrame++;
-						if (childInterface.modelAnimationFrame >= animation.anInt352) {
-							childInterface.modelAnimationFrame -= animation.anInt356;
-							if (childInterface.modelAnimationFrame < 0 || childInterface.modelAnimationFrame >= animation.anInt352) {
+						if (childInterface.modelAnimationFrame >= animation.frameCount) {
+							childInterface.modelAnimationFrame -= animation.loopBackFrames;
+							if (childInterface.modelAnimationFrame < 0 || childInterface.modelAnimationFrame >= animation.frameCount) {
 								childInterface.modelAnimationFrame = 0;
 							}
 						}

@@ -35,9 +35,9 @@ public class InterfaceAnimationTest {
     @After public void after(){Trace.on=false;RSInterface.interfaceCache=a;Animation.anims=b;}
     public static Animation sequence(int[] a,int b)throws Exception {
         Constructor<Animation> c=Animation.class.getDeclaredConstructor();c.setAccessible(true);
-        Animation d=c.newInstance();d.anInt352=a.length;d.anInt356=b;
+        Animation d=c.newInstance();d.frameCount=a.length;d.loopBackFrames=b;
         Field e=Animation.class.getDeclaredField("frameDelays");e.setAccessible(true);e.set(d,a.clone());
-        d.anIntArray353=new int[a.length];d.anIntArray354=new int[a.length];Arrays.fill(d.anIntArray353,-1);Arrays.fill(d.anIntArray354,-1);return d;
+        d.frameIds=new int[a.length];d.secondFrameIds=new int[a.length];Arrays.fill(d.frameIds,-1);Arrays.fill(d.secondFrameIds,-1);return d;
     }
     public static RSInterface component(int a,int b){RSInterface c=new RSInterface();c.id=a;c.type=b;c.anInt257=-1;c.anInt258=-1;return c;}
     private RSInterface c(){return RSInterface.interfaceCache[7];}
@@ -61,11 +61,11 @@ public class InterfaceAnimationTest {
     }
     @Test public void multipleFramesLoopByTailCountAndInvalidLoopReturnsToZero(){
         assertTrue(g.advanceInterfaceModelAnimations(10,2));assertEquals(1,c().modelAnimationFrame);assertEquals(0,c().modelAnimationTicks);
-        c().modelAnimationFrame=2;c().modelAnimationTicks=0;Animation.anims[1].anInt356=-1;
+        c().modelAnimationFrame=2;c().modelAnimationTicks=0;Animation.anims[1].loopBackFrames=-1;
         assertTrue(g.advanceInterfaceModelAnimations(2,2));assertEquals(0,c().modelAnimationFrame);assertEquals(0,c().modelAnimationTicks);
-        c().modelAnimationFrame=2;Animation.anims[1].anInt356=9;
+        c().modelAnimationFrame=2;Animation.anims[1].loopBackFrames=9;
         assertTrue(g.advanceInterfaceModelAnimations(2,2));assertEquals(0,c().modelAnimationFrame);
-        c().modelAnimationFrame=2;Animation.anims[1].anInt356=0;
+        c().modelAnimationFrame=2;Animation.anims[1].loopBackFrames=0;
         assertTrue(g.advanceInterfaceModelAnimations(2,2));assertEquals(0,c().modelAnimationFrame);
     }
     @Test public void sparseChildrenSentinelNullParentsAndOnlyTypeOneRecursion(){
