@@ -613,7 +613,7 @@ public class ItemDefTest {
     private static Player body139(int anim, int hold, int f1527, int a1517, int a1518, int a1511) throws Exception {
         Player p = new Player(); p.visible = true;
         p.anim = anim; ent139(p, "anInt1529", hold); ent139(p, "anInt1527", f1527);
-        ent139(p, "anInt1517", a1517); ent139(p, "anInt1518", a1518); ent139(p, "anInt1511", a1511);
+        ent139(p, "movementAnimationId", a1517); ent139(p, "anInt1518", a1518); ent139(p, "idleAnimationId", a1511);
         f(Player.class, "appearanceKey").setLong(p, 9000L);
         return p;
     }
@@ -699,9 +699,9 @@ public class ItemDefTest {
             assertArrayEquals(new int[]{19, 29}, bodyXs139(body139(-1, 0, 0, 1, 1, -1), anims));
             // hold counter non-zero: same as no main animation
             assertArrayEquals(new int[]{19, 29}, bodyXs139(body139(0, 1, 1, 1, 1, -1), anims));
-            // both, other animation differs from anInt1511: it supplies the frame for the masked transform (index 1)
+            // both, other animation differs from idleAnimationId: it supplies the frame for the masked transform (index 1)
             assertArrayEquals(new int[]{110, 29}, bodyXs139(body139(0, 0, 1, 1, 1, -1), anims));
-            // other animation equal to anInt1511: ignored, main frame everywhere
+            // other animation equal to idleAnimationId: ignored, main frame everywhere
             assertArrayEquals(new int[]{110, 120}, bodyXs139(body139(0, 0, 1, 1, 1, 1), anims));
         } finally { Animation.anims = saved; sset(AnimationFrame.class, "loadedFrames", savedFrames); Player.mruNodes.clear(); }
     }

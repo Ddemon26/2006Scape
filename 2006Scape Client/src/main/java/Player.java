@@ -107,33 +107,33 @@ public final class Player extends Entity {
 			anIntArray1700[l] = j1;
 		}
 
-		super.anInt1511 = stream.readUnsignedShortBigEndian();
-		if (super.anInt1511 == 65535) {
-			super.anInt1511 = -1;
+		super.idleAnimationId = stream.readUnsignedShortBigEndian();
+		if (super.idleAnimationId == 65535) {
+			super.idleAnimationId = -1;
 		}
-		super.anInt1512 = stream.readUnsignedShortBigEndian();
-		if (super.anInt1512 == 65535) {
-			super.anInt1512 = -1;
+		super.turnInPlaceAnimationId = stream.readUnsignedShortBigEndian();
+		if (super.turnInPlaceAnimationId == 65535) {
+			super.turnInPlaceAnimationId = -1;
 		}
-		super.anInt1554 = stream.readUnsignedShortBigEndian();
-		if (super.anInt1554 == 65535) {
-			super.anInt1554 = -1;
+		super.walkAnimationId = stream.readUnsignedShortBigEndian();
+		if (super.walkAnimationId == 65535) {
+			super.walkAnimationId = -1;
 		}
-		super.anInt1555 = stream.readUnsignedShortBigEndian();
-		if (super.anInt1555 == 65535) {
-			super.anInt1555 = -1;
+		super.reverseWalkAnimationId = stream.readUnsignedShortBigEndian();
+		if (super.reverseWalkAnimationId == 65535) {
+			super.reverseWalkAnimationId = -1;
 		}
-		super.anInt1556 = stream.readUnsignedShortBigEndian();
-		if (super.anInt1556 == 65535) {
-			super.anInt1556 = -1;
+		super.sidestepNegativeAnimationId = stream.readUnsignedShortBigEndian();
+		if (super.sidestepNegativeAnimationId == 65535) {
+			super.sidestepNegativeAnimationId = -1;
 		}
-		super.anInt1557 = stream.readUnsignedShortBigEndian();
-		if (super.anInt1557 == 65535) {
-			super.anInt1557 = -1;
+		super.sidestepPositiveAnimationId = stream.readUnsignedShortBigEndian();
+		if (super.sidestepPositiveAnimationId == 65535) {
+			super.sidestepPositiveAnimationId = -1;
 		}
-		super.anInt1505 = stream.readUnsignedShortBigEndian();
-		if (super.anInt1505 == 65535) {
-			super.anInt1505 = -1;
+		super.runAnimationId = stream.readUnsignedShortBigEndian();
+		if (super.runAnimationId == 65535) {
+			super.runAnimationId = -1;
 		}
 		name = TextClass.formatDisplayName(TextClass.decodeBase37Name(stream.readLongBigEndian()));
 		combatLevel = stream.readUnsignedByte();
@@ -167,8 +167,8 @@ public final class Player extends Entity {
 			int frameId = -1;
 			if (super.anim >= 0 && super.anInt1529 == 0) {
 				frameId = Animation.anims[super.anim].anIntArray353[super.anInt1527];
-			} else if (super.anInt1517 >= 0) {
-				frameId = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
+			} else if (super.movementAnimationId >= 0) {
+				frameId = Animation.anims[super.movementAnimationId].anIntArray353[super.anInt1518];
 			}
 			Model model = desc.getAnimatedModel(-1, frameId, null);
 			return model;
@@ -181,8 +181,8 @@ public final class Player extends Entity {
 		if (super.anim >= 0 && super.anInt1529 == 0) {
 			Animation animation = Animation.anims[super.anim];
 			primaryFrameId = animation.anIntArray353[super.anInt1527];
-			if (super.anInt1517 >= 0 && super.anInt1517 != super.anInt1511) {
-				secondaryFrameId = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
+			if (super.movementAnimationId >= 0 && super.movementAnimationId != super.idleAnimationId) {
+				secondaryFrameId = Animation.anims[super.movementAnimationId].anIntArray353[super.anInt1518];
 			}
 			if (animation.slot5EquipmentOverride >= 0) {
 				slot5Override = animation.slot5EquipmentOverride;
@@ -192,8 +192,8 @@ public final class Player extends Entity {
 				slot3Override = animation.slot3EquipmentOverride;
 				cacheKey += slot3Override - equipment[3] << 48;
 			}
-		} else if (super.anInt1517 >= 0) {
-			primaryFrameId = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
+		} else if (super.movementAnimationId >= 0) {
+			primaryFrameId = Animation.anims[super.movementAnimationId].anIntArray353[super.anInt1518];
 		}
 		Model bodyModel = (Model) mruNodes.insertFromCache(cacheKey);
 		if (bodyModel == null) {

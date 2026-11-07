@@ -5,7 +5,7 @@ public class ForcedMovementStartTest {
     private Entity entity(int x, int y, int tileX, int tileY, int size, int direction) {
         Entity e = new Entity();
         e.x = x; e.y = y; e.anInt1543 = tileX; e.anInt1545 = tileY;
-        e.anInt1540 = size; e.anInt1549 = direction; e.anInt1503 = 9;
+        e.tileSize = size; e.anInt1549 = direction; e.deferredMovementTicks = 9;
         e.turnDirection = 777;
         return e;
     }
@@ -15,7 +15,7 @@ public class ForcedMovementStartTest {
         Entity a = entity(1000, 2000, 10, 20, 1, 0);
         a.anInt1547 = 104; g.advanceEntityToForcedMovementStart(a);
         assertEquals(1086, a.x); assertEquals(2156, a.y);
-        assertEquals(0, a.anInt1503); assertEquals(1024, a.turnDirection);
+        assertEquals(0, a.deferredMovementTicks); assertEquals(1024, a.turnDirection);
         Entity b = entity(1000, 2000, 11, 20, 1, 1);
         b.anInt1547 = 104; g.advanceEntityToForcedMovementStart(b);
         assertEquals(1118, b.x); assertEquals(2156, b.y);

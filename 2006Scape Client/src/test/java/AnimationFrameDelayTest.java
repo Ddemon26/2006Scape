@@ -84,7 +84,7 @@ public class AnimationFrameDelayTest {
         Game g = (Game) ((sun.misc.Unsafe) uf.get(null)).allocateInstance(Game.class);
         for (int delay : new int[]{1, 2, 7}) {
             Animation.anims = new Animation[]{sequence(null, delay, 3)};
-            Entity e = new Entity(); e.anInt1517 = 0;
+            Entity e = new Entity(); e.movementAnimationId = 0;
             for (int cycle = 1; cycle <= delay; cycle++) {
                 g.updateEntityAnimations(e); assertEquals(0, e.anInt1518); assertEquals(cycle, e.anInt1519);
             }

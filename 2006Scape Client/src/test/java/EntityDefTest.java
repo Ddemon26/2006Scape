@@ -356,11 +356,11 @@ public class EntityDefTest {
             Game game = new Game();
             NPC npc = npcWithDef(game, 77);
             assertSame(def, npc.desc);
-            assertEquals(105, npc.anInt1511); assertEquals(101, npc.anInt1554); assertEquals(102, npc.anInt1555);
-            assertEquals(103, npc.anInt1556); assertEquals(104, npc.anInt1557); assertEquals(7, npc.anInt1504); assertEquals(1, npc.anInt1540);
-            npc.anInt1517 = -1; npc.smallXYIndex = 0;
+            assertEquals(105, npc.idleAnimationId); assertEquals(101, npc.walkAnimationId); assertEquals(102, npc.reverseWalkAnimationId);
+            assertEquals(103, npc.sidestepNegativeAnimationId); assertEquals(104, npc.sidestepPositiveAnimationId); assertEquals(7, npc.turnSpeed); assertEquals(1, npc.tileSize);
+            npc.movementAnimationId = -1; npc.smallXYIndex = 0;
             game.advanceEntityAlongWalkingPath(npc);
-            assertEquals("no queued steps: the idle animation", 105, npc.anInt1517);
+            assertEquals("no queued steps: the idle animation", 105, npc.movementAnimationId);
             // facing 0; the walk target is tile (10,10), centre 1344. {startX, startY, expected animation, expected turnDirection}
             int[][] cases = {
                 {1284, 1344, 103, 1536},   // target east: relative heading -512
@@ -372,20 +372,20 @@ public class EntityDefTest {
                 {1284, 1284, 103, 1280},   // relative -768: the -512 side
                 {1404, 1284, 102, 768}};   // relative +768: away from the facing
             for (int[] c : cases) {
-                npc.smallXYIndex = 1; npc.smallX[0] = 10; npc.smallY[0] = 10; npc.anInt1552 = 0; npc.anInt1503 = 0; npc.anInt1517 = -1;
+                npc.smallXYIndex = 1; npc.smallX[0] = 10; npc.smallY[0] = 10; npc.facingDirection = 0; npc.deferredMovementTicks = 0; npc.movementAnimationId = -1;
                 npc.x = c[0]; npc.y = c[1];
                 game.advanceEntityAlongWalkingPath(npc);
                 assertEquals(Arrays.toString(c) + " turnDirection", c[3], npc.turnDirection);
-                assertEquals(Arrays.toString(c) + " animation", c[2], npc.anInt1517);
+                assertEquals(Arrays.toString(c) + " animation", c[2], npc.movementAnimationId);
             }
             def.sidestepNegativeAnimationId = -1; def.sidestepPositiveAnimationId = -1; def.reverseWalkAnimationId = -1;
             npcWithDef(game, 77);
             for (int[] c : cases) {
                 npc = game.npcArray[2];
-                npc.smallXYIndex = 1; npc.smallX[0] = 10; npc.smallY[0] = 10; npc.anInt1552 = 0; npc.anInt1503 = 0; npc.anInt1517 = -1;
+                npc.smallXYIndex = 1; npc.smallX[0] = 10; npc.smallY[0] = 10; npc.facingDirection = 0; npc.deferredMovementTicks = 0; npc.movementAnimationId = -1;
                 npc.x = c[0]; npc.y = c[1];
                 game.advanceEntityAlongWalkingPath(npc);
-                assertEquals(Arrays.toString(c) + " with missing side animations falls back to the forward one", 101, npc.anInt1517);
+                assertEquals(Arrays.toString(c) + " with missing side animations falls back to the forward one", 101, npc.movementAnimationId);
             }
         } });
     }
@@ -398,22 +398,22 @@ public class EntityDefTest {
             for (int speed : new int[] {7, 32, 0}) {
                 def.turnSpeed = speed;
                 NPC npc = npcWithDef(game, 77);
-                assertEquals(speed, npc.anInt1504);
-                npc.turnDirection = 1024; npc.anInt1552 = 0; npc.interactingEntity = -1; npc.anInt1517 = npc.anInt1511;
+                assertEquals(speed, npc.turnSpeed);
+                npc.turnDirection = 1024; npc.facingDirection = 0; npc.interactingEntity = -1; npc.movementAnimationId = npc.idleAnimationId;
                 game.updateEntityTurning(npc);
-                assertEquals("one update turns by the speed", speed, npc.anInt1552);
-                assertEquals(speed == 0 ? 105 : 101, npc.anInt1517);   // a turning idle NPC plays the walk animation
+                assertEquals("one update turns by the speed", speed, npc.facingDirection);
+                assertEquals(speed == 0 ? 105 : 101, npc.movementAnimationId);   // a turning idle NPC plays the walk animation
                 game.updateEntityTurning(npc);
-                assertEquals(2 * speed, npc.anInt1552);
+                assertEquals(2 * speed, npc.facingDirection);
             }
             def.turnSpeed = 7;
             NPC npc = npcWithDef(game, 77);
-            npc.turnDirection = 5; npc.anInt1552 = 0; npc.interactingEntity = -1;
+            npc.turnDirection = 5; npc.facingDirection = 0; npc.interactingEntity = -1;
             game.updateEntityTurning(npc);
-            assertEquals("less than one step away: snaps to the target", 5, npc.anInt1552);
-            npc.turnDirection = 2040; npc.anInt1552 = 0;
+            assertEquals("less than one step away: snaps to the target", 5, npc.facingDirection);
+            npc.turnDirection = 2040; npc.facingDirection = 0;
             game.updateEntityTurning(npc);
-            assertEquals("short way round is negative", 2041, npc.anInt1552);
+            assertEquals("short way round is negative", 2041, npc.facingDirection);
         } });
     }
 
@@ -425,8 +425,8 @@ public class EntityDefTest {
                 for (int standing = 1; standing <= 3; standing++) {
                     def.tileSize = (byte) size;
                     NPC npc = npcWithDef(game, 77);
-                    assertEquals(size, npc.anInt1540);
-                    npc.smallXYIndex = 1; npc.smallX[0] = 10; npc.smallY[0] = 10; npc.anInt1552 = 0; npc.anInt1503 = 0;
+                    assertEquals(size, npc.tileSize);
+                    npc.smallXYIndex = 1; npc.smallX[0] = 10; npc.smallY[0] = 10; npc.facingDirection = 0; npc.deferredMovementTicks = 0;
                     npc.x = 10 * 128 + standing * 64; npc.y = 10 * 128 + standing * 64;
                     game.advanceEntityAlongWalkingPath(npc);
                     assertEquals("size " + size + " standing as " + standing, size == standing ? 0 : 1, npc.smallXYIndex);

@@ -40,7 +40,7 @@ public class EntityAnimationUpdateTest {
         SpotAnim.cache = new SpotAnim[]{spot(sequence(1, 1))};
         Game game = game();
         Entity entity = new Entity();
-        entity.anInt1517 = 0;
+        entity.movementAnimationId = 0;
         entity.anInt1520 = 0;
         entity.anim = 1;
         game.updateEntityAnimations(entity);
@@ -67,7 +67,7 @@ public class EntityAnimationUpdateTest {
         assertEquals(-1, entity.anInt1521); assertEquals(0, entity.anInt1522);
         game.loopCycle = 10; game.updateEntityAnimations(entity);
         assertEquals(0, entity.anInt1521); assertEquals(1, entity.anInt1522);
-        assertEquals(-1, entity.anInt1517); assertEquals(-1, entity.anim);
+        assertEquals(-1, entity.movementAnimationId); assertEquals(-1, entity.anim);
     }
 
     @Test public void actionPrecedenceGatesProgressOnlyDuringMovementWindow() throws Exception {

@@ -29,11 +29,11 @@ public class Entity extends Animable {
 		}
 		smallXYIndex = 0;
 		anInt1542 = 0;
-		anInt1503 = 0;
+		deferredMovementTicks = 0;
 		smallX[0] = i;
 		smallY[0] = j;
-		x = smallX[0] * 128 + anInt1540 * 64;
-		y = smallY[0] * 128 + anInt1540 * 64;
+		x = smallX[0] * 128 + tileSize * 64;
+		y = smallY[0] * 128 + tileSize * 64;
 	}
 
 	public final void method446() {
@@ -110,44 +110,44 @@ public class Entity extends Animable {
 		smallX = new int[10];
 		smallY = new int[10];
 		interactingEntity = -1;
-		anInt1504 = 32;
-		anInt1505 = -1;
+		turnSpeed = 32;
+		runAnimationId = -1;
 		height = 200;
-		anInt1511 = -1;
-		anInt1512 = -1;
+		idleAnimationId = -1;
+		turnInPlaceAnimationId = -1;
 		hitArray = new int[4];
 		hitMarkTypes = new int[4];
 		hitsLoopCycle = new int[4];
-		anInt1517 = -1;
+		movementAnimationId = -1;
 		anInt1520 = -1;
 		anim = -1;
 		loopCycleStatus = -1000;
 		textCycle = 100;
-		anInt1540 = 1;
+		tileSize = 1;
 		aBoolean1541 = false;
 		aBooleanArray1553 = new boolean[10];
-		anInt1554 = -1;
-		anInt1555 = -1;
-		anInt1556 = -1;
-		anInt1557 = -1;
+		walkAnimationId = -1;
+		reverseWalkAnimationId = -1;
+		sidestepNegativeAnimationId = -1;
+		sidestepPositiveAnimationId = -1;
 	}
 
 	public final int[] smallX;
 	public final int[] smallY;
 	public int interactingEntity;
-	int anInt1503;
-	int anInt1504;
-	int anInt1505;
+	int deferredMovementTicks;
+	int turnSpeed;
+	int runAnimationId;
 	public String textSpoken;
 	public int height;
 	public int turnDirection;
-	int anInt1511;
-	int anInt1512;
+	int idleAnimationId;
+	int turnInPlaceAnimationId;
 	int anInt1513;
 	final int[] hitArray;
 	final int[] hitMarkTypes;
 	final int[] hitsLoopCycle;
-	int anInt1517;
+	int movementAnimationId;
 	int anInt1518;
 	int anInt1519;
 	int anInt1520;
@@ -169,7 +169,7 @@ public class Entity extends Animable {
 	int anInt1537;
 	int anInt1538;
 	int anInt1539;
-	int anInt1540;
+	int tileSize;
 	boolean aBoolean1541;
 	int anInt1542;
 	int anInt1543;
@@ -181,10 +181,10 @@ public class Entity extends Animable {
 	int anInt1549;
 	public int x;
 	public int y;
-	int anInt1552;
+	int facingDirection;
 	final boolean[] aBooleanArray1553;
-	int anInt1554;
-	int anInt1555;
-	int anInt1556;
-	int anInt1557;
+	int walkAnimationId;
+	int reverseWalkAnimationId;
+	int sidestepNegativeAnimationId;
+	int sidestepPositiveAnimationId;
 }

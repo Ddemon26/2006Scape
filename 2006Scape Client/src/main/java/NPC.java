@@ -8,14 +8,14 @@ public final class NPC extends Entity {
 		if (super.anim >= 0 && super.anInt1529 == 0) {
 			int k = Animation.anims[super.anim].anIntArray353[super.anInt1527];
 			int i1 = -1;
-			if (super.anInt1517 >= 0 && super.anInt1517 != super.anInt1511) {
-				i1 = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
+			if (super.movementAnimationId >= 0 && super.movementAnimationId != super.idleAnimationId) {
+				i1 = Animation.anims[super.movementAnimationId].anIntArray353[super.anInt1518];
 			}
 			return desc.getAnimatedModel(i1, k, Animation.anims[super.anim].anIntArray357);
 		}
 		int l = -1;
-		if (super.anInt1517 >= 0) {
-			l = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
+		if (super.movementAnimationId >= 0) {
+			l = Animation.anims[super.movementAnimationId].anIntArray353[super.anInt1518];
 		}
 		return desc.getAnimatedModel(-1, l, null);
 	}

@@ -13,25 +13,25 @@ public class EntityTurningTest {
         Entity entity = new Entity();
         entity.x = 1024;
         entity.y = 1024;
-        entity.anInt1504 = 32;
+        entity.turnSpeed = 32;
         entity.interactingEntity = -1;
-        entity.anInt1511 = 10;
-        entity.anInt1512 = 11;
-        entity.anInt1554 = 12;
-        entity.anInt1517 = 10;
+        entity.idleAnimationId = 10;
+        entity.turnInPlaceAnimationId = 11;
+        entity.walkAnimationId = 12;
+        entity.movementAnimationId = 10;
         return entity;
     }
 
     @Test public void zeroTurnRateLeavesTargetAndAnimationUntouched() {
         Game game = game(); Entity entity = entity();
-        entity.anInt1504 = 0; entity.turnDirection = 512;
+        entity.turnSpeed = 0; entity.turnDirection = 512;
         entity.interactingEntity = 2;
         NPC target = new NPC(); target.x = 1024; target.y = 896;
         game.npcArray[2] = target;
         game.updateEntityTurning(entity);
         assertEquals(512, entity.turnDirection);
-        assertEquals(0, entity.anInt1552);
-        assertEquals(10, entity.anInt1517);
+        assertEquals(0, entity.facingDirection);
+        assertEquals(10, entity.movementAnimationId);
     }
 
     @Test public void npcAxesSetFacingAndTurnAnimation() {
@@ -41,12 +41,12 @@ public class EntityTurningTest {
         target.x = 1024; target.y = 896;
         game.updateEntityTurning(entity);
         assertEquals(0, entity.turnDirection);
-        assertEquals(10, entity.anInt1517);
+        assertEquals(10, entity.movementAnimationId);
         target.x = 896; target.y = 1024;
         game.updateEntityTurning(entity);
         assertEquals(511, entity.turnDirection);
-        assertEquals(32, entity.anInt1552);
-        assertEquals(11, entity.anInt1517);
+        assertEquals(32, entity.facingDirection);
+        assertEquals(11, entity.movementAnimationId);
         entity.turnDirection = 777; target.x = entity.x; target.y = entity.y;
         game.updateEntityTurning(entity);
         assertEquals(777, entity.turnDirection);
@@ -71,11 +71,11 @@ public class EntityTurningTest {
     @Test public void faceCoordinateWaitsForWalkingQueueThenClears() {
         Game game = game(); Entity entity = entity();
         entity.anInt1538 = 14; entity.anInt1539 = 16;
-        entity.smallXYIndex = 1; entity.anInt1503 = 0;
+        entity.smallXYIndex = 1; entity.deferredMovementTicks = 0;
         game.updateEntityTurning(entity);
         assertEquals(14, entity.anInt1538);
         assertEquals(16, entity.anInt1539);
-        entity.anInt1503 = 1;
+        entity.deferredMovementTicks = 1;
         game.updateEntityTurning(entity);
         assertEquals(511, entity.turnDirection);
         assertEquals(0, entity.anInt1538);
@@ -90,16 +90,16 @@ public class EntityTurningTest {
 
     @Test public void modularTurnTakesShortestStepAndSnapsAtBoundary() {
         Game game = game(); Entity entity = entity();
-        entity.turnDirection = 8; entity.anInt1552 = 2040;
+        entity.turnDirection = 8; entity.facingDirection = 2040;
         game.updateEntityTurning(entity);
-        assertEquals(8, entity.anInt1552);
-        entity.turnDirection = 1536; entity.anInt1552 = 0;
-        entity.anInt1512 = -1; entity.anInt1517 = entity.anInt1511;
+        assertEquals(8, entity.facingDirection);
+        entity.turnDirection = 1536; entity.facingDirection = 0;
+        entity.turnInPlaceAnimationId = -1; entity.movementAnimationId = entity.idleAnimationId;
         game.updateEntityTurning(entity);
-        assertEquals(2016, entity.anInt1552);
-        assertEquals(12, entity.anInt1517);
-        entity.turnDirection = 1024; entity.anInt1552 = 0;
+        assertEquals(2016, entity.facingDirection);
+        assertEquals(12, entity.movementAnimationId);
+        entity.turnDirection = 1024; entity.facingDirection = 0;
         game.updateEntityTurning(entity);
-        assertEquals(32, entity.anInt1552);
+        assertEquals(32, entity.facingDirection);
     }
 }
