@@ -58,7 +58,7 @@ public class Game extends RSApplet {
 	
 	static final void method790() {
 		if (aClass56_749 != null) {
-			method891(false);
+			stopMusicPlayback(false);
 			if (anInt720 > 0) {
 				aClass56_749.method831(256);
 				anInt720 = 0;
@@ -162,15 +162,15 @@ public class Game extends RSApplet {
 		}
 	}
 	
-	static final synchronized void method55(boolean bool) {
+	static final synchronized void stopMusic(boolean bool) {
 		if (musicIsntNull()) {
-			method891(bool);
+			stopMusicPlayback(bool);
 			fetchMusic = false;
 		}
 	}
 	
-	static final void method891(boolean bool) {
-		method853(0, null, bool);
+	static final void stopMusicPlayback(boolean bool) {
+		setMusicData(0, null, bool);
 	}
 	
 	static final boolean constructMusic() {
@@ -224,13 +224,13 @@ public class Game extends RSApplet {
 				byte[] is = musicData;
 				if (is != null) {
 					if (ClientSettings.ANDROID)
-						method853(musicVolume2, is, aBoolean995);
+						setMusicData(musicVolume2, is, aBoolean995);
 					else if (anInt116 >= 0)
 						method684(aBoolean995, anInt116, musicVolume2, is);
 					else if (anInt139 >= 0)
 						method899(anInt139, -1, aBoolean995, is, musicVolume2);
 					else
-						method853(musicVolume2, is, aBoolean995);
+						setMusicData(musicVolume2, is, aBoolean995);
 					fetchMusic = false;
 				}
 			}
@@ -242,7 +242,7 @@ public class Game extends RSApplet {
 		return (int) (Math.log((double) i * 0.00390625) * 868.5889638065036 + 0.5);
 	}
 	
-	static final void method853(int i_2_, byte[] is, boolean bool) {
+	static final void setMusicData(int volume, byte[] midiData, boolean loopMusic) {
 		if (aClass56_749 != null) {
 			if (anInt478 >= 0) {
 				aClass56_749.method833();
@@ -251,14 +251,14 @@ public class Game extends RSApplet {
 				anInt720 = 20;
 				anInt155 = 0;
 			}
-		    if (is != null) {
-		    	if (anInt720 > 0) {
-		    		aClass56_749.method831(i_2_);
-		    		anInt720 = 0;
-		    	}
-		    	anInt478 = i_2_;
-		    	aClass56_749.method827(i_2_, is, 0, bool);
-		    }
+			if (midiData != null) {
+				if (anInt720 > 0) {
+					aClass56_749.method831(volume);
+					anInt720 = 0;
+				}
+					anInt478 = volume;
+					aClass56_749.method827(volume, midiData, 0, loopMusic);
+			}
 		}
 	}
 	
@@ -284,7 +284,7 @@ public class Game extends RSApplet {
 				aByteArray347 = is;
 				anInt1478 = i_30_;
 			} else
-				method853(i_30_, is, bool);
+				setMusicData(i_30_, is, bool);
 		}
 	}
 	
@@ -304,7 +304,7 @@ public class Game extends RSApplet {
 				anInt1478 = i_2_;
 				aBoolean475 = bool;
 			} else if (anInt720 == 0)
-				method853(i_2_, is, bool);
+				setMusicData(i_2_, is, bool);
 			else {
 				anInt1478 = i_2_;
 				aBoolean475 = bool;
@@ -1421,7 +1421,7 @@ public class Game extends RSApplet {
 					if (volume != 0)
 						setVolume(volume);
 					else {
-						method55(false);
+						stopMusic(false);
 						previousSong = 0;
 					}
 				} else {
@@ -10779,7 +10779,7 @@ public class Game extends RSApplet {
 					if (i2 != -1 && currentSong != i2 && musicVolume != 0 && previousSong == 0)
 						method58(10, musicVolume, false, i2);
 				} else
-					method55(false);
+					stopMusic(false);
 				currentSong = i2;
 				pktType = -1;
 				return true;
