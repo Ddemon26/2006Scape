@@ -507,7 +507,7 @@ public class ObjectDefTest {
     private static Animable placedObject(WorldController world, int plane, int x, int y) throws Exception {
         Ground[][][] grounds = (Ground[][][]) field(WorldController.class, "groundArray").get(world);
         Ground g = grounds[plane][x][y];
-        return g == null || g.anInt1317 == 0 ? null : g.obj5Array[0].aClass30_Sub2_Sub4_521;
+        return g == null || g.objectCount == 0 ? null : g.obj5Array[0].model;
     }
 
     @Test public void animationIdOrChildrenMakeTheObjectAnAnimatedOne() throws Exception {
@@ -567,10 +567,10 @@ public class ObjectDefTest {
             Object5 object = grounds[0][20][30].obj5Array[0];
             int wide = orientation % 2 == 0 ? 3 : 2;
             int tall = orientation % 2 == 0 ? 2 : 3;
-            assertEquals(20, object.anInt523);
-            assertEquals(30, object.anInt525);
-            assertEquals(20 + wide - 1, object.anInt524);
-            assertEquals(30 + tall - 1, object.anInt526);
+            assertEquals(20, object.minTileX);
+            assertEquals(30, object.minTileY);
+            assertEquals(20 + wide - 1, object.maxTileX);
+            assertEquals(30 + tall - 1, object.maxTileY);
         }
     }
 
@@ -600,8 +600,8 @@ public class ObjectDefTest {
                 ObjectManager.placeObjectWithoutShading(world, orientation, 30, 5, 0, blank(), new int[4][105][105], 20, 607, 0);
                 Ground[][][] grounds = (Ground[][][]) field(WorldController.class, "groundArray").get(world);
                 Object2 placed = grounds[0][20][30].obj2;
-                int dx = placed.anInt500 - (20 * 128 + 64);
-                int dy = placed.anInt501 - (30 * 128 + 64);
+                int dx = placed.worldX - (20 * 128 + 64);
+                int dy = placed.worldY - (30 * 128 + 64);
                 int[] ux = {1, 0, -1, 0};
                 int[] uy = {0, -1, 0, 1};
                 assertEquals("wall " + wallIds[n] + " orientation " + orientation + " x", expected[n] * Math.abs(ux[orientation]), Math.abs(dx));

@@ -214,7 +214,7 @@ public class WorldControllerSceneLightingTest {
 
     // ================= mergeGroundDecorationNormals: ground-decoration neighbours =================
 
-    private static Object3 decoration(Model m) { Object3 d = new Object3(); d.aClass30_Sub2_Sub4_814 = m; return d; }
+    private static Object3 decoration(Model m) { Object3 d = new Object3(); d.model = m; return d; }
 
     @Test public void method306MergesWithPlusXPlusYAndBothPlusXDiagonalGroundDecorationsOnly() throws Exception {
         WorldController wc = scene();
@@ -253,7 +253,7 @@ public class WorldControllerSceneLightingTest {
         Model wallModel = model(new int[] {0, 0, 0});
         Ground g = tile(wc, 1, 51, 50);
         g.obj3 = null;
-        g.obj1 = new Object1(); g.obj1.aClass30_Sub2_Sub4_278 = wallModel;
+        g.obj1 = new Object1(); g.obj1.model = wallModel;
         call(wc, "mergeGroundDecorationNormals", M306, 50, 1, m, 50);                  // wall (slot 1) on the neighbour: not merged
         assertEquals(1, count(m, 0)); assertEquals(1, count(wallModel, 0));
         // another plane
@@ -286,12 +286,12 @@ public class WorldControllerSceneLightingTest {
                     Model nm = model(new int[] {0, 0, 0});
                     ns[layer][dx * 3 + dz] = nm;
                     Ground g = tile(wc, plane + layer, x + offs[dx], y + offs[dz]);
-                    g.obj1 = new Object1(); g.obj1.aClass30_Sub2_Sub4_278 = nm;
+                    g.obj1 = new Object1(); g.obj1.model = nm;
                 }
         // decoys on planes outside the scanned pair
         Model low = model(new int[] {0, 0, 0}), high = model(new int[] {0, 0, 0});
-        tile(wc, plane - 1, x + 1, y).obj1 = new Object1(); tiles(wc)[plane - 1][x + 1][y].obj1.aClass30_Sub2_Sub4_278 = low;
-        tile(wc, plane + 2, x + 1, y).obj1 = new Object1(); tiles(wc)[plane + 2][x + 1][y].obj1.aClass30_Sub2_Sub4_278 = high;
+        tile(wc, plane - 1, x + 1, y).obj1 = new Object1(); tiles(wc)[plane - 1][x + 1][y].obj1.model = low;
+        tile(wc, plane + 2, x + 1, y).obj1 = new Object1(); tiles(wc)[plane + 2][x + 1][y].obj1.model = high;
         call(wc, "mergeNeighbourNormals", M307, plane, 1, 1, x, y, m);
         boolean[][] sameExpected = new boolean[3][3];
         sameExpected[2][0] = sameExpected[2][1] = sameExpected[2][2] = true;   // east column
@@ -308,7 +308,7 @@ public class WorldControllerSceneLightingTest {
         WorldController wc = scene();
         Model m = model(new int[] {128, 0, 0});
         Model nm = model(new int[] {0, 0, 0});
-        tile(wc, 3, 51, 50).obj1 = new Object1(); tiles(wc)[3][51][50].obj1.aClass30_Sub2_Sub4_278 = nm;
+        tile(wc, 3, 51, 50).obj1 = new Object1(); tiles(wc)[3][51][50].obj1.model = nm;
         call(wc, "mergeNeighbourNormals", M307, 3, 1, 1, 50, 50, m);
         assertEquals(2, count(nm, 0));
     }
@@ -320,7 +320,7 @@ public class WorldControllerSceneLightingTest {
         Model m = model(new int[] {192, 0, 0}, new int[] {128 + 64, 0, 0}, new int[] {-1, -1, -1});
         Model secondary = model(new int[] {0, 0, 0});
         Ground g = tile(wc, plane, x + 2, y);
-        g.obj1 = new Object1(); g.obj1.aClass30_Sub2_Sub4_279 = secondary;
+        g.obj1 = new Object1(); g.obj1.secondaryModel = secondary;
         call(wc, "mergeNeighbourNormals", M307, plane, 2, 1, x, y, m);
         assertEquals(3, count(secondary, 0));
         assertEquals(2, count(m, 0));
@@ -334,11 +334,11 @@ public class WorldControllerSceneLightingTest {
         Model m = model(new int[] {128, 0, 64});
         Model om = model(new int[] {0, 0, 0});
         Object5 o = new Object5();
-        o.anInt523 = x + 1; o.anInt524 = x + 1; o.anInt525 = y; o.anInt526 = y + 1;
-        o.aClass30_Sub2_Sub4_521 = om;
+        o.minTileX = x + 1; o.maxTileX = x + 1; o.minTileY = y; o.maxTileY = y + 1;
+        o.model = om;
         for (int ty = y; ty <= y + 1; ty++) {
             Ground g = tile(wc, plane, x + 1, ty);
-            g.obj5Array[g.anInt1317++] = o;
+            g.obj5Array[g.objectCount++] = o;
         }
         call(wc, "mergeNeighbourNormals", M307, plane, 1, 1, x, y, m);
         assertEquals(3, count(m, 0));            // both covered tiles lie in the scan range: merged twice
@@ -381,11 +381,11 @@ public class WorldControllerSceneLightingTest {
         WorldController wc = scene();
         Model wall = litModel(), wall2 = litModel(), scene = litModel(), deco = litModel(), wallDeco = litModel();
         Ground g = tile(wc, 2, 20, 21);
-        g.obj1 = new Object1(); g.obj1.aClass30_Sub2_Sub4_278 = wall; g.obj1.aClass30_Sub2_Sub4_279 = wall2;
-        Object5 o = new Object5(); o.anInt523 = o.anInt524 = 20; o.anInt525 = o.anInt526 = 21; o.aClass30_Sub2_Sub4_521 = scene;
-        g.obj5Array[g.anInt1317++] = o;
+        g.obj1 = new Object1(); g.obj1.model = wall; g.obj1.secondaryModel = wall2;
+        Object5 o = new Object5(); o.minTileX = o.maxTileX = 20; o.minTileY = o.maxTileY = 21; o.model = scene;
+        g.obj5Array[g.objectCount++] = o;
         g.obj3 = decoration(deco);
-        g.obj2 = new Object2(); g.obj2.aClass30_Sub2_Sub4_504 = wallDeco;
+        g.obj2 = new Object2(); g.obj2.model = wallDeco;
         call(wc, "lightScene", new Class<?>[] {int.class, int.class, int.class}, -10, -50, -50);
         assertNull(wall.aClass33Array1425); assertNull(wall2.aClass33Array1425);
         assertNull(scene.aClass33Array1425); assertNull(deco.aClass33Array1425);
@@ -402,15 +402,15 @@ public class WorldControllerSceneLightingTest {
         a.aClass33Array1425[0] = normal(256, 0, 0, 1); a.aClass33Array1660[0] = normal(256, 0, 0, 1);
         b.aClass33Array1425[0] = normal(0, 256, 0, 1); b.aClass33Array1660[0] = normal(0, 256, 0, 1);
         Ground g = tile(wc, 0, 30, 30);
-        g.obj1 = new Object1(); g.obj1.aClass30_Sub2_Sub4_278 = a; g.obj1.aClass30_Sub2_Sub4_279 = b;
+        g.obj1 = new Object1(); g.obj1.model = a; g.obj1.secondaryModel = b;
         call(wc, "lightScene", new Class<?>[] {int.class, int.class, int.class}, 4, 3, 0);
         // merged normal (256,256,0) count 2: 64 + (3*256+4*256)/(15*2) = 64+59
         assertEquals((64 + 1792 / 30) * 64 >> 7, shades(a, 0)[0]);
         assertEquals((64 + 1792 / 30) * 64 >> 7, shades(b, 0)[0]);
         // a scene object shared by two tiles is lit once: the second tile sees null normals and skips
         Model so = litModel();
-        Object5 o = new Object5(); o.anInt523 = 40; o.anInt524 = 41; o.anInt525 = 40; o.anInt526 = 40; o.aClass30_Sub2_Sub4_521 = so;
-        for (int tx = 40; tx <= 41; tx++) { Ground t = tile(wc, 0, tx, 40); t.obj5Array[t.anInt1317++] = o; }
+        Object5 o = new Object5(); o.minTileX = 40; o.maxTileX = 41; o.minTileY = 40; o.maxTileY = 40; o.model = so;
+        for (int tx = 40; tx <= 41; tx++) { Ground t = tile(wc, 0, tx, 40); t.obj5Array[t.objectCount++] = o; }
         call(wc, "lightScene", new Class<?>[] {int.class, int.class, int.class}, 4, 3, 0);
         assertNull(so.aClass33Array1425);
     }
@@ -444,7 +444,7 @@ public class WorldControllerSceneLightingTest {
 
     @Test public void method309PlainTileFillsFourByFourWithItsColourUsingStride512AndSkipsColourZero() throws Exception {
         WorldController wc = scene();
-        tile(wc, 2, 7, 9).aClass43_1311 = new Class43(0, 0, 0, 0, 0, 0x336699, true);
+        tile(wc, 2, 7, 9).plainTile = new Class43(0, 0, 0, 0, 0, 0x336699, true);
         int[] px = raster();
         call(wc, "drawMinimapTile", M309, px, 100, 2, 7, 9);
         for (int row = 0; row < 4; row++)
@@ -456,7 +456,7 @@ public class WorldControllerSceneLightingTest {
             }
         assertEquals(0xABCDEF, px[99]);
         assertEquals(0xABCDEF, px[100 + 4 * STRIDE]);
-        tile(wc, 2, 8, 9).aClass43_1311 = new Class43(0, 0, 0, 0, 0, 0, true);
+        tile(wc, 2, 8, 9).plainTile = new Class43(0, 0, 0, 0, 0, 0, true);
         int[] px2 = raster();
         call(wc, "drawMinimapTile", M309, px2, 100, 2, 8, 9);
         assertArrayEquals(raster(), px2);
@@ -483,8 +483,8 @@ public class WorldControllerSceneLightingTest {
         int base = 0x111111, masked = 0x222222;
         for (int shape = 0; shape < masks.length; shape++)
             for (int rotation = 0; rotation < 4; rotation++) {
-                tile(wc, 1, 3, 4).aClass43_1311 = null;
-                tile(wc, 1, 3, 4).aClass40_1312 = shaped(shape, rotation, base, masked);
+                tile(wc, 1, 3, 4).plainTile = null;
+                tile(wc, 1, 3, 4).shapedTile = shaped(shape, rotation, base, masked);
                 int[] px = raster();
                 call(wc, "drawMinimapTile", M309, px, 0, 1, 3, 4);
                 int[] got = block(px, 0);
@@ -500,7 +500,7 @@ public class WorldControllerSceneLightingTest {
         WorldController wc = scene();
         int[][] masks = (int[][]) get(wc, "tileShapeMasks");
         int[][] rot = (int[][]) get(wc, "tileRotationOrders");
-        tile(wc, 1, 3, 4).aClass40_1312 = shaped(2, 1, 0, 0x222222);
+        tile(wc, 1, 3, 4).shapedTile = shaped(2, 1, 0, 0x222222);
         int[] px = raster();
         call(wc, "drawMinimapTile", M309, px, 0, 1, 3, 4);
         int[] got = block(px, 0);
@@ -512,13 +512,13 @@ public class WorldControllerSceneLightingTest {
         }
         assertTrue(painted > 0 && painted < 16);
         // zero masked colour with zero base still paints cells as 0 (colour value is written for mask 1)
-        tile(wc, 1, 3, 5).aClass40_1312 = shaped(1, 0, 0, 0);
+        tile(wc, 1, 3, 5).shapedTile = shaped(1, 0, 0, 0);
         int[] p2 = raster();
         call(wc, "drawMinimapTile", M309, p2, 0, 1, 3, 5);
         for (int v : block(p2, 0)) assertEquals(0, v);
         // a plain tile takes precedence over a shaped tile on the same ground
-        tile(wc, 1, 3, 6).aClass43_1311 = new Class43(0, 0, 0, 0, 0, 0x333333, true);
-        tile(wc, 1, 3, 6).aClass40_1312 = shaped(1, 0, 0x444444, 0x555555);
+        tile(wc, 1, 3, 6).plainTile = new Class43(0, 0, 0, 0, 0, 0x333333, true);
+        tile(wc, 1, 3, 6).shapedTile = shaped(1, 0, 0x444444, 0x555555);
         int[] p3 = raster();
         call(wc, "drawMinimapTile", M309, p3, 0, 1, 3, 6);
         for (int v : block(p3, 0)) assertEquals(0x333333, v);
@@ -752,8 +752,8 @@ public class WorldControllerSceneLightingTest {
 
     private static Ground marked(WorldController wc, int plane, int x, int y, int topPlane) throws Exception {
         Ground g = tile(wc, plane, x, y);
-        g.anInt1321 = topPlane; g.aBoolean1324 = true; g.anInt1325 = 0;
-        g.aBoolean1322 = true; g.aBoolean1323 = true;
+        g.minCameraPlane = topPlane; g.objectsPending = true; g.anInt1325 = 0;
+        g.firstPassPending = true; g.drawPending = true;
         return g;
     }
 
@@ -774,10 +774,10 @@ public class WorldControllerSceneLightingTest {
         Ground f = marked(wc, 0, cx, cy + 1, 0);  h[0][cx][cy + 1] = 50;             // 50 above camera: visible
         b.anInt1325 = 7; c.anInt1325 = 7; e.anInt1325 = 7;
         draw(wc, cx * 128 + 10, cy * 128 + 10, 640, 0, plane, 160);
-        for (Ground g : new Ground[] {a, bq, d, f}) assertFalse("visible tile gets its object flag recomputed", g.aBoolean1324);
+        for (Ground g : new Ground[] {a, bq, d, f}) assertFalse("visible tile gets its object flag recomputed", g.objectsPending);
         for (Ground g : new Ground[] {b, c, e}) {
-            assertTrue("hidden tile keeps flag", g.aBoolean1324);
-            assertEquals(0, g.anInt1325); assertFalse(g.aBoolean1322); assertFalse(g.aBoolean1323);
+            assertTrue("hidden tile keeps flag", g.objectsPending);
+            assertEquals(0, g.anInt1325); assertFalse(g.firstPassPending); assertFalse(g.drawPending);
         }
     }
 
@@ -799,9 +799,9 @@ public class WorldControllerSceneLightingTest {
         Ground edge = marked(wc, 0, cx + dd - 1, cy, 0);              // last tile inside the window
         row[2 * dd - 1][dd] = true;
         draw(wc, cx * 128 + 10, cy * 128 + 10, 640, 0, 0, 160);
-        for (int i = 0; i < offs.length; i++) { assertFalse("flag " + i, visible[i].aBoolean1324); assertFalse("drawn " + i, visible[i].aBoolean1322); }
-        assertFalse(edge.aBoolean1324); assertFalse(edge.aBoolean1322);
-        assertTrue(outside.aBoolean1324); assertTrue(outside.aBoolean1322); assertEquals(0, outside.anInt1325);
+        for (int i = 0; i < offs.length; i++) { assertFalse("flag " + i, visible[i].objectsPending); assertFalse("drawn " + i, visible[i].firstPassPending); }
+        assertFalse(edge.objectsPending); assertFalse(edge.firstPassPending);
+        assertTrue(outside.objectsPending); assertTrue(outside.firstPassPending); assertEquals(0, outside.anInt1325);
         assertEquals(0, sint("pendingTileCount"));
     }
 }

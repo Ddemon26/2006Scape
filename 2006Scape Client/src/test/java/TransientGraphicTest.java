@@ -107,10 +107,10 @@ public class TransientGraphicTest {
         g.updateTransientGraphics();
         Ground tile = grounds(g.worldController)[1][3][2];
         assertNotNull(tile);
-        assertSame(delayed, tile.obj5Array[0].aClass30_Sub2_Sub4_521);
-        assertEquals(55, tile.obj5Array[0].anInt518);
-        assertEquals(448, tile.obj5Array[0].anInt519);
-        assertEquals(320, tile.obj5Array[0].anInt520);
+        assertSame(delayed, tile.obj5Array[0].model);
+        assertEquals(55, tile.obj5Array[0].height);
+        assertEquals(448, tile.obj5Array[0].worldX);
+        assertEquals(320, tile.obj5Array[0].worldY);
         assertSame(delayed, g.transientGraphics.firstFromTail());
         g.anInt945 = 2;
         g.updateTransientGraphics();

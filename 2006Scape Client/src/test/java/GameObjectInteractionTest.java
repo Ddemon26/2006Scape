@@ -76,7 +76,7 @@ public class GameObjectInteractionTest {
         Ground ground = new Ground(plane, x, y);
         Object1 object = new Object1();
         object.uid = uid;
-        object.aByte281 = (byte) (shape | rotation << 6);
+        object.info = (byte) (shape | rotation << 6);
         ground.obj1 = object;
         grounds[plane][x][y] = ground;
     }

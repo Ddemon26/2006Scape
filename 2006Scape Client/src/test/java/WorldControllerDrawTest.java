@@ -261,19 +261,19 @@ public class WorldControllerDrawTest {
         sset("cameraPlane", 0); sset("drawMinTileX", 0); sset("drawMaxTileX", SIZE); sset("drawMinTileY", 0); sset("drawMaxTileY", SIZE);
         sset("cameraTileVisibility", new boolean[51][51]);
         Ground pending = tile(wc, 20, 20);
-        pending.aBoolean1322 = true; pending.aBoolean1323 = true;
+        pending.firstPassPending = true; pending.drawPending = true;
         sset("pendingTileCount", 3);
-        Method m = WorldController.class.getDeclaredMethod("method314", Ground.class, boolean.class);
+        Method m = WorldController.class.getDeclaredMethod("drawTileQueue", Ground.class, boolean.class);
         m.setAccessible(true);
         Field tiles = field(WorldController.class, "groundArray");
         Ground[][][] g = (Ground[][][]) tiles.get(wc);
         g[0][20][20] = pending;
         m.invoke(wc, pending, false);
         assertEquals(2, sint("pendingTileCount"));
-        assertFalse(pending.aBoolean1323);
-        assertFalse(pending.aBoolean1322);
+        assertFalse(pending.drawPending);
+        assertFalse(pending.firstPassPending);
         Ground notPending = tile(wc, 21, 20);
-        notPending.aBoolean1322 = true; notPending.aBoolean1323 = false;
+        notPending.firstPassPending = true; notPending.drawPending = false;
         g[0][21][20] = notPending;
         m.invoke(wc, notPending, false);
         assertEquals("a tile that was already drawn is not counted again", 2, sint("pendingTileCount"));
@@ -538,7 +538,7 @@ public class WorldControllerDrawTest {
     private static Class40 shapedTile(WorldController wc, int shape, int rotation, int texture, int[] heights) throws Exception {
         wc.addTile(1, TX, TY, shape, rotation, texture, heights[0], heights[1], heights[2], heights[3], 0x1150, 0x2900, 0x4a80, 0x6fe0, 21, 60, 100, 30, 77, 88);
         Ground g = ((Ground[][][]) get(wc, "groundArray"))[1][TX][TY];
-        return (Class40) g.aClass40_1312;
+        return (Class40) g.shapedTile;
     }
 
     private static void call316(WorldController wc, Class40 t) throws Exception {

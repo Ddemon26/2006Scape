@@ -10100,17 +10100,17 @@ public class Game extends RSApplet {
 					if (class10 != null) {
 						int k21 = class10.uid >> 14 & 0x7fff;
 						if (j12 == 2) {
-							class10.aClass30_Sub2_Sub4_278 = new Animable_Sub5(k21, 4 + k14, 2, i19, l19, j18, k20, j17, false);
-							class10.aClass30_Sub2_Sub4_279 = new Animable_Sub5(k21, k14 + 1 & 3, 2, i19, l19, j18, k20, j17, false);
+							class10.model = new Animable_Sub5(k21, 4 + k14, 2, i19, l19, j18, k20, j17, false);
+							class10.secondaryModel = new Animable_Sub5(k21, k14 + 1 & 3, 2, i19, l19, j18, k20, j17, false);
 						} else {
-							class10.aClass30_Sub2_Sub4_278 = new Animable_Sub5(k21, k14, j12, i19, l19, j18, k20, j17, false);
+							class10.model = new Animable_Sub5(k21, k14, j12, i19, l19, j18, k20, j17, false);
 						}
 					}
 				}
 				if (j16 == 1) {
 					Object2 class26 = worldController.getWallDecoration(j4, i7, plane);
 					if (class26 != null) {
-						class26.aClass30_Sub2_Sub4_504 = new Animable_Sub5(class26.uid >> 14 & 0x7fff, 0, 4, i19, l19, j18, k20, j17, false);
+						class26.model = new Animable_Sub5(class26.uid >> 14 & 0x7fff, 0, 4, i19, l19, j18, k20, j17, false);
 					}
 				}
 				if (j16 == 2) {
@@ -10119,13 +10119,13 @@ public class Game extends RSApplet {
 						j12 = 10;
 					}
 					if (class28 != null) {
-						class28.aClass30_Sub2_Sub4_521 = new Animable_Sub5(class28.uid >> 14 & 0x7fff, k14, j12, i19, l19, j18, k20, j17, false);
+						class28.model = new Animable_Sub5(class28.uid >> 14 & 0x7fff, k14, j12, i19, l19, j18, k20, j17, false);
 					}
 				}
 				if (j16 == 3) {
 					Object3 class49 = worldController.getGroundDecoration(i7, j4, plane);
 					if (class49 != null) {
-						class49.aClass30_Sub2_Sub4_814 = new Animable_Sub5(class49.uid >> 14 & 0x7fff, k14, 22, i19, l19, j18, k20, j17, false);
+						class49.model = new Animable_Sub5(class49.uid >> 14 & 0x7fff, k14, 22, i19, l19, j18, k20, j17, false);
 					}
 				}
 			}

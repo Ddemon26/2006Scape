@@ -41,17 +41,17 @@ public class PendingSceneChangeTest {
             Ground[][][] tiles = (Ground[][][]) ground.get(game.worldController);
             assertNotNull(tiles[1][10][11].obj3);
             assertEquals(401, tiles[1][10][11].obj3.uid >> 14 & 0x7fff);
-            assertEquals((2 << 6) | 22, tiles[1][10][11].obj3.aByte816 & 0xff);
-            assertEquals(200, tiles[1][10][11].obj3.anInt811);
+            assertEquals((2 << 6) | 22, tiles[1][10][11].obj3.info & 0xff);
+            assertEquals(200, tiles[1][10][11].obj3.height);
             assertNull(tiles[2][10][11]);
             game.applySceneObjectChange(12, 1, 1, 22, 10, 3, 401);
-            assertEquals(100, tiles[1][10][12].obj3.anInt811);
+            assertEquals(100, tiles[1][10][12].obj3.height);
             game.applySceneObjectChange(11, 1, 0, 22, 0, 3, 401);
             assertNull(tiles[1][0][11]);
 
             tiles[1][10][11].obj1 = new Object1();
             tiles[1][10][11].obj1.uid = 402 << 14;
-            tiles[1][10][11].obj1.aByte281 = (byte) (2 << 6);
+            tiles[1][10][11].obj1.info = (byte) (2 << 6);
             game.aClass11Array1230[1].addWall(11, 2, 10, 0, false);
             assertTrue((game.aClass11Array1230[1].tileFlags[10][11] & 8) != 0);
             game.applySceneObjectChange(11, 1, 0, 0, 10, 0, -1);
@@ -87,7 +87,7 @@ public class PendingSceneChangeTest {
         tiles[1][10][11] = new Ground(1, 10, 11);
         Object1 existing = new Object1();
         existing.uid = 123 << 14;
-        existing.aByte281 = (byte) ((3 << 6) | 10);
+        existing.info = (byte) ((3 << 6) | 10);
         tiles[1][10][11].obj1 = existing;
 
         game.method130(3, 77, 2, 0, 11, 9, 1, 10, 4);
@@ -159,20 +159,20 @@ public class PendingSceneChangeTest {
         Ground tile = tiles[2][17][23];
         tile.obj1 = new Object1();
         tile.obj1.uid = 101 << 14;
-        tile.obj1.aByte281 = (byte) ((1 << 6) | 3);
+        tile.obj1.info = (byte) ((1 << 6) | 3);
         tile.obj2 = new Object2();
         tile.obj2.uid = 202 << 14;
-        tile.obj2.aByte506 = (byte) ((2 << 6) | 11);
+        tile.obj2.info = (byte) ((2 << 6) | 11);
         tile.obj3 = new Object3();
         tile.obj3.uid = 303 << 14;
-        tile.obj3.aByte816 = (byte) ((3 << 6) | 22);
+        tile.obj3.info = (byte) ((3 << 6) | 22);
         Object5 scenery = new Object5();
         scenery.uid = (2 << 29) | (404 << 14);
-        scenery.aByte530 = (byte) 31;
-        scenery.anInt523 = 17;
-        scenery.anInt525 = 23;
+        scenery.info = (byte) 31;
+        scenery.minTileX = 17;
+        scenery.minTileY = 23;
         tile.obj5Array[0] = scenery;
-        tile.anInt1317 = 1;
+        tile.objectCount = 1;
 
         int[] ids = {101, 202, 404, 303};
         int[] shapes = {3, 11, 31, 22};
@@ -201,7 +201,7 @@ public class PendingSceneChangeTest {
         assertEquals(-1, absent.originalObjectId);
         assertEquals(0, absent.originalShape);
         assertEquals(0, absent.originalOrientation);
-        scenery.anInt525 = 24;
+        scenery.minTileY = 24;
         Class30_Sub1 mismatched = new Class30_Sub1();
         mismatched.scenePlane = 2;
         mismatched.tileX = 17;
@@ -219,7 +219,7 @@ public class PendingSceneChangeTest {
         tiles[1][10][11] = new Ground(1, 10, 11);
         tiles[1][10][11].obj1 = new Object1();
         tiles[1][10][11].obj1.uid = 77 << 14;
-        tiles[1][10][11].obj1.aByte281 = (byte) ((2 << 6) | 8);
+        tiles[1][10][11].obj1.info = (byte) ((2 << 6) | 8);
         Class30_Sub1 retained = new Class30_Sub1();
         retained.scenePlane = 1;
         retained.tileX = 10;

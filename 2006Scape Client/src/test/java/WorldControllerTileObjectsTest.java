@@ -27,13 +27,13 @@ public class WorldControllerTileObjectsTest {
         Ground g = new Ground(plane, x, y);
         g.obj1 = new Object1();
         g.obj1.uid = base + 1;
-        g.obj1.aByte281 = (byte) 0x81;
+        g.obj1.info = (byte) 0x81;
         g.obj2 = new Object2();
         g.obj2.uid = base + 2;
-        g.obj2.aByte506 = (byte) 0x82;
+        g.obj2.info = (byte) 0x82;
         g.obj3 = new Object3();
         g.obj3.uid = base + 3;
-        g.obj3.aByte816 = (byte) 0x83;
+        g.obj3.info = (byte) 0x83;
         g.obj4 = new Object4();
         t[plane][x][y] = g;
         return g;
@@ -41,24 +41,24 @@ public class WorldControllerTileObjectsTest {
 
     private static Object5 object5(int plane, int x0, int x1, int y0, int y1, int uid, int sz) {
         Object5 o = new Object5();
-        o.anInt517 = plane;
-        o.anInt523 = x0;
-        o.anInt524 = x1;
-        o.anInt525 = y0;
-        o.anInt526 = y1;
+        o.plane = plane;
+        o.minTileX = x0;
+        o.maxTileX = x1;
+        o.minTileY = y0;
+        o.maxTileY = y1;
         o.uid = uid;
-        o.aByte530 = (byte) sz;
+        o.info = (byte) sz;
         return o;
     }
 
     private static void attach(Ground[][][] t, Object5 o, int flags) {
-        for (int x = o.anInt523; x <= o.anInt524; x++)
-            for (int y = o.anInt525; y <= o.anInt526; y++) {
-                Ground g = t[o.anInt517][x][y];
-                if (g == null) g = t[o.anInt517][x][y] = new Ground(o.anInt517, x, y);
-                g.obj5Array[g.anInt1317] = o;
-                g.anIntArray1319[g.anInt1317++] = flags;
-                g.anInt1320 |= flags;
+        for (int x = o.minTileX; x <= o.maxTileX; x++)
+            for (int y = o.minTileY; y <= o.maxTileY; y++) {
+                Ground g = t[o.plane][x][y];
+                if (g == null) g = t[o.plane][x][y] = new Ground(o.plane, x, y);
+                g.obj5Array[g.objectCount] = o;
+                g.objectEdgeMasks[g.objectCount++] = flags;
+                g.objectEdgeMask |= flags;
             }
     }
 
@@ -176,27 +176,27 @@ public class WorldControllerTileObjectsTest {
         attach(t, b, 4);
         attach(t, other, 8);
         attach(t, near, 16);
-        assertEquals(1 | 2 | 4, t[2][10][11].anInt1320);
+        assertEquals(1 | 2 | 4, t[2][10][11].objectEdgeMask);
         wc.removeSceneObject(2, 10, 12); // covered by big but not its anchor: nothing happens
-        assertEquals(3, t[2][10][11].anInt1317);
-        assertEquals(1, t[2][10][12].anInt1317);
+        assertEquals(3, t[2][10][11].objectCount);
+        assertEquals(1, t[2][10][12].objectCount);
         wc.removeSceneObject(2, 10, 11);
         Ground g = t[2][10][11];
-        assertEquals(2, g.anInt1317);
+        assertEquals(2, g.objectCount);
         assertSame(a, g.obj5Array[0]);
         assertSame(b, g.obj5Array[1]);
         assertNull(g.obj5Array[2]);
-        assertEquals(1, g.anIntArray1319[0]);
-        assertEquals(4, g.anIntArray1319[1]);
-        assertEquals(1 | 4, g.anInt1320);
-        assertEquals(0, t[2][10][12].anInt1317);
-        assertEquals(0, t[2][10][12].anInt1320);
-        assertEquals(1, t[2][11][11].anInt1317);
+        assertEquals(1, g.objectEdgeMasks[0]);
+        assertEquals(4, g.objectEdgeMasks[1]);
+        assertEquals(1 | 4, g.objectEdgeMask);
+        assertEquals(0, t[2][10][12].objectCount);
+        assertEquals(0, t[2][10][12].objectEdgeMask);
+        assertEquals(1, t[2][11][11].objectCount);
         assertSame(near, t[2][11][11].obj5Array[0]);
-        assertEquals(16, t[2][11][11].anInt1320);
-        assertEquals(1, t[2][11][12].anInt1317);
+        assertEquals(16, t[2][11][11].objectEdgeMask);
+        assertEquals(1, t[2][11][12].objectCount);
         assertSame(other, t[2][11][12].obj5Array[0]);
-        assertEquals(8, t[2][11][12].anInt1320);
+        assertEquals(8, t[2][11][12].objectEdgeMask);
     }
 
     @Test public void method304ReturnsMaskedInfoByUidWithSlotPriority() throws Exception {
@@ -226,24 +226,24 @@ public class WorldControllerTileObjectsTest {
             Ground[][][] t = tiles(wc);
             Ground g = filled(t, 2, 10, 11, 0);
             Ground other = filled(t, 2, 11, 10, 100);
-            g.obj2.anInt500 = 1344 + 64;
-            g.obj2.anInt501 = 1472 - 32;
-            other.obj2.anInt500 = 1344 + 64;
-            other.obj2.anInt501 = 1472 - 32;
+            g.obj2.worldX = 1344 + 64;
+            g.obj2.worldY = 1472 - 32;
+            other.obj2.worldX = 1344 + 64;
+            other.obj2.worldY = 1472 - 32;
             wc.scaleWallDecorationOffset(11, c[0], 10, 2);
-            assertEquals(c[1], g.obj2.anInt500);
-            assertEquals(c[2], g.obj2.anInt501);
-            assertEquals(1408, other.obj2.anInt500);
-            assertEquals(1440, other.obj2.anInt501);
+            assertEquals(c[1], g.obj2.worldX);
+            assertEquals(c[2], g.obj2.worldY);
+            assertEquals(1408, other.obj2.worldX);
+            assertEquals(1440, other.obj2.worldY);
         }
         WorldController wc = scene();
         Ground[][][] t = tiles(wc);
         Ground g = filled(t, 0, 3, 4, 0);
-        g.obj2.anInt500 = 3 * 128 + 64 - 33;
-        g.obj2.anInt501 = 4 * 128 + 64 + 33;
+        g.obj2.worldX = 3 * 128 + 64 - 33;
+        g.obj2.worldY = 4 * 128 + 64 + 33;
         wc.scaleWallDecorationOffset(4, 8, 3, 0);
-        assertEquals(3 * 128 + 64 - 16, g.obj2.anInt500);
-        assertEquals(4 * 128 + 64 + 16, g.obj2.anInt501);
+        assertEquals(3 * 128 + 64 - 16, g.obj2.worldX);
+        assertEquals(4 * 128 + 64 + 16, g.obj2.worldY);
         wc.scaleWallDecorationOffset(9, 8, 9, 0);
         g.obj2 = null;
         wc.scaleWallDecorationOffset(4, 8, 3, 0);

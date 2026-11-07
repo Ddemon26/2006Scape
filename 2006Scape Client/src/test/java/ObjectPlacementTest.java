@@ -247,13 +247,13 @@ public class ObjectPlacementTest {
                     Object5 ob = gb.obj5Array[0];
                     assertEquals(oa.uid, ob.uid);
                     assertEquals("uid = x + y<<7 + id<<14 + 0x40000000, plus 0x80000000 without actions", X + (Y << 7) + (604 << 14) + 0x40000000 + 0x80000000, oa.uid);
-                    assertEquals("orientation in the top two bits, shape below", (byte) ((orientation << 6) + shape), oa.aByte530);
-                    assertEquals(oa.aByte530, ob.aByte530);
-                    assertEquals(oa.anInt524, ob.anInt524);
-                    assertEquals(oa.anInt526, ob.anInt526);
+                    assertEquals("orientation in the top two bits, shape below", (byte) ((orientation << 6) + shape), oa.info);
+                    assertEquals(oa.info, ob.info);
+                    assertEquals(oa.maxTileX, ob.maxTileX);
+                    assertEquals(oa.maxTileY, ob.maxTileY);
                 } else {
                     assertEquals(ga.obj1.uid, gb.obj1.uid);
-                    assertEquals(ga.obj1.aByte281, gb.obj1.aByte281);
+                    assertEquals(ga.obj1.info, gb.obj1.info);
                     assertFalse("placeObject shades walls", cells(m, "occlusionFlags").isEmpty());
                 }
             }
@@ -270,13 +270,13 @@ public class ObjectPlacementTest {
         WorldController w = world();
         ObjectManager.placeObjectWithoutShading(w, 0, Y, 10, 1, new CollisionMap(), ground, X, 604, 0);
         assertNotNull("placed on the plane named by the last argument", grounds(w)[0][X][Y]);
-        assertEquals(0, grounds(w)[0][X][Y].obj5Array[0].anInt517);
-        assertEquals("average of the four corners on the height plane", 100, grounds(w)[0][X][Y].obj5Array[0].anInt518);
+        assertEquals(0, grounds(w)[0][X][Y].obj5Array[0].plane);
+        assertEquals("average of the four corners on the height plane", 100, grounds(w)[0][X][Y].obj5Array[0].height);
         w = world();
         ObjectManager.placeObjectWithoutShading(w, 0, Y, 10, 0, new CollisionMap(), ground, X, 604, 1);
         assertNotNull(grounds(w)[1][X][Y]);
-        assertEquals(1, grounds(w)[1][X][Y].obj5Array[0].anInt517);
-        assertEquals("height plane 0 is flat", 0, grounds(w)[1][X][Y].obj5Array[0].anInt518);
+        assertEquals(1, grounds(w)[1][X][Y].obj5Array[0].plane);
+        assertEquals("height plane 0 is flat", 0, grounds(w)[1][X][Y].obj5Array[0].height);
     }
 
     @Test public void method175HeightIsTheAverageOfTheFourCornerHeights() throws Exception {
@@ -288,11 +288,11 @@ public class ObjectPlacementTest {
         ground[0][X][Y + 1] = 160;
         WorldController w = world();
         place175(new ObjectManager(new byte[4][105][105], ground), w, null, Y, 10, 0, X, 604, 0);
-        assertEquals(100, grounds(w)[0][X][Y].obj5Array[0].anInt518);
+        assertEquals(100, grounds(w)[0][X][Y].obj5Array[0].height);
         ground[0][X + 1][Y + 1] = 520;
         w = world();
         place175(new ObjectManager(new byte[4][105][105], ground), w, null, Y, 10, 0, X, 604, 0);
-        assertEquals(200, grounds(w)[0][X][Y].obj5Array[0].anInt518);
+        assertEquals(200, grounds(w)[0][X][Y].obj5Array[0].height);
     }
 
     // ------------------------------------------------ loadObjects region object stream
@@ -344,10 +344,10 @@ public class ObjectPlacementTest {
             Object5 o = grounds(w)[0][13][25].obj5Array[0];
             int wide = orientation % 2 == 0 ? 3 : 2;
             int tall = orientation % 2 == 0 ? 2 : 3;
-            assertEquals(13, o.anInt523);
-            assertEquals(25, o.anInt525);
-            assertEquals(13 + wide - 1, o.anInt524);
-            assertEquals(25 + tall - 1, o.anInt526);
+            assertEquals(13, o.minTileX);
+            assertEquals(25, o.minTileY);
+            assertEquals(13 + wide - 1, o.maxTileX);
+            assertEquals(25 + tall - 1, o.maxTileY);
         }
     }
 

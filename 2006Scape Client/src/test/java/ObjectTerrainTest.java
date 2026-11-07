@@ -286,7 +286,7 @@ public class ObjectTerrainTest {
 
     private static int[] animatedCorners(WorldController w, int x, int y) throws Exception {
         Ground[][][] g = (Ground[][][]) field(WorldController.class, "groundArray").get(w);
-        Object animable = g[0][x][y].obj5Array[0].aClass30_Sub2_Sub4_521;
+        Object animable = g[0][x][y].obj5Array[0].model;
         int[] out = new int[4];
         for (int n = 0; n < 4; n++) {
             out[n] = field(animable.getClass(), "anInt" + (1603 + n)).getInt(animable);
