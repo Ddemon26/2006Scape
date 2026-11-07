@@ -13,7 +13,7 @@ public class LocalPlayerMovementBitsTest {
 
     @Before public void setUp() {
         saved = Game.myPlayer;
-        oldPlane = ObjectManager.anInt131;
+        oldPlane = ObjectManager.scenePlaneFilter;
         oldRoofs = ObjectManager.hideRoofs;
         oldSnow = ObjectManager.hideBuggyVarrockSwordShopSnow;
         game = new Probe();
@@ -25,7 +25,7 @@ public class LocalPlayerMovementBitsTest {
     }
     @After public void tearDown() {
         Game.myPlayer = saved;
-        ObjectManager.anInt131 = oldPlane;
+        ObjectManager.scenePlaneFilter = oldPlane;
         ObjectManager.hideRoofs = oldRoofs;
         ObjectManager.hideBuggyVarrockSwordShopSnow = oldSnow;
     }
@@ -125,7 +125,7 @@ public class LocalPlayerMovementBitsTest {
         assertEquals(77, Game.myPlayer.smallY[0]);
         assertEquals(0, Game.myPlayer.smallXYIndex);
         assertEquals(2, game.plane);
-        assertEquals(2, ObjectManager.anInt131);
+        assertEquals(2, ObjectManager.scenePlaneFilter);
         assertEquals(1, game.anInt893);
         assertFalse(ObjectManager.hideRoofs);
         assertEquals(7, game.refreshes);

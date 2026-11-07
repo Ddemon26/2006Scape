@@ -779,7 +779,7 @@ public class Game extends RSApplet {
 				Texture.lineOffsets = chatBoxAreaOffsets;
 			}
 			stream.writeEncryptedOpcode(0);
-			int k3 = ObjectManager.anInt145;
+			int k3 = ObjectManager.lowestBuiltPlane;
 			if (k3 > plane) {
 				k3 = plane;
 			}
@@ -787,7 +787,7 @@ public class Game extends RSApplet {
 				k3 = plane - 1;
 			}
 			if (lowMem) {
-				worldController.createPlaneTiles(ObjectManager.anInt145);
+				worldController.createPlaneTiles(ObjectManager.lowestBuiltPlane);
 			} else {
 				worldController.createPlaneTiles(0);
 			}
@@ -2699,7 +2699,7 @@ public class Game extends RSApplet {
 	}
 
 	public void loadingStages() {
-		if (lowMem && loadingStage == 2 && ObjectManager.anInt131 != plane) {
+		if (lowMem && loadingStage == 2 && ObjectManager.scenePlaneFilter != plane) {
 			drawTextOnScreen(null, "Loading - please wait.");
 			loadingStage = 1;
 			aLong824 = System.currentTimeMillis();
@@ -2748,7 +2748,7 @@ public class Game extends RSApplet {
 			return -4;
 		} else {
 			loadingStage = 2;
-			ObjectManager.anInt131 = plane;
+			ObjectManager.scenePlaneFilter = plane;
 			method22();
 			stream.writeEncryptedOpcode(121);
 			return 0;
@@ -9116,14 +9116,14 @@ public class Game extends RSApplet {
 			int localTileY = stream.readBitsMsbFirst(7);
 			int localTileX = stream.readBitsMsbFirst(7);
 			myPlayer.setPos(localTileX, localTileY, teleport == 1);
-			//Handle plane changes, higher planes need the roof drawing checks disabled, and we need to manually update ObjectManager's anInt131 (plane) then manually call method22 to let the ObjectManaegr know we're on a different plane. This makes plane changes draw properly. Coords for testing this: lumb: 3207 3227 and varrock: 3209, 3392 and gnome agil: 2474, 3427 
+			//Handle plane changes, higher planes need the roof drawing checks disabled, and we need to manually update ObjectManager's scenePlaneFilter (plane) then manually call method22 to let the ObjectManaegr know we're on a different plane. This makes plane changes draw properly. Coords for testing this: lumb: 3207 3227 and varrock: 3209, 3392 and gnome agil: 2474, 3427
 			ObjectManager.hideRoofs = ClientSettings.HIDE_ROOFS;
 			ObjectManager.hideBuggyVarrockSwordShopSnow = ClientSettings.HIDE_BUGGY_VARROCK_SWORD_SHOP_SNOW;
 			if (plane > 0) {
 				ObjectManager.hideRoofs = false;
 				ObjectManager.hideBuggyVarrockSwordShopSnow = false;
 			}
-			ObjectManager.anInt131 = plane;
+			ObjectManager.scenePlaneFilter = plane;
 			method22();
 		}
 	}
