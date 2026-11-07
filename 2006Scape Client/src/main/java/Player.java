@@ -15,57 +15,57 @@ public final class Player extends Entity {
 		}
 		super.height = model.modelHeight;
 		model.pickByBounds = true;
-		if (aBoolean1699) {
+		if (staticModelOnly) {
 			return model;
 		}
 		if (super.anInt1520 != -1 && super.anInt1521 != -1) {
 			SpotAnim spotAnim = SpotAnim.cache[super.anInt1520];
-			Model model_2 = spotAnim.getModel();
-			if (model_2 != null) {
-				Model model_3 = new Model(true, AnimationFrame.isMissingFrameId(super.anInt1521), false, model_2);
-				model_3.translate(0, -super.anInt1524, 0);
-				model_3.buildAnimationGroups();
-				model_3.applyAnimationFrame(spotAnim.animation.frameIds[super.anInt1521]);
-				model_3.faceGroups = null;
-				model_3.vertexGroups = null;
+			Model spotModel = spotAnim.getModel();
+			if (spotModel != null) {
+				Model spotCopy = new Model(true, AnimationFrame.isMissingFrameId(super.anInt1521), false, spotModel);
+				spotCopy.translate(0, -super.anInt1524, 0);
+				spotCopy.buildAnimationGroups();
+				spotCopy.applyAnimationFrame(spotAnim.animation.frameIds[super.anInt1521]);
+				spotCopy.faceGroups = null;
+				spotCopy.vertexGroups = null;
 				if (spotAnim.horizontalScale128 != 128 || spotAnim.verticalScale128 != 128) {
-					model_3.scale(spotAnim.horizontalScale128, spotAnim.horizontalScale128, spotAnim.verticalScale128);
+					spotCopy.scale(spotAnim.horizontalScale128, spotAnim.horizontalScale128, spotAnim.verticalScale128);
 				}
-				model_3.applyLighting(64 + spotAnim.ambientLightOffset, 850 + spotAnim.lightDivisorOffset, -30, -50, -30, true);
-				Model aclass30_sub2_sub4_sub6_1s[] = {model, model_3};
-				model = new Model(aclass30_sub2_sub4_sub6_1s);
+				spotCopy.applyLighting(64 + spotAnim.ambientLightOffset, 850 + spotAnim.lightDivisorOffset, -30, -50, -30, true);
+				Model spotParts[] = {model, spotCopy};
+				model = new Model(spotParts);
 			}
 		}
-		if (aModel_1714 != null) {
-			if (Game.loopCycle >= anInt1708) {
-				aModel_1714 = null;
+		if (attachedModel != null) {
+			if (Game.loopCycle >= attachedModelEndCycle) {
+				attachedModel = null;
 			}
-			if (Game.loopCycle >= anInt1707 && Game.loopCycle < anInt1708) {
-				Model model_1 = aModel_1714;
-				model_1.translate(anInt1711 - super.x, anInt1712 - anInt1709, anInt1713 - super.y);
+			if (Game.loopCycle >= attachedModelStartCycle && Game.loopCycle < attachedModelEndCycle) {
+				Model attachedPart = attachedModel;
+				attachedPart.translate(attachedModelX - super.x, attachedModelHeight - groundHeight, attachedModelY - super.y);
 				if (super.turnDirection == 512) {
-					model_1.rotateYQuarterTurn();
-					model_1.rotateYQuarterTurn();
-					model_1.rotateYQuarterTurn();
+					attachedPart.rotateYQuarterTurn();
+					attachedPart.rotateYQuarterTurn();
+					attachedPart.rotateYQuarterTurn();
 				} else if (super.turnDirection == 1024) {
-					model_1.rotateYQuarterTurn();
-					model_1.rotateYQuarterTurn();
+					attachedPart.rotateYQuarterTurn();
+					attachedPart.rotateYQuarterTurn();
 				} else if (super.turnDirection == 1536) {
-					model_1.rotateYQuarterTurn();
+					attachedPart.rotateYQuarterTurn();
 				}
-				Model aclass30_sub2_sub4_sub6s[] = {model, model_1};
-				model = new Model(aclass30_sub2_sub4_sub6s);
+				Model attachedParts[] = {model, attachedPart};
+				model = new Model(attachedParts);
 				if (super.turnDirection == 512) {
-					model_1.rotateYQuarterTurn();
+					attachedPart.rotateYQuarterTurn();
 				} else if (super.turnDirection == 1024) {
-					model_1.rotateYQuarterTurn();
-					model_1.rotateYQuarterTurn();
+					attachedPart.rotateYQuarterTurn();
+					attachedPart.rotateYQuarterTurn();
 				} else if (super.turnDirection == 1536) {
-					model_1.rotateYQuarterTurn();
-					model_1.rotateYQuarterTurn();
-					model_1.rotateYQuarterTurn();
+					attachedPart.rotateYQuarterTurn();
+					attachedPart.rotateYQuarterTurn();
+					attachedPart.rotateYQuarterTurn();
 				}
-				model_1.translate(super.x - anInt1711, anInt1709 - anInt1712, super.y - anInt1713);
+				attachedPart.translate(super.x - attachedModelX, groundHeight - attachedModelHeight, super.y - attachedModelY);
 			}
 		}
 		model.pickByBounds = true;
@@ -79,32 +79,32 @@ public final class Player extends Entity {
 		skullIcon = stream.readUnsignedByte();
 		desc = null;
 		team = 0;
-		for (int j = 0; j < 12; j++) {
-			int k = stream.readUnsignedByte();
-			if (k == 0) {
-				equipment[j] = 0;
+		for (int equipmentSlot = 0; equipmentSlot < 12; equipmentSlot++) {
+			int equipmentHighByte = stream.readUnsignedByte();
+			if (equipmentHighByte == 0) {
+				equipment[equipmentSlot] = 0;
 				continue;
 			}
-			int i1 = stream.readUnsignedByte();
-			equipment[j] = (k << 8) + i1;
-			if (j == 0 && equipment[0] == 65535) {
+			int equipmentLowByte = stream.readUnsignedByte();
+			equipment[equipmentSlot] = (equipmentHighByte << 8) + equipmentLowByte;
+			if (equipmentSlot == 0 && equipment[0] == 65535) {
 				desc = EntityDef.forID(stream.readUnsignedShortBigEndian());
 				break;
 			}
-			if (equipment[j] >= 512 && equipment[j] - 512 < ItemDef.totalItems) {
-				int l1 = ItemDef.forID(equipment[j] - 512).team;
+			if (equipment[equipmentSlot] >= 512 && equipment[equipmentSlot] - 512 < ItemDef.totalItems) {
+				int l1 = ItemDef.forID(equipment[equipmentSlot] - 512).team;
 				if (l1 != 0) {
 					team = l1;
 				}
 			}
 		}
 
-		for (int l = 0; l < 5; l++) {
-			int j1 = stream.readUnsignedByte();
-			if (j1 < 0 || j1 >= Game.anIntArrayArray1003[l].length) {
-				j1 = 0;
+		for (int colourSlot = 0; colourSlot < 5; colourSlot++) {
+			int colourIndex = stream.readUnsignedByte();
+			if (colourIndex < 0 || colourIndex >= Game.anIntArrayArray1003[colourSlot].length) {
+				colourIndex = 0;
 			}
-			anIntArray1700[l] = j1;
+			appearanceColours[colourSlot] = colourIndex;
 		}
 
 		super.idleAnimationId = stream.readUnsignedShortBigEndian();
@@ -140,10 +140,10 @@ public final class Player extends Entity {
 		skill = stream.readUnsignedShortBigEndian();
 		visible = true;
 		appearanceKey = 0L;
-		for (int k1 = 0; k1 < 12; k1++) {
+		for (int keySlot = 0; keySlot < 12; keySlot++) {
 			appearanceKey <<= 4;
-			if (equipment[k1] >= 256) {
-				appearanceKey += equipment[k1] - 256;
+			if (equipment[keySlot] >= 256) {
+				appearanceKey += equipment[keySlot] - 256;
 			}
 		}
 
@@ -153,9 +153,9 @@ public final class Player extends Entity {
 		if (equipment[1] >= 256) {
 			appearanceKey += equipment[1] - 256 >> 8;
 		}
-		for (int i2 = 0; i2 < 5; i2++) {
+		for (int keyColourSlot = 0; keyColourSlot < 5; keyColourSlot++) {
 			appearanceKey <<= 3;
-			appearanceKey += anIntArray1700[i2];
+			appearanceKey += appearanceColours[keyColourSlot];
 		}
 
 		appearanceKey <<= 1;
@@ -215,8 +215,8 @@ public final class Player extends Entity {
 			}
 
 			if (anyPartNotReady) {
-				if (aLong1697 != -1L) {
-					bodyModel = (Model) mruNodes.insertFromCache(aLong1697);
+				if (lastBuiltModelKey != -1L) {
+					bodyModel = (Model) mruNodes.insertFromCache(lastBuiltModelKey);
 				}
 				if (bodyModel == null) {
 					return null;
@@ -250,10 +250,10 @@ public final class Player extends Entity {
 
 			bodyModel = new Model(partCount, parts);
 			for (int colourSlot = 0; colourSlot < 5; colourSlot++) {
-				if (anIntArray1700[colourSlot] != 0) {
-					bodyModel.recolor(Game.anIntArrayArray1003[colourSlot][0], Game.anIntArrayArray1003[colourSlot][anIntArray1700[colourSlot]]);
+				if (appearanceColours[colourSlot] != 0) {
+					bodyModel.recolor(Game.anIntArrayArray1003[colourSlot][0], Game.anIntArrayArray1003[colourSlot][appearanceColours[colourSlot]]);
 					if (colourSlot == 1) {
-						bodyModel.recolor(Game.anIntArray1204[0], Game.anIntArray1204[anIntArray1700[colourSlot]]);
+						bodyModel.recolor(Game.anIntArray1204[0], Game.anIntArray1204[appearanceColours[colourSlot]]);
 					}
 				}
 			}
@@ -261,9 +261,9 @@ public final class Player extends Entity {
 			bodyModel.buildAnimationGroups();
 			bodyModel.applyLighting(64, 850, -30, -50, -30, true);
 			mruNodes.removeFromCache(bodyModel, cacheKey);
-			aLong1697 = cacheKey;
+			lastBuiltModelKey = cacheKey;
 		}
-		if (aBoolean1699) {
+		if (staticModelOnly) {
 			return bodyModel;
 		}
 		Model animatedModel = Model.animationScratchModel;
@@ -326,10 +326,10 @@ public final class Player extends Entity {
 
 		Model model = new Model(partCount, parts);
 		for (int colourSlot = 0; colourSlot < 5; colourSlot++) {
-			if (anIntArray1700[colourSlot] != 0) {
-				model.recolor(Game.anIntArrayArray1003[colourSlot][0], Game.anIntArrayArray1003[colourSlot][anIntArray1700[colourSlot]]);
+			if (appearanceColours[colourSlot] != 0) {
+				model.recolor(Game.anIntArrayArray1003[colourSlot][0], Game.anIntArrayArray1003[colourSlot][appearanceColours[colourSlot]]);
 				if (colourSlot == 1) {
-					model.recolor(Game.anIntArray1204[0], Game.anIntArray1204[anIntArray1700[colourSlot]]);
+					model.recolor(Game.anIntArray1204[0], Game.anIntArray1204[appearanceColours[colourSlot]]);
 				}
 			}
 		}
@@ -338,17 +338,17 @@ public final class Player extends Entity {
 	}
 
 	Player() {
-		aLong1697 = -1L;
-		aBoolean1699 = false;
-		anIntArray1700 = new int[5];
+		lastBuiltModelKey = -1L;
+		staticModelOnly = false;
+		appearanceColours = new int[5];
 		visible = false;
 		equipment = new int[12];
 	}
 
-	private long aLong1697;
+	private long lastBuiltModelKey;
 	public EntityDef desc;
-	boolean aBoolean1699;
-	final int[] anIntArray1700;
+	boolean staticModelOnly;
+	final int[] appearanceColours;
 	public int team;
 	private int gender;
 	public String name;
@@ -357,20 +357,20 @@ public final class Player extends Entity {
 	public int headIcon;
 	public int skullIcon;
 	public int hintIcon;
-	public int anInt1707;
-	int anInt1708;
-	int anInt1709;
+	public int attachedModelStartCycle;
+	int attachedModelEndCycle;
+	int groundHeight;
 	boolean visible;
-	int anInt1711;
-	int anInt1712;
-	int anInt1713;
-	Model aModel_1714;
+	int attachedModelX;
+	int attachedModelHeight;
+	int attachedModelY;
+	Model attachedModel;
 	public final int[] equipment;
 	private long appearanceKey;
-	int anInt1719;
-	int anInt1720;
-	int anInt1721;
-	int anInt1722;
+	int attachedMinTileX;
+	int attachedMinTileY;
+	int attachedMaxTileX;
+	int attachedMaxTileY;
 	int skill;
 
 }

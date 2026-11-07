@@ -752,9 +752,9 @@ public class ItemDefTest {
             for (int j = 0; j < 5; j++) { pal[j][0] = src[j]; pal[j][1] = 100 + j; pal[j][2] = 200 + j; }
             pal1204[0] = 40003; pal1204[1] = 555; pal1204[2] = 556;
             int[] colours = {1, 1, 2, 0, 1};
-            System.arraycopy(colours, 0, (int[]) get(p, "anIntArray1700"), 0, 5);
+            System.arraycopy(colours, 0, (int[]) get(p, "appearanceColours"), 0, 5);
             assertArrayEquals(new int[]{100, 101, 202, 555}, Arrays.copyOf(p.buildHeadModel().faceColors, 4));
-            colours[1] = 2; System.arraycopy(colours, 0, (int[]) get(p, "anIntArray1700"), 0, 5);
+            colours[1] = 2; System.arraycopy(colours, 0, (int[]) get(p, "appearanceColours"), 0, 5);
             assertArrayEquals(new int[]{100, 201, 202, 556}, Arrays.copyOf(p.buildHeadModel().faceColors, 4));
             p.equipment[0] = 0; p.equipment[11] = 0;
             assertEquals(0, p.buildHeadModel().vertexCount);

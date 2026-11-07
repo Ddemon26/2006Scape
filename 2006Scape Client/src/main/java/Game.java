@@ -2314,16 +2314,16 @@ public class Game extends RSApplet {
 			if (player == null || !player.isVisible()) {
 				continue;
 			}
-			player.aBoolean1699 = (lowMem && playerCount > 50 || playerCount > 200) && !localPlayerOnly && player.movementAnimationId == player.idleAnimationId;
+			player.staticModelOnly = (lowMem && playerCount > 50 || playerCount > 200) && !localPlayerOnly && player.movementAnimationId == player.idleAnimationId;
 			int tileX = player.x >> 7;
 			int tileY = player.y >> 7;
 			if (tileX < 0 || tileX >= 104 || tileY < 0 || tileY >= 104) {
 				continue;
 			}
-			if (player.aModel_1714 != null && loopCycle >= player.anInt1707 && loopCycle < player.anInt1708) {
-				player.aBoolean1699 = false;
-				player.anInt1709 = interpolatedGroundHeight(plane, player.y, player.x);
-				worldController.addEntityInTileBounds(plane, player.y, player, player.facingDirection, player.anInt1722, player.x, player.anInt1709, player.anInt1719, player.anInt1721, uid, player.anInt1720);
+			if (player.attachedModel != null && loopCycle >= player.attachedModelStartCycle && loopCycle < player.attachedModelEndCycle) {
+				player.staticModelOnly = false;
+				player.groundHeight = interpolatedGroundHeight(plane, player.y, player.x);
+				worldController.addEntityInTileBounds(plane, player.y, player, player.facingDirection, player.attachedMaxTileY, player.x, player.groundHeight, player.attachedMinTileX, player.attachedMaxTileX, uid, player.attachedMinTileY);
 				continue;
 			}
 			if ((player.x & 0x7f) == 64 && (player.y & 0x7f) == 64) {
@@ -2332,8 +2332,8 @@ public class Game extends RSApplet {
 				}
 				anIntArrayArray929[tileX][tileY] = anInt1265;
 			}
-			player.anInt1709 = interpolatedGroundHeight(plane, player.y, player.x);
-			worldController.addEntity(plane, player.facingDirection, player.anInt1709, uid, player.y, 60, player.x, player, player.aBoolean1541);
+			player.groundHeight = interpolatedGroundHeight(plane, player.y, player.x);
+			worldController.addEntity(plane, player.facingDirection, player.groundHeight, uid, player.y, 60, player.x, player, player.aBoolean1541);
 		}
 
 	}
@@ -10162,18 +10162,18 @@ public class Game extends RSApplet {
 				Model model = class46.getModel(j19, i20, i22, j22, k22, l22, -1);
 				if (model != null) {
 					method130(k17 + 1, -1, 0, l20, j7, 0, plane, k4, l14 + 1);
-					player.anInt1707 = l14 + loopCycle;
-					player.anInt1708 = k17 + loopCycle;
-					player.aModel_1714 = model;
+					player.attachedModelStartCycle = l14 + loopCycle;
+					player.attachedModelEndCycle = k17 + loopCycle;
+					player.attachedModel = model;
 					int i23 = class46.sizeX;
 					int j23 = class46.sizeY;
 					if (i20 == 1 || i20 == 3) {
 						i23 = class46.sizeY;
 						j23 = class46.sizeX;
 					}
-					player.anInt1711 = k4 * 128 + i23 * 64;
-					player.anInt1713 = j7 * 128 + j23 * 64;
-					player.anInt1712 = interpolatedGroundHeight(plane, player.anInt1713, player.anInt1711);
+					player.attachedModelX = k4 * 128 + i23 * 64;
+					player.attachedModelY = j7 * 128 + j23 * 64;
+					player.attachedModelHeight = interpolatedGroundHeight(plane, player.attachedModelY, player.attachedModelX);
 					if (byte2 > byte0) {
 						byte byte4 = byte2;
 						byte2 = byte0;
@@ -10184,10 +10184,10 @@ public class Game extends RSApplet {
 						byte3 = byte1;
 						byte1 = byte5;
 					}
-					player.anInt1719 = k4 + byte2;
-					player.anInt1721 = k4 + byte0;
-					player.anInt1720 = j7 + byte3;
-					player.anInt1722 = j7 + byte1;
+					player.attachedMinTileX = k4 + byte2;
+					player.attachedMaxTileX = k4 + byte0;
+					player.attachedMinTileY = j7 + byte3;
+					player.attachedMaxTileY = j7 + byte1;
 				}
 			}
 		}
@@ -10687,7 +10687,7 @@ public class Game extends RSApplet {
 				int k = inStream.readUnsignedShortLittleEndianSubtract128();
 				RSInterface.interfaceCache[k].mediaType = 3;
 				if (myPlayer.desc == null) {
-					RSInterface.interfaceCache[k].mediaID = (myPlayer.anIntArray1700[0] << 25) + (myPlayer.anIntArray1700[4] << 20) + (myPlayer.equipment[0] << 15) + (myPlayer.equipment[8] << 10) + (myPlayer.equipment[11] << 5) + myPlayer.equipment[1];
+					RSInterface.interfaceCache[k].mediaID = (myPlayer.appearanceColours[0] << 25) + (myPlayer.appearanceColours[4] << 20) + (myPlayer.equipment[0] << 15) + (myPlayer.equipment[8] << 10) + (myPlayer.equipment[11] << 5) + myPlayer.equipment[1];
 				} else {
 					RSInterface.interfaceCache[k].mediaID = (int) (0x12345678L + myPlayer.desc.type);
 				}
