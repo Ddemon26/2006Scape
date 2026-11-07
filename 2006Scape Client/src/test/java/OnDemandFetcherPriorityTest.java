@@ -214,7 +214,7 @@ public class OnDemandFetcherPriorityTest {
             assertEquals(0, cells[pair[0]][pair[1]]);
         }
         assertNull(requested().popTail());
-        assertEquals(3, get("completedCount"));
+        assertEquals(3, get("extraInFlightCount"));
         assertEquals(3, get("filesLoaded"));
         assertEquals("Loading extra files - 3%", fetcher.statusString);
         assertEquals(0, levelField());
@@ -223,13 +223,13 @@ public class OnDemandFetcherPriorityTest {
     @Test public void method568BlocksOnMandatoryRequestsAndStopsAtTenThenResumes() throws Exception {
         for (int id = 0; id < 12; id++) status()[2][id] = 2;
         level(2);
-        set("uncompletedCount", 1);
+        set("urgentInFlightCount", 1);
         drain();
         assertEquals(2, levelField());
         assertNull(requested().popTail());
-        set("uncompletedCount", 0);
+        set("urgentInFlightCount", 0);
         drain();
-        assertEquals(10, get("completedCount"));
+        assertEquals(10, get("extraInFlightCount"));
         assertEquals(2, status()[2][10]);
         for (int id = 0; id < 10; id++) {
             OnDemandData node = (OnDemandData) requested().popTail();
@@ -238,7 +238,7 @@ public class OnDemandFetcherPriorityTest {
         }
         drain(); // outstanding extra count at ten blocks even with queue empty
         assertNull(requested().popTail());
-        set("completedCount", 0);
+        set("extraInFlightCount", 0);
         drain();
         assertEquals(10, ((OnDemandData) requested().popTail()).ID);
         assertEquals(11, ((OnDemandData) requested().popTail()).ID);
@@ -258,7 +258,7 @@ public class OnDemandFetcherPriorityTest {
         }
         set("filesLoaded", 100); // must not exceed totalFiles
         drain();
-        assertEquals(10, get("completedCount"));
+        assertEquals(10, get("extraInFlightCount"));
         assertEquals(100, get("filesLoaded"));
         assertEquals("Loading extra files - 100%", fetcher.statusString);
         for (int id = 0; id < 10; id++) {

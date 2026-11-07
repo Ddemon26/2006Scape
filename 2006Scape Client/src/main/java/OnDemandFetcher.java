@@ -284,20 +284,20 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			return;
 		}
 		synchronized (nodeSubList) {
-			for (OnDemandData onDemandData = (OnDemandData) nodeSubList.firstFromTail(); onDemandData != null; onDemandData = (OnDemandData) nodeSubList.nextTowardHead()) {
-				if (onDemandData.dataType == dataType && onDemandData.ID == fileId) {
+			for (OnDemandData existingRequest = (OnDemandData) nodeSubList.firstFromTail(); existingRequest != null; existingRequest = (OnDemandData) nodeSubList.nextTowardHead()) {
+				if (existingRequest.dataType == dataType && existingRequest.ID == fileId) {
 					return;
 				}
 			}
 
-			OnDemandData onDemandData_1 = new OnDemandData();
-			onDemandData_1.dataType = dataType;
-			onDemandData_1.ID = fileId;
-			onDemandData_1.incomplete = true;
+			OnDemandData newRequest = new OnDemandData();
+			newRequest.dataType = dataType;
+			newRequest.ID = fileId;
+			newRequest.incomplete = true;
 			synchronized (cacheLookupQueue) {
-				cacheLookupQueue.insertHead(onDemandData_1);
+				cacheLookupQueue.insertHead(newRequest);
 			}
-			nodeSubList.insertHead(onDemandData_1);
+			nodeSubList.insertHead(newRequest);
 		}
 	}
 
@@ -326,7 +326,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 					waiting = false;
 					checkReceived();
 					handleFailed();
-					if (uncompletedCount == 0 && pollPass >= 5) {
+					if (urgentInFlightCount == 0 && pollPass >= 5) {
 						break;
 					}
 					dispatchExtraFileRequests();
@@ -408,37 +408,37 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		if (highestPendingPriority == 0) {
 			return;
 		}
-		OnDemandData onDemandData = new OnDemandData();
-		onDemandData.dataType = dataType;
-		onDemandData.ID = fileId;
-		onDemandData.incomplete = false;
+		OnDemandData extraRequest = new OnDemandData();
+		extraRequest.dataType = dataType;
+		extraRequest.ID = fileId;
+		extraRequest.incomplete = false;
 		synchronized (extraFileQueue) {
-			extraFileQueue.insertHead(onDemandData);
+			extraFileQueue.insertHead(extraRequest);
 		}
 	}
 
 	public OnDemandData getNextNode() {
-		OnDemandData onDemandData;
+		OnDemandData completedRequest;
 		synchronized (completedRequests) {
-			onDemandData = (OnDemandData) completedRequests.popTail();
+			completedRequest = (OnDemandData) completedRequests.popTail();
 		}
-		if (onDemandData == null) {
+		if (completedRequest == null) {
 			return null;
 		}
 		synchronized (nodeSubList) {
-			onDemandData.unlinkSub();
+			completedRequest.unlinkSub();
 		}
-		if (onDemandData.buffer == null) {
-			return onDemandData;
+		if (completedRequest.buffer == null) {
+			return completedRequest;
 		}
 		int inflatedLength = 0;
 		try {
-			GZIPInputStream gzipinputstream = new GZIPInputStream(new ByteArrayInputStream(onDemandData.buffer));
+			GZIPInputStream gzipInput = new GZIPInputStream(new ByteArrayInputStream(completedRequest.buffer));
 			do {
 				if (inflatedLength == gzipInputBuffer.length) {
 					throw new RuntimeException("buffer overflow!");
 				}
-				int bytesRead = gzipinputstream.read(gzipInputBuffer, inflatedLength, gzipInputBuffer.length - inflatedLength);
+				int bytesRead = gzipInput.read(gzipInputBuffer, inflatedLength, gzipInputBuffer.length - inflatedLength);
 				if (bytesRead == -1) {
 					break;
 				}
@@ -447,10 +447,10 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		} catch (IOException _ex) {
 			throw new RuntimeException("error unzipping");
 		}
-		onDemandData.buffer = new byte[inflatedLength];
-		System.arraycopy(gzipInputBuffer, 0, onDemandData.buffer, 0, inflatedLength);
+		completedRequest.buffer = new byte[inflatedLength];
+		System.arraycopy(gzipInputBuffer, 0, completedRequest.buffer, 0, inflatedLength);
 
-		return onDemandData;
+		return completedRequest;
 	}
 
 	public int getMapFileId(int fileKind, int regionY, int regionX) {
@@ -500,28 +500,28 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	}
 
 	private void handleFailed() {
-		uncompletedCount = 0;
-		completedCount = 0;
-		for (OnDemandData onDemandData = (OnDemandData) requested.firstFromTail(); onDemandData != null; onDemandData = (OnDemandData) requested.nextTowardHead()) {
-			if (onDemandData.incomplete) {
-				uncompletedCount++;
+		urgentInFlightCount = 0;
+		extraInFlightCount = 0;
+		for (OnDemandData inFlightRequest = (OnDemandData) requested.firstFromTail(); inFlightRequest != null; inFlightRequest = (OnDemandData) requested.nextTowardHead()) {
+			if (inFlightRequest.incomplete) {
+				urgentInFlightCount++;
 			} else {
-				completedCount++;
+				extraInFlightCount++;
 			}
 		}
 
-		while (uncompletedCount < 10) {
-			OnDemandData onDemandData_1 = (OnDemandData) cacheMissQueue.popTail();
-			if (onDemandData_1 == null) {
+		while (urgentInFlightCount < 10) {
+			OnDemandData missedRequest = (OnDemandData) cacheMissQueue.popTail();
+			if (missedRequest == null) {
 				break;
 			}
-			if (fileStatus[onDemandData_1.dataType][onDemandData_1.ID] != 0) {
+			if (fileStatus[missedRequest.dataType][missedRequest.ID] != 0) {
 				filesLoaded++;
 			}
-			fileStatus[onDemandData_1.dataType][onDemandData_1.ID] = 0;
-			requested.insertHead(onDemandData_1);
-			uncompletedCount++;
-			sendRequest(onDemandData_1);
+			fileStatus[missedRequest.dataType][missedRequest.ID] = 0;
+			requested.insertHead(missedRequest);
+			urgentInFlightCount++;
+			sendRequest(missedRequest);
 			waiting = true;
 		}
 	}
@@ -533,35 +533,35 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	}
 
 	private void checkReceived() {
-		OnDemandData onDemandData;
+		OnDemandData lookupRequest;
 		synchronized (cacheLookupQueue) {
-			onDemandData = (OnDemandData) cacheLookupQueue.popTail();
+			lookupRequest = (OnDemandData) cacheLookupQueue.popTail();
 		}
-		while (onDemandData != null) {
+		while (lookupRequest != null) {
 			waiting = true;
 			byte cachedData[] = null;
 			if (clientInstance.cacheStores[0] != null) {
-				cachedData = clientInstance.cacheStores[onDemandData.dataType + 1].readFile(onDemandData.ID);
+				cachedData = clientInstance.cacheStores[lookupRequest.dataType + 1].readFile(lookupRequest.ID);
 			}
-			if (!matchesVersionAndCrc32(versions[onDemandData.dataType][onDemandData.ID], crcs[onDemandData.dataType][onDemandData.ID], cachedData)) {
+			if (!matchesVersionAndCrc32(versions[lookupRequest.dataType][lookupRequest.ID], crcs[lookupRequest.dataType][lookupRequest.ID], cachedData)) {
 				cachedData = null;
 			}
 			synchronized (cacheLookupQueue) {
 				if (cachedData == null) {
-					cacheMissQueue.insertHead(onDemandData);
+					cacheMissQueue.insertHead(lookupRequest);
 				} else {
-					onDemandData.buffer = cachedData;
+					lookupRequest.buffer = cachedData;
 					synchronized (completedRequests) {
-						completedRequests.insertHead(onDemandData);
+						completedRequests.insertHead(lookupRequest);
 					}
 				}
-				onDemandData = (OnDemandData) cacheLookupQueue.popTail();
+				lookupRequest = (OnDemandData) cacheLookupQueue.popTail();
 			}
 		}
 	}
 
 	private void dispatchExtraFileRequests() {
-		while (uncompletedCount == 0 && completedCount < 10) {
+		while (urgentInFlightCount == 0 && extraInFlightCount < 10) {
 			if (highestPendingPriority == 0) {
 				break;
 			}
@@ -579,8 +579,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 						filesLoaded++;
 					}
 					statusString = "Loading extra files - " + filesLoaded * 100 / totalFiles + "%";
-					completedCount++;
-					if (completedCount == 10) {
+					extraInFlightCount++;
+					if (extraInFlightCount == 10) {
 						return;
 					}
 				}
@@ -605,8 +605,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 							filesLoaded++;
 						}
 						statusString = "Loading extra files - " + filesLoaded * 100 / totalFiles + "%";
-						completedCount++;
-						if (completedCount == 10) {
+						extraInFlightCount++;
+						if (extraInFlightCount == 10) {
 							return;
 						}
 					}
@@ -671,8 +671,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	private Socket socket;
 	public final int[][] versions;
 	public final int[][] crcs;
-	private int uncompletedCount;
-	private int completedCount;
+	private int urgentInFlightCount;
+	private int extraInFlightCount;
 	private final NodeList cacheMissQueue;
 	private OnDemandData current;
 	private final NodeList cacheLookupQueue;
