@@ -9839,54 +9839,54 @@ public class Game extends RSApplet {
 		aRSImageProducer_1111.drawGraphics(0, super.graphics, 637);
 	}
 
-	public void method134(Stream stream) {
-		int j = stream.readBitsMsbFirst(8);
-		if (j < playerCount) {
-			for (int k = j; k < playerCount; k++) {
-				anIntArray840[anInt839++] = playerIndices[k];
+	public void decodeExistingPlayerMovement(Stream stream) {
+		int reportedPlayerCount = stream.readBitsMsbFirst(8);
+		if (reportedPlayerCount < playerCount) {
+			for (int removedTailIndex = reportedPlayerCount; removedTailIndex < playerCount; removedTailIndex++) {
+				anIntArray840[anInt839++] = playerIndices[removedTailIndex];
 			}
 
 		}
-		if (j > playerCount) {
+		if (reportedPlayerCount > playerCount) {
 			Signlink.reporterror(myUsername + " Too many players");
 			throw new RuntimeException("eek");
 		}
 		playerCount = 0;
-		for (int l = 0; l < j; l++) {
-			int i1 = playerIndices[l];
-			Player player = playerArray[i1];
-			int j1 = stream.readBitsMsbFirst(1);
-			if (j1 == 0) {
-				playerIndices[playerCount++] = i1;
+		for (int playerListIndex = 0; playerListIndex < reportedPlayerCount; playerListIndex++) {
+			int playerIndex = playerIndices[playerListIndex];
+			Player player = playerArray[playerIndex];
+			int updateFlag = stream.readBitsMsbFirst(1);
+			if (updateFlag == 0) {
+				playerIndices[playerCount++] = playerIndex;
 				player.anInt1537 = loopCycle;
 			} else {
-				int k1 = stream.readBitsMsbFirst(2);
-				if (k1 == 0) {
-					playerIndices[playerCount++] = i1;
+				int movementType = stream.readBitsMsbFirst(2);
+				if (movementType == 0) {
+					playerIndices[playerCount++] = playerIndex;
 					player.anInt1537 = loopCycle;
-					maskUpdateIndices[maskUpdateCount++] = i1;
-				} else if (k1 == 1) {
-					playerIndices[playerCount++] = i1;
+					maskUpdateIndices[maskUpdateCount++] = playerIndex;
+				} else if (movementType == 1) {
+					playerIndices[playerCount++] = playerIndex;
 					player.anInt1537 = loopCycle;
-					int l1 = stream.readBitsMsbFirst(3);
-					player.moveInDir(false, l1);
-					int j2 = stream.readBitsMsbFirst(1);
-					if (j2 == 1) {
-						maskUpdateIndices[maskUpdateCount++] = i1;
+					int walkDirection = stream.readBitsMsbFirst(3);
+					player.moveInDir(false, walkDirection);
+					int walkMaskUpdateFlag = stream.readBitsMsbFirst(1);
+					if (walkMaskUpdateFlag == 1) {
+						maskUpdateIndices[maskUpdateCount++] = playerIndex;
 					}
-				} else if (k1 == 2) {
-					playerIndices[playerCount++] = i1;
+				} else if (movementType == 2) {
+					playerIndices[playerCount++] = playerIndex;
 					player.anInt1537 = loopCycle;
-					int i2 = stream.readBitsMsbFirst(3);
-					player.moveInDir(true, i2);
-					int k2 = stream.readBitsMsbFirst(3);
-					player.moveInDir(true, k2);
-					int l2 = stream.readBitsMsbFirst(1);
-					if (l2 == 1) {
-						maskUpdateIndices[maskUpdateCount++] = i1;
+					int firstRunDirection = stream.readBitsMsbFirst(3);
+					player.moveInDir(true, firstRunDirection);
+					int secondRunDirection = stream.readBitsMsbFirst(3);
+					player.moveInDir(true, secondRunDirection);
+					int runMaskUpdateFlag = stream.readBitsMsbFirst(1);
+					if (runMaskUpdateFlag == 1) {
+						maskUpdateIndices[maskUpdateCount++] = playerIndex;
 					}
-				} else if (k1 == 3) {
-					anIntArray840[anInt839++] = i1;
+				} else if (movementType == 3) {
+					anIntArray840[anInt839++] = playerIndex;
 				}
 			}
 		}
@@ -10527,7 +10527,7 @@ public class Game extends RSApplet {
 		anInt839 = 0;
 		maskUpdateCount = 0;
 		decodeLocalPlayerMovement(stream);
-		method134(stream);
+		decodeExistingPlayerMovement(stream);
 		addNewLocalPlayers(stream, i);
 		decodePlayerUpdateMasks(stream);
 		for (int k = 0; k < anInt839; k++) {
