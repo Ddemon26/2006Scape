@@ -837,11 +837,11 @@ public class Game extends RSApplet {
 		for (int l3 = k; l3 <= j1; l3++) {
 			for (int j5 = i2; j5 <= l2; j5++) {
 				if (l3 == k || l3 == j1 || j5 == i2 || j5 == l2) {
-					int j7 = onDemandFetcher.method562(0, j5, l3);
+					int j7 = onDemandFetcher.getMapFileId(0, j5, l3);
 					if (j7 != -1) {
 						onDemandFetcher.requestExtraFile(j7, 3);
 					}
-					int k8 = onDemandFetcher.method562(1, j5, l3);
+					int k8 = onDemandFetcher.getMapFileId(1, j5, l3);
 					if (k8 != -1) {
 						onDemandFetcher.requestExtraFile(k8, 3);
 					}
@@ -2888,7 +2888,7 @@ public class Game extends RSApplet {
 					}
 
 				}
-			} while (onDemandData.dataType != 93 || !onDemandFetcher.method564(onDemandData.ID));
+			} while (onDemandData.dataType != 93 || !onDemandFetcher.isMapObjectFileId(onDemandData.ID));
 			ObjectManager.requestObjectModels(new Stream(onDemandData.buffer), onDemandFetcher);
 		} while (true);
 	}
@@ -7110,18 +7110,18 @@ public class Game extends RSApplet {
 			}
 			if (cacheStores[0] != null) {
 				drawLoadingText(75, "Requesting maps");
-				onDemandFetcher.method558(3, onDemandFetcher.method562(0, 48, 47));
-				onDemandFetcher.method558(3, onDemandFetcher.method562(1, 48, 47));
-				onDemandFetcher.method558(3, onDemandFetcher.method562(0, 48, 48));
-				onDemandFetcher.method558(3, onDemandFetcher.method562(1, 48, 48));
-				onDemandFetcher.method558(3, onDemandFetcher.method562(0, 48, 49));
-				onDemandFetcher.method558(3, onDemandFetcher.method562(1, 48, 49));
-				onDemandFetcher.method558(3, onDemandFetcher.method562(0, 47, 47));
-				onDemandFetcher.method558(3, onDemandFetcher.method562(1, 47, 47));
-				onDemandFetcher.method558(3, onDemandFetcher.method562(0, 47, 48));
-				onDemandFetcher.method558(3, onDemandFetcher.method562(1, 47, 48));
-				onDemandFetcher.method558(3, onDemandFetcher.method562(0, 148, 48));
-				onDemandFetcher.method558(3, onDemandFetcher.method562(1, 148, 48));
+				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(0, 48, 47));
+				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(1, 48, 47));
+				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(0, 48, 48));
+				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(1, 48, 48));
+				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(0, 48, 49));
+				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(1, 48, 49));
+				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(0, 47, 47));
+				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(1, 47, 47));
+				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(0, 47, 48));
+				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(1, 47, 48));
+				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(0, 148, 48));
+				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(1, 148, 48));
 				k = onDemandFetcher.getNodeCount();
 				while (onDemandFetcher.getNodeCount() > 0) {
 					int j2 = k - onDemandFetcher.getNodeCount();
@@ -7162,11 +7162,11 @@ public class Game extends RSApplet {
 				}
 			}
 
-			onDemandFetcher.method554(isMembers);
+			onDemandFetcher.markMapFilesForDownload(isMembers);
 			if (!lowMem) {
 				int l = onDemandFetcher.getVersionCount(2);
 				for (int i3 = 1; i3 < l; i3++) {
-					if (onDemandFetcher.method569(i3)) {
+					if (onDemandFetcher.isSongPreloadFlagged(i3)) {
 						onDemandFetcher.markExtraFileForDownload((byte) 1, 2, i3);
 					}
 				}
@@ -10882,11 +10882,11 @@ public class Game extends RSApplet {
 								anIntArray1236[k16] = -1;
 								k16++;
 							} else {
-								int k28 = anIntArray1235[k16] = onDemandFetcher.method562(0, j26, l23);
+								int k28 = anIntArray1235[k16] = onDemandFetcher.getMapFileId(0, j26, l23);
 								if (k28 != -1) {
 									onDemandFetcher.method558(3, k28);
 								}
-								int j30 = anIntArray1236[k16] = onDemandFetcher.method562(1, j26, l23);
+								int j30 = anIntArray1236[k16] = onDemandFetcher.getMapFileId(1, j26, l23);
 								if (j30 != -1) {
 									onDemandFetcher.method558(3, j30);
 								}
@@ -10935,11 +10935,11 @@ public class Game extends RSApplet {
 						int i29 = anIntArray1234[l26] = ai[l26];
 						int l30 = i29 >> 8 & 0xff;
 						int l31 = i29 & 0xff;
-						int j32 = anIntArray1235[l26] = onDemandFetcher.method562(0, l31, l30);
+						int j32 = anIntArray1235[l26] = onDemandFetcher.getMapFileId(0, l31, l30);
 						if (j32 != -1) {
 							onDemandFetcher.method558(3, j32);
 						}
-						int i33 = anIntArray1236[l26] = onDemandFetcher.method562(1, l31, l30);
+						int i33 = anIntArray1236[l26] = onDemandFetcher.getMapFileId(1, l31, l30);
 						if (i33 != -1) {
 							onDemandFetcher.method558(3, i33);
 						}

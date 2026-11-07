@@ -130,74 +130,74 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		}
 	}
 
-	public void start(StreamLoader streamLoader, Game client1) {
-		String as[] = {"model_version", "anim_version", "midi_version", "map_version"};
-		for (int i = 0; i < 4; i++) {
-			byte abyte0[] = streamLoader.getDataForName(as[i]);
-			int j = abyte0.length / 2;
-			Stream stream = new Stream(abyte0);
-			versions[i] = new int[j];
-			fileStatus[i] = new byte[j];
-			for (int l = 0; l < j; l++) {
-				versions[i][l] = stream.readUnsignedShortBigEndian();
+	public void start(StreamLoader streamLoader, Game client) {
+		String versionNames[] = {"model_version", "anim_version", "midi_version", "map_version"};
+		for (int tableIndex = 0; tableIndex < 4; tableIndex++) {
+			byte versionData[] = streamLoader.getDataForName(versionNames[tableIndex]);
+			int versionCount = versionData.length / 2;
+			Stream versionStream = new Stream(versionData);
+			versions[tableIndex] = new int[versionCount];
+			fileStatus[tableIndex] = new byte[versionCount];
+			for (int versionIndex = 0; versionIndex < versionCount; versionIndex++) {
+				versions[tableIndex][versionIndex] = versionStream.readUnsignedShortBigEndian();
 			}
 
 		}
 
-		String as1[] = {"model_crc", "anim_crc", "midi_crc", "map_crc"};
-		for (int k = 0; k < 4; k++) {
-			byte abyte1[] = streamLoader.getDataForName(as1[k]);
-			int i1 = abyte1.length / 4;
-			Stream stream_1 = new Stream(abyte1);
-			crcs[k] = new int[i1];
-			for (int l1 = 0; l1 < i1; l1++) {
-				crcs[k][l1] = stream_1.readIntBigEndian();
+		String crcNames[] = {"model_crc", "anim_crc", "midi_crc", "map_crc"};
+		for (int tableIndex = 0; tableIndex < 4; tableIndex++) {
+			byte crcData[] = streamLoader.getDataForName(crcNames[tableIndex]);
+			int crcCount = crcData.length / 4;
+			Stream crcStream = new Stream(crcData);
+			crcs[tableIndex] = new int[crcCount];
+			for (int crcIndex = 0; crcIndex < crcCount; crcIndex++) {
+				crcs[tableIndex][crcIndex] = crcStream.readIntBigEndian();
 			}
 
 		}
 
-		byte abyte2[] = streamLoader.getDataForName("model_index");
-		int j1 = versions[0].length;
-		modelIndices = new byte[j1];
-		for (int k1 = 0; k1 < j1; k1++) {
-			if (k1 < abyte2.length) {
-				modelIndices[k1] = abyte2[k1];
+		byte tableData[] = streamLoader.getDataForName("model_index");
+		int entryCount = versions[0].length;
+		modelIndices = new byte[entryCount];
+		for (int entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+			if (entryIndex < tableData.length) {
+				modelIndices[entryIndex] = tableData[entryIndex];
 			} else {
-				modelIndices[k1] = 0;
+				modelIndices[entryIndex] = 0;
 			}
 		}
 
-		abyte2 = streamLoader.getDataForName("map_index");
-		Stream stream2 = new Stream(abyte2);
-		j1 = abyte2.length / 7;
-		mapIndices1 = new int[j1];
-		mapIndices2 = new int[j1];
-		mapIndices3 = new int[j1];
-		mapIndices4 = new int[j1];
-		for (int i2 = 0; i2 < j1; i2++) {
-			mapIndices1[i2] = stream2.readUnsignedShortBigEndian();
-			mapIndices2[i2] = stream2.readUnsignedShortBigEndian();
-			mapIndices3[i2] = stream2.readUnsignedShortBigEndian();
-			mapIndices4[i2] = stream2.readUnsignedByte();
+		tableData = streamLoader.getDataForName("map_index");
+		Stream tableStream = new Stream(tableData);
+		entryCount = tableData.length / 7;
+		mapRegionKeys = new int[entryCount];
+		mapTerrainFileIds = new int[entryCount];
+		mapObjectFileIds = new int[entryCount];
+		mapPreloadFlags = new int[entryCount];
+		for (int entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+			mapRegionKeys[entryIndex] = tableStream.readUnsignedShortBigEndian();
+			mapTerrainFileIds[entryIndex] = tableStream.readUnsignedShortBigEndian();
+			mapObjectFileIds[entryIndex] = tableStream.readUnsignedShortBigEndian();
+			mapPreloadFlags[entryIndex] = tableStream.readUnsignedByte();
 		}
 
-		abyte2 = streamLoader.getDataForName("anim_index");
-		stream2 = new Stream(abyte2);
-		j1 = abyte2.length / 2;
-		anIntArray1360 = new int[j1];
-		for (int j2 = 0; j2 < j1; j2++) {
-			anIntArray1360[j2] = stream2.readUnsignedShortBigEndian();
+		tableData = streamLoader.getDataForName("anim_index");
+		tableStream = new Stream(tableData);
+		entryCount = tableData.length / 2;
+		animIndices = new int[entryCount];
+		for (int entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+			animIndices[entryIndex] = tableStream.readUnsignedShortBigEndian();
 		}
 
-		abyte2 = streamLoader.getDataForName("midi_index");
-		stream2 = new Stream(abyte2);
-		j1 = abyte2.length;
-		anIntArray1348 = new int[j1];
-		for (int k2 = 0; k2 < j1; k2++) {
-			anIntArray1348[k2] = stream2.readUnsignedByte();
+		tableData = streamLoader.getDataForName("midi_index");
+		tableStream = new Stream(tableData);
+		entryCount = tableData.length;
+		songPreloadFlags = new int[entryCount];
+		for (int entryIndex = 0; entryIndex < entryCount; entryIndex++) {
+			songPreloadFlags[entryIndex] = tableStream.readUnsignedByte();
 		}
 
-		clientInstance = client1;
+		clientInstance = client;
 		running = true;
 		clientInstance.startRunnable(this, 2);
 	}
@@ -212,12 +212,12 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		running = false;
 	}
 
-	public void method554(boolean flag) {
-		int j = mapIndices1.length;
-		for (int k = 0; k < j; k++) {
-			if (flag || mapIndices4[k] != 0) {
-				markExtraFileForDownload((byte) 2, 3, mapIndices3[k]);
-				markExtraFileForDownload((byte) 2, 3, mapIndices2[k]);
+	public void markMapFilesForDownload(boolean allRegions) {
+		int regionCount = mapRegionKeys.length;
+		for (int recordIndex = 0; recordIndex < regionCount; recordIndex++) {
+			if (allRegions || mapPreloadFlags[recordIndex] != 0) {
+				markExtraFileForDownload((byte) 2, 3, mapObjectFileIds[recordIndex]);
+				markExtraFileForDownload((byte) 2, 3, mapTerrainFileIds[recordIndex]);
 			}
 		}
 
@@ -273,7 +273,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	}
 
 	public int getAnimCount() {
-		return anIntArray1360.length;
+		return animIndices.length;
 	}
 
 	public void method558(int i, int j) {
@@ -453,14 +453,14 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		return onDemandData;
 	}
 
-	public int method562(int i, int k, int l) {
-		int i1 = (l << 8) + k;
-		for (int j1 = 0; j1 < mapIndices1.length; j1++) {
-			if (mapIndices1[j1] == i1) {
-				if (i == 0) {
-					return mapIndices2[j1];
+	public int getMapFileId(int fileKind, int regionY, int regionX) {
+		int regionKey = (regionX << 8) + regionY;
+		for (int recordIndex = 0; recordIndex < mapRegionKeys.length; recordIndex++) {
+			if (mapRegionKeys[recordIndex] == regionKey) {
+				if (fileKind == 0) {
+					return mapTerrainFileIds[recordIndex];
 				} else {
-					return mapIndices3[j1];
+					return mapObjectFileIds[recordIndex];
 				}
 			}
 		}
@@ -490,9 +490,9 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		totalFiles++;
 	}
 
-	public boolean method564(int i) {
-		for (int k = 0; k < mapIndices1.length; k++) {
-			if (mapIndices3[k] == i) {
+	public boolean isMapObjectFileId(int fileId) {
+		for (int recordIndex = 0; recordIndex < mapRegionKeys.length; recordIndex++) {
+			if (mapObjectFileIds[recordIndex] == fileId) {
 				return true;
 			}
 		}
@@ -618,8 +618,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		}
 	}
 
-	public boolean method569(int i) {
-		return anIntArray1348[i] == 1;
+	public boolean isSongPreloadFlagged(int songId) {
+		return songPreloadFlags[songId] == 1;
 	}
 
 	public OnDemandFetcher() {
@@ -646,7 +646,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	public String statusString;
 	private int writeLoopCycle;
 	private long openSocketTime;
-	private int[] mapIndices3;
+	private int[] mapObjectFileIds;
 	private final CRC32 crc32;
 	private final byte[] ioBuffer;
 	public int onDemandCycle;
@@ -655,17 +655,17 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	private final NodeList extraFileQueue;
 	private int completedSize;
 	private int expectedSize;
-	int[] anIntArray1348;
+	int[] songPreloadFlags;
 	public int anInt1349;
-	private int[] mapIndices2;
+	private int[] mapTerrainFileIds;
 	private int filesLoaded;
 	private boolean running;
 	private OutputStream outputStream;
-	private int[] mapIndices4;
+	private int[] mapPreloadFlags;
 	private boolean waiting;
 	private final NodeList aClass19_1358;
 	private final byte[] gzipInputBuffer;
-	private int[] anIntArray1360;
+	private int[] animIndices;
 	private final NodeSubList nodeSubList;
 	private InputStream inputStream;
 	private Socket socket;
@@ -676,7 +676,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	private final NodeList aClass19_1368;
 	private OnDemandData current;
 	private final NodeList aClass19_1370;
-	private int[] mapIndices1;
+	private int[] mapRegionKeys;
 	private byte[] modelIndices;
 	private int loopCycle;
 }
