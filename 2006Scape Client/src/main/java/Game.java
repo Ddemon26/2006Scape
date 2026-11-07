@@ -9681,30 +9681,30 @@ public class Game extends RSApplet {
 
 	}
 
-	public void method130(int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2) {
-		Class30_Sub1 class30_sub1 = null;
-		for (Class30_Sub1 class30_sub1_1 = (Class30_Sub1) pendingSceneChanges.firstFromTail(); class30_sub1_1 != null; class30_sub1_1 = (Class30_Sub1) pendingSceneChanges.nextTowardHead()) {
-			if (class30_sub1_1.scenePlane != l1 || class30_sub1_1.tileX != i2 || class30_sub1_1.tileY != j1 || class30_sub1_1.objectCategory != i1) {
+	public void queueSceneObjectChange(int restoreDelayTicks, int requestedObjectId, int requestedOrientation, int objectCategory, int tileY, int requestedShape, int scenePlane, int tileX, int placementDelayTicks) {
+		Class30_Sub1 pendingChange = null;
+		for (Class30_Sub1 candidate = (Class30_Sub1) pendingSceneChanges.firstFromTail(); candidate != null; candidate = (Class30_Sub1) pendingSceneChanges.nextTowardHead()) {
+			if (candidate.scenePlane != scenePlane || candidate.tileX != tileX || candidate.tileY != tileY || candidate.objectCategory != objectCategory) {
 				continue;
 			}
-			class30_sub1 = class30_sub1_1;
+			pendingChange = candidate;
 			break;
 		}
 
-		if (class30_sub1 == null) {
-			class30_sub1 = new Class30_Sub1();
-			class30_sub1.scenePlane = l1;
-			class30_sub1.objectCategory = i1;
-			class30_sub1.tileX = i2;
-			class30_sub1.tileY = j1;
-			snapshotOriginalSceneObject(class30_sub1);
-			pendingSceneChanges.insertHead(class30_sub1);
+		if (pendingChange == null) {
+			pendingChange = new Class30_Sub1();
+			pendingChange.scenePlane = scenePlane;
+			pendingChange.objectCategory = objectCategory;
+			pendingChange.tileX = tileX;
+			pendingChange.tileY = tileY;
+			snapshotOriginalSceneObject(pendingChange);
+			pendingSceneChanges.insertHead(pendingChange);
 		}
-		class30_sub1.requestedObjectId = k;
-		class30_sub1.requestedShape = k1;
-		class30_sub1.requestedOrientation = l;
-		class30_sub1.placementDelayTicks = j2;
-		class30_sub1.restoreDelayTicks = j;
+		pendingChange.requestedObjectId = requestedObjectId;
+		pendingChange.requestedShape = requestedShape;
+		pendingChange.requestedOrientation = requestedOrientation;
+		pendingChange.placementDelayTicks = placementDelayTicks;
+		pendingChange.restoreDelayTicks = restoreDelayTicks;
 	}
 
 	public boolean interfaceIsSelected(RSInterface component) {
@@ -10161,7 +10161,7 @@ public class Game extends RSApplet {
 				int l22 = intGroundArray[plane][k4][j7 + 1];
 				Model model = class46.getModel(j19, i20, i22, j22, k22, l22, -1);
 				if (model != null) {
-					method130(k17 + 1, -1, 0, l20, j7, 0, plane, k4, l14 + 1);
+					queueSceneObjectChange(k17 + 1, -1, 0, l20, j7, 0, plane, k4, l14 + 1);
 					player.attachedModelStartCycle = l14 + loopCycle;
 					player.attachedModelEndCycle = k17 + loopCycle;
 					player.attachedModel = model;
@@ -10201,7 +10201,7 @@ public class Game extends RSApplet {
 			int l16 = anInt1269 + (j13 & 7);
 
 			if (k15 >= 0 && l16 >= 0 && k15 < 104 && l16 < 104) {
-				method130(-1, -1, j8, i11, l16, k5, plane, k15, 0);
+				queueSceneObjectChange(-1, -1, j8, i11, l16, k5, plane, k15, 0);
 			}
 			return;
 		}
@@ -10216,7 +10216,7 @@ public class Game extends RSApplet {
 			int l17 = anIntArray1177[i15];
 			//System.out.println("id: " + j10 + " x:" + (this.baseX + anInt1268) + " y:" + (this.baseY + anInt1269));
 			if (l4 >= 0 && k7 >= 0 && l4 < 104 && k7 < 104)
-				method130(-1, j10, k16, l17, k7, i15, plane, l4, 0);
+				queueSceneObjectChange(-1, j10, k16, l17, k7, i15, plane, l4, 0);
 			return;
 		}
 

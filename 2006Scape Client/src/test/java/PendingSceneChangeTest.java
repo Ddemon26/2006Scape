@@ -90,7 +90,7 @@ public class PendingSceneChangeTest {
         existing.info = (byte) ((3 << 6) | 10);
         tiles[1][10][11].obj1 = existing;
 
-        game.method130(3, 77, 2, 0, 11, 9, 1, 10, 4);
+        game.queueSceneObjectChange(3, 77, 2, 0, 11, 9, 1, 10, 4);
         Class30_Sub1 entry = (Class30_Sub1) game.pendingSceneChanges.firstFromTail();
         assertNotNull(entry);
         assertEquals(77, entry.requestedObjectId);
@@ -106,21 +106,37 @@ public class PendingSceneChangeTest {
         assertEquals(10, entry.originalShape);
         assertEquals(4, entry.placementDelayTicks);
 
-        game.method130(5, 88, 1, 0, 11, 8, 1, 10, 2);
+        game.queueSceneObjectChange(5, 88, 1, 0, 11, 8, 1, 10, 2);
         assertSame(entry, game.pendingSceneChanges.firstFromTail());
         assertEquals(88, entry.requestedObjectId);
         assertEquals(5, entry.restoreDelayTicks);
         assertEquals(2, entry.placementDelayTicks);
-        game.method130(5, -1, 1, 1, 11, 8, 1, 10, 2);
+        game.queueSceneObjectChange(5, -1, 1, 1, 11, 8, 1, 10, 2);
         Class30_Sub1 other = (Class30_Sub1) game.pendingSceneChanges.firstFromHead();
         assertNotSame(entry, other);
         assertEquals(1, other.objectCategory);
         assertEquals(-1, other.originalObjectId);
     }
 
+    @Test public void method130KeysEntriesByPlaneTileXTileYAndCategory() throws Exception {
+        Game game = game();
+        game.queueSceneObjectChange(1, 10, 0, 0, 11, 2, 1, 10, 3);
+        game.queueSceneObjectChange(1, 10, 0, 0, 11, 2, 2, 10, 3);
+        game.queueSceneObjectChange(1, 10, 0, 0, 11, 2, 1, 12, 3);
+        game.queueSceneObjectChange(1, 10, 0, 0, 13, 2, 1, 10, 3);
+        game.queueSceneObjectChange(1, 10, 0, 1, 11, 2, 1, 10, 3);
+        int count = 0;
+        for (Class30_Sub1 e = (Class30_Sub1) game.pendingSceneChanges.firstFromTail(); e != null; e = (Class30_Sub1) game.pendingSceneChanges.nextTowardHead()) count++;
+        assertEquals(5, count);
+        game.queueSceneObjectChange(9, 20, 3, 0, 11, 4, 1, 10, 8);
+        count = 0;
+        for (Class30_Sub1 e = (Class30_Sub1) game.pendingSceneChanges.firstFromTail(); e != null; e = (Class30_Sub1) game.pendingSceneChanges.nextTowardHead()) count++;
+        assertEquals(5, count);
+    }
+
     @Test public void method115CountsDownOnlyInLoadedSceneAndUnlinksAfterRestoration() throws Exception {
         Game game = game();
-        game.method130(3, -2, 0, 0, 11, 0, 1, 10, 2);
+        game.queueSceneObjectChange(3, -2, 0, 0, 11, 0, 1, 10, 2);
         Class30_Sub1 entry = (Class30_Sub1) game.pendingSceneChanges.firstFromTail();
         game.loadingStage = 1;
         game.advancePendingSceneChanges();
@@ -140,7 +156,7 @@ public class PendingSceneChangeTest {
 
     @Test public void method115RejectsPlacementAtSceneBoundary() throws Exception {
         Game game = game();
-        game.method130(2, -1, 0, 0, 11, 0, 1, 0, 1);
+        game.queueSceneObjectChange(2, -1, 0, 0, 11, 0, 1, 0, 1);
         Class30_Sub1 entry = (Class30_Sub1) game.pendingSceneChanges.firstFromTail();
         game.loadingStage = 2;
         game.advancePendingSceneChanges();
