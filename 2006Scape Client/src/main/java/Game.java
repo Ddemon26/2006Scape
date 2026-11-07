@@ -6018,48 +6018,48 @@ public class Game extends RSApplet {
 		return ((firstRgb & 0xff00ff) * firstWeight + (secondRgb & 0xff00ff) * secondWeight & 0xff00ff00) + ((firstRgb & 0xff00) * firstWeight + (secondRgb & 0xff00) * secondWeight & 0xff0000) >> 8;
 	}
 
-	public void login(String s, String s1, boolean flag) {
-		Signlink.errorname = s;
+	public void login(String username, String password, boolean reconnecting) {
+		Signlink.errorname = username;
 		try {
-			if (!flag) {
+			if (!reconnecting) {
 				loginMessage1 = "";
 				loginMessage2 = "Connecting to server...";
 				drawLoginScreen(true);
 			}
 			socketStream = new RSSocket(this, openSocket((ClientSettings.SERVER_WORLD == 1) ? 43594 : 43596 + ClientSettings.SERVER_WORLD + portOff));
-			long l = TextClass.encodeBase37Name(s);
-			int i = (int) (l >> 16 & 31L);
+			long nameHash = TextClass.encodeBase37Name(username);
+			int nameHashByte = (int) (nameHash >> 16 & 31L);
 			stream.currentOffset = 0;
 			stream.writeByte(14);
-			stream.writeByte(i);
+			stream.writeByte(nameHashByte);
 			socketStream.queueBytes(2, stream.buffer);
-			for (int j = 0; j < 8; j++) {
+			for (int discardedByteIndex = 0; discardedByteIndex < 8; discardedByteIndex++) {
 				socketStream.read();
 			}
 
-			int k = socketStream.read();
-			int i1 = k;
-			if (k == 0) {
+			int responseCode = socketStream.read();
+			int initialResponseCode = responseCode;
+			if (responseCode == 0) {
 				socketStream.readFully(inStream.buffer, 8);
 				inStream.currentOffset = 0;
 				aLong1215 = inStream.readLongBigEndian();
-				int ai[] = new int[4];
-				ai[0] = (int) (Math.random() * 99999999D);
-				ai[1] = (int) (Math.random() * 99999999D);
-				ai[2] = (int) (aLong1215 >> 32);
-				ai[3] = (int) aLong1215;
+				int isaacSeed[] = new int[4];
+				isaacSeed[0] = (int) (Math.random() * 99999999D);
+				isaacSeed[1] = (int) (Math.random() * 99999999D);
+				isaacSeed[2] = (int) (aLong1215 >> 32);
+				isaacSeed[3] = (int) aLong1215;
 				stream.currentOffset = 0;
 				stream.writeByte(10);
-				stream.writeIntBigEndian(ai[0]);
-				stream.writeIntBigEndian(ai[1]);
-				stream.writeIntBigEndian(ai[2]);
-				stream.writeIntBigEndian(ai[3]);
+				stream.writeIntBigEndian(isaacSeed[0]);
+				stream.writeIntBigEndian(isaacSeed[1]);
+				stream.writeIntBigEndian(isaacSeed[2]);
+				stream.writeIntBigEndian(isaacSeed[3]);
 				stream.writeIntBigEndian(ClientSettings.UID);
-				stream.writeLfTerminatedString(s);
-				stream.writeLfTerminatedString(s1);
+				stream.writeLfTerminatedString(username);
+				stream.writeLfTerminatedString(password);
 				stream.encryptRsaBlock();
 				aStream_847.currentOffset = 0;
-				if (flag) {
+				if (reconnecting) {
 					aStream_847.writeByte(18);
 				} else {
 					aStream_847.writeByte(16);
@@ -6068,29 +6068,29 @@ public class Game extends RSApplet {
 				aStream_847.writeByte(255);
 				aStream_847.writeShortBigEndian(1);
 				aStream_847.writeByte(lowMem ? 1 : 0);
-				for (int l1 = 0; l1 < 9; l1++) {
-					aStream_847.writeIntBigEndian(expectedCRCs[l1]);
+				for (int crcIndex = 0; crcIndex < 9; crcIndex++) {
+					aStream_847.writeIntBigEndian(expectedCRCs[crcIndex]);
 				}
 
 				aStream_847.writeBytes(stream.buffer, stream.currentOffset, 0);
-				stream.encryption = new ISAACRandomGen(ai);
-				for (int j2 = 0; j2 < 4; j2++) {
-					ai[j2] += 50;
+				stream.encryption = new ISAACRandomGen(isaacSeed);
+				for (int seedIndex = 0; seedIndex < 4; seedIndex++) {
+					isaacSeed[seedIndex] += 50;
 				}
 
-				encryption = new ISAACRandomGen(ai);
+				encryption = new ISAACRandomGen(isaacSeed);
 				socketStream.queueBytes(aStream_847.currentOffset, aStream_847.buffer);
-				k = socketStream.read();
+				responseCode = socketStream.read();
 			}
-			if (k == 1) {
+			if (responseCode == 1) {
 				try {
 					Thread.sleep(2000L);
 				} catch (Exception _ex) {
 				}
-				login(s, s1, flag);
+				login(username, password, reconnecting);
 				return;
 			}
-			if (k == 2) {
+			if (responseCode == 2) {
 				myPrivilege = socketStream.read();
 				flagged = socketStream.read() == 1;
 				aLong1220 = 0L;
@@ -6113,8 +6113,8 @@ public class Game extends RSApplet {
 				menuActionRow = 0;
 				menuOpen = false;
 				super.idleTime = 0;
-				for (int j1 = 0; j1 < 100; j1++) {
-					chatMessages[j1] = null;
+				for (int chatIndex = 0; chatIndex < 100; chatIndex++) {
+					chatMessages[chatIndex] = null;
 				}
 
 				itemSelected = 0;
@@ -6133,22 +6133,22 @@ public class Game extends RSApplet {
 				destY = 0;
 				playerCount = 0;
 				npcCount = 0;
-				for (int i2 = 0; i2 < maxPlayers; i2++) {
-					playerArray[i2] = null;
-					aStreamArray895s[i2] = null;
+				for (int playerIndex = 0; playerIndex < maxPlayers; playerIndex++) {
+					playerArray[playerIndex] = null;
+					aStreamArray895s[playerIndex] = null;
 				}
 
-				for (int k2 = 0; k2 < 16384; k2++) {
-					npcArray[k2] = null;
+				for (int npcIndex = 0; npcIndex < 16384; npcIndex++) {
+					npcArray[npcIndex] = null;
 				}
 
 				myPlayer = playerArray[myPlayerIndex] = new Player();
 				projectiles.removeAll();
 				transientGraphics.removeAll();
-				for (int l2 = 0; l2 < 4; l2++) {
-					for (int i3 = 0; i3 < 104; i3++) {
-						for (int k3 = 0; k3 < 104; k3++) {
-							groundArray[l2][i3][k3] = null;
+				for (int planeIndex = 0; planeIndex < 4; planeIndex++) {
+					for (int tileX = 0; tileX < 104; tileX++) {
+						for (int tileY = 0; tileY < 104; tileY++) {
+							groundArray[planeIndex][tileX][tileY] = null;
 						}
 					}
 				}
@@ -6172,13 +6172,13 @@ public class Game extends RSApplet {
 				anInt1054 = -1;
 				designerMale = true;
 				selectDefaultDesignerKits();
-				for (int j3 = 0; j3 < 5; j3++) {
-					anIntArray990[j3] = 0;
+				for (int resetSlot = 0; resetSlot < 5; resetSlot++) {
+					anIntArray990[resetSlot] = 0;
 				}
 
-				for (int l3 = 0; l3 < 5; l3++) {
-					atPlayerActions[l3] = null;
-					atPlayerArray[l3] = false;
+				for (int actionIndex = 0; actionIndex < 5; actionIndex++) {
+					atPlayerActions[actionIndex] = null;
+					atPlayerArray[actionIndex] = false;
 				}
 
 				anInt1175 = 0;
@@ -6192,69 +6192,69 @@ public class Game extends RSApplet {
 				resetImageProducers2();
 				return;
 			}
-			if (k == 3) {
+			if (responseCode == 3) {
 				loginMessage1 = "";
 				loginMessage2 = "Invalid username or password.";
 				return;
 			}
-			if (k == 4) {
+			if (responseCode == 4) {
 				loginMessage1 = "Your account has been disabled.";
 				loginMessage2 = "Or you entered an invalid character for user/pass";
 				return;
 			}
-			if (k == 5) {
+			if (responseCode == 5) {
 				loginMessage1 = "Your account is already logged in.";
 				loginMessage2 = "Try again in 60 secs...";
 				return;
 			}
-			if (k == 6) {
+			if (responseCode == 6) {
 				loginMessage1 = "" + ClientSettings.SERVER_NAME + " has been updated!";
 				loginMessage2 = "Please reload this page.";
 				return;
 			}
-			if (k == 7) {
+			if (responseCode == 7) {
 				loginMessage1 = "This world is full.";
 				loginMessage2 = "Please use a different world.";
 				return;
 			}
-			if (k == 8) {
+			if (responseCode == 8) {
 				loginMessage1 = "Unable to connect.";
 				loginMessage2 = "Login server offline.";
 				return;
 			}
-			if (k == 9) {
+			if (responseCode == 9) {
 				loginMessage1 = "Login limit exceeded.";
 				loginMessage2 = "Too many connections from your address.";
 				return;
 			}
-			if (k == 10) {
+			if (responseCode == 10) {
 				loginMessage1 = "Unable to connect.";
 				loginMessage2 = "Bad session id.";
 				return;
 			}
-			if (k == 11) {
+			if (responseCode == 11) {
 				loginMessage1 = "Login server rejected session.";
 				loginMessage2 = "Please try again.";
 				return;
 			}
-			if (k == 12) {
+			if (responseCode == 12) {
 				loginMessage1 = "Only staff are allowed to play right now.";
 				loginMessage2 = "Please login using a staff account.";
 				//loginMessage1 = "You need a members account to login to this world.";
 				//loginMessage2 = "Please subscribe, or use a different world.";
 				return;
 			}
-			if (k == 13) {
+			if (responseCode == 13) {
 				loginMessage1 = "Could not complete login.";
 				loginMessage2 = "Please try using a different world.";
 				return;
 			}
-			if (k == 14) {
+			if (responseCode == 14) {
 				loginMessage1 = "The server is being updated.";
 				loginMessage2 = "Please wait 1 minute and try again.";
 				return;
 			}
-			if (k == 15) {
+			if (responseCode == 15) {
 				loggedIn = true;
 				stream.currentOffset = 0;
 				inStream.currentOffset = 0;
@@ -6270,50 +6270,50 @@ public class Game extends RSApplet {
 				aLong824 = System.currentTimeMillis();
 				return;
 			}
-			if (k == 16) {
+			if (responseCode == 16) {
 				loginMessage1 = "Login attempts exceeded.";
 				loginMessage2 = "Please wait 1 minute and try again.";
 				return;
 			}
-			if (k == 17) {
+			if (responseCode == 17) {
 				loginMessage1 = "You are standing in a members-only area.";
 				loginMessage2 = "To play on this world move to a free area first";
 				return;
 			}
-			if (k == 20) {
+			if (responseCode == 20) {
 				loginMessage1 = "Invalid loginserver requested";
 				loginMessage2 = "Please try using a different world.";
 				return;
 			}
-			if (k == 30) {
+			if (responseCode == 30) {
 				loginMessage1 = "You need a forum account to play.";
 				loginMessage2 = "Go to " + ClientSettings.SERVER_WEBSITE + " to register.";
 				return;
 			}
-			if (k == 31) {
+			if (responseCode == 31) {
 				loginMessage1 = "You're using an invalid or outdated client.";
 				loginMessage2 = "Get the latest version at " + ClientSettings.SERVER_WEBSITE + "";
 				return;
 			}
-			if (k == 32) {
+			if (responseCode == 32) {
 				loginMessage1 = "You need to recover your account first,";
 				loginMessage2 = "go to " + ClientSettings.SERVER_WEBSITE + "/help for a tutorial!";
 				return;
 			}
-			if (k == 33) {
+			if (responseCode == 33) {
 				loginMessage1 = "You need a members account to login to this world.";
 				loginMessage2 = "Please subscribe, or use a different world.";
 				return;
 			}
-			if (k == 34) {
+			if (responseCode == 34) {
 				loginMessage1 = "You need to activate your forum account first.";
 				loginMessage2 = "Click on confirm in the email we have send you!";
 				return;
 			}
-			if (k == 21) {
-				for (int k1 = socketStream.read(); k1 >= 0; k1--) {
+			if (responseCode == 21) {
+				for (int secondsRemaining = socketStream.read(); secondsRemaining >= 0; secondsRemaining--) {
 					loginMessage1 = "You have only just left another world";
-					loginMessage2 = "Your profile will be transferred in: " + k1 + " seconds";
+					loginMessage2 = "Your profile will be transferred in: " + secondsRemaining + " seconds";
 					drawLoginScreen(true);
 					try {
 						Thread.sleep(1000L);
@@ -6321,18 +6321,18 @@ public class Game extends RSApplet {
 					}
 				}
 
-				login(s, s1, flag);
+				login(username, password, reconnecting);
 				return;
 			}
-			if (k == -1) {
-				if (i1 == 0) {
+			if (responseCode == -1) {
+				if (initialResponseCode == 0) {
 					if (loginFailures < 2) {
 						try {
 							Thread.sleep(2000L);
 						} catch (Exception _ex) {
 						}
 						loginFailures++;
-						login(s, s1, flag);
+						login(username, password, reconnecting);
 						return;
 					} else {
 						loginMessage1 = "Error connecting to server.";
@@ -6345,7 +6345,7 @@ public class Game extends RSApplet {
 					return;
 				}
 			} else {
-				System.out.println("response:" + k);
+				System.out.println("response:" + responseCode);
 				loginMessage1 = "Unexpected server response";
 				loginMessage2 = "Please try using a different world.";
 				return;
