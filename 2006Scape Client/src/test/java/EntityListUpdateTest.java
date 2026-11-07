@@ -35,7 +35,7 @@ public class EntityListUpdateTest {
         g.npcCount = ids.length;
         for (int n = 0; n < ids.length; n++) {
             g.npcIndices[n] = ids[n];
-            NPC p = new NPC(); p.setPos(50 + n, 60 + n, true); p.anInt1537 = -1; p.desc = def(500 + n);
+            NPC p = new NPC(); p.setPos(50 + n, 60 + n, true); p.lastUpdateCycle = -1; p.desc = def(500 + n);
             g.npcArray[ids[n]] = p;
         }
     }
@@ -43,7 +43,7 @@ public class EntityListUpdateTest {
         g.playerCount = ids.length;
         for (int n = 0; n < ids.length; n++) {
             g.playerIndices[n] = ids[n];
-            Player p = new Player(); p.setPos(50 + n, 60 + n, true); p.anInt1537 = -1;
+            Player p = new Player(); p.setPos(50 + n, 60 + n, true); p.lastUpdateCycle = -1;
             g.playerArray[ids[n]] = p;
         }
     }
@@ -68,7 +68,7 @@ public class EntityListUpdateTest {
 
     @Test public void npcRemovalCountIsResetSoStaleEntriesAreIgnored() throws Exception {
         Game g = new Game(); seedNpcs(g, 41, 7, 93, 12);
-        NPC unlisted = new NPC(); unlisted.anInt1537 = -1; g.npcArray[300] = unlisted;
+        NPC unlisted = new NPC(); unlisted.lastUpdateCycle = -1; g.npcArray[300] = unlisted;
         g.removedEntityIndices[0] = 300; g.removedEntityIndices[1] = 300; g.removedEntityCount = 2; // left from an earlier packet
         g.updateNPCs(bits(8, 4, 1, 0, 1, 0, 1, 0, 1, 0), 2);
         assertEquals(0, g.removedEntityCount);
@@ -139,7 +139,7 @@ public class EntityListUpdateTest {
 
     @Test public void playerRemovalCountIsResetSoStaleEntriesAreIgnored() {
         Game g = new Game(); seedPlayers(g, 41, 7, 93, 12);
-        Player unlisted = new Player(); unlisted.anInt1537 = -1; g.playerArray[300] = unlisted;
+        Player unlisted = new Player(); unlisted.lastUpdateCycle = -1; g.playerArray[300] = unlisted;
         g.removedEntityIndices[0] = 300; g.removedEntityCount = 1;
         g.updatePlayers(2, bits(1, 0, 8, 4, 1, 0, 1, 0, 1, 0, 1, 0));
         assertEquals(0, g.removedEntityCount);

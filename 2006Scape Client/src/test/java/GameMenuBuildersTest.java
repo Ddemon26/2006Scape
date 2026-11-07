@@ -157,7 +157,7 @@ public class GameMenuBuildersTest {
         assertEquals(1, g.playerCount);
         assertEquals(9, g.playerIndices[0]);
         Player p = g.playerArray[9];
-        assertEquals(42, p.anInt1537);
+        assertEquals(42, p.lastUpdateCycle);
         assertEquals(103, p.smallX[0]);
         assertEquals(198, p.smallY[0]);
         assertEquals(103 * 128 + 64, p.x);

@@ -70,22 +70,22 @@ public class EntityTurningTest {
 
     @Test public void faceCoordinateWaitsForWalkingQueueThenClears() {
         Game game = game(); Entity entity = entity();
-        entity.anInt1538 = 14; entity.anInt1539 = 16;
+        entity.faceHalfTileX = 14; entity.faceHalfTileY = 16;
         entity.smallXYIndex = 1; entity.deferredMovementTicks = 0;
         game.updateEntityTurning(entity);
-        assertEquals(14, entity.anInt1538);
-        assertEquals(16, entity.anInt1539);
+        assertEquals(14, entity.faceHalfTileX);
+        assertEquals(16, entity.faceHalfTileY);
         entity.deferredMovementTicks = 1;
         game.updateEntityTurning(entity);
         assertEquals(511, entity.turnDirection);
-        assertEquals(0, entity.anInt1538);
-        assertEquals(0, entity.anInt1539);
-        entity.anInt1538 = 16; entity.anInt1539 = 18;
+        assertEquals(0, entity.faceHalfTileX);
+        assertEquals(0, entity.faceHalfTileY);
+        entity.faceHalfTileX = 16; entity.faceHalfTileY = 18;
         entity.smallXYIndex = 0;
         game.updateEntityTurning(entity);
         assertEquals(1023, entity.turnDirection);
-        assertEquals(0, entity.anInt1538);
-        assertEquals(0, entity.anInt1539);
+        assertEquals(0, entity.faceHalfTileX);
+        assertEquals(0, entity.faceHalfTileY);
     }
 
     @Test public void modularTurnTakesShortestStepAndSnapsAtBoundary() {

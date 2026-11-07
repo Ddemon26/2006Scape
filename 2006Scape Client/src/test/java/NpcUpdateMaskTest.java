@@ -51,18 +51,18 @@ public class NpcUpdateMaskTest {
             Stream start = packet(0x10, 0, 0, 5);
             game.decodeNpcUpdateMasks(start);
             assertEquals(4, start.currentOffset); assertEquals(0, npc.anim);
-            assertEquals(5, npc.animationDelay); assertEquals(3, npc.anInt1542);
-            npc.animFrame = 9; npc.anInt1530 = 9;
+            assertEquals(5, npc.animationDelay); assertEquals(3, npc.stepsQueuedBeforeAnimation);
+            npc.animFrame = 9; npc.animLoopCount = 9;
             game.decodeNpcUpdateMasks(packet(0x10, 0, 0, 2));
             assertEquals(0, npc.animFrame); assertEquals(2, npc.animationDelay);
-            assertEquals(0, npc.anInt1530);
+            assertEquals(0, npc.animLoopCount);
             game.decodeNpcUpdateMasks(packet(0x10, 1, 0, 7));
             assertEquals(0, npc.anim); assertEquals(2, npc.animationDelay);
             game.decodeNpcUpdateMasks(packet(0x10, 255, 255, 8));
             assertEquals(-1, npc.anim); assertEquals(8, npc.animationDelay);
-            npc.anim = 1; npc.anInt1530 = 9;
+            npc.anim = 1; npc.animLoopCount = 9;
             game.decodeNpcUpdateMasks(packet(0x10, 1, 0, 6));
-            assertEquals(0, npc.anInt1530); assertEquals(8, npc.animationDelay);
+            assertEquals(0, npc.animLoopCount); assertEquals(8, npc.animationDelay);
         } finally { Animation.anims = saved; }
     }
 
@@ -99,7 +99,7 @@ public class NpcUpdateMaskTest {
         game.decodeNpcUpdateMasks(stream);
         assertEquals(10, stream.currentOffset); assertEquals(77, stream.readUnsignedByte());
         assertEquals(17, npc.interactingEntity); assertEquals("ok", npc.textSpoken);
-        assertEquals(258, npc.anInt1538); assertEquals(772, npc.anInt1539);
+        assertEquals(258, npc.faceHalfTileX); assertEquals(772, npc.faceHalfTileY);
         game.decodeNpcUpdateMasks(packet(0x20, 255, 255));
         assertEquals(-1, npc.interactingEntity);
     }

@@ -28,7 +28,7 @@ public class ExistingNpcMovementBitsTest {
             g.npcIndices[n] = ids[n];
             NPC p = new NPC();
             p.setPos(50 + n, 60 + n, true);
-            p.anInt1537 = -1;
+            p.lastUpdateCycle = -1;
             g.npcArray[ids[n]] = p;
         }
     }
@@ -58,9 +58,9 @@ public class ExistingNpcMovementBitsTest {
         assertEquals(2, g.removedEntityCount);
         assertEquals(93, g.removedEntityIndices[0]);
         assertEquals(12, g.removedEntityIndices[1]);
-        assertEquals(731, g.npcArray[41].anInt1537);
-        assertEquals(731, g.npcArray[7].anInt1537);
-        assertEquals(-1, g.npcArray[93].anInt1537);
+        assertEquals(731, g.npcArray[41].lastUpdateCycle);
+        assertEquals(731, g.npcArray[7].lastUpdateCycle);
+        assertEquals(-1, g.npcArray[93].lastUpdateCycle);
         assertEquals(0, g.maskUpdateCount);
         seed(41, 7, 93, 12);
         s = apply(8, 0, 1, 1);
@@ -85,7 +85,7 @@ public class ExistingNpcMovementBitsTest {
         assertEquals(9, s.bitOffset);
         assertEquals(50, p.smallX[0]);
         assertEquals(60, p.smallY[0]);
-        assertEquals(731, p.anInt1537);
+        assertEquals(731, p.lastUpdateCycle);
         assertEquals(0, g.maskUpdateCount);
         assertEquals(0, g.removedEntityCount);
     }
@@ -101,7 +101,7 @@ public class ExistingNpcMovementBitsTest {
         assertEquals(7, g.maskUpdateIndices[1]);
         assertEquals(50, g.npcArray[7].smallX[0]);
         assertEquals(60, g.npcArray[7].smallY[0]);
-        assertEquals(731, g.npcArray[7].anInt1537);
+        assertEquals(731, g.npcArray[7].lastUpdateCycle);
         assertEquals(0, g.removedEntityCount);
     }
     @Test public void allWalkDirectionsAndBothMaskValuesAreIndependent() {
@@ -115,8 +115,8 @@ public class ExistingNpcMovementBitsTest {
             assertEquals(60 + DY[d], p.smallY[0]);
             assertEquals(50, p.smallX[1]);
             assertEquals(60, p.smallY[1]);
-            assertFalse(p.aBooleanArray1553[0]);
-            assertEquals(731, p.anInt1537);
+            assertFalse(p.pathRunFlags[0]);
+            assertEquals(731, p.lastUpdateCycle);
             assertEquals(b, g.maskUpdateCount);
             if (b == 1) assertEquals(93, g.maskUpdateIndices[0]);
             assertEquals(0, g.removedEntityCount);
@@ -133,9 +133,9 @@ public class ExistingNpcMovementBitsTest {
             assertEquals(60 + DY[a], p.smallY[1]);
             assertEquals(50 + DX[a] + DX[b], p.smallX[0]);
             assertEquals(60 + DY[a] + DY[b], p.smallY[0]);
-            assertTrue(p.aBooleanArray1553[0]);
-            assertTrue(p.aBooleanArray1553[1]);
-            assertEquals(731, p.anInt1537);
+            assertTrue(p.pathRunFlags[0]);
+            assertTrue(p.pathRunFlags[1]);
+            assertEquals(731, p.lastUpdateCycle);
             assertEquals(c, g.maskUpdateCount);
             if (c == 1) assertEquals(12, g.maskUpdateIndices[0]);
             assertEquals(0, g.removedEntityCount);
@@ -150,10 +150,10 @@ public class ExistingNpcMovementBitsTest {
         assertEquals(19, s.bitOffset);
         assertEquals(3, g.removedEntityCount);
         assertArrayEquals(new int[]{305, 12, 41}, java.util.Arrays.copyOf(g.removedEntityIndices, 3));
-        assertEquals(-1, g.npcArray[41].anInt1537);
-        assertEquals(-1, g.npcArray[12].anInt1537);
-        assertEquals(731, g.npcArray[7].anInt1537);
-        assertEquals(731, g.npcArray[93].anInt1537);
+        assertEquals(-1, g.npcArray[41].lastUpdateCycle);
+        assertEquals(-1, g.npcArray[12].lastUpdateCycle);
+        assertEquals(731, g.npcArray[7].lastUpdateCycle);
+        assertEquals(731, g.npcArray[93].lastUpdateCycle);
         assertEquals(52, p.smallX[0]);
         assertEquals(61, p.smallY[0]);
         assertEquals(1, g.maskUpdateCount);
@@ -169,7 +169,7 @@ public class ExistingNpcMovementBitsTest {
         g.decodeExistingNpcMovement(s);
         list(ids);
         assertEquals(263, s.bitOffset);
-        assertEquals(731, g.npcArray[510].anInt1537);
+        assertEquals(731, g.npcArray[510].lastUpdateCycle);
         assertEquals(0, g.removedEntityCount);
         assertEquals(0, g.maskUpdateCount);
     }

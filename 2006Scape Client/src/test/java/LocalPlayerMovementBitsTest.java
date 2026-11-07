@@ -62,7 +62,7 @@ public class LocalPlayerMovementBitsTest {
         assertEquals(7, west.bitOffset);
         assertEquals(49, Game.myPlayer.smallX[0]);
         assertEquals(50, Game.myPlayer.smallY[0]);
-        assertFalse(Game.myPlayer.aBooleanArray1553[0]);
+        assertFalse(Game.myPlayer.pathRunFlags[0]);
         assertEquals(0, game.maskUpdateCount);
         Game.myPlayer.setPos(50, 50, true);
         apply(1, 1, 2, 1, 3, 4, 1, 1);
@@ -77,8 +77,8 @@ public class LocalPlayerMovementBitsTest {
         assertEquals(51, Game.myPlayer.smallY[0]);
         assertEquals(50, Game.myPlayer.smallX[1]);
         assertEquals(51, Game.myPlayer.smallY[1]);
-        assertTrue(Game.myPlayer.aBooleanArray1553[0]);
-        assertTrue(Game.myPlayer.aBooleanArray1553[1]);
+        assertTrue(Game.myPlayer.pathRunFlags[0]);
+        assertTrue(Game.myPlayer.pathRunFlags[1]);
         assertEquals(1, game.maskUpdateCount);
         Game.myPlayer.setPos(50, 50, true);
         game.maskUpdateCount = 0;

@@ -62,15 +62,15 @@ public class WalkingPathTest {
         Game g = new Game();
         Entity deep = at(1344, 1344, 11, 10);
         deep.smallXYIndex = 4; deep.smallX[3] = 11; deep.smallY[3] = 10;
-        deep.deferredMovementTicks = 2; deep.anInt1542 = 3;
+        deep.deferredMovementTicks = 2; deep.stepsQueuedBeforeAnimation = 3;
         g.advanceEntityAlongWalkingPath(deep);
         assertEquals(1352, deep.x); assertEquals(1, deep.deferredMovementTicks);
         assertEquals(24, deep.movementAnimationId);
         Entity running = at(1468, 1344, 11, 10);
-        running.aBooleanArray1553[0] = true; running.anInt1542 = 2;
+        running.pathRunFlags[0] = true; running.stepsQueuedBeforeAnimation = 2;
         g.advanceEntityAlongWalkingPath(running);
         assertEquals(1472, running.x); assertEquals(0, running.smallXYIndex);
-        assertEquals(1, running.anInt1542);
+        assertEquals(1, running.stepsQueuedBeforeAnimation);
         assertEquals(24, running.movementAnimationId);
         Entity walking = at(1468, 1344, 11, 10);
         g.advanceEntityAlongWalkingPath(walking);

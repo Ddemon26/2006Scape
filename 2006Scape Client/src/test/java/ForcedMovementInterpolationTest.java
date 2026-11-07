@@ -4,10 +4,10 @@ import org.junit.Test;
 public class ForcedMovementInterpolationTest {
     private Entity entity(int sx, int sy, int ex, int ey, int size) {
         Entity e = new Entity();
-        e.anInt1543 = sx; e.anInt1545 = sy;
-        e.anInt1544 = ex; e.anInt1546 = ey;
+        e.forceMoveStartX = sx; e.forceMoveStartY = sy;
+        e.forceMoveEndX = ex; e.forceMoveEndY = ey;
         e.tileSize = size; e.anim = -1;
-        e.anInt1547 = 100; e.anInt1548 = 104;
+        e.forceMoveStartCycle = 100; e.forceMoveEndCycle = 104;
         e.x = -50; e.y = -60; e.deferredMovementTicks = 8;
         return e;
     }
@@ -34,11 +34,11 @@ public class ForcedMovementInterpolationTest {
     @Test public void durationBoundaryAndFacingMapping() {
         Game g = new Game(); g.loopCycle = 101;
         Entity a = entity(10, 20, 14, 24, 1);
-        a.anInt1548 = 102; a.anInt1549 = 3; a.turnDirection = 777;
+        a.forceMoveEndCycle = 102; a.forceMoveDirection = 3; a.turnDirection = 777;
         g.advanceEntityThroughForcedMovement(a); assertEquals(1600, a.x); assertEquals(2880, a.y);
         assertEquals(512, a.turnDirection); assertEquals(512, a.facingDirection);
         Entity b = entity(10, 20, 14, 24, 1);
-        b.anInt1549 = 4; b.turnDirection = 777;
+        b.forceMoveDirection = 4; b.turnDirection = 777;
         g.advanceEntityThroughForcedMovement(b); assertEquals(777, b.turnDirection); assertEquals(777, b.facingDirection);
     }
 }
