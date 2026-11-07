@@ -355,11 +355,11 @@ public class ObjectPlanePlacementTest {
         g.plane = plane;
         g.minimapBuiltPlane = plane;
         g.loadingStage = 2;
-        g.aByteArrayArray1183 = new byte[0][];
-        g.aByteArrayArray1247 = new byte[0][];
-        g.anIntArray1235 = new int[0];
-        g.anIntArray1236 = new int[0];
-        g.anIntArray1234 = new int[0];
+        g.regionTerrainData = new byte[0][];
+        g.regionObjectData = new byte[0][];
+        g.regionTerrainFileIds = new int[0];
+        g.regionObjectFileIds = new int[0];
+        g.regionKeys = new int[0];
         g.stream = new Stream(new byte[16]);
         g.stream.encryption = new ISAACRandomGen(new int[4]);
         ObjectManager.scenePlaneFilter = filter;

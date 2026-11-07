@@ -671,22 +671,22 @@ public class Game extends RSApplet {
 			}
 
 			ObjectManager objectManager = new ObjectManager(byteGroundArray, intGroundArray);
-			int k2 = aByteArrayArray1183.length;
+			int k2 = regionTerrainData.length;
 			stream.writeEncryptedOpcode(0);
 			if (!aBoolean1159) {
 				for (int i3 = 0; i3 < k2; i3++) {
-					int i4 = (anIntArray1234[i3] >> 8) * 64 - baseX;
-					int k5 = (anIntArray1234[i3] & 0xff) * 64 - baseY;
-					byte abyte0[] = aByteArrayArray1183[i3];
+					int i4 = (regionKeys[i3] >> 8) * 64 - baseX;
+					int k5 = (regionKeys[i3] & 0xff) * 64 - baseY;
+					byte abyte0[] = regionTerrainData[i3];
 					if (abyte0 != null) {
 						objectManager.loadTerrainRegion(abyte0, k5, i4, (anInt1069 - 6) * 8, (anInt1070 - 6) * 8, aClass11Array1230);
 					}
 				}
 
 				for (int j4 = 0; j4 < k2; j4++) {
-					int l5 = (anIntArray1234[j4] >> 8) * 64 - baseX;
-					int k7 = (anIntArray1234[j4] & 0xff) * 64 - baseY;
-					byte abyte2[] = aByteArrayArray1183[j4];
+					int l5 = (regionKeys[j4] >> 8) * 64 - baseX;
+					int k7 = (regionKeys[j4] & 0xff) * 64 - baseY;
+					byte abyte2[] = regionTerrainData[j4];
 					if (abyte2 == null && anInt1070 < 800) {
 						objectManager.blankRegionArea(k7, 64, 64, l5);
 					}
@@ -700,10 +700,10 @@ public class Game extends RSApplet {
 				}
 				stream.writeEncryptedOpcode(0);
 				for (int i6 = 0; i6 < k2; i6++) {
-					byte abyte1[] = aByteArrayArray1247[i6];
+					byte abyte1[] = regionObjectData[i6];
 					if (abyte1 != null) {
-						int l8 = (anIntArray1234[i6] >> 8) * 64 - baseX;
-						int k9 = (anIntArray1234[i6] & 0xff) * 64 - baseY;
+						int l8 = (regionKeys[i6] >> 8) * 64 - baseX;
+						int k9 = (regionKeys[i6] & 0xff) * 64 - baseY;
 						objectManager.loadObjects(l8, aClass11Array1230, k9, worldController, abyte1);
 					}
 				}
@@ -720,11 +720,11 @@ public class Game extends RSApplet {
 								int j10 = l7 >> 14 & 0x3ff;
 								int l10 = l7 >> 3 & 0x7ff;
 								int j11 = (j10 / 8 << 8) + l10 / 8;
-								for (int l11 = 0; l11 < anIntArray1234.length; l11++) {
-									if (anIntArray1234[l11] != j11 || aByteArrayArray1183[l11] == null) {
+								for (int l11 = 0; l11 < regionKeys.length; l11++) {
+									if (regionKeys[l11] != j11 || regionTerrainData[l11] == null) {
 										continue;
 									}
-									objectManager.loadTerrainChunk(i9, l9, aClass11Array1230, k4 * 8, (j10 & 7) * 8, aByteArrayArray1183[l11], (l10 & 7) * 8, j3, j6 * 8);
+									objectManager.loadTerrainChunk(i9, l9, aClass11Array1230, k4 * 8, (j10 & 7) * 8, regionTerrainData[l11], (l10 & 7) * 8, j3, j6 * 8);
 									break;
 								}
 
@@ -756,11 +756,11 @@ public class Game extends RSApplet {
 								int k11 = i10 >> 14 & 0x3ff;
 								int i12 = i10 >> 3 & 0x7ff;
 								int j12 = (k11 / 8 << 8) + i12 / 8;
-								for (int k12 = 0; k12 < anIntArray1234.length; k12++) {
-									if (anIntArray1234[k12] != j12 || aByteArrayArray1247[k12] == null) {
+								for (int k12 = 0; k12 < regionKeys.length; k12++) {
+									if (regionKeys[k12] != j12 || regionObjectData[k12] == null) {
 										continue;
 									}
-									objectManager.loadObjectChunk(aClass11Array1230, worldController, k10, j8 * 8, (i12 & 7) * 8, l6, aByteArrayArray1247[k12], (k11 & 7) * 8, i11, j9 * 8);
+									objectManager.loadObjectChunk(aClass11Array1230, worldController, k10, j8 * 8, (i12 & 7) * 8, l6, regionObjectData[k12], (k11 & 7) * 8, i11, j9 * 8);
 									break;
 								}
 
@@ -2705,7 +2705,7 @@ public class Game extends RSApplet {
 			aLong824 = System.currentTimeMillis();
 		}
 		if (loadingStage == 1) {
-			int j = method54();
+			int j = tryFinishRegionLoad();
 			if (j != 0 && System.currentTimeMillis() - aLong824 > 0x57e40L) {
 				Signlink.reporterror(myUsername + " glcfb " + aLong1215 + "," + j + "," + lowMem + "," + cacheStores[0] + "," + onDemandFetcher.getNodeCount() + "," + plane + "," + anInt1069 + "," + anInt1070);
 				aLong824 = System.currentTimeMillis();
@@ -2717,31 +2717,31 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public int method54() {
-		for (int i = 0; i < aByteArrayArray1183.length; i++) {
-			if (aByteArrayArray1183[i] == null && anIntArray1235[i] != -1) {
+	public int tryFinishRegionLoad() {
+		for (int regionIndex = 0; regionIndex < regionTerrainData.length; regionIndex++) {
+			if (regionTerrainData[regionIndex] == null && regionTerrainFileIds[regionIndex] != -1) {
 				return -1;
 			}
-			if (aByteArrayArray1247[i] == null && anIntArray1236[i] != -1) {
+			if (regionObjectData[regionIndex] == null && regionObjectFileIds[regionIndex] != -1) {
 				return -2;
 			}
 		}
 
-		boolean flag = true;
-		for (int j = 0; j < aByteArrayArray1183.length; j++) {
-			byte abyte0[] = aByteArrayArray1247[j];
-			if (abyte0 != null) {
-				int k = (anIntArray1234[j] >> 8) * 64 - baseX;
-				int l = (anIntArray1234[j] & 0xff) * 64 - baseY;
+		boolean allObjectModelsReady = true;
+		for (int regionIndex = 0; regionIndex < regionTerrainData.length; regionIndex++) {
+			byte objectData[] = regionObjectData[regionIndex];
+			if (objectData != null) {
+				int regionOffsetX = (regionKeys[regionIndex] >> 8) * 64 - baseX;
+				int regionOffsetY = (regionKeys[regionIndex] & 0xff) * 64 - baseY;
 				if (aBoolean1159) {
-					k = 10;
-					l = 10;
+					regionOffsetX = 10;
+					regionOffsetY = 10;
 				}
-				flag &= ObjectManager.method189(k, abyte0, l);
+				allObjectModelsReady &= ObjectManager.method189(regionOffsetX, objectData, regionOffsetY);
 			}
 		}
 
-		if (!flag) {
+		if (!allObjectModelsReady) {
 			return -3;
 		}
 		if (aBoolean1080) {
@@ -2869,20 +2869,20 @@ public class Game extends RSApplet {
 					fetchMusic = true;
 				}
 				if (onDemandData.dataType == 3 && loadingStage == 1) {
-					for (int i = 0; i < aByteArrayArray1183.length; i++) {
-						if (anIntArray1235[i] == onDemandData.ID) {
-							aByteArrayArray1183[i] = onDemandData.buffer;
+					for (int regionIndex = 0; regionIndex < regionTerrainData.length; regionIndex++) {
+						if (regionTerrainFileIds[regionIndex] == onDemandData.ID) {
+							regionTerrainData[regionIndex] = onDemandData.buffer;
 							if (onDemandData.buffer == null) {
-								anIntArray1235[i] = -1;
+								regionTerrainFileIds[regionIndex] = -1;
 							}
 							break;
 						}
-						if (anIntArray1236[i] != onDemandData.ID) {
+						if (regionObjectFileIds[regionIndex] != onDemandData.ID) {
 							continue;
 						}
-						aByteArrayArray1247[i] = onDemandData.buffer;
+						regionObjectData[regionIndex] = onDemandData.buffer;
 						if (onDemandData.buffer == null) {
-							anIntArray1236[i] = -1;
+							regionObjectFileIds[regionIndex] = -1;
 						}
 						break;
 					}
@@ -4737,11 +4737,11 @@ public class Game extends RSApplet {
 		stream = null;
 		aStream_847 = null;
 		inStream = null;
-		anIntArray1234 = null;
-		aByteArrayArray1183 = null;
-		aByteArrayArray1247 = null;
-		anIntArray1235 = null;
-		anIntArray1236 = null;
+		regionKeys = null;
+		regionTerrainData = null;
+		regionObjectData = null;
+		regionTerrainFileIds = null;
+		regionObjectFileIds = null;
 		intGroundArray = null;
 		byteGroundArray = null;
 		worldController = null;
@@ -10868,25 +10868,25 @@ public class Game extends RSApplet {
 
 					}
 
-					aByteArrayArray1183 = new byte[k16][];
-					aByteArrayArray1247 = new byte[k16][];
-					anIntArray1234 = new int[k16];
-					anIntArray1235 = new int[k16];
-					anIntArray1236 = new int[k16];
+					regionTerrainData = new byte[k16][];
+					regionObjectData = new byte[k16][];
+					regionKeys = new int[k16];
+					regionTerrainFileIds = new int[k16];
+					regionObjectFileIds = new int[k16];
 					k16 = 0;
 					for (int l23 = (anInt1069 - 6) / 8; l23 <= (anInt1069 + 6) / 8; l23++) {
 						for (int j26 = (anInt1070 - 6) / 8; j26 <= (anInt1070 + 6) / 8; j26++) {
-							anIntArray1234[k16] = (l23 << 8) + j26;
+							regionKeys[k16] = (l23 << 8) + j26;
 							if (aBoolean1141 && (j26 == 49 || j26 == 149 || j26 == 147 || l23 == 50 || l23 == 49 && j26 == 47)) {
-								anIntArray1235[k16] = -1;
-								anIntArray1236[k16] = -1;
+								regionTerrainFileIds[k16] = -1;
+								regionObjectFileIds[k16] = -1;
 								k16++;
 							} else {
-								int k28 = anIntArray1235[k16] = onDemandFetcher.getMapFileId(0, j26, l23);
+								int k28 = regionTerrainFileIds[k16] = onDemandFetcher.getMapFileId(0, j26, l23);
 								if (k28 != -1) {
 									onDemandFetcher.method558(3, k28);
 								}
-								int j30 = anIntArray1236[k16] = onDemandFetcher.getMapFileId(1, j26, l23);
+								int j30 = regionObjectFileIds[k16] = onDemandFetcher.getMapFileId(1, j26, l23);
 								if (j30 != -1) {
 									onDemandFetcher.method558(3, j30);
 								}
@@ -10926,20 +10926,20 @@ public class Game extends RSApplet {
 
 					}
 
-					aByteArrayArray1183 = new byte[l16][];
-					aByteArrayArray1247 = new byte[l16][];
-					anIntArray1234 = new int[l16];
-					anIntArray1235 = new int[l16];
-					anIntArray1236 = new int[l16];
+					regionTerrainData = new byte[l16][];
+					regionObjectData = new byte[l16][];
+					regionKeys = new int[l16];
+					regionTerrainFileIds = new int[l16];
+					regionObjectFileIds = new int[l16];
 					for (int l26 = 0; l26 < l16; l26++) {
-						int i29 = anIntArray1234[l26] = ai[l26];
+						int i29 = regionKeys[l26] = ai[l26];
 						int l30 = i29 >> 8 & 0xff;
 						int l31 = i29 & 0xff;
-						int j32 = anIntArray1235[l26] = onDemandFetcher.getMapFileId(0, l31, l30);
+						int j32 = regionTerrainFileIds[l26] = onDemandFetcher.getMapFileId(0, l31, l30);
 						if (j32 != -1) {
 							onDemandFetcher.method558(3, j32);
 						}
-						int i33 = anIntArray1236[l26] = onDemandFetcher.getMapFileId(1, l31, l30);
+						int i33 = regionObjectFileIds[l26] = onDemandFetcher.getMapFileId(1, l31, l30);
 						if (i33 != -1) {
 							onDemandFetcher.method558(3, i33);
 						}
@@ -12488,7 +12488,7 @@ public class Game extends RSApplet {
 	public int[] chatAreaOffsets;
 	public int[] tabAreaOffsets;
 	public int[] chatBoxAreaOffsets;
-	public byte[][] aByteArrayArray1183;
+	public byte[][] regionTerrainData;
 	public int anInt1184;
 	public int minimapInt1;
 	public int anInt1186;
@@ -12532,9 +12532,9 @@ public class Game extends RSApplet {
 	public CollisionMap[] aClass11Array1230;
 	public static int anIntArray1232[];
 	public boolean aBoolean1233;
-	public int[] anIntArray1234;
-	public int[] anIntArray1235;
-	public int[] anIntArray1236;
+	public int[] regionKeys;
+	public int[] regionTerrainFileIds;
+	public int[] regionObjectFileIds;
 	public int anInt1237;
 	public int anInt1238;
 	public final int anInt1239 = 100;
@@ -12544,7 +12544,7 @@ public class Game extends RSApplet {
 	public int atInventoryInterface;
 	public int atInventoryIndex;
 	public int atInventoryInterfaceType;
-	public byte[][] aByteArrayArray1247;
+	public byte[][] regionObjectData;
 	public int tradeMode;
 	public int anInt1249;
 	public final int[] soundDelay;
