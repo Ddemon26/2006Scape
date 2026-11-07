@@ -1892,7 +1892,7 @@ public final class Model extends Animable {
 	static {
 		modelIntArray1 = Texture.anIntArray1470;
 		modelIntArray2 = Texture.anIntArray1471;
-		modelIntArray3 = Texture.anIntArray1482;
+		modelIntArray3 = Texture.hslToRgbPalette;
 		modelIntArray4 = Texture.anIntArray1469;
 	}
 }

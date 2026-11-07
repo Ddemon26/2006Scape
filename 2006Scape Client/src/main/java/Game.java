@@ -652,7 +652,7 @@ public class Game extends RSApplet {
 			anInt985 = -1;
 			transientGraphics.removeAll();
 			projectiles.removeAll();
-			Texture.method366();
+			Texture.releaseAllTextureBuffers();
 			unlinkMRUNodes();
 			worldController.initToNull();
 			System.gc();
@@ -822,7 +822,7 @@ public class Game extends RSApplet {
 
 		}
 		System.gc();
-		Texture.method367();
+		Texture.allocateBufferPool();
 		onDemandFetcher.method566();
 		int k = (anInt1069 - 6) / 8 - 1;
 		int j1 = (anInt1069 + 6) / 8 + 1;
@@ -1390,16 +1390,16 @@ public class Game extends RSApplet {
 		int config = variousSettings[i];
 		if (action == 1) {
 			if (config == 1) {
-				Texture.method372(0.90000000000000002D);
+				Texture.buildPalettes(0.90000000000000002D);
 			}
 			if (config == 2) {
-				Texture.method372(0.80000000000000004D);
+				Texture.buildPalettes(0.80000000000000004D);
 			}
 			if (config == 3) {
-				Texture.method372(0.69999999999999996D);
+				Texture.buildPalettes(0.69999999999999996D);
 			}
 			if (config == 4) {
-				Texture.method372(0.59999999999999998D);
+				Texture.buildPalettes(0.59999999999999998D);
 			}
 			ItemDef.mruNodes1.clear();
 			welcomeScreenRaised = true;
@@ -1860,8 +1860,8 @@ public class Game extends RSApplet {
 
 	public void method37(int j) {
 		if (!lowMem) {
-			if (Texture.anIntArray1480[17] >= j) {
-				Background background = Texture.aBackgroundArray1474s[17];
+			if (Texture.lastUsedStamps[17] >= j) {
+				Background background = Texture.textureBackgrounds[17];
 				int k = background.imageWidth * background.imageHeight - 1;
 				int j1 = background.imageWidth * anInt945 * 2;
 				byte abyte0[] = background.paletteIndices;
@@ -1872,10 +1872,10 @@ public class Game extends RSApplet {
 
 				background.paletteIndices = abyte3;
 				aByteArray912 = abyte0;
-				Texture.method370(17);
+				Texture.releaseTextureBuffer(17);
 			}
-			if (Texture.anIntArray1480[24] >= j) {
-				Background background_1 = Texture.aBackgroundArray1474s[24];
+			if (Texture.lastUsedStamps[24] >= j) {
+				Background background_1 = Texture.textureBackgrounds[24];
 				int l = background_1.imageWidth * background_1.imageHeight - 1;
 				int k1 = background_1.imageWidth * anInt945 * 2;
 				byte abyte1[] = background_1.paletteIndices;
@@ -1886,10 +1886,10 @@ public class Game extends RSApplet {
 
 				background_1.paletteIndices = abyte4;
 				aByteArray912 = abyte1;
-				Texture.method370(24);
+				Texture.releaseTextureBuffer(24);
 			}
-			if (Texture.anIntArray1480[34] >= j) {
-				Background background_2 = Texture.aBackgroundArray1474s[34];
+			if (Texture.lastUsedStamps[34] >= j) {
+				Background background_2 = Texture.textureBackgrounds[34];
 				int i1 = background_2.imageWidth * background_2.imageHeight - 1;
 				int l1 = background_2.imageWidth * anInt945 * 2;
 				byte abyte2[] = background_2.paletteIndices;
@@ -1900,10 +1900,10 @@ public class Game extends RSApplet {
 
 				background_2.paletteIndices = abyte5;
 				aByteArray912 = abyte2;
-				Texture.method370(34);
+				Texture.releaseTextureBuffer(34);
 			}
-			if (Texture.anIntArray1480[40] >= j) {
-				Background background_2 = Texture.aBackgroundArray1474s[40];
+			if (Texture.lastUsedStamps[40] >= j) {
+				Background background_2 = Texture.textureBackgrounds[40];
 				int i1 = background_2.imageWidth * background_2.imageHeight - 1;
 				int l1 = background_2.imageWidth * anInt945 * 2;
 				byte abyte2[] = background_2.paletteIndices;
@@ -1914,7 +1914,7 @@ public class Game extends RSApplet {
 
 				background_2.paletteIndices = abyte5;
 				aByteArray912 = abyte2;
-				Texture.method370(40);
+				Texture.releaseTextureBuffer(40);
 			}
 		}
 	}
@@ -7297,9 +7297,9 @@ public class Game extends RSApplet {
 			}
 
 			drawLoadingText(83, "Unpacking textures");
-			Texture.method368(streamLoader_3);
-			Texture.method372(0.80000000000000004D);
-			Texture.method367();
+			Texture.loadTextures(streamLoader_3);
+			Texture.buildPalettes(0.80000000000000004D);
+			Texture.allocateBufferPool();
 			drawLoadingText(86, "Unpacking config");
 			Animation.unpackConfig(streamLoader);
 			ObjectDef.unpackConfig(streamLoader);
@@ -7362,13 +7362,13 @@ public class Game extends RSApplet {
 				anIntArray1052[l6 - 5] = j7 - 25;
 				anIntArray1229[l6 - 5] = l7 - j7;
 			}
-			Texture.method365(765, 503);
+			Texture.setScreenSize(765, 503);
 			gameScreenOffsets = Texture.lineOffsets;
-			Texture.method365(479, 96);
+			Texture.setScreenSize(479, 96);
 			chatAreaOffsets = Texture.lineOffsets;
-			Texture.method365(190, 261);
+			Texture.setScreenSize(190, 261);
 			tabAreaOffsets = Texture.lineOffsets;
-			Texture.method365(512, 334);
+			Texture.setScreenSize(512, 334);
 			chatBoxAreaOffsets = Texture.lineOffsets;
 			int ai[] = new int[9];
 			for (int i8 = 0; i8 < 9; i8++) {
@@ -11888,7 +11888,7 @@ public class Game extends RSApplet {
 			}
 		}
 
-		int k2 = Texture.anInt1481;
+		int k2 = Texture.useCounter;
 		Model.aBoolean1684 = true;
 		Model.anInt1687 = 0;
 		Model.anInt1685 = super.mouseX - 4;

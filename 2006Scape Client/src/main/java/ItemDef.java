@@ -2104,7 +2104,7 @@ public final class ItemDef {
 		Texture.aBoolean1464 = false;
 		DrawingArea.bindRaster(32, 32, sprite2.pixels);
 		DrawingArea.fillRectangle(32, 0, 0, 32, 0);
-		Texture.method364();
+		Texture.setScreenSizeFromDrawingArea();
 		int k3 = itemDef.modelZoom;
 		if (k == -1) {
 			k3 = (int) (k3 * 1.5D);
