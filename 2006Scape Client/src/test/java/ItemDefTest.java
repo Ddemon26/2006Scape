@@ -604,4 +604,105 @@ public class ItemDefTest {
             assertArrayEquals(x3(41, 42), xs(media(ri, 3, 0)));
         } finally { Game.myPlayer = saved; cache.clear(); }
     }
+
+    // ================= pass 139: Player.buildBodyModel animation locals =================
+    private static Animation anim139(int[] frames, int shield, int weapon, int[] mask) throws Exception {
+        Constructor<Animation> c = Animation.class.getDeclaredConstructor(); c.setAccessible(true); Animation a = c.newInstance();
+        a.anIntArray353 = frames; a.slot5EquipmentOverride = shield; a.slot3EquipmentOverride = weapon; a.anIntArray357 = mask; return a;
+    }
+    private static Player body139(int anim, int hold, int f1527, int a1517, int a1518, int a1511) throws Exception {
+        Player p = new Player(); p.visible = true;
+        p.anim = anim; ent139(p, "anInt1529", hold); ent139(p, "anInt1527", f1527);
+        ent139(p, "anInt1517", a1517); ent139(p, "anInt1518", a1518); ent139(p, "anInt1511", a1511);
+        f(Player.class, "appearanceKey").setLong(p, 9000L);
+        return p;
+    }
+    private static void ent139(Player p, String n, int v) throws Exception { f(Entity.class, n).setInt(p, v); }
+    private static Model invokeBody139(Player p) throws Exception {
+        Method m = Player.class.getDeclaredMethod("buildBodyModel"); m.setAccessible(true); return (Model) m.invoke(p);
+    }
+    private void threeItems139() throws Exception {
+        install(blanks(8)); loadAll(1, 2, 3, 21, 22, 23, 41, 42, 43);
+        ItemDef[] cache = (ItemDef[]) sget(ItemDef.class, "cache");
+        int[][] ms = {{1, 2, 3}, {21, 22, 23}, {41, 42, 43}};
+        for (int i = 0; i < 3; i++) {
+            ItemDef d = withModels(ms[i][0], ms[i][1], ms[i][2], -1, -1, -1, -1, -1, -1, -1);
+            cache[i] = d; seti(d, "id", 3 + i);
+        }
+        sset(ItemDef.class, "cacheIndex", 5);
+        Player.mruNodes.clear();
+    }
+    @Test public void animationOverridesReplaceTheEquipmentCodeInSlotFiveAndSlotThreeOnly() throws Exception {
+        Animation[] saved = Animation.anims;
+        try {
+            threeItems139();
+            Animation.anims = new Animation[]{ anim139(new int[]{-1}, -1, -1, null), anim139(new int[]{-1}, 512 + 4, -1, null),
+                anim139(new int[]{-1}, -1, 512 + 4, null), anim139(new int[]{-1}, 512 + 4, 512 + 3, null) };
+            int[][] ids = { {1, 2, 3, 41, 42, 43}, {1, 2, 3, 21, 22, 23}, {21, 22, 23, 41, 42, 43}, {1, 2, 3, 21, 22, 23} };
+            for (int a = 0; a < 4; a++) {
+                Player.mruNodes.clear();
+                Player p = body139(a, 0, 0, -1, 0, -1);
+                p.equipment[3] = 512 + 3; p.equipment[5] = 512 + 5;
+                assertArrayEquals("animation " + a, x3(ids[a]), xs(invokeBody139(p)));
+            }
+            // the slot-five override is part of the cache key: key + ((override - equipment[5]) << 40) in int arithmetic (the shift count wraps mod 32, so it is << 8)
+            Player.mruNodes.clear();
+            Player p = body139(1, 0, 0, -1, 0, -1); p.equipment[3] = 512 + 3; p.equipment[5] = 512 + 5;
+            invokeBody139(p);
+            assertNotNull(Player.mruNodes.insertFromCache(9000L + (((512 + 4) - (512 + 5)) << 40)));
+            // slot-three override: key + ((override - equipment[3]) << 48) in int arithmetic (<< 16)
+            Player.mruNodes.clear();
+            p = body139(2, 0, 0, -1, 0, -1); p.equipment[3] = 512 + 3; p.equipment[5] = 512 + 5;
+            invokeBody139(p);
+            assertNotNull(Player.mruNodes.insertFromCache(9000L + (((512 + 4) - (512 + 3)) << 48)));
+            // a non-zero hold counter (anInt1529) ignores the animation's overrides
+            Player.mruNodes.clear();
+            p = body139(3, 1, 0, -1, 0, -1); p.equipment[3] = 512 + 3; p.equipment[5] = 512 + 5;
+            assertArrayEquals(x3(1, 2, 3, 41, 42, 43), xs(invokeBody139(p)));
+            // no animation at all: none either
+            Player.mruNodes.clear();
+            p = body139(-1, 0, 0, -1, 0, -1); p.equipment[3] = 512 + 3; p.equipment[5] = 512 + 5;
+            assertArrayEquals(x3(1, 2, 3, 41, 42, 43), xs(invokeBody139(p)));
+        } finally { Animation.anims = saved; Player.mruNodes.clear(); }
+    }
+
+    private static AnimationFrame frame139(AnimationTransformTable t, int dx) throws Exception {
+        Constructor<AnimationFrame> c = AnimationFrame.class.getDeclaredConstructor(); c.setAccessible(true); AnimationFrame fr = c.newInstance();
+        fr.transformTable = t; fr.transformCount = 2; fr.transformIndices = new int[]{0, 1};
+        fr.transformX = new int[]{dx, dx}; fr.transformY = new int[]{0, 0}; fr.transformZ = new int[]{0, 0}; return fr;
+    }
+    private static int[] bodyXs139(Player p, Animation[] anims) throws Exception {
+        Constructor<Model> c = Model.class.getDeclaredConstructor(); c.setAccessible(true); Model m = c.newInstance();
+        m.anInt1626 = 2; m.anInt1630 = 0; m.anIntArray1627 = new int[]{10, 20}; m.anIntArray1628 = new int[]{0, 0}; m.anIntArray1629 = new int[]{0, 0};
+        m.vertexGroups = new int[][]{{0}, {1}};
+        Player.mruNodes.clear(); Player.mruNodes.removeFromCache(m, 9000L);
+        Animation.anims = anims;
+        return xs(invokeBody139(p));
+    }
+    @Test public void animationFramesAreTheMainFrameThenTheOptionalSecondFrameForTheMaskedTransforms() throws Exception {
+        Animation[] saved = Animation.anims; Object savedFrames = sget(AnimationFrame.class, "loadedFrames");
+        try {
+            ByteArrayOutputStream o = new ByteArrayOutputStream();
+            for (int v : new int[]{2, 1, 1, 1, 0, 1, 1}) o.write(v);
+            AnimationTransformTable t = new AnimationTransformTable(new Stream(o.toByteArray()));
+            AnimationFrame[] fr = new AnimationFrame[8];
+            fr[3] = frame139(t, 7); fr[4] = frame139(t, 100); fr[5] = frame139(t, 3000); fr[6] = frame139(t, 9);
+            sset(AnimationFrame.class, "loadedFrames", fr);
+            int[] mask = {1, 1000};
+            Animation a0 = anim139(new int[]{3, 4}, -1, -1, mask), a1 = anim139(new int[]{5, 6}, -1, -1, null);
+            Animation[] anims = {a0, a1};
+            // main animation alone: frame list entry chosen by anInt1527, every transform applied
+            assertArrayEquals(new int[]{110, 120}, bodyXs139(body139(0, 0, 1, -1, 0, -1), anims));
+            assertArrayEquals(new int[]{17, 27}, bodyXs139(body139(0, 0, 0, -1, 0, -1), anims));
+            // no main animation: the other animation's frame (entry anInt1518) is the one frame applied
+            assertArrayEquals(new int[]{3010, 3020}, bodyXs139(body139(-1, 0, 0, 1, 0, -1), anims));
+            assertArrayEquals(new int[]{19, 29}, bodyXs139(body139(-1, 0, 0, 1, 1, -1), anims));
+            // hold counter non-zero: same as no main animation
+            assertArrayEquals(new int[]{19, 29}, bodyXs139(body139(0, 1, 1, 1, 1, -1), anims));
+            // both, other animation differs from anInt1511: it supplies the frame for the masked transform (index 1)
+            assertArrayEquals(new int[]{110, 29}, bodyXs139(body139(0, 0, 1, 1, 1, -1), anims));
+            // other animation equal to anInt1511: ignored, main frame everywhere
+            assertArrayEquals(new int[]{110, 120}, bodyXs139(body139(0, 0, 1, 1, 1, 1), anims));
+        } finally { Animation.anims = saved; sset(AnimationFrame.class, "loadedFrames", savedFrames); Player.mruNodes.clear(); }
+    }
 }

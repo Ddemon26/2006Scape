@@ -174,37 +174,37 @@ public final class Player extends Entity {
 			return model;
 		}
 		long cacheKey = appearanceKey;
-		int k = -1;
-		int i1 = -1;
-		int j1 = -1;
-		int k1 = -1;
+		int primaryFrameId = -1;
+		int secondaryFrameId = -1;
+		int slot5Override = -1;
+		int slot3Override = -1;
 		if (super.anim >= 0 && super.anInt1529 == 0) {
 			Animation animation = Animation.anims[super.anim];
-			k = animation.anIntArray353[super.anInt1527];
+			primaryFrameId = animation.anIntArray353[super.anInt1527];
 			if (super.anInt1517 >= 0 && super.anInt1517 != super.anInt1511) {
-				i1 = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
+				secondaryFrameId = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
 			}
-			if (animation.anInt360 >= 0) {
-				j1 = animation.anInt360;
-				cacheKey += j1 - equipment[5] << 40;
+			if (animation.slot5EquipmentOverride >= 0) {
+				slot5Override = animation.slot5EquipmentOverride;
+				cacheKey += slot5Override - equipment[5] << 40;
 			}
-			if (animation.anInt361 >= 0) {
-				k1 = animation.anInt361;
-				cacheKey += k1 - equipment[3] << 48;
+			if (animation.slot3EquipmentOverride >= 0) {
+				slot3Override = animation.slot3EquipmentOverride;
+				cacheKey += slot3Override - equipment[3] << 48;
 			}
 		} else if (super.anInt1517 >= 0) {
-			k = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
+			primaryFrameId = Animation.anims[super.anInt1517].anIntArray353[super.anInt1518];
 		}
 		Model model_1 = (Model) mruNodes.insertFromCache(cacheKey);
 		if (model_1 == null) {
 			boolean flag = false;
 			for (int i2 = 0; i2 < 12; i2++) {
 				int k2 = equipment[i2];
-				if (k1 >= 0 && i2 == 3) {
-					k2 = k1;
+				if (slot3Override >= 0 && i2 == 3) {
+					k2 = slot3Override;
 				}
-				if (j1 >= 0 && i2 == 5) {
-					k2 = j1;
+				if (slot5Override >= 0 && i2 == 5) {
+					k2 = slot5Override;
 				}
 				if (k2 >= 256 && k2 < 512 && !IDK.cache[k2 - 256].method537()) {
 					flag = true;
@@ -228,11 +228,11 @@ public final class Player extends Entity {
 			int j2 = 0;
 			for (int l2 = 0; l2 < 12; l2++) {
 				int i3 = equipment[l2];
-				if (k1 >= 0 && l2 == 3) {
-					i3 = k1;
+				if (slot3Override >= 0 && l2 == 3) {
+					i3 = slot3Override;
 				}
-				if (j1 >= 0 && l2 == 5) {
-					i3 = j1;
+				if (slot5Override >= 0 && l2 == 5) {
+					i3 = slot5Override;
 				}
 				if (i3 >= 256 && i3 < 512) {
 					Model model_3 = IDK.cache[i3 - 256].method538();
@@ -267,11 +267,11 @@ public final class Player extends Entity {
 			return model_1;
 		}
 		Model model_2 = Model.animationScratchModel;
-		model_2.copyIntoAnimationScratch(model_1, AnimationFrame.isMissingFrameId(k) & AnimationFrame.isMissingFrameId(i1));
-		if (k != -1 && i1 != -1) {
-			model_2.applyInterleavedFrames(Animation.anims[super.anim].anIntArray357, i1, k);
-		} else if (k != -1) {
-			model_2.applyAnimationFrame(k);
+		model_2.copyIntoAnimationScratch(model_1, AnimationFrame.isMissingFrameId(primaryFrameId) & AnimationFrame.isMissingFrameId(secondaryFrameId));
+		if (primaryFrameId != -1 && secondaryFrameId != -1) {
+			model_2.applyInterleavedFrames(Animation.anims[super.anim].anIntArray357, secondaryFrameId, primaryFrameId);
+		} else if (primaryFrameId != -1) {
+			model_2.applyAnimationFrame(primaryFrameId);
 		}
 		model_2.calculateBounds();
 		model_2.faceGroups = null;

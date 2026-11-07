@@ -67,9 +67,9 @@ public final class Animation {
 			} else if (i == 5) {
 				anInt359 = stream.readUnsignedByte();
 			} else if (i == 6) {
-				anInt360 = stream.readUnsignedShortBigEndian();
+				slot5EquipmentOverride = stream.readUnsignedShortBigEndian();
 			} else if (i == 7) {
-				anInt361 = stream.readUnsignedShortBigEndian();
+				slot3EquipmentOverride = stream.readUnsignedShortBigEndian();
 			} else if (i == 8) {
 				anInt362 = stream.readUnsignedByte();
 			} else if (i == 9) {
@@ -113,8 +113,8 @@ public final class Animation {
 		anInt356 = -1;
 		aBoolean358 = false;
 		anInt359 = 5;
-		anInt360 = -1;
-		anInt361 = -1;
+		slot5EquipmentOverride = -1;
+		slot3EquipmentOverride = -1;
 		anInt362 = 99;
 		anInt363 = -1;
 		anInt364 = -1;
@@ -130,8 +130,8 @@ public final class Animation {
 	public int anIntArray357[];
 	public boolean aBoolean358;
 	public int anInt359;
-	public int anInt360;
-	public int anInt361;
+	public int slot5EquipmentOverride;
+	public int slot3EquipmentOverride;
 	public int anInt362;
 	public int anInt363;
 	public int anInt364;
