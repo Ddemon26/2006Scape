@@ -45,7 +45,7 @@ public class WorldControllerSceneLightingTest {
 
     private static WorldController scene() throws Exception { return new WorldController(new int[PLANES][SIZE + 1][SIZE + 1]); }
     private static Ground[][][] tiles(WorldController wc) throws Exception { return (Ground[][][]) get(wc, "groundArray"); }
-    private static int[][][] heights(WorldController wc) throws Exception { return (int[][][]) get(wc, "anIntArrayArrayArray440"); }
+    private static int[][][] heights(WorldController wc) throws Exception { return (int[][][]) get(wc, "tileHeights"); }
 
     private static Ground tile(WorldController wc, int plane, int x, int y) throws Exception {
         Ground[][][] t = tiles(wc);

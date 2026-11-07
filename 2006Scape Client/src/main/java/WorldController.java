@@ -13,40 +13,40 @@ final class WorldController {
 		obj5Cache = new Object5[5000];
 		modelSharedVertexStamps = new int[10000];
 		otherSharedVertexStamps = new int[10000];
-		anInt437 = k;
-		anInt438 = j;
-		anInt439 = i;
+		planeCount = k;
+		tileCountX = j;
+		tileCountY = i;
 		groundArray = new Ground[k][j][i];
 		anIntArrayArrayArray445 = new int[k][j + 1][i + 1];
-		anIntArrayArrayArray440 = ai;
+		tileHeights = ai;
 		initToNull();
 	}
 
 	public static void nullLoader() {
 		aClass28Array462 = null;
-		anIntArray473 = null;
-		aClass47ArrayArray474 = null;
+		occluderCounts = null;
+		occluders = null;
 		aClass19_477 = null;
 		tileVisibilityTable = null;
 		cameraTileVisibility = null;
 	}
 
 	public void initToNull() {
-		for (int j = 0; j < anInt437; j++) {
-			for (int k = 0; k < anInt438; k++) {
-				for (int i1 = 0; i1 < anInt439; i1++) {
+		for (int j = 0; j < planeCount; j++) {
+			for (int k = 0; k < tileCountX; k++) {
+				for (int i1 = 0; i1 < tileCountY; i1++) {
 					groundArray[j][k][i1] = null;
 				}
 
 			}
 
 		}
-		for (int l = 0; l < anInt472; l++) {
-			for (int j1 = 0; j1 < anIntArray473[l]; j1++) {
-				aClass47ArrayArray474[l][j1] = null;
+		for (int l = 0; l < occluderPlaneCount; l++) {
+			for (int j1 = 0; j1 < occluderCounts[l]; j1++) {
+				occluders[l][j1] = null;
 			}
 
-			anIntArray473[l] = 0;
+			occluderCounts[l] = 0;
 		}
 
 		for (int k1 = 0; k1 < obj5CacheCurrPos; k1++) {
@@ -60,12 +60,12 @@ final class WorldController {
 
 	}
 
-	public void method275(int i) {
-		anInt442 = i;
-		for (int k = 0; k < anInt438; k++) {
-			for (int l = 0; l < anInt439; l++) {
-				if (groundArray[i][k][l] == null) {
-					groundArray[i][k][l] = new Ground(i, k, l);
+	public void createPlaneTiles(int plane) {
+		lowestPlane = plane;
+		for (int tileX = 0; tileX < tileCountX; tileX++) {
+			for (int tileY = 0; tileY < tileCountY; tileY++) {
+				if (groundArray[plane][tileX][tileY] == null) {
+					groundArray[plane][tileX][tileY] = new Ground(plane, tileX, tileY);
 				}
 			}
 
@@ -73,277 +73,281 @@ final class WorldController {
 
 	}
 
-	public void method276(int i, int j) {
-		Ground class30_sub3 = groundArray[0][j][i];
-		for (int l = 0; l < 3; l++) {
-			Ground class30_sub3_1 = groundArray[l][j][i] = groundArray[l + 1][j][i];
-			if (class30_sub3_1 != null) {
-				class30_sub3_1.anInt1307--;
-				for (int j1 = 0; j1 < class30_sub3_1.anInt1317; j1++) {
-					Object5 class28 = class30_sub3_1.obj5Array[j1];
-					if ((class28.uid >> 29 & 3) == 2 && class28.anInt523 == j && class28.anInt525 == i) {
-						class28.anInt517--;
+	public void lowerColumnPlanes(int tileY, int tileX) {
+		Ground oldGround = groundArray[0][tileX][tileY];
+		for (int plane = 0; plane < 3; plane++) {
+			Ground tile = groundArray[plane][tileX][tileY] = groundArray[plane + 1][tileX][tileY];
+			if (tile != null) {
+				tile.anInt1307--;
+				for (int index = 0; index < tile.anInt1317; index++) {
+					Object5 sceneObject = tile.obj5Array[index];
+					if ((sceneObject.uid >> 29 & 3) == 2 && sceneObject.anInt523 == tileX && sceneObject.anInt525 == tileY) {
+						sceneObject.anInt517--;
 					}
 				}
 
 			}
 		}
-		if (groundArray[0][j][i] == null) {
-			groundArray[0][j][i] = new Ground(0, j, i);
+		if (groundArray[0][tileX][tileY] == null) {
+			groundArray[0][tileX][tileY] = new Ground(0, tileX, tileY);
 		}
-		groundArray[0][j][i].aClass30_Sub3_1329 = class30_sub3;
-		groundArray[3][j][i] = null;
+		groundArray[0][tileX][tileY].aClass30_Sub3_1329 = oldGround;
+		groundArray[3][tileX][tileY] = null;
 	}
 
-	public static void method277(int i, int j, int k, int l, int i1, int j1, int l1, int i2) {
-		Class47 class47 = new Class47();
-		class47.anInt787 = j / 128;
-		class47.anInt788 = l / 128;
-		class47.anInt789 = l1 / 128;
-		class47.anInt790 = i1 / 128;
-		class47.anInt791 = i2;
-		class47.anInt792 = j;
-		class47.anInt793 = l;
-		class47.anInt794 = l1;
-		class47.anInt795 = i1;
-		class47.anInt796 = j1;
-		class47.anInt797 = k;
-		aClass47ArrayArray474[i][anIntArray473[i]++] = class47;
+	public static void addOccluder(int plane, int minX, int maxHeight, int maxX, int maxY, int minHeight, int minY, int occluderType) {
+		Class47 occluder = new Class47();
+		occluder.anInt787 = minX / 128;
+		occluder.anInt788 = maxX / 128;
+		occluder.anInt789 = minY / 128;
+		occluder.anInt790 = maxY / 128;
+		occluder.anInt791 = occluderType;
+		occluder.anInt792 = minX;
+		occluder.anInt793 = maxX;
+		occluder.anInt794 = minY;
+		occluder.anInt795 = maxY;
+		occluder.anInt796 = minHeight;
+		occluder.anInt797 = maxHeight;
+		occluders[plane][occluderCounts[plane]++] = occluder;
 	}
 
-	public void method278(int i, int j, int k, int l) {
-		Ground class30_sub3 = groundArray[i][j][k];
-		if (class30_sub3 != null) {
-			groundArray[i][j][k].anInt1321 = l;
+	public void setMinCameraPlane(int plane, int tileX, int tileY, int minCameraPlane) {
+		Ground tile = groundArray[plane][tileX][tileY];
+		if (tile != null) {
+			groundArray[plane][tileX][tileY].anInt1321 = minCameraPlane;
 		}
 	}
 
-	public void method279(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2, int k2, int l2, int i3, int j3, int k3, int l3, int i4, int j4, int k4, int l4) {
-		if (l == 0) {
-			Class43 class43 = new Class43(k2, l2, i3, j3, -1, k4, false);
-			for (int i5 = i; i5 >= 0; i5--) {
-				if (groundArray[i5][j][k] == null) {
-					groundArray[i5][j][k] = new Ground(i5, j, k);
+	/**
+	 * Corners are ordered (minX,minY), (maxX,minY), (maxX,maxY), (minX,maxY) in world x/y.
+	 * Shape 0 is a plain underlay-only tile, shape 1 a plain overlay tile, any other shape indexes the Class40 shape tables.
+	 */
+	public void addTile(int plane, int tileX, int tileY, int shape, int rotation, int textureId, int height0, int height1, int height2, int height3, int underlayColour0, int underlayColour1, int underlayColour2, int underlayColour3, int overlayColour0, int overlayColour1, int overlayColour2, int overlayColour3, int underlayMapColour, int overlayMapColour) {
+		if (shape == 0) {
+			Class43 plainTile = new Class43(underlayColour0, underlayColour1, underlayColour2, underlayColour3, -1, underlayMapColour, false);
+			for (int planeIndex = plane; planeIndex >= 0; planeIndex--) {
+				if (groundArray[planeIndex][tileX][tileY] == null) {
+					groundArray[planeIndex][tileX][tileY] = new Ground(planeIndex, tileX, tileY);
 				}
 			}
 
-			groundArray[i][j][k].aClass43_1311 = class43;
+			groundArray[plane][tileX][tileY].aClass43_1311 = plainTile;
 			return;
 		}
-		if (l == 1) {
-			Class43 class43_1 = new Class43(k3, l3, i4, j4, j1, l4, k1 == l1 && k1 == i2 && k1 == j2);
-			for (int j5 = i; j5 >= 0; j5--) {
-				if (groundArray[j5][j][k] == null) {
-					groundArray[j5][j][k] = new Ground(j5, j, k);
+		if (shape == 1) {
+			Class43 overlayTile = new Class43(overlayColour0, overlayColour1, overlayColour2, overlayColour3, textureId, overlayMapColour, height0 == height1 && height0 == height2 && height0 == height3);
+			for (int planeIndex = plane; planeIndex >= 0; planeIndex--) {
+				if (groundArray[planeIndex][tileX][tileY] == null) {
+					groundArray[planeIndex][tileX][tileY] = new Ground(planeIndex, tileX, tileY);
 				}
 			}
 
-			groundArray[i][j][k].aClass43_1311 = class43_1;
+			groundArray[plane][tileX][tileY].aClass43_1311 = overlayTile;
 			return;
 		}
-		Class40 class40 = new Class40(k, k3, j3, i2, j1, i4, i1, k2, k4, i3, j2, l1, k1, l, j4, l3, l2, j, l4);
-		for (int k5 = i; k5 >= 0; k5--) {
-			if (groundArray[k5][j][k] == null) {
-				groundArray[k5][j][k] = new Ground(k5, j, k);
+		Class40 shapedTile = new Class40(tileY, overlayColour0, underlayColour3, height2, textureId, overlayColour2, rotation, underlayColour0, underlayMapColour, underlayColour2, height3, height1, height0, shape, overlayColour3, overlayColour1, underlayColour1, tileX, overlayMapColour);
+		for (int planeIndex = plane; planeIndex >= 0; planeIndex--) {
+			if (groundArray[planeIndex][tileX][tileY] == null) {
+				groundArray[planeIndex][tileX][tileY] = new Ground(planeIndex, tileX, tileY);
 			}
 		}
 
-		groundArray[i][j][k].aClass40_1312 = class40;
+		groundArray[plane][tileX][tileY].aClass40_1312 = shapedTile;
 	}
 
-	public void method280(int i, int j, int k, Animable class30_sub2_sub4, byte byte0, int i1, int j1) {
-		if (class30_sub2_sub4 == null) {
+	public void addGroundDecoration(int plane, int height, int tileY, Animable model, byte info, int uid, int tileX) {
+		if (model == null) {
 			return;
 		}
-		Object3 class49 = new Object3();
-		class49.aClass30_Sub2_Sub4_814 = class30_sub2_sub4;
-		class49.anInt812 = j1 * 128 + 64;
-		class49.anInt813 = k * 128 + 64;
-		class49.anInt811 = j;
-		class49.uid = i1;
-		class49.aByte816 = byte0;
-		if (groundArray[i][j1][k] == null) {
-			groundArray[i][j1][k] = new Ground(i, j1, k);
+		Object3 groundDecoration = new Object3();
+		groundDecoration.aClass30_Sub2_Sub4_814 = model;
+		groundDecoration.anInt812 = tileX * 128 + 64;
+		groundDecoration.anInt813 = tileY * 128 + 64;
+		groundDecoration.anInt811 = height;
+		groundDecoration.uid = uid;
+		groundDecoration.aByte816 = info;
+		if (groundArray[plane][tileX][tileY] == null) {
+			groundArray[plane][tileX][tileY] = new Ground(plane, tileX, tileY);
 		}
-		groundArray[i][j1][k].obj3 = class49;
+		groundArray[plane][tileX][tileY].obj3 = groundDecoration;
 	}
 
-	public void method281(int i, int j, Animable class30_sub2_sub4, int k, Animable class30_sub2_sub4_1, Animable class30_sub2_sub4_2, int l, int i1) {
-		Object4 object4 = new Object4();
-		object4.aClass30_Sub2_Sub4_48 = class30_sub2_sub4_2;
-		object4.anInt46 = i * 128 + 64;
-		object4.anInt47 = i1 * 128 + 64;
-		object4.anInt45 = k;
-		object4.uid = j;
-		object4.aClass30_Sub2_Sub4_49 = class30_sub2_sub4;
-		object4.aClass30_Sub2_Sub4_50 = class30_sub2_sub4_1;
-		int j1 = 0;
-		Ground class30_sub3 = groundArray[l][i][i1];
-		if (class30_sub3 != null) {
-			for (int k1 = 0; k1 < class30_sub3.anInt1317; k1++) {
-				if (class30_sub3.obj5Array[k1].aClass30_Sub2_Sub4_521 instanceof Model) {
-					int l1 = ((Model) class30_sub3.obj5Array[k1].aClass30_Sub2_Sub4_521).anInt1654;
-					if (l1 > j1) {
-						j1 = l1;
+	public void addItemStack(int tileX, int uid, Animable otherItemModel1, int height, Animable otherItemModel2, Animable topItemModel, int plane, int tileY) {
+		Object4 itemStack = new Object4();
+		itemStack.aClass30_Sub2_Sub4_48 = topItemModel;
+		itemStack.anInt46 = tileX * 128 + 64;
+		itemStack.anInt47 = tileY * 128 + 64;
+		itemStack.anInt45 = height;
+		itemStack.uid = uid;
+		itemStack.aClass30_Sub2_Sub4_49 = otherItemModel1;
+		itemStack.aClass30_Sub2_Sub4_50 = otherItemModel2;
+		int tallestObjectHeight = 0;
+		Ground tile = groundArray[plane][tileX][tileY];
+		if (tile != null) {
+			for (int index = 0; index < tile.anInt1317; index++) {
+				if (tile.obj5Array[index].aClass30_Sub2_Sub4_521 instanceof Model) {
+					int objectHeight = ((Model) tile.obj5Array[index].aClass30_Sub2_Sub4_521).anInt1654;
+					if (objectHeight > tallestObjectHeight) {
+						tallestObjectHeight = objectHeight;
 					}
 				}
 			}
 
 		}
-		object4.anInt52 = j1;
-		if (groundArray[l][i][i1] == null) {
-			groundArray[l][i][i1] = new Ground(l, i, i1);
+		itemStack.anInt52 = tallestObjectHeight;
+		if (groundArray[plane][tileX][tileY] == null) {
+			groundArray[plane][tileX][tileY] = new Ground(plane, tileX, tileY);
 		}
-		groundArray[l][i][i1].obj4 = object4;
+		groundArray[plane][tileX][tileY].obj4 = itemStack;
 	}
 
-	public void method282(int i, Animable class30_sub2_sub4, int j, int k, byte byte0, int l, Animable class30_sub2_sub4_1, int i1, int j1, int k1) {
-		if (class30_sub2_sub4 == null && class30_sub2_sub4_1 == null) {
+	public void addWall(int orientation, Animable model, int uid, int tileY, byte info, int tileX, Animable secondaryModel, int height, int secondaryOrientation, int plane) {
+		if (model == null && secondaryModel == null) {
 			return;
 		}
-		Object1 object1 = new Object1();
-		object1.uid = j;
-		object1.aByte281 = byte0;
-		object1.anInt274 = l * 128 + 64;
-		object1.anInt275 = k * 128 + 64;
-		object1.anInt273 = i1;
-		object1.aClass30_Sub2_Sub4_278 = class30_sub2_sub4;
-		object1.aClass30_Sub2_Sub4_279 = class30_sub2_sub4_1;
-		object1.orientation = i;
-		object1.orientation1 = j1;
-		for (int l1 = k1; l1 >= 0; l1--) {
-			if (groundArray[l1][l][k] == null) {
-				groundArray[l1][l][k] = new Ground(l1, l, k);
+		Object1 wall = new Object1();
+		wall.uid = uid;
+		wall.aByte281 = info;
+		wall.anInt274 = tileX * 128 + 64;
+		wall.anInt275 = tileY * 128 + 64;
+		wall.anInt273 = height;
+		wall.aClass30_Sub2_Sub4_278 = model;
+		wall.aClass30_Sub2_Sub4_279 = secondaryModel;
+		wall.orientation = orientation;
+		wall.orientation1 = secondaryOrientation;
+		for (int planeIndex = plane; planeIndex >= 0; planeIndex--) {
+			if (groundArray[planeIndex][tileX][tileY] == null) {
+				groundArray[planeIndex][tileX][tileY] = new Ground(planeIndex, tileX, tileY);
 			}
 		}
 
-		groundArray[k1][l][k].obj1 = object1;
+		groundArray[plane][tileX][tileY].obj1 = wall;
 	}
 
-	public void method283(int i, int j, int k, int i1, int j1, int k1, Animable class30_sub2_sub4, int l1, byte byte0, int i2, int j2) {
-		if (class30_sub2_sub4 == null) {
+	public void addWallDecoration(int uid, int tileY, int rotation, int plane, int xOffset, int height, Animable model, int tileX, byte info, int yOffset, int drawMask) {
+		if (model == null) {
 			return;
 		}
-		Object2 class26 = new Object2();
-		class26.uid = i;
-		class26.aByte506 = byte0;
-		class26.anInt500 = l1 * 128 + 64 + j1;
-		class26.anInt501 = j * 128 + 64 + i2;
-		class26.anInt499 = k1;
-		class26.aClass30_Sub2_Sub4_504 = class30_sub2_sub4;
-		class26.anInt502 = j2;
-		class26.anInt503 = k;
-		for (int k2 = i1; k2 >= 0; k2--) {
-			if (groundArray[k2][l1][j] == null) {
-				groundArray[k2][l1][j] = new Ground(k2, l1, j);
+		Object2 wallDecoration = new Object2();
+		wallDecoration.uid = uid;
+		wallDecoration.aByte506 = info;
+		wallDecoration.anInt500 = tileX * 128 + 64 + xOffset;
+		wallDecoration.anInt501 = tileY * 128 + 64 + yOffset;
+		wallDecoration.anInt499 = height;
+		wallDecoration.aClass30_Sub2_Sub4_504 = model;
+		wallDecoration.anInt502 = drawMask;
+		wallDecoration.anInt503 = rotation;
+		for (int planeIndex = plane; planeIndex >= 0; planeIndex--) {
+			if (groundArray[planeIndex][tileX][tileY] == null) {
+				groundArray[planeIndex][tileX][tileY] = new Ground(planeIndex, tileX, tileY);
 			}
 		}
 
-		groundArray[i1][l1][j].obj2 = class26;
+		groundArray[plane][tileX][tileY].obj2 = wallDecoration;
 	}
 
-	public boolean method284(int i, byte byte0, int j, int k, Animable class30_sub2_sub4, int l, int i1, int j1, int k1, int l1) {
-		if (class30_sub2_sub4 == null) {
+	public boolean addSceneObject(int uid, byte info, int height, int sizeY, Animable model, int sizeX, int plane, int rotation, int tileY, int tileX) {
+		if (model == null) {
 			return true;
 		} else {
-			int i2 = l1 * 128 + 64 * l;
-			int j2 = k1 * 128 + 64 * k;
-			return method287(i1, l1, k1, l, k, i2, j2, j, class30_sub2_sub4, j1, false, i, byte0);
+			int x = tileX * 128 + 64 * sizeX;
+			int y = tileY * 128 + 64 * sizeY;
+			return placeSceneObject(plane, tileX, tileY, sizeX, sizeY, x, y, height, model, rotation, false, uid, info);
 		}
 	}
 
-	public boolean method285(int i, int j, int k, int l, int i1, int j1, int k1, Animable class30_sub2_sub4, boolean flag) {
-		if (class30_sub2_sub4 == null) {
+	public boolean addEntity(int plane, int yaw, int height, int uid, int y, int radius, int x, Animable model, boolean extendByYaw) {
+		if (model == null) {
 			return true;
 		}
-		int l1 = k1 - j1;
-		int i2 = i1 - j1;
-		int j2 = k1 + j1;
-		int k2 = i1 + j1;
-		if (flag) {
-			if (j > 640 && j < 1408) {
-				k2 += 128;
+		int minX = x - radius;
+		int minY = y - radius;
+		int maxX = x + radius;
+		int maxY = y + radius;
+		if (extendByYaw) {
+			if (yaw > 640 && yaw < 1408) {
+				maxY += 128;
 			}
-			if (j > 1152 && j < 1920) {
-				j2 += 128;
+			if (yaw > 1152 && yaw < 1920) {
+				maxX += 128;
 			}
-			if (j > 1664 || j < 384) {
-				i2 -= 128;
+			if (yaw > 1664 || yaw < 384) {
+				minY -= 128;
 			}
-			if (j > 128 && j < 896) {
-				l1 -= 128;
+			if (yaw > 128 && yaw < 896) {
+				minX -= 128;
 			}
 		}
-		l1 /= 128;
-		i2 /= 128;
-		j2 /= 128;
-		k2 /= 128;
-		return method287(i, l1, i2, j2 - l1 + 1, k2 - i2 + 1, k1, i1, k, class30_sub2_sub4, j, true, l, (byte) 0);
+		minX /= 128;
+		minY /= 128;
+		maxX /= 128;
+		maxY /= 128;
+		return placeSceneObject(plane, minX, minY, maxX - minX + 1, maxY - minY + 1, x, y, height, model, yaw, true, uid, (byte) 0);
 	}
 
-	public boolean method286(int j, int k, Animable class30_sub2_sub4, int l, int i1, int j1, int k1, int l1, int i2, int j2, int k2) {
-		return class30_sub2_sub4 == null || method287(j, l1, k2, i2 - l1 + 1, i1 - k2 + 1, j1, k, k1, class30_sub2_sub4, l, true, j2, (byte) 0);
+	public boolean addEntityInTileBounds(int plane, int y, Animable model, int yaw, int maxTileY, int x, int height, int minTileX, int maxTileX, int uid, int minTileY) {
+		return model == null || placeSceneObject(plane, minTileX, minTileY, maxTileX - minTileX + 1, maxTileY - minTileY + 1, x, y, height, model, yaw, true, uid, (byte) 0);
 	}
 
-	private boolean method287(int i, int j, int k, int l, int i1, int j1, int k1, int l1, Animable class30_sub2_sub4, int i2, boolean flag, int j2, byte byte0) {
-		for (int k2 = j; k2 < j + l; k2++) {
-			for (int l2 = k; l2 < k + i1; l2++) {
-				if (k2 < 0 || l2 < 0 || k2 >= anInt438 || l2 >= anInt439) {
+	private boolean placeSceneObject(int plane, int tileX, int tileY, int sizeX, int sizeY, int x, int y, int height, Animable model, int rotation, boolean addToObj5Cache, int uid, byte info) {
+		for (int scanX = tileX; scanX < tileX + sizeX; scanX++) {
+			for (int scanY = tileY; scanY < tileY + sizeY; scanY++) {
+				if (scanX < 0 || scanY < 0 || scanX >= tileCountX || scanY >= tileCountY) {
 					return false;
 				}
-				Ground class30_sub3 = groundArray[i][k2][l2];
-				if (class30_sub3 != null && class30_sub3.anInt1317 >= 5) {
+				Ground tile = groundArray[plane][scanX][scanY];
+				if (tile != null && tile.anInt1317 >= 5) {
 					return false;
 				}
 			}
 
 		}
 
-		Object5 class28 = new Object5();
-		class28.uid = j2;
-		class28.aByte530 = byte0;
-		class28.anInt517 = i;
-		class28.anInt519 = j1;
-		class28.anInt520 = k1;
-		class28.anInt518 = l1;
-		class28.aClass30_Sub2_Sub4_521 = class30_sub2_sub4;
-		class28.anInt522 = i2;
-		class28.anInt523 = j;
-		class28.anInt525 = k;
-		class28.anInt524 = j + l - 1;
-		class28.anInt526 = k + i1 - 1;
-		for (int i3 = j; i3 < j + l; i3++) {
-			for (int j3 = k; j3 < k + i1; j3++) {
-				int k3 = 0;
-				if (i3 > j) {
-					k3++;
+		Object5 sceneObject = new Object5();
+		sceneObject.uid = uid;
+		sceneObject.aByte530 = info;
+		sceneObject.anInt517 = plane;
+		sceneObject.anInt519 = x;
+		sceneObject.anInt520 = y;
+		sceneObject.anInt518 = height;
+		sceneObject.aClass30_Sub2_Sub4_521 = model;
+		sceneObject.anInt522 = rotation;
+		sceneObject.anInt523 = tileX;
+		sceneObject.anInt525 = tileY;
+		sceneObject.anInt524 = tileX + sizeX - 1;
+		sceneObject.anInt526 = tileY + sizeY - 1;
+		for (int coverX = tileX; coverX < tileX + sizeX; coverX++) {
+			for (int coverY = tileY; coverY < tileY + sizeY; coverY++) {
+				int edgeMask = 0;
+				if (coverX > tileX) {
+					edgeMask++;
 				}
-				if (i3 < j + l - 1) {
-					k3 += 4;
+				if (coverX < tileX + sizeX - 1) {
+					edgeMask += 4;
 				}
-				if (j3 > k) {
-					k3 += 8;
+				if (coverY > tileY) {
+					edgeMask += 8;
 				}
-				if (j3 < k + i1 - 1) {
-					k3 += 2;
+				if (coverY < tileY + sizeY - 1) {
+					edgeMask += 2;
 				}
-				for (int l3 = i; l3 >= 0; l3--) {
-					if (groundArray[l3][i3][j3] == null) {
-						groundArray[l3][i3][j3] = new Ground(l3, i3, j3);
+				for (int planeIndex = plane; planeIndex >= 0; planeIndex--) {
+					if (groundArray[planeIndex][coverX][coverY] == null) {
+						groundArray[planeIndex][coverX][coverY] = new Ground(planeIndex, coverX, coverY);
 					}
 				}
 
-				Ground class30_sub3_1 = groundArray[i][i3][j3];
-				class30_sub3_1.obj5Array[class30_sub3_1.anInt1317] = class28;
-				class30_sub3_1.anIntArray1319[class30_sub3_1.anInt1317] = k3;
-				class30_sub3_1.anInt1320 |= k3;
-				class30_sub3_1.anInt1317++;
+				Ground tile = groundArray[plane][coverX][coverY];
+				tile.obj5Array[tile.anInt1317] = sceneObject;
+				tile.anIntArray1319[tile.anInt1317] = edgeMask;
+				tile.anInt1320 |= edgeMask;
+				tile.anInt1317++;
 			}
 
 		}
 
-		if (flag) {
-			obj5Cache[obj5CacheCurrPos++] = class28;
+		if (addToObj5Cache) {
+			obj5Cache[obj5CacheCurrPos++] = sceneObject;
 		}
 		return true;
 	}
@@ -561,9 +565,9 @@ final class WorldController {
 		int contrastBase = 768;// was parameter
 		int lightMagnitude = (int) Math.sqrt(lightX * lightX + lightY * lightY + lightZ * lightZ);
 		int lightContrast = contrastBase * lightMagnitude >> 8;
-		for (int plane = 0; plane < anInt437; plane++) {
-			for (int tileX = 0; tileX < anInt438; tileX++) {
-				for (int tileY = 0; tileY < anInt439; tileY++) {
+		for (int plane = 0; plane < planeCount; plane++) {
+			for (int tileX = 0; tileX < tileCountX; tileX++) {
+				for (int tileY = 0; tileY < tileCountY; tileY++) {
 					Ground ground = groundArray[plane][tileX][tileY];
 					if (ground != null) {
 						Object1 wall = ground.obj1;
@@ -599,25 +603,25 @@ final class WorldController {
 	}
 
 	private void mergeGroundDecorationNormals(int tileX, int plane, Model model, int tileY) {
-		if (tileX < anInt438) {
+		if (tileX < tileCountX) {
 			Ground neighbourPlusX = groundArray[plane][tileX + 1][tileY];
 			if (neighbourPlusX != null && neighbourPlusX.obj3 != null && neighbourPlusX.obj3.aClass30_Sub2_Sub4_814.aClass33Array1425 != null) {
 				mergeSharedVertexNormals(model, (Model) neighbourPlusX.obj3.aClass30_Sub2_Sub4_814, 128, 0, 0, true);
 			}
 		}
-		if (tileY < anInt438) {
+		if (tileY < tileCountX) {
 			Ground neighbourPlusY = groundArray[plane][tileX][tileY + 1];
 			if (neighbourPlusY != null && neighbourPlusY.obj3 != null && neighbourPlusY.obj3.aClass30_Sub2_Sub4_814.aClass33Array1425 != null) {
 				mergeSharedVertexNormals(model, (Model) neighbourPlusY.obj3.aClass30_Sub2_Sub4_814, 0, 0, 128, true);
 			}
 		}
-		if (tileX < anInt438 && tileY < anInt439) {
+		if (tileX < tileCountX && tileY < tileCountY) {
 			Ground neighbourPlusXPlusY = groundArray[plane][tileX + 1][tileY + 1];
 			if (neighbourPlusXPlusY != null && neighbourPlusXPlusY.obj3 != null && neighbourPlusXPlusY.obj3.aClass30_Sub2_Sub4_814.aClass33Array1425 != null) {
 				mergeSharedVertexNormals(model, (Model) neighbourPlusXPlusY.obj3.aClass30_Sub2_Sub4_814, 128, 0, 128, true);
 			}
 		}
-		if (tileX < anInt438 && tileY > 0) {
+		if (tileX < tileCountX && tileY > 0) {
 			Ground neighbourPlusXMinusY = groundArray[plane][tileX + 1][tileY - 1];
 			if (neighbourPlusXMinusY != null && neighbourPlusXMinusY.obj3 != null && neighbourPlusXMinusY.obj3.aClass30_Sub2_Sub4_814.aClass33Array1425 != null) {
 				mergeSharedVertexNormals(model, (Model) neighbourPlusXMinusY.obj3.aClass30_Sub2_Sub4_814, 128, 0, -128, true);
@@ -632,14 +636,14 @@ final class WorldController {
 		int startY = tileY - 1;
 		int endY = tileY + sizeY;
 		for (int scanPlane = plane; scanPlane <= plane + 1; scanPlane++) {
-			if (scanPlane != anInt437) {
+			if (scanPlane != planeCount) {
 				for (int scanX = startX; scanX <= endX; scanX++) {
-					if (scanX >= 0 && scanX < anInt438) {
+					if (scanX >= 0 && scanX < tileCountX) {
 						for (int scanY = startY; scanY <= endY; scanY++) {
-							if (scanY >= 0 && scanY < anInt439 && (!onOwnPlane || scanX >= endX || scanY >= endY || scanY < tileY && scanX != tileX)) {
+							if (scanY >= 0 && scanY < tileCountY && (!onOwnPlane || scanX >= endX || scanY >= endY || scanY < tileY && scanX != tileX)) {
 								Ground neighbour = groundArray[scanPlane][scanX][scanY];
 								if (neighbour != null) {
-									int heightOffset = (anIntArrayArrayArray440[scanPlane][scanX][scanY] + anIntArrayArrayArray440[scanPlane][scanX + 1][scanY] + anIntArrayArrayArray440[scanPlane][scanX][scanY + 1] + anIntArrayArrayArray440[scanPlane][scanX + 1][scanY + 1]) / 4 - (anIntArrayArrayArray440[plane][tileX][tileY] + anIntArrayArrayArray440[plane][tileX + 1][tileY] + anIntArrayArrayArray440[plane][tileX][tileY + 1] + anIntArrayArrayArray440[plane][tileX + 1][tileY + 1]) / 4;
+									int heightOffset = (tileHeights[scanPlane][scanX][scanY] + tileHeights[scanPlane][scanX + 1][scanY] + tileHeights[scanPlane][scanX][scanY + 1] + tileHeights[scanPlane][scanX + 1][scanY + 1]) / 4 - (tileHeights[plane][tileX][tileY] + tileHeights[plane][tileX + 1][tileY] + tileHeights[plane][tileX][tileY + 1] + tileHeights[plane][tileX + 1][tileY + 1]) / 4;
 									Object1 wall = neighbour.obj1;
 									if (wall != null && wall.aClass30_Sub2_Sub4_278 != null && wall.aClass30_Sub2_Sub4_278.aClass33Array1425 != null) {
 										mergeSharedVertexNormals(model, (Model) wall.aClass30_Sub2_Sub4_278, (scanX - tileX) * 128 + (1 - sizeX) * 64, heightOffset, (scanY - tileY) * 128 + (1 - sizeY) * 64, onOwnPlane);
@@ -885,13 +889,13 @@ final class WorldController {
 	public void drawScene(int cameraX, int cameraY, int yaw, int cameraZ, int plane, int pitch) {
 		if (cameraX < 0) {
 			cameraX = 0;
-		} else if (cameraX >= anInt438 * 128) {
-			cameraX = anInt438 * 128 - 1;
+		} else if (cameraX >= tileCountX * 128) {
+			cameraX = tileCountX * 128 - 1;
 		}
 		if (cameraY < 0) {
 			cameraY = 0;
-		} else if (cameraY >= anInt439 * 128) {
-			cameraY = anInt439 * 128 - 1;
+		} else if (cameraY >= tileCountY * 128) {
+			cameraY = tileCountY * 128 - 1;
 		}
 		anInt448++;
 		anInt458 = Model.modelIntArray1[pitch];
@@ -914,22 +918,22 @@ final class WorldController {
 			anInt451 = 0;
 		}
 		anInt450 = anInt453 + drawDistance;
-		if (anInt450 > anInt438) {
-			anInt450 = anInt438;
+		if (anInt450 > tileCountX) {
+			anInt450 = tileCountX;
 		}
 		anInt452 = anInt454 + drawDistance;
-		if (anInt452 > anInt439) {
-			anInt452 = anInt439;
+		if (anInt452 > tileCountY) {
+			anInt452 = tileCountY;
 		}
 		method319();
 		anInt446 = 0;
-		for (int planeIndex = anInt442; planeIndex < anInt437; planeIndex++) {
+		for (int planeIndex = lowestPlane; planeIndex < planeCount; planeIndex++) {
 			Ground planeTiles[][] = groundArray[planeIndex];
 			for (int tileX = anInt449; tileX < anInt450; tileX++) {
 				for (int tileY = anInt451; tileY < anInt452; tileY++) {
 					Ground tile = planeTiles[tileX][tileY];
 					if (tile != null) {
-						if (tile.anInt1321 > plane || !cameraTileVisibility[tileX - anInt453 + drawDistance][tileY - anInt454 + drawDistance] && anIntArrayArrayArray440[planeIndex][tileX][tileY] - cameraZ < 50) {
+						if (tile.anInt1321 > plane || !cameraTileVisibility[tileX - anInt453 + drawDistance][tileY - anInt454 + drawDistance] && tileHeights[planeIndex][tileX][tileY] - cameraZ < 50) {
 							tile.aBoolean1322 = false;
 							tile.aBoolean1323 = false;
 							tile.anInt1325 = 0;
@@ -946,7 +950,7 @@ final class WorldController {
 
 		}
 
-		for (int planeIndex = anInt442; planeIndex < anInt437; planeIndex++) {
+		for (int planeIndex = lowestPlane; planeIndex < planeCount; planeIndex++) {
 			Ground planeTiles[][] = groundArray[planeIndex];
 			for (int offsetX = -drawDistance; offsetX <= 0; offsetX++) {
 				int lowX = anInt453 + offsetX;
@@ -994,7 +998,7 @@ final class WorldController {
 
 		}
 
-		for (int planeIndex = anInt442; planeIndex < anInt437; planeIndex++) {
+		for (int planeIndex = lowestPlane; planeIndex < planeCount; planeIndex++) {
 			Ground planeTiles[][] = groundArray[planeIndex];
 			for (int offsetX = -drawDistance; offsetX <= 0; offsetX++) {
 				int lowX = anInt453 + offsetX;
@@ -1461,7 +1465,7 @@ final class WorldController {
 					}
 				}
 			}
-			if (k < anInt437 - 1) {
+			if (k < planeCount - 1) {
 				Ground class30_sub3_12 = groundArray[k + 1][i][j];
 				if (class30_sub3_12 != null && class30_sub3_12.aBoolean1323) {
 					aClass19_477.insertHead(class30_sub3_12);
@@ -1503,10 +1507,10 @@ final class WorldController {
 		int i3 = l2 = i2 + 128;
 		int j3;
 		int k3 = j3 = k2 + 128;
-		int l3 = anIntArrayArrayArray440[i][j1][k1] - anInt456;
-		int i4 = anIntArrayArrayArray440[i][j1 + 1][k1] - anInt456;
-		int j4 = anIntArrayArrayArray440[i][j1 + 1][k1 + 1] - anInt456;
-		int k4 = anIntArrayArrayArray440[i][j1][k1 + 1] - anInt456;
+		int l3 = tileHeights[i][j1][k1] - anInt456;
+		int i4 = tileHeights[i][j1 + 1][k1] - anInt456;
+		int j4 = tileHeights[i][j1 + 1][k1 + 1] - anInt456;
+		int k4 = tileHeights[i][j1][k1 + 1] - anInt456;
 		int l4 = k2 * l + i2 * i1 >> 16;
 		k2 = k2 * i1 - i2 * l >> 16;
 		i2 = l4;
@@ -1686,8 +1690,8 @@ final class WorldController {
 	}
 
 	private void method319() {
-		int j = anIntArray473[anInt447];
-		Class47 aclass47[] = aClass47ArrayArray474[anInt447];
+		int j = occluderCounts[anInt447];
+		Class47 aclass47[] = occluders[anInt447];
 		anInt475 = 0;
 		for (int k = 0; k < j; k++) {
 			Class47 class47 = aclass47[k];
@@ -1826,7 +1830,7 @@ final class WorldController {
 		}
 		int i1 = j << 7;
 		int j1 = k << 7;
-		if (method324(i1 + 1, anIntArrayArrayArray440[i][j][k], j1 + 1) && method324(i1 + 128 - 1, anIntArrayArrayArray440[i][j + 1][k], j1 + 1) && method324(i1 + 128 - 1, anIntArrayArrayArray440[i][j + 1][k + 1], j1 + 128 - 1) && method324(i1 + 1, anIntArrayArrayArray440[i][j][k + 1], j1 + 128 - 1)) {
+		if (method324(i1 + 1, tileHeights[i][j][k], j1 + 1) && method324(i1 + 128 - 1, tileHeights[i][j + 1][k], j1 + 1) && method324(i1 + 128 - 1, tileHeights[i][j + 1][k + 1], j1 + 128 - 1) && method324(i1 + 1, tileHeights[i][j][k + 1], j1 + 128 - 1)) {
 			anIntArrayArrayArray445[i][j][k] = anInt448;
 			return true;
 		} else {
@@ -1841,7 +1845,7 @@ final class WorldController {
 		}
 		int i1 = j << 7;
 		int j1 = k << 7;
-		int k1 = anIntArrayArrayArray440[i][j][k] - 1;
+		int k1 = tileHeights[i][j][k] - 1;
 		int l1 = k1 - 120;
 		int i2 = k1 - 230;
 		int j2 = k1 - 238;
@@ -1949,7 +1953,7 @@ final class WorldController {
 		}
 		int i1 = j << 7;
 		int j1 = k << 7;
-		return method324(i1 + 1, anIntArrayArrayArray440[i][j][k] - l, j1 + 1) && method324(i1 + 128 - 1, anIntArrayArrayArray440[i][j + 1][k] - l, j1 + 1) && method324(i1 + 128 - 1, anIntArrayArrayArray440[i][j + 1][k + 1] - l, j1 + 128 - 1) && method324(i1 + 1, anIntArrayArrayArray440[i][j][k + 1] - l, j1 + 128 - 1);
+		return method324(i1 + 1, tileHeights[i][j][k] - l, j1 + 1) && method324(i1 + 128 - 1, tileHeights[i][j + 1][k] - l, j1 + 1) && method324(i1 + 128 - 1, tileHeights[i][j + 1][k + 1] - l, j1 + 128 - 1) && method324(i1 + 1, tileHeights[i][j][k + 1] - l, j1 + 128 - 1);
 	}
 
 	private boolean method323(int i, int j, int k, int l, int i1, int j1) {
@@ -1959,7 +1963,7 @@ final class WorldController {
 			}
 			int k1 = j << 7;
 			int i2 = l << 7;
-			return method324(k1 + 1, anIntArrayArrayArray440[i][j][l] - j1, i2 + 1) && method324(k1 + 128 - 1, anIntArrayArrayArray440[i][j + 1][l] - j1, i2 + 1) && method324(k1 + 128 - 1, anIntArrayArrayArray440[i][j + 1][l + 1] - j1, i2 + 128 - 1) && method324(k1 + 1, anIntArrayArrayArray440[i][j][l + 1] - j1, i2 + 128 - 1);
+			return method324(k1 + 1, tileHeights[i][j][l] - j1, i2 + 1) && method324(k1 + 128 - 1, tileHeights[i][j + 1][l] - j1, i2 + 1) && method324(k1 + 128 - 1, tileHeights[i][j + 1][l + 1] - j1, i2 + 128 - 1) && method324(k1 + 1, tileHeights[i][j][l + 1] - j1, i2 + 128 - 1);
 		}
 		for (int l1 = j; l1 <= k; l1++) {
 			for (int j2 = l; j2 <= i1; j2++) {
@@ -1972,7 +1976,7 @@ final class WorldController {
 
 		int k2 = (j << 7) + 1;
 		int l2 = (l << 7) + 2;
-		int i3 = anIntArrayArrayArray440[i][j][l] - j1;
+		int i3 = tileHeights[i][j][l] - j1;
 		if (!method324(k2, i3, l2)) {
 			return false;
 		}
@@ -2050,12 +2054,12 @@ final class WorldController {
 
 	private boolean aBoolean434;
 	public static boolean lowMem = true;
-	private final int anInt437;
-	private final int anInt438;
-	private final int anInt439;
-	private final int[][][] anIntArrayArrayArray440;
+	private final int planeCount;
+	private final int tileCountX;
+	private final int tileCountY;
+	private final int[][][] tileHeights;
 	private final Ground[][][] groundArray;
-	private int anInt442;
+	private int lowestPlane;
 	private int obj5CacheCurrPos;
 	private final Object5[] obj5Cache;
 	private final int[][][] anIntArrayArrayArray445;
@@ -2085,9 +2089,9 @@ final class WorldController {
 	private static int anInt469;
 	public static int anInt470 = -1;
 	public static int anInt471 = -1;
-	private static final int anInt472;
-	private static int[] anIntArray473;
-	private static Class47[][] aClass47ArrayArray474;
+	private static final int occluderPlaneCount;
+	private static int[] occluderCounts;
+	private static Class47[][] occluders;
 	private static int anInt475;
 	private static final Class47[] aClass47Array476 = new Class47[500];
 	private static NodeList aClass19_477 = new NodeList();
@@ -2114,8 +2118,8 @@ final class WorldController {
 	private static int viewportMaxY;
 
 	static {
-		anInt472 = 4;
-		anIntArray473 = new int[anInt472];
-		aClass47ArrayArray474 = new Class47[anInt472][500];
+		occluderPlaneCount = 4;
+		occluderCounts = new int[occluderPlaneCount];
+		occluders = new Class47[occluderPlaneCount][500];
 	}
 }

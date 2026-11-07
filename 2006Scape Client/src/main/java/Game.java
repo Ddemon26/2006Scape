@@ -787,9 +787,9 @@ public class Game extends RSApplet {
 				k3 = plane - 1;
 			}
 			if (lowMem) {
-				worldController.method275(ObjectManager.anInt145);
+				worldController.createPlaneTiles(ObjectManager.anInt145);
 			} else {
-				worldController.method275(0);
+				worldController.createPlaneTiles(0);
 			}
 			for (int i5 = 0; i5 < 104; i5++) {
 				for (int i7 = 0; i7 < 104; i7++) {
@@ -979,7 +979,7 @@ public class Game extends RSApplet {
 		}
 
 		int i1 = i + (j << 7) + 0x60000000;
-		worldController.method281(i, i1, ((Animable) obj1), interpolatedGroundHeight(plane, j * 128 + 64, i * 128 + 64), ((Animable) obj2), ((Animable) obj), plane, j);
+		worldController.addItemStack(i, i1, ((Animable) obj1), interpolatedGroundHeight(plane, j * 128 + 64, i * 128 + 64), ((Animable) obj2), ((Animable) obj), plane, j);
 	}
 
 	public void method26(boolean flag) {
@@ -1003,7 +1003,7 @@ public class Game extends RSApplet {
 			if (!npc.desc.aBoolean84) {
 				k += 0x80000000;
 			}
-			worldController.method285(plane, npc.anInt1552, interpolatedGroundHeight(plane, npc.y, npc.x), k, npc.y, (npc.anInt1540 - 1) * 64 + 60, npc.x, npc, npc.aBoolean1541);
+			worldController.addEntity(plane, npc.anInt1552, interpolatedGroundHeight(plane, npc.y, npc.x), k, npc.y, (npc.anInt1540 - 1) * 64 + 60, npc.x, npc, npc.aBoolean1541);
 		}
 	}
 
@@ -2323,7 +2323,7 @@ public class Game extends RSApplet {
 			if (player.aModel_1714 != null && loopCycle >= player.anInt1707 && loopCycle < player.anInt1708) {
 				player.aBoolean1699 = false;
 				player.anInt1709 = interpolatedGroundHeight(plane, player.y, player.x);
-				worldController.method286(plane, player.y, player, player.anInt1552, player.anInt1722, player.x, player.anInt1709, player.anInt1719, player.anInt1721, i1, player.anInt1720);
+				worldController.addEntityInTileBounds(plane, player.y, player, player.anInt1552, player.anInt1722, player.x, player.anInt1709, player.anInt1719, player.anInt1721, i1, player.anInt1720);
 				continue;
 			}
 			if ((player.x & 0x7f) == 64 && (player.y & 0x7f) == 64) {
@@ -2333,7 +2333,7 @@ public class Game extends RSApplet {
 				anIntArrayArray929[j1][k1] = anInt1265;
 			}
 			player.anInt1709 = interpolatedGroundHeight(plane, player.y, player.x);
-			worldController.method285(plane, player.anInt1552, player.anInt1709, i1, player.y, 60, player.x, player, player.aBoolean1541);
+			worldController.addEntity(plane, player.anInt1552, player.anInt1709, i1, player.y, 60, player.x, player, player.aBoolean1541);
 		}
 
 	}
@@ -2779,7 +2779,7 @@ public class Game extends RSApplet {
 					}
 				}
 				projectile.method456(anInt945);
-				worldController.method285(plane, projectile.anInt1595, (int) projectile.aDouble1587, -1, (int) projectile.aDouble1586, 60, (int) projectile.aDouble1585, projectile, false);
+				worldController.addEntity(plane, projectile.anInt1595, (int) projectile.aDouble1587, -1, (int) projectile.aDouble1586, 60, (int) projectile.aDouble1585, projectile, false);
 			}
 		}
 
@@ -8163,7 +8163,7 @@ public class Game extends RSApplet {
 				if (graphic.finished) {
 					graphic.unlink();
 				} else {
-					worldController.method285(graphic.plane, 0, graphic.height, -1, graphic.worldX, 60, graphic.worldY, graphic, false);
+					worldController.addEntity(graphic.plane, 0, graphic.height, -1, graphic.worldX, 60, graphic.worldY, graphic, false);
 				}
 			}
 		}
