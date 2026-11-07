@@ -4,7 +4,7 @@
 
 public interface Runnable_Impl1 extends Runnable
 {
-    public void method10(int[] is, int i);
+    public void writeEvents(int[] events, int count);
     
     public void method11(boolean bool);
     
@@ -12,7 +12,7 @@ public interface Runnable_Impl1 extends Runnable
     
     public void close();
     
-    public int method14(int i);
+    public int getPlaybackPosition(int i);
     
     public void method15(byte i);
 }

@@ -392,13 +392,13 @@ public class MusicPlayerTest {
         int resets, closes, lastInitArg;
         volatile int reading;
         boolean closedWith;
-        public synchronized void method10(int[] is, int n) {
+        public synchronized void writeEvents(int[] is, int n) {
             batches.add(Arrays.copyOf(is, n));
         }
         public void method11(boolean b) { closes++; closedWith = b; }
         public void method12(boolean b) { resets++; }
         public void close() { }
-        public int method14(int i) { return reading; }
+        public int getPlaybackPosition(int i) { return reading; }
         public void method15(byte b) { lastInitArg = b; }
         public void run() { }
     }
@@ -562,7 +562,7 @@ public class MusicPlayerTest {
         p.play(256, empty, 0, false);
         assertEquals(96, decode(sink.batches).size());
         assertArrayEquals(ev(0, 176, 123, 0), decode(sink.batches).get(0));
-        assertFalse("song released", ((Class11) get(Class56_Sub1_Sub2.class, p, F_READER)).method527());
+        assertFalse("song released", ((Class11) get(Class56_Sub1_Sub2.class, p, F_READER)).isLoaded());
         sink.reading = -1000000;
         int before = sink.batches.size();
         p.tick(-126);                            // nothing loaded: nothing happens
@@ -611,7 +611,7 @@ public class MusicPlayerTest {
         assertEquals(97, end.size());
         assertArrayEquals(ev(200, 0x80, 62, 0), end.get(0));
         assertArrayEquals(ev(0, 176, 123, 0), end.get(1));
-        assertFalse("song released", ((Class11) get(Class56_Sub1_Sub2.class, p, F_READER)).method527());
+        assertFalse("song released", ((Class11) get(Class56_Sub1_Sub2.class, p, F_READER)).isLoaded());
         tick(p, sink, -100000);
         assertEquals(4, sink.batches.size());
     }
@@ -628,7 +628,7 @@ public class MusicPlayerTest {
         tick(p, sink, 0);                             // note off at 500 and end of the song: restart, replaying the start at 500
         List<long[]> got = decode(sink.batches.subList(3, 4));
         assertEquals(strs(ev(200, 0x80, 62, 0), ev(0, 0xC0, 5, 0), ev(0, 0xB0, 7, 100), ev(0, 0xB0, 39, 0)), strs(got));
-        assertTrue("song stays loaded", ((Class11) get(Class56_Sub1_Sub2.class, p, F_READER)).method527());
+        assertTrue("song stays loaded", ((Class11) get(Class56_Sub1_Sub2.class, p, F_READER)).isLoaded());
         tick(p, sink, 100);                           // the restarted song continues on the same timeline: note on at 500 + 100
         assertEquals(strs(ev(100, 0x90, 60, 64)), strs(decode(sink.batches.subList(4, 5))));
         assertEquals(true, get(Class56_Sub1_Sub2.class, null, F_LOOP));
@@ -659,7 +659,7 @@ public class MusicPlayerTest {
         assertEquals(resetsBefore + 1, sink.resets);
         assertEquals(batchesBefore + 1, sink.batches.size());
         assertEquals(96, decode(sink.batches.subList(batchesBefore, batchesBefore + 1)).size());
-        assertFalse(((Class11) get(Class56_Sub1_Sub2.class, p, F_READER)).method527());
+        assertFalse(((Class11) get(Class56_Sub1_Sub2.class, p, F_READER)).isLoaded());
         sink.reading = -1000000;
         p.tick(-126);
         assertEquals("a stopped song queues nothing more", batchesBefore + 1, sink.batches.size());
@@ -672,7 +672,7 @@ public class MusicPlayerTest {
         p.play(256, cacheSong(SONG), 0, false);
         sink.batches.clear();
         Class11 reader = (Class11) get(Class56_Sub1_Sub2.class, p, F_READER);
-        reader.method526(0);                          // rewind track 0 to the saved position (before the note on)
+        reader.restoreTrackPosition(0);                          // rewind track 0 to the saved position (before the note on)
         invoke(p, M_DISPATCH, 0, 123456789L, 0);      // 123456789 / (500 * 1000) = 246 ms
         invokeStatic(Class56_Sub1_Sub2.class, M_FLUSH);
         assertArrayEquals(ev(246, 0x90, 60, 64), decode(sink.batches).get(0));
@@ -685,7 +685,7 @@ public class MusicPlayerTest {
         p.play(256, cacheSong(SONG), 0, false);
         p.tick(-90);
         assertSame(sink, get(Class56_Sub1_Sub2.class, null, F_SINK));
-        assertTrue("song still loaded", ((Class11) get(Class56_Sub1_Sub2.class, p, F_READER)).method527());
+        assertTrue("song still loaded", ((Class11) get(Class56_Sub1_Sub2.class, p, F_READER)).isLoaded());
         p.tick(-89);                             // the guard value that nulls the sink
         assertNull(get(Class56_Sub1_Sub2.class, null, F_SINK));
     }

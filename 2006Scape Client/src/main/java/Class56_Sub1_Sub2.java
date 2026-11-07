@@ -14,7 +14,7 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
 
     private static final void queueEvent(int status, int time, int data1, int data2) {
     	if (eventBuffer.length <= eventBufferLength) {
-    		eventSink.method10(eventBuffer, eventBufferLength);
+		eventSink.writeEvents(eventBuffer, eventBufferLength);
     		eventBufferLength = 0;
     	}
     	eventBuffer[eventBufferLength++] = time - lastEventTime;
@@ -24,7 +24,7 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
 
     private static final void flushEvents() {
     	if (eventBufferLength > 0) {
-    		eventSink.method10(eventBuffer, eventBufferLength);
+		eventSink.writeEvents(eventBuffer, eventBufferLength);
     		eventBufferLength = 0;
     	}
     }
@@ -35,76 +35,76 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
 
     final synchronized void play(int volume, byte[] midiData, int fadeAttenuation,
 				      boolean loop) {
-		sequenceReader.method525(midiData);
+		sequenceReader.load(midiData);
 		boolean allTracksEmpty = true;
 		looping = loop;
 		lastEventTime = 0;
 		eventSink.method12(false);
 		applyFade(fadeAttenuation, volume, (long) lastEventTime);
-		int trackCount = sequenceReader.method533();
+		int trackCount = sequenceReader.trackCount();
 		for (int track = 0; track < trackCount; track++) {
-			sequenceReader.method526(track);
-			while (!sequenceReader.method521()) {
-				sequenceReader.method520(track);
-				if (sequenceReader.anIntArray216[track] != 0) {
+			sequenceReader.restoreTrackPosition(track);
+			while (!sequenceReader.isTrackEnded()) {
+				sequenceReader.readDelta(track);
+				if (sequenceReader.trackTicks[track] != 0) {
 					allTracksEmpty = false;
 					break;
 				}
 				dispatchNextEvent(fadeAttenuation ^ 0x70, 0L, track);
 			}
-		    sequenceReader.method522(track);
+		    sequenceReader.saveTrackPosition(track);
 		}
 		if (allTracksEmpty) {
 			if (looping)
 				throw new RuntimeException();
 			resetAllChannels((long) lastEventTime);
-		    sequenceReader.method523();
+		    sequenceReader.release();
 		}
 		flushEvents();
     }
 
     final synchronized void setVolume(int volume) {
 		setMasterVolume(volume, (long) lastEventTime);
-		eventSink.method10(eventBuffer, eventBufferLength);
+		eventSink.writeEvents(eventBuffer, eventBufferLength);
 		eventBufferLength = 0;
     }
 
     final synchronized void tick(int guard) {
-	if (sequenceReader.method527()) {
+	if (sequenceReader.isLoaded()) {
 	    int queuedUntil = lastEventTime;
 	    int lookaheadOffset = -200;
-	    int sinkReading = eventSink.method14(-29810);
+	    int sinkReading = eventSink.getPlaybackPosition(-29810);
 	    long windowEnd = ((long) (queuedUntil - (sinkReading + lookaheadOffset))
-		      * (long) (sequenceReader.anInt213 * 1000));
+		      * (long) (sequenceReader.division * 1000));
 	    for (;;) {
-		int track = sequenceReader.method536();
-		int eventTick = sequenceReader.anIntArray216[track];
-		long eventTime = sequenceReader.method532(eventTick);
+		int track = sequenceReader.nextTrack();
+		int eventTick = sequenceReader.trackTicks[track];
+		long eventTime = sequenceReader.tickToScaledTime(eventTick);
 		if (windowEnd < eventTime)
 		    break;
 		while (eventTick
-		       == sequenceReader.anIntArray216[track]) {
-		    sequenceReader.method526(track);
+		       == sequenceReader.trackTicks[track]) {
+		    sequenceReader.restoreTrackPosition(track);
 		    dispatchNextEvent(126, eventTime, track);
-		    if (sequenceReader.method521()) {
-			sequenceReader.method522(track);
-			if (sequenceReader.method531()) {
+		    if (sequenceReader.isTrackEnded()) {
+			sequenceReader.saveTrackPosition(track);
+			if (sequenceReader.allTracksEnded()) {
 			    if (looping)
-				sequenceReader.method534(eventTime);
+				sequenceReader.restart(eventTime);
 			    else {
 				resetAllChannels
 				    ((long) (int) (eventTime
-						   / (long) ((sequenceReader.anInt213)
+						   / (long) ((sequenceReader.division)
 							     * 1000)));
-				sequenceReader.method523();
+				sequenceReader.release();
 				flushEvents();
 				return;
 			    }
 			}
 			break;
 		    }
-		    sequenceReader.method520(track);
-		    sequenceReader.method522(track);
+		    sequenceReader.readDelta(track);
+		    sequenceReader.saveTrackPosition(track);
 		}
 	    }
 	    if (guard > -90)
@@ -116,9 +116,9 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
     final synchronized void stop() {
 		eventSink.method12(false);
 		resetAllChannels((long) lastEventTime);
-		eventSink.method10(eventBuffer, eventBufferLength);
+		eventSink.writeEvents(eventBuffer, eventBufferLength);
 		eventBufferLength = 0;
-		sequenceReader.method523();
+		sequenceReader.release();
     }
 
     final void shutdown() {
@@ -152,10 +152,10 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
     }
 
     private final void dispatchNextEvent(int unused, long scaledTime, int track) {
-    	int event = sequenceReader.method529(track);
+		int event = sequenceReader.readEvent(track);
     	if (event != 1) {
     		if ((event & 0x80) != 0) {
-    			int timeMs  = (int) (scaledTime / (long) (sequenceReader.anInt213 * 1000));
+				int timeMs  = (int) (scaledTime / (long) (sequenceReader.division * 1000));
     			int status = event & 0xff;
     			int data2 = (event & 0xffe7d5) >> 16;
 				int data1 = (event & 0xfff6) >> 8;
@@ -163,7 +163,7 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
 			    	queueEvent(status, timeMs, data1, data2);
     		}
     	} else
-    		sequenceReader.method528();
+		sequenceReader.markTrackEnded();
     }
 
     Class56_Sub1_Sub2(Runnable_Impl1 runnable_impl1) {
@@ -171,7 +171,7 @@ final class Class56_Sub1_Sub2 extends Class56_Sub1 implements Runnable
 		eventSink.method15((byte) 96);
 		eventSink.method12(false);
 		resetAllChannels((long) lastEventTime);
-		eventSink.method10(eventBuffer, eventBufferLength);
+		eventSink.writeEvents(eventBuffer, eventBufferLength);
 		eventBufferLength = 0;
 		Thread thread = new Thread(this);
 		thread.setDaemon(true);

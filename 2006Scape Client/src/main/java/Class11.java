@@ -4,191 +4,191 @@
 
 final class Class11
 {
-    private static byte[] aByteArray210
+    private static byte[] eventDataLengths
 	= { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 	    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 	    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1,
 	    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 	    1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 	    2, 2, 0, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    private Stream aClass3_Sub12_211 = new Stream(null);
-    private int[] anIntArray212;
-    int anInt213;
-    private int[] anIntArray214;
-    private long aLong215;
-    int[] anIntArray216;
-    private int[] anIntArray217;
-    private int anInt218;
-    
-    final void method520(int i) {
-	int i_0_ = aClass3_Sub12_211.readUnsignedByte128MinusValue();
-	anIntArray216[i] += i_0_;
+    private Stream midiStream = new Stream(null);
+    private int[] runningStatus;
+    int division;
+    private int[] trackPositions;
+    private long timeBase;
+    int[] trackTicks;
+    private int[] trackStarts;
+    private int tempo;
+
+    final void readDelta(int track) {
+	int delta = midiStream.readUnsignedByte128MinusValue();
+	trackTicks[track] += delta;
     }
-    
-    final boolean method521() {
-	if (aClass3_Sub12_211.currentOffset >= 0)
+
+    final boolean isTrackEnded() {
+	if (midiStream.currentOffset >= 0)
 	    return false;
 	return true;
     }
-    
-    final void method522(int i) {
-	anIntArray214[i] = aClass3_Sub12_211.currentOffset;
+
+    final void saveTrackPosition(int track) {
+	trackPositions[track] = midiStream.currentOffset;
     }
-    
-    final void method523() {
-	aClass3_Sub12_211.buffer = null;
-	anIntArray217 = null;
-	anIntArray214 = null;
-	anIntArray216 = null;
-	anIntArray212 = null;
+
+    final void release() {
+	midiStream.buffer = null;
+	trackStarts = null;
+	trackPositions = null;
+	trackTicks = null;
+	runningStatus = null;
     }
-    
-    private final int method524(int i) {
-	int i_1_ = (aClass3_Sub12_211.buffer
-		    [aClass3_Sub12_211.currentOffset]);
-	if (i_1_ < 0) {
-	    i_1_ &= 0xff;
-	    anIntArray212[i] = i_1_;
-	    aClass3_Sub12_211.currentOffset++;
+
+    private final int decodeNextEvent(int track) {
+	int status = (midiStream.buffer
+		    [midiStream.currentOffset]);
+	if (status < 0) {
+	    status &= 0xff;
+	    runningStatus[track] = status;
+	    midiStream.currentOffset++;
 	} else
-	    i_1_ = anIntArray212[i];
-	if (i_1_ == 240 || i_1_ == 247) {
-	    int i_2_ = aClass3_Sub12_211.readUnsignedByte128MinusValue();
-	    if (i_1_ == 247 && i_2_ > 0) {
-		int i_3_ = ((aClass3_Sub12_211.buffer
-			     [aClass3_Sub12_211.currentOffset])
+	    status = runningStatus[track];
+	if (status == 240 || status == 247) {
+	    int length = midiStream.readUnsignedByte128MinusValue();
+	    if (status == 247 && length > 0) {
+		int nextByte = ((midiStream.buffer
+			     [midiStream.currentOffset])
 			    & 0xff);
-		if (i_3_ >= 241 && i_3_ <= 243 || i_3_ == 246 || i_3_ == 248
-		    || i_3_ >= 250 && i_3_ <= 252 || i_3_ == 254) {
-		    aClass3_Sub12_211.currentOffset++;
-		    anIntArray212[i] = i_3_;
-		    return method535(i, i_3_);
+		if (nextByte >= 241 && nextByte <= 243 || nextByte == 246 || nextByte == 248
+		    || nextByte >= 250 && nextByte <= 252 || nextByte == 254) {
+		    midiStream.currentOffset++;
+		    runningStatus[track] = nextByte;
+		    return decodeEvent(track, nextByte);
 		}
 	    }
-	    aClass3_Sub12_211.currentOffset += i_2_;
+	    midiStream.currentOffset += length;
 	    return 0;
 	}
-	return method535(i, i_1_);
+	return decodeEvent(track, status);
     }
-    
-    final void method525(byte[] is) {
-	aClass3_Sub12_211.buffer = is;
-	aClass3_Sub12_211.currentOffset = 10;
-	int i = aClass3_Sub12_211.readUnsignedShortBigEndian();
-	anInt213 = aClass3_Sub12_211.readUnsignedShortBigEndian();
-	anInt218 = 500000;
-	anIntArray217 = new int[i];
-	int i_4_ = 0;
-	while (i_4_ < i) {
-	    int i_5_ = aClass3_Sub12_211.readIntBigEndian();
-	    int i_6_ = aClass3_Sub12_211.readIntBigEndian();
-	    if (i_5_ == 1297379947) {
-		anIntArray217[i_4_]
-		    = aClass3_Sub12_211.currentOffset;
-		i_4_++;
+
+    final void load(byte[] midiData) {
+	midiStream.buffer = midiData;
+	midiStream.currentOffset = 10;
+	int trackCount = midiStream.readUnsignedShortBigEndian();
+	division = midiStream.readUnsignedShortBigEndian();
+	tempo = 500000;
+	trackStarts = new int[trackCount];
+	int tracksFound = 0;
+	while (tracksFound < trackCount) {
+	    int chunkTag = midiStream.readIntBigEndian();
+	    int chunkLength = midiStream.readIntBigEndian();
+	    if (chunkTag == 1297379947) {
+		trackStarts[tracksFound]
+		    = midiStream.currentOffset;
+		tracksFound++;
 	    }
-	    aClass3_Sub12_211.currentOffset += i_6_;
+	    midiStream.currentOffset += chunkLength;
 	}
-	anIntArray214 = anIntArray217.clone();
-	anIntArray216 = new int[i];
-	anIntArray212 = new int[i];
+	trackPositions = trackStarts.clone();
+	trackTicks = new int[trackCount];
+	runningStatus = new int[trackCount];
     }
-    
-    final void method526(int i) {
-	aClass3_Sub12_211.currentOffset = anIntArray214[i];
+
+    final void restoreTrackPosition(int track) {
+	midiStream.currentOffset = trackPositions[track];
     }
-    
-    final boolean method527() {
-	if (aClass3_Sub12_211.buffer == null)
+
+    final boolean isLoaded() {
+	if (midiStream.buffer == null)
 	    return false;
 	return true;
     }
-    
-    final void method528() {
-	aClass3_Sub12_211.currentOffset = -1;
+
+    final void markTrackEnded() {
+	midiStream.currentOffset = -1;
     }
-    
-    final int method529(int i) {
-	int i_7_ = method524(i);
-	return i_7_;
+
+    final int readEvent(int track) {
+	int event = decodeNextEvent(track);
+	return event;
     }
-    
+
     public static void reset() {
-	aByteArray210 = null;
+	eventDataLengths = null;
     }
-    
-    final boolean method531() {
-	int i = anIntArray214.length;
-	for (int i_8_ = 0; i_8_ < i; i_8_++) {
-	    if (anIntArray214[i_8_] >= 0)
+
+    final boolean allTracksEnded() {
+	int trackCount = trackPositions.length;
+	for (int track = 0; track < trackCount; track++) {
+	    if (trackPositions[track] >= 0)
 		return false;
 	}
 	return true;
     }
-    
-    final long method532(int i) {
-	return aLong215 + (long) i * (long) anInt218;
+
+    final long tickToScaledTime(int tick) {
+	return timeBase + (long) tick * (long) tempo;
     }
-    
-    final int method533() {
-	return anIntArray214.length;
+
+    final int trackCount() {
+	return trackPositions.length;
     }
-    
-    final void method534(long l) {
-	aLong215 = l;
-	int i = anIntArray214.length;
-	for (int i_9_ = 0; i_9_ < i; i_9_++) {
-	    anIntArray216[i_9_] = 0;
-	    anIntArray212[i_9_] = 0;
-	    aClass3_Sub12_211.currentOffset = anIntArray217[i_9_];
-	    method520(i_9_);
-	    anIntArray214[i_9_] = aClass3_Sub12_211.currentOffset;
+
+    final void restart(long startTime) {
+	timeBase = startTime;
+	int trackCount = trackPositions.length;
+	for (int track = 0; track < trackCount; track++) {
+	    trackTicks[track] = 0;
+	    runningStatus[track] = 0;
+	    midiStream.currentOffset = trackStarts[track];
+	    readDelta(track);
+	    trackPositions[track] = midiStream.currentOffset;
 	}
     }
-    
-    private final int method535(int i, int i_10_) {
-	if (i_10_ == 255) {
-	    int i_11_ = aClass3_Sub12_211.readUnsignedByte();
-	    int i_12_ = aClass3_Sub12_211.readUnsignedByte128MinusValue();
-	    if (i_11_ == 47) {
-		aClass3_Sub12_211.currentOffset += i_12_;
+
+    private final int decodeEvent(int track, int status) {
+	if (status == 255) {
+	    int metaType = midiStream.readUnsignedByte();
+	    int metaLength = midiStream.readUnsignedByte128MinusValue();
+	    if (metaType == 47) {
+		midiStream.currentOffset += metaLength;
 		return 1;
 	    }
-	    if (i_11_ == 81) {
-		int i_13_ = aClass3_Sub12_211.readUnsignedMediumBigEndian();
-		i_12_ -= 3;
-		int i_14_ = anIntArray216[i];
-		aLong215 += (long) i_14_ * (long) (anInt218 - i_13_);
-		anInt218 = i_13_;
-		aClass3_Sub12_211.currentOffset += i_12_;
+	    if (metaType == 81) {
+		int newTempo = midiStream.readUnsignedMediumBigEndian();
+		metaLength -= 3;
+		int tick = trackTicks[track];
+		timeBase += (long) tick * (long) (tempo - newTempo);
+		tempo = newTempo;
+		midiStream.currentOffset += metaLength;
 		return 2;
 	    }
-	    aClass3_Sub12_211.currentOffset += i_12_;
+	    midiStream.currentOffset += metaLength;
 	    return 3;
 	}
-	byte i_15_ = aByteArray210[i_10_ - 128];
-	int i_16_ = i_10_;
-	if (i_15_ >= 1)
-	    i_16_ |= aClass3_Sub12_211.readUnsignedByte() << 8;
-	if (i_15_ >= 2)
-	    i_16_ |= aClass3_Sub12_211.readUnsignedByte() << 16;
-	return i_16_;
+	byte dataLength = eventDataLengths[status - 128];
+	int message = status;
+	if (dataLength >= 1)
+	    message |= midiStream.readUnsignedByte() << 8;
+	if (dataLength >= 2)
+	    message |= midiStream.readUnsignedByte() << 16;
+	return message;
     }
-    
-    final int method536() {
-	int i = anIntArray214.length;
-	int i_17_ = -1;
-	int i_18_ = 2147483647;
-	for (int i_19_ = 0; i_19_ < i; i_19_++) {
-	    if (anIntArray214[i_19_] >= 0
-		&& anIntArray216[i_19_] < i_18_) {
-		i_17_ = i_19_;
-		i_18_ = anIntArray216[i_19_];
+
+    final int nextTrack() {
+	int trackCount = trackPositions.length;
+	int best = -1;
+	int bestTick = 2147483647;
+	for (int track = 0; track < trackCount; track++) {
+	    if (trackPositions[track] >= 0
+		&& trackTicks[track] < bestTick) {
+		best = track;
+		bestTick = trackTicks[track];
 	    }
 	}
-	return i_17_;
+	return best;
     }
-    
+
     public Class11() {
 	/* empty */
     }
