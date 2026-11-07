@@ -64,9 +64,10 @@ public final class FileServer {
 	 * Starts the file server.
 	 * @throws Exception if an error occurs.
 	 */
-	public SocketAddress service = new InetSocketAddress((Constants.WORLD == 1) ? 43594 : 43596 + Constants.WORLD);
+	public SocketAddress service;
 
 	public void start() throws Exception {
+		service = new InetSocketAddress(Constants.BIND_ADDRESS, (Constants.WORLD == 1) ? 43594 : 43596 + Constants.WORLD);
 		if (!new File(Constants.FILE_SYSTEM_DIR).exists())
 		{
 			System.out.println("Working Directory = " + System.getProperty("user.dir"));
@@ -92,8 +93,8 @@ public final class FileServer {
 		logger.info("Starting services...");
 		
 		init();
-		SocketAddress http = new InetSocketAddress(Constants.HTTP_PORT);
-		SocketAddress jaggrab = new InetSocketAddress(Constants.JAGGRAB_PORT);
+		SocketAddress http = new InetSocketAddress(Constants.BIND_ADDRESS, Constants.HTTP_PORT);
+		SocketAddress jaggrab = new InetSocketAddress(Constants.BIND_ADDRESS, Constants.JAGGRAB_PORT);
 
 		bind(service, http, jaggrab);
 		
