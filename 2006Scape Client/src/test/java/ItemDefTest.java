@@ -75,7 +75,7 @@ public class ItemDefTest {
 
     private static void load(int id) { Model.method460(triangle(id, 40000, false), id); }
     private static void loadAll(int... ids) { for (int id : ids) load(id); }
-    private static int[] sh(Model m, int n) throws Exception { return (int[]) f(Model.class, "anIntArray163" + n).get(m); }
+    private static int[] sh(Model m, int n) throws Exception { return (int[]) f(Model.class, "faceShade" + (char) ('A' + n - 4)).get(m); }
     private static int[] xs(Model m) { return Arrays.copyOf(m.anIntArray1627, m.anInt1626); }
     private static int[] ys(Model m) { return Arrays.copyOf(m.anIntArray1628, m.anInt1626); }
     private static int[] zs(Model m) { return Arrays.copyOf(m.anIntArray1629, m.anInt1626); }
@@ -512,7 +512,7 @@ public class ItemDefTest {
         byte[][] r = blanks(4); r[1] = new Rec().b(1).s(21).b(4).s(300).b(5).s(rot1).b(6).s(rot2).b(95).s(roll).done();
         install(r); ItemDef.mruNodes1.clear(); ItemDef.mruNodes2.clear(); loadRev(21);
         assertNotNull(ItemDef.getSprite(1, 1, 5));
-        return new int[][]{Arrays.copyOf(arr("anIntArray1665"), 3), Arrays.copyOf(arr("anIntArray1666"), 3), Arrays.copyOf(arr("anIntArray1667"), 3)};
+        return new int[][]{Arrays.copyOf(arr("screenX"), 3), Arrays.copyOf(arr("screenY"), 3), Arrays.copyOf(arr("vertexDepth"), 3)};
     }
     @Test public void thirdRotationTurnsTheIconInThePlaneOfTheScreenWithoutChangingDepth() throws Exception {
         int[][] base = project(0, 0, 0);

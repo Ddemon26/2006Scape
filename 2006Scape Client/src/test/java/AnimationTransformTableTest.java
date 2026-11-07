@@ -76,7 +76,7 @@ public class AnimationTransformTableTest {
         m.anInt1626 = 3; m.anInt1630 = 3;
         m.anIntArray1627 = new int[]{10, 20, 30}; m.anIntArray1628 = new int[]{40, 50, 60}; m.anIntArray1629 = new int[]{70, 80, 90};
         m.vertexGroups = new int[][]{{2}, {0}, {1}}; m.faceGroups = new int[][]{{1}, {2}, {0}};
-        field(Model.class, "anIntArray1639").set(m, new int[]{11, 22, 33}); return m;
+        field(Model.class, "faceAlphas").set(m, new int[]{11, 22, 33}); return m;
     }
     private static void apply(Model m, Object table, int slot, int x, int y, int z) throws Exception {
         Constructor<AnimationFrame> c = AnimationFrame.class.getDeclaredConstructor(); c.setAccessible(true); AnimationFrame f = c.newInstance();
@@ -88,18 +88,18 @@ public class AnimationTransformTableTest {
         Object o = read(new Stream(bytes(new int[]{1, 3, 5, 200}, new int[]{1}, new int[]{0}, new int[]{2}, new int[]{1})));
         Model m = model(); apply(m, o, 0, 7, -2, 5);
         assertArrayEquals(new int[]{17, 20, 30}, m.anIntArray1627); assertArrayEquals(new int[]{38, 50, 60}, m.anIntArray1628);
-        assertArrayEquals(new int[]{75, 80, 90}, m.anIntArray1629); assertArrayEquals(new int[]{11, 22, 33}, (int[])field(Model.class, "anIntArray1639").get(m));
+        assertArrayEquals(new int[]{75, 80, 90}, m.anIntArray1629); assertArrayEquals(new int[]{11, 22, 33}, (int[])field(Model.class, "faceAlphas").get(m));
         m = model(); apply(m, o, 1, 256, 64, 128);
         assertArrayEquals(new int[]{10, 20, 60}, m.anIntArray1627); assertArrayEquals(new int[]{40, 50, 30}, m.anIntArray1628);
         m = model(); apply(m, o, 2, 2, 99, 99);
-        assertArrayEquals(new int[]{27, 22, 33}, (int[])field(Model.class, "anIntArray1639").get(m)); assertArrayEquals(new int[]{10, 20, 30}, m.anIntArray1627);
+        assertArrayEquals(new int[]{27, 22, 33}, (int[])field(Model.class, "faceAlphas").get(m)); assertArrayEquals(new int[]{10, 20, 30}, m.anIntArray1627);
         m = model(); apply(m, o, 3, 7, 8, 9);
-        assertArrayEquals(new int[]{10, 20, 30}, m.anIntArray1627); assertArrayEquals(new int[]{11, 22, 33}, (int[])field(Model.class, "anIntArray1639").get(m));
+        assertArrayEquals(new int[]{10, 20, 30}, m.anIntArray1627); assertArrayEquals(new int[]{11, 22, 33}, (int[])field(Model.class, "faceAlphas").get(m));
     }
     @Test public void orderedDuplicateGroupIdsRepeatOperationAndUnsignedMissingGroupIsIgnored() throws Exception {
         Object o = read(new Stream(bytes(new int[]{1, 5, 1}, new int[]{1, 1}, new int[]{2, 2}, new int[]{255})));
         Model m = model(); apply(m, o, 0, 3, 0, 0); assertArrayEquals(new int[]{16, 20, 30}, m.anIntArray1627);
-        m = model(); apply(m, o, 1, 1, 0, 0); assertArrayEquals(new int[]{27, 22, 33}, (int[])field(Model.class, "anIntArray1639").get(m));
+        m = model(); apply(m, o, 1, 1, 0, 0); assertArrayEquals(new int[]{27, 22, 33}, (int[])field(Model.class, "faceAlphas").get(m));
         m = model(); apply(m, o, 2, 3, 0, 0); assertArrayEquals(new int[]{10, 20, 30}, m.anIntArray1627);
     }
 }

@@ -59,24 +59,24 @@ public class ModelAssemblyTest {
     }
     @Test public void textureTrianglesImportUnusedVerticesAndRebaseOnlyTexturedFlags() throws Exception {
         Model a=triangle(), b=triangle();
-        set(a,"anInt1642",1); set(a,"anIntArray1643",new int[]{2}); set(a,"anIntArray1644",new int[]{0}); set(a,"anIntArray1645",new int[]{1});
+        set(a,"texturedFaceCount",1); set(a,"texturedFaceVertexA",new int[]{2}); set(a,"texturedFaceVertexB",new int[]{0}); set(a,"texturedFaceVertexC",new int[]{1});
         b.anIntArray1627=new int[]{10,20,30,40}; b.anIntArray1628=new int[]{1,2,3,4}; b.anIntArray1629=new int[]{4,5,6,7}; b.anInt1626=4;
         b.anInt1630=4; b.anIntArray1631=new int[]{0,0,0,0}; b.anIntArray1632=new int[]{1,1,1,1}; b.anIntArray1633=new int[]{2,2,2,2}; b.anIntArray1640=new int[]{11,12,13,14};
-        b.anIntArray1637=new int[]{0,1,2,7}; set(b,"anInt1642",1); set(b,"anIntArray1643",new int[]{3}); set(b,"anIntArray1644",new int[]{2}); set(b,"anIntArray1645",new int[]{1});
+        b.anIntArray1637=new int[]{0,1,2,7}; set(b,"texturedFaceCount",1); set(b,"texturedFaceVertexA",new int[]{3}); set(b,"texturedFaceVertexB",new int[]{2}); set(b,"texturedFaceVertexC",new int[]{1});
         Model out=new Model(2,new Model[]{a,b});
-        assertEquals(4,out.anInt1626); assertEquals(2,field("anInt1642").getInt(out));
+        assertEquals(4,out.anInt1626); assertEquals(2,field("texturedFaceCount").getInt(out));
         assertArrayEquals(new int[]{0,0,1,6,11},out.anIntArray1637);
-        assertArrayEquals(new int[]{2,3},ints(out,"anIntArray1643")); assertArrayEquals(new int[]{0,2},ints(out,"anIntArray1644")); assertArrayEquals(new int[]{1,1},ints(out,"anIntArray1645"));
+        assertArrayEquals(new int[]{2,3},ints(out,"texturedFaceVertexA")); assertArrayEquals(new int[]{0,2},ints(out,"texturedFaceVertexB")); assertArrayEquals(new int[]{1,1},ints(out,"texturedFaceVertexC"));
         assertArrayEquals(new int[]{500,11,12,13,14},out.anIntArray1640); assertArrayEquals(new int[]{0,1,2,7},b.anIntArray1637);
     }
     @Test public void optionalMetadataAllocatesOnlyWhenNeededAndUsesPerPartDefaults() throws Exception {
-        Model a=triangle(), b=triangle(); set(a,"anInt1641",4); set(b,"anInt1641",4);
-        Model out=new Model(2,new Model[]{a,b}); assertNull(ints(out,"anIntArray1638")); assertEquals(4,field("anInt1641").getInt(out));
-        assertNull(out.anIntArray1637); assertNull(ints(out,"anIntArray1639")); assertNull(ints(out,"faceGroupIds"));
-        set(b,"anInt1641",9); out=new Model(2,new Model[]{a,b}); assertArrayEquals(new int[]{4,9},ints(out,"anIntArray1638"));
-        set(b,"anIntArray1638",new int[]{6}); set(b,"anIntArray1639",new int[]{128}); set(b,"faceGroupIds",new int[]{17}); b.anIntArray1637=new int[]{1};
-        out=new Model(2,new Model[]{a,b}); assertArrayEquals(new int[]{4,6},ints(out,"anIntArray1638"));
-        assertArrayEquals(new int[]{0,128},ints(out,"anIntArray1639")); assertArrayEquals(new int[]{0,17},ints(out,"faceGroupIds")); assertArrayEquals(new int[]{0,1},out.anIntArray1637);
+        Model a=triangle(), b=triangle(); set(a,"uniformFacePriority",4); set(b,"uniformFacePriority",4);
+        Model out=new Model(2,new Model[]{a,b}); assertNull(ints(out,"facePriorities")); assertEquals(4,field("uniformFacePriority").getInt(out));
+        assertNull(out.anIntArray1637); assertNull(ints(out,"faceAlphas")); assertNull(ints(out,"faceGroupIds"));
+        set(b,"uniformFacePriority",9); out=new Model(2,new Model[]{a,b}); assertArrayEquals(new int[]{4,9},ints(out,"facePriorities"));
+        set(b,"facePriorities",new int[]{6}); set(b,"faceAlphas",new int[]{128}); set(b,"faceGroupIds",new int[]{17}); b.anIntArray1637=new int[]{1};
+        out=new Model(2,new Model[]{a,b}); assertArrayEquals(new int[]{4,6},ints(out,"facePriorities"));
+        assertArrayEquals(new int[]{0,128},ints(out,"faceAlphas")); assertArrayEquals(new int[]{0,17},ints(out,"faceGroupIds")); assertArrayEquals(new int[]{0,1},out.anIntArray1637);
         assertArrayEquals(new int[6],ints(out,"vertexGroupIds"));
     }
     @Test public void helperReturnsFirstActiveMatchOrAppendsWithSourceLabel() throws Exception {
@@ -102,7 +102,7 @@ public class ModelAssemblyTest {
 
     private static Model shadedTriangle(int shade) throws Exception {
         Model m=triangle();
-        set(m,"anIntArray1634",new int[]{shade}); set(m,"anIntArray1635",new int[]{shade+1}); set(m,"anIntArray1636",new int[]{shade+2});
+        set(m,"faceShadeA",new int[]{shade}); set(m,"faceShadeB",new int[]{shade+1}); set(m,"faceShadeC",new int[]{shade+2});
         return m;
     }
     @Test public void shadedPairConcatenatesEveryVertexWithoutWeldingAndOffsetsCorners() throws Exception {
@@ -114,15 +114,15 @@ public class ModelAssemblyTest {
         assertArrayEquals(new int[]{1,2,3,-12,1,2,3},out.anIntArray1628);
         assertArrayEquals(new int[]{4,5,6,0,4,5,6},out.anIntArray1629);
         assertArrayEquals(new int[]{0,4},out.anIntArray1631); assertArrayEquals(new int[]{1,5},out.anIntArray1632); assertArrayEquals(new int[]{2,6},out.anIntArray1633);
-        assertArrayEquals(new int[]{100,200},ints(out,"anIntArray1634")); assertArrayEquals(new int[]{101,201},ints(out,"anIntArray1635")); assertArrayEquals(new int[]{102,202},ints(out,"anIntArray1636"));
+        assertArrayEquals(new int[]{100,200},ints(out,"faceShadeA")); assertArrayEquals(new int[]{101,201},ints(out,"faceShadeB")); assertArrayEquals(new int[]{102,202},ints(out,"faceShadeC"));
         assertEquals(12,out.modelHeight); assertEquals(3,out.maxY); assertEquals(40,out.radiusXZ); assertEquals(42,field("depthBucketOffset").getInt(out)); assertEquals(83,field("depthBucketCount").getInt(out));
-        Model reverse=new Model(new Model[]{b,a}); assertArrayEquals(new int[]{10,20,30,10,20,30,40},reverse.anIntArray1627); assertArrayEquals(new int[]{0,3},reverse.anIntArray1631); assertArrayEquals(new int[]{200,100},ints(reverse,"anIntArray1634"));
-        out.anIntArray1627[0]=99; ints(out,"anIntArray1634")[0]=999; out.anIntArray1631[0]=6;
-        assertEquals(10,a.anIntArray1627[0]); assertEquals(100,ints(a,"anIntArray1634")[0]); assertEquals(0,a.anIntArray1631[0]);
+        Model reverse=new Model(new Model[]{b,a}); assertArrayEquals(new int[]{10,20,30,10,20,30,40},reverse.anIntArray1627); assertArrayEquals(new int[]{0,3},reverse.anIntArray1631); assertArrayEquals(new int[]{200,100},ints(reverse,"faceShadeA"));
+        out.anIntArray1627[0]=99; ints(out,"faceShadeA")[0]=999; out.anIntArray1631[0]=6;
+        assertEquals(10,a.anIntArray1627[0]); assertEquals(100,ints(a,"faceShadeA")[0]); assertEquals(0,a.anIntArray1631[0]);
     }
     @Test public void shadedPairAlwaysSelectsTwoSlotsSkipsNullAndIgnoresTrailingParts() throws Exception {
         Model a=shadedTriangle(100);
-        Model out=new Model(new Model[]{null,a,null}); assertEquals(3,out.anInt1626); assertArrayEquals(new int[]{100},ints(out,"anIntArray1634"));
+        Model out=new Model(new Model[]{null,a,null}); assertEquals(3,out.anInt1626); assertArrayEquals(new int[]{100},ints(out,"faceShadeA"));
         out=new Model(new Model[]{a,null,a}); assertEquals(3,out.anInt1626); assertEquals(1,out.anInt1630);
         out=new Model(new Model[]{null,null,a}); assertEquals(0,out.anInt1626); assertEquals(0,out.radiusXZ); assertEquals(0,field("depthBucketCount").getInt(out));
         for(Model[] inputs:new Model[][]{new Model[0],new Model[]{a}}) { try { new Model(inputs); fail(); } catch(ArrayIndexOutOfBoundsException expected) { } }
@@ -130,58 +130,58 @@ public class ModelAssemblyTest {
     }
     @Test public void shadedPairRebasesTextureTrianglesAndOnlyTexturedRenderFlags() throws Exception {
         Model a=shadedTriangle(100),b=shadedTriangle(200);
-        set(a,"anInt1642",1); set(a,"anIntArray1643",new int[]{2}); set(a,"anIntArray1644",new int[]{0}); set(a,"anIntArray1645",new int[]{1});
-        set(b,"anInt1642",1); set(b,"anIntArray1643",new int[]{1}); set(b,"anIntArray1644",new int[]{2}); set(b,"anIntArray1645",new int[]{0});
+        set(a,"texturedFaceCount",1); set(a,"texturedFaceVertexA",new int[]{2}); set(a,"texturedFaceVertexB",new int[]{0}); set(a,"texturedFaceVertexC",new int[]{1});
+        set(b,"texturedFaceCount",1); set(b,"texturedFaceVertexA",new int[]{1}); set(b,"texturedFaceVertexB",new int[]{2}); set(b,"texturedFaceVertexC",new int[]{0});
         for(int[] example:new int[][]{{0,0},{1,1},{2,6},{3,7},{7,11}}) {
             int flags=example[0];
             b.anIntArray1637=new int[]{flags}; Model out=new Model(new Model[]{a,b});
             assertArrayEquals(new int[]{0,example[1]},out.anIntArray1637);
-            assertEquals(2,field("anInt1642").getInt(out)); assertArrayEquals(new int[]{2,4},ints(out,"anIntArray1643")); assertArrayEquals(new int[]{0,5},ints(out,"anIntArray1644")); assertArrayEquals(new int[]{1,3},ints(out,"anIntArray1645"));
-            assertArrayEquals(new int[]{flags},b.anIntArray1637); assertArrayEquals(new int[]{1},ints(b,"anIntArray1643"));
+            assertEquals(2,field("texturedFaceCount").getInt(out)); assertArrayEquals(new int[]{2,4},ints(out,"texturedFaceVertexA")); assertArrayEquals(new int[]{0,5},ints(out,"texturedFaceVertexB")); assertArrayEquals(new int[]{1,3},ints(out,"texturedFaceVertexC"));
+            assertArrayEquals(new int[]{flags},b.anIntArray1637); assertArrayEquals(new int[]{1},ints(b,"texturedFaceVertexA"));
         }
     }
     @Test public void shadedPairOptionalBuffersDistinguishDefaultPriorityAlphaAndSourceFaceValues() throws Exception {
         Model a=shadedTriangle(100),b=shadedTriangle(200); a.anIntArray1640=null; b.anIntArray1640=null;
-        set(a,"anInt1641",4); set(b,"anInt1641",4);
+        set(a,"uniformFacePriority",4); set(b,"uniformFacePriority",4);
         Model out=new Model(new Model[]{a,b});
-        assertNull(out.anIntArray1640); assertNull(out.anIntArray1637); assertNull(ints(out,"anIntArray1638")); assertNull(ints(out,"anIntArray1639")); assertEquals(4,field("anInt1641").getInt(out));
-        b.anIntArray1640=new int[]{321}; b.anIntArray1637=new int[]{1}; set(b,"anInt1641",9); set(b,"anIntArray1639",new int[]{128});
-        out=new Model(new Model[]{a,b}); assertArrayEquals(new int[]{0,321},out.anIntArray1640); assertArrayEquals(new int[]{0,1},out.anIntArray1637); assertArrayEquals(new int[]{4,9},ints(out,"anIntArray1638")); assertArrayEquals(new int[]{0,128},ints(out,"anIntArray1639"));
-        set(b,"anIntArray1638",new int[]{6}); out=new Model(new Model[]{b,a}); assertArrayEquals(new int[]{6,4},ints(out,"anIntArray1638")); assertArrayEquals(new int[]{128,0},ints(out,"anIntArray1639")); assertArrayEquals(new int[]{321,0},out.anIntArray1640);
-        out.anIntArray1640[0]=999; ints(out,"anIntArray1639")[0]=1; ints(out,"anIntArray1638")[0]=0; out.anIntArray1637[0]=0;
-        assertEquals(321,b.anIntArray1640[0]); assertEquals(128,ints(b,"anIntArray1639")[0]); assertEquals(6,ints(b,"anIntArray1638")[0]); assertEquals(1,b.anIntArray1637[0]);
+        assertNull(out.anIntArray1640); assertNull(out.anIntArray1637); assertNull(ints(out,"facePriorities")); assertNull(ints(out,"faceAlphas")); assertEquals(4,field("uniformFacePriority").getInt(out));
+        b.anIntArray1640=new int[]{321}; b.anIntArray1637=new int[]{1}; set(b,"uniformFacePriority",9); set(b,"faceAlphas",new int[]{128});
+        out=new Model(new Model[]{a,b}); assertArrayEquals(new int[]{0,321},out.anIntArray1640); assertArrayEquals(new int[]{0,1},out.anIntArray1637); assertArrayEquals(new int[]{4,9},ints(out,"facePriorities")); assertArrayEquals(new int[]{0,128},ints(out,"faceAlphas"));
+        set(b,"facePriorities",new int[]{6}); out=new Model(new Model[]{b,a}); assertArrayEquals(new int[]{6,4},ints(out,"facePriorities")); assertArrayEquals(new int[]{128,0},ints(out,"faceAlphas")); assertArrayEquals(new int[]{321,0},out.anIntArray1640);
+        out.anIntArray1640[0]=999; ints(out,"faceAlphas")[0]=1; ints(out,"facePriorities")[0]=0; out.anIntArray1637[0]=0;
+        assertEquals(321,b.anIntArray1640[0]); assertEquals(128,ints(b,"faceAlphas")[0]); assertEquals(6,ints(b,"facePriorities")[0]); assertEquals(1,b.anIntArray1637[0]);
     }
     @Test public void shadedPairDropsAnimationGroupsAndDoesNotRequireSourceFaceValues() throws Exception {
         Model a=shadedTriangle(100); a.anIntArray1640=null;
         set(a,"vertexGroupIds",new int[]{1,2,3}); set(a,"faceGroupIds",new int[]{4}); a.vertexGroups=new int[][]{{0}}; a.faceGroups=new int[][]{{0}};
         Model out=new Model(new Model[]{a,a}); assertEquals(6,out.anInt1626); assertEquals(2,out.anInt1630);
         assertNull(ints(out,"vertexGroupIds")); assertNull(ints(out,"faceGroupIds")); assertNull(out.vertexGroups); assertNull(out.faceGroups); assertNull(out.anIntArray1640);
-        assertArrayEquals(new int[]{100,100},ints(out,"anIntArray1634"));
+        assertArrayEquals(new int[]{100,100},ints(out,"faceShadeA"));
     }
     @Test public void shadedPairRequiresPrecomputedCornerShadesAndActiveVertexCoordinates() throws Exception {
-        Model a=shadedTriangle(100); set(a,"anIntArray1635",null);
+        Model a=shadedTriangle(100); set(a,"faceShadeB",null);
         try { new Model(new Model[]{a,null}); fail(); } catch(NullPointerException expected) { }
         a=shadedTriangle(100); a.anIntArray1628=new int[2];
         try { new Model(new Model[]{a,null}); fail(); } catch(ArrayIndexOutOfBoundsException expected) { }
-        a=shadedTriangle(100); a.anInt1626=0; a.anInt1630=0; set(a,"anIntArray1634",null); set(a,"anIntArray1635",null); set(a,"anIntArray1636",null);
-        Model out=new Model(new Model[]{a,null}); assertEquals(0,out.anIntArray1627.length); assertEquals(0,ints(out,"anIntArray1634").length);
+        a=shadedTriangle(100); a.anInt1626=0; a.anInt1630=0; set(a,"faceShadeA",null); set(a,"faceShadeB",null); set(a,"faceShadeC",null);
+        Model out=new Model(new Model[]{a,null}); assertEquals(0,out.anIntArray1627.length); assertEquals(0,ints(out,"faceShadeA").length);
     }
 
     @Test public void shadedPairSeparatesVertexFaceAndTextureIndicesWithDistinctCounts() throws Exception {
         Model a=shadedTriangle(100),b=shadedTriangle(200);
         a.anInt1626=4; a.anIntArray1627=new int[]{10,20,30,40}; a.anIntArray1628=new int[]{1,2,3,4}; a.anIntArray1629=new int[]{4,5,6,7};
         a.anInt1630=2; a.anIntArray1631=new int[]{0,2}; a.anIntArray1632=new int[]{1,0}; a.anIntArray1633=new int[]{2,1};
-        set(a,"anIntArray1634",new int[]{100,110}); set(a,"anIntArray1635",new int[]{101,111}); set(a,"anIntArray1636",new int[]{102,112});
-        a.anIntArray1640=new int[]{500,501}; a.anIntArray1637=new int[]{2,6}; set(a,"anIntArray1638",new int[]{4,9}); set(a,"anIntArray1639",new int[]{0,128});
-        set(a,"anInt1642",3); set(a,"anIntArray1643",new int[]{2,3,1}); set(a,"anIntArray1644",new int[]{0,2,3}); set(a,"anIntArray1645",new int[]{1,0,2});
-        b.anIntArray1637=new int[]{2}; set(b,"anInt1641",7);
-        set(b,"anInt1642",2); set(b,"anIntArray1643",new int[]{1,2}); set(b,"anIntArray1644",new int[]{2,0}); set(b,"anIntArray1645",new int[]{0,1});
+        set(a,"faceShadeA",new int[]{100,110}); set(a,"faceShadeB",new int[]{101,111}); set(a,"faceShadeC",new int[]{102,112});
+        a.anIntArray1640=new int[]{500,501}; a.anIntArray1637=new int[]{2,6}; set(a,"facePriorities",new int[]{4,9}); set(a,"faceAlphas",new int[]{0,128});
+        set(a,"texturedFaceCount",3); set(a,"texturedFaceVertexA",new int[]{2,3,1}); set(a,"texturedFaceVertexB",new int[]{0,2,3}); set(a,"texturedFaceVertexC",new int[]{1,0,2});
+        b.anIntArray1637=new int[]{2}; set(b,"uniformFacePriority",7);
+        set(b,"texturedFaceCount",2); set(b,"texturedFaceVertexA",new int[]{1,2}); set(b,"texturedFaceVertexB",new int[]{2,0}); set(b,"texturedFaceVertexC",new int[]{0,1});
         Model out=new Model(new Model[]{a,b});
-        assertEquals(7,out.anInt1626); assertEquals(3,out.anInt1630); assertEquals(5,field("anInt1642").getInt(out));
+        assertEquals(7,out.anInt1626); assertEquals(3,out.anInt1630); assertEquals(5,field("texturedFaceCount").getInt(out));
         assertArrayEquals(new int[]{0,2,4},out.anIntArray1631); assertArrayEquals(new int[]{1,0,5},out.anIntArray1632); assertArrayEquals(new int[]{2,1,6},out.anIntArray1633);
-        assertArrayEquals(new int[]{100,110,200},ints(out,"anIntArray1634")); assertArrayEquals(new int[]{101,111,201},ints(out,"anIntArray1635")); assertArrayEquals(new int[]{102,112,202},ints(out,"anIntArray1636"));
-        assertArrayEquals(new int[]{500,501,500},out.anIntArray1640); assertArrayEquals(new int[]{2,6,14},out.anIntArray1637); assertArrayEquals(new int[]{4,9,7},ints(out,"anIntArray1638")); assertArrayEquals(new int[]{0,128,0},ints(out,"anIntArray1639"));
-        assertArrayEquals(new int[]{2,3,1,5,6},ints(out,"anIntArray1643")); assertArrayEquals(new int[]{0,2,3,6,4},ints(out,"anIntArray1644")); assertArrayEquals(new int[]{1,0,2,4,5},ints(out,"anIntArray1645"));
-        assertArrayEquals(new int[]{0,2},a.anIntArray1631); assertArrayEquals(new int[]{2,3,1},ints(a,"anIntArray1643")); assertArrayEquals(new int[]{2},b.anIntArray1637);
+        assertArrayEquals(new int[]{100,110,200},ints(out,"faceShadeA")); assertArrayEquals(new int[]{101,111,201},ints(out,"faceShadeB")); assertArrayEquals(new int[]{102,112,202},ints(out,"faceShadeC"));
+        assertArrayEquals(new int[]{500,501,500},out.anIntArray1640); assertArrayEquals(new int[]{2,6,14},out.anIntArray1637); assertArrayEquals(new int[]{4,9,7},ints(out,"facePriorities")); assertArrayEquals(new int[]{0,128,0},ints(out,"faceAlphas"));
+        assertArrayEquals(new int[]{2,3,1,5,6},ints(out,"texturedFaceVertexA")); assertArrayEquals(new int[]{0,2,3,6,4},ints(out,"texturedFaceVertexB")); assertArrayEquals(new int[]{1,0,2,4,5},ints(out,"texturedFaceVertexC"));
+        assertArrayEquals(new int[]{0,2},a.anIntArray1631); assertArrayEquals(new int[]{2,3,1},ints(a,"texturedFaceVertexA")); assertArrayEquals(new int[]{2},b.anIntArray1637);
     }
 }

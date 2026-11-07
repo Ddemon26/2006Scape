@@ -135,8 +135,8 @@ public class ModelHeaderLayoutTest {
             assertArrayEquals(tag, new int[] {3, 1, 3}, m.anIntArray1628);
             assertArrayEquals(tag, new int[] {7, 7, 7}, m.anIntArray1629);
             assertEquals(tag, e[0] == 1, m.anIntArray1637 != null);
-            assertEquals(tag, e[1] == 1, get(m, "anIntArray1638") != null);
-            assertEquals(tag, e[2] == 1, get(m, "anIntArray1639") != null);
+            assertEquals(tag, e[1] == 1, get(m, "facePriorities") != null);
+            assertEquals(tag, e[2] == 1, get(m, "faceAlphas") != null);
             assertEquals(tag, e[3] == 1, get(m, "faceGroupIds") != null);
             assertEquals(tag, e[4] == 1, get(m, "vertexGroupIds") != null);
         }
@@ -154,7 +154,7 @@ public class ModelHeaderLayoutTest {
         Model.method460(full(), 2);
         Model m = Model.getModel(2);
         assertEquals(3, m.anInt1626); assertEquals(2, m.anInt1630);
-        assertEquals(1, ((Integer) get(m, "anInt1642")).intValue());
+        assertEquals(1, ((Integer) get(m, "texturedFaceCount")).intValue());
         assertArrayEquals(new int[] {10, 15, 15}, m.anIntArray1627);
         assertArrayEquals(new int[] {3, 3, 1}, m.anIntArray1628);
         assertArrayEquals(new int[] {7, 7, 7}, m.anIntArray1629);
@@ -169,24 +169,40 @@ public class ModelHeaderLayoutTest {
         assertArrayEquals(new int[] {2, 1}, m.anIntArray1633);
         assertArrayEquals(new int[] {0x1234, 0x0abc}, m.anIntArray1640);
         assertArrayEquals(new int[] {4, 8}, m.anIntArray1637);
-        assertArrayEquals(new int[] {11, 12}, (int[]) get(m, "anIntArray1638"));
-        assertArrayEquals(new int[] {100, 200}, (int[]) get(m, "anIntArray1639"));
+        assertArrayEquals(new int[] {11, 12}, (int[]) get(m, "facePriorities"));
+        assertArrayEquals(new int[] {100, 200}, (int[]) get(m, "faceAlphas"));
         assertArrayEquals(new int[] {21, 22}, (int[]) get(m, "faceGroupIds"));
-        assertArrayEquals(new int[] {1}, (int[]) get(m, "anIntArray1643"));
-        assertArrayEquals(new int[] {2}, (int[]) get(m, "anIntArray1644"));
-        assertArrayEquals(new int[] {3}, (int[]) get(m, "anIntArray1645"));
+        assertArrayEquals(new int[] {1}, (int[]) get(m, "texturedFaceVertexA"));
+        assertArrayEquals(new int[] {2}, (int[]) get(m, "texturedFaceVertexB"));
+        assertArrayEquals(new int[] {3}, (int[]) get(m, "texturedFaceVertexC"));
     }
 
     @Test public void modelConstructorWithoutOptionalSections() throws Exception {
         Model.method460(bare(), 4);
         Model m = Model.getModel(4);
-        assertNull(m.anIntArray1637); assertNull(get(m, "anIntArray1638")); assertNull(get(m, "anIntArray1639"));
+        assertNull(m.anIntArray1637); assertNull(get(m, "facePriorities")); assertNull(get(m, "faceAlphas"));
         assertNull(get(m, "vertexGroupIds")); assertNull(get(m, "faceGroupIds"));
-        assertEquals(7, ((Integer) get(m, "anInt1641")).intValue());
+        assertEquals(7, ((Integer) get(m, "uniformFacePriority")).intValue());
         assertArrayEquals(new int[] {10, 15, 15}, m.anIntArray1627);
         assertArrayEquals(new int[] {0x1234, 0x0abc}, m.anIntArray1640);
         assertArrayEquals(new int[] {0, 0}, m.anIntArray1631);
         assertArrayEquals(new int[] {1, 2}, m.anIntArray1632);
+    }
+
+    @Test public void modelConstructorDecodesAllFourFaceVertexEncodings() throws Exception {
+        ByteArrayOutputStream o = new ByteArrayOutputStream();
+        b(o, 0, 0, 0, 0, 0, 0, 0);          // 7 vertices, no deltas
+        b(o, 1, 2, 3, 4);                   // face types
+        b(o, 64, 65, 65, 65, 66, 65);       // face vertex data: 64 is delta 0
+        s(o, 1); s(o, 2); s(o, 3); s(o, 4); // colours
+        s(o, 7); s(o, 4); b(o, 0);
+        b(o, 0, 7, 0, 0, 0);
+        s(o, 0); s(o, 0); s(o, 0); s(o, 6);
+        Model.method460(o.toByteArray(), 5);
+        Model m = Model.getModel(5);
+        assertArrayEquals(new int[] {0, 0, 3, 2}, m.anIntArray1631);
+        assertArrayEquals(new int[] {1, 2, 2, 3}, m.anIntArray1632);
+        assertArrayEquals(new int[] {2, 3, 5, 6}, m.anIntArray1633);
     }
 
     @Test public void tableIsIndexedByModelIdAndUnloadClearsTheSlot() throws Exception {

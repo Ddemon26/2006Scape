@@ -357,7 +357,7 @@ public class ObjectTerrainTest {
     }
 
     private static int[] shade(Model m) throws Exception {
-        return (int[]) field(Model.class, "anIntArray1634").get(m);
+        return (int[]) field(Model.class, "faceShadeA").get(m);
     }
 
     private static int maxAbsXZ(Model m) {

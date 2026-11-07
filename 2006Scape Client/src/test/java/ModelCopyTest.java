@@ -9,20 +9,20 @@ public class ModelCopyTest {
     private static void set(Model m,String n,Object v) throws Exception { field(n).set(m,v); }
     private static int[] ints(Model m,String n) throws Exception { return (int[])get(m,n); }
     private static Model empty() throws Exception { Constructor<Model> c=Model.class.getDeclaredConstructor(); c.setAccessible(true); return c.newInstance(); }
-    private static final String[] A={"anIntArray1627","anIntArray1628","anIntArray1629","anIntArray1631","anIntArray1632","anIntArray1633","anIntArray1634","anIntArray1635","anIntArray1636","anIntArray1637","anIntArray1638","anIntArray1639","anIntArray1640","anIntArray1643","anIntArray1644","anIntArray1645","vertexGroupIds","faceGroupIds"};
+    private static final String[] A={"anIntArray1627","anIntArray1628","anIntArray1629","anIntArray1631","anIntArray1632","anIntArray1633","faceShadeA","faceShadeB","faceShadeC","anIntArray1637","facePriorities","faceAlphas","anIntArray1640","texturedFaceVertexA","texturedFaceVertexB","texturedFaceVertexC","vertexGroupIds","faceGroupIds"};
     private static final String[] B={"modelHeight","maxY","radiusXZ","depthBucketOffset","depthBucketCount","minX","maxX","minZ","maxZ"};
     private static final String[] S={"animationScratchX","animationScratchY","animationScratchZ","animationScratchAlpha"};
     private static Model fixture() throws Exception {
-        Model m=empty(); m.anInt1626=3; m.anInt1630=2; set(m,"anInt1642",1); set(m,"anInt1641",7);
+        Model m=empty(); m.anInt1626=3; m.anInt1630=2; set(m,"texturedFaceCount",1); set(m,"uniformFacePriority",7);
         for(int i=0;i<A.length;i++) { int count=i<3||i==16?4:i>=13&&i<=15?2:3; int[] a=new int[count]; for(int j=0;j<count;j++)a[j]=100*i+10+j; set(m,A[i],a); }
         m.vertexGroups=new int[][]{{0,2},{1}}; m.faceGroups=new int[][]{{1},{0}};
-        m.aClass33Array1425=new Class33[4]; m.aClass33Array1660=new Class33[4];
-        for(int i=0;i<4;i++) { Class33 a=new Class33(); a.anInt602=11+i; a.anInt603=21+i; a.anInt604=-31-i; a.anInt605=41+i; m.aClass33Array1425[i]=a; m.aClass33Array1660[i]=new Class33(); }
+        m.aClass33Array1425=new VertexNormal[4]; m.aClass33Array1660=new VertexNormal[4];
+        for(int i=0;i<4;i++) { VertexNormal a=new VertexNormal(); a.normalX=11+i; a.normalY=21+i; a.normalZ=-31-i; a.faceCount=41+i; m.aClass33Array1425[i]=a; m.aClass33Array1660[i]=new VertexNormal(); }
         for(int i=0;i<B.length;i++) { if(i==0)m.modelHeight=70; else set(m,B[i],70+i); }
         m.aBoolean1659=true; return m;
     }
     private static void equalPrefix(int[] a,int[] b,int count) { assertArrayEquals(Arrays.copyOf(a,count),Arrays.copyOf(b,count)); }
-    private static void counts(Model a,Model b) throws Exception { assertEquals(a.anInt1626,b.anInt1626);assertEquals(a.anInt1630,b.anInt1630);assertEquals(get(a,"anInt1642"),get(b,"anInt1642"));assertEquals(get(a,"anInt1641"),get(b,"anInt1641")); }
+    private static void counts(Model a,Model b) throws Exception { assertEquals(a.anInt1626,b.anInt1626);assertEquals(a.anInt1630,b.anInt1630);assertEquals(get(a,"texturedFaceCount"),get(b,"texturedFaceCount"));assertEquals(get(a,"uniformFacePriority"),get(b,"uniformFacePriority")); }
     @Test public void threeBooleansIndependentlySelectAliasingAcrossAllCombinations() throws Exception {
         for(int mask=0;mask<8;mask++) {
             Model a=fixture(), b=new Model((mask&1)!=0,(mask&2)!=0,(mask&4)!=0,a); counts(a,b); assertFalse(b.aBoolean1659);
@@ -53,7 +53,7 @@ public class ModelCopyTest {
             assertNull(b.vertexGroups);assertNull(b.faceGroups);assertFalse(b.aBoolean1659);
             if((mask&2)==0) { assertNull(b.aClass33Array1425);assertNull(b.aClass33Array1660); }
             else { assertNotSame(a.aClass33Array1425,b.aClass33Array1425);assertEquals(3,b.aClass33Array1425.length);assertSame(a.aClass33Array1660,b.aClass33Array1660);
-                for(int j=0;j<3;j++) { Class33 x=a.aClass33Array1425[j],y=b.aClass33Array1425[j];assertNotSame(x,y);assertEquals(11+j,y.anInt602);assertEquals(21+j,y.anInt603);assertEquals(-31-j,y.anInt604);assertEquals(41+j,y.anInt605);y.anInt602=999;assertEquals(11+j,x.anInt602); }
+                for(int j=0;j<3;j++) { VertexNormal x=a.aClass33Array1425[j],y=b.aClass33Array1425[j];assertNotSame(x,y);assertEquals(11+j,y.normalX);assertEquals(21+j,y.normalY);assertEquals(-31-j,y.normalZ);assertEquals(41+j,y.faceCount);y.normalX=999;assertEquals(11+j,x.normalX); }
             }
             b.anIntArray1628[2]=900;assertEquals((mask&1)!=0?112:900,a.anIntArray1628[2]);
             ints(b,A[7])[1]=901;assertEquals((mask&2)!=0?711:901,ints(a,A[7])[1]);
@@ -69,7 +69,7 @@ public class ModelCopyTest {
             Model a=empty();a.anInt1626=4;a.anInt1630=1;a.anIntArray1627=new int[]{0,10,0,99};a.anIntArray1628=new int[]{0,0,10,99};a.anIntArray1629=new int[]{0,0,0,99};
             a.anIntArray1631=new int[]{0};a.anIntArray1632=new int[]{reverse?2:1};a.anIntArray1633=new int[]{reverse?1:2};a.anIntArray1640=new int[]{500};
             a.applyLighting(64,850,-30,-50,-30,false);Model b=new Model(false,true,a);
-            for(int j=0;j<4;j++) { Class33 x=b.aClass33Array1425[j];assertEquals(0,x.anInt602);assertEquals(0,x.anInt603);assertEquals(j==3?0:reverse?-256:256,x.anInt604);assertEquals(j==3?0:1,x.anInt605);assertNotSame(a.aClass33Array1425[j],x); }
+            for(int j=0;j<4;j++) { VertexNormal x=b.aClass33Array1425[j];assertEquals(0,x.normalX);assertEquals(0,x.normalY);assertEquals(j==3?0:reverse?-256:256,x.normalZ);assertEquals(j==3?0:1,x.faceCount);assertNotSame(a.aClass33Array1425[j],x); }
         }
     }
     @Test public void scratchCopiesActivePrefixesSharesMetadataAndReusesAcrossDestinations() throws Exception {

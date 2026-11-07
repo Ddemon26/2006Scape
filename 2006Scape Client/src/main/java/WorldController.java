@@ -680,9 +680,9 @@ final class WorldController {
 		int otherX[] = other.anIntArray1627;
 		int otherVertexCount = other.anInt1626;
 		for (int vertexIndex = 0; vertexIndex < model.anInt1626; vertexIndex++) {
-			Class33 normal = model.aClass33Array1425[vertexIndex];
-			Class33 originalNormal = model.aClass33Array1660[vertexIndex];
-			if (originalNormal.anInt605 != 0) {
+			VertexNormal normal = model.aClass33Array1425[vertexIndex];
+			VertexNormal originalNormal = model.aClass33Array1660[vertexIndex];
+			if (originalNormal.faceCount != 0) {
 				int shiftedY = model.anIntArray1628[vertexIndex] - offsetY;
 				if (shiftedY <= other.maxY) {
 					int shiftedX = model.anIntArray1627[vertexIndex] - offsetX;
@@ -690,17 +690,17 @@ final class WorldController {
 						int shiftedZ = model.anIntArray1629[vertexIndex] - offsetZ;
 						if (shiftedZ >= other.minZ && shiftedZ <= other.maxZ) {
 							for (int otherVertexIndex = 0; otherVertexIndex < otherVertexCount; otherVertexIndex++) {
-								Class33 otherNormal = other.aClass33Array1425[otherVertexIndex];
-								Class33 otherOriginalNormal = other.aClass33Array1660[otherVertexIndex];
-								if (shiftedX == otherX[otherVertexIndex] && shiftedZ == other.anIntArray1629[otherVertexIndex] && shiftedY == other.anIntArray1628[otherVertexIndex] && otherOriginalNormal.anInt605 != 0) {
-									normal.anInt602 += otherOriginalNormal.anInt602;
-									normal.anInt603 += otherOriginalNormal.anInt603;
-									normal.anInt604 += otherOriginalNormal.anInt604;
-									normal.anInt605 += otherOriginalNormal.anInt605;
-									otherNormal.anInt602 += originalNormal.anInt602;
-									otherNormal.anInt603 += originalNormal.anInt603;
-									otherNormal.anInt604 += originalNormal.anInt604;
-									otherNormal.anInt605 += originalNormal.anInt605;
+								VertexNormal otherNormal = other.aClass33Array1425[otherVertexIndex];
+								VertexNormal otherOriginalNormal = other.aClass33Array1660[otherVertexIndex];
+								if (shiftedX == otherX[otherVertexIndex] && shiftedZ == other.anIntArray1629[otherVertexIndex] && shiftedY == other.anIntArray1628[otherVertexIndex] && otherOriginalNormal.faceCount != 0) {
+									normal.normalX += otherOriginalNormal.normalX;
+									normal.normalY += otherOriginalNormal.normalY;
+									normal.normalZ += otherOriginalNormal.normalZ;
+									normal.faceCount += otherOriginalNormal.faceCount;
+									otherNormal.normalX += originalNormal.normalX;
+									otherNormal.normalY += originalNormal.normalY;
+									otherNormal.normalZ += originalNormal.normalZ;
+									otherNormal.faceCount += originalNormal.faceCount;
 									sharedCount++;
 									modelSharedVertexStamps[vertexIndex] = mergeStamp;
 									otherSharedVertexStamps[otherVertexIndex] = mergeStamp;

@@ -11,8 +11,8 @@ import org.junit.Test;
 /** Controlled original-name observations of Model.method484. */
 public class ModelFaceRasterTest {
     private static final int W = 48, H = 40, BG = 0x7f7f7f;
-    private static final String[] MODEL_STATIC = {"aBooleanArray1663", "aBooleanArray1664", "anIntArray1665",
-            "anIntArray1666", "anIntArray1668", "anIntArray1669", "anIntArray1670"};
+    private static final String[] MODEL_STATIC = {"faceNeedsHorizontalClip", "faceNearPlaneClipped", "screenX",
+            "screenY", "anIntArray1668", "anIntArray1669", "anIntArray1670"};
     private static final String[] TEXTURE_STATIC = {"clipScanlines", "transparency", "lineOffsets", "lowMem",
             "blockShading", "textureInt1", "textureInt2"};
     private final Object[] savedModel = new Object[MODEL_STATIC.length];
@@ -38,9 +38,9 @@ public class ModelFaceRasterTest {
         set(Texture.class, "blockShading", null, false);
         for (int n = 0; n < 65536; n++) Texture.hslToRgbPalette[n] = n;
         for (String name : MODEL_STATIC) set(Model.class, name, null,
-                name.startsWith("aBoolean") ? new boolean[6] : new int[6]);
-        set(Model.class, "anIntArray1665", null, new int[] {4, 36, 20, 4, 36, 20});
-        set(Model.class, "anIntArray1666", null, new int[] {3, 3, 27, 3, 3, 27});
+                (savedModel[java.util.Arrays.asList(MODEL_STATIC).indexOf(name)] instanceof boolean[]) ? new boolean[6] : new int[6]);
+        set(Model.class, "screenX", null, new int[] {4, 36, 20, 4, 36, 20});
+        set(Model.class, "screenY", null, new int[] {3, 3, 27, 3, 3, 27});
         set(Model.class, "anIntArray1668", null, new int[] {-24, 40, -24, -24, 40, -24});
         set(Model.class, "anIntArray1669", null, new int[] {-20, -20, 44, -20, -20, 44});
         set(Model.class, "anIntArray1670", null, new int[] {512, 512, 512, 512, 512, 512});
@@ -50,12 +50,12 @@ public class ModelFaceRasterTest {
         set(Model.class, "anIntArray1631", model, new int[] {0, 3});
         set(Model.class, "anIntArray1632", model, new int[] {1, 4});
         set(Model.class, "anIntArray1633", model, new int[] {2, 5});
-        set(Model.class, "anIntArray1634", model, new int[] {0x1234, 0x3456});
-        set(Model.class, "anIntArray1635", model, new int[] {0x2345, 0x4567});
-        set(Model.class, "anIntArray1636", model, new int[] {0x3456, 0x5678});
-        set(Model.class, "anIntArray1643", model, new int[] {0, 2});
-        set(Model.class, "anIntArray1644", model, new int[] {1, 1});
-        set(Model.class, "anIntArray1645", model, new int[] {2, 0});
+        set(Model.class, "faceShadeA", model, new int[] {0x1234, 0x3456});
+        set(Model.class, "faceShadeB", model, new int[] {0x2345, 0x4567});
+        set(Model.class, "faceShadeC", model, new int[] {0x3456, 0x5678});
+        set(Model.class, "texturedFaceVertexA", model, new int[] {0, 2});
+        set(Model.class, "texturedFaceVertexB", model, new int[] {1, 1});
+        set(Model.class, "texturedFaceVertexC", model, new int[] {2, 0});
         set(Model.class, "anIntArray1640", model, new int[] {4, 4});
         int[] texture = new int[16384];
         for (int level = 0; level < 4; level++) for (int row = 0; row < 64; row++) for (int col = 0; col < 64; col++)
@@ -83,7 +83,7 @@ public class ModelFaceRasterTest {
         int[] first = render(0);
         assertNotEquals(BG, first[10 * W + 20]);
         assertEquals(BG, first[30 * W + 20]);
-        int[] x = (int[]) get(Model.class, "anIntArray1665", null);
+        int[] x = (int[]) get(Model.class, "screenX", null);
         x[3] = 12; x[4] = 44; x[5] = 28;
         int[] second = render(1);
         assertEquals(BG, second[10 * W + 8]);
@@ -95,7 +95,7 @@ public class ModelFaceRasterTest {
 
     @Test public void eachFaceCornerChangesTheTriangleOutline() throws Exception {
         int[] original = render(0);
-        int[] x = (int[]) get(Model.class, "anIntArray1665", null);
+        int[] x = (int[]) get(Model.class, "screenX", null);
         for (int corner = 0; corner < 3; corner++) {
             x[corner] += 8;
             assertFalse("corner " + corner, Arrays.equals(original, render(0)));
@@ -123,24 +123,24 @@ public class ModelFaceRasterTest {
 
     @Test public void clippingAndAlphaFlagsReachTheRasteriser() throws Exception {
         int[] base = renderWithType(1);
-        ((boolean[]) get(Model.class, "aBooleanArray1663", null))[0] = true;
+        ((boolean[]) get(Model.class, "faceNeedsHorizontalClip", null))[0] = true;
         renderWithType(1);
         assertTrue((boolean) get(Texture.class, "clipScanlines", null));
-        ((boolean[]) get(Model.class, "aBooleanArray1663", null))[0] = false;
-        set(Model.class, "anIntArray1639", model, new int[] {128, 0});
+        ((boolean[]) get(Model.class, "faceNeedsHorizontalClip", null))[0] = false;
+        set(Model.class, "faceAlphas", model, new int[] {128, 0});
         int[] translucent = renderWithType(1);
         assertEquals(128, get(Texture.class, "transparency", null));
         assertFalse(Arrays.equals(base, translucent));
-        set(Model.class, "anIntArray1639", model, null);
+        set(Model.class, "faceAlphas", model, null);
         assertArrayEquals(base, renderWithType(1));
         assertEquals(0, get(Texture.class, "transparency", null));
     }
 
     @Test public void eachMappingCornerControlsTheTexturedImage() throws Exception {
         int[] first = renderWithType(2);
-        int[] mappingA = (int[]) get(Model.class, "anIntArray1643", model);
-        int[] mappingB = (int[]) get(Model.class, "anIntArray1644", model);
-        int[] mappingC = (int[]) get(Model.class, "anIntArray1645", model);
+        int[] mappingA = (int[]) get(Model.class, "texturedFaceVertexA", model);
+        int[] mappingB = (int[]) get(Model.class, "texturedFaceVertexB", model);
+        int[] mappingC = (int[]) get(Model.class, "texturedFaceVertexC", model);
         mappingA[0] = 1; mappingB[0] = 0;
         assertFalse(Arrays.equals(first, renderWithType(2)));
         mappingA[0] = 0; mappingB[0] = 1;
@@ -174,11 +174,11 @@ public class ModelFaceRasterTest {
                 py[v] = Texture.textureInt2 + CAM_Y[v] * 512 / z[v];
             }
         }
-        set(Model.class, "anIntArray1665", null, px);
-        set(Model.class, "anIntArray1666", null, py);
-        set(Model.class, "anIntArray1634", model, new int[] {SHADES[0], 7});
-        set(Model.class, "anIntArray1635", model, new int[] {SHADES[1], 7});
-        set(Model.class, "anIntArray1636", model, new int[] {SHADES[2], 7});
+        set(Model.class, "screenX", null, px);
+        set(Model.class, "screenY", null, py);
+        set(Model.class, "faceShadeA", model, new int[] {SHADES[0], 7});
+        set(Model.class, "faceShadeB", model, new int[] {SHADES[1], 7});
+        set(Model.class, "faceShadeC", model, new int[] {SHADES[2], 7});
         set(Model.class, "anIntArray1637", model, null);
         for (String name : new String[] {"clippedX", "clippedY", "clippedShade"})
             Arrays.fill((int[]) get(Model.class, name, null), SENTINEL);
@@ -350,9 +350,9 @@ public class ModelFaceRasterTest {
                 set(Model.class, "anIntArray1637", model, new int[] {base + 4, 0});
                 assertFalse("face index " + label, Arrays.equals(first, clipRender(0)));
                 set(Model.class, "anIntArray1637", model, new int[] {base, 0});
-                int[] a = (int[]) get(Model.class, "anIntArray1643", model);
-                int[] b = (int[]) get(Model.class, "anIntArray1644", model);
-                int[] c = (int[]) get(Model.class, "anIntArray1645", model);
+                int[] a = (int[]) get(Model.class, "texturedFaceVertexA", model);
+                int[] b = (int[]) get(Model.class, "texturedFaceVertexB", model);
+                int[] c = (int[]) get(Model.class, "texturedFaceVertexC", model);
                 a[0] = 1; b[0] = 0;
                 assertFalse("corner A/B " + label, Arrays.equals(first, clipRender(0)));
                 a[0] = 0; b[0] = 2; c[0] = 1;

@@ -198,7 +198,7 @@ public class AnimationFrameDelayTest {
         Constructor<Model> c=Model.class.getDeclaredConstructor(); c.setAccessible(true); Model m=c.newInstance();
         m.anInt1626=3; m.anInt1630=3; m.anIntArray1627=new int[]{10,20,30}; m.anIntArray1628=new int[]{40,50,60}; m.anIntArray1629=new int[]{70,80,90};
         m.vertexGroups=new int[][]{{2},{0},{1}}; m.faceGroups=new int[][]{{1},{2},{0}};
-        Field alpha=Model.class.getDeclaredField("anIntArray1639"); alpha.setAccessible(true); alpha.set(m,new int[]{11,22,33});
+        Field alpha=Model.class.getDeclaredField("faceAlphas"); alpha.setAccessible(true); alpha.set(m,new int[]{11,22,33});
         int[] old=new int[3]; Field[] pivots=new Field[3];
         for(int i=0;i<3;i++){pivots[i]=Model.class.getDeclaredField("animationPivot"+"XYZ".charAt(i));pivots[i].setAccessible(true);old[i]=pivots[i].getInt(null);}
         try {m.applyAnimationFrame(4); assertArrayEquals(new int[]{17,20,30},m.anIntArray1627); assertArrayEquals(new int[]{38,50,60},m.anIntArray1628); assertArrayEquals(new int[]{75,80,90},m.anIntArray1629); assertArrayEquals(new int[]{27,22,33},(int[])alpha.get(m));

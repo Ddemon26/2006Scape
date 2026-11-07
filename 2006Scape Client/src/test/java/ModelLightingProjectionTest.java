@@ -8,7 +8,7 @@ import org.junit.Test;
 
 /** Controlled original-name observations of Model.method479/method480/method482 and the modelIntArray tables. */
 public class ModelLightingProjectionTest {
-    private static final String[] STATICS = {"anIntArray1665", "anIntArray1666", "anIntArray1667", "anIntArray1668",
+    private static final String[] STATICS = {"screenX", "screenY", "vertexDepth", "anIntArray1668",
             "anIntArray1669", "anIntArray1670"};
     private final Object[] saved = new Object[STATICS.length];
     private int savedC1, savedC2;
@@ -36,7 +36,7 @@ public class ModelLightingProjectionTest {
     private static Model flatTriangle(int flag) throws Exception {
         return model(new int[]{0,10,0}, new int[]{0,0,10}, new int[]{0,0,0}, new int[]{0}, new int[]{1}, new int[]{2}, new int[]{flag}, 127);
     }
-    private static int shade0(Model m) throws Exception { return ints(m, "anIntArray1634")[0]; }
+    private static int shade0(Model m) throws Exception { return ints(m, "faceShadeA")[0]; }
 
     @Test public void tablesAreSineAndCosineOf2048UnitTurnsIn16Bit() {
         assertSame(Texture.sineTable, Model.sineTable16); assertSame(Texture.cosineTable, Model.cosineTable16);
@@ -55,34 +55,34 @@ public class ModelLightingProjectionTest {
         m = flatTriangle(1); m.applyLighting(200, 256, 100, 0, 0, true); assertEquals(126, shade0(m));        // perpendicular
         m = flatTriangle(1); m.applyLighting(0, 256, 0, 0, -100, true); assertEquals(2, shade0(m));          // clamps low
         m = flatTriangle(1); m.applyLighting(200, 256, 0, 0, -100, true);
-        assertEquals(0, ints(m, "anIntArray1635")[0]); assertEquals(0, ints(m, "anIntArray1636")[0]);
+        assertEquals(0, ints(m, "faceShadeB")[0]); assertEquals(0, ints(m, "faceShadeC")[0]);
     }
     @Test public void divisorIsOnlyUsedWhenLightIsApplied() throws Exception {
         try { Model m = flatTriangle(1); m.applyLighting(200, 0, 0, 0, -100, true); fail(); } catch (ArithmeticException expected) { }
         Model m = flatTriangle(0); m.applyLighting(200, 0, 0, 0, -100, false); // normals only; no division yet
-        assertEquals(256, m.aClass33Array1425[0].anInt604);
+        assertEquals(256, m.aClass33Array1425[0].normalZ);
     }
     @Test public void bitZeroOfFaceFlagSelectsFlatShadingAndOtherBitsAccumulateNormals() throws Exception {
         for (int flag : new int[]{0, 2, 4}) {
             Model m = flatTriangle(flag); m.applyLighting(200, 256, 0, 0, -100, false);
-            for (int v = 0; v < 3; v++) { assertEquals(1, m.aClass33Array1425[v].anInt605); assertEquals(256, m.aClass33Array1425[v].anInt604); }
+            for (int v = 0; v < 3; v++) { assertEquals(1, m.aClass33Array1425[v].faceCount); assertEquals(256, m.aClass33Array1425[v].normalZ); }
             assertEquals(0, shade0(m));
         }
         for (int flag : new int[]{1, 3}) {
             Model m = flatTriangle(flag); m.applyLighting(200, 256, 0, 0, -100, false);
-            for (int v = 0; v < 3; v++) assertEquals(0, m.aClass33Array1425[v].anInt605);
+            for (int v = 0; v < 3; v++) assertEquals(0, m.aClass33Array1425[v].faceCount);
             if (flag == 1) assertEquals(29, shade0(m));
         }
     }
     @Test public void faceNormalIsReducedByCommonShiftAndScaledToLength256() throws Exception {
         Model m = model(new int[]{0,20000,0}, new int[]{0,0,20000}, new int[]{0,0,20000}, new int[]{0}, new int[]{1}, new int[]{2}, null, 5);
         m.applyLighting(0, 256, 0, 0, -100, false);
-        Class33 n = m.aClass33Array1425[0]; assertEquals(0, n.anInt602); assertTrue(Math.abs(n.anInt603 + 181) <= 1); assertTrue(Math.abs(n.anInt604 - 181) <= 1);
+        VertexNormal n = m.aClass33Array1425[0]; assertEquals(0, n.normalX); assertTrue(Math.abs(n.normalY + 181) <= 1); assertTrue(Math.abs(n.normalZ - 181) <= 1);
         m = model(new int[]{0,20000,0}, new int[]{0,0,20000}, new int[]{0,0,0}, new int[]{0}, new int[]{1}, new int[]{2}, null, 5);
-        m.applyLighting(0, 256, 0, 0, -100, false); assertEquals(256, m.aClass33Array1425[0].anInt604);
+        m.applyLighting(0, 256, 0, 0, -100, false); assertEquals(256, m.aClass33Array1425[0].normalZ);
         m = model(new int[]{0,0,0}, new int[]{0,0,0}, new int[]{0,0,0}, new int[]{0}, new int[]{1}, new int[]{2}, null, 5); // zero-area face
         m.applyLighting(0, 256, 0, 0, -100, false);
-        assertEquals(0, m.aClass33Array1425[0].anInt604); assertEquals(1, m.aClass33Array1425[0].anInt605);
+        assertEquals(0, m.aClass33Array1425[0].normalZ); assertEquals(1, m.aClass33Array1425[0].faceCount);
     }
     private static Model twoTriangles() throws Exception {
         return model(new int[]{0,10,0,0}, new int[]{0,0,10,0}, new int[]{0,0,0,10}, new int[]{0,0}, new int[]{1,2}, new int[]{2,3}, null, 127);
@@ -91,29 +91,29 @@ public class ModelLightingProjectionTest {
         Model m = twoTriangles(); m.applyLighting(300, 256, -60, 0, -80, false);
         int[][] sum = {{256,0,256,2},{0,0,256,1},{256,0,256,2},{256,0,0,1}};
         for (int v = 0; v < 4; v++) {
-            Class33 a = m.aClass33Array1425[v], b = m.aClass33Array1660[v];
-            assertEquals(sum[v][0], a.anInt602); assertEquals(sum[v][1], a.anInt603); assertEquals(sum[v][2], a.anInt604); assertEquals(sum[v][3], a.anInt605);
-            assertNotSame(a, b); assertEquals(a.anInt604, b.anInt604); assertEquals(a.anInt605, b.anInt605);
+            VertexNormal a = m.aClass33Array1425[v], b = m.aClass33Array1660[v];
+            assertEquals(sum[v][0], a.normalX); assertEquals(sum[v][1], a.normalY); assertEquals(sum[v][2], a.normalZ); assertEquals(sum[v][3], a.faceCount);
+            assertNotSame(a, b); assertEquals(a.normalZ, b.normalZ); assertEquals(a.faceCount, b.faceCount);
         }
         assertEquals(0, m.minX); // extents recalculated, not left at sentinel
-        assertEquals(0, ints(m, "anIntArray1634")[0]);
+        assertEquals(0, ints(m, "faceShadeA")[0]);
     }
     @Test public void trueBakesPerVertexShadeFromNormalSumOverCountAndFreesNormals() throws Exception {
         Model m = twoTriangles(); m.applyLighting(300, 256, -60, 0, -80, true);
-        assertArrayEquals(new int[]{120, 95, 120}, new int[]{ints(m, "anIntArray1634")[0], ints(m, "anIntArray1635")[0], ints(m, "anIntArray1636")[0]});
-        assertArrayEquals(new int[]{120, 120, 126}, new int[]{ints(m, "anIntArray1634")[1], ints(m, "anIntArray1635")[1], ints(m, "anIntArray1636")[1]});
+        assertArrayEquals(new int[]{120, 95, 120}, new int[]{ints(m, "faceShadeA")[0], ints(m, "faceShadeB")[0], ints(m, "faceShadeC")[0]});
+        assertArrayEquals(new int[]{120, 120, 126}, new int[]{ints(m, "faceShadeA")[1], ints(m, "faceShadeB")[1], ints(m, "faceShadeC")[1]});
         assertNull(m.aClass33Array1425); assertNull(m.aClass33Array1660); assertNull(m.anIntArray1640);
         assertEquals(12345, m.minX); // rounded bounds routine leaves extents alone
     }
     @Test public void method480SkipsFlatFacesUsesDivisorDirectlyAndKeepsColoursOnlyForBitOneFaces() throws Exception {
         Model m = twoTriangles(); m.applyLighting(300, 256, -60, 0, -80, false);
-        ints(m, "anIntArray1634")[1] = 777; m.anIntArray1637 = new int[]{0, 1};
+        ints(m, "faceShadeA")[1] = 777; m.anIntArray1637 = new int[]{0, 1};
         m.applyVertexLighting(300, 100, -60, 0, -80);
-        assertEquals(120, ints(m, "anIntArray1634")[0]); assertEquals(777, ints(m, "anIntArray1634")[1]);
+        assertEquals(120, ints(m, "faceShadeA")[0]); assertEquals(777, ints(m, "faceShadeA")[1]);
         assertNull(m.anIntArray1640);
         m = twoTriangles(); m.applyLighting(300, 256, -60, 0, -80, false);
         m.applyVertexLighting(300, 200, -60, 0, -80); // doubled divisor halves the light term: 300-89=211 -> clamp
-        assertEquals(126, ints(m, "anIntArray1636")[1]);
+        assertEquals(126, ints(m, "faceShadeC")[1]);
         m = twoTriangles(); m.applyLighting(300, 256, -60, 0, -80, false); m.anIntArray1637 = new int[]{2, 0};
         m.applyVertexLighting(300, 100, -60, 0, -80); assertNotNull(m.anIntArray1640);
     }
@@ -131,37 +131,37 @@ public class ModelLightingProjectionTest {
         double c = Math.cos(l * TURN), s = Math.sin(l * TURN);
         double ny = y * c - z * s; z = y * s + z * c; y = ny;
         double depth = z - (ty * s + tz * c);
-        assertEquals(depth, stat("anIntArray1667")[0], 2.0);
-        assertEquals(Texture.textureInt1 + x * 512 / z, stat("anIntArray1665")[0], 2.0);
-        assertEquals(Texture.textureInt2 + y * 512 / z, stat("anIntArray1666")[0], 2.0);
+        assertEquals(depth, stat("vertexDepth")[0], 2.0);
+        assertEquals(Texture.textureInt1 + x * 512 / z, stat("screenX")[0], 2.0);
+        assertEquals(Texture.textureInt2 + y * 512 / z, stat("screenY")[0], 2.0);
     }
     @Test public void identityAndTranslationProjectAroundScreenCentreWithZDivide() throws Exception {
         Texture.textureInt1 = 160; Texture.textureInt2 = 90;
         Model m = verts(new int[]{100}, new int[]{50}, new int[]{0});
         m.projectRotated(0, 0, 0, 0, 0, 512);
-        assertEquals(260, stat("anIntArray1665")[0]); assertEquals(140, stat("anIntArray1666")[0]); assertEquals(0, stat("anIntArray1667")[0]);
-        m.projectRotated(0, 0, 0, 20, 0, 512); assertEquals(280, stat("anIntArray1665")[0]);        // i1 = x offset
-        m.projectRotated(0, 0, 0, 0, 30, 512); assertEquals(170, stat("anIntArray1666")[0]); assertEquals(0, stat("anIntArray1667")[0]); // j1 = y
-        m.projectRotated(0, 0, 0, 0, 0, 1024); assertEquals(210, stat("anIntArray1665")[0]); assertEquals(115, stat("anIntArray1666")[0]); // k1 = depth
+        assertEquals(260, stat("screenX")[0]); assertEquals(140, stat("screenY")[0]); assertEquals(0, stat("vertexDepth")[0]);
+        m.projectRotated(0, 0, 0, 20, 0, 512); assertEquals(280, stat("screenX")[0]);        // i1 = x offset
+        m.projectRotated(0, 0, 0, 0, 30, 512); assertEquals(170, stat("screenY")[0]); assertEquals(0, stat("vertexDepth")[0]); // j1 = y
+        m.projectRotated(0, 0, 0, 0, 0, 1024); assertEquals(210, stat("screenX")[0]); assertEquals(115, stat("screenY")[0]); // k1 = depth
         m = verts(new int[]{100}, new int[]{0}, new int[]{200});
-        m.projectRotated(0, 0, 0, 0, 0, 512); assertEquals(200, stat("anIntArray1667")[0]); // depth is relative to the origin
-        assertEquals(Texture.textureInt1 + 100 * 512 / 712, stat("anIntArray1665")[0], 1.0);
+        m.projectRotated(0, 0, 0, 0, 0, 512); assertEquals(200, stat("vertexDepth")[0]); // depth is relative to the origin
+        assertEquals(Texture.textureInt1 + 100 * 512 / 712, stat("screenX")[0], 1.0);
     }
     @Test public void quarterTurnsAndRotationOrder() throws Exception {
         Texture.textureInt1 = 0; Texture.textureInt2 = 0;
         Model m = verts(new int[]{100}, new int[]{0}, new int[]{0});
         m.projectRotated(0, 512, 0, 0, 0, 512); // k = roll in the x/y plane: +x -> -y
-        assertEquals(0, stat("anIntArray1665")[0], 1.0); assertEquals(-100, stat("anIntArray1666")[0], 1.0);
+        assertEquals(0, stat("screenX")[0], 1.0); assertEquals(-100, stat("screenY")[0], 1.0);
         m.projectRotated(512, 0, 0, 0, 0, 512); // j = yaw in the x/z plane: +x -> -z
-        assertEquals(0, stat("anIntArray1665")[0], 1.0); assertEquals(-100, stat("anIntArray1667")[0], 1.0);
+        assertEquals(0, stat("screenX")[0], 1.0); assertEquals(-100, stat("vertexDepth")[0], 1.0);
         m.projectRotated(512, 512, 0, 0, 0, 512); // roll first, then yaw: (100,0,0)->(0,-100,0)->unchanged by yaw
-        assertEquals(-100, stat("anIntArray1666")[0], 1.0); assertEquals(0, stat("anIntArray1667")[0], 1.0);
+        assertEquals(-100, stat("screenY")[0], 1.0); assertEquals(0, stat("vertexDepth")[0], 1.0);
     }
     @Test public void cameraPitchAppliesAfterTranslationAndDepthIsRelativeToTranslatedOrigin() throws Exception {
         Texture.textureInt1 = 0; Texture.textureInt2 = 0;
         Model m = verts(new int[]{0}, new int[]{0}, new int[]{0});
         m.projectRotated(0, 0, 256, 0, 0, 1000);
-        assertEquals(0, stat("anIntArray1667")[0], 1.0); assertEquals(-512, stat("anIntArray1666")[0], 2.0);
+        assertEquals(0, stat("vertexDepth")[0], 1.0); assertEquals(-512, stat("screenY")[0], 2.0);
         for (int[] c : new int[][]{{200, 300, 100, 20, -30, 700, 50, -40, 60}, {0, 0, 128, 0, 0, 900, 10, 20, 30}, {512, 100, 300, -50, 40, 800, -70, 15, 25}}) {
             m = verts(new int[]{c[6]}, new int[]{c[7]}, new int[]{c[8]});
             m.projectRotated(c[0], c[1], c[2], c[3], c[4], c[5]); expect(c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7], c[8]);
@@ -172,9 +172,9 @@ public class ModelLightingProjectionTest {
         Model m = verts(new int[]{10, 20, 30}, new int[]{0, 0, 0}, new int[]{0, 0, 0}); m.anInt1626 = 2;
         for (String n : STATICS) java.util.Arrays.fill(stat(n), -99);
         m.projectRotated(0, 0, 0, 0, 0, 512);
-        assertEquals(10, stat("anIntArray1665")[0]); assertEquals(20, stat("anIntArray1665")[1]); assertEquals(-99, stat("anIntArray1665")[2]);
+        assertEquals(10, stat("screenX")[0]); assertEquals(20, stat("screenX")[1]); assertEquals(-99, stat("screenX")[2]);
         assertEquals(-99, stat("anIntArray1668")[0]);
-        f("anInt1642").setInt(m, 1); m.projectRotated(0, 0, 0, 0, 0, 512);
+        f("texturedFaceCount").setInt(m, 1); m.projectRotated(0, 0, 0, 0, 0, 512);
         assertEquals(10, stat("anIntArray1668")[0]); assertEquals(0, stat("anIntArray1669")[0]); assertEquals(512, stat("anIntArray1670")[0]);
     }
 }
