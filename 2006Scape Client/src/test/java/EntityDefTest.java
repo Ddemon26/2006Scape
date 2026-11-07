@@ -451,7 +451,7 @@ public class EntityDefTest {
                 npc.x = 1344; npc.y = 1344;
                 game.anIntArrayArray929 = new int[104][104]; game.anInt1265 = 1;
                 game.worldController = new WorldController(new int[4][105][105]);
-                game.method26(false);
+                game.addNpcsToScene(false);
                 Ground[][][] tiles = (Ground[][][]) f(WorldController.class, "groundArray").get(game.worldController);
                 Object5 o = tiles[0][10][10].obj5Array[0];
                 assertEquals("size " + c[0] + " minTileX", c[1], o.minTileX); assertEquals(c[2], o.maxTileX);
@@ -474,14 +474,14 @@ public class EntityDefTest {
                     Ground[][][] tiles;
                     game.anIntArrayArray929 = new int[104][104]; game.anInt1265 = 1;
                     game.worldController = new WorldController(new int[4][105][105]);
-                    game.method26(late);
+                    game.addNpcsToScene(late);
                     tiles = (Ground[][][]) f(WorldController.class, "groundArray").get(game.worldController);
                     String label = "late=" + late + " clickable=" + clickable;
                     assertNotNull(label, tiles[0][10][10]);
                     assertEquals(label, 0x20000000 + (2 << 14) + (clickable ? 0 : 0x80000000), tiles[0][10][10].obj5Array[0].uid);
                     game.anIntArrayArray929 = new int[104][104]; game.anInt1265 = 1;
                     game.worldController = new WorldController(new int[4][105][105]);
-                    game.method26(!late);
+                    game.addNpcsToScene(!late);
                     tiles = (Ground[][][]) f(WorldController.class, "groundArray").get(game.worldController);
                     assertNull(label + " other pass", tiles[0][10][10]);
                 }

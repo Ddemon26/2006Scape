@@ -982,28 +982,28 @@ public class Game extends RSApplet {
 		worldController.addItemStack(i, i1, ((Animable) obj1), interpolatedGroundHeight(plane, j * 128 + 64, i * 128 + 64), ((Animable) obj2), ((Animable) obj), plane, j);
 	}
 
-	public void method26(boolean flag) {
-		for (int j = 0; j < npcCount; j++) {
-			NPC npc = npcArray[npcIndices[j]];
-			int k = 0x20000000 + (npcIndices[j] << 14);
-			if (npc == null || !npc.isVisible() || npc.desc.placedInFirstPass != flag) {
+	public void addNpcsToScene(boolean firstPass) {
+		for (int npcSlot = 0; npcSlot < npcCount; npcSlot++) {
+			NPC npc = npcArray[npcIndices[npcSlot]];
+			int uid = 0x20000000 + (npcIndices[npcSlot] << 14);
+			if (npc == null || !npc.isVisible() || npc.desc.placedInFirstPass != firstPass) {
 				continue;
 			}
-			int l = npc.x >> 7;
-			int i1 = npc.y >> 7;
-			if (l < 0 || l >= 104 || i1 < 0 || i1 >= 104) {
+			int tileX = npc.x >> 7;
+			int tileY = npc.y >> 7;
+			if (tileX < 0 || tileX >= 104 || tileY < 0 || tileY >= 104) {
 				continue;
 			}
 			if (npc.tileSize == 1 && (npc.x & 0x7f) == 64 && (npc.y & 0x7f) == 64) {
-				if (anIntArrayArray929[l][i1] == anInt1265) {
+				if (anIntArrayArray929[tileX][tileY] == anInt1265) {
 					continue;
 				}
-				anIntArrayArray929[l][i1] = anInt1265;
+				anIntArrayArray929[tileX][tileY] = anInt1265;
 			}
 			if (!npc.desc.interactable) {
-				k += 0x80000000;
+				uid += 0x80000000;
 			}
-			worldController.addEntity(plane, npc.facingDirection, interpolatedGroundHeight(plane, npc.y, npc.x), k, npc.y, (npc.tileSize - 1) * 64 + 60, npc.x, npc, npc.aBoolean1541);
+			worldController.addEntity(plane, npc.facingDirection, interpolatedGroundHeight(plane, npc.y, npc.x), uid, npc.y, (npc.tileSize - 1) * 64 + 60, npc.x, npc, npc.aBoolean1541);
 		}
 	}
 
@@ -2293,47 +2293,47 @@ public class Game extends RSApplet {
 		updateMusic();
 	}
 
-	public void method47(boolean flag) {
+	public void addPlayersToScene(boolean localPlayerOnly) {
 		if (myPlayer.x >> 7 == destX && myPlayer.y >> 7 == destY) {
 			destX = 0;
 		}
-		int j = playerCount;
-		if (flag) {
-			j = 1;
+		int playerLimit = playerCount;
+		if (localPlayerOnly) {
+			playerLimit = 1;
 		}
-		for (int l = 0; l < j; l++) {
+		for (int playerSlot = 0; playerSlot < playerLimit; playerSlot++) {
 			Player player;
-			int i1;
-			if (flag) {
+			int uid;
+			if (localPlayerOnly) {
 				player = myPlayer;
-				i1 = myPlayerIndex << 14;
+				uid = myPlayerIndex << 14;
 			} else {
-				player = playerArray[playerIndices[l]];
-				i1 = playerIndices[l] << 14;
+				player = playerArray[playerIndices[playerSlot]];
+				uid = playerIndices[playerSlot] << 14;
 			}
 			if (player == null || !player.isVisible()) {
 				continue;
 			}
-			player.aBoolean1699 = (lowMem && playerCount > 50 || playerCount > 200) && !flag && player.movementAnimationId == player.idleAnimationId;
-			int j1 = player.x >> 7;
-			int k1 = player.y >> 7;
-			if (j1 < 0 || j1 >= 104 || k1 < 0 || k1 >= 104) {
+			player.aBoolean1699 = (lowMem && playerCount > 50 || playerCount > 200) && !localPlayerOnly && player.movementAnimationId == player.idleAnimationId;
+			int tileX = player.x >> 7;
+			int tileY = player.y >> 7;
+			if (tileX < 0 || tileX >= 104 || tileY < 0 || tileY >= 104) {
 				continue;
 			}
 			if (player.aModel_1714 != null && loopCycle >= player.anInt1707 && loopCycle < player.anInt1708) {
 				player.aBoolean1699 = false;
 				player.anInt1709 = interpolatedGroundHeight(plane, player.y, player.x);
-				worldController.addEntityInTileBounds(plane, player.y, player, player.facingDirection, player.anInt1722, player.x, player.anInt1709, player.anInt1719, player.anInt1721, i1, player.anInt1720);
+				worldController.addEntityInTileBounds(plane, player.y, player, player.facingDirection, player.anInt1722, player.x, player.anInt1709, player.anInt1719, player.anInt1721, uid, player.anInt1720);
 				continue;
 			}
 			if ((player.x & 0x7f) == 64 && (player.y & 0x7f) == 64) {
-				if (anIntArrayArray929[j1][k1] == anInt1265) {
+				if (anIntArrayArray929[tileX][tileY] == anInt1265) {
 					continue;
 				}
-				anIntArrayArray929[j1][k1] = anInt1265;
+				anIntArrayArray929[tileX][tileY] = anInt1265;
 			}
 			player.anInt1709 = interpolatedGroundHeight(plane, player.y, player.x);
-			worldController.addEntity(plane, player.facingDirection, player.anInt1709, i1, player.y, 60, player.x, player, player.aBoolean1541);
+			worldController.addEntity(plane, player.facingDirection, player.anInt1709, uid, player.y, 60, player.x, player, player.aBoolean1541);
 		}
 
 	}
@@ -7900,7 +7900,7 @@ public class Game extends RSApplet {
 			}
 		}
 		if (loadingStage == 2) {
-			method146();
+			drawWorldView();
 		}
 		if (menuOpen && menuScreenArea == 1) {
 			needDrawTabArea = true;
@@ -11831,54 +11831,54 @@ public class Game extends RSApplet {
 
 	public static int zoom = 3;
 
-	public void method146() {
+	public void drawWorldView() {
 		anInt1265++;
-		method47(true);
-		method26(true);
-		method47(false);
-		method26(false);
+		addPlayersToScene(true);
+		addNpcsToScene(true);
+		addPlayersToScene(false);
+		addNpcsToScene(false);
 		updateProjectiles();
 		updateTransientGraphics();
 		if (!aBoolean1160) {
-			int i = anInt1184;
-			if (anInt984 / 256 > i) {
-				i = anInt984 / 256;
+			int cameraPitch = anInt1184;
+			if (anInt984 / 256 > cameraPitch) {
+				cameraPitch = anInt984 / 256;
 			}
-			if (aBooleanArray876[4] && anIntArray1203[4] + 128 > i) {
-				i = anIntArray1203[4] + 128;
+			if (aBooleanArray876[4] && anIntArray1203[4] + 128 > cameraPitch) {
+				cameraPitch = anIntArray1203[4] + 128;
 			}
-			int k = minimapInt1 + anInt896 & 0x7ff;
+			int cameraYaw = minimapInt1 + anInt896 & 0x7ff;
 			// Camera zoom control
-			setCameraPos(600 + i * zoom, i, anInt1014, interpolatedGroundHeight(plane, myPlayer.y, myPlayer.x) - 70, k, anInt1015);
+			setCameraPos(600 + cameraPitch * zoom, cameraPitch, anInt1014, interpolatedGroundHeight(plane, myPlayer.y, myPlayer.x) - 70, cameraYaw, anInt1015);
 		}
-		int j;
+		int scenePlane;
 		if (!aBoolean1160) {
-			j = selectRoofVisibilityPlane();
+			scenePlane = selectRoofVisibilityPlane();
 		} else {
-			j = selectFixedCameraPlane();
+			scenePlane = selectFixedCameraPlane();
 		}
-		int l = xCameraPos;
-		int i1 = zCameraPos;
-		int j1 = yCameraPos;
-		int k1 = yCameraCurve;
-		int l1 = xCameraCurve;
-		for (int i2 = 0; i2 < 5; i2++) {
-			if (aBooleanArray876[i2]) {
-				int j2 = (int) (Math.random() * (double) (anIntArray873[i2] * 2 + 1) - (double) anIntArray873[i2] + Math.sin((double) anIntArray1030[i2] * (double) anIntArray928[i2] / 100D) * (double) anIntArray1203[i2]);
-				if (i2 == 0) {
-					xCameraPos += j2;
+		int savedXCameraPos = xCameraPos;
+		int savedZCameraPos = zCameraPos;
+		int savedYCameraPos = yCameraPos;
+		int savedYCameraCurve = yCameraCurve;
+		int savedXCameraCurve = xCameraCurve;
+		for (int shakeChannel = 0; shakeChannel < 5; shakeChannel++) {
+			if (aBooleanArray876[shakeChannel]) {
+				int shakeOffset = (int) (Math.random() * (double) (anIntArray873[shakeChannel] * 2 + 1) - (double) anIntArray873[shakeChannel] + Math.sin((double) anIntArray1030[shakeChannel] * (double) anIntArray928[shakeChannel] / 100D) * (double) anIntArray1203[shakeChannel]);
+				if (shakeChannel == 0) {
+					xCameraPos += shakeOffset;
 				}
-				if (i2 == 1) {
-					zCameraPos += j2;
+				if (shakeChannel == 1) {
+					zCameraPos += shakeOffset;
 				}
-				if (i2 == 2) {
-					yCameraPos += j2;
+				if (shakeChannel == 2) {
+					yCameraPos += shakeOffset;
 				}
-				if (i2 == 3) {
-					xCameraCurve = xCameraCurve + j2 & 0x7ff;
+				if (shakeChannel == 3) {
+					xCameraCurve = xCameraCurve + shakeOffset & 0x7ff;
 				}
-				if (i2 == 4) {
-					yCameraCurve += j2;
+				if (shakeChannel == 4) {
+					yCameraCurve += shakeOffset;
 					if (yCameraCurve < 128) {
 						yCameraCurve = 128;
 					}
@@ -11889,20 +11889,20 @@ public class Game extends RSApplet {
 			}
 		}
 
-		int k2 = Texture.useCounter;
+		int textureUseCounter = Texture.useCounter;
 		Model.pickingEnabled = true;
 		Model.pickedCount = 0;
 		Model.pickMouseX = super.mouseX - 4;
 		Model.pickMouseY = super.mouseY - 4;
 		DrawingArea.clearRaster();
 		if(graphicsEnabled){
-			worldController.drawScene(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve);
+			worldController.drawScene(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, scenePlane, yCameraCurve);
 			worldController.clearObj5Cache();
 			updateEntities();
 			drawHeadIcon();
 		}
 		// Allow tabs to work
-		method37(k2);
+		method37(textureUseCounter);
 		// Allow stuff inside the tabs to work
 		draw3dScreen();
 		if (showInfo) {
@@ -11973,11 +11973,11 @@ public class Game extends RSApplet {
 		aRSImageProducer_1165.drawGraphics(4, super.graphics, 4);
 
 		if(graphicsEnabled) {
-			xCameraPos = l;
-			zCameraPos = i1;
-			yCameraPos = j1;
-			yCameraCurve = k1;
-			xCameraCurve = l1;
+			xCameraPos = savedXCameraPos;
+			zCameraPos = savedZCameraPos;
+			yCameraPos = savedYCameraPos;
+			yCameraCurve = savedYCameraCurve;
+			xCameraCurve = savedXCameraCurve;
 		}
 	}
 
