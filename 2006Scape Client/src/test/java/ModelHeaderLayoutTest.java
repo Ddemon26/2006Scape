@@ -218,7 +218,7 @@ public class ModelHeaderLayoutTest {
     @Test public void method548OnTheRealFetcherQueuesAModelFileRequestOnce() throws Exception {
         OnDemandFetcher f = new OnDemandFetcher();
         f.versions[0] = new int[] {0, 5, 5};
-        NodeList queue = (NodeList) get(f, "aClass19_1370");
+        NodeList queue = (NodeList) get(f, "cacheLookupQueue");
         f.requestModel(0);
         assertNull("version 0 means the file does not exist", queue.popTail());
         f.requestModel(2);

@@ -191,7 +191,7 @@ public class Game extends RSApplet {
 		    boolean bool, int songId) {
 		if (musicIsntNull()) {
 			nextSong = songId;
-			onDemandFetcher.method558(2, nextSong);
+			onDemandFetcher.requestFile(2, nextSong);
 			musicVolume2 = volume;
 			pendingSongFadeTicks = -1;
 			aBoolean995 = true;
@@ -202,7 +202,7 @@ public class Game extends RSApplet {
 	final synchronized void requestSongWithoutFade(int volume, boolean bool, int songId) {
 		if (musicIsntNull()) {
 			nextSong = songId;
-			onDemandFetcher.method558(2, nextSong);
+			onDemandFetcher.requestFile(2, nextSong);
 			musicVolume2 = volume;
 			pendingSongFadeTicks = -1;
 			aBoolean995 = true;
@@ -7060,7 +7060,7 @@ public class Game extends RSApplet {
 						Thread.sleep(100L);
 					} catch (Exception _ex) {
 					}
-					if (onDemandFetcher.anInt1349 > 3) {
+					if (onDemandFetcher.connectionFailureCount > 3) {
 						loadError();
 						return;
 					}
@@ -7069,7 +7069,7 @@ public class Game extends RSApplet {
 			drawLoadingText(65, "Requesting animations");
 			int k = onDemandFetcher.getVersionCount(1);
 			for (int i1 = 0; i1 < k; i1++) {
-				onDemandFetcher.method558(1, i1);
+				onDemandFetcher.requestFile(1, i1);
 			}
 
 			while (onDemandFetcher.getNodeCount() > 0) {
@@ -7082,7 +7082,7 @@ public class Game extends RSApplet {
 					Thread.sleep(100L);
 				} catch (Exception _ex) {
 				}
-				if (onDemandFetcher.anInt1349 > 3) {
+				if (onDemandFetcher.connectionFailureCount > 3) {
 					loadError();
 					return;
 				}
@@ -7092,7 +7092,7 @@ public class Game extends RSApplet {
 			for (int k1 = 0; k1 < k; k1++) {
 				int l1 = onDemandFetcher.getModelIndex(k1);
 				if ((l1 & 1) != 0) {
-					onDemandFetcher.method558(0, k1);
+					onDemandFetcher.requestFile(0, k1);
 				}
 			}
 
@@ -7110,18 +7110,18 @@ public class Game extends RSApplet {
 			}
 			if (cacheStores[0] != null) {
 				drawLoadingText(75, "Requesting maps");
-				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(0, 48, 47));
-				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(1, 48, 47));
-				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(0, 48, 48));
-				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(1, 48, 48));
-				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(0, 48, 49));
-				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(1, 48, 49));
-				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(0, 47, 47));
-				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(1, 47, 47));
-				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(0, 47, 48));
-				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(1, 47, 48));
-				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(0, 148, 48));
-				onDemandFetcher.method558(3, onDemandFetcher.getMapFileId(1, 148, 48));
+				onDemandFetcher.requestFile(3, onDemandFetcher.getMapFileId(0, 48, 47));
+				onDemandFetcher.requestFile(3, onDemandFetcher.getMapFileId(1, 48, 47));
+				onDemandFetcher.requestFile(3, onDemandFetcher.getMapFileId(0, 48, 48));
+				onDemandFetcher.requestFile(3, onDemandFetcher.getMapFileId(1, 48, 48));
+				onDemandFetcher.requestFile(3, onDemandFetcher.getMapFileId(0, 48, 49));
+				onDemandFetcher.requestFile(3, onDemandFetcher.getMapFileId(1, 48, 49));
+				onDemandFetcher.requestFile(3, onDemandFetcher.getMapFileId(0, 47, 47));
+				onDemandFetcher.requestFile(3, onDemandFetcher.getMapFileId(1, 47, 47));
+				onDemandFetcher.requestFile(3, onDemandFetcher.getMapFileId(0, 47, 48));
+				onDemandFetcher.requestFile(3, onDemandFetcher.getMapFileId(1, 47, 48));
+				onDemandFetcher.requestFile(3, onDemandFetcher.getMapFileId(0, 148, 48));
+				onDemandFetcher.requestFile(3, onDemandFetcher.getMapFileId(1, 148, 48));
 				k = onDemandFetcher.getNodeCount();
 				while (onDemandFetcher.getNodeCount() > 0) {
 					int j2 = k - onDemandFetcher.getNodeCount();
@@ -10884,11 +10884,11 @@ public class Game extends RSApplet {
 							} else {
 								int terrainFileId = regionTerrainFileIds[regionCount] = onDemandFetcher.getMapFileId(0, regionY, regionX);
 								if (terrainFileId != -1) {
-									onDemandFetcher.method558(3, terrainFileId);
+									onDemandFetcher.requestFile(3, terrainFileId);
 								}
 								int objectFileId = regionObjectFileIds[regionCount] = onDemandFetcher.getMapFileId(1, regionY, regionX);
 								if (objectFileId != -1) {
-									onDemandFetcher.method558(3, objectFileId);
+									onDemandFetcher.requestFile(3, objectFileId);
 								}
 								regionCount++;
 							}
@@ -10937,11 +10937,11 @@ public class Game extends RSApplet {
 						int regionY = regionKey & 0xff;
 						int terrainFileId = regionTerrainFileIds[regionIndex] = onDemandFetcher.getMapFileId(0, regionY, regionX);
 						if (terrainFileId != -1) {
-							onDemandFetcher.method558(3, terrainFileId);
+							onDemandFetcher.requestFile(3, terrainFileId);
 						}
 						int objectFileId = regionObjectFileIds[regionIndex] = onDemandFetcher.getMapFileId(1, regionY, regionX);
 						if (objectFileId != -1) {
-							onDemandFetcher.method558(3, objectFileId);
+							onDemandFetcher.requestFile(3, objectFileId);
 						}
 					}
 

@@ -151,7 +151,7 @@ public class RegionLoadReadinessTest {
                 GZIPOutputStream zip = new GZIPOutputStream(out);
                 zip.write(bytes); zip.close(); d.buffer = out.toByteArray();
             }
-            ((NodeList) field(OnDemandFetcher.class, "aClass19_1358").get(value)).insertHead(d);
+            ((NodeList) field(OnDemandFetcher.class, "completedRequests").get(value)).insertHead(d);
             return d;
         }
     }
