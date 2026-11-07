@@ -157,17 +157,44 @@ public class GameSongRequestTest {
         assertEquals(0, player.ticks);
     }
 
+    @Test public void method790ClosesPlayerAndClearsAttachmentAfterStoppingPlayback() {
+        Game.anInt478 = 70;
+        Game.anInt720 = 4;
+        Game.aByteArray347 = new byte[] {1};
+        Game.shutdownMusicPlayer();
+        assertEquals("stop;volume256;close;", player.events.toString());
+        assertNull(Game.aClass56_749);
+        assertEquals(-1, Game.anInt478);
+        assertEquals(0, Game.anInt720);
+        assertNull(Game.aByteArray347);
+        Game.shutdownMusicPlayer();
+        assertEquals("stop;volume256;close;", player.events.toString());
+    }
+
+    @Test public void method790HandlesNoPlayerAndIdlePlayer() {
+        Game.aClass56_749 = null;
+        Game.anInt720 = 7;
+        Game.shutdownMusicPlayer();
+        assertEquals(7, Game.anInt720);
+        Game.aClass56_749 = player;
+        Game.anInt720 = 0;
+        Game.shutdownMusicPlayer();
+        assertEquals("close;", player.events.toString());
+        assertNull(Game.aClass56_749);
+    }
+
     private static final class PlayerProbe extends Class56 {
         int plays, volume, ticks, lastTick;
+        final StringBuilder events = new StringBuilder();
         byte[] data;
         boolean loop;
         void method827(int value, byte[] bytes, int ignored, boolean repeat) {
             plays++; volume = value; data = bytes; loop = repeat;
         }
-        void method828() { }
+        void method828() { events.append("close;"); }
         void method830(int a, int b) { }
-        void method831(int value) { }
+        void method831(int value) { events.append("volume").append(value).append(';'); }
         void method832(int value) { ticks++; lastTick = value; }
-        void method833() { }
+        void method833() { events.append("stop;"); }
     }
 }

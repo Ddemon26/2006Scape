@@ -56,7 +56,7 @@ public class Game extends RSApplet {
 		return true;
 	}
 	
-	static final void method790() {
+	static final void shutdownMusicPlayer() {
 		if (aClass56_749 != null) {
 			stopMusicPlayback(false);
 			if (anInt720 > 0) {
