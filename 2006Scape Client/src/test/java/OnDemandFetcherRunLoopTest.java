@@ -43,7 +43,7 @@ public class OnDemandFetcherRunLoopTest {
 
     private OnDemandData request(int type, int id, boolean incomplete, int loopCycle) throws Exception {
         OnDemandData d = new OnDemandData();
-        d.dataType = type; d.ID = id; d.incomplete = incomplete; d.loopCycle = loopCycle;
+        d.dataType = type; d.ID = id; d.urgent = incomplete; d.idleCycles = loopCycle;
         ((NodeList) get("requested")).insertHead(d);
         return d;
     }
@@ -63,7 +63,7 @@ public class OnDemandFetcherRunLoopTest {
             calls++;
             if (firstCallAt < 0) firstCallAt = System.currentTimeMillis();
             try {
-                set("waiting", true);
+                set("madeProgress", true);
                 set("running", false);
             } catch (Exception e) { throw new RuntimeException(e); }
             return 0;
@@ -89,13 +89,13 @@ public class OnDemandFetcherRunLoopTest {
         set("socket", s);
         set("outputStream", sink);
         OnDemandData d = new OnDemandData();
-        d.dataType = 3; d.ID = 0x1234; d.incomplete = false;
+        d.dataType = 3; d.ID = 0x1234; d.urgent = false;
         sendRequest(d);
         assertArrayEquals(new byte[] {3, 0x12, 0x34, 1}, sink.toByteArray());
         game.loggedIn = true;
         sendRequest(d);
         assertEquals(0, sink.toByteArray()[7]);
-        d.incomplete = true;
+        d.urgent = true;
         sendRequest(d);
         assertEquals(2, sink.toByteArray()[11]);
         assertEquals(12, sink.size());
@@ -146,11 +146,11 @@ public class OnDemandFetcherRunLoopTest {
         OnDemandData due = request(2, 0x0102, true, 50);
         OnDemandData fresh = request(0, 4, true, 3);
         runOneCycle();
-        assertEquals(0, due.loopCycle);
-        assertEquals(4, fresh.loopCycle);
-        assertEquals("complete entries do not tick while an incomplete one exists", 10, done.loopCycle);
+        assertEquals(0, due.idleCycles);
+        assertEquals(4, fresh.idleCycles);
+        assertEquals("complete entries do not tick while an incomplete one exists", 10, done.idleCycles);
         assertArrayEquals(new byte[] {2, 1, 2, 2}, sink.toByteArray());
-        assertEquals(1, geti("loopCycle"));
+        assertEquals(1, geti("connectionIdleCycles"));
     }
 
     @Test public void atFortyNineAnIncompleteRequestIsNotYetResent() throws Exception {
@@ -160,7 +160,7 @@ public class OnDemandFetcherRunLoopTest {
         set("outputStream", sink);
         OnDemandData d = request(2, 9, true, 49);
         runOneCycle();
-        assertEquals(50, d.loopCycle);
+        assertEquals(50, d.idleCycles);
         assertEquals(0, sink.size());
     }
 
@@ -171,17 +171,17 @@ public class OnDemandFetcherRunLoopTest {
         set("outputStream", sink);
         OnDemandData done = request(1, 7, false, 50);
         runOneCycle();
-        assertEquals(0, done.loopCycle);
+        assertEquals(0, done.idleCycles);
         assertArrayEquals(new byte[] {1, 0, 7, 1}, sink.toByteArray());
-        assertEquals(1, geti("loopCycle"));
+        assertEquals(1, geti("connectionIdleCycles"));
     }
 
     @Test public void noRequestsResetsLoopCycleAndClearsStatus() throws Exception {
         markStore(true);
-        set("loopCycle", 40);
+        set("connectionIdleCycles", 40);
         fetcher.statusString = "busy";
         runOneCycle();
-        assertEquals(0, geti("loopCycle"));
+        assertEquals(0, geti("connectionIdleCycles"));
         assertEquals("", fetcher.statusString);
     }
 
@@ -198,6 +198,100 @@ public class OnDemandFetcherRunLoopTest {
         OnDemandData d = (OnDemandData) ((NodeList) get("cacheLookupQueue")).popTail();
         assertEquals(0, d.dataType);
         assertEquals(3, d.ID);
-        assertTrue(d.incomplete);
+        assertTrue(d.urgent);
+    }
+
+    // Pass 203: waiting, the connection and write counters, original names only.
+
+    /** available() stops the outer loop but, unlike Counting, never sets waiting itself. */
+    private class Quiet extends InputStream {
+        int calls;
+        public int read() { return -1; }
+        public int available() {
+            calls++;
+            try { set("running", false); } catch (Exception e) { throw new RuntimeException(e); }
+            return 0;
+        }
+    }
+
+    private Quiet runQuietCycle() throws Exception {
+        Quiet q = new Quiet();
+        set("inputStream", q);
+        set("running", true);
+        fetcher.run();
+        return q;
+    }
+
+    @Test public void pass203InnerPollRepeatsOnlyAfterAPassThatDidWork() throws Exception {
+        markStore(false);
+        assertEquals("idle pass ends the poll loop", 1, runQuietCycle().calls);
+        fetcher = new OnDemandFetcher();
+        set("clientInstance", game);
+        set("openSocketTime", System.currentTimeMillis() + 3000000L);
+        fetcher.versions[0] = new int[] {5, 5};
+        fetcher.crcs[0] = new int[2];
+        ((byte[][]) get("fileStatus"))[0] = new byte[2];
+        OnDemandData lookup = new OnDemandData();
+        lookup.dataType = 0; lookup.ID = 1;
+        ((NodeList) get("cacheLookupQueue")).insertHead(lookup);
+        assertEquals("cache-lookup work buys exactly one more pass", 2, runQuietCycle().calls);
+        assertFalse(((Boolean) get("madeProgress")).booleanValue());
+    }
+
+    @Test public void pass203ConnectionIsDroppedAboveSevenFiftyIdleCycles() throws Exception {
+        markStore(true);
+        Socket s = new Socket();
+        set("socket", s);
+        set("outputStream", new ByteArrayOutputStream());
+        request(0, 5, true, 0);
+        set("connectionIdleCycles", 749);
+        runOneCycle();
+        assertEquals(750, geti("connectionIdleCycles"));
+        assertSame("750 is not yet over the limit", s, get("socket"));
+        runOneCycle();
+        assertEquals(751, geti("connectionIdleCycles"));
+        assertNull(get("socket"));
+        assertNull(get("inputStream"));
+        assertNull(get("outputStream"));
+    }
+
+    @Test public void pass203WriteCounterSendsKeepAliveAfterFiveHundredAndResetsOnRequestWrite() throws Exception {
+        markStore(false);
+        game.loggedIn = true;
+        ByteArrayOutputStream sink = new ByteArrayOutputStream();
+        set("socket", new Socket());
+        set("outputStream", sink);
+        set("cyclesSinceLastWrite", 499);
+        runOneCycle();
+        assertEquals(500, geti("cyclesSinceLastWrite"));
+        assertEquals(0, sink.size());
+        runOneCycle();
+        assertEquals(0, geti("cyclesSinceLastWrite"));
+        assertArrayEquals(new byte[] {0, 0, 0, 10}, sink.toByteArray());
+        game.loggedIn = false;
+        set("cyclesSinceLastWrite", 7);
+        runOneCycle();
+        assertEquals("not counted while logged out", 7, geti("cyclesSinceLastWrite"));
+        set("cyclesSinceLastWrite", 300);
+        OnDemandData d = new OnDemandData();
+        d.dataType = 1; d.ID = 2;
+        sendRequest(d);
+        assertEquals(0, geti("cyclesSinceLastWrite"));
+        set("socket", null);
+        set("cyclesSinceLastWrite", 300);
+        sendRequest(d);
+        assertEquals("no write, no reset", 300, geti("cyclesSinceLastWrite"));
+    }
+
+    @Test public void pass203FailedKeepAliveForcesConnectionCounterPastTheLimit() throws Exception {
+        markStore(false);
+        game.loggedIn = true;
+        set("socket", new Socket());
+        set("outputStream", new java.io.OutputStream() {
+            public void write(int b) throws IOException { throw new IOException("x"); }
+        });
+        set("cyclesSinceLastWrite", 500);
+        runOneCycle();
+        assertEquals(5000, geti("connectionIdleCycles"));
     }
 }

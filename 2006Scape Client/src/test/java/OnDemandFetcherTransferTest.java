@@ -56,7 +56,7 @@ public class OnDemandFetcherTransferTest {
 
     private OnDemandData request(int type, int id, boolean incomplete) throws Exception {
         OnDemandData d = new OnDemandData();
-        d.dataType = type; d.ID = id; d.incomplete = incomplete;
+        d.dataType = type; d.ID = id; d.urgent = incomplete;
         list("requested").insertHead(d);
         return d;
     }
@@ -155,7 +155,7 @@ public class OnDemandFetcherTransferTest {
         feed(header(3, 4, 10, 0), pattern(10, 1));
         call("readData");
         call("readData");
-        assertTrue(d.incomplete);
+        assertTrue(d.urgent);
         assertEquals(93, d.dataType);
         assertSame(d, list("completedRequests").popTail());
         request(1, 4, false);
@@ -221,7 +221,7 @@ public class OnDemandFetcherTransferTest {
         OnDemandData d = (OnDemandData) list("cacheLookupQueue").popTail();
         assertEquals(1, d.dataType);
         assertEquals(7, d.ID);
-        assertTrue(d.incomplete);
+        assertTrue(d.urgent);
         assertNull(list("cacheLookupQueue").popTail());
         assertEquals(1, fetcher.getNodeCount());
     }
@@ -232,7 +232,7 @@ public class OnDemandFetcherTransferTest {
         set("outputStream", sink);
         set("inputStream", new ByteArrayInputStream(new byte[0]));
         OnDemandData d = new OnDemandData();
-        d.dataType = 2; d.ID = 0x0304; d.incomplete = true;
+        d.dataType = 2; d.ID = 0x0304; d.urgent = true;
         Method m = OnDemandFetcher.class.getDeclaredMethod("sendRequest", OnDemandData.class);
         m.setAccessible(true);
         m.invoke(fetcher, d);
@@ -288,8 +288,8 @@ public class OnDemandFetcherTransferTest {
         OnDemandData first = (OnDemandData) list("cacheLookupQueue").popTail();
         OnDemandData second = (OnDemandData) list("cacheLookupQueue").popTail();
         assertNull(list("cacheLookupQueue").popTail());
-        assertEquals(1, first.dataType); assertEquals(7, first.ID); assertTrue(first.incomplete);
-        assertEquals(2, second.dataType); assertEquals(7, second.ID); assertTrue(second.incomplete);
+        assertEquals(1, first.dataType); assertEquals(7, first.ID); assertTrue(first.urgent);
+        assertEquals(2, second.dataType); assertEquals(7, second.ID); assertTrue(second.urgent);
     }
 
     @Test public void handleFailedCountsRequestedNodesByIncompleteFlag() throws Exception {
@@ -347,7 +347,7 @@ public class OnDemandFetcherTransferTest {
         OnDemandData d = (OnDemandData) list("extraFileQueue").popTail();
         assertEquals(3, d.dataType);
         assertEquals(9, d.ID);
-        assertFalse(d.incomplete);
+        assertFalse(d.urgent);
         assertEquals(0, fetcher.getNodeCount());
         assertNull(list("cacheLookupQueue").popTail());
     }
@@ -380,5 +380,82 @@ public class OnDemandFetcherTransferTest {
         assertSame(b, fetcher.getNextNode());
         assertEquals(0, fetcher.getNodeCount());
         assertNull(fetcher.getNextNode());
+    }
+
+    // Pass 203: incomplete, waiting, readData's lookup local and the idle counters, original names only.
+
+    @Test public void pass203IncompleteMarksClientRequestsNotDownloadState() throws Exception {
+        ((int[][]) get("versions"))[1][7] = 5;
+        fetcher.requestFile(1, 7);
+        assertTrue("client request", ((OnDemandData) list("cacheLookupQueue").popTail()).urgent);
+        ((byte[][]) get("fileStatus"))[1][8] = 2;
+        ((int[][]) get("versions"))[1][8] = 5;
+        set("highestPendingPriority", 2);
+        fetcher.requestExtraFile(8, 1);
+        assertFalse("prefetch request", ((OnDemandData) list("extraFileQueue").popTail()).urgent);
+        OnDemandData done = request(1, 4, true);
+        feed(header(1, 4, 10, 0), pattern(10, 1));
+        call("readData");
+        call("readData");
+        assertArrayEquals(pattern(10, 1), done.buffer);
+        assertTrue("still true after the whole file arrived", done.urgent);
+        assertSame(done, list("completedRequests").popTail());
+        OnDemandData partial = request(1, 6, false);
+        feed(header(1, 6, 1000, 0));
+        call("readData");
+        assertSame(partial, get("current"));
+        assertFalse("false while still downloading", partial.urgent);
+    }
+
+    @Test public void pass203ReadDataSetsWaitingOnlyWhenItConsumesInput() throws Exception {
+        set("madeProgress", false);
+        feed(new byte[5]);
+        call("readData");
+        assertFalse(((Boolean) get("madeProgress")).booleanValue());
+        feed(header(2, 77, 20, 0));
+        call("readData");
+        assertTrue(((Boolean) get("madeProgress")).booleanValue());
+        set("madeProgress", false);
+        feed(new byte[19]);
+        call("readData");
+        assertFalse("body not yet available", ((Boolean) get("madeProgress")).booleanValue());
+        feed(new byte[20]);
+        call("readData");
+        assertTrue(((Boolean) get("madeProgress")).booleanValue());
+    }
+
+    @Test public void pass203HeaderMatchesOnlyRequestsInTheRequestedList() throws Exception {
+        OnDemandData lookupOnly = new OnDemandData();
+        lookupOnly.dataType = 1; lookupOnly.ID = 5; lookupOnly.urgent = true;
+        list("cacheLookupQueue").insertHead(lookupOnly);
+        feed(header(1, 5, 10, 0));
+        call("readData");
+        assertNull(get("current"));
+        assertNull(lookupOnly.buffer);
+        set("expectedSize", 0);
+        OnDemandData inFlight = request(1, 5, true);
+        feed(header(1, 5, 10, 0));
+        call("readData");
+        assertSame(inFlight, get("current"));
+    }
+
+    @Test public void pass203HeaderResetsIdleCountersFromTheMatchOnward() throws Exception {
+        OnDemandData a = request(0, 1, true);
+        OnDemandData b = request(0, 2, true);
+        OnDemandData c = request(0, 3, true);
+        a.idleCycles = 30; b.idleCycles = 30; c.idleCycles = 30;
+        set("connectionIdleCycles", 600);
+        feed(header(2, 77, 20, 0));
+        call("readData");
+        assertEquals("unmatched header leaves connection counter", 600, geti("connectionIdleCycles"));
+        assertEquals(30, a.idleCycles);
+        assertEquals(30, b.idleCycles);
+        set("expectedSize", 0);
+        feed(header(0, 2, 10, 0));
+        call("readData");
+        assertEquals(0, geti("connectionIdleCycles"));
+        assertEquals("entry before the match keeps its count", 30, a.idleCycles);
+        assertEquals(0, b.idleCycles);
+        assertEquals(0, c.idleCycles);
     }
 }

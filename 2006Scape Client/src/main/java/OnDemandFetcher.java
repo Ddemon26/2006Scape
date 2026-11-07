@@ -43,7 +43,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		try {
 			int available = inputStream.available();
 			if (expectedSize == 0 && available >= 6) {
-				waiting = true;
+				madeProgress = true;
 				for (int headerBytesRead = 0; headerBytesRead < 6; headerBytesRead += inputStream.read(ioBuffer, headerBytesRead, 6 - headerBytesRead)) {
 					;
 				}
@@ -52,21 +52,21 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				int fileSize = ((ioBuffer[3] & 0xff) << 8) + (ioBuffer[4] & 0xff);
 				int chunkIndex = ioBuffer[5] & 0xff;
 				current = null;
-				for (OnDemandData onDemandData = (OnDemandData) requested.firstFromTail(); onDemandData != null; onDemandData = (OnDemandData) requested.nextTowardHead()) {
-					if (onDemandData.dataType == fileType && onDemandData.ID == fileId) {
-						current = onDemandData;
+				for (OnDemandData inFlightRequest = (OnDemandData) requested.firstFromTail(); inFlightRequest != null; inFlightRequest = (OnDemandData) requested.nextTowardHead()) {
+					if (inFlightRequest.dataType == fileType && inFlightRequest.ID == fileId) {
+						current = inFlightRequest;
 					}
 					if (current != null) {
-						onDemandData.loopCycle = 0;
+						inFlightRequest.idleCycles = 0;
 					}
 				}
 
 				if (current != null) {
-					loopCycle = 0;
+					connectionIdleCycles = 0;
 					if (fileSize == 0) {
 						Signlink.reporterror("Rej: " + fileType + "," + fileId);
 						current.buffer = null;
-						if (current.incomplete) {
+						if (current.urgent) {
 							synchronized (completedRequests) {
 								completedRequests.insertHead(current);
 							}
@@ -90,7 +90,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				}
 			}
 			if (expectedSize > 0 && available >= expectedSize) {
-				waiting = true;
+				madeProgress = true;
 				byte destinationBuffer[] = ioBuffer;
 				int destinationOffset = 0;
 				if (current != null) {
@@ -104,11 +104,11 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 					if (clientInstance.cacheStores[0] != null) {
 						clientInstance.cacheStores[current.dataType + 1].writeFile(destinationBuffer.length, destinationBuffer, current.ID);
 					}
-					if (!current.incomplete && current.dataType == 3) {
-						current.incomplete = true;
+					if (!current.urgent && current.dataType == 3) {
+						current.urgent = true;
 						current.dataType = 93;
 					}
-					if (current.incomplete) {
+					if (current.urgent) {
 						synchronized (completedRequests) {
 							completedRequests.insertHead(current);
 						}
@@ -243,12 +243,12 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 					inputStream.read();
 				}
 
-				loopCycle = 0;
+				connectionIdleCycles = 0;
 			}
 			ioBuffer[0] = (byte) request.dataType;
 			ioBuffer[1] = (byte) (request.ID >> 8);
 			ioBuffer[2] = (byte) request.ID;
-			if (request.incomplete) {
+			if (request.urgent) {
 				ioBuffer[3] = 2;
 			} else if (!clientInstance.loggedIn) {
 				ioBuffer[3] = 1;
@@ -256,7 +256,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				ioBuffer[3] = 0;
 			}
 			outputStream.write(ioBuffer, 0, 4);
-			writeLoopCycle = 0;
+			cyclesSinceLastWrite = 0;
 			connectionFailureCount = -10000;
 			return;
 		} catch (IOException ioexception) {
@@ -293,7 +293,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			OnDemandData newRequest = new OnDemandData();
 			newRequest.dataType = dataType;
 			newRequest.ID = fileId;
-			newRequest.incomplete = true;
+			newRequest.urgent = true;
 			synchronized (cacheLookupQueue) {
 				cacheLookupQueue.insertHead(newRequest);
 			}
@@ -318,12 +318,12 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 					Thread.sleep(sleepMillis);
 				} catch (Exception _ex) {
 				}
-				waiting = true;
+				madeProgress = true;
 				for (int pollPass = 0; pollPass < 100; pollPass++) {
-					if (!waiting) {
+					if (!madeProgress) {
 						break;
 					}
-					waiting = false;
+					madeProgress = false;
 					checkReceived();
 					handleFailed();
 					if (urgentInFlightCount == 0 && pollPass >= 5) {
@@ -337,11 +337,11 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 
 				boolean hasOutstandingRequest = false;
 				for (OnDemandData request = (OnDemandData) requested.firstFromTail(); request != null; request = (OnDemandData) requested.nextTowardHead()) {
-					if (request.incomplete) {
+					if (request.urgent) {
 						hasOutstandingRequest = true;
-						request.loopCycle++;
-						if (request.loopCycle > 50) {
-							request.loopCycle = 0;
+						request.idleCycles++;
+						if (request.idleCycles > 50) {
+							request.idleCycles = 0;
 							sendRequest(request);
 						}
 					}
@@ -350,17 +350,17 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				if (!hasOutstandingRequest) {
 					for (OnDemandData request = (OnDemandData) requested.firstFromTail(); request != null; request = (OnDemandData) requested.nextTowardHead()) {
 						hasOutstandingRequest = true;
-						request.loopCycle++;
-						if (request.loopCycle > 50) {
-							request.loopCycle = 0;
+						request.idleCycles++;
+						if (request.idleCycles > 50) {
+							request.idleCycles = 0;
 							sendRequest(request);
 						}
 					}
 
 				}
 				if (hasOutstandingRequest) {
-					loopCycle++;
-					if (loopCycle > 750) {
+					connectionIdleCycles++;
+					if (connectionIdleCycles > 750) {
 						try {
 							socket.close();
 						} catch (Exception _ex) {
@@ -371,13 +371,13 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 						expectedSize = 0;
 					}
 				} else {
-					loopCycle = 0;
+					connectionIdleCycles = 0;
 					statusString = "";
 				}
 				if (clientInstance.loggedIn && socket != null && outputStream != null && (highestPendingPriority > 0 || clientInstance.cacheStores[0] == null)) {
-					writeLoopCycle++;
-					if (writeLoopCycle > 500) {
-						writeLoopCycle = 0;
+					cyclesSinceLastWrite++;
+					if (cyclesSinceLastWrite > 500) {
+						cyclesSinceLastWrite = 0;
 						ioBuffer[0] = 0;
 						ioBuffer[1] = 0;
 						ioBuffer[2] = 0;
@@ -385,7 +385,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 						try {
 							outputStream.write(ioBuffer, 0, 4);
 						} catch (IOException _ex) {
-							loopCycle = 5000;
+							connectionIdleCycles = 5000;
 						}
 					}
 				}
@@ -411,7 +411,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		OnDemandData extraRequest = new OnDemandData();
 		extraRequest.dataType = dataType;
 		extraRequest.ID = fileId;
-		extraRequest.incomplete = false;
+		extraRequest.urgent = false;
 		synchronized (extraFileQueue) {
 			extraFileQueue.insertHead(extraRequest);
 		}
@@ -503,7 +503,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		urgentInFlightCount = 0;
 		extraInFlightCount = 0;
 		for (OnDemandData inFlightRequest = (OnDemandData) requested.firstFromTail(); inFlightRequest != null; inFlightRequest = (OnDemandData) requested.nextTowardHead()) {
-			if (inFlightRequest.incomplete) {
+			if (inFlightRequest.urgent) {
 				urgentInFlightCount++;
 			} else {
 				extraInFlightCount++;
@@ -522,7 +522,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			requested.insertHead(missedRequest);
 			urgentInFlightCount++;
 			sendRequest(missedRequest);
-			waiting = true;
+			madeProgress = true;
 		}
 	}
 
@@ -538,7 +538,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			lookupRequest = (OnDemandData) cacheLookupQueue.popTail();
 		}
 		while (lookupRequest != null) {
-			waiting = true;
+			madeProgress = true;
 			byte cachedData[] = null;
 			if (clientInstance.cacheStores[0] != null) {
 				cachedData = clientInstance.cacheStores[lookupRequest.dataType + 1].readFile(lookupRequest.ID);
@@ -574,7 +574,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 					fileStatus[queuedRequest.dataType][queuedRequest.ID] = 0;
 					requested.insertHead(queuedRequest);
 					sendRequest(queuedRequest);
-					waiting = true;
+					madeProgress = true;
 					if (filesLoaded < totalFiles) {
 						filesLoaded++;
 					}
@@ -597,10 +597,10 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 						OnDemandData scannedRequest = new OnDemandData();
 						scannedRequest.dataType = dataType;
 						scannedRequest.ID = fileId;
-						scannedRequest.incomplete = false;
+						scannedRequest.urgent = false;
 						requested.insertHead(scannedRequest);
 						sendRequest(scannedRequest);
-						waiting = true;
+						madeProgress = true;
 						if (filesLoaded < totalFiles) {
 							filesLoaded++;
 						}
@@ -630,7 +630,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		fileStatus = new byte[4][];
 		extraFileQueue = new NodeList();
 		running = true;
-		waiting = false;
+		madeProgress = false;
 		completedRequests = new NodeList();
 		gzipInputBuffer = new byte[65000];
 		nodeSubList = new NodeSubList();
@@ -644,7 +644,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	private final NodeList requested;
 	private int highestPendingPriority;
 	public String statusString;
-	private int writeLoopCycle;
+	private int cyclesSinceLastWrite;
 	private long openSocketTime;
 	private int[] mapObjectFileIds;
 	private final CRC32 crc32;
@@ -662,7 +662,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	private boolean running;
 	private OutputStream outputStream;
 	private int[] mapPreloadFlags;
-	private boolean waiting;
+	private boolean madeProgress;
 	private final NodeList completedRequests;
 	private final byte[] gzipInputBuffer;
 	private int[] animIndices;
@@ -678,5 +678,5 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	private final NodeList cacheLookupQueue;
 	private int[] mapRegionKeys;
 	private byte[] modelIndices;
-	private int loopCycle;
+	private int connectionIdleCycles;
 }

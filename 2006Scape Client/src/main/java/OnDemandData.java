@@ -5,12 +5,12 @@
 public final class OnDemandData extends NodeSub {
 
 	public OnDemandData() {
-		incomplete = true;
+		urgent = true;
 	}
 
 	int dataType;
 	byte buffer[];
 	int ID;
-	boolean incomplete;
-	int loopCycle;
+	boolean urgent;
+	int idleCycles;
 }
