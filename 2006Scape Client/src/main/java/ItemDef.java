@@ -12,128 +12,128 @@ public final class ItemDef {
 		stream = null;
 	}
 
-	public boolean method192(int j) {
-		int k = anInt175;
-		int l = anInt166;
-		if (j == 1) {
-			k = anInt197;
-			l = anInt173;
+	public boolean isHeadModelReady(int gender) {
+		int modelID1 = maleHeadModelID1;
+		int modelID2 = maleHeadModelID2;
+		if (gender == 1) {
+			modelID1 = femaleHeadModelID1;
+			modelID2 = femaleHeadModelID2;
 		}
-		if (k == -1) {
+		if (modelID1 == -1) {
 			return true;
 		}
-		boolean flag = true;
-		if (!Model.method463(k)) {
-			flag = false;
+		boolean ready = true;
+		if (!Model.method463(modelID1)) {
+			ready = false;
 		}
-		if (l != -1 && !Model.method463(l)) {
-			flag = false;
+		if (modelID2 != -1 && !Model.method463(modelID2)) {
+			ready = false;
 		}
-		return flag;
+		return ready;
 	}
 
 	public static void unpackConfig(StreamLoader streamLoader) {
 		stream = new Stream(streamLoader.getDataForName("obj.dat"));
-		Stream stream = new Stream(streamLoader.getDataForName("obj.idx"));
-		totalItems = stream.readUnsignedShortBigEndian();
+		Stream indexStream = new Stream(streamLoader.getDataForName("obj.idx"));
+		totalItems = indexStream.readUnsignedShortBigEndian();
 		streamIndices = new int[totalItems];
-		int i = 2;
-		for (int j = 0; j < totalItems; j++) {
-			streamIndices[j] = i;
-			i += stream.readUnsignedShortBigEndian();
+		int recordOffset = 2;
+		for (int itemID = 0; itemID < totalItems; itemID++) {
+			streamIndices[itemID] = recordOffset;
+			recordOffset += indexStream.readUnsignedShortBigEndian();
 		}
 
 		cache = new ItemDef[10];
-		for (int k = 0; k < 10; k++) {
-			cache[k] = new ItemDef();
+		for (int slot = 0; slot < 10; slot++) {
+			cache[slot] = new ItemDef();
 		}
 
 	}
 
-	public Model method194(int j) {
-		int k = anInt175;
-		int l = anInt166;
-		if (j == 1) {
-			k = anInt197;
-			l = anInt173;
+	public Model getHeadModel(int gender) {
+		int modelID1 = maleHeadModelID1;
+		int modelID2 = maleHeadModelID2;
+		if (gender == 1) {
+			modelID1 = femaleHeadModelID1;
+			modelID2 = femaleHeadModelID2;
 		}
-		if (k == -1) {
+		if (modelID1 == -1) {
 			return null;
 		}
-		Model model = Model.method462(k);
-		if (l != -1) {
-			Model model_1 = Model.method462(l);
-			Model aclass30_sub2_sub4_sub6s[] = {model, model_1};
-			model = new Model(2, aclass30_sub2_sub4_sub6s);
+		Model model = Model.method462(modelID1);
+		if (modelID2 != -1) {
+			Model model2 = Model.method462(modelID2);
+			Model parts[] = {model, model2};
+			model = new Model(2, parts);
 		}
 		if (modifiedModelColors != null) {
-			for (int i1 = 0; i1 < modifiedModelColors.length; i1++) {
-				model.recolor(modifiedModelColors[i1], originalModelColors[i1]);
+			for (int colorIndex = 0; colorIndex < modifiedModelColors.length; colorIndex++) {
+				model.recolor(modifiedModelColors[colorIndex], originalModelColors[colorIndex]);
 			}
 
 		}
 		return model;
 	}
 
-	public boolean method195(int j) {
-		int k = anInt165;
-		int l = anInt188;
-		int i1 = anInt185;
-		if (j == 1) {
-			k = anInt200;
-			l = anInt164;
-			i1 = anInt162;
+	public boolean isWornModelReady(int gender) {
+		int modelID1 = maleWornModelID1;
+		int modelID2 = maleWornModelID2;
+		int modelID3 = maleWornModelID3;
+		if (gender == 1) {
+			modelID1 = femaleWornModelID1;
+			modelID2 = femaleWornModelID2;
+			modelID3 = femaleWornModelID3;
 		}
-		if (k == -1) {
+		if (modelID1 == -1) {
 			return true;
 		}
-		boolean flag = true;
-		if (!Model.method463(k)) {
-			flag = false;
+		boolean ready = true;
+		if (!Model.method463(modelID1)) {
+			ready = false;
 		}
-		if (l != -1 && !Model.method463(l)) {
-			flag = false;
+		if (modelID2 != -1 && !Model.method463(modelID2)) {
+			ready = false;
 		}
-		if (i1 != -1 && !Model.method463(i1)) {
-			flag = false;
+		if (modelID3 != -1 && !Model.method463(modelID3)) {
+			ready = false;
 		}
-		return flag;
+		return ready;
 	}
 
-	public Model method196(int i) {
-		int j = anInt165;
-		int k = anInt188;
-		int l = anInt185;
-		if (i == 1) {
-			j = anInt200;
-			k = anInt164;
-			l = anInt162;
+	public Model getWornModel(int gender) {
+		int modelID1 = maleWornModelID1;
+		int modelID2 = maleWornModelID2;
+		int modelID3 = maleWornModelID3;
+		if (gender == 1) {
+			modelID1 = femaleWornModelID1;
+			modelID2 = femaleWornModelID2;
+			modelID3 = femaleWornModelID3;
 		}
-		if (j == -1) {
+		if (modelID1 == -1) {
 			return null;
 		}
-		Model model = Model.method462(j);
-		if (k != -1) {
-			if (l != -1) {
-				Model model_1 = Model.method462(k);
-				Model model_3 = Model.method462(l);
-				Model aclass30_sub2_sub4_sub6_1s[] = {model, model_1, model_3};
-				model = new Model(3, aclass30_sub2_sub4_sub6_1s);
+		Model model = Model.method462(modelID1);
+		if (modelID2 != -1) {
+			if (modelID3 != -1) {
+				Model model2 = Model.method462(modelID2);
+				Model model3 = Model.method462(modelID3);
+				Model parts[] = {model, model2, model3};
+				model = new Model(3, parts);
 			} else {
-				Model model_2 = Model.method462(k);
-				Model aclass30_sub2_sub4_sub6s[] = {model, model_2};
-				model = new Model(2, aclass30_sub2_sub4_sub6s);
+				Model model2 = Model.method462(modelID2);
+				Model parts[] = {model, model2};
+				model = new Model(2, parts);
 			}
 		}
-		if (i == 0 && aByte205 != 0) {
-			model.translate(0, aByte205, 0);
+		if (gender == 0 && maleWornOffsetY != 0) {
+			model.translate(0, maleWornOffsetY, 0);
 		}
-		if (i == 1 && aByte154 != 0) {
-			model.translate(0, aByte154, 0);
+		if (gender == 1 && femaleWornOffsetY != 0) {
+			model.translate(0, femaleWornOffsetY, 0);
 		}
 		if (modifiedModelColors != null) {
-			for (int i1 = 0; i1 < modifiedModelColors.length; i1++) {
-				model.recolor(modifiedModelColors[i1], originalModelColors[i1]);
+			for (int colorIndex = 0; colorIndex < modifiedModelColors.length; colorIndex++) {
+				model.recolor(modifiedModelColors[colorIndex], originalModelColors[colorIndex]);
 			}
 
 		}
@@ -149,7 +149,7 @@ public final class ItemDef {
 		modelZoom = 2000;
 		modelRotation1 = 0;
 		modelRotation2 = 0;
-		anInt204 = 0;
+		modelRotation3 = 0;
 		modelOffset1 = 0;
 		modelOffset2 = 0;
 		stackable = false;
@@ -157,51 +157,51 @@ public final class ItemDef {
 		membersObject = false;
 		groundActions = null;
 		actions = null;
-		anInt165 = -1;
-		anInt188 = -1;
-		aByte205 = 0;
-		anInt200 = -1;
-		anInt164 = -1;
-		aByte154 = 0;
-		anInt185 = -1;
-		anInt162 = -1;
-		anInt175 = -1;
-		anInt166 = -1;
-		anInt197 = -1;
-		anInt173 = -1;
+		maleWornModelID1 = -1;
+		maleWornModelID2 = -1;
+		maleWornOffsetY = 0;
+		femaleWornModelID1 = -1;
+		femaleWornModelID2 = -1;
+		femaleWornOffsetY = 0;
+		maleWornModelID3 = -1;
+		femaleWornModelID3 = -1;
+		maleHeadModelID1 = -1;
+		maleHeadModelID2 = -1;
+		femaleHeadModelID1 = -1;
+		femaleHeadModelID2 = -1;
 		stackIDs = null;
 		stackAmounts = null;
 		certID = -1;
 		certTemplateID = -1;
-		anInt167 = 128;
-		anInt192 = 128;
-		anInt191 = 128;
-		anInt196 = 0;
-		anInt184 = 0;
+		modelScaleX = 128;
+		modelScaleY = 128;
+		modelScaleZ = 128;
+		ambientLightOffset = 0;
+		lightDivisorOffset = 0;
 		team = 0;
 	}
 
-	public static ItemDef forID(int i) {
-		for (int j = 0; j < 10; j++) {
-			if (cache[j].id == i) {
-				return cache[j];
+	public static ItemDef forID(int itemID) {
+		for (int slot = 0; slot < 10; slot++) {
+			if (cache[slot].id == itemID) {
+				return cache[slot];
 			}
 		}
 
 		cacheIndex = (cacheIndex + 1) % 10;
 		ItemDef itemDef = cache[cacheIndex];
 		try {
-			stream.currentOffset = streamIndices[i];
+			stream.currentOffset = streamIndices[itemID];
 		} catch (Exception e) {
 			System.out.println("Itemdef issue? Apparently this ID is out of bounds: " + e);
 		}
-		itemDef.id = i;
+		itemDef.id = itemID;
 		itemDef.setDefaults();
 		itemDef.readValues(stream);
 		if (itemDef.certTemplateID != -1) {
 			itemDef.toNote();
 		}
-		if (i == 6543) {
+		if (itemID == 6543) {
 			itemDef.name = "Magical Lamp";
 			itemDef.description = "I wonder what will happen when I rub this...".getBytes();
 		}
@@ -212,7 +212,7 @@ public final class ItemDef {
 			itemDef.actions = null;
 			itemDef.team = 0;
 		}
-		switch (i) {
+		switch (itemID) {
 		case 9747:
 			itemDef.actions = new String[5];
 			itemDef.actions[1] = "Wear";
@@ -232,11 +232,11 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt204 = 0;
-			itemDef.anInt165 = 18920;
-			itemDef.anInt200 = 18969;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.modelRotation3 = 0;
+			itemDef.maleWornModelID1 = 18920;
+			itemDef.femaleWornModelID1 = 18969;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Attack cape";
 			itemDef.description = "The cape worn by masters of Attack.".getBytes();
 			break;
@@ -258,13 +258,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18920;
-			itemDef.anInt200 = 18969;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18920;
+			itemDef.femaleWornModelID1 = 18969;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Attack cape(t)";
 			itemDef.description = "The cape worn by masters of Attack.".getBytes();
 			break;
@@ -286,8 +286,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "Attack hood";
 			itemDef.description = "Attack skillcape hood.".getBytes();
 			break;
@@ -311,14 +311,14 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt204 = 0;
-			itemDef.anInt165 = 18954;
-			itemDef.anInt200 = 18989;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.modelRotation3 = 0;
+			itemDef.maleWornModelID1 = 18954;
+			itemDef.femaleWornModelID1 = 18989;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Strength cape";
 			itemDef.description = "The cape worn by only the strongest people.".getBytes();
 			break;
@@ -340,13 +340,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18954;
-			itemDef.anInt200 = 18989;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18954;
+			itemDef.femaleWornModelID1 = 18989;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Strength cape(t)";
 			itemDef.description = "The cape worn by only the strongest people.".getBytes();
 			break;
@@ -368,8 +368,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "Strength hood";
 			itemDef.description = "Strength skillcape hood.".getBytes();
 			break;
@@ -391,13 +391,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18928;
-			itemDef.anInt200 = 18973;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18928;
+			itemDef.femaleWornModelID1 = 18973;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			/*itemDef.anInt199 = -1;*/
 			itemDef.name = "Defence cape";
 			itemDef.description = "The cape worn by masters of the art of Defence.".getBytes();
@@ -418,13 +418,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18928;
-			itemDef.anInt200 = 18973;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18928;
+			itemDef.femaleWornModelID1 = 18973;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Defence cape(t)";
 			itemDef.description = "The cape worn by masters of the art of Defence.".getBytes();
 			break;
@@ -446,8 +446,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "Defence hood";
 			itemDef.description = "Defence skillcape hood.".getBytes();
 			break;
@@ -469,13 +469,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18948;
-			itemDef.anInt200 = 18985;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18948;
+			itemDef.femaleWornModelID1 = 18985;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Ranging cape";
 			itemDef.description = "The cape worn by master archers.".getBytes();
 			break;
@@ -497,13 +497,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18948;
-			itemDef.anInt200 = 18985;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18948;
+			itemDef.femaleWornModelID1 = 18985;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Ranging cape(t)";
 			itemDef.description = "The cape worn by master archers.".getBytes();
 			break;
@@ -525,8 +525,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "Range hood";
 			itemDef.description = "Range skillcape hood.".getBytes();
 			break;
@@ -548,13 +548,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18945;
-			itemDef.anInt200 = 18983;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18945;
+			itemDef.femaleWornModelID1 = 18983;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Prayer cape";
 			itemDef.description = "The cape worn by the most pious of heroes.".getBytes();
 			break;
@@ -576,13 +576,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18945;
-			itemDef.anInt200 = 18983;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18945;
+			itemDef.femaleWornModelID1 = 18983;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Prayer cape(t)";
 			itemDef.description = "The cape worn by the most pious of heroes.".getBytes();
 			break;
@@ -604,8 +604,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "Prayer hood";
 			itemDef.description = "Prayer skillcape hood.".getBytes();
 			break;
@@ -627,13 +627,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18915;
-			itemDef.anInt200 = 18981;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18915;
+			itemDef.femaleWornModelID1 = 18981;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Magic cape";
 			itemDef.description = "The cape worn by the most powerful mages.".getBytes();
 			break;
@@ -655,13 +655,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18915;
-			itemDef.anInt200 = 18981;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18915;
+			itemDef.femaleWornModelID1 = 18981;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Magic cape(t)";
 			itemDef.description = "The cape worn by the most powerful mages.".getBytes();
 			break;
@@ -683,8 +683,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "Magic hood";
 			itemDef.description = "Magic skillcape hood.".getBytes();
 			break;
@@ -706,13 +706,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18950;
-			itemDef.anInt200 = 18986;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18950;
+			itemDef.femaleWornModelID1 = 18986;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "RuneCrafting cape";
 			itemDef.description = "The cape worn by master runecrafters.".getBytes();
 			break;
@@ -734,13 +734,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18950;
-			itemDef.anInt200 = 18986;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18950;
+			itemDef.femaleWornModelID1 = 18986;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "RuneCrafting cape(t)";
 			itemDef.description = "The cape worn by master runecrafters.".getBytes();
 			break;
@@ -762,8 +762,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "RuneCrafting hood";
 			itemDef.description = "RuneCrafting skillcape hood.".getBytes();
 			break;
@@ -785,13 +785,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18939;
-			itemDef.anInt200 = 18980;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18939;
+			itemDef.femaleWornModelID1 = 18980;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Hitpoint cape";
 			itemDef.description = "The cape worn by the healthiest adventurers.".getBytes();
 			break;
@@ -813,13 +813,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18939;
-			itemDef.anInt200 = 18980;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18939;
+			itemDef.femaleWornModelID1 = 18980;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Hitpoint cape(t)";
 			itemDef.description = "The cape worn by the healthiest adventurers.".getBytes();
 			break;
@@ -841,8 +841,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "Hitpoint hood";
 			itemDef.description = "Hitpoint skillcape hood.".getBytes();
 			break;
@@ -864,13 +864,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18918;
-			itemDef.anInt200 = 18968;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18918;
+			itemDef.femaleWornModelID1 = 18968;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Agility cape";
 			itemDef.description = "The cape worn by the most agile of heroes.".getBytes();
 			break;
@@ -892,13 +892,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18918;
-			itemDef.anInt200 = 18968;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18918;
+			itemDef.femaleWornModelID1 = 18968;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Agility cape(t)";
 			itemDef.description = "The cape worn by the best of agility trainers.".getBytes();
 			break;
@@ -920,8 +920,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "Agility hood";
 			itemDef.description = "Agility skillcape hood.".getBytes();
 			break;
@@ -943,13 +943,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18938;
-			itemDef.anInt200 = 18978;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18938;
+			itemDef.femaleWornModelID1 = 18978;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Herblore cape";
 			itemDef.description = "The cape worn by master herbalists.".getBytes();
 			break;
@@ -971,13 +971,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18938;
-			itemDef.anInt200 = 18978;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18938;
+			itemDef.femaleWornModelID1 = 18978;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Herblore cape(t)";
 			itemDef.description = "The cape worn by master herbalists.".getBytes();
 			break;
@@ -999,8 +999,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "Herblore hood";
 			itemDef.description = "Herblore skillcape hood.".getBytes();
 			break;
@@ -1022,13 +1022,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18956;
-			itemDef.anInt200 = 18956;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18956;
+			itemDef.femaleWornModelID1 = 18956;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Thieving cape";
 			itemDef.description = "The cape worn by the best of thieves.".getBytes();
 			break;
@@ -1050,13 +1050,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18956;
-			itemDef.anInt200 = 18956;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18956;
+			itemDef.femaleWornModelID1 = 18956;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Thieving cape(t)";
 			itemDef.description = "The cape worn by the best of thieves.".getBytes();
 			break;
@@ -1078,8 +1078,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "Thieving hood";
 			itemDef.description = "Thieving skillcape hood.".getBytes();
 			break;
@@ -1101,13 +1101,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18925;
-			itemDef.anInt200 = 18972;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18925;
+			itemDef.femaleWornModelID1 = 18972;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Crafting cape";
 			itemDef.description = "The cape worn by master craftworkers.".getBytes();
 			break;
@@ -1129,13 +1129,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18925;
-			itemDef.anInt200 = 18972;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18925;
+			itemDef.femaleWornModelID1 = 18972;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Crafting cape(t)";
 			itemDef.description = "The cape worn by master craftworkers.".getBytes();
 			break;
@@ -1158,8 +1158,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "Crafting hood";
 			itemDef.description = "Crafting skillcape hood.".getBytes();
 			break;
@@ -1181,13 +1181,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18935;
-			itemDef.anInt200 = 18977;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18935;
+			itemDef.femaleWornModelID1 = 18977;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Fletching cape";
 			itemDef.description = "The cape worn by the best of fletchers.".getBytes();
 			break;
@@ -1209,13 +1209,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18935;
-			itemDef.anInt200 = 18977;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18935;
+			itemDef.femaleWornModelID1 = 18977;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Fletching cape(t)";
 			itemDef.description = "The cape worn by the best of fletchers.".getBytes();
 			break;
@@ -1238,8 +1238,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "Fletching hood";
 			itemDef.description = "Fletching skillcape hood.".getBytes();
 			break;
@@ -1261,13 +1261,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18951;
-			itemDef.anInt200 = 18987;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18951;
+			itemDef.femaleWornModelID1 = 18987;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Slayer cape";
 			itemDef.description = "The cape worn by Slayer masters.".getBytes();
 			break;
@@ -1289,13 +1289,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18951;
-			itemDef.anInt200 = 18987;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18951;
+			itemDef.femaleWornModelID1 = 18987;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Slayer cape(t)";
 			itemDef.description = "The cape worn by Slayer masters.".getBytes();
 			break;
@@ -1318,8 +1318,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "Slayer hood";
 			itemDef.description = "Slayer skillcape hood.".getBytes();
 			break;
@@ -1345,13 +1345,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18916;
-			itemDef.anInt200 = 18970;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18916;
+			itemDef.femaleWornModelID1 = 18970;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Construct. cape";
 			itemDef.description = "The cape worn by the best of constructers.".getBytes();
 			break;
@@ -1377,13 +1377,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18916;
-			itemDef.anInt200 = 18970;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18916;
+			itemDef.femaleWornModelID1 = 18970;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Const. cape(t)";
 			itemDef.description = "The cape worn by the best of constructers.".getBytes();
 			break;
@@ -1406,8 +1406,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "Const. hood";
 			itemDef.description = "Construction skillcape hood.".getBytes();
 			break;	
@@ -1429,13 +1429,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18942;
-			itemDef.anInt200 = 18982;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18942;
+			itemDef.femaleWornModelID1 = 18982;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Mining cape";
 			itemDef.description = "The cape worn by the most skilled miners.".getBytes();
 			break;
@@ -1457,13 +1457,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18942;
-			itemDef.anInt200 = 18982;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18942;
+			itemDef.femaleWornModelID1 = 18982;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Mining cape(t)";
 			itemDef.description = "The cape worn by the most skilled miners.".getBytes();
 			break;
@@ -1486,8 +1486,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "Mining hood";
 			itemDef.description = "Mining skillcape hood.".getBytes();
 			break;			
@@ -1509,13 +1509,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18953;
-			itemDef.anInt200 = 18988;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18953;
+			itemDef.femaleWornModelID1 = 18988;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Smithing cape";
 			itemDef.description = "The cape worn by the best of smithers.".getBytes();
 			break;
@@ -1537,13 +1537,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18953;
-			itemDef.anInt200 = 18988;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18953;
+			itemDef.femaleWornModelID1 = 18988;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Smithing cape(t)";
 			itemDef.description = "The cape worn by the best of smithers.".getBytes();
 			break;
@@ -1566,8 +1566,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "Smithing hood";
 			itemDef.description = "Smithing skillcape hood.".getBytes();
 			break;
@@ -1589,13 +1589,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18934;
-			itemDef.anInt200 = 18976;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18934;
+			itemDef.femaleWornModelID1 = 18976;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Fishing cape";
 			itemDef.description = "The cape worn by the best fishermen.".getBytes();
 			break;
@@ -1617,13 +1617,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18934;
-			itemDef.anInt200 = 18976;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18934;
+			itemDef.femaleWornModelID1 = 18976;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Fishing cape(t)";
 			itemDef.description = "The cape worn by the best fishermen.".getBytes();
 			break;
@@ -1646,8 +1646,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "Fishing hood";
 			itemDef.description = "Fishing skillcape hood.".getBytes();
 			break;		
@@ -1669,13 +1669,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18924;
-			itemDef.anInt200 = 18971;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18924;
+			itemDef.femaleWornModelID1 = 18971;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Cooking cape";
 			itemDef.description = "The cape worn by the world's best chefs.".getBytes();
 			break;
@@ -1697,13 +1697,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18924;
-			itemDef.anInt200 = 18971;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18924;
+			itemDef.femaleWornModelID1 = 18971;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Cooking cape(t)";
 			itemDef.description = "The cape worn by the world's best chefs.".getBytes();
 			break;
@@ -1726,8 +1726,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "Cooking hood";
 			itemDef.description = "Cooking skillcape hood.".getBytes();
 			break;
@@ -1752,11 +1752,11 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt204 = 0;
-			itemDef.anInt165 = 18932;
-			itemDef.anInt200 = 18975;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.modelRotation3 = 0;
+			itemDef.maleWornModelID1 = 18932;
+			itemDef.femaleWornModelID1 = 18975;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Firemaking cape";
 			itemDef.description = "The cape worn by the master firelighters.".getBytes();
 			break;
@@ -1780,11 +1780,11 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt204 = 0;
-			itemDef.anInt165 = 18932;
-			itemDef.anInt200 = 18975;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.modelRotation3 = 0;
+			itemDef.maleWornModelID1 = 18932;
+			itemDef.femaleWornModelID1 = 18975;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Firemaking cape(t)";
 			itemDef.description = "The cape worn by the master firelighters.".getBytes();
 			break;
@@ -1806,8 +1806,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "FireMaking hood";
 			itemDef.description = "FireMaking skillcape hood.".getBytes();
 			break;
@@ -1829,13 +1829,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18955;
-			itemDef.anInt200 = 18991;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18955;
+			itemDef.femaleWornModelID1 = 18991;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Woodcutting cape";
 			itemDef.description = "The cape worn by master woodcutters.".getBytes();
 			break;
@@ -1857,13 +1857,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18955;
-			itemDef.anInt200 = 18991;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18955;
+			itemDef.femaleWornModelID1 = 18991;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Woodcutting cape(t)";
 			itemDef.description = "The cape worn by master woodcutters.".getBytes();
 			break;
@@ -1886,8 +1886,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "Woodcutting hood";
 			itemDef.description = "Woodcutting skillcape hood.".getBytes();
 			break;
@@ -1909,13 +1909,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18929;
-			itemDef.anInt200 = 18974;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18929;
+			itemDef.femaleWornModelID1 = 18974;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Farming cape";
 			itemDef.description = "The cape worn by the best of farmers.".getBytes();
 			break;
@@ -1937,13 +1937,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18929;
-			itemDef.anInt200 = 18974;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18929;
+			itemDef.femaleWornModelID1 = 18974;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Farming cape(t)";
 			itemDef.description = "The cape worn by the best of farmers.".getBytes();
 			break;
@@ -1966,8 +1966,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "Farming hood";
 			itemDef.description = "Farming skillcape hood.".getBytes();
 			break;
@@ -1989,13 +1989,13 @@ public final class ItemDef {
 			itemDef.modelZoom = 2128;
 			itemDef.modelRotation1 = 504;
 			itemDef.modelRotation2 = 0;
-			itemDef.anInt204 = 0;
+			itemDef.modelRotation3 = 0;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 1;
-			itemDef.anInt165 = 18946;
-			itemDef.anInt200 = 18984;
-			itemDef.anInt175 = -1;
-			itemDef.anInt197 = -1;
+			itemDef.maleWornModelID1 = 18946;
+			itemDef.femaleWornModelID1 = 18984;
+			itemDef.maleHeadModelID1 = -1;
+			itemDef.femaleHeadModelID1 = -1;
 			itemDef.name = "Quest cape";
 			itemDef.description = "Its a quest cape".getBytes();
 			break;
@@ -2018,8 +2018,8 @@ public final class ItemDef {
 			itemDef.modelRotation2 = 18;
 			itemDef.modelOffset1 = 0;
 			itemDef.modelOffset2 = 0;
-			itemDef.anInt165 = 18914;
-			itemDef.anInt200 = 18967;
+			itemDef.maleWornModelID1 = 18914;
+			itemDef.femaleWornModelID1 = 18967;
 			itemDef.name = "Quest hood";
 			itemDef.description = "Quest skillcape hood.".getBytes();
 			break;
@@ -2028,133 +2028,133 @@ public final class ItemDef {
 	}
 
 	private void toNote() {
-		ItemDef itemDef = forID(certTemplateID);
-		modelID = itemDef.modelID;
-		modelZoom = itemDef.modelZoom;
-		modelRotation1 = itemDef.modelRotation1;
-		modelRotation2 = itemDef.modelRotation2;
+		ItemDef templateDef = forID(certTemplateID);
+		modelID = templateDef.modelID;
+		modelZoom = templateDef.modelZoom;
+		modelRotation1 = templateDef.modelRotation1;
+		modelRotation2 = templateDef.modelRotation2;
 
-		anInt204 = itemDef.anInt204;
-		modelOffset1 = itemDef.modelOffset1;
-		modelOffset2 = itemDef.modelOffset2;
-		modifiedModelColors = itemDef.modifiedModelColors;
-		originalModelColors = itemDef.originalModelColors;
-		ItemDef itemDef_1 = forID(certID);
-		name = itemDef_1.name;
-		membersObject = itemDef_1.membersObject;
-		value = itemDef_1.value;
-		String s = "a";
-		char c = itemDef_1.name.charAt(0);
-		if (c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U') {
-			s = "an";
+		modelRotation3 = templateDef.modelRotation3;
+		modelOffset1 = templateDef.modelOffset1;
+		modelOffset2 = templateDef.modelOffset2;
+		modifiedModelColors = templateDef.modifiedModelColors;
+		originalModelColors = templateDef.originalModelColors;
+		ItemDef baseDef = forID(certID);
+		name = baseDef.name;
+		membersObject = baseDef.membersObject;
+		value = baseDef.value;
+		String article = "a";
+		char firstLetter = baseDef.name.charAt(0);
+		if (firstLetter == 'A' || firstLetter == 'E' || firstLetter == 'I' || firstLetter == 'O' || firstLetter == 'U') {
+			article = "an";
 		}
-		description = ("Swap this note at any bank for " + s + " " + itemDef_1.name + ".").getBytes();
+		description = ("Swap this note at any bank for " + article + " " + baseDef.name + ".").getBytes();
 		stackable = true;
 	}
 
-	public static Sprite getSprite(int i, int j, int k) {
-		if (k == 0) {
-			Sprite sprite = (Sprite) mruNodes1.insertFromCache(i);
-			if (sprite != null && sprite.trimHeight != j && sprite.trimHeight != -1) {
-				sprite.unlink();
-				sprite = null;
+	public static Sprite getSprite(int itemID, int amount, int outline) {
+		if (outline == 0) {
+			Sprite cachedSprite = (Sprite) mruNodes1.insertFromCache(itemID);
+			if (cachedSprite != null && cachedSprite.trimHeight != amount && cachedSprite.trimHeight != -1) {
+				cachedSprite.unlink();
+				cachedSprite = null;
 			}
-			if (sprite != null) {
-				return sprite;
+			if (cachedSprite != null) {
+				return cachedSprite;
 			}
 		}
-		ItemDef itemDef = forID(i);
+		ItemDef itemDef = forID(itemID);
 		if (itemDef.stackIDs == null) {
-			j = -1;
+			amount = -1;
 		}
-		if (j > 1) {
-			int i1 = -1;
-			for (int j1 = 0; j1 < 10; j1++) {
-				if (j >= itemDef.stackAmounts[j1] && itemDef.stackAmounts[j1] != 0) {
-					i1 = itemDef.stackIDs[j1];
+		if (amount > 1) {
+			int variantID = -1;
+			for (int stackIndex = 0; stackIndex < 10; stackIndex++) {
+				if (amount >= itemDef.stackAmounts[stackIndex] && itemDef.stackAmounts[stackIndex] != 0) {
+					variantID = itemDef.stackIDs[stackIndex];
 				}
 			}
 
-			if (i1 != -1) {
-				itemDef = forID(i1);
+			if (variantID != -1) {
+				itemDef = forID(variantID);
 			}
 		}
-		Model model = itemDef.method201(1);
+		Model model = itemDef.getLitModel(1);
 		if (model == null) {
 			return null;
 		}
-		Sprite sprite = null;
+		Sprite baseSprite = null;
 		if (itemDef.certTemplateID != -1) {
-			sprite = getSprite(itemDef.certID, 10, -1);
-			if (sprite == null) {
+			baseSprite = getSprite(itemDef.certID, 10, -1);
+			if (baseSprite == null) {
 				return null;
 			}
 		}
-		Sprite sprite2 = new Sprite(32, 32);
-		int k1 = Texture.textureInt1;
-		int l1 = Texture.textureInt2;
-		int ai[] = Texture.lineOffsets;
-		int ai1[] = DrawingArea.pixels;
-		int i2 = DrawingArea.width;
-		int j2 = DrawingArea.height;
-		int k2 = DrawingArea.topX;
-		int l2 = DrawingArea.bottomX;
-		int i3 = DrawingArea.topY;
-		int j3 = DrawingArea.bottomY;
+		Sprite icon = new Sprite(32, 32);
+		int savedTextureInt1 = Texture.textureInt1;
+		int savedTextureInt2 = Texture.textureInt2;
+		int savedLineOffsets[] = Texture.lineOffsets;
+		int savedPixels[] = DrawingArea.pixels;
+		int savedWidth = DrawingArea.width;
+		int savedHeight = DrawingArea.height;
+		int savedTopX = DrawingArea.topX;
+		int savedBottomX = DrawingArea.bottomX;
+		int savedTopY = DrawingArea.topY;
+		int savedBottomY = DrawingArea.bottomY;
 		Texture.blockShading = false;
-		DrawingArea.bindRaster(32, 32, sprite2.pixels);
+		DrawingArea.bindRaster(32, 32, icon.pixels);
 		DrawingArea.fillRectangle(32, 0, 0, 32, 0);
 		Texture.setScreenSizeFromDrawingArea();
-		int k3 = itemDef.modelZoom;
-		if (k == -1) {
-			k3 = (int) (k3 * 1.5D);
+		int viewDistance = itemDef.modelZoom;
+		if (outline == -1) {
+			viewDistance = (int) (viewDistance * 1.5D);
 		}
-		if (k > 0) {
-			k3 = (int) (k3 * 1.04D);
+		if (outline > 0) {
+			viewDistance = (int) (viewDistance * 1.04D);
 		}
-		int l3 = Texture.sineTable[itemDef.modelRotation1] * k3 >> 16;
-		int i4 = Texture.cosineTable[itemDef.modelRotation1] * k3 >> 16;
-		model.method482(itemDef.modelRotation2, itemDef.anInt204, itemDef.modelRotation1, itemDef.modelOffset1, l3 + model.modelHeight / 2 + itemDef.modelOffset2, i4 + itemDef.modelOffset2);
-		for (int i5 = 31; i5 >= 0; i5--) {
-			for (int j4 = 31; j4 >= 0; j4--) {
-				if (sprite2.pixels[i5 + j4 * 32] == 0) {
-					if (i5 > 0 && sprite2.pixels[i5 - 1 + j4 * 32] > 1) {
-						sprite2.pixels[i5 + j4 * 32] = 1;
-					} else if (j4 > 0 && sprite2.pixels[i5 + (j4 - 1) * 32] > 1) {
-						sprite2.pixels[i5 + j4 * 32] = 1;
-					} else if (i5 < 31 && sprite2.pixels[i5 + 1 + j4 * 32] > 1) {
-						sprite2.pixels[i5 + j4 * 32] = 1;
-					} else if (j4 < 31 && sprite2.pixels[i5 + (j4 + 1) * 32] > 1) {
-						sprite2.pixels[i5 + j4 * 32] = 1;
+		int l3 = Texture.sineTable[itemDef.modelRotation1] * viewDistance >> 16;
+		int i4 = Texture.cosineTable[itemDef.modelRotation1] * viewDistance >> 16;
+		model.method482(itemDef.modelRotation2, itemDef.modelRotation3, itemDef.modelRotation1, itemDef.modelOffset1, l3 + model.modelHeight / 2 + itemDef.modelOffset2, i4 + itemDef.modelOffset2);
+		for (int x = 31; x >= 0; x--) {
+			for (int y = 31; y >= 0; y--) {
+				if (icon.pixels[x + y * 32] == 0) {
+					if (x > 0 && icon.pixels[x - 1 + y * 32] > 1) {
+						icon.pixels[x + y * 32] = 1;
+					} else if (y > 0 && icon.pixels[x + (y - 1) * 32] > 1) {
+						icon.pixels[x + y * 32] = 1;
+					} else if (x < 31 && icon.pixels[x + 1 + y * 32] > 1) {
+						icon.pixels[x + y * 32] = 1;
+					} else if (y < 31 && icon.pixels[x + (y + 1) * 32] > 1) {
+						icon.pixels[x + y * 32] = 1;
 					}
 				}
 			}
 
 		}
 
-		if (k > 0) {
-			for (int j5 = 31; j5 >= 0; j5--) {
-				for (int k4 = 31; k4 >= 0; k4--) {
-					if (sprite2.pixels[j5 + k4 * 32] == 0) {
-						if (j5 > 0 && sprite2.pixels[j5 - 1 + k4 * 32] == 1) {
-							sprite2.pixels[j5 + k4 * 32] = k;
-						} else if (k4 > 0 && sprite2.pixels[j5 + (k4 - 1) * 32] == 1) {
-							sprite2.pixels[j5 + k4 * 32] = k;
-						} else if (j5 < 31 && sprite2.pixels[j5 + 1 + k4 * 32] == 1) {
-							sprite2.pixels[j5 + k4 * 32] = k;
-						} else if (k4 < 31 && sprite2.pixels[j5 + (k4 + 1) * 32] == 1) {
-							sprite2.pixels[j5 + k4 * 32] = k;
+		if (outline > 0) {
+			for (int x = 31; x >= 0; x--) {
+				for (int y = 31; y >= 0; y--) {
+					if (icon.pixels[x + y * 32] == 0) {
+						if (x > 0 && icon.pixels[x - 1 + y * 32] == 1) {
+							icon.pixels[x + y * 32] = outline;
+						} else if (y > 0 && icon.pixels[x + (y - 1) * 32] == 1) {
+							icon.pixels[x + y * 32] = outline;
+						} else if (x < 31 && icon.pixels[x + 1 + y * 32] == 1) {
+							icon.pixels[x + y * 32] = outline;
+						} else if (y < 31 && icon.pixels[x + (y + 1) * 32] == 1) {
+							icon.pixels[x + y * 32] = outline;
 						}
 					}
 				}
 
 			}
 
-		} else if (k == 0) {
-			for (int k5 = 31; k5 >= 0; k5--) {
-				for (int l4 = 31; l4 >= 0; l4--) {
-					if (sprite2.pixels[k5 + l4 * 32] == 0 && k5 > 0 && l4 > 0 && sprite2.pixels[k5 - 1 + (l4 - 1) * 32] > 0) {
-						sprite2.pixels[k5 + l4 * 32] = 0x302020;
+		} else if (outline == 0) {
+			for (int x = 31; x >= 0; x--) {
+				for (int y = 31; y >= 0; y--) {
+					if (icon.pixels[x + y * 32] == 0 && x > 0 && y > 0 && icon.pixels[x - 1 + (y - 1) * 32] > 0) {
+						icon.pixels[x + y * 32] = 0x302020;
 					}
 				}
 
@@ -2162,43 +2162,43 @@ public final class ItemDef {
 
 		}
 		if (itemDef.certTemplateID != -1) {
-			int l5 = sprite.trimWidth;
-			int j6 = sprite.trimHeight;
-			sprite.trimWidth = 32;
-			sprite.trimHeight = 32;
-			sprite.drawSprite(0, 0);
-			sprite.trimWidth = l5;
-			sprite.trimHeight = j6;
+			int savedTrimWidth = baseSprite.trimWidth;
+			int savedTrimHeight = baseSprite.trimHeight;
+			baseSprite.trimWidth = 32;
+			baseSprite.trimHeight = 32;
+			baseSprite.drawSprite(0, 0);
+			baseSprite.trimWidth = savedTrimWidth;
+			baseSprite.trimHeight = savedTrimHeight;
 		}
-		if (k == 0) {
-			mruNodes1.removeFromCache(sprite2, i);
+		if (outline == 0) {
+			mruNodes1.removeFromCache(icon, itemID);
 		}
-		DrawingArea.bindRaster(j2, i2, ai1);
-		DrawingArea.setClip(j3, k2, l2, i3);
-		Texture.textureInt1 = k1;
-		Texture.textureInt2 = l1;
-		Texture.lineOffsets = ai;
+		DrawingArea.bindRaster(savedHeight, savedWidth, savedPixels);
+		DrawingArea.setClip(savedBottomY, savedTopX, savedBottomX, savedTopY);
+		Texture.textureInt1 = savedTextureInt1;
+		Texture.textureInt2 = savedTextureInt2;
+		Texture.lineOffsets = savedLineOffsets;
 		Texture.blockShading = true;
 		if (itemDef.stackable) {
-			sprite2.trimWidth = 33;
+			icon.trimWidth = 33;
 		} else {
-			sprite2.trimWidth = 32;
+			icon.trimWidth = 32;
 		}
-		sprite2.trimHeight = j;
-		return sprite2;
+		icon.trimHeight = amount;
+		return icon;
 	}
 
-	public Model method201(int i) {
-		if (stackIDs != null && i > 1) {
-			int j = -1;
-			for (int k = 0; k < 10; k++) {
-				if (i >= stackAmounts[k] && stackAmounts[k] != 0) {
-					j = stackIDs[k];
+	public Model getLitModel(int amount) {
+		if (stackIDs != null && amount > 1) {
+			int variantID = -1;
+			for (int stackIndex = 0; stackIndex < 10; stackIndex++) {
+				if (amount >= stackAmounts[stackIndex] && stackAmounts[stackIndex] != 0) {
+					variantID = stackIDs[stackIndex];
 				}
 			}
 
-			if (j != -1) {
-				return forID(j).method201(1);
+			if (variantID != -1) {
+				return forID(variantID).getLitModel(1);
 			}
 		}
 		Model model = (Model) mruNodes2.insertFromCache(id);
@@ -2209,32 +2209,32 @@ public final class ItemDef {
 		if (model == null) {
 			return null;
 		}
-		if (anInt167 != 128 || anInt192 != 128 || anInt191 != 128) {
-			model.scale(anInt167, anInt191, anInt192);
+		if (modelScaleX != 128 || modelScaleY != 128 || modelScaleZ != 128) {
+			model.scale(modelScaleX, modelScaleZ, modelScaleY);
 		}
 		if (modifiedModelColors != null) {
-			for (int l = 0; l < modifiedModelColors.length; l++) {
-				model.recolor(modifiedModelColors[l], originalModelColors[l]);
+			for (int colorIndex = 0; colorIndex < modifiedModelColors.length; colorIndex++) {
+				model.recolor(modifiedModelColors[colorIndex], originalModelColors[colorIndex]);
 			}
 
 		}
-		model.method479(64 + anInt196, 768 + anInt184, -50, -10, -50, true);
+		model.method479(64 + ambientLightOffset, 768 + lightDivisorOffset, -50, -10, -50, true);
 		model.aBoolean1659 = true;
 		mruNodes2.removeFromCache(model, id);
 		return model;
 	}
 
-	public Model method202(int i) {
-		if (stackIDs != null && i > 1) {
-			int j = -1;
-			for (int k = 0; k < 10; k++) {
-				if (i >= stackAmounts[k] && stackAmounts[k] != 0) {
-					j = stackIDs[k];
+	public Model getUnlitModel(int amount) {
+		if (stackIDs != null && amount > 1) {
+			int variantID = -1;
+			for (int stackIndex = 0; stackIndex < 10; stackIndex++) {
+				if (amount >= stackAmounts[stackIndex] && stackAmounts[stackIndex] != 0) {
+					variantID = stackIDs[stackIndex];
 				}
 			}
 
-			if (j != -1) {
-				return forID(j).method202(1);
+			if (variantID != -1) {
+				return forID(variantID).getUnlitModel(1);
 			}
 		}
 		Model model = Model.method462(modelID);
@@ -2242,8 +2242,8 @@ public final class ItemDef {
 			return null;
 		}
 		if (modifiedModelColors != null) {
-			for (int l = 0; l < modifiedModelColors.length; l++) {
-				model.recolor(modifiedModelColors[l], originalModelColors[l]);
+			for (int colorIndex = 0; colorIndex < modifiedModelColors.length; colorIndex++) {
+				model.recolor(modifiedModelColors[colorIndex], originalModelColors[colorIndex]);
 			}
 
 		}
@@ -2252,108 +2252,108 @@ public final class ItemDef {
 
 	private void readValues(Stream stream) {
 		do {
-			int i = stream.readUnsignedByte();
-			if (i == 0) {
+			int opcode = stream.readUnsignedByte();
+			if (opcode == 0) {
 				return;
 			}
-			if (i == 1) {
+			if (opcode == 1) {
 				modelID = stream.readUnsignedShortBigEndian();
-			} else if (i == 2) {
+			} else if (opcode == 2) {
 				name = stream.readLfTerminatedString();
-			} else if (i == 3) {
+			} else if (opcode == 3) {
 				description = stream.readLfTerminatedBytes();
-			} else if (i == 4) {
+			} else if (opcode == 4) {
 				modelZoom = stream.readUnsignedShortBigEndian();
-			} else if (i == 5) {
+			} else if (opcode == 5) {
 				modelRotation1 = stream.readUnsignedShortBigEndian();
-			} else if (i == 6) {
+			} else if (opcode == 6) {
 				modelRotation2 = stream.readUnsignedShortBigEndian();
-			} else if (i == 7) {
+			} else if (opcode == 7) {
 				modelOffset1 = stream.readUnsignedShortBigEndian();
 				if (modelOffset1 > 32767) {
 					modelOffset1 -= 0x10000;
 				}
-			} else if (i == 8) {
+			} else if (opcode == 8) {
 				modelOffset2 = stream.readUnsignedShortBigEndian();
 				if (modelOffset2 > 32767) {
 					modelOffset2 -= 0x10000;
 				}
-			} else if (i == 10) {
+			} else if (opcode == 10) {
 				stream.readUnsignedShortBigEndian();
-			} else if (i == 11) {
+			} else if (opcode == 11) {
 				stackable = true;
-			} else if (i == 12) {
+			} else if (opcode == 12) {
 				value = stream.readIntBigEndian();
-			} else if (i == 16) {
+			} else if (opcode == 16) {
 				membersObject = true;
-			} else if (i == 23) {
-				anInt165 = stream.readUnsignedShortBigEndian();
-				aByte205 = stream.readSignedByte();
-			} else if (i == 24) {
-				anInt188 = stream.readUnsignedShortBigEndian();
-			} else if (i == 25) {
-				anInt200 = stream.readUnsignedShortBigEndian();
-				aByte154 = stream.readSignedByte();
-			} else if (i == 26) {
-				anInt164 = stream.readUnsignedShortBigEndian();
-			} else if (i >= 30 && i < 35) {
+			} else if (opcode == 23) {
+				maleWornModelID1 = stream.readUnsignedShortBigEndian();
+				maleWornOffsetY = stream.readSignedByte();
+			} else if (opcode == 24) {
+				maleWornModelID2 = stream.readUnsignedShortBigEndian();
+			} else if (opcode == 25) {
+				femaleWornModelID1 = stream.readUnsignedShortBigEndian();
+				femaleWornOffsetY = stream.readSignedByte();
+			} else if (opcode == 26) {
+				femaleWornModelID2 = stream.readUnsignedShortBigEndian();
+			} else if (opcode >= 30 && opcode < 35) {
 				if (groundActions == null) {
 					groundActions = new String[5];
 				}
-				groundActions[i - 30] = stream.readLfTerminatedString();
-				if (groundActions[i - 30].equalsIgnoreCase("hidden")) {
-					groundActions[i - 30] = null;
+				groundActions[opcode - 30] = stream.readLfTerminatedString();
+				if (groundActions[opcode - 30].equalsIgnoreCase("hidden")) {
+					groundActions[opcode - 30] = null;
 				}
-			} else if (i >= 35 && i < 40) {
+			} else if (opcode >= 35 && opcode < 40) {
 				if (actions == null) {
 					actions = new String[5];
 				}
-				actions[i - 35] = stream.readLfTerminatedString();
-			} else if (i == 40) {
-				int j = stream.readUnsignedByte();
-				modifiedModelColors = new int[j];
-				originalModelColors = new int[j];
-				for (int k = 0; k < j; k++) {
-					modifiedModelColors[k] = stream.readUnsignedShortBigEndian();
-					originalModelColors[k] = stream.readUnsignedShortBigEndian();
+				actions[opcode - 35] = stream.readLfTerminatedString();
+			} else if (opcode == 40) {
+				int colorCount = stream.readUnsignedByte();
+				modifiedModelColors = new int[colorCount];
+				originalModelColors = new int[colorCount];
+				for (int colorIndex = 0; colorIndex < colorCount; colorIndex++) {
+					modifiedModelColors[colorIndex] = stream.readUnsignedShortBigEndian();
+					originalModelColors[colorIndex] = stream.readUnsignedShortBigEndian();
 				}
 
-			} else if (i == 78) {
-				anInt185 = stream.readUnsignedShortBigEndian();
-			} else if (i == 79) {
-				anInt162 = stream.readUnsignedShortBigEndian();
-			} else if (i == 90) {
-				anInt175 = stream.readUnsignedShortBigEndian();
-			} else if (i == 91) {
-				anInt197 = stream.readUnsignedShortBigEndian();
-			} else if (i == 92) {
-				anInt166 = stream.readUnsignedShortBigEndian();
-			} else if (i == 93) {
-				anInt173 = stream.readUnsignedShortBigEndian();
-			} else if (i == 95) {
-				anInt204 = stream.readUnsignedShortBigEndian();
-			} else if (i == 97) {
+			} else if (opcode == 78) {
+				maleWornModelID3 = stream.readUnsignedShortBigEndian();
+			} else if (opcode == 79) {
+				femaleWornModelID3 = stream.readUnsignedShortBigEndian();
+			} else if (opcode == 90) {
+				maleHeadModelID1 = stream.readUnsignedShortBigEndian();
+			} else if (opcode == 91) {
+				femaleHeadModelID1 = stream.readUnsignedShortBigEndian();
+			} else if (opcode == 92) {
+				maleHeadModelID2 = stream.readUnsignedShortBigEndian();
+			} else if (opcode == 93) {
+				femaleHeadModelID2 = stream.readUnsignedShortBigEndian();
+			} else if (opcode == 95) {
+				modelRotation3 = stream.readUnsignedShortBigEndian();
+			} else if (opcode == 97) {
 				certID = stream.readUnsignedShortBigEndian();
-			} else if (i == 98) {
+			} else if (opcode == 98) {
 				certTemplateID = stream.readUnsignedShortBigEndian();
-			} else if (i >= 100 && i < 110) {
+			} else if (opcode >= 100 && opcode < 110) {
 				if (stackIDs == null) {
 					stackIDs = new int[10];
 					stackAmounts = new int[10];
 				}
-				stackIDs[i - 100] = stream.readUnsignedShortBigEndian();
-				stackAmounts[i - 100] = stream.readUnsignedShortBigEndian();
-			} else if (i == 110) {
-				anInt167 = stream.readUnsignedShortBigEndian();
-			} else if (i == 111) {
-				anInt192 = stream.readUnsignedShortBigEndian();
-			} else if (i == 112) {
-				anInt191 = stream.readUnsignedShortBigEndian();
-			} else if (i == 113) {
-				anInt196 = stream.readSignedByte();
-			} else if (i == 114) {
-				anInt184 = stream.readSignedByte() * 5;
-			} else if (i == 115) {
+				stackIDs[opcode - 100] = stream.readUnsignedShortBigEndian();
+				stackAmounts[opcode - 100] = stream.readUnsignedShortBigEndian();
+			} else if (opcode == 110) {
+				modelScaleX = stream.readUnsignedShortBigEndian();
+			} else if (opcode == 111) {
+				modelScaleY = stream.readUnsignedShortBigEndian();
+			} else if (opcode == 112) {
+				modelScaleZ = stream.readUnsignedShortBigEndian();
+			} else if (opcode == 113) {
+				ambientLightOffset = stream.readSignedByte();
+			} else if (opcode == 114) {
+				lightDivisorOffset = stream.readSignedByte() * 5;
+			} else if (opcode == 115) {
 				team = stream.readUnsignedByte();
 			}
 		} while (true);
@@ -2363,7 +2363,7 @@ public final class ItemDef {
 		id = -1;
 	}
 
-	private byte aByte154;
+	private byte femaleWornOffsetY;
 	public int value;
 	private int[] modifiedModelColors;
 	public int id;
@@ -2371,19 +2371,19 @@ public final class ItemDef {
 	public static LruCache mruNodes2 = new LruCache(50);
 	private int[] originalModelColors;
 	public boolean membersObject;
-	private int anInt162;
+	private int femaleWornModelID3;
 	public int certTemplateID;
-	private int anInt164;
-	private int anInt165;
-	private int anInt166;
-	private int anInt167;
+	private int femaleWornModelID2;
+	private int maleWornModelID1;
+	private int maleHeadModelID2;
+	private int modelScaleX;
 	public String groundActions[];
 	private int modelOffset1;
 	public String name;
 	private static ItemDef[] cache;
-	private int anInt173;
+	private int femaleHeadModelID2;
 	private int modelID;
-	private int anInt175;
+	private int maleHeadModelID1;
 	public boolean stackable;
 	public byte description[];
 	private int certID;
@@ -2391,24 +2391,24 @@ public final class ItemDef {
 	public int modelZoom;
 	public static boolean isMembers = true;
 	private static Stream stream;
-	public int anInt184;
-	private int anInt185;
-	private int anInt188;
+	public int lightDivisorOffset;
+	private int maleWornModelID3;
+	private int maleWornModelID2;
 	public String actions[];
 	public int modelRotation1;
-	private int anInt191;
-	private int anInt192;
+	private int modelScaleZ;
+	private int modelScaleY;
 	private int[] stackIDs;
 	private int modelOffset2;
 	private static int[] streamIndices;
-	public int anInt196;
-	private int anInt197;
+	public int ambientLightOffset;
+	private int femaleHeadModelID1;
 	public int modelRotation2;
-	private int anInt200;
+	private int femaleWornModelID1;
 	public int[] stackAmounts;
 	public int team;
 	public static int totalItems;
-	private int anInt204;
-	private byte aByte205;
+	private int modelRotation3;
+	private byte maleWornOffsetY;
 
 }
