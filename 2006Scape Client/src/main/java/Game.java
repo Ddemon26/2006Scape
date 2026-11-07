@@ -2986,8 +2986,8 @@ public class Game extends RSApplet {
 	}
 
 	public void mainGameProcessor() {
-		if (anInt1104 > 1) {
-			anInt1104--;
+		if (systemUpdateCycles > 1) {
+			systemUpdateCycles--;
 		}
 		if (anInt1011 > 0) {
 			anInt1011--;
@@ -5584,56 +5584,56 @@ public class Game extends RSApplet {
 			return;
 		}
 		TextDrawingArea textDrawingArea = aTextDrawingArea_1271;
-		int i = 0;
-		if (anInt1104 != 0) {
-			i = 1;
+		int splitRow = 0;
+		if (systemUpdateCycles != 0) {
+			splitRow = 1;
 		}
-		for (int j = 0; j < 100; j++) {
-			if (chatMessages[j] != null) {
-				int k = chatTypes[j];
-				String s = chatNames[j];
-				byte byte1 = 0;
-				if (s != null && s.startsWith("@cr1@")) {
-					s = s.substring(5);
-					byte1 = 1;
+		for (int messageSlot = 0; messageSlot < 100; messageSlot++) {
+			if (chatMessages[messageSlot] != null) {
+				int chatType = chatTypes[messageSlot];
+				String senderName = chatNames[messageSlot];
+				byte crownIcon = 0;
+				if (senderName != null && senderName.startsWith("@cr1@")) {
+					senderName = senderName.substring(5);
+					crownIcon = 1;
 				}
-				if (s != null && s.startsWith("@cr2@")) {
-					s = s.substring(5);
-					byte1 = 2;
+				if (senderName != null && senderName.startsWith("@cr2@")) {
+					senderName = senderName.substring(5);
+					crownIcon = 2;
 				}
-				if ((k == 3 || k == 7) && (k == 7 || privateChatMode == 0 || privateChatMode == 1 && isFriendOrSelf(s))) {
-					int l = 329 - i * 13;
-					int k1 = 4;
-					textDrawingArea.drawLiteralText(0, "From", l, k1);
-					textDrawingArea.drawLiteralText(0x00ffff, "From", l - 1, k1);
-					k1 += textDrawingArea.measureTaggedTextWidth("From ");
-					if (byte1 == 1) {
-						modIcons[0].drawNonzeroIndexed(k1, l - 12);
-						k1 += 14;
+				if ((chatType == 3 || chatType == 7) && (chatType == 7 || privateChatMode == 0 || privateChatMode == 1 && isFriendOrSelf(senderName))) {
+					int rowBaselineY = 329 - splitRow * 13;
+					int textX = 4;
+					textDrawingArea.drawLiteralText(0, "From", rowBaselineY, textX);
+					textDrawingArea.drawLiteralText(0x00ffff, "From", rowBaselineY - 1, textX);
+					textX += textDrawingArea.measureTaggedTextWidth("From ");
+					if (crownIcon == 1) {
+						modIcons[0].drawNonzeroIndexed(textX, rowBaselineY - 12);
+						textX += 14;
 					}
-					if (byte1 == 2) {
-						modIcons[1].drawNonzeroIndexed(k1, l - 12);
-						k1 += 14;
+					if (crownIcon == 2) {
+						modIcons[1].drawNonzeroIndexed(textX, rowBaselineY - 12);
+						textX += 14;
 					}
-					textDrawingArea.drawLiteralText(0, s + ": " + chatMessages[j], l, k1);
-					textDrawingArea.drawLiteralText(0x00ffff, s + ": " + chatMessages[j], l - 1, k1);
-					if (++i >= 5) {
+					textDrawingArea.drawLiteralText(0, senderName + ": " + chatMessages[messageSlot], rowBaselineY, textX);
+					textDrawingArea.drawLiteralText(0x00ffff, senderName + ": " + chatMessages[messageSlot], rowBaselineY - 1, textX);
+					if (++splitRow >= 5) {
 						return;
 					}
 				}
-				if (k == 5 && privateChatMode < 2) {
-					int i1 = 329 - i * 13;
-					textDrawingArea.drawLiteralText(0, chatMessages[j], i1, 4);
-					textDrawingArea.drawLiteralText(0x00ffff, chatMessages[j], i1 - 1, 4);
-					if (++i >= 5) {
+				if (chatType == 5 && privateChatMode < 2) {
+					int rowBaselineY = 329 - splitRow * 13;
+					textDrawingArea.drawLiteralText(0, chatMessages[messageSlot], rowBaselineY, 4);
+					textDrawingArea.drawLiteralText(0x00ffff, chatMessages[messageSlot], rowBaselineY - 1, 4);
+					if (++splitRow >= 5) {
 						return;
 					}
 				}
-				if (k == 6 && privateChatMode < 2) {
-					int j1 = 329 - i * 13;
-					textDrawingArea.drawLiteralText(0, "To " + s + ": " + chatMessages[j], j1, 4);
-					textDrawingArea.drawLiteralText(0x00ffff, "To " + s + ": " + chatMessages[j], j1 - 1, 4);
-					if (++i >= 5) {
+				if (chatType == 6 && privateChatMode < 2) {
+					int rowBaselineY = 329 - splitRow * 13;
+					textDrawingArea.drawLiteralText(0, "To " + senderName + ": " + chatMessages[messageSlot], rowBaselineY, 4);
+					textDrawingArea.drawLiteralText(0x00ffff, "To " + senderName + ": " + chatMessages[messageSlot], rowBaselineY - 1, 4);
+					if (++splitRow >= 5) {
 						return;
 					}
 				}
@@ -6107,7 +6107,7 @@ public class Game extends RSApplet {
 				prevPktType2 = -1;
 				pktSize = 0;
 				anInt1009 = 0;
-				anInt1104 = 0;
+				systemUpdateCycles = 0;
 				anInt1011 = 0;
 				anInt855 = 0;
 				menuActionRow = 0;
@@ -6264,7 +6264,7 @@ public class Game extends RSApplet {
 				prevPktType2 = -1;
 				pktSize = 0;
 				anInt1009 = 0;
-				anInt1104 = 0;
+				systemUpdateCycles = 0;
 				menuActionRow = 0;
 				menuOpen = false;
 				aLong824 = System.currentTimeMillis();
@@ -8855,9 +8855,9 @@ public class Game extends RSApplet {
 		if (anInt1055 == 1) {
 			multiOverlay.drawSprite(472, 296);
 		}
-		if (anInt1104 != 0) {
+		if (systemUpdateCycles != 0) {
 			String message = "";
-			int seconds = anInt1104 / 50;
+			int seconds = systemUpdateCycles / 50;
 			int minutes = seconds / 60;
 			int hours = minutes / 60;
 			seconds %= 60;
@@ -8899,9 +8899,9 @@ public class Game extends RSApplet {
 			chatTextDrawingArea.drawRightAlignedTaggedText(true, debugX + debugWidth - 4, RSColors.YELLOW, message, debugY);
 
 			// Not sure what this is for
-			anInt849++;
-			if (anInt849 > 75) {
-				anInt849 = 0;
+			systemUpdateNoticeDrawCount++;
+			if (systemUpdateNoticeDrawCount > 75) {
+				systemUpdateNoticeDrawCount = 0;
 				stream.writeEncryptedOpcode(148);
 			}
 		}
@@ -9631,49 +9631,49 @@ public class Game extends RSApplet {
 		if (splitpublicChat == 0) {
 			return;
 		}
-		int i = 0;
-		if (anInt1104 != 0) {
-			i = 1;
+		int splitRow = 0;
+		if (systemUpdateCycles != 0) {
+			splitRow = 1;
 		}
-		for (int j = 0; j < 100; j++) {
-			if (chatMessages[j] != null) {
-				int k = chatTypes[j];
-				String s = chatNames[j];
-				if (s != null && s.startsWith("@cr1@")) {
-					s = s.substring(5);
+		for (int messageSlot = 0; messageSlot < 100; messageSlot++) {
+			if (chatMessages[messageSlot] != null) {
+				int chatType = chatTypes[messageSlot];
+				String senderName = chatNames[messageSlot];
+				if (senderName != null && senderName.startsWith("@cr1@")) {
+					senderName = senderName.substring(5);
 				}
-				if (s != null && s.startsWith("@cr2@")) {
-					s = s.substring(5);
+				if (senderName != null && senderName.startsWith("@cr2@")) {
+					senderName = senderName.substring(5);
 				}
-				if ((k == 3 || k == 7) && (k == 7 || privateChatMode == 0 || privateChatMode == 1 && isFriendOrSelf(s))) {
-					int l = 329 - i * 13;
-					if (super.mouseX > 4 && super.mouseY - 4 > l - 10 && super.mouseY - 4 <= l + 3) {
-						int i1 = aTextDrawingArea_1271.measureTaggedTextWidth("From:  " + s + chatMessages[j]) + 25;
-						if (i1 > 450) {
-							i1 = 450;
+				if ((chatType == 3 || chatType == 7) && (chatType == 7 || privateChatMode == 0 || privateChatMode == 1 && isFriendOrSelf(senderName))) {
+					int rowBaselineY = 329 - splitRow * 13;
+					if (super.mouseX > 4 && super.mouseY - 4 > rowBaselineY - 10 && super.mouseY - 4 <= rowBaselineY + 3) {
+						int hitWidth = aTextDrawingArea_1271.measureTaggedTextWidth("From:  " + senderName + chatMessages[messageSlot]) + 25;
+						if (hitWidth > 450) {
+							hitWidth = 450;
 						}
-						if (super.mouseX < 4 + i1) {
+						if (super.mouseX < 4 + hitWidth) {
 							if (myPrivilege >= 1 && myPrivilege <= 3) {
-								menuActionName[menuActionRow] = "Report abuse @whi@" + s;
+								menuActionName[menuActionRow] = "Report abuse @whi@" + senderName;
 								menuActionID[menuActionRow] = 2606;
 								menuActionRow++;
 							}
-							menuActionName[menuActionRow] = "Add ignore @whi@" + s;
+							menuActionName[menuActionRow] = "Add ignore @whi@" + senderName;
 							menuActionID[menuActionRow] = 2042;
 							menuActionRow++;
-							menuActionName[menuActionRow] = "Reply to @whi@" + s;
+							menuActionName[menuActionRow] = "Reply to @whi@" + senderName;
 							menuActionID[menuActionRow] = 2639;
 							menuActionRow++;
-							menuActionName[menuActionRow] = "Add friend @whi@" + s;
+							menuActionName[menuActionRow] = "Add friend @whi@" + senderName;
 							menuActionID[menuActionRow] = 2337;
 							menuActionRow++;
 						}
 					}
-					if (++i >= 5) {
+					if (++splitRow >= 5) {
 						return;
 					}
 				}
-				if ((k == 5 || k == 6) && privateChatMode < 2 && ++i >= 5) {
+				if ((chatType == 5 || chatType == 6) && privateChatMode < 2 && ++splitRow >= 5) {
 					return;
 				}
 			}
@@ -11048,7 +11048,7 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 114) {
-				anInt1104 = inStream.readUnsignedShortLittleEndian() * 30;
+				systemUpdateCycles = inStream.readUnsignedShortLittleEndian() * 30;
 				pktType = -1;
 				return true;
 			}
@@ -12183,7 +12183,7 @@ public class Game extends RSApplet {
 	public int privateChatMode;
 	public Stream aStream_847;
 	public boolean aBoolean848;
-	public static int anInt849;
+	public static int systemUpdateNoticeDrawCount;
 	public int[] anIntArray850;
 	public int[] anIntArray851;
 	public int[] anIntArray852;
@@ -12417,7 +12417,7 @@ public class Game extends RSApplet {
 	public int anInt1101;
 	public int anInt1102;
 	public boolean tabAreaAltered;
-	public int anInt1104;
+	public int systemUpdateCycles;
 	public RSImageProducer aRSImageProducer_1107;
 	public RSImageProducer aRSImageProducer_1108;
 	public RSImageProducer aRSImageProducer_1109;
