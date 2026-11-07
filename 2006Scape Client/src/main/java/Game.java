@@ -5252,83 +5252,83 @@ public class Game extends RSApplet {
 		} while (true);
 	}
 
-	public void buildChatAreaMenu(int j) {
-		int l = 0;
-		for (int i1 = 0; i1 < 100; i1++) {
-			if (chatMessages[i1] == null) {
+	public void buildChatAreaMenu(int hoverY) {
+		int visibleLineCount = 0;
+		for (int messageIndex = 0; messageIndex < 100; messageIndex++) {
+			if (chatMessages[messageIndex] == null) {
 				continue;
 			}
-			int j1 = chatTypes[i1];
-			int k1 = 70 - l * 14 + anInt1089 + 4;
-			if (k1 < -20) {
+			int chatType = chatTypes[messageIndex];
+			int lineBottomY = 70 - visibleLineCount * 14 + anInt1089 + 4;
+			if (lineBottomY < -20) {
 				break;
 			}
-			String s = chatNames[i1];
-			if (s != null && s.startsWith("@cr1@")) {
-				s = s.substring(5);
+			String senderName = chatNames[messageIndex];
+			if (senderName != null && senderName.startsWith("@cr1@")) {
+				senderName = senderName.substring(5);
 			}
-			if (s != null && s.startsWith("@cr2@")) {
-				s = s.substring(5);
+			if (senderName != null && senderName.startsWith("@cr2@")) {
+				senderName = senderName.substring(5);
 			}
-			if (j1 == 0) {
-				l++;
+			if (chatType == 0) {
+				visibleLineCount++;
 			}
-			if ((j1 == 1 || j1 == 2) && (j1 == 1 || publicChatMode == 0 || publicChatMode == 1 && isFriendOrSelf(s))) {
-				if (j > k1 - 14 && j <= k1 && !s.equals(myPlayer.name)) {
+			if ((chatType == 1 || chatType == 2) && (chatType == 1 || publicChatMode == 0 || publicChatMode == 1 && isFriendOrSelf(senderName))) {
+				if (hoverY > lineBottomY - 14 && hoverY <= lineBottomY && !senderName.equals(myPlayer.name)) {
 					if (myPrivilege >= 1 && myPrivilege <= 3) {
-						menuActionName[menuActionRow] = "Report abuse @whi@" + s;
+						menuActionName[menuActionRow] = "Report abuse @whi@" + senderName;
 						menuActionID[menuActionRow] = 606;
 						menuActionRow++;
 					}
-					menuActionName[menuActionRow] = "Add ignore @whi@" + s;
+					menuActionName[menuActionRow] = "Add ignore @whi@" + senderName;
 					menuActionID[menuActionRow] = 42;
 					menuActionRow++;
-					menuActionName[menuActionRow] = "Reply to @whi@" + s;
+					menuActionName[menuActionRow] = "Reply to @whi@" + senderName;
 					menuActionID[menuActionRow] = 639;
 					menuActionRow++;
-					menuActionName[menuActionRow] = "Add friend @whi@" + s;
+					menuActionName[menuActionRow] = "Add friend @whi@" + senderName;
 					menuActionID[menuActionRow] = 337;
 					menuActionRow++;
 				}
-				l++;
+				visibleLineCount++;
 			}
-			if ((j1 == 3 || j1 == 7) && splitpublicChat == 0 && (j1 == 7 || privateChatMode == 0 || publicChatMode == 1 && isFriendOrSelf(s))) {
-				if (j > k1 - 14 && j <= k1) {
+			if ((chatType == 3 || chatType == 7) && splitpublicChat == 0 && (chatType == 7 || privateChatMode == 0 || publicChatMode == 1 && isFriendOrSelf(senderName))) {
+				if (hoverY > lineBottomY - 14 && hoverY <= lineBottomY) {
 					if (myPrivilege >= 1 && myPrivilege <= 3) {
-						menuActionName[menuActionRow] = "Report abuse @whi@" + s;
+						menuActionName[menuActionRow] = "Report abuse @whi@" + senderName;
 						menuActionID[menuActionRow] = 606;
 						menuActionRow++;
 					}
-					menuActionName[menuActionRow] = "Add ignore @whi@" + s;
+					menuActionName[menuActionRow] = "Add ignore @whi@" + senderName;
 					menuActionID[menuActionRow] = 42;
 					menuActionRow++;
-					menuActionName[menuActionRow] = "Reply to @whi@" + s;
+					menuActionName[menuActionRow] = "Reply to @whi@" + senderName;
 					menuActionID[menuActionRow] = 639;
 					menuActionRow++;
-					menuActionName[menuActionRow] = "Add friend @whi@" + s;
+					menuActionName[menuActionRow] = "Add friend @whi@" + senderName;
 					menuActionID[menuActionRow] = 337;
 					menuActionRow++;
 				}
-				l++;
+				visibleLineCount++;
 			}
-			if (j1 == 4 && (tradeMode == 0 || tradeMode == 1 && isFriendOrSelf(s))) {
-				if (j > k1 - 14 && j <= k1) {
-					menuActionName[menuActionRow] = "Accept trade @whi@" + s;
+			if (chatType == 4 && (tradeMode == 0 || tradeMode == 1 && isFriendOrSelf(senderName))) {
+				if (hoverY > lineBottomY - 14 && hoverY <= lineBottomY) {
+					menuActionName[menuActionRow] = "Accept trade @whi@" + senderName;
 					menuActionID[menuActionRow] = 484;
 					menuActionRow++;
 				}
-				l++;
+				visibleLineCount++;
 			}
-			if ((j1 == 5 || j1 == 6) && splitpublicChat == 0 && privateChatMode < 2) {
-				l++;
+			if ((chatType == 5 || chatType == 6) && splitpublicChat == 0 && privateChatMode < 2) {
+				visibleLineCount++;
 			}
-			if (j1 == 8 && (tradeMode == 0 || tradeMode == 1 && isFriendOrSelf(s))) {
-				if (j > k1 - 14 && j <= k1) {
-					menuActionName[menuActionRow] = "Accept challenge @whi@" + s;
+			if (chatType == 8 && (tradeMode == 0 || tradeMode == 1 && isFriendOrSelf(senderName))) {
+				if (hoverY > lineBottomY - 14 && hoverY <= lineBottomY) {
+					menuActionName[menuActionRow] = "Accept challenge @whi@" + senderName;
 					menuActionID[menuActionRow] = 6;
 					menuActionRow++;
 				}
-				l++;
+				visibleLineCount++;
 			}
 		}
 
