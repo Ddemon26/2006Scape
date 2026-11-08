@@ -68,26 +68,23 @@ public class CycleEventHandler {
 	}
 
 	/**
-	 * Execute and remove events
+	 * Executes the events that are due, then removes every stopped event.
+	 * <p>
+	 * Events added while this runs (an event starting another) are appended to the list and first
+	 * run next cycle. Stopped events are removed whoever stopped them: the event itself, or
+	 * {@link #stopEvents} / {@link CycleEventContainer#stop()} from outside. Events stopped from
+	 * outside used to stay in the list forever (they never ran again, so they were never removed),
+	 * so the list, and the time this method takes, grew with server uptime.
 	 */
 	public void process() {
-		List<CycleEventContainer> eventsCopy = new ArrayList<CycleEventContainer>(
-				events);
-		List<CycleEventContainer> remove = new ArrayList<CycleEventContainer>();
-		for (CycleEventContainer c : eventsCopy) {
-			if (c != null) {
-				if (c.needsExecution() && c.isRunning()) {
-					c.execute();
-					if (!c.isRunning()) {
-						remove.add(c);
-
-					}
-				}
+		int due = events.size();
+		for (int i = 0; i < due; i++) {
+			CycleEventContainer c = events.get(i);
+			if (c != null && c.needsExecution()) {
+				c.execute();
 			}
 		}
-		for (CycleEventContainer c : remove) {
-			events.remove(c);
-		}
+		events.removeIf(c -> c == null || !c.isRunning());
 	}
 
 	/**
