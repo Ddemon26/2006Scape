@@ -47,6 +47,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				for (int headerBytesRead = 0; headerBytesRead < 6; headerBytesRead += inputStream.read(ioBuffer, headerBytesRead, 6 - headerBytesRead)) {
 					;
 				}
+				available = inputStream.available();
 				int fileType = ioBuffer[0] & 0xff;
 				int fileId = ((ioBuffer[1] & 0xff) << 8) + (ioBuffer[2] & 0xff);
 				int fileSize = ((ioBuffer[3] & 0xff) << 8) + (ioBuffer[4] & 0xff);

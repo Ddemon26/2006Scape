@@ -458,4 +458,29 @@ public class OnDemandFetcherTransferTest {
         assertEquals(0, b.idleCycles);
         assertEquals(0, c.idleCycles);
     }
+
+    // BUG-002 fix: the body check uses the bytes left after the header, not the count from before it.
+    @Test public void headerWithPartialBodyWaitsForTheRestInsteadOfOverReading() throws Exception {
+        OnDemandData d = request(1, 4, true);
+        feed(header(1, 4, 10, 0), pattern(5, 1));   // 11 bytes available before the header, only 5 after it
+        call("readData");
+        assertSame(d, get("current"));
+        assertEquals("waiting for the 10-byte body", 10, geti("expectedSize"));
+        assertTrue(((Boolean) get("madeProgress")).booleanValue());
+        assertArrayEquals(new byte[10], d.buffer);
+        assertNull(list("completedRequests").popTail());
+        feed(pattern(10, 1));
+        call("readData");
+        assertArrayEquals(pattern(10, 1), d.buffer);
+        assertEquals(0, geti("expectedSize"));
+        assertSame(d, list("completedRequests").popTail());
+    }
+
+    @Test public void headerAndWholeBodyInOneCallStillCompleteInThatCall() throws Exception {
+        OnDemandData d = request(1, 4, true);
+        feed(header(1, 4, 10, 0), pattern(10, 3));
+        call("readData");
+        assertArrayEquals(pattern(10, 3), d.buffer);
+        assertSame(d, list("completedRequests").popTail());
+    }
 }
