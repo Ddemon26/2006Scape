@@ -1110,7 +1110,7 @@ public class Game extends RSApplet {
 					menuActionCmd3[menuActionRow] = class9_1.id;
 					menuActionRow++;
 				}
-				if (class9_1.atActionType == 6 && !aBoolean1149 && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
+				if (class9_1.atActionType == 6 && !dialogContinuePending && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
 					menuActionName[menuActionRow] = showInfo ? class9_1.tooltip + ", " + class9_1.id : class9_1.tooltip;
 					menuActionID[menuActionRow] = 679;
 					menuActionCmd3[menuActionRow] = class9_1.id;
@@ -3822,10 +3822,10 @@ public class Game extends RSApplet {
 			stream.writeShortBigEndianAdd128(k + baseY);
 			stream.writeShortBigEndian(j + baseX);
 		}
-		if (l == 679 && !aBoolean1149) {
+		if (l == 679 && !dialogContinuePending) {
 			stream.writeEncryptedOpcode(40);
 			stream.writeShortBigEndian(k);
-			aBoolean1149 = true;
+			dialogContinuePending = true;
 		}
 		if (l == 431) {
 			stream.writeEncryptedOpcode(129);
@@ -5817,7 +5817,7 @@ public class Game extends RSApplet {
 					}
 				}
 			}
-			if (anInt1054 == tabID) {
+			if (flashingTabId == tabID) {
 				stream.writeEncryptedOpcode(152);
 				stream.writeByte(tabID);
 			}
@@ -6163,14 +6163,14 @@ public class Game extends RSApplet {
 				invOverlayInterfaceID = -1;
 				fullScreenInterfaceId = -1;
 				walkableInterfaceId = -1;
-				aBoolean1149 = false;
+				dialogContinuePending = false;
 				tabID = 3;
 				inputDialogState = 0;
 				menuOpen = false;
 				messagePromptRaised = false;
 				aString844 = null;
 				multiCombatOverlayState = 0;
-				anInt1054 = -1;
+				flashingTabId = -1;
 				designerMale = true;
 				selectDefaultDesignerKits();
 				for (int resetSlot = 0; resetSlot < 5; resetSlot++) {
@@ -7968,12 +7968,12 @@ public class Game extends RSApplet {
 			drawMinimap();
 			aRSImageProducer_1164.drawGraphics(4, super.graphics, 550);
 		}
-		if (anInt1054 != -1) {
+		if (flashingTabId != -1) {
 			tabAreaAltered = true;
 		}
 		if (tabAreaAltered) {
-			if (anInt1054 != -1 && anInt1054 == tabID) {
-				anInt1054 = -1;
+			if (flashingTabId != -1 && flashingTabId == tabID) {
+				flashingTabId = -1;
 				stream.writeEncryptedOpcode(120);
 				stream.writeByte(tabID);
 			}
@@ -8004,25 +8004,25 @@ public class Game extends RSApplet {
 						redStone1_2.drawNonzeroIndexed(209, 9);
 					}
 				}
-				if (tabInterfaceIDs[0] != -1 && (anInt1054 != 0 || loopCycle % 20 < 10)) {
+				if (tabInterfaceIDs[0] != -1 && (flashingTabId != 0 || loopCycle % 20 < 10)) {
 					sideIcons[0].drawNonzeroIndexed(29, 13);
 				}
-				if (tabInterfaceIDs[1] != -1 && (anInt1054 != 1 || loopCycle % 20 < 10)) {
+				if (tabInterfaceIDs[1] != -1 && (flashingTabId != 1 || loopCycle % 20 < 10)) {
 					sideIcons[1].drawNonzeroIndexed(53, 11);
 				}
-				if (tabInterfaceIDs[2] != -1 && (anInt1054 != 2 || loopCycle % 20 < 10)) {
+				if (tabInterfaceIDs[2] != -1 && (flashingTabId != 2 || loopCycle % 20 < 10)) {
 					sideIcons[2].drawNonzeroIndexed(82, 11);
 				}
-				if (tabInterfaceIDs[3] != -1 && (anInt1054 != 3 || loopCycle % 20 < 10)) {
+				if (tabInterfaceIDs[3] != -1 && (flashingTabId != 3 || loopCycle % 20 < 10)) {
 					sideIcons[3].drawNonzeroIndexed(115, 12);
 				}
-				if (tabInterfaceIDs[4] != -1 && (anInt1054 != 4 || loopCycle % 20 < 10)) {
+				if (tabInterfaceIDs[4] != -1 && (flashingTabId != 4 || loopCycle % 20 < 10)) {
 					sideIcons[4].drawNonzeroIndexed(153, 13);
 				}
-				if (tabInterfaceIDs[5] != -1 && (anInt1054 != 5 || loopCycle % 20 < 10)) {
+				if (tabInterfaceIDs[5] != -1 && (flashingTabId != 5 || loopCycle % 20 < 10)) {
 					sideIcons[5].drawNonzeroIndexed(180, 11);
 				}
-				if (tabInterfaceIDs[6] != -1 && (anInt1054 != 6 || loopCycle % 20 < 10)) {
+				if (tabInterfaceIDs[6] != -1 && (flashingTabId != 6 || loopCycle % 20 < 10)) {
 					sideIcons[6].drawNonzeroIndexed(208, 13);
 				}
 			}
@@ -8053,25 +8053,25 @@ public class Game extends RSApplet {
 						redStone1_4.drawNonzeroIndexed(229, 0);
 					}
 				}
-				if (tabInterfaceIDs[7] != -1 && (anInt1054 != 7 || loopCycle % 20 < 10) && ClientSettings.CUSTOM_SETTINGS_TAB) {
+				if (tabInterfaceIDs[7] != -1 && (flashingTabId != 7 || loopCycle % 20 < 10) && ClientSettings.CUSTOM_SETTINGS_TAB) {
 					sideIcons[10].drawNonzeroIndexed(47, 2);
 				}
-				if (tabInterfaceIDs[8] != -1 && (anInt1054 != 8 || loopCycle % 20 < 10)) {
+				if (tabInterfaceIDs[8] != -1 && (flashingTabId != 8 || loopCycle % 20 < 10)) {
 					sideIcons[7].drawNonzeroIndexed(74, 2);
 				}
-				if (tabInterfaceIDs[9] != -1 && (anInt1054 != 9 || loopCycle % 20 < 10)) {
+				if (tabInterfaceIDs[9] != -1 && (flashingTabId != 9 || loopCycle % 20 < 10)) {
 					sideIcons[8].drawNonzeroIndexed(102, 3);
 				}
-				if (tabInterfaceIDs[10] != -1 && (anInt1054 != 10 || loopCycle % 20 < 10)) {
+				if (tabInterfaceIDs[10] != -1 && (flashingTabId != 10 || loopCycle % 20 < 10)) {
 					sideIcons[9].drawNonzeroIndexed(137, 4);
 				}
-				if (tabInterfaceIDs[11] != -1 && (anInt1054 != 11 || loopCycle % 20 < 10)) {
+				if (tabInterfaceIDs[11] != -1 && (flashingTabId != 11 || loopCycle % 20 < 10)) {
 					sideIcons[10].drawNonzeroIndexed(174, 2);
 				}
-				if (tabInterfaceIDs[12] != -1 && (anInt1054 != 12 || loopCycle % 20 < 10)) {
+				if (tabInterfaceIDs[12] != -1 && (flashingTabId != 12 || loopCycle % 20 < 10)) {
 					sideIcons[11].drawNonzeroIndexed(201, 2);
 				}
-				if (tabInterfaceIDs[13] != -1 && (anInt1054 != 13 || loopCycle % 20 < 10)) {
+				if (tabInterfaceIDs[13] != -1 && (flashingTabId != 13 || loopCycle % 20 < 10)) {
 					sideIcons[12].drawNonzeroIndexed(226, 2);
 				}
 			}
@@ -8340,7 +8340,7 @@ public class Game extends RSApplet {
 							i4 = component.disabledHoverColor;
 						}
 					}
-					if (component.atActionType == 6 && aBoolean1149) {
+					if (component.atActionType == 6 && dialogContinuePending) {
 						s = "Please wait...";
 						i4 = component.textColor;
 					}
@@ -8878,26 +8878,26 @@ public class Game extends RSApplet {
 			message += seconds + "";
 
 			// Draw the menu
-			int debugItems = 1;
-			int debugWidth = chatTextDrawingArea.measureTaggedTextWidth("System update in: 00:00") + 10; //140;
-			int debugHeight = 25 + (debugItems * 15);
-			int debugX = 511 - debugWidth;
-			int debugY = 334 - debugHeight;
+			int noticeRowCount = 1;
+			int noticeWidth = chatTextDrawingArea.measureTaggedTextWidth("System update in: 00:00") + 10; //140;
+			int noticeHeight = 25 + (noticeRowCount * 15);
+			int noticeX = 511 - noticeWidth;
+			int noticeY = 334 - noticeHeight;
 			int fill = 0x5d5447;
 			int fill2 = RSColors.BLACK;
 			int opacity = 140;
 	
-			DrawingArea.fillBlendedRectangle(fill, debugY, debugWidth, debugHeight, opacity, debugX);
-			DrawingArea.fillBlendedRectangle(fill2, debugY + 1, debugWidth - 2, 16, opacity, debugX + 1);
-			DrawingArea.drawRectangleOutline(debugY + 18, debugHeight - 19, fill2, debugX + 1, debugWidth - 2);
-			chatTextDrawingArea.drawLiteralText(RSColors.WHITE_DARKER, "Notification", debugY += 14, debugX + 3);
+			DrawingArea.fillBlendedRectangle(fill, noticeY, noticeWidth, noticeHeight, opacity, noticeX);
+			DrawingArea.fillBlendedRectangle(fill2, noticeY + 1, noticeWidth - 2, 16, opacity, noticeX + 1);
+			DrawingArea.drawRectangleOutline(noticeY + 18, noticeHeight - 19, fill2, noticeX + 1, noticeWidth - 2);
+			chatTextDrawingArea.drawLiteralText(RSColors.WHITE_DARKER, "Notification", noticeY += 14, noticeX + 3);
 
 			// Bump Y value
-			debugY += 3;
+			noticeY += 3;
 			
 			// Draw items
-			chatTextDrawingArea.drawTaggedText(true, debugX + 4, RSColors.WHITE, "System update in:", debugY += 15);
-			chatTextDrawingArea.drawRightAlignedTaggedText(true, debugX + debugWidth - 4, RSColors.YELLOW, message, debugY);
+			chatTextDrawingArea.drawTaggedText(true, noticeX + 4, RSColors.WHITE, "System update in:", noticeY += 15);
+			chatTextDrawingArea.drawRightAlignedTaggedText(true, noticeX + noticeWidth - 4, RSColors.YELLOW, message, noticeY);
 
 			// Not sure what this is for
 			systemUpdateNoticeDrawCount++;
@@ -11323,7 +11323,7 @@ public class Game extends RSApplet {
 				}
 				needDrawTabArea = true;
 				tabAreaAltered = true;
-				aBoolean1149 = false;
+				dialogContinuePending = false;
 				pktType = -1;
 				if (ClientSettings.SCREENSHOTS_ENABLED && ClientSettings.AUTOMATIC_SCREENSHOTS_ENABLED && i5 == 5292) {
 					java.util.Timer timer = new java.util.Timer();
@@ -11405,9 +11405,9 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 24) {
-				anInt1054 = inStream.readUnsignedByte128MinusValue();
-				if (anInt1054 == tabID) {
-					if (anInt1054 == 3) {
+				flashingTabId = inStream.readUnsignedByte128MinusValue();
+				if (flashingTabId == tabID) {
+					if (flashingTabId == 3) {
 						tabID = 1;
 					} else {
 						tabID = 3;
@@ -11465,7 +11465,7 @@ public class Game extends RSApplet {
 				}
 				needDrawTabArea = true;
 				tabAreaAltered = true;
-				aBoolean1149 = false;
+				dialogContinuePending = false;
 				pktType = -1;
 				return true;
 			}
@@ -11520,7 +11520,7 @@ public class Game extends RSApplet {
 					fullScreenInterfaceId = k9;
 				}
 				inputDialogState = 0;
-				aBoolean1149 = false;
+				dialogContinuePending = false;
 				pktType = -1;
 				return true;
 			}
@@ -11674,7 +11674,7 @@ public class Game extends RSApplet {
 				} else {
 					openInterfaceID = l7;
 				}
-				aBoolean1149 = false;
+				dialogContinuePending = false;
 				pktType = -1;
 				return true;
 			}
@@ -11752,7 +11752,7 @@ public class Game extends RSApplet {
 					inputDialogState = 0;
 					inputTaken = true;
 				}
-				aBoolean1149 = false;
+				dialogContinuePending = false;
 				pktType = -1;
 				return true;
 			}
@@ -11805,7 +11805,7 @@ public class Game extends RSApplet {
 					backDialogID = j9;
 				}
 				inputTaken = true;
-				aBoolean1149 = false;
+				dialogContinuePending = false;
 				pktType = -1;
 				return true;
 			}
@@ -11987,13 +11987,13 @@ public class Game extends RSApplet {
 		if (invOverlayInterfaceID != -1) {
 			invOverlayInterfaceID = -1;
 			needDrawTabArea = true;
-			aBoolean1149 = false;
+			dialogContinuePending = false;
 			tabAreaAltered = true;
 		}
 		if (backDialogID != -1) {
 			backDialogID = -1;
 			inputTaken = true;
-			aBoolean1149 = false;
+			dialogContinuePending = false;
 		}
 		if (fullScreenInterfaceId != -1) {
 			fullScreenInterfaceId = -1;
@@ -12084,7 +12084,7 @@ public class Game extends RSApplet {
 		anIntArray1045 = new int[2000];
 		designerMale = true;
 		minimapScanlineStarts = new int[151];
-		anInt1054 = -1;
+		flashingTabId = -1;
 		transientGraphics = new NodeList();
 		compassScanlineWidths = new int[33];
 		aClass9_1059 = new RSInterface();
@@ -12112,7 +12112,7 @@ public class Game extends RSApplet {
 		cameraDriftYStep = 2;
 		mapFunctionIconSprites = new Sprite[1000];
 		aBoolean1141 = false;
-		aBoolean1149 = false;
+		dialogContinuePending = false;
 		crosses = new Sprite[8];
 		musicEnabled = true;
 		needDrawTabArea = false;
@@ -12369,7 +12369,7 @@ public class Game extends RSApplet {
 	public static int anInt1051;
 	public final int[] minimapScanlineStarts;
 	public StreamLoader titleStreamLoader;
-	public int anInt1054;
+	public int flashingTabId;
 	public int multiCombatOverlayState;
 	public NodeList transientGraphics;
 	public final int[] compassScanlineWidths;
@@ -12457,7 +12457,7 @@ public class Game extends RSApplet {
 	public Background redStone1_2;
 	public Background redStone2_2;
 	public int energy;
-	public boolean aBoolean1149;
+	public boolean dialogContinuePending;
 	public Sprite[] crosses;
 	public boolean musicEnabled;
 	public Background[] aBackgroundArray1152s;
@@ -12892,7 +12892,7 @@ public class Game extends RSApplet {
 		} else {
 			openInterfaceID = interfaceID;
 		}
-		aBoolean1149 = false;
+		dialogContinuePending = false;
 	}
 
 	public void openSideInterface(int tab, int interfaceID) {
