@@ -245,30 +245,30 @@ public class MinimapDrawTest {
         g.playerArray[6] = other(320 - 32, 640 - 128, 0, 50, "zed");
         g.baseX = 3000; g.baseY = 3100;
         g.anInt934 = 3010; g.anInt935 = 3120;
-        g.anInt1222 = 5; g.anInt933 = 6;
+        g.hintIconNpcIndex = 5; g.hintIconPlayerIndex = 6;
         int saved = Game.loopCycle;
         try {
             Game.loopCycle = 0;
-            g.anInt855 = 1; g.drawMinimap();
+            g.hintIconType = 1; g.drawMinimap();
             assertEquals(1, g.hints.size());
             assertEquals("offsetY first", 3, g.hints.get(0)[1]); assertEquals(2, g.hints.get(0)[2]);
-            g.hints.clear(); g.anInt855 = 2; g.drawMinimap();
+            g.hints.clear(); g.hintIconType = 2; g.drawMinimap();
             assertEquals(20 * 4 + 2 - 20, g.hints.get(0)[1]); assertEquals(10 * 4 + 2 - 10, g.hints.get(0)[2]);
-            g.hints.clear(); g.anInt855 = 10; g.drawMinimap();
+            g.hints.clear(); g.hintIconType = 10; g.drawMinimap();
             assertEquals(-4, g.hints.get(0)[1]); assertEquals(-1, g.hints.get(0)[2]);
-            g.hints.clear(); g.anInt855 = 3; g.drawMinimap();
+            g.hints.clear(); g.hintIconType = 3; g.drawMinimap();
             assertEquals("other modes draw nothing", 0, g.hints.size());
-            g.anInt855 = 1; g.anInt1222 = 16; g.drawMinimap();
+            g.hintIconType = 1; g.hintIconNpcIndex = 16; g.drawMinimap();
             assertEquals("index beyond the array", 0, g.hints.size());
-            g.anInt1222 = 7; g.drawMinimap();
+            g.hintIconNpcIndex = 7; g.drawMinimap();
             assertEquals("empty slot", 0, g.hints.size());
-            g.anInt1222 = 5; Game.loopCycle = 10; g.drawMinimap();
+            g.hintIconNpcIndex = 5; Game.loopCycle = 10; g.drawMinimap();
             assertEquals("blink off half", 0, g.hints.size());
             Game.loopCycle = 19; g.drawMinimap();
             assertEquals(0, g.hints.size());
             Game.loopCycle = 20; g.drawMinimap();
             assertEquals(1, g.hints.size());
-            g.hints.clear(); g.anInt855 = 0; g.drawMinimap();
+            g.hints.clear(); g.hintIconType = 0; g.drawMinimap();
             assertEquals(0, g.hints.size());
         } finally { Game.loopCycle = saved; }
     }

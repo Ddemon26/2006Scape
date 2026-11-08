@@ -247,7 +247,7 @@ public class UpdateEntitiesOverheadLayoutTest {
         s.headIconsHint = new Sprite[]{solid(0x333333), solid(0x333333)};
         Player p = talker(null, 0, 0, 100); p.skullIcon = skull; p.headIcon = head;
         addPlayer(s, 5, p, 150, 100);
-        s.anInt855 = 10; s.anInt933 = 5;
+        s.hintIconType = 10; s.hintIconPlayerIndex = 5;
         run(s);
         return bottomRow(0x333333);
     }

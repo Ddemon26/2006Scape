@@ -65,7 +65,7 @@ public class PlayerChatRightsTest {
         int[] clip = {DrawingArea.topX, DrawingArea.topY, DrawingArea.bottomX, DrawingArea.bottomY};
         try {
             ClientSettings.ANDROID = false; ScreenProbe g = new ScreenProbe();
-            g.chatTextDrawingArea = font(); g.anInt1265 = 7;
+            g.chatTextDrawingArea = font(); g.sceneDrawCycle = 7;
             DrawingArea.bindRaster(334, 512, new int[512 * 334]);
             Player p = speaker(); p.headIcon = -1; p.loopCycleStatus = -1; p.textSpoken = "hello"; p.textCycle = 127;
             Game.myPlayer = p;
@@ -84,8 +84,8 @@ public class PlayerChatRightsTest {
             assertFalse("slide starts outside its clip", hasColor(0xff0000));
             p.textCycle = 127;
             p.overheadChatEffectCode = 0; p.overheadChatColorCode = 6;
-            g.anInt1265 = 9; java.util.Arrays.fill(DrawingArea.pixels, 0); g.updateEntities(); assertTrue(hasColor(0xff0000)); assertFalse(hasColor(0xffff00));
-            g.anInt1265 = 10; java.util.Arrays.fill(DrawingArea.pixels, 0); g.updateEntities(); assertTrue(hasColor(0xffff00)); assertFalse(hasColor(0xff0000));
+            g.sceneDrawCycle = 9; java.util.Arrays.fill(DrawingArea.pixels, 0); g.updateEntities(); assertTrue(hasColor(0xff0000)); assertFalse(hasColor(0xffff00));
+            g.sceneDrawCycle = 10; java.util.Arrays.fill(DrawingArea.pixels, 0); g.updateEntities(); assertTrue(hasColor(0xffff00)); assertFalse(hasColor(0xff0000));
             p.overheadChatEffectCode = 2; p.overheadChatColorCode = 1; g.chatEffectsMode = 1;
             java.util.Arrays.fill(DrawingArea.pixels, 0); g.updateEntities(); assertTrue(hasColor(0xffff00)); assertFalse(hasColor(0xff0000));
             int[] disabled = DrawingArea.pixels.clone(); p.overheadChatEffectCode = 0; g.chatEffectsMode = 0; p.overheadChatColorCode = 0;

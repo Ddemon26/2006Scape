@@ -449,7 +449,7 @@ public class EntityDefTest {
                 def.tileSize = (byte) c[0];
                 NPC npc = npcWithDef(game, 77);
                 npc.x = 1344; npc.y = 1344;
-                game.anIntArrayArray929 = new int[104][104]; game.anInt1265 = 1;
+                game.anIntArrayArray929 = new int[104][104]; game.sceneDrawCycle = 1;
                 game.worldController = new WorldController(new int[4][105][105]);
                 game.addNpcsToScene(false);
                 Ground[][][] tiles = (Ground[][][]) f(WorldController.class, "groundArray").get(game.worldController);
@@ -472,14 +472,14 @@ public class EntityDefTest {
                 for (boolean clickable : new boolean[] {true, false}) {
                     def.placedInFirstPass = late; def.interactable = clickable;
                     Ground[][][] tiles;
-                    game.anIntArrayArray929 = new int[104][104]; game.anInt1265 = 1;
+                    game.anIntArrayArray929 = new int[104][104]; game.sceneDrawCycle = 1;
                     game.worldController = new WorldController(new int[4][105][105]);
                     game.addNpcsToScene(late);
                     tiles = (Ground[][][]) f(WorldController.class, "groundArray").get(game.worldController);
                     String label = "late=" + late + " clickable=" + clickable;
                     assertNotNull(label, tiles[0][10][10]);
                     assertEquals(label, 0x20000000 + (2 << 14) + (clickable ? 0 : 0x80000000), tiles[0][10][10].obj5Array[0].uid);
-                    game.anIntArrayArray929 = new int[104][104]; game.anInt1265 = 1;
+                    game.anIntArrayArray929 = new int[104][104]; game.sceneDrawCycle = 1;
                     game.worldController = new WorldController(new int[4][105][105]);
                     game.addNpcsToScene(!late);
                     tiles = (Ground[][][]) f(WorldController.class, "groundArray").get(game.worldController);
@@ -541,7 +541,7 @@ public class EntityDefTest {
             TestGame g = new TestGame();
             g.aRSImageProducer_1164 = producer(172, 156); g.aRSImageProducer_1165 = producer(8, 8);
             g.minimapState = 0; g.compass = new Sprite(1, 1); g.minimapSprite = new Sprite(1, 1); g.mapDotNPC = new Sprite(1, 1);
-            g.groundArray = new NodeList[4][104][104]; g.plane = 0; g.playerCount = 0; g.mapFunctionIconCount = 0; g.anInt855 = 0; g.destX = 0;
+            g.groundArray = new NodeList[4][104][104]; g.plane = 0; g.playerCount = 0; g.mapFunctionIconCount = 0; g.hintIconType = 0; g.destX = 0;
             g.variousSettings = new int[10];
             Game.myPlayer = new Player(); Game.myPlayer.x = 0; Game.myPlayer.y = 0;
             final EntityDef def = typed(0);
@@ -576,7 +576,7 @@ public class EntityDefTest {
         int[] savedState = saveRaster(); int[] savedPixels = DrawingArea.pixels; Player savedMe = Game.myPlayer;
         try {
             final TestGame g = new TestGame();
-            g.groundArray = new NodeList[4][104][104]; g.plane = 0; g.playerCount = 0; g.anInt855 = 0;
+            g.groundArray = new NodeList[4][104][104]; g.plane = 0; g.playerCount = 0; g.hintIconType = 0;
             Player me = new Player(); me.visible = true; me.combatLevel = 3; me.headIcon = -1; me.x = 640; me.y = 640;
             Game.myPlayer = me; g.playerArray = new Player[8]; g.playerIndices = new int[8];
             g.headIcons = new Sprite[4];

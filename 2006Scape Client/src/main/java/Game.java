@@ -995,10 +995,10 @@ public class Game extends RSApplet {
 				continue;
 			}
 			if (npc.tileSize == 1 && (npc.x & 0x7f) == 64 && (npc.y & 0x7f) == 64) {
-				if (anIntArrayArray929[tileX][tileY] == anInt1265) {
+				if (anIntArrayArray929[tileX][tileY] == sceneDrawCycle) {
 					continue;
 				}
-				anIntArrayArray929[tileX][tileY] = anInt1265;
+				anIntArrayArray929[tileX][tileY] = sceneDrawCycle;
 			}
 			if (!npc.desc.interactable) {
 				uid += 0x80000000;
@@ -1475,16 +1475,16 @@ public class Game extends RSApplet {
 	public void updateEntities() {
 		try {
 			// Draw item info
-			for (int k5 = 0; k5 < 104; k5++) {
-				for (int l5 = 0; l5 < 104; l5++) {
-					NodeList class19 = groundArray[plane][k5][l5];
-					if (class19 != null) {
+			for (int groundTileX = 0; groundTileX < 104; groundTileX++) {
+				for (int groundTileY = 0; groundTileY < 104; groundTileY++) {
+					NodeList groundItemPile = groundArray[plane][groundTileX][groundTileY];
+					if (groundItemPile != null) {
 						int offset = 5;
-						for (Item item = (Item) class19.firstFromTail(); item != null; item = (Item) class19.nextTowardHead()) {
+						for (Item item = (Item) groundItemPile.firstFromTail(); item != null; item = (Item) groundItemPile.nextTowardHead()) {
 							ItemDef itemDef = ItemDef.forID(item.ID);
 							long totalValue = Math.max(1, item.amount) * Math.max(1, itemDef.value);
 							totalValue = totalValue > 0 ? totalValue : Integer.MAX_VALUE;
-							projectWorldToScreen(k5 * 128 + 64, 20, l5 * 128 + 64);
+							projectWorldToScreen(groundTileX * 128 + 64, 20, groundTileY * 128 + 64);
 							// only show ground items names if worth more than x (1k default)
 							if (totalValue >= customSettingMinItemValue) {
 								int color = RSColors.WHITE;
@@ -1566,7 +1566,7 @@ public class Game extends RSApplet {
 							}
 						}
 					}
-					if (entityListIndex >= 0 && anInt855 == 10 && anInt933 == playerIndices[entityListIndex]) {
+					if (entityListIndex >= 0 && hintIconType == 10 && hintIconPlayerIndex == playerIndices[entityListIndex]) {
 						projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
 							headIconsHint[1].drawSprite(spriteDrawX - 12, spriteDrawY - iconStackOffset);
@@ -1580,7 +1580,7 @@ public class Game extends RSApplet {
 							headIcons[entityDef_1.headIconId].drawSprite(spriteDrawX - 12, spriteDrawY - 30);
 						}
 					}
-					if (anInt855 == 1 && anInt1222 == npcIndices[entityListIndex - playerCount] && loopCycle % 20 < 10) {
+					if (hintIconType == 1 && hintIconNpcIndex == npcIndices[entityListIndex - playerCount] && loopCycle % 20 < 10) {
 						projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
 							headIconsHint[0].drawSprite(spriteDrawX - 12, spriteDrawY - 28);
@@ -1676,13 +1676,13 @@ public class Game extends RSApplet {
 						chatColor = anIntArray965[overheadChatColorCodes[chatSlot]];
 					}
 					if (overheadChatColorCodes[chatSlot] == 6) {
-						chatColor = anInt1265 % 20 >= 10 ? 0xffff00 : 0xff0000;
+						chatColor = sceneDrawCycle % 20 >= 10 ? 0xffff00 : 0xff0000;
 					}
 					if (overheadChatColorCodes[chatSlot] == 7) {
-						chatColor = anInt1265 % 20 >= 10 ? 0x00ffff : 255;
+						chatColor = sceneDrawCycle % 20 >= 10 ? 0x00ffff : 255;
 					}
 					if (overheadChatColorCodes[chatSlot] == 8) {
-						chatColor = anInt1265 % 20 >= 10 ? 0x80ff80 : 45056;
+						chatColor = sceneDrawCycle % 20 >= 10 ? 0x80ff80 : 45056;
 					}
 					if (overheadChatColorCodes[chatSlot] == 9) {
 						int chatAge = 150 - overheadChatTextCycles[chatSlot];
@@ -1719,16 +1719,16 @@ public class Game extends RSApplet {
 						chatTextDrawingArea.drawCenteredLiteralText(chatColor, chatText, spriteDrawY, spriteDrawX);
 					}
 					if (overheadChatEffectCodes[chatSlot] == 1) {
-						chatTextDrawingArea.drawCenteredVerticalWave(0, chatText, spriteDrawX, anInt1265, spriteDrawY + 1);
-						chatTextDrawingArea.drawCenteredVerticalWave(chatColor, chatText, spriteDrawX, anInt1265, spriteDrawY);
+						chatTextDrawingArea.drawCenteredVerticalWave(0, chatText, spriteDrawX, sceneDrawCycle, spriteDrawY + 1);
+						chatTextDrawingArea.drawCenteredVerticalWave(chatColor, chatText, spriteDrawX, sceneDrawCycle, spriteDrawY);
 					}
 					if (overheadChatEffectCodes[chatSlot] == 2) {
-						chatTextDrawingArea.drawCenteredWave(spriteDrawX, chatText, anInt1265, spriteDrawY + 1, 0);
-						chatTextDrawingArea.drawCenteredWave(spriteDrawX, chatText, anInt1265, spriteDrawY, chatColor);
+						chatTextDrawingArea.drawCenteredWave(spriteDrawX, chatText, sceneDrawCycle, spriteDrawY + 1, 0);
+						chatTextDrawingArea.drawCenteredWave(spriteDrawX, chatText, sceneDrawCycle, spriteDrawY, chatColor);
 					}
 					if (overheadChatEffectCodes[chatSlot] == 3) {
-						chatTextDrawingArea.drawCenteredShake(150 - overheadChatTextCycles[chatSlot], chatText, anInt1265, spriteDrawY + 1, spriteDrawX, 0);
-						chatTextDrawingArea.drawCenteredShake(150 - overheadChatTextCycles[chatSlot], chatText, anInt1265, spriteDrawY, spriteDrawX, chatColor);
+						chatTextDrawingArea.drawCenteredShake(150 - overheadChatTextCycles[chatSlot], chatText, sceneDrawCycle, spriteDrawY + 1, spriteDrawX, 0);
+						chatTextDrawingArea.drawCenteredShake(150 - overheadChatTextCycles[chatSlot], chatText, sceneDrawCycle, spriteDrawY, spriteDrawX, chatColor);
 					}
 					if (overheadChatEffectCodes[chatSlot] == 4) {
 						int chatTextWidth = chatTextDrawingArea.measureLiteralTextWidth(chatText);
@@ -2328,10 +2328,10 @@ public class Game extends RSApplet {
 				continue;
 			}
 			if ((player.x & 0x7f) == 64 && (player.y & 0x7f) == 64) {
-				if (anIntArrayArray929[tileX][tileY] == anInt1265) {
+				if (anIntArrayArray929[tileX][tileY] == sceneDrawCycle) {
 					continue;
 				}
-				anIntArrayArray929[tileX][tileY] = anInt1265;
+				anIntArrayArray929[tileX][tileY] = sceneDrawCycle;
 			}
 			player.groundHeight = interpolatedGroundHeight(plane, player.y, player.x);
 			worldController.addEntity(plane, player.facingDirection, player.groundHeight, uid, player.y, 60, player.x, player, player.animExtendByYaw);
@@ -2977,7 +2977,7 @@ public class Game extends RSApplet {
 	}
 
 	public void drawHeadIcon() {
-		if (anInt855 != 2) {
+		if (hintIconType != 2) {
 			return;
 		}
 		projectWorldToScreen((anInt934 - baseX << 7) + anInt937, anInt936 * 2, (anInt935 - baseY << 7) + anInt938);
@@ -6110,7 +6110,7 @@ public class Game extends RSApplet {
 				anInt1009 = 0;
 				systemUpdateCycles = 0;
 				logoutRequestCycles = 0;
-				anInt855 = 0;
+				hintIconType = 0;
 				menuActionRow = 0;
 				menuOpen = false;
 				super.idleTime = 0;
@@ -9558,22 +9558,22 @@ public class Game extends RSApplet {
 			}
 		}
 
-		if (anInt855 != 0 && loopCycle % 20 < 10) {
-			if (anInt855 == 1 && anInt1222 >= 0 && anInt1222 < npcArray.length) {
-				NPC hintNpc = npcArray[anInt1222];
+		if (hintIconType != 0 && loopCycle % 20 < 10) {
+			if (hintIconType == 1 && hintIconNpcIndex >= 0 && hintIconNpcIndex < npcArray.length) {
+				NPC hintNpc = npcArray[hintIconNpcIndex];
 				if (hintNpc != null) {
 					int hintNpcOffsetX = hintNpc.x / 32 - myPlayer.x / 32;
 					int hintNpcOffsetY = hintNpc.y / 32 - myPlayer.y / 32;
 					drawMinimapHint(mapMarker, hintNpcOffsetY, hintNpcOffsetX);
 				}
 			}
-			if (anInt855 == 2) {
+			if (hintIconType == 2) {
 				int hintLocationOffsetX = (anInt934 - baseX) * 4 + 2 - myPlayer.x / 32;
 				int hintLocationOffsetY = (anInt935 - baseY) * 4 + 2 - myPlayer.y / 32;
 				drawMinimapHint(mapMarker, hintLocationOffsetY, hintLocationOffsetX);
 			}
-			if (anInt855 == 10 && anInt933 >= 0 && anInt933 < playerArray.length) {
-				Player hintPlayer = playerArray[anInt933];
+			if (hintIconType == 10 && hintIconPlayerIndex >= 0 && hintIconPlayerIndex < playerArray.length) {
+				Player hintPlayer = playerArray[hintIconPlayerIndex];
 				if (hintPlayer != null) {
 					int hintPlayerOffsetX = hintPlayer.x / 32 - myPlayer.x / 32;
 					int hintPlayerOffsetY = hintPlayer.y / 32 - myPlayer.y / 32;
@@ -11265,38 +11265,38 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 254) {
-				anInt855 = inStream.readUnsignedByte();
-				if (anInt855 == 1) {
-					anInt1222 = inStream.readUnsignedShortBigEndian();
+				hintIconType = inStream.readUnsignedByte();
+				if (hintIconType == 1) {
+					hintIconNpcIndex = inStream.readUnsignedShortBigEndian();
 				}
-				if (anInt855 >= 2 && anInt855 <= 6) {
-					if (anInt855 == 2) {
+				if (hintIconType >= 2 && hintIconType <= 6) {
+					if (hintIconType == 2) {
 						anInt937 = 64;
 						anInt938 = 64;
 					}
-					if (anInt855 == 3) {
+					if (hintIconType == 3) {
 						anInt937 = 0;
 						anInt938 = 64;
 					}
-					if (anInt855 == 4) {
+					if (hintIconType == 4) {
 						anInt937 = 128;
 						anInt938 = 64;
 					}
-					if (anInt855 == 5) {
+					if (hintIconType == 5) {
 						anInt937 = 64;
 						anInt938 = 0;
 					}
-					if (anInt855 == 6) {
+					if (hintIconType == 6) {
 						anInt937 = 64;
 						anInt938 = 128;
 					}
-					anInt855 = 2;
+					hintIconType = 2;
 					anInt934 = inStream.readUnsignedShortBigEndian();
 					anInt935 = inStream.readUnsignedShortBigEndian();
 					anInt936 = inStream.readUnsignedByte();
 				}
-				if (anInt855 == 10) {
-					anInt933 = inStream.readUnsignedShortBigEndian();
+				if (hintIconType == 10) {
+					hintIconPlayerIndex = inStream.readUnsignedShortBigEndian();
 				}
 				pktType = -1;
 				return true;
@@ -11833,7 +11833,7 @@ public class Game extends RSApplet {
 	public static int zoom = 3;
 
 	public void drawWorldView() {
-		anInt1265++;
+		sceneDrawCycle++;
 		addPlayersToScene(true);
 		addNpcsToScene(true);
 		addPlayersToScene(false);
@@ -12190,7 +12190,7 @@ public class Game extends RSApplet {
 	public int[] anIntArray852;
 	public int[] anIntArray853;
 	public static int anInt854;
-	public int anInt855;
+	public int hintIconType;
 	public int openInterfaceID;
 	public int fullScreenInterfaceId = -1;
 	public int xCameraPos;
@@ -12261,7 +12261,7 @@ public class Game extends RSApplet {
 	public int[][] anIntArrayArray929;
 	public Sprite aClass30_Sub2_Sub1_Sub1_931;
 	public Sprite aClass30_Sub2_Sub1_Sub1_932;
-	public int anInt933;
+	public int hintIconPlayerIndex;
 	public int anInt934;
 	public int anInt935;
 	public int anInt936;
@@ -12523,7 +12523,7 @@ public class Game extends RSApplet {
 	public final Background[] modIcons;
 	public long aLong1220;
 	public int tabID;
-	public int anInt1222;
+	public int hintIconNpcIndex;
 	public boolean inputTaken;
 	public int inputDialogState;
 	public static int anInt1226;
@@ -12563,7 +12563,7 @@ public class Game extends RSApplet {
 	public int destY;
 	public Sprite minimapSprite;
 	public int walkDestinationAdjusted;
-	public int anInt1265;
+	public int sceneDrawCycle;
 	public String loginMessage1;
 	public String loginMessage2;
 	public int updateBlockX;
