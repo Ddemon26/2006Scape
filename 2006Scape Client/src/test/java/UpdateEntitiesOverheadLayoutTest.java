@@ -197,6 +197,47 @@ public class UpdateEntitiesOverheadLayoutTest {
         single("AB", 0, 5, 125, 0); assertEquals(b50, bottomRow(0xffff00));     // age 25 -> 0
     }
 
+    // ---------- BUG-001 fix: effect sizing applies to the speaker's own slot ----------
+    @Test public void effectSizingAppliesToTheSpeakersOwnSlot() throws Exception {
+        int hh = h(spy());
+        for (int effect = 1; effect <= 3; effect++) {
+            Spy s = single("AB", 0, effect, 100, 0);
+            assertEquals("wave/shake height, effect " + effect, hh + 10, s.overheadChatHeights[0]);
+            assertEquals("wave/shake baseline, effect " + effect, 105, s.overheadChatDrawY[0]);
+            assertEquals("next slot untouched, effect " + effect, 0, s.overheadChatHeights[1]);
+        }
+        Spy scroll = single("AB", 0, 4, 100, 0);
+        assertEquals(60, scroll.overheadChatHalfWidths[0]);
+        assertEquals(0, scroll.overheadChatHalfWidths[1]);
+        Spy slide = single("AB", 0, 5, 100, 0);
+        assertEquals(hh + 5, slide.overheadChatHeights[0]);
+        assertEquals(0, slide.overheadChatHeights[1]);
+        Spy off = single("AB", 0, 1, 100, 1);  // chat effects off: plain metrics
+        assertEquals(hh, off.overheadChatHeights[0]);
+        assertEquals(100, off.overheadChatDrawY[0]);
+        Spy plain = single("AB", 0, 0, 100, 0);
+        assertEquals(hh, plain.overheadChatHeights[0]);
+        assertEquals(6, plain.overheadChatHalfWidths[0]);
+    }
+    @Test public void wavingSpeakerReservesItsTallerBoxInTheStack() throws Exception {
+        Spy s = spy();
+        int hh = h(s);
+        addPlayer(s, 1, talker("AB", 0, 1, 100), 150, 100);
+        addPlayer(s, 2, talker("AB", 0, 0, 100), 150, 100);
+        run(s);
+        assertEquals(105, s.overheadChatDrawY[0]);
+        assertEquals("plain line stacks above the wave box", 105 - (hh + 10), s.overheadChatDrawY[1]);
+        assertEquals(hh, s.overheadChatHeights[1]);
+    }
+    @Test public void fiftyEffectSpeakersStillLayOutAndDraw() throws Exception {
+        Spy s = spy();
+        int hh = h(s);
+        for (int i = 0; i < 50; i++) addPlayer(s, i + 1, talker("AB", 0, 1, 100), 150, 190);
+        run(s);
+        assertEquals(195, s.overheadChatDrawY[0]);
+        assertEquals("layout reached the 50th slot", 195 - 49 * (hh + 10), s.overheadChatDrawY[49]);
+    }
+
     // ---------- l (icon stack), i1 (health bar), j1 (hit slot) ----------
     private int hintRow(int skull, int head) throws Exception {
         Arrays.fill(DrawingArea.pixels, BG);

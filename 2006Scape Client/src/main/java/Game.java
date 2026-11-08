@@ -1598,7 +1598,7 @@ public class Game extends RSApplet {
 						overheadChatColorCodes[overheadChatCount] = ((Entity) obj).overheadChatColorCode;
 						overheadChatEffectCodes[overheadChatCount] = ((Entity) obj).overheadChatEffectCode;
 						overheadChatTextCycles[overheadChatCount] = ((Entity) obj).textCycle;
-						overheadChatTexts[overheadChatCount++] = ((Entity) obj).textSpoken;
+						overheadChatTexts[overheadChatCount] = ((Entity) obj).textSpoken;
 						if (chatEffectsMode == 0 && ((Entity) obj).overheadChatEffectCode >= 1 && ((Entity) obj).overheadChatEffectCode <= 3) {
 							overheadChatHeights[overheadChatCount] += 10;
 							overheadChatDrawY[overheadChatCount] += 5;
@@ -1609,6 +1609,7 @@ public class Game extends RSApplet {
 						if (chatEffectsMode == 0 && ((Entity) obj).overheadChatEffectCode == 5) {
 							overheadChatHeights[overheadChatCount] += 5;
 						}
+						overheadChatCount++;
 					}
 				}
 				// HP markers for player?
