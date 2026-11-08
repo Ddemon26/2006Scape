@@ -65,7 +65,7 @@ public class OnDemandFetcherPriorityTest {
         assertNotNull(d);
         assertEquals(11, d.ID);
         assertEquals(3, d.dataType);
-        assertFalse(d.incomplete);
+        assertFalse(d.urgent);
         assertNull(queue().popTail());
         // argument order: swapped call indexes versions[11], which does not exist
         arm(3, 11);
@@ -210,7 +210,7 @@ public class OnDemandFetcherPriorityTest {
             assertNotNull(node);
             assertEquals(pair[0], node.dataType);
             assertEquals(pair[1], node.ID);
-            assertFalse(node.incomplete);
+            assertFalse(node.urgent);
             assertEquals(0, cells[pair[0]][pair[1]]);
         }
         assertNull(requested().popTail());
@@ -296,7 +296,7 @@ public class OnDemandFetcherPriorityTest {
         status()[0][2] = 1; status()[0][8] = 1; status()[0][9] = 1;
         level(1);
         OnDemandData d = new OnDemandData();
-        d.dataType = 0; d.ID = 9; d.incomplete = false;
+        d.dataType = 0; d.ID = 9; d.urgent = false;
         queue().insertHead(d);
         drain();
         assertEquals(9, ((OnDemandData) requested().popTail()).ID);

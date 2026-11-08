@@ -185,9 +185,10 @@ public class GameLeftoversBTest {
         s.aTextDrawingArea_1270 = s.chatTextDrawingArea;
         s.chatEffectsMode = mode; s.publicChatMode = 0;
         Player p = new Player(); s.myPlayer = p;
-        p.textSpoken = "AB"; p.anInt1513 = 0; p.anInt1531 = effect; p.textCycle = 100; p.headIcon = -1; p.visible = true;
+        p.textSpoken = "AB"; p.overheadChatColorCode = 0; p.overheadChatEffectCode = effect; p.textCycle = 100; p.headIcon = -1; p.visible = true;
         try { s.updateEntities(); } catch (RuntimeException e) { }
-        return new int[]{s.anIntArray977[1], s.anIntArray978[1], s.anIntArray979[1]};
+        // BUG-001 fix: the effect metrics are applied to the speaker's own slot 0 (previously leaked into slot 1)
+        return new int[]{s.overheadChatDrawY[0], s.overheadChatHeights[0], s.overheadChatHalfWidths[0]};
     }
     @Test public void anInt1249ZeroEnablesChatEffectMetricsNonzeroDisablesThem() throws Exception {
         int[] base = overhead(0, 0);

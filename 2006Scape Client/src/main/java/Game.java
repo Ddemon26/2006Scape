@@ -430,7 +430,7 @@ public class Game extends RSApplet {
 						}
 						j++;
 					}
-					if ((l == 3 || l == 7) && splitpublicChat == 0 && (l == 7 || privateChatMode == 0 || privateChatMode == 1 && isFriendOrSelf(s1))) {
+					if ((l == 3 || l == 7) && splitPrivateChat == 0 && (l == 7 || privateChatMode == 0 || privateChatMode == 1 && isFriendOrSelf(s1))) {
 						if (i1 > 0 && i1 < 110) {
 							int k1 = 4;
 							textDrawingArea.drawLiteralText(0, "From", i1, k1);
@@ -455,13 +455,13 @@ public class Game extends RSApplet {
 						}
 						j++;
 					}
-					if (l == 5 && splitpublicChat == 0 && privateChatMode < 2) {
+					if (l == 5 && splitPrivateChat == 0 && privateChatMode < 2) {
 						if (i1 > 0 && i1 < 110) {
 							textDrawingArea.drawLiteralText(0x800000, chatMessages[k], i1, 4);
 						}
 						j++;
 					}
-					if (l == 6 && splitpublicChat == 0 && privateChatMode < 2) {
+					if (l == 6 && splitPrivateChat == 0 && privateChatMode < 2) {
 						if (i1 > 0 && i1 < 110) {
 							textDrawingArea.drawLiteralText(0, "To " + s1 + ":", i1, 4);
 							textDrawingArea.drawLiteralText(0x800000, chatMessages[k], i1, 12 + textDrawingArea.measureTaggedTextWidth("To " + s1));
@@ -1468,7 +1468,7 @@ public class Game extends RSApplet {
 			chatEffectsMode = config;
 		}
 		if (action == 8) {
-			splitpublicChat = config;
+			splitPrivateChat = config;
 			inputTaken = true;
 		}
 		if (action == 9) {
@@ -1515,15 +1515,15 @@ public class Game extends RSApplet {
 				}
 			}
 			// Entity stuff
-			int anInt974 = 0;
-			for (int j = -1; j < playerCount + npcCount; j++) {
+			int overheadChatCount = 0;
+			for (int entityListIndex = -1; entityListIndex < playerCount + npcCount; entityListIndex++) {
 				Object obj;
-				if (j == -1) {
+				if (entityListIndex == -1) {
 					obj = myPlayer;
-				} else if (j < playerCount) {
-					obj = playerArray[playerIndices[j]];
+				} else if (entityListIndex < playerCount) {
+					obj = playerArray[playerIndices[entityListIndex]];
 				} else {
-					obj = npcArray[npcIndices[j - playerCount]];
+					obj = npcArray[npcIndices[entityListIndex - playerCount]];
 				}
 				if (obj == null || !((Entity) obj).isVisible()) {
 					continue;
@@ -1537,14 +1537,14 @@ public class Game extends RSApplet {
 						continue;
 					}
 				}
-				if (j < playerCount) {
-					int l = 30;
+				if (entityListIndex < playerCount) {
+					int iconStackOffset = 30;
 					Player player = (Player) obj;
 					if (player.combatLevel == 0) {
 						if (customSettingVisiblePlayerNames) {
 							// Show shops
 							projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
-							// ItemDef.getSprite(995, 1000, 0xffff00).drawSprite(spriteDrawX - 16, spriteDrawY - l);
+							// ItemDef.getSprite(995, 1000, 0xffff00).drawSprite(spriteDrawX - 16, spriteDrawY - iconStackOffset);
 							aTextDrawingArea_1270.drawCenteredLiteralText(0x00ffff, "[SHOP]", spriteDrawY - 5, spriteDrawX);
 						}
 					} else if (customSettingVisiblePlayerNames) {
@@ -1561,19 +1561,19 @@ public class Game extends RSApplet {
 						projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
 							if (player.skullIcon < 2) {
-								skullIcons[player.skullIcon].drawSprite(spriteDrawX - 12, spriteDrawY - l);
-								l += 25;
+								skullIcons[player.skullIcon].drawSprite(spriteDrawX - 12, spriteDrawY - iconStackOffset);
+								iconStackOffset += 25;
 							}
 							if (player.headIcon < 7) {
-								headIcons[player.headIcon].drawSprite(spriteDrawX - 12, spriteDrawY - l);
-								l += 18;
+								headIcons[player.headIcon].drawSprite(spriteDrawX - 12, spriteDrawY - iconStackOffset);
+								iconStackOffset += 18;
 							}
 						}
 					}
-					if (j >= 0 && anInt855 == 10 && anInt933 == playerIndices[j]) {
+					if (entityListIndex >= 0 && anInt855 == 10 && anInt933 == playerIndices[entityListIndex]) {
 						projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
-							headIconsHint[1].drawSprite(spriteDrawX - 12, spriteDrawY - l);
+							headIconsHint[1].drawSprite(spriteDrawX - 12, spriteDrawY - iconStackOffset);
 						}
 					}
 				} else {
@@ -1584,7 +1584,7 @@ public class Game extends RSApplet {
 							headIcons[entityDef_1.headIconId].drawSprite(spriteDrawX - 12, spriteDrawY - 30);
 						}
 					}
-					if (anInt855 == 1 && anInt1222 == npcIndices[j - playerCount] && loopCycle % 20 < 10) {
+					if (anInt855 == 1 && anInt1222 == npcIndices[entityListIndex - playerCount] && loopCycle % 20 < 10) {
 						projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
 							headIconsHint[0].drawSprite(spriteDrawX - 12, spriteDrawY - 28);
@@ -1592,27 +1592,28 @@ public class Game extends RSApplet {
 					}
 				}
 				// Chat messages sent
-				if (((Entity) obj).textSpoken != null && (j >= playerCount || publicChatMode == 0 || publicChatMode == 3 || publicChatMode == 1 && isFriendOrSelf(((Player) obj).name))) {
+				if (((Entity) obj).textSpoken != null && (entityListIndex >= playerCount || publicChatMode == 0 || publicChatMode == 3 || publicChatMode == 1 && isFriendOrSelf(((Player) obj).name))) {
 					projectEntityToScreen(((Entity) obj), ((Entity) obj).height);
-					if (spriteDrawX > -1 && anInt974 < anInt975) {
-						anIntArray979[anInt974] = chatTextDrawingArea.measureLiteralTextWidth(((Entity) obj).textSpoken) / 2;
-						anIntArray978[anInt974] = chatTextDrawingArea.maxAsciiGlyphHeightPixels;
-						anIntArray976[anInt974] = spriteDrawX;
-						anIntArray977[anInt974] = spriteDrawY;
-						anIntArray980[anInt974] = ((Entity) obj).anInt1513;
-						anIntArray981[anInt974] = ((Entity) obj).anInt1531;
-						anIntArray982[anInt974] = ((Entity) obj).textCycle;
-						aStringArray983[anInt974++] = ((Entity) obj).textSpoken;
-						if (chatEffectsMode == 0 && ((Entity) obj).anInt1531 >= 1 && ((Entity) obj).anInt1531 <= 3) {
-							anIntArray978[anInt974] += 10;
-							anIntArray977[anInt974] += 5;
+					if (spriteDrawX > -1 && overheadChatCount < overheadChatCapacity) {
+						overheadChatHalfWidths[overheadChatCount] = chatTextDrawingArea.measureLiteralTextWidth(((Entity) obj).textSpoken) / 2;
+						overheadChatHeights[overheadChatCount] = chatTextDrawingArea.maxAsciiGlyphHeightPixels;
+						overheadChatDrawX[overheadChatCount] = spriteDrawX;
+						overheadChatDrawY[overheadChatCount] = spriteDrawY;
+						overheadChatColorCodes[overheadChatCount] = ((Entity) obj).overheadChatColorCode;
+						overheadChatEffectCodes[overheadChatCount] = ((Entity) obj).overheadChatEffectCode;
+						overheadChatTextCycles[overheadChatCount] = ((Entity) obj).textCycle;
+						overheadChatTexts[overheadChatCount] = ((Entity) obj).textSpoken;
+						if (chatEffectsMode == 0 && ((Entity) obj).overheadChatEffectCode >= 1 && ((Entity) obj).overheadChatEffectCode <= 3) {
+							overheadChatHeights[overheadChatCount] += 10;
+							overheadChatDrawY[overheadChatCount] += 5;
 						}
-						if (chatEffectsMode == 0 && ((Entity) obj).anInt1531 == 4) {
-							anIntArray979[anInt974] = 60;
+						if (chatEffectsMode == 0 && ((Entity) obj).overheadChatEffectCode == 4) {
+							overheadChatHalfWidths[overheadChatCount] = 60;
 						}
-						if (chatEffectsMode == 0 && ((Entity) obj).anInt1531 == 5) {
-							anIntArray978[anInt974] += 5;
+						if (chatEffectsMode == 0 && ((Entity) obj).overheadChatEffectCode == 5) {
+							overheadChatHeights[overheadChatCount] += 5;
 						}
+						overheadChatCount++;
 					}
 				}
 				// HP markers for player?
@@ -1620,143 +1621,143 @@ public class Game extends RSApplet {
 					try {
 						projectEntityToScreen(((Entity) obj), ((Entity) obj).height + 15);
 						if (spriteDrawX > -1) {
-							int i1 = ((Entity) obj).currentHealth * 30 / ((Entity) obj).maxHealth;
-							if (i1 > 30) {
-								i1 = 30;
+							int healthBarFillWidth = ((Entity) obj).currentHealth * 30 / ((Entity) obj).maxHealth;
+							if (healthBarFillWidth > 30) {
+								healthBarFillWidth = 30;
 							}
-							DrawingArea.fillRectangle(5, spriteDrawY - 3, 0x00ff00, i1, spriteDrawX - 15);
-							DrawingArea.fillRectangle(5, spriteDrawY - 3, 0xff0000, 30 - i1, spriteDrawX - 15 + i1);
+							DrawingArea.fillRectangle(5, spriteDrawY - 3, 0x00ff00, healthBarFillWidth, spriteDrawX - 15);
+							DrawingArea.fillRectangle(5, spriteDrawY - 3, 0xff0000, 30 - healthBarFillWidth, spriteDrawX - 15 + healthBarFillWidth);
 						}
 					} catch (Exception e) {
 					}
 				}
 				// Hit markers
-				for (int j1 = 0; j1 < 4; j1++) {
-					if (((Entity) obj).hitsLoopCycle[j1] > loopCycle) {
+				for (int hitSlot = 0; hitSlot < 4; hitSlot++) {
+					if (((Entity) obj).hitsLoopCycle[hitSlot] > loopCycle) {
 						projectEntityToScreen(((Entity) obj), ((Entity) obj).height / 2);
 						if (spriteDrawX > -1) {
-							if (j1 == 1) {
+							if (hitSlot == 1) {
 								spriteDrawY -= 20;
 							}
-							if (j1 == 2) {
+							if (hitSlot == 2) {
 								spriteDrawX -= 15;
 								spriteDrawY -= 10;
 							}
-							if (j1 == 3) {
+							if (hitSlot == 3) {
 								spriteDrawX += 15;
 								spriteDrawY -= 10;
 							}
-							hitMarks[((Entity) obj).hitMarkTypes[j1]].drawSprite(spriteDrawX - 12, spriteDrawY - 12);
-							aTextDrawingArea_1270.drawCenteredLiteralText(0, String.valueOf(((Entity) obj).hitArray[j1]), spriteDrawY + 4, spriteDrawX);
-							aTextDrawingArea_1270.drawCenteredLiteralText(0xffffff, String.valueOf(((Entity) obj).hitArray[j1]), spriteDrawY + 3, spriteDrawX - 1);
+							hitMarks[((Entity) obj).hitMarkTypes[hitSlot]].drawSprite(spriteDrawX - 12, spriteDrawY - 12);
+							aTextDrawingArea_1270.drawCenteredLiteralText(0, String.valueOf(((Entity) obj).hitArray[hitSlot]), spriteDrawY + 4, spriteDrawX);
+							aTextDrawingArea_1270.drawCenteredLiteralText(0xffffff, String.valueOf(((Entity) obj).hitArray[hitSlot]), spriteDrawY + 3, spriteDrawX - 1);
 						}
 					}
 				}
 			}
 			// Hit markers
-			for (int k = 0; k < anInt974; k++) {
-				int k1 = anIntArray976[k];
-				int l1 = anIntArray977[k];
-				int j2 = anIntArray979[k];
-				int k2 = anIntArray978[k];
-				boolean flag = true;
-				while (flag) {
-					flag = false;
-					for (int l2 = 0; l2 < k; l2++) {
-						if (l1 + 2 > anIntArray977[l2] - anIntArray978[l2] && l1 - k2 < anIntArray977[l2] + 2 && k1 - j2 < anIntArray976[l2] + anIntArray979[l2] && k1 + j2 > anIntArray976[l2] - anIntArray979[l2] && anIntArray977[l2] - anIntArray978[l2] < l1) {
-							l1 = anIntArray977[l2] - anIntArray978[l2];
-							flag = true;
+			for (int chatSlot = 0; chatSlot < overheadChatCount; chatSlot++) {
+				int chatX = overheadChatDrawX[chatSlot];
+				int chatY = overheadChatDrawY[chatSlot];
+				int chatHalfWidth = overheadChatHalfWidths[chatSlot];
+				int chatHeight = overheadChatHeights[chatSlot];
+				boolean movedUp = true;
+				while (movedUp) {
+					movedUp = false;
+					for (int placedSlot = 0; placedSlot < chatSlot; placedSlot++) {
+						if (chatY + 2 > overheadChatDrawY[placedSlot] - overheadChatHeights[placedSlot] && chatY - chatHeight < overheadChatDrawY[placedSlot] + 2 && chatX - chatHalfWidth < overheadChatDrawX[placedSlot] + overheadChatHalfWidths[placedSlot] && chatX + chatHalfWidth > overheadChatDrawX[placedSlot] - overheadChatHalfWidths[placedSlot] && overheadChatDrawY[placedSlot] - overheadChatHeights[placedSlot] < chatY) {
+							chatY = overheadChatDrawY[placedSlot] - overheadChatHeights[placedSlot];
+							movedUp = true;
 						}
 					}
 
 				}
-				spriteDrawX = anIntArray976[k];
-				spriteDrawY = anIntArray977[k] = l1;
-				String s = aStringArray983[k];
+				spriteDrawX = overheadChatDrawX[chatSlot];
+				spriteDrawY = overheadChatDrawY[chatSlot] = chatY;
+				String chatText = overheadChatTexts[chatSlot];
 				if (chatEffectsMode == 0) {
-					int i3 = 0xffff00;
-					if (anIntArray980[k] < 6) {
-						i3 = anIntArray965[anIntArray980[k]];
+					int chatColor = 0xffff00;
+					if (overheadChatColorCodes[chatSlot] < 6) {
+						chatColor = anIntArray965[overheadChatColorCodes[chatSlot]];
 					}
-					if (anIntArray980[k] == 6) {
-						i3 = anInt1265 % 20 >= 10 ? 0xffff00 : 0xff0000;
+					if (overheadChatColorCodes[chatSlot] == 6) {
+						chatColor = anInt1265 % 20 >= 10 ? 0xffff00 : 0xff0000;
 					}
-					if (anIntArray980[k] == 7) {
-						i3 = anInt1265 % 20 >= 10 ? 0x00ffff : 255;
+					if (overheadChatColorCodes[chatSlot] == 7) {
+						chatColor = anInt1265 % 20 >= 10 ? 0x00ffff : 255;
 					}
-					if (anIntArray980[k] == 8) {
-						i3 = anInt1265 % 20 >= 10 ? 0x80ff80 : 45056;
+					if (overheadChatColorCodes[chatSlot] == 8) {
+						chatColor = anInt1265 % 20 >= 10 ? 0x80ff80 : 45056;
 					}
-					if (anIntArray980[k] == 9) {
-						int j3 = 150 - anIntArray982[k];
-						if (j3 < 50) {
-							i3 = 0xff0000 + 1280 * j3;
-						} else if (j3 < 100) {
-							i3 = 0xffff00 - 0x50000 * (j3 - 50);
-						} else if (j3 < 150) {
-							i3 = 0x00ff00 + 5 * (j3 - 100);
+					if (overheadChatColorCodes[chatSlot] == 9) {
+						int chatAge = 150 - overheadChatTextCycles[chatSlot];
+						if (chatAge < 50) {
+							chatColor = 0xff0000 + 1280 * chatAge;
+						} else if (chatAge < 100) {
+							chatColor = 0xffff00 - 0x50000 * (chatAge - 50);
+						} else if (chatAge < 150) {
+							chatColor = 0x00ff00 + 5 * (chatAge - 100);
 						}
 					}
-					if (anIntArray980[k] == 10) {
-						int k3 = 150 - anIntArray982[k];
-						if (k3 < 50) {
-							i3 = 0xff0000 + 5 * k3;
-						} else if (k3 < 100) {
-							i3 = 0xff00ff - 0x50000 * (k3 - 50);
-						} else if (k3 < 150) {
-							i3 = 255 + 0x50000 * (k3 - 100) - 5 * (k3 - 100);
+					if (overheadChatColorCodes[chatSlot] == 10) {
+						int chatAge = 150 - overheadChatTextCycles[chatSlot];
+						if (chatAge < 50) {
+							chatColor = 0xff0000 + 5 * chatAge;
+						} else if (chatAge < 100) {
+							chatColor = 0xff00ff - 0x50000 * (chatAge - 50);
+						} else if (chatAge < 150) {
+							chatColor = 255 + 0x50000 * (chatAge - 100) - 5 * (chatAge - 100);
 						}
 					}
-					if (anIntArray980[k] == 11) {
-						int l3 = 150 - anIntArray982[k];
-						if (l3 < 50) {
-							i3 = 0xffffff - 0x50005 * l3;
-						} else if (l3 < 100) {
-							i3 = 0x00ff00 + 0x50005 * (l3 - 50);
-						} else if (l3 < 150) {
-							i3 = 0xffffff - 0x50000 * (l3 - 100);
+					if (overheadChatColorCodes[chatSlot] == 11) {
+						int chatAge = 150 - overheadChatTextCycles[chatSlot];
+						if (chatAge < 50) {
+							chatColor = 0xffffff - 0x50005 * chatAge;
+						} else if (chatAge < 100) {
+							chatColor = 0x00ff00 + 0x50005 * (chatAge - 50);
+						} else if (chatAge < 150) {
+							chatColor = 0xffffff - 0x50000 * (chatAge - 100);
 						}
 					}
-					if (anIntArray981[k] == 0) {
-						chatTextDrawingArea.drawCenteredLiteralText(0, s, spriteDrawY + 1, spriteDrawX);
-						chatTextDrawingArea.drawCenteredLiteralText(i3, s, spriteDrawY, spriteDrawX);
+					if (overheadChatEffectCodes[chatSlot] == 0) {
+						chatTextDrawingArea.drawCenteredLiteralText(0, chatText, spriteDrawY + 1, spriteDrawX);
+						chatTextDrawingArea.drawCenteredLiteralText(chatColor, chatText, spriteDrawY, spriteDrawX);
 					}
-					if (anIntArray981[k] == 1) {
-						chatTextDrawingArea.drawCenteredVerticalWave(0, s, spriteDrawX, anInt1265, spriteDrawY + 1);
-						chatTextDrawingArea.drawCenteredVerticalWave(i3, s, spriteDrawX, anInt1265, spriteDrawY);
+					if (overheadChatEffectCodes[chatSlot] == 1) {
+						chatTextDrawingArea.drawCenteredVerticalWave(0, chatText, spriteDrawX, anInt1265, spriteDrawY + 1);
+						chatTextDrawingArea.drawCenteredVerticalWave(chatColor, chatText, spriteDrawX, anInt1265, spriteDrawY);
 					}
-					if (anIntArray981[k] == 2) {
-						chatTextDrawingArea.drawCenteredWave(spriteDrawX, s, anInt1265, spriteDrawY + 1, 0);
-						chatTextDrawingArea.drawCenteredWave(spriteDrawX, s, anInt1265, spriteDrawY, i3);
+					if (overheadChatEffectCodes[chatSlot] == 2) {
+						chatTextDrawingArea.drawCenteredWave(spriteDrawX, chatText, anInt1265, spriteDrawY + 1, 0);
+						chatTextDrawingArea.drawCenteredWave(spriteDrawX, chatText, anInt1265, spriteDrawY, chatColor);
 					}
-					if (anIntArray981[k] == 3) {
-						chatTextDrawingArea.drawCenteredShake(150 - anIntArray982[k], s, anInt1265, spriteDrawY + 1, spriteDrawX, 0);
-						chatTextDrawingArea.drawCenteredShake(150 - anIntArray982[k], s, anInt1265, spriteDrawY, spriteDrawX, i3);
+					if (overheadChatEffectCodes[chatSlot] == 3) {
+						chatTextDrawingArea.drawCenteredShake(150 - overheadChatTextCycles[chatSlot], chatText, anInt1265, spriteDrawY + 1, spriteDrawX, 0);
+						chatTextDrawingArea.drawCenteredShake(150 - overheadChatTextCycles[chatSlot], chatText, anInt1265, spriteDrawY, spriteDrawX, chatColor);
 					}
-					if (anIntArray981[k] == 4) {
-						int i4 = chatTextDrawingArea.measureLiteralTextWidth(s);
-						int k4 = (150 - anIntArray982[k]) * (i4 + 100) / 150;
+					if (overheadChatEffectCodes[chatSlot] == 4) {
+						int chatTextWidth = chatTextDrawingArea.measureLiteralTextWidth(chatText);
+						int scrollOffset = (150 - overheadChatTextCycles[chatSlot]) * (chatTextWidth + 100) / 150;
 						DrawingArea.setClip(334, spriteDrawX - 50, spriteDrawX + 50, 0);
-						chatTextDrawingArea.drawLiteralText(0, s, spriteDrawY + 1, spriteDrawX + 50 - k4);
-						chatTextDrawingArea.drawLiteralText(i3, s, spriteDrawY, spriteDrawX + 50 - k4);
+						chatTextDrawingArea.drawLiteralText(0, chatText, spriteDrawY + 1, spriteDrawX + 50 - scrollOffset);
+						chatTextDrawingArea.drawLiteralText(chatColor, chatText, spriteDrawY, spriteDrawX + 50 - scrollOffset);
 						DrawingArea.resetClip();
 					}
-					if (anIntArray981[k] == 5) {
-						int j4 = 150 - anIntArray982[k];
-						int l4 = 0;
-						if (j4 < 25) {
-							l4 = j4 - 25;
-						} else if (j4 > 125) {
-							l4 = j4 - 125;
+					if (overheadChatEffectCodes[chatSlot] == 5) {
+						int chatAge = 150 - overheadChatTextCycles[chatSlot];
+						int slideOffset = 0;
+						if (chatAge < 25) {
+							slideOffset = chatAge - 25;
+						} else if (chatAge > 125) {
+							slideOffset = chatAge - 125;
 						}
 						DrawingArea.setClip(spriteDrawY + 5, 0, 512, spriteDrawY - chatTextDrawingArea.maxAsciiGlyphHeightPixels - 1);
-						chatTextDrawingArea.drawCenteredLiteralText(0, s, spriteDrawY + 1 + l4, spriteDrawX);
-						chatTextDrawingArea.drawCenteredLiteralText(i3, s, spriteDrawY + l4, spriteDrawX);
+						chatTextDrawingArea.drawCenteredLiteralText(0, chatText, spriteDrawY + 1 + slideOffset, spriteDrawX);
+						chatTextDrawingArea.drawCenteredLiteralText(chatColor, chatText, spriteDrawY + slideOffset, spriteDrawX);
 						DrawingArea.resetClip();
 					}
 				} else {
-					chatTextDrawingArea.drawCenteredLiteralText(0, s, spriteDrawY + 1, spriteDrawX);
-					chatTextDrawingArea.drawCenteredLiteralText(0xffff00, s, spriteDrawY, spriteDrawX);
+					chatTextDrawingArea.drawCenteredLiteralText(0, chatText, spriteDrawY + 1, spriteDrawX);
+					chatTextDrawingArea.drawCenteredLiteralText(0xffff00, chatText, spriteDrawY, spriteDrawX);
 				}
 			}
 		} catch (Exception e) {
@@ -2196,7 +2197,7 @@ public class Game extends RSApplet {
 	}
 
 	public void resetLogout() {
-		boolean wasDisconnected = loggedIn && (pktType != 109) && (anInt1011 <= 0);
+		boolean wasDisconnected = loggedIn && (pktType != 109) && (logoutRequestCycles <= 0);
 		try {
 			if (socketStream != null) {
 				socketStream.close();
@@ -2369,7 +2370,7 @@ public class Game extends RSApplet {
 			}
 		}
 		if (j == 205) {
-			anInt1011 = 250;
+			logoutRequestCycles = 250;
 			return true;
 		}
 		if (j == 501) {
@@ -2993,8 +2994,8 @@ public class Game extends RSApplet {
 		if (systemUpdateCycles > 1) {
 			systemUpdateCycles--;
 		}
-		if (anInt1011 > 0) {
-			anInt1011--;
+		if (logoutRequestCycles > 0) {
+			logoutRequestCycles--;
 		}
 		//TODO: Technically, this loop should be < 5 for authenticity, but until we reduce server inefficiencies
 		//(for example killing a bunch of cows results in client lag, 
@@ -3258,7 +3259,7 @@ public class Game extends RSApplet {
 		processKeyboardInput();
 		super.idleTime++; //Idle timer nope!
 		/*if (super.idleTime > 12000) {
-			anInt1011 = 250;
+			logoutRequestCycles = 250;
 			super.idleTime -= 500;
 			stream.writeEncryptedOpcode(202);
 		}*/
@@ -3294,28 +3295,28 @@ public class Game extends RSApplet {
 		if (cameraYawDrift > 40) {
 			cameraYawDriftStep = -1;
 		}
-		anInt1254++;
-		if (anInt1254 > 500) {
-			anInt1254 = 0;
-			int i2 = (int) (Math.random() * 8D);
-			if ((i2 & 1) == 1) {
-				minimapInt2 += anInt1210;
+		minimapDriftTimer++;
+		if (minimapDriftTimer > 500) {
+			minimapDriftTimer = 0;
+			int minimapDriftAxisMask = (int) (Math.random() * 8D);
+			if ((minimapDriftAxisMask & 1) == 1) {
+				minimapRotationDrift += minimapRotationDriftStep;
 			}
-			if ((i2 & 2) == 2) {
-				minimapInt3 += anInt1171;
+			if ((minimapDriftAxisMask & 2) == 2) {
+				minimapZoomDrift += minimapZoomDriftStep;
 			}
 		}
-		if (minimapInt2 < -60) {
-			anInt1210 = 2;
+		if (minimapRotationDrift < -60) {
+			minimapRotationDriftStep = 2;
 		}
-		if (minimapInt2 > 60) {
-			anInt1210 = -2;
+		if (minimapRotationDrift > 60) {
+			minimapRotationDriftStep = -2;
 		}
-		if (minimapInt3 < -20) {
-			anInt1171 = 1;
+		if (minimapZoomDrift < -20) {
+			minimapZoomDriftStep = 1;
 		}
-		if (minimapInt3 > 10) {
-			anInt1171 = -1;
+		if (minimapZoomDrift > 10) {
+			minimapZoomDriftStep = -1;
 		}
 		anInt1010++;
 		if (anInt1010 > 50) {
@@ -3578,7 +3579,7 @@ public class Game extends RSApplet {
 	}
 
 	public void dropClient() {
-		if (anInt1011 > 0) {
+		if (logoutRequestCycles > 0) {
 			resetLogout();
 			return;
 		}
@@ -5232,8 +5233,8 @@ public class Game extends RSApplet {
 						inputString = TextInput.normalizeChatText(inputString);
 						inputString = Censor.doCensor(inputString);
 						myPlayer.textSpoken = inputString;
-						myPlayer.anInt1513 = chatColorCode;
-						myPlayer.anInt1531 = chatEffectCode;
+						myPlayer.overheadChatColorCode = chatColorCode;
+						myPlayer.overheadChatEffectCode = chatEffectCode;
 						myPlayer.textCycle = 150;
 						if (myPrivilege >= 1) {
 							pushMessage(myPlayer.textSpoken, 2, "@cr" + Math.min(2, myPrivilege) + "@" + myPlayer.name);
@@ -5296,7 +5297,7 @@ public class Game extends RSApplet {
 				}
 				visibleLineCount++;
 			}
-			if ((chatType == 3 || chatType == 7) && splitpublicChat == 0 && (chatType == 7 || privateChatMode == 0 || publicChatMode == 1 && isFriendOrSelf(senderName))) {
+			if ((chatType == 3 || chatType == 7) && splitPrivateChat == 0 && (chatType == 7 || privateChatMode == 0 || publicChatMode == 1 && isFriendOrSelf(senderName))) {
 				if (hoverY > lineBottomY - 14 && hoverY <= lineBottomY) {
 					if (myPrivilege >= 1 && myPrivilege <= 3) {
 						menuActionName[menuActionRow] = "Report abuse @whi@" + senderName;
@@ -5323,7 +5324,7 @@ public class Game extends RSApplet {
 				}
 				visibleLineCount++;
 			}
-			if ((chatType == 5 || chatType == 6) && splitpublicChat == 0 && privateChatMode < 2) {
+			if ((chatType == 5 || chatType == 6) && splitPrivateChat == 0 && privateChatMode < 2) {
 				visibleLineCount++;
 			}
 			if (chatType == 8 && (tradeMode == 0 || tradeMode == 1 && isFriendOrSelf(senderName))) {
@@ -5583,8 +5584,8 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void drawSplitpublicChat() {
-		if (splitpublicChat == 0) {
+	public void drawSplitPrivateChat() {
+		if (splitPrivateChat == 0) {
 			return;
 		}
 		TextDrawingArea textDrawingArea = aTextDrawingArea_1271;
@@ -5920,11 +5921,11 @@ public class Game extends RSApplet {
 	public void drawMinimapHint(Sprite sprite, int offsetY, int offsetX) {
 		int distanceSquared = offsetX * offsetX + offsetY * offsetY;
 		if (distanceSquared > 4225 && distanceSquared < 90000) {
-			int rotation2048 = cameraYawBase + minimapInt2 & 0x7ff;
+			int rotation2048 = cameraYawBase + minimapRotationDrift & 0x7ff;
 			int scaledSine16 = Model.sineTable16[rotation2048];
 			int scaledCosine16 = Model.cosineTable16[rotation2048];
-			scaledSine16 = (scaledSine16 * 256) / (minimapInt3 + 256);
-			scaledCosine16 = (scaledCosine16 * 256) / (minimapInt3 + 256);
+			scaledSine16 = (scaledSine16 * 256) / (minimapZoomDrift + 256);
+			scaledCosine16 = (scaledCosine16 * 256) / (minimapZoomDrift + 256);
 			int rotatedX = offsetY * scaledSine16 + offsetX * scaledCosine16 >> 16;
 			int rotatedY = offsetY * scaledCosine16 - offsetX * scaledSine16 >> 16;
 			double arrowAngleRadians = Math.atan2((double) rotatedX, (double) rotatedY);
@@ -6112,7 +6113,7 @@ public class Game extends RSApplet {
 				pktSize = 0;
 				anInt1009 = 0;
 				systemUpdateCycles = 0;
-				anInt1011 = 0;
+				logoutRequestCycles = 0;
 				anInt855 = 0;
 				menuActionRow = 0;
 				menuOpen = false;
@@ -6128,8 +6129,8 @@ public class Game extends RSApplet {
 				cameraDriftX = (int) (Math.random() * 100D) - 50;
 				cameraDriftY = (int) (Math.random() * 110D) - 55;
 				cameraYawDrift = (int) (Math.random() * 80D) - 40;
-				minimapInt2 = (int) (Math.random() * 120D) - 60;
-				minimapInt3 = (int) (Math.random() * 30D) - 20;
+				minimapRotationDrift = (int) (Math.random() * 120D) - 60;
+				minimapZoomDrift = (int) (Math.random() * 30D) - 20;
 				cameraYawBase = (int) (Math.random() * 20D) - 10 & 0x7ff;
 				minimapState = 0;
 				minimapBuiltPlane = -1;
@@ -6165,14 +6166,14 @@ public class Game extends RSApplet {
 				openInterfaceID = -1;
 				invOverlayInterfaceID = -1;
 				fullScreenInterfaceId = -1;
-				anInt1018 = -1;
+				walkableInterfaceId = -1;
 				aBoolean1149 = false;
 				tabID = 3;
 				inputDialogState = 0;
 				menuOpen = false;
 				messagePromptRaised = false;
 				aString844 = null;
-				anInt1055 = 0;
+				multiCombatOverlayState = 0;
 				anInt1054 = -1;
 				designerMale = true;
 				selectDefaultDesignerKits();
@@ -7443,28 +7444,28 @@ public class Game extends RSApplet {
 			return;
 		}
 		if (super.clickMode3 == 1) {
-			int i = super.saveClickX - 25 - 550;
-			int j = super.saveClickY - 5 - 4;
-			if (i >= 0 && j >= 0 && i < 146 && j < 151) {
-				i -= 73;
-				j -= 75;
-				int k = cameraYawBase + minimapInt2 & 0x7ff;
-				int i1 = Texture.sineTable[k];
-				int j1 = Texture.cosineTable[k];
-				i1 = i1 * (minimapInt3 + 256) >> 8;
-				j1 = j1 * (minimapInt3 + 256) >> 8;
-				int k1 = j * i1 + i * j1 >> 11;
-				int l1 = j * j1 - i * i1 >> 11;
-				int i2 = myPlayer.x + k1 >> 7;
-				int j2 = myPlayer.y - l1 >> 7;
-				boolean flag1 = doWalkTo(1, 0, 0, 0, myPlayer.smallY[0], 0, 0, j2, myPlayer.smallX[0], true, i2);
-				if (flag1) {
-					stream.writeByte(i);
-					stream.writeByte(j);
+			int minimapClickX = super.saveClickX - 25 - 550;
+			int minimapClickY = super.saveClickY - 5 - 4;
+			if (minimapClickX >= 0 && minimapClickY >= 0 && minimapClickX < 146 && minimapClickY < 151) {
+				minimapClickX -= 73;
+				minimapClickY -= 75;
+				int minimapRotation = cameraYawBase + minimapRotationDrift & 0x7ff;
+				int scaledSine = Texture.sineTable[minimapRotation];
+				int scaledCosine = Texture.cosineTable[minimapRotation];
+				scaledSine = scaledSine * (minimapZoomDrift + 256) >> 8;
+				scaledCosine = scaledCosine * (minimapZoomDrift + 256) >> 8;
+				int worldOffsetX = minimapClickY * scaledSine + minimapClickX * scaledCosine >> 11;
+				int worldOffsetSouth = minimapClickY * scaledCosine - minimapClickX * scaledSine >> 11;
+				int targetTileX = myPlayer.x + worldOffsetX >> 7;
+				int targetTileY = myPlayer.y - worldOffsetSouth >> 7;
+				boolean walkPacketWritten = doWalkTo(1, 0, 0, 0, myPlayer.smallY[0], 0, 0, targetTileY, myPlayer.smallX[0], true, targetTileX);
+				if (walkPacketWritten) {
+					stream.writeByte(minimapClickX);
+					stream.writeByte(minimapClickY);
 					stream.writeShortBigEndian(cameraYawBase);
 					stream.writeByte(57);
-					stream.writeByte(minimapInt2);
-					stream.writeByte(minimapInt3);
+					stream.writeByte(minimapRotationDrift);
+					stream.writeByte(minimapZoomDrift);
 					stream.writeByte(89);
 					stream.writeShortBigEndian(myPlayer.x);
 					stream.writeShortBigEndian(myPlayer.y);
@@ -7472,12 +7473,12 @@ public class Game extends RSApplet {
 					stream.writeByte(63);
 				}
 			}
-			anInt1117++;
-			if (anInt1117 > 1151) {
-				anInt1117 = 0;
+			minimapPrimaryClickCount++;
+			if (minimapPrimaryClickCount > 1151) {
+				minimapPrimaryClickCount = 0;
 				stream.writeEncryptedOpcode(246);
 				stream.writeByte(0);
-				int l = stream.currentOffset;
+				int payloadStartOffset = stream.currentOffset;
 				if ((int) (Math.random() * 2D) == 0) {
 					stream.writeByte(101);
 				}
@@ -7494,7 +7495,7 @@ public class Game extends RSApplet {
 					stream.writeByte(220);
 				}
 				stream.writeByte(180);
-				stream.backpatchBytePayloadLength(stream.currentOffset - l);
+				stream.backpatchBytePayloadLength(stream.currentOffset - payloadStartOffset);
 			}
 		}
 	}
@@ -8581,19 +8582,19 @@ public class Game extends RSApplet {
 			} else if (player == myPlayer) {
 				pushMessage(player.textSpoken, 2, player.name);
 			}
-			player.anInt1513 = 0;
-			player.anInt1531 = 0;
+			player.overheadChatColorCode = 0;
+			player.overheadChatEffectCode = 0;
 			player.textCycle = 150;
 		}
 		if ((updateMask & 0x80) != 0) {
-			int i1 = stream.readUnsignedShortLittleEndian();
-			int j2 = stream.readUnsignedByte();
+			int packedChatStyle = stream.readUnsignedShortLittleEndian();
+			int speakerRights = stream.readUnsignedByte();
 			int compressedChatLength = stream.readUnsignedNegatedByte();
 			int chatPayloadStart = stream.currentOffset;
 			if (player.name != null && player.visible) {
 				long encodedSpeakerName = TextClass.encodeBase37Name(player.name);
 				boolean ignoredSpeaker = false;
-				if (j2 <= 1) {
+				if (speakerRights <= 1) {
 					for (int ignoreIndex = 0; ignoreIndex < ignoreCount; ignoreIndex++) {
 						if (ignoreListAsLongs[ignoreIndex] != encodedSpeakerName) {
 							continue;
@@ -8608,22 +8609,22 @@ public class Game extends RSApplet {
 						aStream_834.currentOffset = 0;
 						stream.readReversedBytes(compressedChatLength, 0, aStream_834.buffer);
 						aStream_834.currentOffset = 0;
-						String s = TextInput.decodeChatText(compressedChatLength, aStream_834);
-						s = Censor.doCensor(s);
-						player.textSpoken = s;
-						player.anInt1513 = i1 >> 8;
-						player.rights = j2;
+						String chatText = TextInput.decodeChatText(compressedChatLength, aStream_834);
+						chatText = Censor.doCensor(chatText);
+						player.textSpoken = chatText;
+						player.overheadChatColorCode = packedChatStyle >> 8;
+						player.rights = speakerRights;
 
 						// entityMessage(player);
 
-						player.anInt1531 = i1 & 0xff;
+						player.overheadChatEffectCode = packedChatStyle & 0xff;
 						player.textCycle = 150;
-						if (j2 == 2 || j2 == 3) {
-							pushMessage(s, 1, "@cr2@" + player.name);
-						} else if (j2 == 1) {
-							pushMessage(s, 1, "@cr1@" + player.name);
+						if (speakerRights == 2 || speakerRights == 3) {
+							pushMessage(chatText, 1, "@cr2@" + player.name);
+						} else if (speakerRights == 1) {
+							pushMessage(chatText, 1, "@cr1@" + player.name);
 						} else {
-							pushMessage(s, 2, player.name);
+							pushMessage(chatText, 2, player.name);
 						}
 					} catch (Exception exception) {
 						Signlink.reporterror("cde2");
@@ -8829,21 +8830,21 @@ public class Game extends RSApplet {
 	}
 
 	public void draw3dScreen() {
-		drawSplitpublicChat();
+		drawSplitPrivateChat();
 		if (crossType == 1) {
 			crosses[crossIndex / 100].drawSprite(crossX - 8 - 4, crossY - 8 - 4);
-			anInt1142++;
-			if (anInt1142 > 67) {
-				anInt1142 = 0;
+			walkCrossDrawCount++;
+			if (walkCrossDrawCount > 67) {
+				walkCrossDrawCount = 0;
 				stream.writeEncryptedOpcode(78);
 			}
 		}
 		if (crossType == 2) {
 			crosses[4 + crossIndex / 100].drawSprite(crossX - 8 - 4, crossY - 8 - 4);
 		}
-		if (anInt1018 != -1) {
-			advanceInterfaceModelAnimations(cyclesSinceDraw, anInt1018);
-			drawInterface(0, 0, RSInterface.interfaceCache[anInt1018], 0);
+		if (walkableInterfaceId != -1) {
+			advanceInterfaceModelAnimations(cyclesSinceDraw, walkableInterfaceId);
+			drawInterface(0, 0, RSInterface.interfaceCache[walkableInterfaceId], 0);
 		}
 		if (openInterfaceID != -1) {
 			advanceInterfaceModelAnimations(cyclesSinceDraw, openInterfaceID);
@@ -8856,7 +8857,7 @@ public class Game extends RSApplet {
 		} else if (menuScreenArea == 0) {
 			drawMenu();
 		}
-		if (anInt1055 == 1) {
+		if (multiCombatOverlayState == 1) {
 			multiOverlay.drawSprite(472, 296);
 		}
 		if (systemUpdateCycles != 0) {
@@ -9492,10 +9493,10 @@ public class Game extends RSApplet {
 			Texture.lineOffsets = chatBoxAreaOffsets;
 			return;
 		}
-		int minimapRotation = cameraYawBase + minimapInt2 & 0x7ff;
+		int minimapRotation = cameraYawBase + minimapRotationDrift & 0x7ff;
 		int sourceCenterX = 48 + myPlayer.x / 32;
 		int sourceCenterY = 464 - myPlayer.y / 32;
-		minimapSprite.drawRotatedScanlines(151, minimapRotation, anIntArray1229, 256 + minimapInt3, anIntArray1052, sourceCenterY, 5, 25, 146, sourceCenterX);
+		minimapSprite.drawRotatedScanlines(151, minimapRotation, anIntArray1229, 256 + minimapZoomDrift, anIntArray1052, sourceCenterY, 5, 25, 146, sourceCenterX);
 		compass.drawRotatedScanlines(33, cameraYawBase, anIntArray1057, 256, anIntArray968, 25, 0, 0, 33, 25);
 		// Minimap icons (shops, quest etc)
 		for (int iconIndex = 0; iconIndex < mapFunctionIconCount; iconIndex++) {
@@ -9632,7 +9633,7 @@ public class Game extends RSApplet {
 	}
 
 	public void buildSplitPrivateChatMenu() {
-		if (splitpublicChat == 0) {
+		if (splitPrivateChat == 0) {
 			return;
 		}
 		int splitRow = 0;
@@ -10448,15 +10449,15 @@ public class Game extends RSApplet {
 	}
 
 	public void drawMinimapMarker(Sprite sprite, int offsetX, int offsetY) {
-		int rotation2048 = cameraYawBase + minimapInt2 & 0x7ff;
+		int rotation2048 = cameraYawBase + minimapRotationDrift & 0x7ff;
 		int distanceSquared = offsetX * offsetX + offsetY * offsetY;
 		if (distanceSquared > 6400) {
 			return;
 		}
 		int scaledSine16 = Model.sineTable16[rotation2048];
 		int scaledCosine16 = Model.cosineTable16[rotation2048];
-		scaledSine16 = scaledSine16 * 256 / (minimapInt3 + 256);
-		scaledCosine16 = scaledCosine16 * 256 / (minimapInt3 + 256);
+		scaledSine16 = scaledSine16 * 256 / (minimapZoomDrift + 256);
+		scaledCosine16 = scaledCosine16 * 256 / (minimapZoomDrift + 256);
 		int rotatedX = offsetY * scaledSine16 + offsetX * scaledCosine16 >> 16;
 		int rotatedY = offsetY * scaledCosine16 - offsetX * scaledSine16 >> 16;
 		if (distanceSquared > 2500) {
@@ -11034,7 +11035,7 @@ public class Game extends RSApplet {
 				if (i3 >= 0) {
 					resetInterfaceModelAnimations(i3);
 				}
-				anInt1018 = i3;
+				walkableInterfaceId = i3;
 				pktType = -1;
 				return true;
 			}
@@ -11719,7 +11720,7 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 61) {
-				anInt1055 = inStream.readUnsignedByte();
+				multiCombatOverlayState = inStream.readUnsignedByte();
 				pktType = -1;
 				return true;
 			}
@@ -12062,15 +12063,15 @@ public class Game extends RSApplet {
 		cacheStores = new CacheStore[5];
 		variousSettings = new int[2000];
 		scrollbarDragging = false;
-		anInt975 = 50;
-		anIntArray976 = new int[anInt975];
-		anIntArray977 = new int[anInt975];
-		anIntArray978 = new int[anInt975];
-		anIntArray979 = new int[anInt975];
-		anIntArray980 = new int[anInt975];
-		anIntArray981 = new int[anInt975];
-		anIntArray982 = new int[anInt975];
-		aStringArray983 = new String[anInt975];
+		overheadChatCapacity = 50;
+		overheadChatDrawX = new int[overheadChatCapacity];
+		overheadChatDrawY = new int[overheadChatCapacity];
+		overheadChatHeights = new int[overheadChatCapacity];
+		overheadChatHalfWidths = new int[overheadChatCapacity];
+		overheadChatColorCodes = new int[overheadChatCapacity];
+		overheadChatEffectCodes = new int[overheadChatCapacity];
+		overheadChatTextCycles = new int[overheadChatCapacity];
+		overheadChatTexts = new String[overheadChatCapacity];
 		minimapBuiltPlane = -1;
 		hitMarks = new Sprite[20];
 		anIntArray990 = new int[5];
@@ -12078,7 +12079,7 @@ public class Game extends RSApplet {
 		amountOrNameInput = "";
 		projectiles = new NodeList();
 		cameraMovePending = false;
-		anInt1018 = -1;
+		walkableInterfaceId = -1;
 		shakePhase = new int[5];
 		designerModelDirty = false;
 		mapFunctions = new Sprite[100];
@@ -12123,7 +12124,7 @@ public class Game extends RSApplet {
 		canMute = false;
 		aBoolean1159 = false;
 		aBoolean1160 = false;
-		anInt1171 = 1;
+		minimapZoomDriftStep = 1;
 		myUsername = "";
 		myPassword = "";
 		genericLoadingError = false;
@@ -12135,7 +12136,7 @@ public class Game extends RSApplet {
 		menuActionName = new String[500];
 		shakeSineAmplitude = new int[5];
 		sound = new int[50];
-		anInt1210 = 2;
+		minimapRotationDriftStep = 2;
 		anInt1211 = 78;
 		promptInput = "";
 		modIcons = new Background[2];
@@ -12301,15 +12302,15 @@ public class Game extends RSApplet {
 	final CacheStore[] cacheStores;
 	public int variousSettings[];
 	public boolean scrollbarDragging;
-	public final int anInt975;
-	public final int[] anIntArray976;
-	public final int[] anIntArray977;
-	public final int[] anIntArray978;
-	public final int[] anIntArray979;
-	public final int[] anIntArray980;
-	public final int[] anIntArray981;
-	public final int[] anIntArray982;
-	public final String[] aStringArray983;
+	public final int overheadChatCapacity;
+	public final int[] overheadChatDrawX;
+	public final int[] overheadChatDrawY;
+	public final int[] overheadChatHeights;
+	public final int[] overheadChatHalfWidths;
+	public final int[] overheadChatColorCodes;
+	public final int[] overheadChatEffectCodes;
+	public final int[] overheadChatTextCycles;
+	public final String[] overheadChatTexts;
 	public int cameraTerrainClearance;
 	public int minimapBuiltPlane;
 	public static int anInt986;
@@ -12334,13 +12335,13 @@ public class Game extends RSApplet {
 	public int pktType;
 	public int anInt1009;
 	public int anInt1010;
-	public int anInt1011;
+	public int logoutRequestCycles;
 	public NodeList projectiles;
 	public int cameraFollowX;
 	public int cameraFollowY;
 	public int cameraSendCooldown;
 	public boolean cameraMovePending;
-	public int anInt1018;
+	public int walkableInterfaceId;
 	public static final int[] anIntArray1019;
 	public int minimapState;
 	public int anInt1022;
@@ -12373,7 +12374,7 @@ public class Game extends RSApplet {
 	public final int[] anIntArray1052;
 	public StreamLoader titleStreamLoader;
 	public int anInt1054;
-	public int anInt1055;
+	public int multiCombatOverlayState;
 	public NodeList transientGraphics;
 	public final int[] anIntArray1057;
 	public final RSInterface aClass9_1059;
@@ -12431,7 +12432,7 @@ public class Game extends RSApplet {
 	public RSImageProducer aRSImageProducer_1113;
 	public RSImageProducer aRSImageProducer_1114;
 	public RSImageProducer aRSImageProducer_1115;
-	public static int anInt1117;
+	public static int minimapPrimaryClickCount;
 	public int membersInt;
 	public String aString1121;
 	public Sprite compass;
@@ -12453,7 +12454,7 @@ public class Game extends RSApplet {
 	public String spellTooltip;
 	public Sprite[] mapFunctionIconSprites;
 	public boolean aBoolean1141;
-	public static int anInt1142;
+	public static int walkCrossDrawCount;
 	public Background redStone1;
 	public Background redStone2;
 	public Background redStone3;
@@ -12479,8 +12480,8 @@ public class Game extends RSApplet {
 	public RSImageProducer aRSImageProducer_1166;
 	public int daysSinceRecovChange;
 	public RSSocket socketStream;
-	public int minimapInt3;
-	public int anInt1171;
+	public int minimapZoomDrift;
+	public int minimapZoomDriftStep;
 	public static long soundEndReferenceStartMillis;
 	public String myUsername;
 	public String myPassword;
@@ -12503,7 +12504,7 @@ public class Game extends RSApplet {
 	public int[] anIntArray1191;
 	public Stream stream;
 	public int anInt1193;
-	public int splitpublicChat;
+	public int splitPrivateChat;
 	public Background invBack;
 	public Background mapBack;
 	public Background chatBack;
@@ -12515,8 +12516,8 @@ public class Game extends RSApplet {
 	public static boolean flagged;
 	public final int[] sound;
 	public int anInt1208;
-	public int minimapInt2;
-	public int anInt1210;
+	public int minimapRotationDrift;
+	public int minimapRotationDriftStep;
 	public int anInt1211;
 	public String promptInput;
 	public int anInt1213;
@@ -12556,7 +12557,7 @@ public class Game extends RSApplet {
 	public int chatSuppressionZone;
 	public final boolean rsAlreadyLoaded;
 	public int leftClickOpensMenu;
-	public int anInt1254;
+	public int minimapDriftTimer;
 	public boolean welcomeScreenRaised;
 	public boolean messagePromptRaised;
 	public static int soundEndReferenceByteLength;
@@ -12635,11 +12636,11 @@ public class Game extends RSApplet {
 
 	}
 
-	void mouseWheelDragged(int i, int j) {
+	void mouseWheelDragged(int dragLeft, int dragDown) {
 		if (!mouseWheelDown)
 			return;
-		this.cameraYawVelocity += i * 3;
-		this.cameraPitchVelocity += (j << 1);
+		this.cameraYawVelocity += dragLeft * 3;
+		this.cameraPitchVelocity += (dragDown << 1);
 	}
 
 	public void handleKeyPressed(int keyCode, char keyChar, boolean isControlDown, boolean isShiftDown)

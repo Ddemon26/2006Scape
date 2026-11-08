@@ -143,7 +143,7 @@ public class Entity extends Animable {
 	public int turnDirection;
 	int idleAnimationId;
 	int turnInPlaceAnimationId;
-	int anInt1513;
+	int overheadChatColorCode;
 	final int[] hitArray;
 	final int[] hitMarkTypes;
 	final int[] hitsLoopCycle;
@@ -161,7 +161,7 @@ public class Entity extends Animable {
 	int animFrameTimer;
 	int animationDelay;
 	int animLoopCount;
-	int anInt1531;
+	int overheadChatEffectCode;
 	public int loopCycleStatus;
 	public int currentHealth;
 	public int maxHealth;

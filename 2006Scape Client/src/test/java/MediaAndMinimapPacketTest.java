@@ -97,9 +97,9 @@ public class MediaAndMinimapPacketTest {
             g.minimapState = 77;
             deliver(g, 99, new byte[] {(byte) v});
             assertEquals(v, g.minimapState);
-            g.clickMode3 = 1; g.saveClickX = 0; g.saveClickY = 0; g.anInt1117 = 5;
+            g.clickMode3 = 1; g.saveClickX = 0; g.saveClickY = 0; g.minimapPrimaryClickCount = 5;
             g.processMainScreenClick();
-            assertEquals("state " + v, v == 0 ? 6 : 5, g.anInt1117);
+            assertEquals("state " + v, v == 0 ? 6 : 5, g.minimapPrimaryClickCount);
         }
     }
 }

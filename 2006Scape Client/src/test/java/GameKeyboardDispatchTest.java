@@ -130,8 +130,8 @@ public class GameKeyboardDispatchTest {
         game.inputString = "ReD:WaVe:Hi";
         keys(13);
         assertEquals("", game.inputString);
-        assertEquals(1, Game.myPlayer.anInt1513);
-        assertEquals(1, Game.myPlayer.anInt1531);
+        assertEquals(1, Game.myPlayer.overheadChatColorCode);
+        assertEquals(1, Game.myPlayer.overheadChatEffectCode);
         assertEquals("Hi", Game.myPlayer.textSpoken);
         assertEquals(game.stream.currentOffset - 2, game.stream.buffer[1] & 255);
         assertEquals(127, game.stream.buffer[2] & 255);
@@ -139,8 +139,8 @@ public class GameKeyboardDispatchTest {
         game.stream.currentOffset = 0;
         game.inputString = "plain";
         keys(10);
-        assertEquals(0, Game.myPlayer.anInt1513);
-        assertEquals(0, Game.myPlayer.anInt1531);
+        assertEquals(0, Game.myPlayer.overheadChatColorCode);
+        assertEquals(0, Game.myPlayer.overheadChatEffectCode);
     }
 
     @Test public void privateMessageBackpatchesEncodedTextAfterRecipient() throws Exception {
