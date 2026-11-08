@@ -66,8 +66,8 @@ public class MinimapDrawTest {
         g.mapDotTeam = new Sprite(1, 1);
         g.mapMarker = new Sprite(1, 1);
         g.mapFlag = new Sprite(1, 1);
-        Arrays.fill(g.anIntArray1229, 146);
-        Arrays.fill(g.anIntArray1052, 0);
+        Arrays.fill(g.minimapScanlineWidths, 146);
+        Arrays.fill(g.minimapScanlineStarts, 0);
         Game.myPlayer = new Player();
         Game.myPlayer.x = 320;
         Game.myPlayer.y = 640;
@@ -283,5 +283,57 @@ public class MinimapDrawTest {
         assertEquals(1, f.size());
         assertEquals(6 * 4 + 2 - 10, f.get(0)[1]);
         assertEquals(11 * 4 + 2 - 20, f.get(0)[2]);
+    }
+
+    /** Pixels of the given colour as "x,y" strings, in raster order. */
+    private List<String> pixelsOf(int rgb) {
+        List<String> r = new ArrayList<String>();
+        int[] p = g.aRSImageProducer_1164.pixels;
+        for (int y = 0; y < 156; y++) for (int x = 0; x < 172; x++) if (p[x + y * 172] == rgb) r.add(x + "," + y);
+        return r;
+    }
+
+    private static List<String> run(int x0, int count, int y) {
+        List<String> r = new ArrayList<String>();
+        for (int x = x0; x < x0 + count; x++) r.add(x + "," + y);
+        return r;
+    }
+
+    @Test public void minimapScanlineArraysGiveEachRowsStartColumnPast25AndPixelCount() {
+        Arrays.fill(map.pixels, 0x00ff00);
+        Game.myPlayer.x = 300 * 32; // keep every sampled source row inside the 512x512 map sprite
+        Game.myPlayer.y = 300 * 32;
+        Arrays.fill(g.minimapScanlineWidths, 0);
+        Arrays.fill(g.minimapScanlineStarts, 0);
+        g.minimapScanlineStarts[10] = 7; g.minimapScanlineWidths[10] = 3;
+        drawFresh();
+        assertEquals("index 10 -> row 15, x 25+7 .. +3 pixels", run(32, 3, 15), pixelsOf(0x00ff00));
+        g.minimapScanlineStarts[10] = 9;
+        drawFresh();
+        assertEquals("start alone moves the run", run(34, 3, 15), pixelsOf(0x00ff00));
+        g.minimapScanlineWidths[10] = 5;
+        drawFresh();
+        assertEquals("count alone widens it", run(34, 5, 15), pixelsOf(0x00ff00));
+        g.minimapScanlineWidths[10] = 0; g.minimapScanlineStarts[0] = 0; g.minimapScanlineWidths[0] = 1; g.minimapScanlineStarts[150] = 145; g.minimapScanlineWidths[150] = 1;
+        drawFresh();
+        List<String> ends = run(25, 1, 5);
+        ends.addAll(run(170, 1, 155));
+        assertEquals("first index is row 5, last (150) is row 155", ends, pixelsOf(0x00ff00));
+    }
+
+    @Test public void compassScanlineArraysGiveEachRowsStartColumnAndPixelCount() {
+        Arrays.fill(g.minimapScanlineWidths, 0);
+        Arrays.fill(g.compass.pixels, 0x0000ff);
+        Arrays.fill(g.compassScanlineStarts, 0);
+        Arrays.fill(g.compassScanlineWidths, 0);
+        g.compassScanlineStarts[4] = 2; g.compassScanlineWidths[4] = 5;
+        drawFresh();
+        assertEquals("index 4 -> row 4, x 2 .. +5 pixels", run(2, 5, 4), pixelsOf(0x0000ff));
+        g.compassScanlineStarts[4] = 6;
+        drawFresh();
+        assertEquals(run(6, 5, 4), pixelsOf(0x0000ff));
+        g.compassScanlineWidths[4] = 1;
+        drawFresh();
+        assertEquals(run(6, 1, 4), pixelsOf(0x0000ff));
     }
 }
