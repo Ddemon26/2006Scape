@@ -1,5 +1,6 @@
 import java.awt.Canvas;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ public class RSAppletMouseInputTest {
     /** Records every middle-button drag delta the listener hands on. */
     public static final class DragSpy extends RSApplet {
         List<int[]> calls;
-        @Override void mouseWheelDragged(int a, int b) { calls.add(new int[] {a, b}); }
+        @Override void middleButtonDragged(int a, int b) { calls.add(new int[] {a, b}); }
     }
 
     private static <T> T allocate(Class<T> type) throws Exception {
@@ -47,7 +48,7 @@ public class RSAppletMouseInputTest {
         assertEquals(30, field(s, "clickX")); assertEquals(410, field(s, "clickY"));
         assertEquals(0, s.idleTime);
         assertEquals(1, field(s, "clickMode1")); assertEquals(1, s.clickMode2);
-        assertFalse(s.mouseWheelDown);
+        assertFalse(s.middleButtonDown);
         s.mousePressed(press(412, 7, MouseEvent.BUTTON3));   // swapped magnitudes: x and y are not interchangeable
         assertEquals(412, field(s, "clickX")); assertEquals(7, field(s, "clickY"));
         assertEquals(2, field(s, "clickMode1")); assertEquals(2, s.clickMode2);
@@ -56,11 +57,11 @@ public class RSAppletMouseInputTest {
     @Test public void middlePressRecordsClickButStartsWheelDragInsteadOfClickMode() throws Exception {
         DragSpy s = spy();
         s.mousePressed(press(100, 200, MouseEvent.BUTTON2));
-        assertTrue(s.mouseWheelDown);
+        assertTrue(s.middleButtonDown);
         assertEquals(100, field(s, "clickX")); assertEquals(200, field(s, "clickY"));
         assertEquals(0, field(s, "clickMode1")); assertEquals(0, s.clickMode2);
         s.mouseReleased(event(MouseEvent.MOUSE_RELEASED, 100, 200, MouseEvent.BUTTON2));
-        assertFalse(s.mouseWheelDown);
+        assertFalse(s.middleButtonDown);
     }
 
     @Test public void moveStoresEventXAndYAsMousePosition() throws Exception {
@@ -114,5 +115,44 @@ public class RSAppletMouseInputTest {
         game.mouseReleased(event(MouseEvent.MOUSE_RELEASED, 302, 152, MouseEvent.BUTTON2));
         game.mouseDragged(drag(0, 0));
         assertEquals(-6, game.cameraYawVelocity); assertEquals(4, game.cameraPitchVelocity);
+    }
+
+    private static MouseWheelEvent wheel(int x, int y, int rotation) {
+        return new MouseWheelEvent(SOURCE, MouseEvent.MOUSE_WHEEL, 0L, 0, x, y, 0, false,
+                MouseWheelEvent.WHEEL_UNIT_SCROLL, 3, rotation);
+    }
+
+    @Test public void scrollWheelRotationNeverTouchesTheDragStateOrCallback() throws Exception {
+        DragSpy s = spy();
+        s.mouseWheelMoved(wheel(40, 50, 1));
+        s.mouseWheelMoved(wheel(41, 51, -2));
+        assertFalse(s.middleButtonDown);
+        assertEquals(0, field(s, "middleDragLastX")); assertEquals(0, field(s, "middleDragLastY"));
+        s.mouseDragged(drag(70, 80));                    // no middle press: pointer move only
+        assertTrue(s.calls.isEmpty());
+        s.mousePressed(press(100, 200, MouseEvent.BUTTON2));
+        s.mouseWheelMoved(wheel(5, 6, 3));               // rotating while the middle button is held
+        assertTrue(s.middleButtonDown);
+        assertEquals(100, field(s, "middleDragLastX")); assertEquals(200, field(s, "middleDragLastY"));
+        assertTrue(s.calls.isEmpty());
+    }
+
+    @Test public void onlyMiddlePressSetsDownFlagAndAnchorPosition() throws Exception {
+        DragSpy s = spy();
+        s.mousePressed(press(11, 22, MouseEvent.BUTTON1));
+        s.mousePressed(press(33, 44, MouseEvent.BUTTON3));
+        assertFalse(s.middleButtonDown);
+        assertEquals(0, field(s, "middleDragLastX")); assertEquals(0, field(s, "middleDragLastY"));
+        s.mousePressed(press(321, 123, MouseEvent.BUTTON2));    // asymmetric x/y
+        assertTrue(s.middleButtonDown);
+        assertEquals(321, field(s, "middleDragLastX")); assertEquals(123, field(s, "middleDragLastY"));
+        s.mouseDragged(drag(300, 140));                         // anchor follows the last middle-drag event
+        assertEquals(300, field(s, "middleDragLastX")); assertEquals(140, field(s, "middleDragLastY"));
+        s.mouseReleased(event(MouseEvent.MOUSE_RELEASED, 300, 140, MouseEvent.BUTTON1)); // any release ends it
+        assertFalse(s.middleButtonDown);
+        s.mouseDragged(drag(5, 9));                             // ordinary drag leaves the anchor alone
+        assertEquals(300, field(s, "middleDragLastX")); assertEquals(140, field(s, "middleDragLastY"));
+        s.mousePressed(press(12, 13, MouseEvent.BUTTON1));
+        assertEquals(300, field(s, "middleDragLastX")); assertEquals(140, field(s, "middleDragLastY"));
     }
 }

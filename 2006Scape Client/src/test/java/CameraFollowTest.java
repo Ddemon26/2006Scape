@@ -241,13 +241,13 @@ public class CameraFollowTest {
     @Test public void wheelDragAddsToYawAndPitchVelocities() throws Exception {
         Game game = game(); game.updateCameraFollow();
         int yaw = game.cameraYawBase, pitch = game.cameraPitchBase = 200;
-        game.mouseWheelDown = false;
-        game.mouseWheelDragged(4, 5);
+        game.middleButtonDown = false;
+        game.middleButtonDragged(4, 5);
         assertEquals(0, game.cameraYawVelocity); assertEquals(0, game.cameraPitchVelocity);
-        game.mouseWheelDown = true;
-        game.mouseWheelDragged(4, 0);
+        game.middleButtonDown = true;
+        game.middleButtonDragged(4, 0);
         assertEquals(12, game.cameraYawVelocity); assertEquals(0, game.cameraPitchVelocity);
-        game.mouseWheelDragged(0, 5);
+        game.middleButtonDragged(0, 5);
         assertEquals(12, game.cameraYawVelocity); assertEquals(10, game.cameraPitchVelocity);
         game.updateCameraFollow();                   // no key: velocity halves, then half of it is applied
         assertEquals(6, game.cameraYawVelocity); assertEquals(5, game.cameraPitchVelocity);

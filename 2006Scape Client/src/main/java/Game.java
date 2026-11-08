@@ -12632,8 +12632,8 @@ public class Game extends RSApplet {
 
 	}
 
-	void mouseWheelDragged(int dragLeft, int dragDown) {
-		if (!mouseWheelDown)
+	void middleButtonDragged(int dragLeft, int dragDown) {
+		if (!middleButtonDown)
 			return;
 		this.cameraYawVelocity += dragLeft * 3;
 		this.cameraPitchVelocity += (dragDown << 1);
