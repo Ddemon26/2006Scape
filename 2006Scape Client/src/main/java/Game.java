@@ -430,7 +430,7 @@ public class Game extends RSApplet {
 						}
 						j++;
 					}
-					if ((l == 3 || l == 7) && splitpublicChat == 0 && (l == 7 || privateChatMode == 0 || privateChatMode == 1 && isFriendOrSelf(s1))) {
+					if ((l == 3 || l == 7) && splitPrivateChat == 0 && (l == 7 || privateChatMode == 0 || privateChatMode == 1 && isFriendOrSelf(s1))) {
 						if (i1 > 0 && i1 < 110) {
 							int k1 = 4;
 							textDrawingArea.drawLiteralText(0, "From", i1, k1);
@@ -455,13 +455,13 @@ public class Game extends RSApplet {
 						}
 						j++;
 					}
-					if (l == 5 && splitpublicChat == 0 && privateChatMode < 2) {
+					if (l == 5 && splitPrivateChat == 0 && privateChatMode < 2) {
 						if (i1 > 0 && i1 < 110) {
 							textDrawingArea.drawLiteralText(0x800000, chatMessages[k], i1, 4);
 						}
 						j++;
 					}
-					if (l == 6 && splitpublicChat == 0 && privateChatMode < 2) {
+					if (l == 6 && splitPrivateChat == 0 && privateChatMode < 2) {
 						if (i1 > 0 && i1 < 110) {
 							textDrawingArea.drawLiteralText(0, "To " + s1 + ":", i1, 4);
 							textDrawingArea.drawLiteralText(0x800000, chatMessages[k], i1, 12 + textDrawingArea.measureTaggedTextWidth("To " + s1));
@@ -1464,7 +1464,7 @@ public class Game extends RSApplet {
 			chatEffectsMode = config;
 		}
 		if (action == 8) {
-			splitpublicChat = config;
+			splitPrivateChat = config;
 			inputTaken = true;
 		}
 		if (action == 9) {
@@ -2192,7 +2192,7 @@ public class Game extends RSApplet {
 	}
 
 	public void resetLogout() {
-		boolean wasDisconnected = loggedIn && (pktType != 109) && (anInt1011 <= 0);
+		boolean wasDisconnected = loggedIn && (pktType != 109) && (logoutRequestCycles <= 0);
 		try {
 			if (socketStream != null) {
 				socketStream.close();
@@ -2365,7 +2365,7 @@ public class Game extends RSApplet {
 			}
 		}
 		if (j == 205) {
-			anInt1011 = 250;
+			logoutRequestCycles = 250;
 			return true;
 		}
 		if (j == 501) {
@@ -2989,8 +2989,8 @@ public class Game extends RSApplet {
 		if (systemUpdateCycles > 1) {
 			systemUpdateCycles--;
 		}
-		if (anInt1011 > 0) {
-			anInt1011--;
+		if (logoutRequestCycles > 0) {
+			logoutRequestCycles--;
 		}
 		//TODO: Technically, this loop should be < 5 for authenticity, but until we reduce server inefficiencies
 		//(for example killing a bunch of cows results in client lag, 
@@ -3254,7 +3254,7 @@ public class Game extends RSApplet {
 		processKeyboardInput();
 		super.idleTime++; //Idle timer nope!
 		/*if (super.idleTime > 12000) {
-			anInt1011 = 250;
+			logoutRequestCycles = 250;
 			super.idleTime -= 500;
 			stream.writeEncryptedOpcode(202);
 		}*/
@@ -3574,7 +3574,7 @@ public class Game extends RSApplet {
 	}
 
 	public void dropClient() {
-		if (anInt1011 > 0) {
+		if (logoutRequestCycles > 0) {
 			resetLogout();
 			return;
 		}
@@ -5292,7 +5292,7 @@ public class Game extends RSApplet {
 				}
 				visibleLineCount++;
 			}
-			if ((chatType == 3 || chatType == 7) && splitpublicChat == 0 && (chatType == 7 || privateChatMode == 0 || publicChatMode == 1 && isFriendOrSelf(senderName))) {
+			if ((chatType == 3 || chatType == 7) && splitPrivateChat == 0 && (chatType == 7 || privateChatMode == 0 || publicChatMode == 1 && isFriendOrSelf(senderName))) {
 				if (hoverY > lineBottomY - 14 && hoverY <= lineBottomY) {
 					if (myPrivilege >= 1 && myPrivilege <= 3) {
 						menuActionName[menuActionRow] = "Report abuse @whi@" + senderName;
@@ -5319,7 +5319,7 @@ public class Game extends RSApplet {
 				}
 				visibleLineCount++;
 			}
-			if ((chatType == 5 || chatType == 6) && splitpublicChat == 0 && privateChatMode < 2) {
+			if ((chatType == 5 || chatType == 6) && splitPrivateChat == 0 && privateChatMode < 2) {
 				visibleLineCount++;
 			}
 			if (chatType == 8 && (tradeMode == 0 || tradeMode == 1 && isFriendOrSelf(senderName))) {
@@ -5579,8 +5579,8 @@ public class Game extends RSApplet {
 		}
 	}
 
-	public void drawSplitpublicChat() {
-		if (splitpublicChat == 0) {
+	public void drawSplitPrivateChat() {
+		if (splitPrivateChat == 0) {
 			return;
 		}
 		TextDrawingArea textDrawingArea = aTextDrawingArea_1271;
@@ -6108,7 +6108,7 @@ public class Game extends RSApplet {
 				pktSize = 0;
 				anInt1009 = 0;
 				systemUpdateCycles = 0;
-				anInt1011 = 0;
+				logoutRequestCycles = 0;
 				anInt855 = 0;
 				menuActionRow = 0;
 				menuOpen = false;
@@ -6161,14 +6161,14 @@ public class Game extends RSApplet {
 				openInterfaceID = -1;
 				invOverlayInterfaceID = -1;
 				fullScreenInterfaceId = -1;
-				anInt1018 = -1;
+				walkableInterfaceId = -1;
 				aBoolean1149 = false;
 				tabID = 3;
 				inputDialogState = 0;
 				menuOpen = false;
 				messagePromptRaised = false;
 				aString844 = null;
-				anInt1055 = 0;
+				multiCombatOverlayState = 0;
 				anInt1054 = -1;
 				designerMale = true;
 				selectDefaultDesignerKits();
@@ -8825,21 +8825,21 @@ public class Game extends RSApplet {
 	}
 
 	public void draw3dScreen() {
-		drawSplitpublicChat();
+		drawSplitPrivateChat();
 		if (crossType == 1) {
 			crosses[crossIndex / 100].drawSprite(crossX - 8 - 4, crossY - 8 - 4);
-			anInt1142++;
-			if (anInt1142 > 67) {
-				anInt1142 = 0;
+			walkCrossDrawCount++;
+			if (walkCrossDrawCount > 67) {
+				walkCrossDrawCount = 0;
 				stream.writeEncryptedOpcode(78);
 			}
 		}
 		if (crossType == 2) {
 			crosses[4 + crossIndex / 100].drawSprite(crossX - 8 - 4, crossY - 8 - 4);
 		}
-		if (anInt1018 != -1) {
-			advanceInterfaceModelAnimations(cyclesSinceDraw, anInt1018);
-			drawInterface(0, 0, RSInterface.interfaceCache[anInt1018], 0);
+		if (walkableInterfaceId != -1) {
+			advanceInterfaceModelAnimations(cyclesSinceDraw, walkableInterfaceId);
+			drawInterface(0, 0, RSInterface.interfaceCache[walkableInterfaceId], 0);
 		}
 		if (openInterfaceID != -1) {
 			advanceInterfaceModelAnimations(cyclesSinceDraw, openInterfaceID);
@@ -8852,7 +8852,7 @@ public class Game extends RSApplet {
 		} else if (menuScreenArea == 0) {
 			drawMenu();
 		}
-		if (anInt1055 == 1) {
+		if (multiCombatOverlayState == 1) {
 			multiOverlay.drawSprite(472, 296);
 		}
 		if (systemUpdateCycles != 0) {
@@ -9628,7 +9628,7 @@ public class Game extends RSApplet {
 	}
 
 	public void buildSplitPrivateChatMenu() {
-		if (splitpublicChat == 0) {
+		if (splitPrivateChat == 0) {
 			return;
 		}
 		int splitRow = 0;
@@ -11030,7 +11030,7 @@ public class Game extends RSApplet {
 				if (i3 >= 0) {
 					resetInterfaceModelAnimations(i3);
 				}
-				anInt1018 = i3;
+				walkableInterfaceId = i3;
 				pktType = -1;
 				return true;
 			}
@@ -11715,7 +11715,7 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 61) {
-				anInt1055 = inStream.readUnsignedByte();
+				multiCombatOverlayState = inStream.readUnsignedByte();
 				pktType = -1;
 				return true;
 			}
@@ -12074,7 +12074,7 @@ public class Game extends RSApplet {
 		amountOrNameInput = "";
 		projectiles = new NodeList();
 		cameraMovePending = false;
-		anInt1018 = -1;
+		walkableInterfaceId = -1;
 		shakePhase = new int[5];
 		designerModelDirty = false;
 		mapFunctions = new Sprite[100];
@@ -12330,13 +12330,13 @@ public class Game extends RSApplet {
 	public int pktType;
 	public int anInt1009;
 	public int anInt1010;
-	public int anInt1011;
+	public int logoutRequestCycles;
 	public NodeList projectiles;
 	public int cameraFollowX;
 	public int cameraFollowY;
 	public int cameraSendCooldown;
 	public boolean cameraMovePending;
-	public int anInt1018;
+	public int walkableInterfaceId;
 	public static final int[] anIntArray1019;
 	public int minimapState;
 	public int anInt1022;
@@ -12369,7 +12369,7 @@ public class Game extends RSApplet {
 	public final int[] anIntArray1052;
 	public StreamLoader titleStreamLoader;
 	public int anInt1054;
-	public int anInt1055;
+	public int multiCombatOverlayState;
 	public NodeList transientGraphics;
 	public final int[] anIntArray1057;
 	public final RSInterface aClass9_1059;
@@ -12449,7 +12449,7 @@ public class Game extends RSApplet {
 	public String spellTooltip;
 	public Sprite[] mapFunctionIconSprites;
 	public boolean aBoolean1141;
-	public static int anInt1142;
+	public static int walkCrossDrawCount;
 	public Background redStone1;
 	public Background redStone2;
 	public Background redStone3;
@@ -12499,7 +12499,7 @@ public class Game extends RSApplet {
 	public int[] anIntArray1191;
 	public Stream stream;
 	public int anInt1193;
-	public int splitpublicChat;
+	public int splitPrivateChat;
 	public Background invBack;
 	public Background mapBack;
 	public Background chatBack;

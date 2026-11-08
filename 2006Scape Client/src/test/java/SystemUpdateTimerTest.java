@@ -14,7 +14,7 @@ import org.junit.Test;
 
 /**
  * Original-name observations for the opcode-114 system-update countdown (systemUpdateCycles, systemUpdateNoticeDrawCount) and the
- * split private-chat rows it displaces (drawSplitpublicChat / buildSplitPrivateChatMenu locals).
+ * split private-chat rows it displaces (drawSplitPrivateChat / buildSplitPrivateChatMenu locals).
  */
 public class SystemUpdateTimerTest {
     private static final int W = 520, H = 400, BG = 0x123456, CYAN = 0x00ffff, ICON1 = 0xff00ff, ICON2 = 0x00ff00;
@@ -112,7 +112,7 @@ public class SystemUpdateTimerTest {
     // ---------- draw3dScreen notice: systemUpdateCycles / 50 seconds, systemUpdateNoticeDrawCount report counter ----------
     static class HudGame extends Game {
         int splitCalls;
-        @Override public void drawSplitpublicChat() { splitCalls++; }
+        @Override public void drawSplitPrivateChat() { splitCalls++; }
         @Override public void updateChatSuppressionZone() { }
         @Override public void processRightClick() { }
         @Override public void drawTooltip() { }
@@ -125,7 +125,7 @@ public class SystemUpdateTimerTest {
         heights[':'] = 13;
         HudGame g = new HudGame();
         g.chatTextDrawingArea = font(2, heights);
-        g.crossType = 0; g.anInt1018 = -1; g.openInterfaceID = -1; g.menuOpen = false; g.anInt1055 = 0;
+        g.crossType = 0; g.walkableInterfaceId = -1; g.openInterfaceID = -1; g.menuOpen = false; g.multiCombatOverlayState = 0;
         g.stream = new Stream(new byte[16]);
         g.stream.encryption = new ISAACRandomGen(new int[]{9, 8, 7, 6});
         g.systemUpdateCycles = value;
@@ -177,10 +177,236 @@ public class SystemUpdateTimerTest {
         assertEquals(0, g.stream.currentOffset);
     }
 
-    // ---------- drawSplitpublicChat locals ----------
+    // ---------- pass 200: draw3dScreen overlays (walkCrossDrawCount, multiCombatOverlayState, walkableInterfaceId) and logoutRequestCycles ----------
+    private static Sprite dot(int rgb) {
+        Sprite s = new Sprite(1, 1);
+        s.pixels[0] = rgb;
+        return s;
+    }
+    private static List<Integer> where(int rgb) {
+        List<Integer> out = new ArrayList<Integer>();
+        for (int i = 0; i < W * H; i++) if (DrawingArea.pixels[i] == rgb) { out.add(i % W); out.add(i / W); }
+        return out;
+    }
+    /** Delivers one raw server packet (opcode + payload) through a loopback socket into parsePacket. */
+    private static void deliver(Game g, int opcode, int... payload) throws Exception {
+        InetAddress host = InetAddress.getByName("127.0.0.1");
+        try (ServerSocket listener = new ServerSocket(0, 1, host);
+             Socket client = new Socket(host, listener.getLocalPort());
+             Socket server = listener.accept()) {
+            byte[] raw = new byte[payload.length + 1];
+            raw[0] = (byte) opcode;
+            for (int i = 0; i < payload.length; i++) raw[i + 1] = (byte) payload[i];
+            server.getOutputStream().write(raw);
+            server.getOutputStream().flush();
+            g.socketStream = new RSSocket(null, client);
+            long end = System.currentTimeMillis() + 5000;
+            while (g.socketStream.available() < raw.length && System.currentTimeMillis() < end) Thread.sleep(5);
+            g.inStream = new Stream(new byte[6000]);
+            g.pktType = -1;
+            assertTrue(g.parsePacket());
+            assertEquals(-1, g.pktType);
+            assertEquals(payload.length, g.inStream.currentOffset);
+        }
+    }
+
+    // walkCrossDrawCount: frames on which the walk (crossType 1) cross is drawn; opcode 78 on the 68th, then reset
+    private HudGame crossGame(int type) throws Exception {
+        HudGame g = hud(0);
+        g.crosses = new Sprite[8];
+        for (int i = 0; i < 8; i++) g.crosses[i] = dot(0x100 + i);
+        g.crossType = type; g.crossX = 100; g.crossY = 50; g.crossIndex = 250;
+        return g;
+    }
+    @Test public void anInt1142CountsWalkCrossFramesAndSendsOpcode78OnThe68th() throws Exception {
+        int saved = Game.walkCrossDrawCount;
+        try {
+            Game.walkCrossDrawCount = 0;
+            HudGame g = crossGame(1);
+            g.draw3dScreen();
+            assertEquals(Arrays.asList(88, 38), where(0x102));   // crosses[crossIndex / 100] at (crossX - 12, crossY - 12)
+            assertEquals(1, Game.walkCrossDrawCount);
+            for (int n = 2; n <= 67; n++) { g.draw3dScreen(); assertEquals(n, Game.walkCrossDrawCount); }
+            assertEquals(0, g.stream.currentOffset);
+            g.draw3dScreen();
+            assertEquals(0, Game.walkCrossDrawCount);
+            assertEquals(1, g.stream.currentOffset);
+            int key = new ISAACRandomGen(new int[]{9, 8, 7, 6}).getNextKey();
+            assertEquals((byte) (78 + key), g.stream.buffer[0]);
+        } finally { Game.walkCrossDrawCount = saved; }
+    }
+    @Test public void anInt1142UnchangedForActionCrossOrNoCross() throws Exception {
+        int saved = Game.walkCrossDrawCount;
+        try {
+            Game.walkCrossDrawCount = 30;
+            HudGame g = crossGame(2);
+            for (int n = 0; n < 100; n++) g.draw3dScreen();
+            assertEquals(Arrays.asList(88, 38), where(0x106));   // red action cross is crosses[4 + crossIndex / 100]
+            assertEquals(30, Game.walkCrossDrawCount);
+            g = crossGame(0);
+            for (int n = 0; n < 100; n++) g.draw3dScreen();
+            assertEquals(30, Game.walkCrossDrawCount);
+            assertEquals(0, g.stream.currentOffset);
+        } finally { Game.walkCrossDrawCount = saved; }
+    }
+
+    // multiCombatOverlayState: packet 61 unsigned byte; multiOverlay drawn at (472, 296) only for value 1
+    @Test public void anInt1055IsPacket61UnsignedByte() throws Exception {
+        assertEquals(1, SizeConstants.packetSizes[61]);
+        Game g = new Game();
+        deliver(g, 61, 1); assertEquals(1, g.multiCombatOverlayState);
+        deliver(g, 61, 0); assertEquals(0, g.multiCombatOverlayState);
+        deliver(g, 61, 0xff); assertEquals(255, g.multiCombatOverlayState);   // unsigned
+    }
+    @Test public void anInt1055OneDrawsMultiCombatOverlayOtherValuesDoNot() throws Exception {
+        for (int value : new int[]{0, 1, 2, 255}) {
+            Arrays.fill(DrawingArea.pixels, BG);
+            HudGame g = hud(0);
+            g.multiOverlay = dot(0xabcdef);
+            g.multiCombatOverlayState = value;
+            g.draw3dScreen();
+            assertEquals("value " + value, value == 1 ? Arrays.asList(472, 296) : Arrays.<Integer>asList(), where(0xabcdef));
+        }
+    }
+
+    // walkableInterfaceId: packet 208 signed LE short; drawn by draw3dScreen beneath openInterfaceID; survives closeOpenInterfaces
+    static class InterfaceHud extends HudGame {
+        final List<Integer> drawn = new ArrayList<Integer>(), advanced = new ArrayList<Integer>();
+        @Override public void drawInterface(int scrollPos, int originX, RSInterface container, int originY) {
+            drawn.add(container.id); assertEquals(0, scrollPos); assertEquals(0, originX); assertEquals(0, originY);
+        }
+        @Override public boolean advanceInterfaceModelAnimations(int elapsedTicks, int interfaceId) { advanced.add(interfaceId); return false; }
+    }
+    private static RSInterface[] interfaces() {
+        RSInterface[] cache = new RSInterface[0x8000];
+        for (int id : new int[]{0, 5, 197, 4535, 0x1234, 0x7fff}) { cache[id] = new RSInterface(); cache[id].id = id; }
+        return cache;
+    }
+    @Test public void anInt1018IsPacket208SignedLittleEndianShort() throws Exception {
+        RSInterface[] saved = RSInterface.interfaceCache;
+        try {
+            RSInterface.interfaceCache = interfaces();
+            assertEquals(2, SizeConstants.packetSizes[208]);
+            Game g = new Game();
+            deliver(g, 208, 0x34, 0x12); assertEquals(0x1234, g.walkableInterfaceId);   // big-endian would be 0x3412
+            deliver(g, 208, 0xff, 0xff); assertEquals(-1, g.walkableInterfaceId);       // signed: -1 clears it
+            deliver(g, 208, 0xc5, 0x00); assertEquals(197, g.walkableInterfaceId);
+        } finally { RSInterface.interfaceCache = saved; }
+    }
+    @Test public void anInt1018DrawnBeneathOpenInterfaceOnlyWhenNotMinusOne() throws Exception {
+        RSInterface[] saved = RSInterface.interfaceCache;
+        try {
+            RSInterface.interfaceCache = interfaces();
+            InterfaceHud g = new InterfaceHud();
+            g.chatTextDrawingArea = font(2, null); g.crossType = 0; g.menuOpen = false; g.multiCombatOverlayState = 0;
+            g.stream = new Stream(new byte[16]); g.systemUpdateCycles = 0; g.cyclesSinceDraw = 3;
+            g.walkableInterfaceId = 4535; g.openInterfaceID = 5;
+            g.draw3dScreen();
+            assertEquals(Arrays.asList(4535, 5), g.drawn);      // walkable layer first, open interface over it
+            assertEquals(Arrays.asList(4535, 5), g.advanced);
+            g.drawn.clear(); g.advanced.clear();
+            g.walkableInterfaceId = -1;
+            g.draw3dScreen();
+            assertEquals(Arrays.asList(5), g.drawn);
+            g.drawn.clear();
+            g.walkableInterfaceId = 0; g.openInterfaceID = -1;             // boundary: id 0 is drawn
+            g.draw3dScreen();
+            assertEquals(Arrays.asList(0), g.drawn);
+        } finally { RSInterface.interfaceCache = saved; }
+    }
+    @Test public void anInt1018SurvivesCloseOpenInterfaces() {
+        Game g = new Game();
+        g.stream = new Stream(new byte[16]); g.stream.encryption = new ISAACRandomGen(new int[]{1, 2, 3, 4});
+        g.walkableInterfaceId = 197; g.openInterfaceID = 5; g.invOverlayInterfaceID = 6;
+        g.closeOpenInterfaces();
+        assertEquals(-1, g.openInterfaceID);
+        assertEquals(-1, g.invOverlayInterfaceID);
+        assertEquals(197, g.walkableInterfaceId);
+    }
+
+    // logoutRequestCycles: logout button (content type 205) arms 250 cycles; counts down per cycle; while > 0 a lost connection logs out
+    private static int afterOneCycle1011(int value) {
+        Game g = new Game();
+        g.logoutRequestCycles = value;
+        try { g.mainGameProcessor(); } catch (Throwable t) { /* the countdown runs before anything needing a session */ }
+        return g.logoutRequestCycles;
+    }
+    @Test public void anInt1011ArmedOnlyByLogoutContentType205() {
+        for (int type : new int[]{205, 204, 206, 0, 201}) {
+            Game g = new Game();
+            g.logoutRequestCycles = 0;
+            RSInterface button = new RSInterface();
+            button.contentType = type;
+            boolean handled = false;
+            try { handled = g.promptUserForInput(button); } catch (Throwable t) { /* other content types may need UI state */ }
+            assertEquals("type " + type, type == 205 ? 250 : 0, g.logoutRequestCycles);
+            if (type == 205) assertTrue(handled);
+        }
+    }
+    @Test public void anInt1011CountsDownOnePerCycleToZero() {
+        assertEquals(249, afterOneCycle1011(250));
+        assertEquals(0, afterOneCycle1011(1));
+        assertEquals(0, afterOneCycle1011(0));       // stops at 0
+        assertEquals(-3, afterOneCycle1011(-3));
+    }
+    static class DropGame extends Game {
+        int logouts, reconnectNotices;
+        @Override public void resetLogout() { logouts++; }
+        @Override public void drawTextOnScreen(String s, String s1) { reconnectNotices++; throw new IllegalStateException("reconnect path"); }
+    }
+    @Test public void anInt1011PositiveMakesDropClientLogOutInsteadOfReconnecting() {
+        DropGame g = new DropGame();
+        g.logoutRequestCycles = 1;
+        g.dropClient();
+        assertEquals(1, g.logouts); assertEquals(0, g.reconnectNotices);
+        g = new DropGame();
+        g.logoutRequestCycles = 0;
+        try { g.dropClient(); fail(); } catch (IllegalStateException expected) { }
+        assertEquals(0, g.logouts); assertEquals(1, g.reconnectNotices);
+    }
+    private static String afterResetLogout(int value) {
+        Game g = new Game();
+        g.loggedIn = true; g.pktType = 0; g.myUsername = "someone"; g.loginMessage1 = "";
+        g.logoutRequestCycles = value;
+        try { g.resetLogout(); } catch (Throwable t) { /* later teardown may need a live client */ }
+        return g.loginMessage1;
+    }
+    @Test public void anInt1011PositiveSuppressesDisconnectedNoticeOnResetLogout() {
+        assertEquals("You were disconnected from the server.", afterResetLogout(0));
+        assertFalse("You were disconnected from the server.".equals(afterResetLogout(1)));
+        assertFalse("You were disconnected from the server.".equals(afterResetLogout(250)));
+    }
+
+    // splitPrivateChat / drawSplitPrivateChat: the split-chat option (varp setting action 8) for PRIVATE lines
+    @Test public void drawSplitpublicChatDrawsOnlyPrivateTypesNeverPublicTradeOrDuel() throws Exception {
+        for (int type = 0; type <= 8; type++) {
+            Arrays.fill(DrawingArea.pixels, BG);
+            Game g = chat(2);
+            msg(g, 0, type, "Ann", "x");
+            g.drawSplitPrivateChat();
+            boolean privateType = type == 3 || type == 5 || type == 6 || type == 7;
+            assertEquals("type " + type, privateType ? Arrays.asList(329) : Arrays.<Integer>asList(), rowsDrawn());
+        }
+    }
+    @Test public void splitpublicChatIsVarpSettingAction8() {
+        Varp[] saved = Varp.cache;
+        try {
+            Varp.cache = new Varp[3];
+            for (int i = 0; i < 3; i++) { Varp v; try { v = (Varp) unsafe().allocateInstance(Varp.class); } catch (Exception e) { throw new AssertionError(e); } Varp.cache[i] = v; }
+            Varp.cache[1].settingAction = 8;
+            Varp.cache[2].settingAction = 5;
+            Game g = new Game();
+            g.splitPrivateChat = 0;
+            g.variousSettings[1] = 1; g.applyVarpSetting(1); assertEquals(1, g.splitPrivateChat);
+            g.variousSettings[1] = 0; g.applyVarpSetting(1); assertEquals(0, g.splitPrivateChat);
+            g.variousSettings[2] = 1; g.applyVarpSetting(2); assertEquals(0, g.splitPrivateChat);   // other action untouched
+        } finally { Varp.cache = saved; }
+    }
+
+    // ---------- drawSplitPrivateChat locals ----------
     private Game chat(int advance) throws Exception {
         Game g = new Game();
-        g.splitpublicChat = 1;
+        g.splitPrivateChat = 1;
         g.aTextDrawingArea_1271 = font(advance, null);
         g.modIcons[0] = icon(ICON1); g.modIcons[1] = icon(ICON2);
         g.privateChatMode = 0;
@@ -203,7 +429,7 @@ public class SystemUpdateTimerTest {
         Game g = chat(2);
         msg(g, 0, 5, null, "a");
         msg(g, 1, 5, null, "bbb");
-        g.drawSplitpublicChat();
+        g.drawSplitPrivateChat();
         assertEquals(Arrays.asList(316, 329), rowsDrawn());
         assertEquals(Arrays.asList(4), xs(328, CYAN));            // slot 0 (one char) on the bottom row
         assertEquals(Arrays.asList(4, 6, 8), xs(315, CYAN));      // slot 1 (three chars) one row up
@@ -212,21 +438,21 @@ public class SystemUpdateTimerTest {
         Game g = chat(2);
         msg(g, 0, 5, null, "a");
         g.systemUpdateCycles = 1;
-        g.drawSplitpublicChat();
+        g.drawSplitPrivateChat();
         assertEquals(Arrays.asList(316), rowsDrawn());
         g = chat(2); msg(g, 0, 5, null, "a"); g.systemUpdateCycles = 0;
         Arrays.fill(DrawingArea.pixels, BG);
-        g.drawSplitpublicChat();
+        g.drawSplitPrivateChat();
         assertEquals(Arrays.asList(329), rowsDrawn());
     }
     @Test public void iStopsAfterRowFour() throws Exception {
         Game g = chat(2);
         for (int s = 0; s < 7; s++) msg(g, s, 5, null, "m");
-        g.drawSplitpublicChat();
+        g.drawSplitPrivateChat();
         assertEquals(Arrays.asList(277, 290, 303, 316, 329), rowsDrawn());
         Arrays.fill(DrawingArea.pixels, BG);
         g.systemUpdateCycles = 9;
-        g.drawSplitpublicChat();
+        g.drawSplitPrivateChat();
         assertEquals(Arrays.asList(277, 290, 303, 316), rowsDrawn());
     }
     @Test public void kFiltersTypesAndOnlyDrawnRowsConsumeI() throws Exception {
@@ -235,7 +461,7 @@ public class SystemUpdateTimerTest {
         msg(g, 1, 4, "Tr", "trade");      // other type: skipped
         msg(g, 2, 6, "Bob", "hi");        // "To Bob: hi"
         msg(g, 3, 3, "Ann", "yo");        // "From" + "Ann: yo"
-        g.drawSplitpublicChat();
+        g.drawSplitPrivateChat();
         assertEquals(Arrays.asList(316, 329), rowsDrawn());
         assertEquals(Arrays.asList(4, 6, 10, 12, 14, 16, 20, 22), xs(328, CYAN));
         assertEquals(Arrays.asList(4, 6, 8, 10, 14, 16, 18, 20, 24, 26), xs(315, CYAN));
@@ -247,7 +473,7 @@ public class SystemUpdateTimerTest {
         msg(g, 1, 5, null, "b");
         msg(g, 2, 6, "Bob", "c");
         msg(g, 3, 7, "Cid", "d");
-        g.drawSplitpublicChat();
+        g.drawSplitPrivateChat();
         assertEquals(Arrays.asList(329), rowsDrawn());
         assertEquals(Arrays.asList(4, 6, 8, 10, 14, 16, 18, 20, 24), xs(328, CYAN));
     }
@@ -256,7 +482,7 @@ public class SystemUpdateTimerTest {
         msg(g, 0, 3, "Bob", "hi");
         msg(g, 1, 3, "@cr1@Bob", "hi");
         msg(g, 2, 3, "@cr2@Bob", "hi");
-        g.drawSplitpublicChat();
+        g.drawSplitPrivateChat();
         assertEquals(Arrays.asList(4, 6, 8, 10, 14, 16, 18, 20, 24, 26), xs(328, CYAN));
         assertEquals(Arrays.asList(4, 6, 8, 10, 28, 30, 32, 34, 38, 40), xs(315, CYAN)); // prefix gone, text +14
         assertEquals(Arrays.asList(4, 6, 8, 10, 28, 30, 32, 34, 38, 40), xs(302, CYAN));
@@ -269,15 +495,15 @@ public class SystemUpdateTimerTest {
     @Test public void k1StartsAfterFromSpaceWidth() throws Exception {
         Game g = chat(3);                 // "From " is now 15 px wide: text starts at 19
         msg(g, 0, 7, "Bo", "x");
-        g.drawSplitpublicChat();
+        g.drawSplitPrivateChat();
         assertEquals(Arrays.asList(4, 7, 10, 13, 19, 22, 25, 31), xs(328, CYAN));
         assertEquals(Arrays.asList(4, 7, 10, 13, 19, 22, 25, 31), xs(329, 0)); // black pass on the baseline itself
     }
     @Test public void splitChatDisabledDrawsNothing() throws Exception {
         Game g = chat(2);
-        g.splitpublicChat = 0;
+        g.splitPrivateChat = 0;
         msg(g, 0, 5, null, "a");
-        g.drawSplitpublicChat();
+        g.drawSplitPrivateChat();
         assertEquals(Arrays.asList(), rowsDrawn());
     }
 

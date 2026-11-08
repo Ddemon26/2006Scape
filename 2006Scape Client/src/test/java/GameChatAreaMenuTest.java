@@ -21,7 +21,7 @@ public class GameChatAreaMenuTest {
             f.setAccessible(true);
             f.set(g, field.equals("chatTypes") ? new int[101] : new String[101]);
         }
-        g.publicChatMode = g.privateChatMode = g.tradeMode = g.splitpublicChat = 0;
+        g.publicChatMode = g.privateChatMode = g.tradeMode = g.splitPrivateChat = 0;
         g.myPrivilege = 0;
     }
     @After public void restore() { Game.myPlayer = saved; }
@@ -97,22 +97,28 @@ public class GameChatAreaMenuTest {
                     ? new int[] {606, 42, 639, 337} : new int[] {42, 639, 337}, at(74));
         }
     }
+    @Test public void splitFlagRemovesOnlyPrivateLinesFromChatbox() {
+        g.splitPrivateChat = 1;
+        for (int type : new int[] {1, 2}) { put(0, type, "Other"); social(74); }
+        for (int type : new int[] {3, 7}) { put(0, type, "Other"); assertEquals(0, at(74).length); }
+        put(0, 4, "Trader"); assertArrayEquals(new int[] {484}, at(74));
+    }
     @Test public void privateSplitAndExistingCrossModeGuardArePreserved() {
         put(0, 3, "Other"); social(74);
-        g.splitpublicChat = 1; assertEquals(0, at(74).length);
-        g.splitpublicChat = 0; g.privateChatMode = 2;
+        g.splitPrivateChat = 1; assertEquals(0, at(74).length);
+        g.splitPrivateChat = 0; g.privateChatMode = 2;
         assertEquals(0, at(74).length);
         g.publicChatMode = 1; g.friendsCount = 1;
         g.friendsList[0] = "Other"; social(74);
         g.publicChatMode = 0; assertEquals(0, at(74).length);
         put(0, 7, "Other"); social(74);
-        g.splitpublicChat = 1; assertEquals(0, at(74).length);
+        g.splitPrivateChat = 1; assertEquals(0, at(74).length);
         for (int type : new int[] {5, 6}) {
             put(0, type, "Other"); put(1, 1, "Next");
             social(74); // split rows consume no space
-            g.splitpublicChat = 0; g.privateChatMode = 0; social(60);
+            g.splitPrivateChat = 0; g.privateChatMode = 0; social(60);
             g.privateChatMode = 2; social(74);
-            g.splitpublicChat = 1;
+            g.splitPrivateChat = 1;
         }
     }
     @Test public void tradeAndChallengeFollowTradeVisibilityIncludingFriends() {
