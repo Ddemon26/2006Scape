@@ -58,14 +58,14 @@ public class GameSongRequestTest {
     @Test public void method58QueuesSongAndCarriesFirstAndSecondArguments() {
         game.requestSongWithFade(10, 64, false, 2);
         assertEquals(2, game.nextSong);
-        assertEquals(1, fetcher.getNodeCount());
+        assertEquals(1, fetcher.getOutstandingRequestCount());
         assertEquals(64, Game.musicVolume2);
         assertEquals(10, Game.pendingSongFadeStep);
         assertEquals(-1, Game.pendingSongFadeTicks);
         assertTrue(Game.aBoolean995);
         game.requestSongWithFade(20, 96, true, 3);
         assertEquals(3, game.nextSong);
-        assertEquals(2, fetcher.getNodeCount());
+        assertEquals(2, fetcher.getOutstandingRequestCount());
         assertEquals(96, Game.musicVolume2);
         assertEquals(20, Game.pendingSongFadeStep);
     }
@@ -74,7 +74,7 @@ public class GameSongRequestTest {
         game.requestSongWithFade(10, 64, false, 2);
         game.requestSongWithoutFade(127, true, 1);
         assertEquals(1, game.nextSong);
-        assertEquals(2, fetcher.getNodeCount());
+        assertEquals(2, fetcher.getOutstandingRequestCount());
         assertEquals(127, Game.musicVolume2);
         assertEquals(-1, Game.pendingSongFadeStep);
         assertEquals(-1, Game.pendingSongFadeTicks);
@@ -116,7 +116,7 @@ public class GameSongRequestTest {
         Game.musicPlayer = null;
         game.requestSongWithFade(10, 64, false, 2);
         game.requestSongWithoutFade(127, true, 1);
-        assertEquals(0, fetcher.getNodeCount());
+        assertEquals(0, fetcher.getOutstandingRequestCount());
         assertEquals(-1, game.nextSong);
     }
 

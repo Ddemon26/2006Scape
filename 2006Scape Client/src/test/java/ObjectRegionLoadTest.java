@@ -131,7 +131,7 @@ public class ObjectRegionLoadTest {
         Arrays.fill(versions[0], 1);
         Arrays.fill(status[0], (byte) 1);
         field(OnDemandFetcher.class, "versions").set(fetcher, versions);
-        field(OnDemandFetcher.class, "fileStatus").set(fetcher, status);
+        field(OnDemandFetcher.class, "extraFilePriorities").set(fetcher, status);
         field(OnDemandFetcher.class, "highestPendingPriority").setInt(fetcher, 1);
         field(OnDemandFetcher.class, "extraFileQueue").set(fetcher, new NodeList());
         return fetcher;

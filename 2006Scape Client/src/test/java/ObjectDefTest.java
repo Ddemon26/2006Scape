@@ -314,7 +314,7 @@ public class ObjectDefTest {
         field(OnDemandFetcher.class, "highestPendingPriority").setInt(fetcher, 1);
         fetcher.versions[0] = new int[40];
         Arrays.fill(fetcher.versions[0], 1);
-        byte[][] status = (byte[][]) field(OnDemandFetcher.class, "fileStatus").get(fetcher);
+        byte[][] status = (byte[][]) field(OnDemandFetcher.class, "extraFilePriorities").get(fetcher);
         status[0] = new byte[40];
         Arrays.fill(status[0], (byte) 1);
         status[0][21] = 0;

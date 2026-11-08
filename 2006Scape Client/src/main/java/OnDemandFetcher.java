@@ -42,7 +42,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	private void readData() {
 		try {
 			int available = inputStream.available();
-			if (expectedSize == 0 && available >= 6) {
+			if (pendingChunkLength == 0 && available >= 6) {
 				madeProgress = true;
 				for (int headerBytesRead = 0; headerBytesRead < 6; headerBytesRead += inputStream.read(ioBuffer, headerBytesRead, 6 - headerBytesRead)) {
 					;
@@ -53,7 +53,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				int fileSize = ((ioBuffer[3] & 0xff) << 8) + (ioBuffer[4] & 0xff);
 				int chunkIndex = ioBuffer[5] & 0xff;
 				current = null;
-				for (OnDemandData inFlightRequest = (OnDemandData) requested.firstFromTail(); inFlightRequest != null; inFlightRequest = (OnDemandData) requested.nextTowardHead()) {
+				for (OnDemandData inFlightRequest = (OnDemandData) inFlightRequests.firstFromTail(); inFlightRequest != null; inFlightRequest = (OnDemandData) inFlightRequests.nextTowardHead()) {
 					if (inFlightRequest.dataType == fileType && inFlightRequest.ID == fileId) {
 						current = inFlightRequest;
 					}
@@ -84,24 +84,24 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 						}
 					}
 				}
-				completedSize = chunkIndex * 500;
-				expectedSize = 500;
-				if (expectedSize > fileSize - chunkIndex * 500) {
-					expectedSize = fileSize - chunkIndex * 500;
+				chunkStartOffset = chunkIndex * 500;
+				pendingChunkLength = 500;
+				if (pendingChunkLength > fileSize - chunkIndex * 500) {
+					pendingChunkLength = fileSize - chunkIndex * 500;
 				}
 			}
-			if (expectedSize > 0 && available >= expectedSize) {
+			if (pendingChunkLength > 0 && available >= pendingChunkLength) {
 				madeProgress = true;
 				byte destinationBuffer[] = ioBuffer;
 				int destinationOffset = 0;
 				if (current != null) {
 					destinationBuffer = current.buffer;
-					destinationOffset = completedSize;
+					destinationOffset = chunkStartOffset;
 				}
-				for (int bytesRead = 0; bytesRead < expectedSize; bytesRead += inputStream.read(destinationBuffer, bytesRead + destinationOffset, expectedSize - bytesRead)) {
+				for (int bytesRead = 0; bytesRead < pendingChunkLength; bytesRead += inputStream.read(destinationBuffer, bytesRead + destinationOffset, pendingChunkLength - bytesRead)) {
 					;
 				}
-				if (expectedSize + completedSize >= destinationBuffer.length && current != null) {
+				if (pendingChunkLength + chunkStartOffset >= destinationBuffer.length && current != null) {
 					if (clientInstance.cacheStores[0] != null) {
 						clientInstance.cacheStores[current.dataType + 1].writeFile(destinationBuffer.length, destinationBuffer, current.ID);
 					}
@@ -117,7 +117,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 						current.unlink();
 					}
 				}
-				expectedSize = 0;
+				pendingChunkLength = 0;
 			}
 		} catch (IOException ioexception) {
 			try {
@@ -127,7 +127,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			socket = null;
 			inputStream = null;
 			outputStream = null;
-			expectedSize = 0;
+			pendingChunkLength = 0;
 		}
 	}
 
@@ -138,7 +138,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			int versionCount = versionData.length / 2;
 			Stream versionStream = new Stream(versionData);
 			versions[tableIndex] = new int[versionCount];
-			fileStatus[tableIndex] = new byte[versionCount];
+			extraFilePriorities[tableIndex] = new byte[versionCount];
 			for (int versionIndex = 0; versionIndex < versionCount; versionIndex++) {
 				versions[tableIndex][versionIndex] = versionStream.readUnsignedShortBigEndian();
 			}
@@ -203,9 +203,9 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		clientInstance.startRunnable(this, 2);
 	}
 
-	public int getNodeCount() {
-		synchronized (nodeSubList) {
-			return nodeSubList.getNodeCount();
+	public int getOutstandingRequestCount() {
+		synchronized (outstandingRequests) {
+			return outstandingRequests.getNodeCount();
 		}
 	}
 
@@ -269,7 +269,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		socket = null;
 		inputStream = null;
 		outputStream = null;
-		expectedSize = 0;
+		pendingChunkLength = 0;
 		connectionFailureCount++;
 	}
 
@@ -284,8 +284,8 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		if (versions[dataType][fileId] == 0) {
 			return;
 		}
-		synchronized (nodeSubList) {
-			for (OnDemandData existingRequest = (OnDemandData) nodeSubList.firstFromTail(); existingRequest != null; existingRequest = (OnDemandData) nodeSubList.nextTowardHead()) {
+		synchronized (outstandingRequests) {
+			for (OnDemandData existingRequest = (OnDemandData) outstandingRequests.firstFromTail(); existingRequest != null; existingRequest = (OnDemandData) outstandingRequests.nextTowardHead()) {
 				if (existingRequest.dataType == dataType && existingRequest.ID == fileId) {
 					return;
 				}
@@ -298,7 +298,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			synchronized (cacheLookupQueue) {
 				cacheLookupQueue.insertHead(newRequest);
 			}
-			nodeSubList.insertHead(newRequest);
+			outstandingRequests.insertHead(newRequest);
 		}
 	}
 
@@ -337,7 +337,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				}
 
 				boolean hasOutstandingRequest = false;
-				for (OnDemandData request = (OnDemandData) requested.firstFromTail(); request != null; request = (OnDemandData) requested.nextTowardHead()) {
+				for (OnDemandData request = (OnDemandData) inFlightRequests.firstFromTail(); request != null; request = (OnDemandData) inFlightRequests.nextTowardHead()) {
 					if (request.urgent) {
 						hasOutstandingRequest = true;
 						request.idleCycles++;
@@ -349,7 +349,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				}
 
 				if (!hasOutstandingRequest) {
-					for (OnDemandData request = (OnDemandData) requested.firstFromTail(); request != null; request = (OnDemandData) requested.nextTowardHead()) {
+					for (OnDemandData request = (OnDemandData) inFlightRequests.firstFromTail(); request != null; request = (OnDemandData) inFlightRequests.nextTowardHead()) {
 						hasOutstandingRequest = true;
 						request.idleCycles++;
 						if (request.idleCycles > 50) {
@@ -369,7 +369,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 						socket = null;
 						inputStream = null;
 						outputStream = null;
-						expectedSize = 0;
+						pendingChunkLength = 0;
 					}
 				} else {
 					connectionIdleCycles = 0;
@@ -403,7 +403,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		if (versions[dataType][fileId] == 0) {
 			return;
 		}
-		if (fileStatus[dataType][fileId] == 0) {
+		if (extraFilePriorities[dataType][fileId] == 0) {
 			return;
 		}
 		if (highestPendingPriority == 0) {
@@ -426,7 +426,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		if (completedRequest == null) {
 			return null;
 		}
-		synchronized (nodeSubList) {
+		synchronized (outstandingRequests) {
 			completedRequest.unlinkSub();
 		}
 		if (completedRequest.buffer == null) {
@@ -484,11 +484,11 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 		if (matchesVersionAndCrc32(versions[dataType][fileId], crcs[dataType][fileId], cachedData)) {
 			return;
 		}
-		fileStatus[dataType][fileId] = priority;
+		extraFilePriorities[dataType][fileId] = priority;
 		if (priority > highestPendingPriority) {
 			highestPendingPriority = priority;
 		}
-		totalFiles++;
+		extraFileMarkCount++;
 	}
 
 	public boolean isMapObjectFileId(int fileId) {
@@ -503,7 +503,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	private void handleFailed() {
 		urgentInFlightCount = 0;
 		extraInFlightCount = 0;
-		for (OnDemandData inFlightRequest = (OnDemandData) requested.firstFromTail(); inFlightRequest != null; inFlightRequest = (OnDemandData) requested.nextTowardHead()) {
+		for (OnDemandData inFlightRequest = (OnDemandData) inFlightRequests.firstFromTail(); inFlightRequest != null; inFlightRequest = (OnDemandData) inFlightRequests.nextTowardHead()) {
 			if (inFlightRequest.urgent) {
 				urgentInFlightCount++;
 			} else {
@@ -516,11 +516,11 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 			if (missedRequest == null) {
 				break;
 			}
-			if (fileStatus[missedRequest.dataType][missedRequest.ID] != 0) {
-				filesLoaded++;
+			if (extraFilePriorities[missedRequest.dataType][missedRequest.ID] != 0) {
+				extraFileRequestCount++;
 			}
-			fileStatus[missedRequest.dataType][missedRequest.ID] = 0;
-			requested.insertHead(missedRequest);
+			extraFilePriorities[missedRequest.dataType][missedRequest.ID] = 0;
+			inFlightRequests.insertHead(missedRequest);
 			urgentInFlightCount++;
 			sendRequest(missedRequest);
 			madeProgress = true;
@@ -571,15 +571,15 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				queuedRequest = (OnDemandData) extraFileQueue.popTail();
 			}
 			while (queuedRequest != null) {
-				if (fileStatus[queuedRequest.dataType][queuedRequest.ID] != 0) {
-					fileStatus[queuedRequest.dataType][queuedRequest.ID] = 0;
-					requested.insertHead(queuedRequest);
+				if (extraFilePriorities[queuedRequest.dataType][queuedRequest.ID] != 0) {
+					extraFilePriorities[queuedRequest.dataType][queuedRequest.ID] = 0;
+					inFlightRequests.insertHead(queuedRequest);
 					sendRequest(queuedRequest);
 					madeProgress = true;
-					if (filesLoaded < totalFiles) {
-						filesLoaded++;
+					if (extraFileRequestCount < extraFileMarkCount) {
+						extraFileRequestCount++;
 					}
-					statusString = "Loading extra files - " + filesLoaded * 100 / totalFiles + "%";
+					statusString = "Loading extra files - " + extraFileRequestCount * 100 / extraFileMarkCount + "%";
 					extraInFlightCount++;
 					if (extraInFlightCount == 10) {
 						return;
@@ -590,7 +590,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				}
 			}
 			for (int dataType = 0; dataType < 4; dataType++) {
-				byte typePriorities[] = fileStatus[dataType];
+				byte typePriorities[] = extraFilePriorities[dataType];
 				int fileCount = typePriorities.length;
 				for (int fileId = 0; fileId < fileCount; fileId++) {
 					if (typePriorities[fileId] == highestPendingPriority) {
@@ -599,13 +599,13 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 						scannedRequest.dataType = dataType;
 						scannedRequest.ID = fileId;
 						scannedRequest.urgent = false;
-						requested.insertHead(scannedRequest);
+						inFlightRequests.insertHead(scannedRequest);
 						sendRequest(scannedRequest);
 						madeProgress = true;
-						if (filesLoaded < totalFiles) {
-							filesLoaded++;
+						if (extraFileRequestCount < extraFileMarkCount) {
+							extraFileRequestCount++;
 						}
-						statusString = "Loading extra files - " + filesLoaded * 100 / totalFiles + "%";
+						statusString = "Loading extra files - " + extraFileRequestCount * 100 / extraFileMarkCount + "%";
 						extraInFlightCount++;
 						if (extraInFlightCount == 10) {
 							return;
@@ -624,25 +624,25 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	}
 
 	public OnDemandFetcher() {
-		requested = new NodeList();
+		inFlightRequests = new NodeList();
 		statusString = "";
 		crc32 = new CRC32();
 		ioBuffer = new byte[500];
-		fileStatus = new byte[4][];
+		extraFilePriorities = new byte[4][];
 		extraFileQueue = new NodeList();
 		running = true;
 		madeProgress = false;
 		completedRequests = new NodeList();
 		gzipInputBuffer = new byte[65000];
-		nodeSubList = new NodeSubList();
+		outstandingRequests = new NodeSubList();
 		versions = new int[4][];
 		crcs = new int[4][];
 		cacheMissQueue = new NodeList();
 		cacheLookupQueue = new NodeList();
 	}
 
-	private int totalFiles;
-	private final NodeList requested;
+	private int extraFileMarkCount;
+	private final NodeList inFlightRequests;
 	private int highestPendingPriority;
 	public String statusString;
 	private int cyclesSinceLastWrite;
@@ -651,15 +651,15 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	private final CRC32 crc32;
 	private final byte[] ioBuffer;
 	public int onDemandCycle;
-	private final byte[][] fileStatus;
+	private final byte[][] extraFilePriorities;
 	private Game clientInstance;
 	private final NodeList extraFileQueue;
-	private int completedSize;
-	private int expectedSize;
+	private int chunkStartOffset;
+	private int pendingChunkLength;
 	int[] songPreloadFlags;
 	public int connectionFailureCount;
 	private int[] mapTerrainFileIds;
-	private int filesLoaded;
+	private int extraFileRequestCount;
 	private boolean running;
 	private OutputStream outputStream;
 	private int[] mapPreloadFlags;
@@ -667,7 +667,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	private final NodeList completedRequests;
 	private final byte[] gzipInputBuffer;
 	private int[] animIndices;
-	private final NodeSubList nodeSubList;
+	private final NodeSubList outstandingRequests;
 	private InputStream inputStream;
 	private Socket socket;
 	public final int[][] versions;

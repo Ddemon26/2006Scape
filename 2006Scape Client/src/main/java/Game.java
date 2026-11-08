@@ -2708,7 +2708,7 @@ public class Game extends RSApplet {
 		if (loadingStage == 1) {
 			int j = tryFinishRegionLoad();
 			if (j != 0 && System.currentTimeMillis() - aLong824 > 0x57e40L) {
-				Signlink.reporterror(myUsername + " glcfb " + aLong1215 + "," + j + "," + lowMem + "," + cacheStores[0] + "," + onDemandFetcher.getNodeCount() + "," + plane + "," + anInt1069 + "," + anInt1070);
+				Signlink.reporterror(myUsername + " glcfb " + aLong1215 + "," + j + "," + lowMem + "," + cacheStores[0] + "," + onDemandFetcher.getOutstandingRequestCount() + "," + plane + "," + anInt1069 + "," + anInt1070);
 				aLong824 = System.currentTimeMillis();
 			}
 		}
@@ -7052,7 +7052,7 @@ public class Game extends RSApplet {
 			Model.initModelHeaders(onDemandFetcher.getVersionCount(0), onDemandFetcher);
 			if (!lowMem) {
 				requestSongWithFade(10, musicVolume, false, 0);
-				while (onDemandFetcher.getNodeCount() > 0) {
+				while (onDemandFetcher.getOutstandingRequestCount() > 0) {
 					processOnDemandQueue();
 					if (fetchMusic) {
 						updateMusic();
@@ -7073,8 +7073,8 @@ public class Game extends RSApplet {
 				onDemandFetcher.requestFile(1, i1);
 			}
 
-			while (onDemandFetcher.getNodeCount() > 0) {
-				int j1 = k - onDemandFetcher.getNodeCount();
+			while (onDemandFetcher.getOutstandingRequestCount() > 0) {
+				int j1 = k - onDemandFetcher.getOutstandingRequestCount();
 				if (j1 > 0) {
 					drawLoadingText(65, "Loading animations - " + j1 * 100 / k + "%");
 				}
@@ -7097,9 +7097,9 @@ public class Game extends RSApplet {
 				}
 			}
 
-			k = onDemandFetcher.getNodeCount();
-			while (onDemandFetcher.getNodeCount() > 0) {
-				int i2 = k - onDemandFetcher.getNodeCount();
+			k = onDemandFetcher.getOutstandingRequestCount();
+			while (onDemandFetcher.getOutstandingRequestCount() > 0) {
+				int i2 = k - onDemandFetcher.getOutstandingRequestCount();
 				if (i2 > 0) {
 					drawLoadingText(70, "Loading models - " + i2 * 100 / k + "%");
 				}
@@ -7123,9 +7123,9 @@ public class Game extends RSApplet {
 				onDemandFetcher.requestFile(3, onDemandFetcher.getMapFileId(1, 47, 48));
 				onDemandFetcher.requestFile(3, onDemandFetcher.getMapFileId(0, 148, 48));
 				onDemandFetcher.requestFile(3, onDemandFetcher.getMapFileId(1, 148, 48));
-				k = onDemandFetcher.getNodeCount();
-				while (onDemandFetcher.getNodeCount() > 0) {
-					int j2 = k - onDemandFetcher.getNodeCount();
+				k = onDemandFetcher.getOutstandingRequestCount();
+				while (onDemandFetcher.getOutstandingRequestCount() > 0) {
+					int j2 = k - onDemandFetcher.getOutstandingRequestCount();
 					if (j2 > 0) {
 						drawLoadingText(75, "Loading maps - " + j2 * 100 / k + "%");
 					}
