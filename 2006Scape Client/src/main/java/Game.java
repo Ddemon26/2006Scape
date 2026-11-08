@@ -7440,24 +7440,24 @@ public class Game extends RSApplet {
 			return;
 		}
 		if (super.clickMode3 == 1) {
-			int i = super.saveClickX - 25 - 550;
-			int j = super.saveClickY - 5 - 4;
-			if (i >= 0 && j >= 0 && i < 146 && j < 151) {
-				i -= 73;
-				j -= 75;
-				int k = cameraYawBase + minimapRotationDrift & 0x7ff;
-				int i1 = Texture.sineTable[k];
-				int j1 = Texture.cosineTable[k];
-				i1 = i1 * (minimapZoomDrift + 256) >> 8;
-				j1 = j1 * (minimapZoomDrift + 256) >> 8;
-				int k1 = j * i1 + i * j1 >> 11;
-				int l1 = j * j1 - i * i1 >> 11;
-				int i2 = myPlayer.x + k1 >> 7;
-				int j2 = myPlayer.y - l1 >> 7;
-				boolean flag1 = doWalkTo(1, 0, 0, 0, myPlayer.smallY[0], 0, 0, j2, myPlayer.smallX[0], true, i2);
-				if (flag1) {
-					stream.writeByte(i);
-					stream.writeByte(j);
+			int minimapClickX = super.saveClickX - 25 - 550;
+			int minimapClickY = super.saveClickY - 5 - 4;
+			if (minimapClickX >= 0 && minimapClickY >= 0 && minimapClickX < 146 && minimapClickY < 151) {
+				minimapClickX -= 73;
+				minimapClickY -= 75;
+				int minimapRotation = cameraYawBase + minimapRotationDrift & 0x7ff;
+				int scaledSine = Texture.sineTable[minimapRotation];
+				int scaledCosine = Texture.cosineTable[minimapRotation];
+				scaledSine = scaledSine * (minimapZoomDrift + 256) >> 8;
+				scaledCosine = scaledCosine * (minimapZoomDrift + 256) >> 8;
+				int worldOffsetX = minimapClickY * scaledSine + minimapClickX * scaledCosine >> 11;
+				int worldOffsetSouth = minimapClickY * scaledCosine - minimapClickX * scaledSine >> 11;
+				int targetTileX = myPlayer.x + worldOffsetX >> 7;
+				int targetTileY = myPlayer.y - worldOffsetSouth >> 7;
+				boolean walkPacketWritten = doWalkTo(1, 0, 0, 0, myPlayer.smallY[0], 0, 0, targetTileY, myPlayer.smallX[0], true, targetTileX);
+				if (walkPacketWritten) {
+					stream.writeByte(minimapClickX);
+					stream.writeByte(minimapClickY);
 					stream.writeShortBigEndian(cameraYawBase);
 					stream.writeByte(57);
 					stream.writeByte(minimapRotationDrift);
@@ -7469,12 +7469,12 @@ public class Game extends RSApplet {
 					stream.writeByte(63);
 				}
 			}
-			anInt1117++;
-			if (anInt1117 > 1151) {
-				anInt1117 = 0;
+			minimapPrimaryClickCount++;
+			if (minimapPrimaryClickCount > 1151) {
+				minimapPrimaryClickCount = 0;
 				stream.writeEncryptedOpcode(246);
 				stream.writeByte(0);
-				int l = stream.currentOffset;
+				int payloadStartOffset = stream.currentOffset;
 				if ((int) (Math.random() * 2D) == 0) {
 					stream.writeByte(101);
 				}
@@ -7491,7 +7491,7 @@ public class Game extends RSApplet {
 					stream.writeByte(220);
 				}
 				stream.writeByte(180);
-				stream.backpatchBytePayloadLength(stream.currentOffset - l);
+				stream.backpatchBytePayloadLength(stream.currentOffset - payloadStartOffset);
 			}
 		}
 	}
@@ -12428,7 +12428,7 @@ public class Game extends RSApplet {
 	public RSImageProducer aRSImageProducer_1113;
 	public RSImageProducer aRSImageProducer_1114;
 	public RSImageProducer aRSImageProducer_1115;
-	public static int anInt1117;
+	public static int minimapPrimaryClickCount;
 	public int membersInt;
 	public String aString1121;
 	public Sprite compass;
