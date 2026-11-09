@@ -4802,7 +4802,7 @@ public class Game extends RSApplet {
 		playerArray = null;
 		playerIndices = null;
 		maskUpdateIndices = null;
-		aStreamArray895s = null;
+		cachedPlayerAppearances = null;
 		removedEntityIndices = null;
 		npcArray = null;
 		npcIndices = null;
@@ -6136,7 +6136,7 @@ public class Game extends RSApplet {
 				npcCount = 0;
 				for (int playerIndex = 0; playerIndex < maxPlayers; playerIndex++) {
 					playerArray[playerIndex] = null;
-					aStreamArray895s[playerIndex] = null;
+					cachedPlayerAppearances[playerIndex] = null;
 				}
 
 				for (int npcIndex = 0; npcIndex < 16384; npcIndex++) {
@@ -7410,8 +7410,8 @@ public class Game extends RSApplet {
 			}
 			if (playerArray[playerIndex] == null) {
 				playerArray[playerIndex] = new Player();
-				if (aStreamArray895s[playerIndex] != null) {
-					playerArray[playerIndex].updatePlayer(aStreamArray895s[playerIndex]);
+				if (cachedPlayerAppearances[playerIndex] != null) {
+					playerArray[playerIndex].updatePlayer(cachedPlayerAppearances[playerIndex]);
 				}
 			}
 			playerIndices[playerCount++] = playerIndex;
@@ -8640,7 +8640,7 @@ public class Game extends RSApplet {
 			byte appearanceBytes[] = new byte[appearanceLength];
 			Stream appearanceStream = new Stream(appearanceBytes);
 			stream.readBytes(appearanceLength, 0, appearanceBytes);
-			aStreamArray895s[playerIndex] = appearanceStream;
+			cachedPlayerAppearances[playerIndex] = appearanceStream;
 			player.updatePlayer(appearanceStream);
 		}
 		if ((updateMask & 2) != 0) {
@@ -12033,7 +12033,7 @@ public class Game extends RSApplet {
 		playerArray = new Player[maxPlayers];
 		playerIndices = new int[maxPlayers];
 		maskUpdateIndices = new int[maxPlayers];
-		aStreamArray895s = new Stream[maxPlayers];
+		cachedPlayerAppearances = new Stream[maxPlayers];
 		cameraYawDriftStep = 1;
 		pathBackDirection = new int[104][104];
 		scrollHighlightColor = 0x766654;
@@ -12229,7 +12229,7 @@ public class Game extends RSApplet {
 	public int[] playerIndices;
 	public int maskUpdateCount;
 	public int[] maskUpdateIndices;
-	public Stream[] aStreamArray895s;
+	public Stream[] cachedPlayerAppearances;
 	public int cameraYawDrift;
 	public int cameraYawDriftStep;
 	public int friendsCount;

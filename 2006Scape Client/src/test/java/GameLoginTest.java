@@ -167,7 +167,7 @@ public class GameLoginTest {
         int maxP = g.maxPlayers, me = g.myPlayerIndex;
         Arrays.fill(g.chatMessages, "x");
         g.playerArray = new Player[maxP + 1]; Arrays.fill(g.playerArray, new Player());
-        g.aStreamArray895s = new Stream[maxP + 1]; Arrays.fill(g.aStreamArray895s, new Stream(new byte[1]));
+        g.cachedPlayerAppearances = new Stream[maxP + 1]; Arrays.fill(g.cachedPlayerAppearances, new Stream(new byte[1]));
         g.npcArray = new NPC[16385]; Arrays.fill(g.npcArray, new NPC());
         g.groundArray = new NodeList[5][105][105];
         for (NodeList[][] a : g.groundArray) for (NodeList[] b : a) Arrays.fill(b, new NodeList());
@@ -183,10 +183,10 @@ public class GameLoginTest {
         for (int i = 0; i < 100; i++) assertNull(g.chatMessages[i]);
         for (int i = 0; i < maxP; i++) {
             if (i == me) continue;
-            assertNull(g.playerArray[i]); assertNull(g.aStreamArray895s[i]);
+            assertNull(g.playerArray[i]); assertNull(g.cachedPlayerAppearances[i]);
         }
         assertSame(g.playerArray[me], Game.myPlayer); assertNotNull(Game.myPlayer);
-        assertNotNull(g.playerArray[maxP]); assertNotNull(g.aStreamArray895s[maxP]);
+        assertNotNull(g.playerArray[maxP]); assertNotNull(g.cachedPlayerAppearances[maxP]);
         for (int i = 0; i < 16384; i++) assertNull(g.npcArray[i]);
         assertNotNull(g.npcArray[16384]);
         for (int p = 0; p < 5; p++) for (int x = 0; x < 105; x++) for (int y = 0; y < 105; y++)

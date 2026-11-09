@@ -141,7 +141,7 @@ public class GameMenuBuildersTest {
         Game g = game();
         set(g, "playerArray", new Player[2048]);
         set(g, "playerIndices", new int[2048]);
-        set(g, "aStreamArray895s", new Stream[2048]);
+        set(g, "cachedPlayerAppearances", new Stream[2048]);
         set(g, "maskUpdateIndices", new int[2048]);
         set(g, "loopCycle", 42);
         Game.myPlayer.smallX[0] = 100; Game.myPlayer.smallY[0] = 200;
