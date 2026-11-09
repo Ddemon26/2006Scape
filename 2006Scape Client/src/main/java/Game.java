@@ -2622,9 +2622,9 @@ public class Game extends RSApplet {
 		}
 		aClass30_Sub2_Sub1_Sub1_1201 = new Sprite(128, 265);
 		aClass30_Sub2_Sub1_Sub1_1202 = new Sprite(128, 265);
-		System.arraycopy(aRSImageProducer_1110.pixels, 0, aClass30_Sub2_Sub1_Sub1_1201.pixels, 0, 33920);
+		System.arraycopy(titleLeftFlamePaneProducer.pixels, 0, aClass30_Sub2_Sub1_Sub1_1201.pixels, 0, 33920);
 
-		System.arraycopy(aRSImageProducer_1111.pixels, 0, aClass30_Sub2_Sub1_Sub1_1202.pixels, 0, 33920);
+		System.arraycopy(titleRightFlamePaneProducer.pixels, 0, aClass30_Sub2_Sub1_Sub1_1202.pixels, 0, 33920);
 
 		anIntArray851 = new int[256];
 		for (int k1 = 0; k1 < 64; k1++) {
@@ -2684,9 +2684,9 @@ public class Game extends RSApplet {
 		anIntArray828 = new int[32768];
 		anIntArray829 = new int[32768];
 		drawLoadingText(10, "Connecting to fileserver");
-		if (!aBoolean831) {
+		if (!flameThreadActive) {
 			drawFlames = true;
-			aBoolean831 = true;
+			flameThreadActive = true;
 			startRunnable(this, 2);
 		}
 	}
@@ -2790,23 +2790,23 @@ public class Game extends RSApplet {
 	public void drawLogo() {
 		byte abyte0[] = titleStreamLoader.getDataForName("title.dat");
 		Sprite sprite = new Sprite(abyte0, this);
-		aRSImageProducer_1110.setAsDrawingArea();
+		titleLeftFlamePaneProducer.setAsDrawingArea();
 		sprite.drawOpaque(0, 0);
-		aRSImageProducer_1111.setAsDrawingArea();
+		titleRightFlamePaneProducer.setAsDrawingArea();
 		sprite.drawOpaque(-637, 0);
-		aRSImageProducer_1107.setAsDrawingArea();
+		titleTopBannerProducer.setAsDrawingArea();
 		sprite.drawOpaque(-128, 0);
-		aRSImageProducer_1108.setAsDrawingArea();
+		titleBottomStripProducer.setAsDrawingArea();
 		sprite.drawOpaque(-202, -371);
-		aRSImageProducer_1109.setAsDrawingArea();
+		titleCenterBoxProducer.setAsDrawingArea();
 		sprite.drawOpaque(-202, -171);
-		aRSImageProducer_1112.setAsDrawingArea();
+		titleBottomLeftProducer.setAsDrawingArea();
 		sprite.drawOpaque(0, -265);
-		aRSImageProducer_1113.setAsDrawingArea();
+		titleBottomRightProducer.setAsDrawingArea();
 		sprite.drawOpaque(-562, -265);
-		aRSImageProducer_1114.setAsDrawingArea();
+		titleCenterLeftProducer.setAsDrawingArea();
 		sprite.drawOpaque(-128, -171);
-		aRSImageProducer_1115.setAsDrawingArea();
+		titleCenterRightProducer.setAsDrawingArea();
 		sprite.drawOpaque(-562, -171);
 		int ai[] = new int[sprite.width];
 		for (int j = 0; j < sprite.height; j++) {
@@ -2818,26 +2818,26 @@ public class Game extends RSApplet {
 
 		}
 
-		aRSImageProducer_1110.setAsDrawingArea();
+		titleLeftFlamePaneProducer.setAsDrawingArea();
 		sprite.drawOpaque(382, 0);
-		aRSImageProducer_1111.setAsDrawingArea();
+		titleRightFlamePaneProducer.setAsDrawingArea();
 		sprite.drawOpaque(-255, 0);
-		aRSImageProducer_1107.setAsDrawingArea();
+		titleTopBannerProducer.setAsDrawingArea();
 		sprite.drawOpaque(254, 0);
-		aRSImageProducer_1108.setAsDrawingArea();
+		titleBottomStripProducer.setAsDrawingArea();
 		sprite.drawOpaque(180, -371);
-		aRSImageProducer_1109.setAsDrawingArea();
+		titleCenterBoxProducer.setAsDrawingArea();
 		sprite.drawOpaque(180, -171);
-		aRSImageProducer_1112.setAsDrawingArea();
+		titleBottomLeftProducer.setAsDrawingArea();
 		sprite.drawOpaque(382, -265);
-		aRSImageProducer_1113.setAsDrawingArea();
+		titleBottomRightProducer.setAsDrawingArea();
 		sprite.drawOpaque(-180, -265);
-		aRSImageProducer_1114.setAsDrawingArea();
+		titleCenterLeftProducer.setAsDrawingArea();
 		sprite.drawOpaque(254, -171);
-		aRSImageProducer_1115.setAsDrawingArea();
+		titleCenterRightProducer.setAsDrawingArea();
 		sprite.drawOpaque(-180, -171);
 		sprite = new Sprite(titleStreamLoader, "logo", 0);
-		aRSImageProducer_1107.setAsDrawingArea();
+		titleTopBannerProducer.setAsDrawingArea();
 		sprite.drawSprite(382 - sprite.width / 2 - 128, 18);
 		sprite = null;
 		System.gc();
@@ -3352,7 +3352,7 @@ public class Game extends RSApplet {
 			super.drawLoadingText(percent, message);
 			return;
 		}
-		aRSImageProducer_1109.setAsDrawingArea();
+		titleCenterBoxProducer.setAsDrawingArea();
 		char areaWidth = '\u0168';
 		char areaHeight = '\310';
 		byte verticalLift = 20;
@@ -3363,19 +3363,19 @@ public class Game extends RSApplet {
 		DrawingArea.fillRectangle(30, barY + 2, 0x8c1111, percent * 3, areaWidth / 2 - 150);
 		DrawingArea.fillRectangle(30, barY + 2, 0, 300 - percent * 3, areaWidth / 2 - 150 + percent * 3);
 		chatTextDrawingArea.drawCenteredLiteralText(0xffffff, message, areaHeight / 2 + 5 - verticalLift, areaWidth / 2);
-		aRSImageProducer_1109.drawGraphics(171, super.graphics, 202);
+		titleCenterBoxProducer.drawGraphics(171, super.graphics, 202);
 		if (welcomeScreenRaised) {
 			welcomeScreenRaised = false;
-			if (!aBoolean831) {
-				aRSImageProducer_1110.drawGraphics(0, super.graphics, 0);
-				aRSImageProducer_1111.drawGraphics(0, super.graphics, 637);
+			if (!flameThreadActive) {
+				titleLeftFlamePaneProducer.drawGraphics(0, super.graphics, 0);
+				titleRightFlamePaneProducer.drawGraphics(0, super.graphics, 637);
 			}
-			aRSImageProducer_1107.drawGraphics(0, super.graphics, 128);
-			aRSImageProducer_1108.drawGraphics(371, super.graphics, 202);
-			aRSImageProducer_1112.drawGraphics(265, super.graphics, 0);
-			aRSImageProducer_1113.drawGraphics(265, super.graphics, 562);
-			aRSImageProducer_1114.drawGraphics(171, super.graphics, 128);
-			aRSImageProducer_1115.drawGraphics(171, super.graphics, 562);
+			titleTopBannerProducer.drawGraphics(0, super.graphics, 128);
+			titleBottomStripProducer.drawGraphics(371, super.graphics, 202);
+			titleBottomLeftProducer.drawGraphics(265, super.graphics, 0);
+			titleBottomRightProducer.drawGraphics(265, super.graphics, 562);
+			titleCenterLeftProducer.drawGraphics(171, super.graphics, 128);
+			titleCenterRightProducer.drawGraphics(171, super.graphics, 562);
 		}
 	}
 
@@ -4823,15 +4823,15 @@ public class Game extends RSApplet {
 		friendsList = null;
 		friendsListAsLongs = null;
 		friendsNodeIDs = null;
-		aRSImageProducer_1110 = null;
-		aRSImageProducer_1111 = null;
-		aRSImageProducer_1107 = null;
-		aRSImageProducer_1108 = null;
-		aRSImageProducer_1109 = null;
-		aRSImageProducer_1112 = null;
-		aRSImageProducer_1113 = null;
-		aRSImageProducer_1114 = null;
-		aRSImageProducer_1115 = null;
+		titleLeftFlamePaneProducer = null;
+		titleRightFlamePaneProducer = null;
+		titleTopBannerProducer = null;
+		titleBottomStripProducer = null;
+		titleCenterBoxProducer = null;
+		titleBottomLeftProducer = null;
+		titleBottomRightProducer = null;
+		titleCenterLeftProducer = null;
+		titleCenterRightProducer = null;
 		multiOverlay = null;
 		nullLoader();
 		ObjectDef.nullLoader();
@@ -5825,7 +5825,7 @@ public class Game extends RSApplet {
 	}
 	
 	public void resetImageProducers() {
-		if (aRSImageProducer_1107 != null) {
+		if (titleTopBannerProducer != null) {
 			return;
 		}
 		super.fullGameScreen = null;
@@ -5836,23 +5836,23 @@ public class Game extends RSApplet {
 		aRSImageProducer_1123 = null;
 		aRSImageProducer_1124 = null;
 		aRSImageProducer_1125 = null;
-		aRSImageProducer_1110 = new RSImageProducer(128, 265, getGameComponent());
+		titleLeftFlamePaneProducer = new RSImageProducer(128, 265, getGameComponent());
 		DrawingArea.clearRaster();
-		aRSImageProducer_1111 = new RSImageProducer(128, 265, getGameComponent());
+		titleRightFlamePaneProducer = new RSImageProducer(128, 265, getGameComponent());
 		DrawingArea.clearRaster();
-		aRSImageProducer_1107 = new RSImageProducer(509, 171, getGameComponent());
+		titleTopBannerProducer = new RSImageProducer(509, 171, getGameComponent());
 		DrawingArea.clearRaster();
-		aRSImageProducer_1108 = new RSImageProducer(360, 132, getGameComponent());
+		titleBottomStripProducer = new RSImageProducer(360, 132, getGameComponent());
 		DrawingArea.clearRaster();
-		aRSImageProducer_1109 = new RSImageProducer(360, 200, getGameComponent());
+		titleCenterBoxProducer = new RSImageProducer(360, 200, getGameComponent());
 		DrawingArea.clearRaster();
-		aRSImageProducer_1112 = new RSImageProducer(202, 238, getGameComponent());
+		titleBottomLeftProducer = new RSImageProducer(202, 238, getGameComponent());
 		DrawingArea.clearRaster();
-		aRSImageProducer_1113 = new RSImageProducer(203, 238, getGameComponent());
+		titleBottomRightProducer = new RSImageProducer(203, 238, getGameComponent());
 		DrawingArea.clearRaster();
-		aRSImageProducer_1114 = new RSImageProducer(74, 94, getGameComponent());
+		titleCenterLeftProducer = new RSImageProducer(74, 94, getGameComponent());
 		DrawingArea.clearRaster();
-		aRSImageProducer_1115 = new RSImageProducer(75, 94, getGameComponent());
+		titleCenterRightProducer = new RSImageProducer(75, 94, getGameComponent());
 		DrawingArea.clearRaster();
 		if (titleStreamLoader != null) {
 			drawLogo();
@@ -5865,13 +5865,13 @@ public class Game extends RSApplet {
 		if (super.fullGameScreen != null)
 			return;
 		nullLoader();
-		aRSImageProducer_1107 = null;
-		aRSImageProducer_1108 = null;
-		aRSImageProducer_1109 = null;
-		aRSImageProducer_1112 = null;
-		aRSImageProducer_1113 = null;
-		aRSImageProducer_1114 = null;
-		aRSImageProducer_1115 = null;
+		titleTopBannerProducer = null;
+		titleBottomStripProducer = null;
+		titleCenterBoxProducer = null;
+		titleBottomLeftProducer = null;
+		titleBottomRightProducer = null;
+		titleCenterLeftProducer = null;
+		titleCenterRightProducer = null;
 		aRSImageProducer_1166 = null;
 		aRSImageProducer_1164 = null;
 		aRSImageProducer_1163 = null;
@@ -5889,15 +5889,15 @@ public class Game extends RSApplet {
 		}
 		nullLoader();
 		super.fullGameScreen = null;
-		aRSImageProducer_1107 = null;
-		aRSImageProducer_1108 = null;
-		aRSImageProducer_1109 = null;
-		aRSImageProducer_1110 = null;
-		aRSImageProducer_1111 = null;
-		aRSImageProducer_1112 = null;
-		aRSImageProducer_1113 = null;
-		aRSImageProducer_1114 = null;
-		aRSImageProducer_1115 = null;
+		titleTopBannerProducer = null;
+		titleBottomStripProducer = null;
+		titleCenterBoxProducer = null;
+		titleLeftFlamePaneProducer = null;
+		titleRightFlamePaneProducer = null;
+		titleBottomLeftProducer = null;
+		titleBottomRightProducer = null;
+		titleCenterLeftProducer = null;
+		titleCenterRightProducer = null;
 		aRSImageProducer_1166 = new RSImageProducer(479, 96, getGameComponent());
 		aRSImageProducer_1164 = new RSImageProducer(172, 156, getGameComponent());
 		DrawingArea.clearRaster();
@@ -9130,9 +9130,9 @@ public class Game extends RSApplet {
 	}
 
 	public void nullLoader() {
-		aBoolean831 = false;
+		flameThreadActive = false;
 		while (drawingFlames) {
-			aBoolean831 = false;
+			flameThreadActive = false;
 			try {
 				Thread.sleep(50L);
 			} catch (Exception _ex) {
@@ -9784,7 +9784,7 @@ public class Game extends RSApplet {
 			System.arraycopy(anIntArray851, 0, anIntArray850, 0, 256);
 
 		}
-		System.arraycopy(aClass30_Sub2_Sub1_Sub1_1201.pixels, 0, aRSImageProducer_1110.pixels, 0, 33920);
+		System.arraycopy(aClass30_Sub2_Sub1_Sub1_1201.pixels, 0, titleLeftFlamePaneProducer.pixels, 0, 33920);
 
 		int i1 = 0;
 		int j1 = 1152;
@@ -9801,8 +9801,8 @@ public class Game extends RSApplet {
 					int l3 = j3;
 					int j4 = 256 - j3;
 					j3 = anIntArray850[j3];
-					int l4 = aRSImageProducer_1110.pixels[j1];
-					aRSImageProducer_1110.pixels[j1++] = ((j3 & 0xff00ff) * l3 + (l4 & 0xff00ff) * j4 & 0xff00ff00) + ((j3 & 0xff00) * l3 + (l4 & 0xff00) * j4 & 0xff0000) >> 8;
+					int l4 = titleLeftFlamePaneProducer.pixels[j1];
+					titleLeftFlamePaneProducer.pixels[j1++] = ((j3 & 0xff00ff) * l3 + (l4 & 0xff00ff) * j4 & 0xff00ff00) + ((j3 & 0xff00) * l3 + (l4 & 0xff00) * j4 & 0xff0000) >> 8;
 				} else {
 					j1++;
 				}
@@ -9811,8 +9811,8 @@ public class Game extends RSApplet {
 			j1 += j2;
 		}
 
-		aRSImageProducer_1110.drawGraphics(0, super.graphics, 0);
-		System.arraycopy(aClass30_Sub2_Sub1_Sub1_1202.pixels, 0, aRSImageProducer_1111.pixels, 0, 33920);
+		titleLeftFlamePaneProducer.drawGraphics(0, super.graphics, 0);
+		System.arraycopy(aClass30_Sub2_Sub1_Sub1_1202.pixels, 0, titleRightFlamePaneProducer.pixels, 0, 33920);
 
 		i1 = 0;
 		j1 = 1176;
@@ -9826,8 +9826,8 @@ public class Game extends RSApplet {
 					int i5 = k4;
 					int j5 = 256 - k4;
 					k4 = anIntArray850[k4];
-					int k5 = aRSImageProducer_1111.pixels[j1];
-					aRSImageProducer_1111.pixels[j1++] = ((k4 & 0xff00ff) * i5 + (k5 & 0xff00ff) * j5 & 0xff00ff00) + ((k4 & 0xff00) * i5 + (k5 & 0xff00) * j5 & 0xff0000) >> 8;
+					int k5 = titleRightFlamePaneProducer.pixels[j1];
+					titleRightFlamePaneProducer.pixels[j1++] = ((k4 & 0xff00ff) * i5 + (k5 & 0xff00ff) * j5 & 0xff00ff00) + ((k4 & 0xff00) * i5 + (k5 & 0xff00) * j5 & 0xff0000) >> 8;
 				} else {
 					j1++;
 				}
@@ -9837,7 +9837,7 @@ public class Game extends RSApplet {
 			j1 += 128 - k3 - i3;
 		}
 
-		aRSImageProducer_1111.drawGraphics(0, super.graphics, 637);
+		titleRightFlamePaneProducer.drawGraphics(0, super.graphics, 637);
 	}
 
 	public void decodeExistingPlayerMovement(Stream stream) {
@@ -9895,7 +9895,7 @@ public class Game extends RSApplet {
 
 	public void drawLoginScreen(boolean flag) {
 		resetImageProducers();
-		aRSImageProducer_1109.setAsDrawingArea();
+		titleCenterBoxProducer.setAsDrawingArea();
 		aBackground_966.drawNonzeroIndexed(0, 0);
 		char c = '\u0168';
 		char c1 = '\310';
@@ -9953,15 +9953,15 @@ public class Game extends RSApplet {
 			aBackground_967.drawNonzeroIndexed(j1 - 73, i2 - 20);
 			chatTextDrawingArea.drawCenteredTaggedText(0xffffff, j1, "Cancel", i2 + 5, true);
 		}
-		aRSImageProducer_1109.drawGraphics(171, super.graphics, 202);
+		titleCenterBoxProducer.drawGraphics(171, super.graphics, 202);
 		if (welcomeScreenRaised) {
 			welcomeScreenRaised = false;
-			aRSImageProducer_1107.drawGraphics(0, super.graphics, 128);
-			aRSImageProducer_1108.drawGraphics(371, super.graphics, 202);
-			aRSImageProducer_1112.drawGraphics(265, super.graphics, 0);
-			aRSImageProducer_1113.drawGraphics(265, super.graphics, 562);
-			aRSImageProducer_1114.drawGraphics(171, super.graphics, 128);
-			aRSImageProducer_1115.drawGraphics(171, super.graphics, 562);
+			titleTopBannerProducer.drawGraphics(0, super.graphics, 128);
+			titleBottomStripProducer.drawGraphics(371, super.graphics, 202);
+			titleBottomLeftProducer.drawGraphics(265, super.graphics, 0);
+			titleBottomRightProducer.drawGraphics(265, super.graphics, 562);
+			titleCenterLeftProducer.drawGraphics(171, super.graphics, 128);
+			titleCenterRightProducer.drawGraphics(171, super.graphics, 562);
 		}
 	}
 
@@ -9971,7 +9971,7 @@ public class Game extends RSApplet {
 			long l = System.currentTimeMillis();
 			int i = 0;
 			int j = 20;
-			while (aBoolean831) {
+			while (flameThreadActive) {
 				anInt1208++;
 				calcFlamesPosition();
 				calcFlamesPosition();
@@ -12010,7 +12010,7 @@ public class Game extends RSApplet {
 		pathDistance = new int[104][104];
 		friendsNodeIDs = new int[200];
 		groundArray = new NodeList[4][104][104];
-		aBoolean831 = false;
+		flameThreadActive = false;
 		aStream_834 = new Stream(new byte[5000]);
 		npcArray = new NPC[16384];
 		npcIndices = new int[16384];
@@ -12167,7 +12167,7 @@ public class Game extends RSApplet {
 	public NodeList[][][] groundArray;
 	public int[] anIntArray828;
 	public int[] anIntArray829;
-	public volatile boolean aBoolean831;
+	public volatile boolean flameThreadActive;
 	public Socket aSocket832;
 	public int loginScreenState;
 	public Stream aStream_834;
@@ -12419,15 +12419,15 @@ public class Game extends RSApplet {
 	public int anInt1102;
 	public boolean tabAreaAltered;
 	public int systemUpdateCycles;
-	public RSImageProducer aRSImageProducer_1107;
-	public RSImageProducer aRSImageProducer_1108;
-	public RSImageProducer aRSImageProducer_1109;
-	public RSImageProducer aRSImageProducer_1110;
-	public RSImageProducer aRSImageProducer_1111;
-	public RSImageProducer aRSImageProducer_1112;
-	public RSImageProducer aRSImageProducer_1113;
-	public RSImageProducer aRSImageProducer_1114;
-	public RSImageProducer aRSImageProducer_1115;
+	public RSImageProducer titleTopBannerProducer;
+	public RSImageProducer titleBottomStripProducer;
+	public RSImageProducer titleCenterBoxProducer;
+	public RSImageProducer titleLeftFlamePaneProducer;
+	public RSImageProducer titleRightFlamePaneProducer;
+	public RSImageProducer titleBottomLeftProducer;
+	public RSImageProducer titleBottomRightProducer;
+	public RSImageProducer titleCenterLeftProducer;
+	public RSImageProducer titleCenterRightProducer;
 	public static int minimapPrimaryClickCount;
 	public int membersInt;
 	public String aString1121;
