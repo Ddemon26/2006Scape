@@ -66,8 +66,24 @@ public class GameFrameAreaProducersTest {
 
     private static class Rec extends Game {
         boolean stubTabAndChat;
-        @Override public void drawTabArea() { if (!stubTabAndChat) super.drawTabArea(); }
-        @Override public void drawChatArea() { if (!stubTabAndChat) super.drawChatArea(); }
+        int tabCalls, chatCalls;
+        java.util.Map<Integer, Boolean> animResult;
+        List<int[]> animCalls = new ArrayList<int[]>();
+        Integer scrollbarSets;
+        List<Object[]> scrollbarCalls = new ArrayList<Object[]>();
+        @Override public void drawTabArea() { tabCalls++; if (!stubTabAndChat) super.drawTabArea(); }
+        @Override public void drawChatArea() { chatCalls++; if (!stubTabAndChat) super.drawChatArea(); }
+        @Override public boolean advanceInterfaceModelAnimations(int t, int id) {
+            if (animResult == null) return super.advanceInterfaceModelAnimations(t, id);
+            animCalls.add(new int[] {t, id});
+            Boolean b = animResult.get(id);
+            return b != null && b;
+        }
+        @Override public void handleScrollbarInput(int a, int b, int c, int d, RSInterface comp, int e, boolean f, int h) {
+            if (scrollbarSets == null) { super.handleScrollbarInput(a, b, c, d, comp, e, f, h); return; }
+            scrollbarCalls.add(new Object[] {a, b, c, d, comp, e, f, h});
+            comp.scrollPosition = scrollbarSets;
+        }
     }
 
     private static TextDrawingArea blankFont() throws Exception {
@@ -255,5 +271,93 @@ public class GameFrameAreaProducersTest {
         for (int i : new int[] {0, 1, 2, 4, 5}) {
             assertTrue(pos[i][0] + wid(p[i]) <= 765); assertTrue(pos[i][1] + hei(p[i]) <= 503);
         }
+    }
+
+    /** A Rec wired for drawGameScreen with the tab/chat routines stubbed and loadingStage 0. */
+    private Rec frame(final Fixture c) throws Exception {
+        Rec f = new Rec() { @Override Component getGameComponent() { return c; } };
+        f.stubTabAndChat = true;
+        f.graphics = out;
+        f.loadingStage = 0; f.fullScreenInterfaceId = -1; f.invOverlayInterfaceID = -1; f.backDialogID = -1;
+        f.dialogID = -1; f.flashingTabId = -1;
+        f.worldViewIP = new RSImageProducer(512, 334, c);
+        f.chatModeButtonsIP = new RSImageProducer(496, 50, c);
+        f.backBase1 = solid(496, 50, 0x303030);
+        f.aTextDrawingArea_1271 = blankFont();
+        return f;
+    }
+
+    @Test public void needDrawChatModeButtonsGatesTheChatModeButtonStripRedrawAndIsConsumed() throws Exception {
+        Fixture c = new Fixture();
+        Rec f = frame(c);
+        f.needDrawTabArea = true; f.inputTaken = true;          // other redraw flags must not draw the strip
+        f.drawGameScreen();
+        assertNull(blit(f.chatModeButtonsIP)); assertTrue(none(f.chatModeButtonsIP.pixels));
+        assertFalse(f.needDrawChatModeButtons);
+        f.needDrawChatModeButtons = true;
+        f.drawGameScreen();
+        assertArrayEquals(new int[] {0, 453}, blit(f.chatModeButtonsIP));
+        assertTrue(all(f.chatModeButtonsIP.pixels, 0x303030));
+        assertFalse(f.needDrawChatModeButtons);
+        int n = out.calls.size();
+        f.drawGameScreen();                                      // consumed: no second strip blit
+        assertEquals(n, out.calls.size());
+    }
+
+    @Test public void chatModeButtonClickSetsAboolean1233() throws Exception {
+        Fixture c = new Fixture();
+        Rec f = frame(c);
+        f.stream = new Stream(new byte[64]);
+        f.stream.encryption = new ISAACRandomGen(new int[] {9, 8, 7, 6});
+        f.publicChatMode = 0;
+        f.clickMode3 = 1; f.saveClickX = 5; f.saveClickY = 480;   // just left of the public chat button
+        f.processChatModeClick();
+        assertFalse(f.needDrawChatModeButtons); assertEquals(0, f.publicChatMode);
+        f.saveClickX = 50;
+        f.processChatModeClick();
+        assertTrue(f.needDrawChatModeButtons); assertEquals(1, f.publicChatMode);
+    }
+
+    @Test public void drawGameScreenLocalsFlag1AndFlag2AreTheModelAnimationAdvancedResults() throws Exception {
+        Fixture c = new Fixture();
+        Rec f = frame(c);
+        f.animResult = new java.util.HashMap<Integer, Boolean>();
+        f.invOverlayInterfaceID = 5; f.backDialogID = 7; f.cyclesSinceDraw = 3;
+        f.drawGameScreen();
+        assertEquals(0, f.tabCalls); assertEquals(0, f.chatCalls);
+        assertEquals(2, f.animCalls.size());
+        assertArrayEquals(new int[] {3, 5}, f.animCalls.get(0)); assertArrayEquals(new int[] {3, 7}, f.animCalls.get(1));
+        assertEquals(0, f.cyclesSinceDraw);
+        f.animResult.put(5, true);                                // inventory overlay animated: tab area only
+        f.drawGameScreen();
+        assertEquals(1, f.tabCalls); assertEquals(0, f.chatCalls); assertFalse(f.needDrawTabArea);
+        f.animResult.put(5, false); f.animResult.put(7, true);    // back dialog animated: chat area only
+        f.drawGameScreen();
+        assertEquals(1, f.tabCalls); assertEquals(1, f.chatCalls); assertFalse(f.inputTaken);
+    }
+
+    @Test public void drawGameScreenLocalIIsTheClampedChatScrollOffsetFromTheScrollbar() throws Exception {
+        Fixture c = new Fixture();
+        Rec f = frame(c);
+        f.anInt1211 = 300; f.anInt1089 = 40;
+        f.drawGameScreen();                                       // mouse outside: scrollbar position derives from anInt1089
+        assertEquals(300 - 40 - 77, f.aClass9_1059.scrollPosition);
+        assertEquals(40, f.anInt1089); assertEquals(0, f.chatCalls); assertEquals(0, f.scrollbarCalls.size());
+        f.scrollbarSets = 100;
+        f.mouseX = 448; f.mouseY = 340; f.drawGameScreen();       // mouseX boundary: not > 448
+        f.mouseX = 500; f.mouseY = 332; f.drawGameScreen();       // mouseY boundary: not > 332
+        assertEquals(0, f.scrollbarCalls.size());
+        f.mouseX = 500; f.mouseY = 340;
+        f.drawGameScreen();
+        assertEquals(1, f.scrollbarCalls.size());
+        Object[] a = f.scrollbarCalls.get(0);
+        assertArrayEquals(new Object[] {463, 77, 483, -17, f.aClass9_1059, 0, false, 300}, a);
+        assertEquals(300 - 77 - 100, f.anInt1089); assertEquals(1, f.chatCalls); assertFalse(f.inputTaken);
+        f.scrollbarSets = -50; f.drawGameScreen();                // above the top: clamped to anInt1211 - 77
+        assertEquals(223, f.anInt1089); assertEquals(2, f.chatCalls);
+        f.scrollbarSets = 500; f.drawGameScreen();                // below the bottom: clamped to 0
+        assertEquals(0, f.anInt1089); assertEquals(3, f.chatCalls);
+        f.scrollbarSets = 223; f.drawGameScreen();                // equals current offset (0): no redraw
+        assertEquals(0, f.anInt1089); assertEquals(3, f.chatCalls);
     }
 }

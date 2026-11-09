@@ -1315,7 +1315,7 @@ public class Game extends RSApplet {
 		if (super.clickMode3 == 1) {
 			if (super.saveClickX >= 6 && super.saveClickX <= 106 && super.saveClickY >= 467 && super.saveClickY <= 499) {
 				publicChatMode = (publicChatMode + 1) % 4;
-				aBoolean1233 = true;
+				needDrawChatModeButtons = true;
 				inputTaken = true;
 				stream.writeEncryptedOpcode(95);
 				stream.writeByte(publicChatMode);
@@ -1324,7 +1324,7 @@ public class Game extends RSApplet {
 			}
 			if (super.saveClickX >= 135 && super.saveClickX <= 235 && super.saveClickY >= 467 && super.saveClickY <= 499) {
 				privateChatMode = (privateChatMode + 1) % 3;
-				aBoolean1233 = true;
+				needDrawChatModeButtons = true;
 				inputTaken = true;
 				stream.writeEncryptedOpcode(95);
 				stream.writeByte(publicChatMode);
@@ -1333,7 +1333,7 @@ public class Game extends RSApplet {
 			}
 			if (super.saveClickX >= 273 && super.saveClickX <= 373 && super.saveClickY >= 467 && super.saveClickY <= 499) {
 				tradeMode = (tradeMode + 1) % 3;
-				aBoolean1233 = true;
+				needDrawChatModeButtons = true;
 				inputTaken = true;
 				stream.writeEncryptedOpcode(95);
 				stream.writeByte(publicChatMode);
@@ -4961,7 +4961,7 @@ public class Game extends RSApplet {
 						pushMessage(promptInput, 6, TextClass.formatDisplayName(TextClass.decodeBase37Name(aLong953)));
 						if (privateChatMode == 2) {
 							privateChatMode = 1;
-							aBoolean1233 = true;
+							needDrawChatModeButtons = true;
 							stream.writeEncryptedOpcode(95);
 							stream.writeByte(publicChatMode);
 							stream.writeByte(privateChatMode);
@@ -5239,7 +5239,7 @@ public class Game extends RSApplet {
 						}
 						if (publicChatMode == 2) {
 							publicChatMode = 3;
-							aBoolean1233 = true;
+							needDrawChatModeButtons = true;
 							stream.writeEncryptedOpcode(95);
 							stream.writeByte(publicChatMode);
 							stream.writeByte(privateChatMode);
@@ -7894,7 +7894,7 @@ public class Game extends RSApplet {
 			needDrawTabArea = true;
 			inputTaken = true;
 			tabAreaAltered = true;
-			aBoolean1233 = true;
+			needDrawChatModeButtons = true;
 			if (loadingStage != 2) {
 				worldViewIP.drawGraphics(4, super.graphics, 4);
 				minimapIP.drawGraphics(4, super.graphics, 550);
@@ -7907,8 +7907,8 @@ public class Game extends RSApplet {
 			needDrawTabArea = true;
 		}
 		if (invOverlayInterfaceID != -1) {
-			boolean flag1 = advanceInterfaceModelAnimations(cyclesSinceDraw, invOverlayInterfaceID);
-			if (flag1) {
+			boolean invOverlayFrameAdvanced = advanceInterfaceModelAnimations(cyclesSinceDraw, invOverlayInterfaceID);
+			if (invOverlayFrameAdvanced) {
 				needDrawTabArea = true;
 			}
 		}
@@ -7927,21 +7927,21 @@ public class Game extends RSApplet {
 			if (super.mouseX > 448 && super.mouseX < 560 && super.mouseY > 332) {
 				handleScrollbarInput(463, 77, super.mouseX - 17, super.mouseY - 357, aClass9_1059, 0, false, anInt1211);
 			}
-			int i = anInt1211 - 77 - aClass9_1059.scrollPosition;
-			if (i < 0) {
-				i = 0;
+			int clampedChatScrollOffset = anInt1211 - 77 - aClass9_1059.scrollPosition;
+			if (clampedChatScrollOffset < 0) {
+				clampedChatScrollOffset = 0;
 			}
-			if (i > anInt1211 - 77) {
-				i = anInt1211 - 77;
+			if (clampedChatScrollOffset > anInt1211 - 77) {
+				clampedChatScrollOffset = anInt1211 - 77;
 			}
-			if (anInt1089 != i) {
-				anInt1089 = i;
+			if (anInt1089 != clampedChatScrollOffset) {
+				anInt1089 = clampedChatScrollOffset;
 				inputTaken = true;
 			}
 		}
 		if (backDialogID != -1) {
-			boolean flag2 = advanceInterfaceModelAnimations(cyclesSinceDraw, backDialogID);
-			if (flag2) {
+			boolean backDialogFrameAdvanced = advanceInterfaceModelAnimations(cyclesSinceDraw, backDialogID);
+			if (backDialogFrameAdvanced) {
 				inputTaken = true;
 			}
 		}
@@ -8079,8 +8079,8 @@ public class Game extends RSApplet {
 			worldViewIP.setAsDrawingArea();
 			Texture.lineOffsets = chatBoxAreaOffsets;
 		}
-		if (aBoolean1233) {
-			aBoolean1233 = false;
+		if (needDrawChatModeButtons) {
+			needDrawChatModeButtons = false;
 			chatModeButtonsIP.setAsDrawingArea();
 			backBase1.drawNonzeroIndexed(0, 0);
 			aTextDrawingArea_1271.drawCenteredTaggedText(0xffffff, 55, "Public chat", 28, true);
@@ -11488,7 +11488,7 @@ public class Game extends RSApplet {
 				publicChatMode = inStream.readUnsignedByte();
 				privateChatMode = inStream.readUnsignedByte();
 				tradeMode = inStream.readUnsignedByte();
-				aBoolean1233 = true;
+				needDrawChatModeButtons = true;
 				inputTaken = true;
 				pktType = -1;
 				return true;
@@ -12141,7 +12141,7 @@ public class Game extends RSApplet {
 		songChanging = true;
 		minimapScanlineWidths = new int[151];
 		collisionMaps = new CollisionMap[4];
-		aBoolean1233 = false;
+		needDrawChatModeButtons = false;
 		soundType = new int[50];
 		aBoolean1242 = false;
 		soundDelay = new int[50];
@@ -12532,7 +12532,7 @@ public class Game extends RSApplet {
 	public final int[] minimapScanlineWidths;
 	public CollisionMap[] collisionMaps;
 	public static int anIntArray1232[];
-	public boolean aBoolean1233;
+	public boolean needDrawChatModeButtons;
 	public int[] regionKeys;
 	public int[] regionTerrainFileIds;
 	public int[] regionObjectFileIds;
