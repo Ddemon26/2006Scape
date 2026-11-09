@@ -244,7 +244,7 @@ public class MinimapDrawTest {
         g.npcArray[5] = npc;
         g.playerArray[6] = other(320 - 32, 640 - 128, 0, 50, "zed");
         g.baseX = 3000; g.baseY = 3100;
-        g.anInt934 = 3010; g.anInt935 = 3120;
+        g.hintIconTileX = 3010; g.hintIconTileY = 3120;
         g.hintIconNpcIndex = 5; g.hintIconPlayerIndex = 6;
         int saved = Game.loopCycle;
         try {

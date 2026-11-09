@@ -449,7 +449,7 @@ public class EntityDefTest {
                 def.tileSize = (byte) c[0];
                 NPC npc = npcWithDef(game, 77);
                 npc.x = 1344; npc.y = 1344;
-                game.anIntArrayArray929 = new int[104][104]; game.sceneDrawCycle = 1;
+                game.tileCentreEntityCycle = new int[104][104]; game.sceneDrawCycle = 1;
                 game.worldController = new WorldController(new int[4][105][105]);
                 game.addNpcsToScene(false);
                 Ground[][][] tiles = (Ground[][][]) f(WorldController.class, "groundArray").get(game.worldController);
@@ -472,14 +472,14 @@ public class EntityDefTest {
                 for (boolean clickable : new boolean[] {true, false}) {
                     def.placedInFirstPass = late; def.interactable = clickable;
                     Ground[][][] tiles;
-                    game.anIntArrayArray929 = new int[104][104]; game.sceneDrawCycle = 1;
+                    game.tileCentreEntityCycle = new int[104][104]; game.sceneDrawCycle = 1;
                     game.worldController = new WorldController(new int[4][105][105]);
                     game.addNpcsToScene(late);
                     tiles = (Ground[][][]) f(WorldController.class, "groundArray").get(game.worldController);
                     String label = "late=" + late + " clickable=" + clickable;
                     assertNotNull(label, tiles[0][10][10]);
                     assertEquals(label, 0x20000000 + (2 << 14) + (clickable ? 0 : 0x80000000), tiles[0][10][10].obj5Array[0].uid);
-                    game.anIntArrayArray929 = new int[104][104]; game.sceneDrawCycle = 1;
+                    game.tileCentreEntityCycle = new int[104][104]; game.sceneDrawCycle = 1;
                     game.worldController = new WorldController(new int[4][105][105]);
                     game.addNpcsToScene(!late);
                     tiles = (Ground[][][]) f(WorldController.class, "groundArray").get(game.worldController);

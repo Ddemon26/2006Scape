@@ -38,7 +38,7 @@ public class EntitySceneInsertionTest {
     private static TestGame newGame() throws Exception {
         TestGame g = new TestGame();
         g.byteGroundArray = new byte[4][104][104]; g.intGroundArray = new int[4][105][105];
-        g.anIntArrayArray929 = new int[104][104]; g.sceneDrawCycle = 1; g.plane = 0;
+        g.tileCentreEntityCycle = new int[104][104]; g.sceneDrawCycle = 1; g.plane = 0;
         g.worldController = world();
         return g;
     }
@@ -101,7 +101,7 @@ public class EntitySceneInsertionTest {
             assertEquals("x tile 103 is on the map", 1, count(g, 103, 5));
             assertEquals("centred twice on one tile: second skipped", 1, count(g, 7, 7));
             assertEquals("off-centre twice on one tile: both kept", 2, count(g, 8, 8));
-            assertEquals("marker for tile centre", 1, g.anIntArrayArray929[7][7]); assertEquals("off-centre sets no marker", 0, g.anIntArrayArray929[8][8]);
+            assertEquals("marker for tile centre", 1, g.tileCentreEntityCycle[7][7]); assertEquals("off-centre sets no marker", 0, g.tileCentreEntityCycle[8][8]);
             g.worldController = world(); g.sceneDrawCycle = 2;
             g.addPlayersToScene(false);
             assertEquals("new frame places the centred tile again", 1, count(g, 7, 7));

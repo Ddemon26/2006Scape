@@ -126,8 +126,8 @@ public class HintIconAndGroundLabelTest {
     @Test public void packet254TypesTwoToSixCollapseToTwoAndReadTileHeight() throws Exception {
         Game g = new Game(); g.hintIconNpcIndex = -7; g.hintIconPlayerIndex = -8;
         deliver(g, b(3, 0x0c, 0xa0, 0x0c, 0x93, 9));
-        assertEquals(2, g.hintIconType); assertEquals(0, g.anInt937); assertEquals(64, g.anInt938);
-        assertEquals(3232, g.anInt934); assertEquals(3219, g.anInt935); assertEquals(9, g.anInt936);
+        assertEquals(2, g.hintIconType); assertEquals(0, g.hintIconOffsetX); assertEquals(64, g.hintIconOffsetY);
+        assertEquals(3232, g.hintIconTileX); assertEquals(3219, g.hintIconTileY); assertEquals(9, g.hintIconHeight);
         assertEquals(-7, g.hintIconNpcIndex); assertEquals(-8, g.hintIconPlayerIndex);
     }
     @Test public void packet254TypeZeroAndUnknownTypesReadNoTarget() throws Exception {
@@ -136,6 +136,108 @@ public class HintIconAndGroundLabelTest {
         assertEquals(0, g.hintIconType); assertEquals(-7, g.hintIconNpcIndex); assertEquals(-8, g.hintIconPlayerIndex);
         deliver(g, b(7));
         assertEquals("unknown type stored as-is", 7, g.hintIconType); assertEquals(-7, g.hintIconNpcIndex); assertEquals(-8, g.hintIconPlayerIndex);
+    }
+
+    // ---------- location hint: hintIconTileX..hintIconOffsetY ----------
+    @Test public void packet254TypesTwoToSixSelectTileEdgeOrCentreOffsetsInAnInt937And938() throws Exception {
+        int[][] expect = {{2, 64, 64}, {3, 0, 64}, {4, 128, 64}, {5, 64, 0}, {6, 64, 128}};
+        for (int[] e : expect) {
+            Game g = new Game(); g.hintIconOffsetX = -1; g.hintIconOffsetY = -1;
+            deliver(g, b(e[0], 0x0c, 0x80 + e[0], 0x0d, 0x10 + e[0], 200 + e[0]));
+            assertEquals("type " + e[0], 2, g.hintIconType);
+            assertEquals("type " + e[0] + " x offset", e[1], g.hintIconOffsetX);
+            assertEquals("type " + e[0] + " y offset", e[2], g.hintIconOffsetY);
+            assertEquals("big-endian x tile", 0x0c80 + e[0], g.hintIconTileX);
+            assertEquals("big-endian y tile", 0x0d10 + e[0], g.hintIconTileY);
+            assertEquals("unsigned height byte", 200 + e[0], g.hintIconHeight);
+        }
+    }
+    @Test public void packet254NpcAndPlayerTypesLeaveLocationFieldsUntouched() throws Exception {
+        for (byte[] p : new byte[][]{b(1, 0, 5), b(10, 0, 5), b(0)}) {
+            Game g = new Game(); g.hintIconTileX = 11; g.hintIconTileY = 12; g.hintIconHeight = 13; g.hintIconOffsetX = 14; g.hintIconOffsetY = 15;
+            deliver(g, p);
+            assertArrayEquals(new int[]{11, 12, 13, 14, 15}, new int[]{g.hintIconTileX, g.hintIconTileY, g.hintIconHeight, g.hintIconOffsetX, g.hintIconOffsetY});
+        }
+    }
+    private static int[] headIcon(int type, int baseX, int baseY, int tileX, int tileY, int h, int subX, int subY) throws Exception {
+        Spy s = new Spy(); s.headIconsHint = new Sprite[]{solid(ARROW_NPC), solid(ARROW_PLAYER)};
+        s.hintIconType = type; s.baseX = baseX; s.baseY = baseY;
+        s.hintIconTileX = tileX; s.hintIconTileY = tileY; s.hintIconHeight = h; s.hintIconOffsetX = subX; s.hintIconOffsetY = subY;
+        s.drawHeadIcon();
+        return s.projected.isEmpty() ? null : s.projected.get(0);
+    }
+    @Test public void drawHeadIconProjectsWorldTileMinusRegionBaseTimes128PlusSubTileOffsetAtTwiceHeight() throws Exception {
+        assertArrayEquals("tile 3232,3219 in region 3200,3200 at centre", new int[]{32 * 128 + 64, 18, 19 * 128 + 64},
+            headIcon(2, 3200, 3200, 3232, 3219, 9, 64, 64));
+        assertArrayEquals("hintIconTileX moves x by whole tiles only", new int[]{33 * 128 + 64, 18, 19 * 128 + 64},
+            headIcon(2, 3200, 3200, 3233, 3219, 9, 64, 64));
+        assertArrayEquals("baseX is subtracted from hintIconTileX only", new int[]{31 * 128 + 64, 18, 19 * 128 + 64},
+            headIcon(2, 3201, 3200, 3232, 3219, 9, 64, 64));
+        assertArrayEquals("hintIconTileY / baseY move y by whole tiles only", new int[]{32 * 128 + 64, 18, 17 * 128 + 64},
+            headIcon(2, 3200, 3202, 3232, 3219, 9, 64, 64));
+        assertArrayEquals("hintIconHeight is doubled into the height offset only", new int[]{32 * 128 + 64, 250, 19 * 128 + 64},
+            headIcon(2, 3200, 3200, 3232, 3219, 125, 64, 64));
+        assertArrayEquals("west edge offset (hintIconOffsetX = 0) moves x only", new int[]{32 * 128, 18, 19 * 128 + 64},
+            headIcon(2, 3200, 3200, 3232, 3219, 9, 0, 64));
+        assertArrayEquals("north edge offset (hintIconOffsetY = 128) reaches the next tile's edge in y only", new int[]{32 * 128 + 64, 18, 20 * 128},
+            headIcon(2, 3200, 3200, 3232, 3219, 9, 64, 128));
+        assertNull("only type 2 projects the location", headIcon(1, 3200, 3200, 3232, 3219, 9, 64, 64));
+    }
+
+    // ---------- tileCentreEntityCycle: one tile-centred entity per tile per sceneDrawCycle ----------
+    static class SceneSpy extends Game {
+        final List<Integer> added = new ArrayList<Integer>();
+        SceneSpy() {
+            worldController = new WorldController(new int[4][105][105]);
+            tileCentreEntityCycle = new int[104][104];
+            npcArray = new NPC[16]; npcIndices = new int[16]; playerArray = new Player[16]; playerIndices = new int[16];
+        }
+        /** Reads the uids added to the real WorldController since the last call, then clears its entity cache. */
+        void collect() throws Exception {
+            added.clear();
+            Object[] cache = (Object[]) f(WorldController.class, "obj5Cache").get(worldController);
+            int n = f(WorldController.class, "obj5CacheCurrPos").getInt(worldController);
+            for (int i = 0; i < n; i++) added.add(((Object5) cache[i]).uid >> 14 & 0x7ff);
+            worldController.clearObj5Cache();
+        }
+        @Override public int interpolatedGroundHeight(int p, int y, int x) { return 0; }
+        void npc(int slot, int x, int y) throws Exception {
+            Constructor<EntityDef> k = EntityDef.class.getDeclaredConstructor(); k.setAccessible(true);
+            EntityDef d = k.newInstance(); d.placedInFirstPass = false; d.interactable = true;
+            NPC n = new NPC(); n.desc = d; n.tileSize = 1; n.x = x; n.y = y;
+            npcIndices[npcCount++] = slot; npcArray[slot] = n;
+        }
+        void player(int slot, int x, int y) {
+            Player p = new Player(); p.visible = true; p.x = x; p.y = y;
+            playerIndices[playerCount++] = slot; playerArray[slot] = p;
+        }
+    }
+    @Test public void anIntArrayArray929AdmitsOnlyTheFirstTileCentredNpcPerTilePerCycle() throws Exception {
+        SceneSpy s = new SceneSpy(); s.sceneDrawCycle = 7;
+        s.npc(1, 10 * 128 + 64, 20 * 128 + 64); s.npc(2, 10 * 128 + 64, 20 * 128 + 64);
+        s.npc(3, 10 * 128 + 65, 20 * 128 + 64); s.npc(4, 11 * 128 + 64, 20 * 128 + 64); s.npc(9, 12 * 128 + 64, 20 * 128 + 100);
+        s.addNpcsToScene(false); s.collect();
+        assertEquals("second centred npc on the same tile skipped; off-centre npc kept", Arrays.asList(1, 3, 4, 9), s.added);
+        assertEquals("tile stamped with the current cycle", 7, s.tileCentreEntityCycle[10][20]);
+        assertEquals(7, s.tileCentreEntityCycle[11][20]);
+        assertEquals("off-centre npc never stamps its tile", 0, s.tileCentreEntityCycle[12][20]);
+        s.addNpcsToScene(false); s.collect();
+        assertEquals("same cycle: all centred npcs blocked by the stamp", Arrays.asList(3, 9), s.added);
+        s.sceneDrawCycle = 8; s.addNpcsToScene(false); s.collect();
+        assertEquals("new cycle: stale stamp no longer blocks", Arrays.asList(1, 3, 4, 9), s.added);
+        assertEquals(8, s.tileCentreEntityCycle[10][20]);
+    }
+    @Test public void anIntArrayArray929IsSharedBetweenPlayersAndNpcsInOneCycle() throws Exception {
+        SceneSpy s = new SceneSpy(); s.sceneDrawCycle = 3;
+        Player me = new Player(); me.x = 0; me.y = 0; Game.myPlayer = me; s.destX = 0;
+        s.player(5, 30 * 128 + 64, 40 * 128 + 64); s.player(6, 30 * 128 + 64, 41 * 128 + 64);
+        s.npc(7, 30 * 128 + 64, 40 * 128 + 64); s.npc(8, 30 * 128 + 64, 41 * 128 + 10);
+        s.tileCentreEntityCycle[30][41] = 2;
+        s.addPlayersToScene(false);
+        s.addNpcsToScene(false); s.collect();
+        assertEquals("npc 7 shares player 5's tile centre and is skipped", Arrays.asList(5, 6, 8), s.added);
+        assertEquals(3, s.tileCentreEntityCycle[30][40]);
+        assertEquals("cell overwritten from stale cycle 2", 3, s.tileCentreEntityCycle[30][41]);
     }
 
     // ---------- updateEntities head arrows ----------

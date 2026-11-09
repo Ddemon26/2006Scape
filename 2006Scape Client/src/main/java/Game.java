@@ -995,10 +995,10 @@ public class Game extends RSApplet {
 				continue;
 			}
 			if (npc.tileSize == 1 && (npc.x & 0x7f) == 64 && (npc.y & 0x7f) == 64) {
-				if (anIntArrayArray929[tileX][tileY] == sceneDrawCycle) {
+				if (tileCentreEntityCycle[tileX][tileY] == sceneDrawCycle) {
 					continue;
 				}
-				anIntArrayArray929[tileX][tileY] = sceneDrawCycle;
+				tileCentreEntityCycle[tileX][tileY] = sceneDrawCycle;
 			}
 			if (!npc.desc.interactable) {
 				uid += 0x80000000;
@@ -2328,10 +2328,10 @@ public class Game extends RSApplet {
 				continue;
 			}
 			if ((player.x & 0x7f) == 64 && (player.y & 0x7f) == 64) {
-				if (anIntArrayArray929[tileX][tileY] == sceneDrawCycle) {
+				if (tileCentreEntityCycle[tileX][tileY] == sceneDrawCycle) {
 					continue;
 				}
-				anIntArrayArray929[tileX][tileY] = sceneDrawCycle;
+				tileCentreEntityCycle[tileX][tileY] = sceneDrawCycle;
 			}
 			player.groundHeight = interpolatedGroundHeight(plane, player.y, player.x);
 			worldController.addEntity(plane, player.facingDirection, player.groundHeight, uid, player.y, 60, player.x, player, player.animExtendByYaw);
@@ -2980,7 +2980,7 @@ public class Game extends RSApplet {
 		if (hintIconType != 2) {
 			return;
 		}
-		projectWorldToScreen((anInt934 - baseX << 7) + anInt937, anInt936 * 2, (anInt935 - baseY << 7) + anInt938);
+		projectWorldToScreen((hintIconTileX - baseX << 7) + hintIconOffsetX, hintIconHeight * 2, (hintIconTileY - baseY << 7) + hintIconOffsetY);
 		if (spriteDrawX > -1 && loopCycle % 20 < 10) {
 			headIconsHint[0].drawSprite(spriteDrawX - 12, spriteDrawY - 28);
 		}
@@ -4798,7 +4798,7 @@ public class Game extends RSApplet {
 		mapDotTeam = null;
 		mapScenes = null;
 		mapFunctions = null;
-		anIntArrayArray929 = null;
+		tileCentreEntityCycle = null;
 		playerArray = null;
 		playerIndices = null;
 		maskUpdateIndices = null;
@@ -9568,8 +9568,8 @@ public class Game extends RSApplet {
 				}
 			}
 			if (hintIconType == 2) {
-				int hintLocationOffsetX = (anInt934 - baseX) * 4 + 2 - myPlayer.x / 32;
-				int hintLocationOffsetY = (anInt935 - baseY) * 4 + 2 - myPlayer.y / 32;
+				int hintLocationOffsetX = (hintIconTileX - baseX) * 4 + 2 - myPlayer.x / 32;
+				int hintLocationOffsetY = (hintIconTileY - baseY) * 4 + 2 - myPlayer.y / 32;
 				drawMinimapHint(mapMarker, hintLocationOffsetY, hintLocationOffsetX);
 			}
 			if (hintIconType == 10 && hintIconPlayerIndex >= 0 && hintIconPlayerIndex < playerArray.length) {
@@ -11271,29 +11271,29 @@ public class Game extends RSApplet {
 				}
 				if (hintIconType >= 2 && hintIconType <= 6) {
 					if (hintIconType == 2) {
-						anInt937 = 64;
-						anInt938 = 64;
+						hintIconOffsetX = 64;
+						hintIconOffsetY = 64;
 					}
 					if (hintIconType == 3) {
-						anInt937 = 0;
-						anInt938 = 64;
+						hintIconOffsetX = 0;
+						hintIconOffsetY = 64;
 					}
 					if (hintIconType == 4) {
-						anInt937 = 128;
-						anInt938 = 64;
+						hintIconOffsetX = 128;
+						hintIconOffsetY = 64;
 					}
 					if (hintIconType == 5) {
-						anInt937 = 64;
-						anInt938 = 0;
+						hintIconOffsetX = 64;
+						hintIconOffsetY = 0;
 					}
 					if (hintIconType == 6) {
-						anInt937 = 64;
-						anInt938 = 128;
+						hintIconOffsetX = 64;
+						hintIconOffsetY = 128;
 					}
 					hintIconType = 2;
-					anInt934 = inStream.readUnsignedShortBigEndian();
-					anInt935 = inStream.readUnsignedShortBigEndian();
-					anInt936 = inStream.readUnsignedByte();
+					hintIconTileX = inStream.readUnsignedShortBigEndian();
+					hintIconTileY = inStream.readUnsignedShortBigEndian();
+					hintIconHeight = inStream.readUnsignedByte();
 				}
 				if (hintIconType == 10) {
 					hintIconPlayerIndex = inStream.readUnsignedShortBigEndian();
@@ -12043,7 +12043,7 @@ public class Game extends RSApplet {
 		loadingError = false;
 		scrollShadowColor = 0x332d25;
 		shakeSineSpeed = new int[5];
-		anIntArrayArray929 = new int[104][104];
+		tileCentreEntityCycle = new int[104][104];
 		chatTypes = new int[100];
 		chatNames = new String[100];
 		chatMessages = new String[100];
@@ -12258,15 +12258,15 @@ public class Game extends RSApplet {
 	public boolean loadingError;
 	public final int scrollShadowColor;
 	public final int[] shakeSineSpeed;
-	public int[][] anIntArrayArray929;
+	public int[][] tileCentreEntityCycle;
 	public Sprite aClass30_Sub2_Sub1_Sub1_931;
 	public Sprite aClass30_Sub2_Sub1_Sub1_932;
 	public int hintIconPlayerIndex;
-	public int anInt934;
-	public int anInt935;
-	public int anInt936;
-	public int anInt937;
-	public int anInt938;
+	public int hintIconTileX;
+	public int hintIconTileY;
+	public int hintIconHeight;
+	public int hintIconOffsetX;
+	public int hintIconOffsetY;
 	public static int anInt940;
 	public final int[] chatTypes;
 	public final String[] chatNames;
