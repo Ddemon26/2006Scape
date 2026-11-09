@@ -129,7 +129,7 @@ public class InterfaceHoverDragSelectionFieldsTest {
         g.menuActionRow = 1; g.menuActionID[0] = actionId; g.menuActionCmd2[0] = 5; g.menuActionCmd3[0] = 7;
         g.openInterfaceID = openId; g.backDialogID = backId;
         g.clickMode3 = 1; g.saveClickX = 123; g.saveClickY = 77;
-        g.dragInterfaceId = -9; g.dragSlotIndex = -9; g.dragStartX = -9; g.dragStartY = -9; g.dragHeldCycles = 9; g.aBoolean1242 = true;
+        g.dragInterfaceId = -9; g.dragSlotIndex = -9; g.dragStartX = -9; g.dragStartY = -9; g.dragHeldCycles = 9; g.dragMoved = true;
         return g;
     }
     private static boolean press(Game g) { try { return g.processMenuClick(); } catch (RuntimeException e) { return false; } }
@@ -141,7 +141,7 @@ public class InterfaceHoverDragSelectionFieldsTest {
         assertEquals(123, g.dragStartX);   // click x
         assertEquals(77, g.dragStartY);    // click y
         assertEquals(0, g.dragHeldCycles);      // held-cycle counter restarted
-        assertFalse(g.aBoolean1242);
+        assertFalse(g.dragMoved);
         assertEquals(2, g.activeInterfaceType);
         g = pressGame(632, true, 40, 40, -1); press(g); assertEquals(1, g.activeInterfaceType);
         g = pressGame(632, true, 40, -1, 40); press(g); assertEquals(3, g.activeInterfaceType);
@@ -169,7 +169,7 @@ public class InterfaceHoverDragSelectionFieldsTest {
         s.stream = new Stream(new byte[5000]); s.stream.encryption = new ISAACRandomGen(new int[]{1, 2, 3, 4});
         s.loggedIn = true;
         s.dragStartX = 100; s.dragStartY = 100; s.mouseX = 100; s.mouseY = 100;
-        s.activeInterfaceType = 1; s.aBoolean1242 = false; s.dragHeldCycles = 3; s.clickMode2 = 1;
+        s.activeInterfaceType = 1; s.dragMoved = false; s.dragHeldCycles = 3; s.clickMode2 = 1;
         return s;
     }
     private static void cycle(Game s) { try { s.mainGameProcessor(); } catch (RuntimeException e) { /* rest of the cycle needs a live session */ } }
@@ -181,14 +181,14 @@ public class InterfaceHoverDragSelectionFieldsTest {
         int[][] cases = {{105, 100, 0}, {106, 100, 1}, {95, 100, 0}, {94, 100, 1}, {100, 105, 0}, {100, 106, 1}, {100, 95, 0}, {100, 94, 1}};
         for (int[] c : cases) {
             DragSpy s = cycleGame(); s.mouseX = c[0]; s.mouseY = c[1]; cycle(s);
-            assertEquals("mouse " + c[0] + "," + c[1], c[2] == 1, s.aBoolean1242);
+            assertEquals("mouse " + c[0] + "," + c[1], c[2] == 1, s.dragMoved);
         }
     }
     private int[] release(int heldBefore, boolean moved, int hoverInterface, int hoverSlot, int[] ids, int fromSlot) {
         DragSpy s = cycleGame();
         RSInterface inv = new RSInterface(); inv.id = 300; inv.itemIdsPlusOne = ids.clone(); inv.itemQuantities = new int[ids.length];
         RSInterface.interfaceCache[300] = inv;
-        s.dragInterfaceId = 300; s.dragSlotIndex = fromSlot; s.dragHeldCycles = heldBefore; s.aBoolean1242 = moved; s.clickMode2 = 0;
+        s.dragInterfaceId = 300; s.dragSlotIndex = fromSlot; s.dragHeldCycles = heldBefore; s.dragMoved = moved; s.clickMode2 = 0;
         s.hoverInterface = hoverInterface; s.hoverSlot = hoverSlot;
         cycle(s);
         return inv.itemIdsPlusOne;
@@ -206,12 +206,80 @@ public class InterfaceHoverDragSelectionFieldsTest {
         DragSpy s = cycleGame();
         RSInterface inv = new RSInterface(); inv.id = 300; inv.itemIdsPlusOne = new int[]{11, 22, 33, 44}; inv.itemQuantities = new int[4];
         RSInterface.interfaceCache[300] = inv;
-        s.dragInterfaceId = 300; s.dragSlotIndex = 1; s.dragHeldCycles = 10; s.aBoolean1242 = true; s.clickMode2 = 0; s.hoverInterface = 300; s.hoverSlot = 3;
+        s.dragInterfaceId = 300; s.dragSlotIndex = 1; s.dragHeldCycles = 10; s.dragMoved = true; s.clickMode2 = 0; s.hoverInterface = 300; s.hoverSlot = 3;
         cycle(s);
         Stream ref = new Stream(new byte[16]);
         ref.writeShortLittleEndianAdd128(300); ref.writeNegatedByte(0); ref.writeShortLittleEndianAdd128(1); ref.writeShortLittleEndian(3);
         assertEquals(1 + 7, s.stream.currentOffset);
         for (int n = 0; n < 7; n++) assertEquals("byte " + n, ref.buffer[n], s.stream.buffer[1 + n]);
+    }
+
+    // ---------- dragMoved (drag moved flag) and the release routine's locals ----------
+    @Test public void movedFlagStaysSetWhenTheMouseReturnsToTheStartPosition() {
+        DragSpy s = cycleGame(); s.mouseX = 120; cycle(s); assertTrue(s.dragMoved);
+        s.mouseX = 100; cycle(s); assertTrue(s.dragMoved);                    // never re-cleared by movement
+        s = cycleGame(); s.dragMoved = true; s.mouseX = 100; cycle(s); assertTrue(s.dragMoved);
+        s = cycleGame(); s.activeInterfaceType = 0; s.mouseX = 150; cycle(s); assertFalse(s.dragMoved); // not dragging: untouched
+    }
+    @Test public void releaseDoesNotClearTheMovedFlagButPressDoes() {
+        DragSpy s = cycleGame(); s.dragMoved = true; s.dragHeldCycles = 10; s.clickMode2 = 0; s.dragInterfaceId = 300;
+        cycle(s); assertEquals(0, s.activeInterfaceType); assertTrue(s.dragMoved);
+        Game g = pressGame(632, true, -5, -1, -1); g.dragMoved = true; g.processMenuClick(); assertFalse(g.dragMoved);
+    }
+    @Test public void startItemDragMarksTheDragAsMovedAtOnce() {
+        DragSpy s = new DragSpy(); s.loggedIn = true;
+        RSInterface inv = new RSInterface(); inv.id = 300; inv.aBoolean259 = true; inv.itemIdsPlusOne = new int[]{11, 0};
+        RSInterface.interfaceCache[300] = inv;
+        s.hoverInterface = 300; s.hoverSlot = 0; s.dragMoved = false; s.dragHeldCycles = 0;
+        assertTrue(s.startItemDrag(50, 60));
+        assertTrue(s.dragMoved); assertEquals(10, s.dragHeldCycles); assertEquals(300, s.dragInterfaceId); assertEquals(0, s.dragSlotIndex);
+        s = new DragSpy(); s.loggedIn = true; s.hoverInterface = 300; s.hoverSlot = 1; s.dragMoved = false;   // empty slot: no drag
+        assertFalse(s.startItemDrag(50, 60)); assertFalse(s.dragMoved);
+    }
+    private DragSpy releaseWith(boolean moved, boolean freeSwap, int mode, int content, int[] ids, int[] qty, int from, int to, RSInterface[] out) {
+        DragSpy s = cycleGame();
+        RSInterface inv = new RSInterface(); inv.id = 300; inv.contentType = content; inv.aBoolean235 = freeSwap;
+        inv.itemIdsPlusOne = ids.clone(); inv.itemQuantities = qty.clone(); out[0] = inv;
+        RSInterface.interfaceCache[300] = inv;
+        s.insertDragMode = mode;
+        s.dragInterfaceId = 300; s.dragSlotIndex = from; s.dragHeldCycles = 10; s.dragMoved = moved; s.clickMode2 = 0;
+        s.hoverInterface = 300; s.hoverSlot = to;
+        cycle(s);
+        return s;
+    }
+    private int packetFlagByte(DragSpy s) {
+        Stream ref = new Stream(new byte[16]); ref.writeNegatedByte(1);
+        return s.stream.buffer[1 + 2] == ref.buffer[0] ? 1 : 0;   // byte after the interface id short
+    }
+    @Test public void releasePacketFlagByteIsOneOnlyForAnInsertOnAnOccupiedSlot() {
+        RSInterface[] o = new RSInterface[1];
+        assertEquals(1, packetFlagByte(releaseWith(true, false, 1, 206, new int[]{11, 22, 33, 44}, new int[4], 0, 2, o)));
+        assertEquals(0, packetFlagByte(releaseWith(true, false, 0, 206, new int[]{11, 22, 33, 44}, new int[4], 0, 2, o)));
+        assertEquals(0, packetFlagByte(releaseWith(true, false, 1, 206, new int[]{11, 22, 33, 0}, new int[4], 0, 3, o)));
+    }
+    @Test public void insertWalksFromTheSourceSlotToTheTargetSlotInBothDirections() {
+        RSInterface[] o = new RSInterface[1];
+        releaseWith(true, false, 1, 206, new int[]{11, 22, 33, 44, 55}, new int[5], 1, 4, o);
+        assertArrayEquals(new int[]{11, 33, 44, 55, 22}, o[0].itemIdsPlusOne);   // forward: source goes to target, others shift down
+        releaseWith(true, false, 1, 206, new int[]{11, 22, 33, 44, 55}, new int[5], 4, 1, o);
+        assertArrayEquals(new int[]{11, 55, 22, 33, 44}, o[0].itemIdsPlusOne);   // backward: others shift up
+    }
+    @Test public void freeSwapInterfaceMovesItemAndQuantityToTheTargetAndEmptiesTheSource() {
+        RSInterface[] o = new RSInterface[1];
+        DragSpy s = releaseWith(true, true, 0, 0, new int[]{11, 22, 33, 44}, new int[]{5, 6, 7, 8}, 1, 3, o);
+        assertArrayEquals(new int[]{11, -1, 33, 22}, o[0].itemIdsPlusOne);
+        assertArrayEquals(new int[]{5, 0, 7, 6}, o[0].itemQuantities);
+        assertEquals(1 + 7, s.stream.currentOffset);                              // packet 214 still sent
+        releaseWith(true, true, 1, 206, new int[]{11, 22, 33, 44}, new int[]{5, 6, 7, 8}, 3, 0, o);   // free swap wins over insert
+        assertArrayEquals(new int[]{44, 22, 33, -1}, o[0].itemIdsPlusOne);
+        assertArrayEquals(new int[]{8, 6, 7, 0}, o[0].itemQuantities);
+    }
+    @Test public void releaseWithoutMovementFallsBackToTheMenuAndSendsNoDropPacket() {
+        RSInterface[] o = new RSInterface[1];
+        DragSpy s = releaseWith(false, false, 0, 0, new int[]{11, 22, 33, 44}, new int[4], 0, 2, o);
+        assertArrayEquals(new int[]{11, 22, 33, 44}, o[0].itemIdsPlusOne);
+        assertEquals(0, s.stream.currentOffset);                                  // no 7-byte drop packet
+        assertEquals(10, s.atInventoryLoopCycle);
     }
 
     // ---------- selected item: written by action 447 ----------

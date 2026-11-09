@@ -612,7 +612,7 @@ public class Game extends RSApplet {
 					int j2 = menuActionCmd3[menuActionRow - 1];
 					RSInterface class9 = RSInterface.interfaceCache[j2];
 					if (class9.aBoolean259 || class9.aBoolean235) {
-						aBoolean1242 = false;
+						dragMoved = false;
 						dragHeldCycles = 0;
 						dragInterfaceId = j2;
 						dragSlotIndex = l1;
@@ -3158,7 +3158,7 @@ public class Game extends RSApplet {
 		if (activeInterfaceType != 0) {
 			dragHeldCycles++;
 			if (super.mouseX > dragStartX + 5 || super.mouseX < dragStartX - 5 || super.mouseY > dragStartY + 5 || super.mouseY < dragStartY - 5) {
-				aBoolean1242 = true;
+				dragMoved = true;
 			}
 			if (super.clickMode2 == 0) {
 				if (activeInterfaceType == 2) {
@@ -3168,43 +3168,43 @@ public class Game extends RSApplet {
 					inputTaken = true;
 				}
 				activeInterfaceType = 0;
-				if (aBoolean1242 && dragHeldCycles >= 5) {
+				if (dragMoved && dragHeldCycles >= 5) {
 					lastActiveInvInterface = -1;
 					processRightClick();
 					if (lastActiveInvInterface == dragInterfaceId && mouseInvInterfaceIndex != dragSlotIndex) {
-						RSInterface class9 = RSInterface.interfaceCache[dragInterfaceId];
-						int j1 = 0;
-						if (insertDragMode == 1 && class9.contentType == 206) {
-							j1 = 1;
+						RSInterface dragInterface = RSInterface.interfaceCache[dragInterfaceId];
+						int insertFlag = 0;
+						if (insertDragMode == 1 && dragInterface.contentType == 206) {
+							insertFlag = 1;
 						}
-						if (class9.itemIdsPlusOne[mouseInvInterfaceIndex] <= 0) {
-							j1 = 0;
+						if (dragInterface.itemIdsPlusOne[mouseInvInterfaceIndex] <= 0) {
+							insertFlag = 0;
 						}
-						if (class9.aBoolean235) {
+						if (dragInterface.aBoolean235) {
 							int l2 = dragSlotIndex;
 							int l3 = mouseInvInterfaceIndex;
-							class9.itemIdsPlusOne[l3] = class9.itemIdsPlusOne[l2];
-							class9.itemQuantities[l3] = class9.itemQuantities[l2];
-							class9.itemIdsPlusOne[l2] = -1;
-							class9.itemQuantities[l2] = 0;
-						} else if (j1 == 1) {
-							int i3 = dragSlotIndex;
-							for (int i4 = mouseInvInterfaceIndex; i3 != i4;) {
-								if (i3 > i4) {
-									class9.swapInventoryItems(i3, i3 - 1);
-									i3--;
-								} else if (i3 < i4) {
-									class9.swapInventoryItems(i3, i3 + 1);
-									i3++;
+							dragInterface.itemIdsPlusOne[l3] = dragInterface.itemIdsPlusOne[l2];
+							dragInterface.itemQuantities[l3] = dragInterface.itemQuantities[l2];
+							dragInterface.itemIdsPlusOne[l2] = -1;
+							dragInterface.itemQuantities[l2] = 0;
+						} else if (insertFlag == 1) {
+							int stepSlot = dragSlotIndex;
+							for (int stepTarget = mouseInvInterfaceIndex; stepSlot != stepTarget;) {
+								if (stepSlot > stepTarget) {
+									dragInterface.swapInventoryItems(stepSlot, stepSlot - 1);
+									stepSlot--;
+								} else if (stepSlot < stepTarget) {
+									dragInterface.swapInventoryItems(stepSlot, stepSlot + 1);
+									stepSlot++;
 								}
 							}
 
 						} else {
-							class9.swapInventoryItems(dragSlotIndex, mouseInvInterfaceIndex);
+							dragInterface.swapInventoryItems(dragSlotIndex, mouseInvInterfaceIndex);
 						}
 						stream.writeEncryptedOpcode(214);
 						stream.writeShortLittleEndianAdd128(dragInterfaceId);
-						stream.writeNegatedByte(j1);
+						stream.writeNegatedByte(insertFlag);
 						stream.writeShortLittleEndianAdd128(dragSlotIndex);
 						stream.writeShortLittleEndian(mouseInvInterfaceIndex);
 					}
@@ -12143,7 +12143,7 @@ public class Game extends RSApplet {
 		collisionMaps = new CollisionMap[4];
 		needDrawChatModeButtons = false;
 		soundType = new int[50];
-		aBoolean1242 = false;
+		dragMoved = false;
 		soundDelay = new int[50];
 		soundVolume = new int[50];
 		rsAlreadyLoaded = false;
@@ -12540,7 +12540,7 @@ public class Game extends RSApplet {
 	public int anInt1238;
 	public final int anInt1239 = 100;
 	public final int[] soundType;
-	public boolean aBoolean1242;
+	public boolean dragMoved;
 	public int atInventoryLoopCycle;
 	public int atInventoryInterface;
 	public int atInventoryIndex;
@@ -12981,7 +12981,7 @@ public class Game extends RSApplet {
 			if (interf != null && (interf.aBoolean259 || interf.aBoolean235)
 					&& mouseInvInterfaceIndex >= 0 && mouseInvInterfaceIndex < interf.itemIdsPlusOne.length
 					&& interf.itemIdsPlusOne[mouseInvInterfaceIndex] > 0) {
-				aBoolean1242 = true;
+				dragMoved = true;
 				dragHeldCycles = 10;
 				dragInterfaceId = lastActiveInvInterface;
 				dragSlotIndex = mouseInvInterfaceIndex;

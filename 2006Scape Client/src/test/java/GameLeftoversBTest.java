@@ -268,7 +268,7 @@ public class GameLeftoversBTest {
         inv.itemIdsPlusOne = ids.clone(); inv.itemQuantities = new int[ids.length];
         RSInterface.interfaceCache[4] = inv;
         s.dragInterfaceId = 4; s.dragSlotIndex = from; s.hoverSlot = to;
-        s.activeInterfaceType = 1; s.aBoolean1242 = true; s.dragHeldCycles = 10; s.clickMode2 = 0;
+        s.activeInterfaceType = 1; s.dragMoved = true; s.dragHeldCycles = 10; s.clickMode2 = 0;
         try { s.mainGameProcessor(); } catch (RuntimeException e) { /* code after the drag needs a live session */ }
         return inv.itemIdsPlusOne;
     }
