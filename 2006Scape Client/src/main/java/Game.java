@@ -613,12 +613,12 @@ public class Game extends RSApplet {
 					RSInterface class9 = RSInterface.interfaceCache[j2];
 					if (class9.aBoolean259 || class9.aBoolean235) {
 						aBoolean1242 = false;
-						anInt989 = 0;
-						anInt1084 = j2;
-						anInt1085 = l1;
+						dragHeldCycles = 0;
+						dragInterfaceId = j2;
+						dragSlotIndex = l1;
 						activeInterfaceType = 2;
-						anInt1087 = super.saveClickX;
-						anInt1088 = super.saveClickY;
+						dragStartX = super.saveClickX;
+						dragStartY = super.saveClickY;
 						if (RSInterface.interfaceCache[j2].parentID == openInterfaceID) {
 							activeInterfaceType = 1;
 						}
@@ -1059,9 +1059,9 @@ public class Game extends RSApplet {
 			j2 += class9_1.offsetY;
 			if ((class9_1.hoverRedirectId >= 0 || class9_1.disabledHoverColor != 0) && k >= i2 && i1 >= j2 && k < i2 + class9_1.width && i1 < j2 + class9_1.height) {
 				if (class9_1.hoverRedirectId >= 0) {
-					anInt886 = class9_1.hoverRedirectId;
+					areaHoverId = class9_1.hoverRedirectId;
 				} else {
-					anInt886 = class9_1.id;
+					areaHoverId = class9_1.id;
 				}
 			}
 			if (class9_1.type == 0) {
@@ -1132,7 +1132,7 @@ public class Game extends RSApplet {
 								if (class9_1.itemIdsPlusOne[k2] > 0) {
 									ItemDef itemDef = ItemDef.forID(class9_1.itemIdsPlusOne[k2] - 1);
 									if (itemSelected == 1 && class9_1.isInventoryInterface) {
-										if (class9_1.id != anInt1284 || k2 != anInt1283) {
+										if (class9_1.id != selectedItemInterfaceId || k2 != selectedItemSlot) {
 											menuActionName[menuActionRow] = "Use " + selectedItemName + " with @lre@" + itemDef.name;
 											menuActionID[menuActionRow] = 870;
 											menuActionCmd1[menuActionRow] = itemDef.id;
@@ -3156,8 +3156,8 @@ public class Game extends RSApplet {
 			}
 		}
 		if (activeInterfaceType != 0) {
-			anInt989++;
-			if (super.mouseX > anInt1087 + 5 || super.mouseX < anInt1087 - 5 || super.mouseY > anInt1088 + 5 || super.mouseY < anInt1088 - 5) {
+			dragHeldCycles++;
+			if (super.mouseX > dragStartX + 5 || super.mouseX < dragStartX - 5 || super.mouseY > dragStartY + 5 || super.mouseY < dragStartY - 5) {
 				aBoolean1242 = true;
 			}
 			if (super.clickMode2 == 0) {
@@ -3168,11 +3168,11 @@ public class Game extends RSApplet {
 					inputTaken = true;
 				}
 				activeInterfaceType = 0;
-				if (aBoolean1242 && anInt989 >= 5) {
+				if (aBoolean1242 && dragHeldCycles >= 5) {
 					lastActiveInvInterface = -1;
 					processRightClick();
-					if (lastActiveInvInterface == anInt1084 && mouseInvInterfaceIndex != anInt1085) {
-						RSInterface class9 = RSInterface.interfaceCache[anInt1084];
+					if (lastActiveInvInterface == dragInterfaceId && mouseInvInterfaceIndex != dragSlotIndex) {
+						RSInterface class9 = RSInterface.interfaceCache[dragInterfaceId];
 						int j1 = 0;
 						if (insertDragMode == 1 && class9.contentType == 206) {
 							j1 = 1;
@@ -3181,14 +3181,14 @@ public class Game extends RSApplet {
 							j1 = 0;
 						}
 						if (class9.aBoolean235) {
-							int l2 = anInt1085;
+							int l2 = dragSlotIndex;
 							int l3 = mouseInvInterfaceIndex;
 							class9.itemIdsPlusOne[l3] = class9.itemIdsPlusOne[l2];
 							class9.itemQuantities[l3] = class9.itemQuantities[l2];
 							class9.itemIdsPlusOne[l2] = -1;
 							class9.itemQuantities[l2] = 0;
 						} else if (j1 == 1) {
-							int i3 = anInt1085;
+							int i3 = dragSlotIndex;
 							for (int i4 = mouseInvInterfaceIndex; i3 != i4;) {
 								if (i3 > i4) {
 									class9.swapInventoryItems(i3, i3 - 1);
@@ -3200,12 +3200,12 @@ public class Game extends RSApplet {
 							}
 
 						} else {
-							class9.swapInventoryItems(anInt1085, mouseInvInterfaceIndex);
+							class9.swapInventoryItems(dragSlotIndex, mouseInvInterfaceIndex);
 						}
 						stream.writeEncryptedOpcode(214);
-						stream.writeShortLittleEndianAdd128(anInt1084);
+						stream.writeShortLittleEndianAdd128(dragInterfaceId);
 						stream.writeNegatedByte(j1);
-						stream.writeShortLittleEndianAdd128(anInt1085);
+						stream.writeShortLittleEndianAdd128(dragSlotIndex);
 						stream.writeShortLittleEndian(mouseInvInterfaceIndex);
 					}
 				} else if ((leftClickOpensMenu == 1 || menuHasAddFriend(menuActionRow - 1)) && menuActionRow > 2) {
@@ -3688,10 +3688,10 @@ public class Game extends RSApplet {
 				crossType = 2;
 				crossIndex = 0;
 				stream.writeEncryptedOpcode(57);
-				stream.writeShortBigEndianAdd128(anInt1285);
+				stream.writeShortBigEndianAdd128(selectedItemId);
 				stream.writeShortBigEndianAdd128(i1);
-				stream.writeShortLittleEndian(anInt1283);
-				stream.writeShortBigEndianAdd128(anInt1284);
+				stream.writeShortLittleEndian(selectedItemSlot);
+				stream.writeShortBigEndianAdd128(selectedItemInterfaceId);
 			}
 		}
 		if (l == 234) {
@@ -3710,12 +3710,12 @@ public class Game extends RSApplet {
 		}
 		if (l == 62 && walkToSceneObject(i1, k, j)) {
 			stream.writeEncryptedOpcode(192);
-			stream.writeShortBigEndian(anInt1284);
+			stream.writeShortBigEndian(selectedItemInterfaceId);
 			stream.writeShortLittleEndian(i1 >> 14 & 0x7fff);
 			stream.writeShortLittleEndianAdd128(k + baseY);
-			stream.writeShortLittleEndian(anInt1283);
+			stream.writeShortLittleEndian(selectedItemSlot);
 			stream.writeShortLittleEndianAdd128(j + baseX);
-			stream.writeShortBigEndian(anInt1285);
+			stream.writeShortBigEndian(selectedItemId);
 		}
 		if (l == 511) {
 			boolean flag2 = doWalkTo(2, 0, 0, 0, myPlayer.smallY[0], 0, 0, k, myPlayer.smallX[0], false, j);
@@ -3727,11 +3727,11 @@ public class Game extends RSApplet {
 			crossType = 2;
 			crossIndex = 0;
 			stream.writeEncryptedOpcode(25);
-			stream.writeShortLittleEndian(anInt1284);
-			stream.writeShortBigEndianAdd128(anInt1285);
+			stream.writeShortLittleEndian(selectedItemInterfaceId);
+			stream.writeShortBigEndianAdd128(selectedItemId);
 			stream.writeShortBigEndian(i1);
 			stream.writeShortBigEndianAdd128(k + baseY);
-			stream.writeShortLittleEndianAdd128(anInt1283);
+			stream.writeShortLittleEndianAdd128(selectedItemSlot);
 			stream.writeShortBigEndian(j + baseX);
 		}
 		if (l == 74) {
@@ -3933,10 +3933,10 @@ public class Game extends RSApplet {
 		if (l == 870) {
 			stream.writeEncryptedOpcode(53);
 			stream.writeShortBigEndian(j);
-			stream.writeShortBigEndianAdd128(anInt1283);
+			stream.writeShortBigEndianAdd128(selectedItemSlot);
 			stream.writeShortLittleEndianAdd128(i1);
-			stream.writeShortBigEndian(anInt1284);
-			stream.writeShortLittleEndian(anInt1285);
+			stream.writeShortBigEndian(selectedItemInterfaceId);
+			stream.writeShortLittleEndian(selectedItemId);
 			stream.writeShortBigEndian(k);
 			atInventoryLoopCycle = 0;
 			atInventoryInterface = k;
@@ -4328,10 +4328,10 @@ public class Game extends RSApplet {
 				crossType = 2;
 				crossIndex = 0;
 				stream.writeEncryptedOpcode(14);
-				// stream.writeShortBigEndianAdd128(anInt1284);
+				// stream.writeShortBigEndianAdd128(selectedItemInterfaceId);
 				stream.writeShortBigEndian(i1);
-				// stream.writeShortBigEndian(anInt1285);
-				stream.writeShortLittleEndian(anInt1283);
+				// stream.writeShortBigEndian(selectedItemId);
+				stream.writeShortLittleEndian(selectedItemSlot);
 			}
 		}
 		if (l == 639) {
@@ -4455,9 +4455,9 @@ public class Game extends RSApplet {
 				return;
 			}
 			itemSelected = 1;
-			anInt1283 = j;
-			anInt1284 = k;
-			anInt1285 = i1;
+			selectedItemSlot = j;
+			selectedItemInterfaceId = k;
+			selectedItemId = i1;
 			selectedItemName = ItemDef.forID(i1).name;
 			spellSelected = 0;
 			needDrawTabArea = true;
@@ -5941,15 +5941,15 @@ public class Game extends RSApplet {
 		menuActionID[0] = 1107;
 		menuActionRow = 1;
 		 if (fullScreenInterfaceId != -1) {
-			anInt886 = 0;
+			areaHoverId = 0;
 			buildInterfaceMenu(0, RSInterface.interfaceCache[fullScreenInterfaceId], super.mouseX, 0, super.mouseY, 0);
-			if (anInt886 != anInt1026) {
-				anInt1026 = anInt886;
+			if (areaHoverId != viewportHoverId) {
+				viewportHoverId = areaHoverId;
 			}
 			return;
 		}
 		buildSplitPrivateChatMenu();
-		anInt886 = 0;
+		areaHoverId = 0;
 		if (super.mouseX > 4 && super.mouseY > 4 && super.mouseX < 516 && super.mouseY < 338) {
 			if (openInterfaceID != -1) {
 				buildInterfaceMenu(4, RSInterface.interfaceCache[openInterfaceID], super.mouseX, 4, super.mouseY, 0);
@@ -5957,10 +5957,10 @@ public class Game extends RSApplet {
 				build3dScreenMenu();
 			}
 		}
-		if (anInt886 != anInt1026) {
-			anInt1026 = anInt886;
+		if (areaHoverId != viewportHoverId) {
+			viewportHoverId = areaHoverId;
 		}
-		anInt886 = 0;
+		areaHoverId = 0;
 		if (super.mouseX > 553 && super.mouseY > 205 && super.mouseX < 743 && super.mouseY < 466) {
 			if (invOverlayInterfaceID != -1) {
 				buildInterfaceMenu(553, RSInterface.interfaceCache[invOverlayInterfaceID], super.mouseX, 205, super.mouseY, 0);
@@ -5968,11 +5968,11 @@ public class Game extends RSApplet {
 				buildInterfaceMenu(553, RSInterface.interfaceCache[tabInterfaceIDs[tabID]], super.mouseX, 205, super.mouseY, 0);
 			}
 		}
-		if (anInt886 != anInt1048) {
+		if (areaHoverId != tabAreaHoverId) {
 			needDrawTabArea = true;
-			anInt1048 = anInt886;
+			tabAreaHoverId = areaHoverId;
 		}
-		anInt886 = 0;
+		areaHoverId = 0;
 		if (super.mouseX > 17 && super.mouseY > 357 && super.mouseX < 496 && super.mouseY < 453) {
 			if (backDialogID != -1) {
 				buildInterfaceMenu(17, RSInterface.interfaceCache[backDialogID], super.mouseX, 357, super.mouseY, 0);
@@ -5982,9 +5982,9 @@ public class Game extends RSApplet {
 				buildChatAreaMenu(super.mouseY - 357);
 			}
 		}
-		if ((backDialogID != -1 || dialogID != -1) && anInt886 != anInt1039) {//TODO remove if any issues
+		if ((backDialogID != -1 || dialogID != -1) && areaHoverId != chatAreaHoverId) {//TODO remove if any issues
 			inputTaken = true;
-			anInt1039 = anInt886;
+			chatAreaHoverId = areaHoverId;
 		}
 		processMinimapActions();
 		boolean flag = false;
@@ -8175,7 +8175,7 @@ public class Game extends RSApplet {
 		if (container.type != 0 || container.children == null) {
 			return;
 		}
-		if (container.hidden && anInt1026 != container.id && anInt1048 != container.id && anInt1039 != container.id) {
+		if (container.hidden && viewportHoverId != container.id && tabAreaHoverId != container.id && chatAreaHoverId != container.id) {
 			return;
 		}
 		int savedTopX = DrawingArea.topX;
@@ -8219,23 +8219,23 @@ public class Game extends RSApplet {
 								int dragOffsetX = 0;
 								int dragOffsetY = 0;
 								int itemId = component.itemIdsPlusOne[slotIndex] - 1;
-								if (slotX > DrawingArea.topX - 32 && slotX < DrawingArea.bottomX && slotY > DrawingArea.topY - 32 && slotY < DrawingArea.bottomY || activeInterfaceType != 0 && anInt1085 == slotIndex) {
+								if (slotX > DrawingArea.topX - 32 && slotX < DrawingArea.bottomX && slotY > DrawingArea.topY - 32 && slotY < DrawingArea.bottomY || activeInterfaceType != 0 && dragSlotIndex == slotIndex) {
 									int outlineColor = 0;
-									if (itemSelected == 1 && anInt1283 == slotIndex && anInt1284 == component.id) {
+									if (itemSelected == 1 && selectedItemSlot == slotIndex && selectedItemInterfaceId == component.id) {
 										outlineColor = 0xffffff;
 									}
 									Sprite itemSprite = ItemDef.getSprite(itemId, component.itemQuantities[slotIndex], outlineColor);
 									if (itemSprite != null) {
-										if (activeInterfaceType != 0 && anInt1085 == slotIndex && anInt1084 == component.id) {
-											dragOffsetX = super.mouseX - anInt1087;
-											dragOffsetY = super.mouseY - anInt1088;
+										if (activeInterfaceType != 0 && dragSlotIndex == slotIndex && dragInterfaceId == component.id) {
+											dragOffsetX = super.mouseX - dragStartX;
+											dragOffsetY = super.mouseY - dragStartY;
 											if (dragOffsetX < 5 && dragOffsetX > -5) {
 												dragOffsetX = 0;
 											}
 											if (dragOffsetY < 5 && dragOffsetY > -5) {
 												dragOffsetY = 0;
 											}
-											if (anInt989 < 5) {
+											if (dragHeldCycles < 5) {
 												dragOffsetX = 0;
 												dragOffsetY = 0;
 											}
@@ -8250,7 +8250,7 @@ public class Game extends RSApplet {
 													scrollUpAmount = container.scrollPosition;
 												}
 												container.scrollPosition -= scrollUpAmount;
-												anInt1088 += scrollUpAmount;
+												dragStartY += scrollUpAmount;
 											}
 											if (slotY + dragOffsetY + 32 > DrawingArea.bottomY && container.scrollPosition < container.scrollMax - container.height) {
 												int scrollDownAmount = cyclesSinceDraw * (slotY + dragOffsetY + 32 - DrawingArea.bottomY) / 3;
@@ -8261,7 +8261,7 @@ public class Game extends RSApplet {
 													scrollDownAmount = container.scrollMax - container.height - container.scrollPosition;
 												}
 												container.scrollPosition += scrollDownAmount;
-												anInt1088 -= scrollDownAmount;
+												dragStartY -= scrollDownAmount;
 											}
 										} else if (atInventoryInterfaceType != 0 && atInventoryIndex == slotIndex && atInventoryInterface == component.id) {
 											// Using item? wear/unequip etc
@@ -8292,7 +8292,7 @@ public class Game extends RSApplet {
 
 				} else if (component.type == 3) {
 					boolean hovered = false;
-					if (anInt1039 == component.id || anInt1048 == component.id || anInt1026 == component.id) {
+					if (chatAreaHoverId == component.id || tabAreaHoverId == component.id || viewportHoverId == component.id) {
 						hovered = true;
 					}
 					int color;
@@ -8322,7 +8322,7 @@ public class Game extends RSApplet {
 					TextDrawingArea textDrawingArea = component.textDrawingAreas;
 					String text = component.disabledText;
 					boolean hovered = false;
-					if (anInt1039 == component.id || anInt1048 == component.id || anInt1026 == component.id) {
+					if (chatAreaHoverId == component.id || tabAreaHoverId == component.id || viewportHoverId == component.id) {
 						hovered = true;
 					}
 					int color;
@@ -12220,7 +12220,7 @@ public class Game extends RSApplet {
 	public String reportAbuseInput;
 	public int unknownInt10;
 	public boolean menuOpen;
-	public int anInt886;
+	public int areaHoverId;
 	public String inputString;
 	public final int maxPlayers;
 	public final int myPlayerIndex;
@@ -12312,7 +12312,7 @@ public class Game extends RSApplet {
 	public static int anInt986;
 	public Sprite[] hitMarks;
 	public int cameraDriftTimer;
-	public int anInt989;
+	public int dragHeldCycles;
 	public final int[] designerColorIndices;
 	public static boolean aBoolean993;
 	public int anInt995;
@@ -12344,7 +12344,7 @@ public class Game extends RSApplet {
 	public int loadingStage;
 	public Background scrollUpArrow;
 	public Background scrollDownArrow;
-	public int anInt1026;
+	public int viewportHoverId;
 	public Background backBase1;
 	public Background backBase2;
 	public Background backHmid1;
@@ -12356,7 +12356,7 @@ public class Game extends RSApplet {
 	public int anInt1036;
 	public int anInt1037;
 	public int loginFailures;
-	public int anInt1039;
+	public int chatAreaHoverId;
 	public int anInt1040;
 	public int anInt1041;
 	public int dialogID;
@@ -12364,7 +12364,7 @@ public class Game extends RSApplet {
 	public final int[] anIntArray1045;
 	public int anInt1046;
 	public boolean designerMale;
-	public int anInt1048;
+	public int tabAreaHoverId;
 	public String lastLoadingMessage;
 	public static int anInt1051;
 	public final int[] minimapScanlineStarts;
@@ -12397,11 +12397,11 @@ public class Game extends RSApplet {
 	public boolean aBoolean1080;
 	public String[] friendsList;
 	public Stream inStream;
-	public int anInt1084;
-	public int anInt1085;
+	public int dragInterfaceId;
+	public int dragSlotIndex;
 	public int activeInterfaceType;
-	public int anInt1087;
-	public int anInt1088;
+	public int dragStartX;
+	public int dragStartY;
 	public int anInt1089;
 	public final int[] expectedCRCs;
 	public int[] menuActionCmd2;
@@ -12578,9 +12578,9 @@ public class Game extends RSApplet {
 	public int[] bigX;
 	public int[] bigY;
 	public int itemSelected;
-	public int anInt1283;
-	public int anInt1284;
-	public int anInt1285;
+	public int selectedItemSlot;
+	public int selectedItemInterfaceId;
+	public int selectedItemId;
 	public String selectedItemName;
 	public static int waypointsSinceKeepAlive;
 	public int anInt1289;
@@ -12982,12 +12982,12 @@ public class Game extends RSApplet {
 					&& mouseInvInterfaceIndex >= 0 && mouseInvInterfaceIndex < interf.itemIdsPlusOne.length
 					&& interf.itemIdsPlusOne[mouseInvInterfaceIndex] > 0) {
 				aBoolean1242 = true;
-				anInt989 = 10;
-				anInt1084 = lastActiveInvInterface;
-				anInt1085 = mouseInvInterfaceIndex;
+				dragHeldCycles = 10;
+				dragInterfaceId = lastActiveInvInterface;
+				dragSlotIndex = mouseInvInterfaceIndex;
 				activeInterfaceType = 2;
-				anInt1087 = x;
-				anInt1088 = y;
+				dragStartX = x;
+				dragStartY = y;
 				if (openInterfaceID != -1 && interf.parentID == openInterfaceID) {
 					activeInterfaceType = 1;
 				}

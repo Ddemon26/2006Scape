@@ -257,7 +257,7 @@ public class GameLeftoversBTest {
         @Override public void advanceNpcEntities() { }
         @Override public void decrementOverheadTextTimers() { }
         @Override public void dropClient() { }
-        @Override public void processRightClick() { lastActiveInvInterface = anInt1084; mouseInvInterfaceIndex = hoverSlot; }
+        @Override public void processRightClick() { lastActiveInvInterface = dragInterfaceId; mouseInvInterfaceIndex = hoverSlot; }
     }
     private int[] drag(int mode, int contentType, int[] ids, int from, int to) throws Exception {
         DragSpy s = new DragSpy();
@@ -267,8 +267,8 @@ public class GameLeftoversBTest {
         RSInterface inv = new RSInterface(); inv.id = 4; inv.contentType = contentType;
         inv.itemIdsPlusOne = ids.clone(); inv.itemQuantities = new int[ids.length];
         RSInterface.interfaceCache[4] = inv;
-        s.anInt1084 = 4; s.anInt1085 = from; s.hoverSlot = to;
-        s.activeInterfaceType = 1; s.aBoolean1242 = true; s.anInt989 = 10; s.clickMode2 = 0;
+        s.dragInterfaceId = 4; s.dragSlotIndex = from; s.hoverSlot = to;
+        s.activeInterfaceType = 1; s.aBoolean1242 = true; s.dragHeldCycles = 10; s.clickMode2 = 0;
         try { s.mainGameProcessor(); } catch (RuntimeException e) { /* code after the drag needs a live session */ }
         return inv.itemIdsPlusOne;
     }

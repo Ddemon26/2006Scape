@@ -68,7 +68,7 @@ public class InterfaceFieldRolesTest {
         Arrays.fill(DrawingArea.pixels, BG);
         RSInterface c = rect(12, 8); c.textColor = textColor; c.enabledColor = a219; c.disabledHoverColor = a216; c.enabledHoverColor = a239;
         select(c, selected);
-        g.anInt1026 = hoverId == 1026 ? 2 : 0; g.anInt1039 = hoverId == 1039 ? 2 : 0; g.anInt1048 = hoverId == 1048 ? 2 : 0;
+        g.viewportHoverId = hoverId == 1026 ? 2 : 0; g.chatAreaHoverId = hoverId == 1039 ? 2 : 0; g.tabAreaHoverId = hoverId == 1048 ? 2 : 0;
         draw(scene(c));
         return px(10, 20);
     }
@@ -84,7 +84,7 @@ public class InterfaceFieldRolesTest {
         assertEquals(0x222222, outlineColor(true, 1039, 0x111111, 0x222222, 0x333333, 0));
         // a different id is not hovered
         Arrays.fill(DrawingArea.pixels, BG);
-        RSInterface c = rect(12, 8); c.textColor = 0x111111; c.disabledHoverColor = 0x333333; select(c, false); g.anInt1026 = 0; g.anInt1048 = 0; g.anInt1039 = 3;
+        RSInterface c = rect(12, 8); c.textColor = 0x111111; c.disabledHoverColor = 0x333333; select(c, false); g.viewportHoverId = 0; g.tabAreaHoverId = 0; g.chatAreaHoverId = 3;
         draw(scene(c)); assertEquals(0x111111, px(10, 20));
     }
 
@@ -117,12 +117,12 @@ public class InterfaceFieldRolesTest {
 
     // ---------- hidden ----------
     @Test public void hiddenParentIsNotDrawnUnlessAHoverIdMatches() {
-        g.anInt1026 = 0; g.anInt1039 = 0; g.anInt1048 = 0;
+        g.viewportHoverId = 0; g.chatAreaHoverId = 0; g.tabAreaHoverId = 0;
         RSInterface c = rect(12, 8); c.textColor = 0xff0000; RSInterface root = scene(c);
         root.hidden = true; draw(root); assertEquals(BG, px(10, 20));
-        g.anInt1026 = 1; draw(root); assertEquals(0xff0000, px(10, 20)); g.anInt1026 = 0; Arrays.fill(DrawingArea.pixels, BG);
-        g.anInt1048 = 1; draw(root); assertEquals(0xff0000, px(10, 20)); g.anInt1048 = 0; Arrays.fill(DrawingArea.pixels, BG);
-        g.anInt1039 = 1; draw(root); assertEquals(0xff0000, px(10, 20)); g.anInt1039 = 0; Arrays.fill(DrawingArea.pixels, BG);
+        g.viewportHoverId = 1; draw(root); assertEquals(0xff0000, px(10, 20)); g.viewportHoverId = 0; Arrays.fill(DrawingArea.pixels, BG);
+        g.tabAreaHoverId = 1; draw(root); assertEquals(0xff0000, px(10, 20)); g.tabAreaHoverId = 0; Arrays.fill(DrawingArea.pixels, BG);
+        g.chatAreaHoverId = 1; draw(root); assertEquals(0xff0000, px(10, 20)); g.chatAreaHoverId = 0; Arrays.fill(DrawingArea.pixels, BG);
         root.hidden = false; draw(root); assertEquals(0xff0000, px(10, 20));
         // the flag is read on the container only: a flagged child still draws
         Arrays.fill(DrawingArea.pixels, BG); c.hidden = true; draw(root); assertEquals(0xff0000, px(10, 20));
@@ -149,11 +149,11 @@ public class InterfaceFieldRolesTest {
     // ---------- hover redirect id ----------
     @Test public void hoverRedirectIdReplacesTheHoveredId() {
         RSInterface c = new RSInterface(); c.type = 5; c.width = 12; c.height = 8; c.hoverRedirectId = 9; RSInterface root = scene(c);
-        g.anInt886 = 0; g.buildInterfaceMenu(0, root, 15, 0, 24, 0); assertEquals(9, g.anInt886);          // redirect id wins over own id
-        c.hoverRedirectId = 0; g.anInt886 = 55; g.buildInterfaceMenu(0, root, 15, 0, 24, 0); assertEquals(0, g.anInt886);   // 0 is a real redirect target
-        c.hoverRedirectId = -1; g.anInt886 = 55; g.buildInterfaceMenu(0, root, 15, 0, 24, 0); assertEquals(55, g.anInt886); // -1 and no hover colour: untouched
-        c.disabledHoverColor = 0x1234; g.anInt886 = 0; g.buildInterfaceMenu(0, root, 15, 0, 24, 0); assertEquals(2, g.anInt886); // hover colour alone tracks own id
-        c.hoverRedirectId = 9; g.anInt886 = 0; g.buildInterfaceMenu(0, root, 40, 0, 24, 0); assertEquals(0, g.anInt886);     // outside
+        g.areaHoverId = 0; g.buildInterfaceMenu(0, root, 15, 0, 24, 0); assertEquals(9, g.areaHoverId);          // redirect id wins over own id
+        c.hoverRedirectId = 0; g.areaHoverId = 55; g.buildInterfaceMenu(0, root, 15, 0, 24, 0); assertEquals(0, g.areaHoverId);   // 0 is a real redirect target
+        c.hoverRedirectId = -1; g.areaHoverId = 55; g.buildInterfaceMenu(0, root, 15, 0, 24, 0); assertEquals(55, g.areaHoverId); // -1 and no hover colour: untouched
+        c.disabledHoverColor = 0x1234; g.areaHoverId = 0; g.buildInterfaceMenu(0, root, 15, 0, 24, 0); assertEquals(2, g.areaHoverId); // hover colour alone tracks own id
+        c.hoverRedirectId = 9; g.areaHoverId = 0; g.buildInterfaceMenu(0, root, 40, 0, 24, 0); assertEquals(0, g.areaHoverId);     // outside
     }
 
     // ---------- content type ----------
