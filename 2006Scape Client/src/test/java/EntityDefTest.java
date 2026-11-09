@@ -539,7 +539,7 @@ public class EntityDefTest {
         int[] savedState = saveRaster(); int[] savedPixels = DrawingArea.pixels; int[] savedOffsets = Texture.lineOffsets; Player savedMe = Game.myPlayer;
         try {
             TestGame g = new TestGame();
-            g.aRSImageProducer_1164 = producer(172, 156); g.aRSImageProducer_1165 = producer(8, 8);
+            g.minimapIP = producer(172, 156); g.worldViewIP = producer(8, 8);
             g.minimapState = 0; g.compass = new Sprite(1, 1); g.minimapSprite = new Sprite(1, 1); g.mapDotNPC = new Sprite(1, 1);
             g.groundArray = new NodeList[4][104][104]; g.plane = 0; g.playerCount = 0; g.mapFunctionIconCount = 0; g.hintIconType = 0; g.destX = 0;
             g.variousSettings = new int[10];

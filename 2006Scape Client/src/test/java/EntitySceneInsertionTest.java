@@ -143,7 +143,7 @@ public class EntitySceneInsertionTest {
 
     private static void setupFrame(TestGame g) throws Exception {
         DrawingArea.width = 8; DrawingArea.height = 8; DrawingArea.pixels = new int[64];
-        g.aRSImageProducer_1165 = (RSImageProducer) unsafe().allocateInstance(RSImageProducer.class);
+        g.worldViewIP = (RSImageProducer) unsafe().allocateInstance(RSImageProducer.class);
         f(RSApplet.class, "graphics").set(g, new java.awt.image.BufferedImage(8, 8, 1).createGraphics());
         g.aBoolean1160 = true;
         g.xCameraPos = 11; g.zCameraPos = 22; g.yCameraPos = 33; g.yCameraCurve = 200; g.xCameraCurve = 44;

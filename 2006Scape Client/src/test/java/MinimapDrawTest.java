@@ -47,8 +47,8 @@ public class MinimapDrawTest {
         savedPlayer = Game.myPlayer;
         g = new Rec();
         Fixture c = new Fixture();
-        g.aRSImageProducer_1164 = new RSImageProducer(172, 156, c);
-        g.aRSImageProducer_1165 = new RSImageProducer(512, 334, c);
+        g.minimapIP = new RSImageProducer(172, 156, c);
+        g.worldViewIP = new RSImageProducer(512, 334, c);
         map = new Sprite(512, 512);
         g.minimapSprite = map;
         g.compass = new Sprite(33, 33);
@@ -90,12 +90,12 @@ public class MinimapDrawTest {
     }
 
     private void drawFresh() {
-        Arrays.fill(g.aRSImageProducer_1164.pixels, 0);
+        Arrays.fill(g.minimapIP.pixels, 0);
         g.drawMinimap();
     }
 
     private int[] scan(int rgb) {
-        int[] r = g.aRSImageProducer_1164.pixels;
+        int[] r = g.minimapIP.pixels;
         long sx = 0, sy = 0; int n = 0;
         for (int y = 0; y < 156; y++) for (int x = 0; x < 172; x++) if (r[x + y * 172] == rgb) { sx += x; sy += y; n++; }
         return n == 0 ? new int[] {0, -1, -1} : new int[] {n, (int) (sx / n), (int) (sy / n)};
@@ -137,10 +137,10 @@ public class MinimapDrawTest {
         assertArrayEquals("sum of the two angles", half, scan(0x00ff00));
         g.cameraYawBase = 2000; g.minimapRotationDrift = 100;
         drawFresh();
-        int[] saved = g.aRSImageProducer_1164.pixels.clone();
+        int[] saved = g.minimapIP.pixels.clone();
         g.cameraYawBase = 52; g.minimapRotationDrift = 0;
         drawFresh();
-        assertArrayEquals("2100 & 0x7ff == 52", saved, g.aRSImageProducer_1164.pixels);
+        assertArrayEquals("2100 & 0x7ff == 52", saved, g.minimapIP.pixels);
     }
 
     @Test public void zoomOffsetScalesTheImageAboutThePlayerWithoutRotatingIt() {
@@ -170,11 +170,11 @@ public class MinimapDrawTest {
         back.paletteIndices[5] = 1;
         g.mapBack = back;
         g.minimapState = 2;
-        Arrays.fill(g.aRSImageProducer_1164.pixels, 0x778899);
+        Arrays.fill(g.minimapIP.pixels, 0x778899);
         g.groundArray[0][3][3] = new NodeList();
         g.drawMinimap();
-        assertEquals("index 0 cleared", 0, g.aRSImageProducer_1164.pixels[0]);
-        assertEquals("non-zero index kept", 0x778899, g.aRSImageProducer_1164.pixels[5]);
+        assertEquals("index 0 cleared", 0, g.minimapIP.pixels[0]);
+        assertEquals("non-zero index kept", 0x778899, g.minimapIP.pixels[5]);
         assertEquals(0, g.markers.size());
     }
 
@@ -288,7 +288,7 @@ public class MinimapDrawTest {
     /** Pixels of the given colour as "x,y" strings, in raster order. */
     private List<String> pixelsOf(int rgb) {
         List<String> r = new ArrayList<String>();
-        int[] p = g.aRSImageProducer_1164.pixels;
+        int[] p = g.minimapIP.pixels;
         for (int y = 0; y < 156; y++) for (int x = 0; x < 172; x++) if (p[x + y * 172] == rgb) r.add(x + "," + y);
         return r;
     }

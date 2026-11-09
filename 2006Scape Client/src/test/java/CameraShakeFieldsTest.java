@@ -21,7 +21,7 @@ public class CameraShakeFieldsTest {
         g.tileCentreEntityCycle = new int[104][104]; g.sceneDrawCycle = 1; g.plane = 0;
         g.worldController = new WorldController(new int[4][105][105]);
         DrawingArea.width = 8; DrawingArea.height = 8; DrawingArea.pixels = new int[64];
-        g.aRSImageProducer_1165 = (RSImageProducer) unsafe().allocateInstance(RSImageProducer.class);
+        g.worldViewIP = (RSImageProducer) unsafe().allocateInstance(RSImageProducer.class);
         f(RSApplet.class, "graphics").set(g, new java.awt.image.BufferedImage(8, 8, 1).createGraphics());
         g.aBoolean1160 = fixedCamera;
         g.xCameraPos = 1000; g.zCameraPos = 22; g.yCameraPos = 33; g.yCameraCurve = 200; g.xCameraCurve = 44;

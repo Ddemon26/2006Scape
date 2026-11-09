@@ -366,7 +366,7 @@ public class Game extends RSApplet {
 	}
 
 	public void drawChatArea() {
-		aRSImageProducer_1166.setAsDrawingArea();
+		chatPanelIP.setAsDrawingArea();
 		Texture.lineOffsets = chatAreaOffsets;
 		chatBack.drawNonzeroIndexed(0, 0);
 		if (messagePromptRaised) {
@@ -496,8 +496,8 @@ public class Game extends RSApplet {
 		if (menuOpen && menuScreenArea == 2) {
 			drawMenu();
 		}
-		aRSImageProducer_1166.drawGraphics(357, super.graphics, 17);
-		aRSImageProducer_1165.setAsDrawingArea();
+		chatPanelIP.drawGraphics(357, super.graphics, 17);
+		worldViewIP.setAsDrawingArea();
 		Texture.lineOffsets = chatBoxAreaOffsets;
 	}
 
@@ -774,8 +774,8 @@ public class Game extends RSApplet {
 			}
 			stream.writeEncryptedOpcode(0);
 			objectManager.buildTerrainScene(aClass11Array1230, worldController);
-			if(aRSImageProducer_1165 != null) {
-				aRSImageProducer_1165.setAsDrawingArea();
+			if(worldViewIP != null) {
+				worldViewIP.setAsDrawingArea();
 				Texture.lineOffsets = chatBoxAreaOffsets;
 			}
 			stream.writeEncryptedOpcode(0);
@@ -897,8 +897,8 @@ public class Game extends RSApplet {
 			}
 
 		}
-		if(aRSImageProducer_1165 != null) {
-			aRSImageProducer_1165.setAsDrawingArea();
+		if(worldViewIP != null) {
+			worldViewIP.setAsDrawingArea();
 			Texture.lineOffsets = chatBoxAreaOffsets;
 		}
 		mapFunctionIconCount = 0;
@@ -1808,7 +1808,7 @@ public class Game extends RSApplet {
 	}
 
 	public void drawTabArea() {
-		aRSImageProducer_1163.setAsDrawingArea();
+		tabPanelIP.setAsDrawingArea();
 		Texture.lineOffsets = tabAreaOffsets;
 		invBack.drawNonzeroIndexed(0, 0);
 		if (invOverlayInterfaceID == -1) {
@@ -1854,8 +1854,8 @@ public class Game extends RSApplet {
 		if (menuOpen && menuScreenArea == 1) {
 			drawMenu();
 		}
-		aRSImageProducer_1163.drawGraphics(205, super.graphics, 553);
-		aRSImageProducer_1165.setAsDrawingArea();
+		tabPanelIP.drawGraphics(205, super.graphics, 553);
+		worldViewIP.setAsDrawingArea();
 		Texture.lineOffsets = chatBoxAreaOffsets;
 	}
 
@@ -3611,8 +3611,8 @@ public class Game extends RSApplet {
 	}
 	
 	public void drawTextOnScreen(String s, String s1) {
-		if (aRSImageProducer_1165 != null) {
-			aRSImageProducer_1165.setAsDrawingArea();
+		if (worldViewIP != null) {
+			worldViewIP.setAsDrawingArea();
 			Texture.lineOffsets = chatBoxAreaOffsets;
 			int j = 151;
 			if (s != null)
@@ -3624,7 +3624,7 @@ public class Game extends RSApplet {
 				aTextDrawingArea_1271.drawCenteredLiteralText(0, s, j, 257);
 				aTextDrawingArea_1271.drawCenteredLiteralText(0xffffff, s, j - 1, 256);
 			}
-			aRSImageProducer_1165.drawGraphics(4, super.graphics, 4);
+			worldViewIP.drawGraphics(4, super.graphics, 4);
 			return;
 		}
 		if (super.fullGameScreen != null) {
@@ -4752,13 +4752,13 @@ public class Game extends RSApplet {
 		bigX = null;
 		bigY = null;
 		textureScrollScratch = null;
-		aRSImageProducer_1163 = null;
-		aRSImageProducer_1164 = null;
-		aRSImageProducer_1165 = null;
-		aRSImageProducer_1166 = null;
-		aRSImageProducer_1123 = null;
-		aRSImageProducer_1124 = null;
-		aRSImageProducer_1125 = null;
+		tabPanelIP = null;
+		minimapIP = null;
+		worldViewIP = null;
+		chatPanelIP = null;
+		chatModeButtonsIP = null;
+		tabIconsBottomIP = null;
+		tabIconsTopIP = null;
 		backLeftIP1 = null;
 		backLeftIP2 = null;
 		backRightIP1 = null;
@@ -5829,13 +5829,13 @@ public class Game extends RSApplet {
 			return;
 		}
 		super.fullGameScreen = null;
-		aRSImageProducer_1166 = null;
-		aRSImageProducer_1164 = null;
-		aRSImageProducer_1163 = null;
-		aRSImageProducer_1165 = null;
-		aRSImageProducer_1123 = null;
-		aRSImageProducer_1124 = null;
-		aRSImageProducer_1125 = null;
+		chatPanelIP = null;
+		minimapIP = null;
+		tabPanelIP = null;
+		worldViewIP = null;
+		chatModeButtonsIP = null;
+		tabIconsBottomIP = null;
+		tabIconsTopIP = null;
 		titleLeftFlamePaneProducer = new RSImageProducer(128, 265, getGameComponent());
 		DrawingArea.clearRaster();
 		titleRightFlamePaneProducer = new RSImageProducer(128, 265, getGameComponent());
@@ -5872,19 +5872,19 @@ public class Game extends RSApplet {
 		titleBottomRightProducer = null;
 		titleCenterLeftProducer = null;
 		titleCenterRightProducer = null;
-		aRSImageProducer_1166 = null;
-		aRSImageProducer_1164 = null;
-		aRSImageProducer_1163 = null;
-		aRSImageProducer_1165 = null;
-		aRSImageProducer_1123 = null;
-		aRSImageProducer_1125 = null;
-		aRSImageProducer_1124 = null;
+		chatPanelIP = null;
+		minimapIP = null;
+		tabPanelIP = null;
+		worldViewIP = null;
+		chatModeButtonsIP = null;
+		tabIconsTopIP = null;
+		tabIconsBottomIP = null;
 		super.fullGameScreen = new RSImageProducer(765, 503, getGameComponent());
 		welcomeScreenRaised = true;
 	}
 
 	public void resetImageProducers2() {
-		if (aRSImageProducer_1166 != null) {
+		if (chatPanelIP != null) {
 			return;
 		}
 		nullLoader();
@@ -5898,18 +5898,18 @@ public class Game extends RSApplet {
 		titleBottomRightProducer = null;
 		titleCenterLeftProducer = null;
 		titleCenterRightProducer = null;
-		aRSImageProducer_1166 = new RSImageProducer(479, 96, getGameComponent());
-		aRSImageProducer_1164 = new RSImageProducer(172, 156, getGameComponent());
+		chatPanelIP = new RSImageProducer(479, 96, getGameComponent());
+		minimapIP = new RSImageProducer(172, 156, getGameComponent());
 		DrawingArea.clearRaster();
 		mapBack.drawNonzeroIndexed(0, 0);
-		aRSImageProducer_1163 = new RSImageProducer(190, 261, getGameComponent());
-		aRSImageProducer_1165 = new RSImageProducer(512, 334, getGameComponent());
+		tabPanelIP = new RSImageProducer(190, 261, getGameComponent());
+		worldViewIP = new RSImageProducer(512, 334, getGameComponent());
 		DrawingArea.clearRaster();
-		aRSImageProducer_1123 = new RSImageProducer(496, 50, getGameComponent());
-		aRSImageProducer_1124 = new RSImageProducer(269, 37, getGameComponent());
-		aRSImageProducer_1125 = new RSImageProducer(249, 45, getGameComponent());
+		chatModeButtonsIP = new RSImageProducer(496, 50, getGameComponent());
+		tabIconsBottomIP = new RSImageProducer(269, 37, getGameComponent());
+		tabIconsTopIP = new RSImageProducer(249, 45, getGameComponent());
 		welcomeScreenRaised = true;
-		aRSImageProducer_1165.setAsDrawingArea();
+		worldViewIP.setAsDrawingArea();
 		Texture.lineOffsets = chatBoxAreaOffsets;
 		// SignLink.midii.fadeOut();
 	}
@@ -7896,8 +7896,8 @@ public class Game extends RSApplet {
 			tabAreaAltered = true;
 			aBoolean1233 = true;
 			if (loadingStage != 2) {
-				aRSImageProducer_1165.drawGraphics(4, super.graphics, 4);
-				aRSImageProducer_1164.drawGraphics(4, super.graphics, 550);
+				worldViewIP.drawGraphics(4, super.graphics, 4);
+				minimapIP.drawGraphics(4, super.graphics, 550);
 			}
 		}
 		if (loadingStage == 2) {
@@ -7966,7 +7966,7 @@ public class Game extends RSApplet {
 		}
 		if (loadingStage == 2) {
 			drawMinimap();
-			aRSImageProducer_1164.drawGraphics(4, super.graphics, 550);
+			minimapIP.drawGraphics(4, super.graphics, 550);
 		}
 		if (flashingTabId != -1) {
 			tabAreaAltered = true;
@@ -7978,7 +7978,7 @@ public class Game extends RSApplet {
 				stream.writeByte(tabID);
 			}
 			tabAreaAltered = false;
-			aRSImageProducer_1125.setAsDrawingArea();
+			tabIconsTopIP.setAsDrawingArea();
 			backHmid1.drawNonzeroIndexed(0, 0);
 			if (invOverlayInterfaceID == -1) {
 				if (tabInterfaceIDs[tabID] != -1) {
@@ -8026,8 +8026,8 @@ public class Game extends RSApplet {
 					sideIcons[6].drawNonzeroIndexed(208, 13);
 				}
 			}
-			aRSImageProducer_1125.drawGraphics(160, super.graphics, 516);
-			aRSImageProducer_1124.setAsDrawingArea();
+			tabIconsTopIP.drawGraphics(160, super.graphics, 516);
+			tabIconsBottomIP.setAsDrawingArea();
 			backBase2.drawNonzeroIndexed(0, 0);
 			if (invOverlayInterfaceID == -1) {
 				if (tabInterfaceIDs[tabID] != -1) {
@@ -8075,13 +8075,13 @@ public class Game extends RSApplet {
 					sideIcons[12].drawNonzeroIndexed(226, 2);
 				}
 			}
-			aRSImageProducer_1124.drawGraphics(466, super.graphics, 496);
-			aRSImageProducer_1165.setAsDrawingArea();
+			tabIconsBottomIP.drawGraphics(466, super.graphics, 496);
+			worldViewIP.setAsDrawingArea();
 			Texture.lineOffsets = chatBoxAreaOffsets;
 		}
 		if (aBoolean1233) {
 			aBoolean1233 = false;
-			aRSImageProducer_1123.setAsDrawingArea();
+			chatModeButtonsIP.setAsDrawingArea();
 			backBase1.drawNonzeroIndexed(0, 0);
 			aTextDrawingArea_1271.drawCenteredTaggedText(0xffffff, 55, "Public chat", 28, true);
 			if (publicChatMode == 0) {
@@ -8117,8 +8117,8 @@ public class Game extends RSApplet {
 				aTextDrawingArea_1271.drawCenteredTaggedText(0xff0000, 324, "Off", 41, true);
 			}
 			aTextDrawingArea_1271.drawCenteredTaggedText(0xffffff, 458, "Report abuse", 33, true);
-			aRSImageProducer_1123.drawGraphics(453, super.graphics, 0);
-			aRSImageProducer_1165.setAsDrawingArea();
+			chatModeButtonsIP.drawGraphics(453, super.graphics, 0);
+			worldViewIP.setAsDrawingArea();
 			Texture.lineOffsets = chatBoxAreaOffsets;
 		}
 		cyclesSinceDraw = 0;
@@ -9473,7 +9473,7 @@ public class Game extends RSApplet {
 	}
 
 	public void drawMinimap() {
-		aRSImageProducer_1164.setAsDrawingArea();
+		minimapIP.setAsDrawingArea();
 		if (minimapState == 2) {
 			byte backMaskIndices[] = mapBack.paletteIndices;
 			int raster[] = DrawingArea.pixels;
@@ -9485,7 +9485,7 @@ public class Game extends RSApplet {
 			}
 
 			compass.drawRotatedScanlines(33, cameraYawBase, compassScanlineWidths, 256, compassScanlineStarts, 25, 0, 0, 33, 25);
-			aRSImageProducer_1165.setAsDrawingArea();
+			worldViewIP.setAsDrawingArea();
 			Texture.lineOffsets = chatBoxAreaOffsets;
 			return;
 		}
@@ -9588,7 +9588,7 @@ public class Game extends RSApplet {
 		}
 		// Draw player square on mini map
 		DrawingArea.fillRectangle(3, 78, 0xffffff, 3, 97);
-		aRSImageProducer_1165.setAsDrawingArea();
+		worldViewIP.setAsDrawingArea();
 		Texture.lineOffsets = chatBoxAreaOffsets;
 	}
 
@@ -11971,7 +11971,7 @@ public class Game extends RSApplet {
 		}
 
 		// Draw main screen
-		aRSImageProducer_1165.drawGraphics(4, super.graphics, 4);
+		worldViewIP.drawGraphics(4, super.graphics, 4);
 
 		if(graphicsEnabled) {
 			xCameraPos = savedXCameraPos;
@@ -12432,9 +12432,9 @@ public class Game extends RSApplet {
 	public int membersInt;
 	public String aString1121;
 	public Sprite compass;
-	public RSImageProducer aRSImageProducer_1123;
-	public RSImageProducer aRSImageProducer_1124;
-	public RSImageProducer aRSImageProducer_1125;
+	public RSImageProducer chatModeButtonsIP;
+	public RSImageProducer tabIconsBottomIP;
+	public RSImageProducer tabIconsTopIP;
 	public static Player myPlayer;
 	public final String[] atPlayerActions;
 	public final boolean[] atPlayerArray;
@@ -12470,10 +12470,10 @@ public class Game extends RSApplet {
 	public boolean aBoolean1160;
 	static int loopCycle;
 	public static final String validUserPassChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!\"\243$%^&*()-_=+[{]};:'@#~,<.>/?\\| ";
-	public RSImageProducer aRSImageProducer_1163;
-	public RSImageProducer aRSImageProducer_1164;
-	public RSImageProducer aRSImageProducer_1165;
-	public RSImageProducer aRSImageProducer_1166;
+	public RSImageProducer tabPanelIP;
+	public RSImageProducer minimapIP;
+	public RSImageProducer worldViewIP;
+	public RSImageProducer chatPanelIP;
 	public int daysSinceRecovChange;
 	public RSSocket socketStream;
 	public int minimapZoomDrift;
