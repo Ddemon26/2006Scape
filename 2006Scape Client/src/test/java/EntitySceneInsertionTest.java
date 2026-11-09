@@ -38,7 +38,7 @@ public class EntitySceneInsertionTest {
     private static TestGame newGame() throws Exception {
         TestGame g = new TestGame();
         g.byteGroundArray = new byte[4][104][104]; g.intGroundArray = new int[4][105][105];
-        g.anIntArrayArray929 = new int[104][104]; g.anInt1265 = 1; g.plane = 0;
+        g.tileCentreEntityCycle = new int[104][104]; g.sceneDrawCycle = 1; g.plane = 0;
         g.worldController = world();
         return g;
     }
@@ -101,8 +101,8 @@ public class EntitySceneInsertionTest {
             assertEquals("x tile 103 is on the map", 1, count(g, 103, 5));
             assertEquals("centred twice on one tile: second skipped", 1, count(g, 7, 7));
             assertEquals("off-centre twice on one tile: both kept", 2, count(g, 8, 8));
-            assertEquals("marker for tile centre", 1, g.anIntArrayArray929[7][7]); assertEquals("off-centre sets no marker", 0, g.anIntArrayArray929[8][8]);
-            g.worldController = world(); g.anInt1265 = 2;
+            assertEquals("marker for tile centre", 1, g.tileCentreEntityCycle[7][7]); assertEquals("off-centre sets no marker", 0, g.tileCentreEntityCycle[8][8]);
+            g.worldController = world(); g.sceneDrawCycle = 2;
             g.addPlayersToScene(false);
             assertEquals("new frame places the centred tile again", 1, count(g, 7, 7));
             int placed = 0; Ground[][] plane = tiles(g.worldController)[0];
@@ -136,7 +136,7 @@ public class EntitySceneInsertionTest {
         assertEquals(0x20000000 + (5 << 14), uid(g, 10, 20, 0));
         assertEquals("size-1 centred duplicate skipped", 1, count(g, 30, 40)); assertEquals(0x20000000 + (9 << 14), uid(g, 30, 40, 0));
         assertEquals("larger NPCs are not deduplicated", 2, count(g, 50, 60));
-        g.worldController = world(); g.npcCount = 1; g.anInt1265 = 2;
+        g.worldController = world(); g.npcCount = 1; g.sceneDrawCycle = 2;
         g.addNpcsToScene(false);
         assertEquals("npcCount bounds the loop", 0, count(g, 30, 40)); assertEquals(1, count(g, 10, 20));
     }
@@ -154,9 +154,9 @@ public class EntitySceneInsertionTest {
         try {
             TestGame g = newGame(); setupFrame(g); g.fixedPlane = 0; f(WorldController.class, "planeCount").setInt(g.worldController, 0);
             Game.myPlayer = hidden(player(1, 1)); g.playerCount = 0; g.npcCount = 0;
-            g.anInt1265 = 41;
+            g.sceneDrawCycle = 41;
             g.drawWorldView();
-            assertEquals("counter bumped once per frame", 42, g.anInt1265);
+            assertEquals("counter bumped once per frame", 42, g.sceneDrawCycle);
             assertEquals(Arrays.asList("m47:true", "m26:true", "m47:false", "m26:false", "proj", "gfx", "entities", "icons", "m37", "3d"), g.log);
         } finally { Game.myPlayer = savedMe; DrawingArea.width = ras[0]; DrawingArea.height = ras[1]; DrawingArea.pixels = savedPx; }
     }

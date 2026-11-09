@@ -177,6 +177,52 @@ public class SystemUpdateTimerTest {
         assertEquals(0, g.stream.currentOffset);
     }
 
+    // ---------- pass 207: draw3dScreen notice box layout locals (debugItems, debugWidth, debugHeight, debugX, debugY) ----------
+    private static int px(int x, int y) { return DrawingArea.pixels[x + y * W]; }
+    private static void assertNoticeBox(int advance) throws Exception {
+        Arrays.fill(DrawingArea.pixels, BG);
+        HudGame g = new HudGame();
+        g.chatTextDrawingArea = font(advance, null);
+        g.crossType = 0; g.walkableInterfaceId = -1; g.openInterfaceID = -1; g.menuOpen = false; g.multiCombatOverlayState = 0;
+        g.stream = new Stream(new byte[16]);
+        g.stream.encryption = new ISAACRandomGen(new int[]{9, 8, 7, 6});
+        g.systemUpdateCycles = 250;                         // "00:05"
+        Game.systemUpdateNoticeDrawCount = 0;
+        g.draw3dScreen();
+        int width = "System update in: 00:00".length() * advance + 10; // debugWidth = measured template + 10
+        int height = 25 + 1 * 15;                            // debugHeight = 25 + debugItems * 15, one body row
+        int x = 511 - width, y = 334 - height;               // debugX / debugY: box anchored to the viewport's bottom-right
+        // box extent: top-left corner and bottom-right corner inside, neighbours outside untouched
+        assertNotEquals(BG, px(x, y)); assertEquals(BG, px(x - 1, y)); assertEquals(BG, px(x, y - 1));
+        assertNotEquals(BG, px(x + width - 1, y + height - 1));
+        assertEquals(BG, px(x + width, y + height - 1)); assertEquals(BG, px(x + width - 1, y + height));
+        // body outline: starts 18 below the top, inset 1, black edges
+        assertEquals(RSColors.BLACK, px(x + 1, y + 25)); assertEquals(RSColors.BLACK, px(x + width - 2, y + 25));
+        assertNotEquals(RSColors.BLACK, px(x + 2, y + 25));
+        // header text on the debugY + 14 baseline, 3 right of debugX
+        assertEquals(RSColors.WHITE_DARKER, px(x + 3, y + 14)); assertNotEquals(RSColors.WHITE_DARKER, px(x + 2, y + 14));
+        // exactly one body row (debugItems = 1), on baseline debugY + 14 + 3 + 15, white label at debugX + 4
+        int whiteRows = 0, yellowRows = 0, maxYellowX = -1;
+        for (int row = 0; row < H; row++) {
+            boolean w = false, yl = false;
+            for (int col = 0; col < W; col++) {
+                if (px(col, row) == RSColors.WHITE) w = true;
+                if (px(col, row) == RSColors.YELLOW) { yl = true; maxYellowX = Math.max(maxYellowX, col); }
+            }
+            if (w) { whiteRows++; assertEquals(y + 32, row); }
+            if (yl) { yellowRows++; assertEquals(y + 32, row); }
+        }
+        assertEquals(1, whiteRows); assertEquals(1, yellowRows);
+        assertEquals(RSColors.WHITE, px(x + 4, y + 32)); assertNotEquals(RSColors.WHITE, px(x + 3, y + 32));
+        // clock right-aligned to debugX + debugWidth - 4: last glyph starts one advance before it
+        assertEquals(x + width - 4 - advance, maxYellowX);
+        assertTrue(y + 32 < y + height);                     // the single body row fits inside the box
+    }
+    @Test public void noticeBoxWidthFollowsFontAndRightEdgeStaysFixed() throws Exception {
+        assertNoticeBox(2);   // width 56, left 455, top 294
+        assertNoticeBox(3);   // width 79, left 432: width tracks the measured template, right edge stays at 510
+    }
+
     // ---------- pass 200: draw3dScreen overlays (walkCrossDrawCount, multiCombatOverlayState, walkableInterfaceId) and logoutRequestCycles ----------
     private static Sprite dot(int rgb) {
         Sprite s = new Sprite(1, 1);

@@ -44,7 +44,7 @@ public class OnDemandFetcherRunLoopTest {
     private OnDemandData request(int type, int id, boolean incomplete, int loopCycle) throws Exception {
         OnDemandData d = new OnDemandData();
         d.dataType = type; d.ID = id; d.urgent = incomplete; d.idleCycles = loopCycle;
-        ((NodeList) get("requested")).insertHead(d);
+        ((NodeList) get("inFlightRequests")).insertHead(d);
         return d;
     }
 
@@ -124,7 +124,7 @@ public class OnDemandFetcherRunLoopTest {
             fetcher = new OnDemandFetcher();
             set("clientInstance", game);
             set("clientInstance", game);
-            byte[][] status = (byte[][]) get("fileStatus");
+            byte[][] status = (byte[][]) get("extraFilePriorities");
             for (int t = 0; t < 4; t++) status[t] = new byte[4];
             set("highestPendingPriority", 1);
             best20 = Math.min(best20, runOneCycle().firstCallAt);
@@ -230,7 +230,7 @@ public class OnDemandFetcherRunLoopTest {
         set("openSocketTime", System.currentTimeMillis() + 3000000L);
         fetcher.versions[0] = new int[] {5, 5};
         fetcher.crcs[0] = new int[2];
-        ((byte[][]) get("fileStatus"))[0] = new byte[2];
+        ((byte[][]) get("extraFilePriorities"))[0] = new byte[2];
         OnDemandData lookup = new OnDemandData();
         lookup.dataType = 0; lookup.ID = 1;
         ((NodeList) get("cacheLookupQueue")).insertHead(lookup);

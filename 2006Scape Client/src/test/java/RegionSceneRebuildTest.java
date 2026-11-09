@@ -356,7 +356,7 @@ public class RegionSceneRebuildTest {
         versions[3] = new int[70000]; status[3] = new byte[70000];
         Arrays.fill(versions[3], 1); Arrays.fill(status[3], (byte) 1);
         field(OnDemandFetcher.class, "versions").set(f, versions);
-        field(OnDemandFetcher.class, "fileStatus").set(f, status);
+        field(OnDemandFetcher.class, "extraFilePriorities").set(f, status);
         field(OnDemandFetcher.class, "highestPendingPriority").setInt(f, 1);
         field(OnDemandFetcher.class, "extraFileQueue").set(f, new NodeList());
         field(OnDemandFetcher.class, "modelIndices").set(f, modelIndices);

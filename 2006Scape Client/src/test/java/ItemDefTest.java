@@ -740,7 +740,7 @@ public class ItemDefTest {
     }
     @Test public void headModelSkipsEmptySlotsAndAbsentPartsKeepsSlotOrderAndRecolorsPerColourSlot() throws Exception {
         headSetup144();
-        int[][] pal = Game.anIntArrayArray1003; int[] pal1204 = Game.anIntArray1204;
+        int[][] pal = Game.appearanceColorPalettes; int[] pal1204 = Game.torsoSecondaryColorPalette;
         int[][] savedPal = new int[5][]; for (int i = 0; i < 5; i++) savedPal[i] = pal[i].clone(); int[] saved1204 = pal1204.clone();
         try {
             Player p = new Player(); p.visible = true;

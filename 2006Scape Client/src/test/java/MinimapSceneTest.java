@@ -631,8 +631,8 @@ public class MinimapSceneTest {
             Game.myPlayer = new Player();
             Game.myPlayer.x = 250 * 32;
             Game.myPlayer.y = 250 * 32;
-            Arrays.fill(game.anIntArray1229, 146);
-            Arrays.fill(game.anIntArray1052, 0);
+            Arrays.fill(game.minimapScanlineWidths, 146);
+            Arrays.fill(game.minimapScanlineStarts, 0);
             Arrays.fill(map.pixels, 0x123456);
             // 4x4 block of the tile the player stands on (tile 62,62 -> x/32 = 250 is its block centre + 0)
             int px = 250 - 2;

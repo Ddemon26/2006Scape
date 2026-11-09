@@ -143,14 +143,14 @@ public class OnDemandFetcherIndexTest {
         assertFalse(fetcher.isMapObjectFileId(2003));
     }
 
-    private byte[] status3() throws Exception { return ((byte[][]) get("fileStatus"))[3]; }
+    private byte[] status3() throws Exception { return ((byte[][]) get("extraFilePriorities"))[3]; }
 
     @Test public void method554FlagFalseMarksOnlyNonzeroPreloadRegions() throws Exception {
         fetcher.markMapFilesForDownload(false);
         byte[] s = status3();
         for (int id : new int[] {1001, 2002, 1005, 2006}) assertEquals("marked " + id, 2, s[id]);
         for (int id : new int[] {1003, 2004, 1007, 2008}) assertEquals("skipped " + id, 0, s[id]);
-        assertEquals(4, ((Integer) get("totalFiles")).intValue());
+        assertEquals(4, ((Integer) get("extraFileMarkCount")).intValue());
         int marked = 0;
         for (byte b : s) if (b != 0) marked++;
         assertEquals(4, marked);   // nothing else touched
@@ -160,7 +160,7 @@ public class OnDemandFetcherIndexTest {
         fetcher.markMapFilesForDownload(true);
         byte[] s = status3();
         for (int id : new int[] {1001, 2002, 1003, 2004, 1005, 2006, 1007, 2008}) assertEquals("marked " + id, 2, s[id]);
-        assertEquals(8, ((Integer) get("totalFiles")).intValue());
+        assertEquals(8, ((Integer) get("extraFileMarkCount")).intValue());
         int marked = 0;
         for (byte b : s) if (b != 0) marked++;
         assertEquals(8, marked);
@@ -188,7 +188,7 @@ public class OnDemandFetcherIndexTest {
         assertArrayEquals(new int[] {0x7F000001, 0xFE, -2}, fetcher.crcs[1]);
         assertEquals(7, fetcher.crcs[2].length);
         assertEquals(MAP_FILES, fetcher.crcs[3].length);
-        byte[][] status = (byte[][]) get("fileStatus");
+        byte[][] status = (byte[][]) get("extraFilePriorities");
         assertEquals(4, status[0].length);
         assertEquals(3, status[1].length);
         assertEquals(MAP_FILES, status[3].length);

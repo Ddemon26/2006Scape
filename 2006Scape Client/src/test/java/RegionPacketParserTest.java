@@ -46,7 +46,7 @@ public class RegionPacketParserTest {
         field(OnDemandFetcher.class, "versions").set(f, versions);
         java.lang.reflect.Constructor<NodeSubList> c = NodeSubList.class.getDeclaredConstructor();
         c.setAccessible(true);
-        field(OnDemandFetcher.class, "nodeSubList").set(f, c.newInstance());
+        field(OnDemandFetcher.class, "outstandingRequests").set(f, c.newInstance());
         field(OnDemandFetcher.class, "cacheLookupQueue").set(f, new NodeList());
         int[] keys = new int[map.length], t = new int[map.length], o = new int[map.length];
         for (int i = 0; i < map.length; i++) { keys[i] = key(map[i][0], map[i][1]); t[i] = map[i][2]; o[i] = map[i][3]; }
@@ -57,7 +57,7 @@ public class RegionPacketParserTest {
         return g;
     }
     private static List<String> requested(Game g) throws Exception {
-        NodeSubList q = (NodeSubList) field(OnDemandFetcher.class, "nodeSubList").get(g.onDemandFetcher);
+        NodeSubList q = (NodeSubList) field(OnDemandFetcher.class, "outstandingRequests").get(g.onDemandFetcher);
         List<String> ids = new ArrayList<String>();
         for (OnDemandData d = (OnDemandData) q.firstFromTail(); d != null; d = (OnDemandData) q.nextTowardHead())
             ids.add(d.dataType + ":" + d.ID);

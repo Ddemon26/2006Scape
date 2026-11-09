@@ -47,7 +47,7 @@ public class OnDemandFetcherTransferTest {
         for (int t = 0; t < 4; t++) {
             ((int[][]) get("versions"))[t] = new int[600];
             ((int[][]) get("crcs"))[t] = new int[600];
-            ((byte[][]) get("fileStatus"))[t] = new byte[600];
+            ((byte[][]) get("extraFilePriorities"))[t] = new byte[600];
         }
         set("openSocketTime", System.currentTimeMillis() + 3000000L);
     }
@@ -57,7 +57,7 @@ public class OnDemandFetcherTransferTest {
     private OnDemandData request(int type, int id, boolean incomplete) throws Exception {
         OnDemandData d = new OnDemandData();
         d.dataType = type; d.ID = id; d.urgent = incomplete;
-        list("requested").insertHead(d);
+        list("inFlightRequests").insertHead(d);
         return d;
     }
 
@@ -93,8 +93,8 @@ public class OnDemandFetcherTransferTest {
         assertEquals(1234, want.buffer.length);
         assertNull(other.buffer);
         assertNull(other2.buffer);
-        assertEquals(0, geti("completedSize"));
-        assertEquals(500, geti("expectedSize"));
+        assertEquals(0, geti("chunkStartOffset"));
+        assertEquals(500, geti("pendingChunkLength"));
     }
 
     @Test public void chunkIndexScalesStartOffsetBy500AndLastChunkIsShort() throws Exception {
@@ -102,13 +102,13 @@ public class OnDemandFetcherTransferTest {
         d.buffer = new byte[1234];
         feed(header(0, 9, 1234, 2));
         call("readData");
-        assertEquals(1000, geti("completedSize"));
-        assertEquals(234, geti("expectedSize"));
+        assertEquals(1000, geti("chunkStartOffset"));
+        assertEquals(234, geti("pendingChunkLength"));
         feed(header(0, 9, 1234, 1));
-        set("expectedSize", 0);
+        set("pendingChunkLength", 0);
         call("readData");
-        assertEquals(500, geti("completedSize"));
-        assertEquals(500, geti("expectedSize"));
+        assertEquals(500, geti("chunkStartOffset"));
+        assertEquals(500, geti("pendingChunkLength"));
     }
 
     @Test public void continuationChunkWithoutStartDropsConnection() throws Exception {
@@ -116,7 +116,7 @@ public class OnDemandFetcherTransferTest {
         feed(header(0, 9, 1234, 1));
         call("readData");
         assertNull(get("inputStream"));
-        assertEquals(0, geti("expectedSize"));
+        assertEquals(0, geti("pendingChunkLength"));
     }
 
     @Test public void zeroSizeIsRejection() throws Exception {
@@ -131,7 +131,7 @@ public class OnDemandFetcherTransferTest {
         feed(header(1, 6, 0, 0));
         call("readData");
         assertNull(list("completedRequests").popTail());
-        assertNull(list("requested").firstFromTail());
+        assertNull(list("inFlightRequests").firstFromTail());
         assertNull(e.buffer);
     }
 
@@ -142,7 +142,7 @@ public class OnDemandFetcherTransferTest {
         call("readData");
         call("readData");
         assertNull(list("completedRequests").popTail());
-        assertEquals(0, geti("expectedSize"));
+        assertEquals(0, geti("pendingChunkLength"));
         feed(header(1, 4, 700, 1), java.util.Arrays.copyOfRange(data, 500, 700));
         call("readData");
         call("readData");
@@ -170,7 +170,7 @@ public class OnDemandFetcherTransferTest {
         call("readData");
         assertNull(get("current"));
         call("readData");
-        assertEquals(0, geti("expectedSize"));
+        assertEquals(0, geti("pendingChunkLength"));
         byte[] io = (byte[]) get("ioBuffer");
         assertEquals(pattern(20, 5)[19], io[19]);
     }
@@ -178,13 +178,13 @@ public class OnDemandFetcherTransferTest {
     @Test public void handleFailedMovesAClass19_1368ToRequested() throws Exception {
         OnDemandData d = new OnDemandData();
         d.dataType = 2; d.ID = 3;
-        ((byte[][]) get("fileStatus"))[2][3] = 1;
+        ((byte[][]) get("extraFilePriorities"))[2][3] = 1;
         list("cacheMissQueue").insertHead(d);
         call("handleFailed");
         assertNull(list("cacheMissQueue").popTail());
-        assertSame(d, list("requested").firstFromTail());
+        assertSame(d, list("inFlightRequests").firstFromTail());
         assertEquals(1, geti("urgentInFlightCount"));
-        assertEquals(0, ((byte[][]) get("fileStatus"))[2][3]);
+        assertEquals(0, ((byte[][]) get("extraFilePriorities"))[2][3]);
     }
 
     @Test public void checkReceivedSplitsClass19_1370ByCacheHit() throws Exception {
@@ -223,7 +223,7 @@ public class OnDemandFetcherTransferTest {
         assertEquals(7, d.ID);
         assertTrue(d.urgent);
         assertNull(list("cacheLookupQueue").popTail());
-        assertEquals(1, fetcher.getNodeCount());
+        assertEquals(1, fetcher.getOutstandingRequestCount());
     }
 
     @Test public void closeRequestWriteFailureIncrementsAnInt1349AndSuccessResets() throws Exception {
@@ -284,7 +284,7 @@ public class OnDemandFetcherTransferTest {
         fetcher.requestFile(1, 7);
         fetcher.requestFile(2, 7);   // same ID, other type: not a duplicate
         fetcher.requestFile(1, 7);   // same type and ID: duplicate
-        assertEquals(2, fetcher.getNodeCount());
+        assertEquals(2, fetcher.getOutstandingRequestCount());
         OnDemandData first = (OnDemandData) list("cacheLookupQueue").popTail();
         OnDemandData second = (OnDemandData) list("cacheLookupQueue").popTail();
         assertNull(list("cacheLookupQueue").popTail());
@@ -303,7 +303,7 @@ public class OnDemandFetcherTransferTest {
         assertEquals(3, geti("extraInFlightCount"));
         set("urgentInFlightCount", 77);
         set("extraInFlightCount", 77);
-        list("requested").removeAll();
+        list("inFlightRequests").removeAll();
         call("handleFailed");
         assertEquals(0, geti("urgentInFlightCount"));
         assertEquals(0, geti("extraInFlightCount"));
@@ -317,13 +317,13 @@ public class OnDemandFetcherTransferTest {
             miss[i] = node(1, 10 + i);
             list("cacheMissQueue").insertHead(miss[i]);
         }
-        ((byte[][]) get("fileStatus"))[1][10] = 3;   // was also a pending extra: counted as loaded
-        set("filesLoaded", 0);
+        ((byte[][]) get("extraFilePriorities"))[1][10] = 3;   // was also a pending extra: counted as loaded
+        set("extraFileRequestCount", 0);
         call("handleFailed");
         assertEquals(10, geti("urgentInFlightCount"));
         assertEquals(1, geti("extraInFlightCount"));
-        assertEquals(1, geti("filesLoaded"));
-        assertEquals(0, ((byte[][]) get("fileStatus"))[1][10]);
+        assertEquals(1, geti("extraFileRequestCount"));
+        assertEquals(0, ((byte[][]) get("extraFilePriorities"))[1][10]);
         assertSame(miss[2], list("cacheMissQueue").popTail());   // oldest two were taken
         assertSame(miss[1], lastSent());                       // newest entry in requested
         assertSame(miss[3], list("cacheMissQueue").popTail());
@@ -333,7 +333,7 @@ public class OnDemandFetcherTransferTest {
 
     private OnDemandData lastSent() throws Exception {
         OnDemandData last = null;
-        for (OnDemandData d = (OnDemandData) list("requested").firstFromTail(); d != null; d = (OnDemandData) list("requested").nextTowardHead()) {
+        for (OnDemandData d = (OnDemandData) list("inFlightRequests").firstFromTail(); d != null; d = (OnDemandData) list("inFlightRequests").nextTowardHead()) {
             last = d;
         }
         return last;
@@ -341,14 +341,14 @@ public class OnDemandFetcherTransferTest {
 
     @Test public void requestExtraFileQueuesNonIncompleteNodeForTypeAndId() throws Exception {
         ((int[][]) get("versions"))[3][9] = 1;
-        ((byte[][]) get("fileStatus"))[3][9] = 2;
+        ((byte[][]) get("extraFilePriorities"))[3][9] = 2;
         set("highestPendingPriority", 2);
         fetcher.requestExtraFile(9, 3);
         OnDemandData d = (OnDemandData) list("extraFileQueue").popTail();
         assertEquals(3, d.dataType);
         assertEquals(9, d.ID);
         assertFalse(d.urgent);
-        assertEquals(0, fetcher.getNodeCount());
+        assertEquals(0, fetcher.getOutstandingRequestCount());
         assertNull(list("cacheLookupQueue").popTail());
     }
 
@@ -373,12 +373,12 @@ public class OnDemandFetcherTransferTest {
         OnDemandData b = (OnDemandData) list("cacheLookupQueue").popTail();
         list("completedRequests").insertHead(a);
         list("completedRequests").insertHead(b);
-        assertEquals(2, fetcher.getNodeCount());
+        assertEquals(2, fetcher.getOutstandingRequestCount());
         assertSame(a, fetcher.getNextNode());
         assertNull(a.buffer);
-        assertEquals(1, fetcher.getNodeCount());
+        assertEquals(1, fetcher.getOutstandingRequestCount());
         assertSame(b, fetcher.getNextNode());
-        assertEquals(0, fetcher.getNodeCount());
+        assertEquals(0, fetcher.getOutstandingRequestCount());
         assertNull(fetcher.getNextNode());
     }
 
@@ -388,7 +388,7 @@ public class OnDemandFetcherTransferTest {
         ((int[][]) get("versions"))[1][7] = 5;
         fetcher.requestFile(1, 7);
         assertTrue("client request", ((OnDemandData) list("cacheLookupQueue").popTail()).urgent);
-        ((byte[][]) get("fileStatus"))[1][8] = 2;
+        ((byte[][]) get("extraFilePriorities"))[1][8] = 2;
         ((int[][]) get("versions"))[1][8] = 5;
         set("highestPendingPriority", 2);
         fetcher.requestExtraFile(8, 1);
@@ -432,7 +432,7 @@ public class OnDemandFetcherTransferTest {
         call("readData");
         assertNull(get("current"));
         assertNull(lookupOnly.buffer);
-        set("expectedSize", 0);
+        set("pendingChunkLength", 0);
         OnDemandData inFlight = request(1, 5, true);
         feed(header(1, 5, 10, 0));
         call("readData");
@@ -450,7 +450,7 @@ public class OnDemandFetcherTransferTest {
         assertEquals("unmatched header leaves connection counter", 600, geti("connectionIdleCycles"));
         assertEquals(30, a.idleCycles);
         assertEquals(30, b.idleCycles);
-        set("expectedSize", 0);
+        set("pendingChunkLength", 0);
         feed(header(0, 2, 10, 0));
         call("readData");
         assertEquals(0, geti("connectionIdleCycles"));
@@ -465,14 +465,14 @@ public class OnDemandFetcherTransferTest {
         feed(header(1, 4, 10, 0), pattern(5, 1));   // 11 bytes available before the header, only 5 after it
         call("readData");
         assertSame(d, get("current"));
-        assertEquals("waiting for the 10-byte body", 10, geti("expectedSize"));
+        assertEquals("waiting for the 10-byte body", 10, geti("pendingChunkLength"));
         assertTrue(((Boolean) get("madeProgress")).booleanValue());
         assertArrayEquals(new byte[10], d.buffer);
         assertNull(list("completedRequests").popTail());
         feed(pattern(10, 1));
         call("readData");
         assertArrayEquals(pattern(10, 1), d.buffer);
-        assertEquals(0, geti("expectedSize"));
+        assertEquals(0, geti("pendingChunkLength"));
         assertSame(d, list("completedRequests").popTail());
     }
 
@@ -482,5 +482,156 @@ public class OnDemandFetcherTransferTest {
         call("readData");
         assertArrayEquals(pattern(10, 3), d.buffer);
         assertSame(d, list("completedRequests").popTail());
+    }
+
+    // Pass 208: OnDemandFetcher request-tracking and prefetch fields, original names only.
+    private java.util.List<Integer> ids(String listName) throws Exception {
+        java.util.List<Integer> r = new java.util.ArrayList<Integer>();
+        NodeList l = list(listName);
+        for (OnDemandData d = (OnDemandData) l.firstFromTail(); d != null; d = (OnDemandData) l.nextTowardHead()) r.add(d.ID);
+        return r;
+    }
+
+    private void storeValid(int type, int id, int version) throws Exception {
+        byte[] payload = pattern(20, id);
+        byte[] stored = new byte[22];
+        System.arraycopy(payload, 0, stored, 0, 20);
+        stored[20] = (byte) (version >> 8); stored[21] = (byte) version;
+        java.util.zip.CRC32 c = new java.util.zip.CRC32();
+        c.update(payload, 0, 20);
+        ((int[][]) get("versions"))[type][id] = version;
+        ((int[][]) get("crcs"))[type][id] = (int) c.getValue();
+        game.cacheStores[type + 1].writeFile(stored.length, stored, id);
+    }
+
+    @Test public void pass208NodeSubListHoldsRequestFileNodesUntilGetNextNodeDeliversThem() throws Exception {
+        ((int[][]) get("versions"))[1][7] = 4;
+        ((int[][]) get("versions"))[1][8] = 4;
+        ((int[][]) get("versions"))[1][9] = 4;
+        fetcher.requestFile(1, 7);
+        fetcher.requestFile(1, 8);
+        NodeSubList tracked = (NodeSubList) get("outstandingRequests");
+        assertEquals(2, tracked.getNodeCount());
+        assertEquals(2, fetcher.getOutstandingRequestCount());
+        OnDemandData seven = (OnDemandData) list("cacheLookupQueue").popTail();
+        OnDemandData eight = (OnDemandData) list("cacheLookupQueue").popTail();
+        assertEquals(7, seven.ID);
+        list("inFlightRequests").insertHead(seven);                 // sent to the server
+        feed(header(1, 7, 0, 0));                            // server rejects it: urgent node completes with null buffer
+        call("readData");
+        assertSame(seven, list("completedRequests").firstFromTail());
+        assertEquals(2, fetcher.getOutstandingRequestCount());             // completed but not delivered: still tracked
+        ((byte[][]) get("extraFilePriorities"))[1][9] = 1;
+        set("highestPendingPriority", 1);
+        fetcher.requestExtraFile(9, 1);                      // extra (prefetch) requests are not tracked
+        assertNotNull(list("extraFileQueue").firstFromTail());
+        assertEquals(2, fetcher.getOutstandingRequestCount());
+        assertSame(seven, fetcher.getNextNode());            // delivery removes it
+        assertEquals(1, fetcher.getOutstandingRequestCount());
+        assertSame(eight, tracked.firstFromTail());
+        assertNull(tracked.nextTowardHead());
+        fetcher.requestFile(1, 8);                           // still tracked: deduplicated
+        assertNull(list("cacheLookupQueue").popTail());
+        fetcher.requestFile(1, 7);                           // delivered: requested again as a new node
+        OnDemandData again = (OnDemandData) list("cacheLookupQueue").popTail();
+        assertNotNull(again);
+        assertNotSame(seven, again);
+        assertEquals(2, fetcher.getOutstandingRequestCount());
+    }
+
+    @Test public void pass208FileStatusStoresMarkPriorityAndDispatchSendsHighestPriorityFirst() throws Exception {
+        int[][] v = (int[][]) get("versions");
+        v[3][4] = 1; v[3][5] = 1; v[3][6] = 1;
+        fetcher.markExtraFileForDownload((byte) 1, 3, 4);
+        fetcher.markExtraFileForDownload((byte) 3, 3, 5);
+        byte[][] status = (byte[][]) get("extraFilePriorities");
+        assertEquals(1, status[3][4]);
+        assertEquals(3, status[3][5]);
+        assertEquals(0, status[3][6]);                       // never marked
+        assertEquals(3, geti("highestPendingPriority"));
+        fetcher.requestExtraFile(6, 3);                      // priority 0: refused
+        assertNull(list("extraFileQueue").firstFromTail());
+        call("dispatchExtraFileRequests");
+        assertEquals(java.util.Arrays.asList(5, 4), ids("inFlightRequests"));   // priority 3 before priority 1
+        assertEquals(0, status[3][4]);
+        assertEquals(0, status[3][5]);
+        assertEquals(0, geti("highestPendingPriority"));
+    }
+
+    @Test public void pass208CompletedSizeIsCurrentChunkStartOffsetNotBytesReceived() throws Exception {
+        OnDemandData d = request(0, 9, true);
+        d.buffer = new byte[1234];
+        feed(header(0, 9, 1234, 1), pattern(500, 4));
+        call("readData");
+        assertEquals(500, geti("chunkStartOffset"));
+        byte[] expected = new byte[1234];
+        System.arraycopy(pattern(500, 4), 0, expected, 500, 500);
+        assertArrayEquals(expected, d.buffer);               // payload written at offset 500 only
+        feed(header(0, 9, 1234, 0), pattern(500, 6));        // 1000 bytes received now, but this chunk starts at 0
+        call("readData");
+        assertEquals(0, geti("chunkStartOffset"));
+        System.arraycopy(pattern(500, 6), 0, expected, 0, 500);
+        assertArrayEquals(expected, d.buffer);
+    }
+
+    @Test public void pass208ExpectedSizeIsUnreadPayloadLengthOfCurrentChunk() throws Exception {
+        OnDemandData d = request(0, 9, true);
+        d.buffer = new byte[1234];
+        feed(header(0, 9, 1234, 2), java.util.Arrays.copyOf(pattern(234, 5), 233));
+        call("readData");
+        assertEquals(234, geti("pendingChunkLength"));             // 1234 - 2*500
+        assertArrayEquals(new byte[1234], d.buffer);         // 233 < 234 available: nothing consumed
+        call("readData");
+        assertArrayEquals(new byte[1234], d.buffer);
+        feed(pattern(234, 5));                               // header already read: waits for exactly the payload
+        call("readData");
+        assertEquals(0, geti("pendingChunkLength"));
+        assertEquals(pattern(234, 5)[233], d.buffer[1233]);
+        OnDemandData e = request(0, 10, true);
+        feed(header(0, 10, 500, 0));
+        call("readData");
+        assertEquals(500, geti("pendingChunkLength"));             // boundary: exactly one full chunk
+        set("pendingChunkLength", 0);
+        feed(header(0, 10, 499, 0));
+        e.buffer = null;
+        call("readData");
+        assertEquals(499, geti("pendingChunkLength"));
+    }
+
+    @Test public void pass208RequestedIsTheInFlightListHeadersAreMatchedAgainst() throws Exception {
+        OnDemandData outside = node(2, 3);                   // same file, never sent
+        outside.urgent = true;
+        feed(header(2, 3, 10, 0), pattern(10, 1));
+        call("readData");
+        assertNull(get("current"));
+        assertNull(outside.buffer);
+        assertEquals(0, geti("pendingChunkLength"));               // payload drained into the scratch buffer
+        OnDemandData sent = request(1, 4, false);
+        feed(header(1, 4, 10, 0), pattern(10, 2));
+        call("readData");
+        assertArrayEquals(pattern(10, 2), sent.buffer);
+        assertNull(list("inFlightRequests").firstFromTail());       // completed non-urgent node leaves the list
+        assertNull(list("completedRequests").firstFromTail());
+    }
+
+    @Test public void pass208TotalFilesCountsAcceptedMarksAndFilesLoadedCountsExtraRequestsSent() throws Exception {
+        int[][] v = (int[][]) get("versions");
+        v[3][1] = 1; v[3][3] = 1;
+        storeValid(3, 7, 2);
+        fetcher.markExtraFileForDownload((byte) 2, 3, 1);
+        assertEquals(1, geti("extraFileMarkCount"));
+        fetcher.markExtraFileForDownload((byte) 2, 3, 1);    // repeated mark of the same file still counts
+        assertEquals(2, geti("extraFileMarkCount"));
+        fetcher.markExtraFileForDownload((byte) 2, 3, 2);    // version 0: refused
+        fetcher.markExtraFileForDownload((byte) 2, 3, 7);    // valid cached copy: refused
+        assertEquals(2, geti("extraFileMarkCount"));
+        assertEquals(0, ((byte[][]) get("extraFilePriorities"))[3][7]);
+        fetcher.markExtraFileForDownload((byte) 2, 3, 3);
+        assertEquals(3, geti("extraFileMarkCount"));
+        assertEquals(0, geti("extraFileRequestCount"));
+        call("dispatchExtraFileRequests");
+        assertEquals(java.util.Arrays.asList(1, 3), ids("inFlightRequests"));
+        assertEquals(2, geti("extraFileRequestCount"));                // two requests sent, nothing received yet
+        assertEquals("Loading extra files - 66%", fetcher.statusString);   // 2 * 100 / 3
     }
 }

@@ -66,8 +66,8 @@ public class MinimapDrawTest {
         g.mapDotTeam = new Sprite(1, 1);
         g.mapMarker = new Sprite(1, 1);
         g.mapFlag = new Sprite(1, 1);
-        Arrays.fill(g.anIntArray1229, 146);
-        Arrays.fill(g.anIntArray1052, 0);
+        Arrays.fill(g.minimapScanlineWidths, 146);
+        Arrays.fill(g.minimapScanlineStarts, 0);
         Game.myPlayer = new Player();
         Game.myPlayer.x = 320;
         Game.myPlayer.y = 640;
@@ -244,31 +244,31 @@ public class MinimapDrawTest {
         g.npcArray[5] = npc;
         g.playerArray[6] = other(320 - 32, 640 - 128, 0, 50, "zed");
         g.baseX = 3000; g.baseY = 3100;
-        g.anInt934 = 3010; g.anInt935 = 3120;
-        g.anInt1222 = 5; g.anInt933 = 6;
+        g.hintIconTileX = 3010; g.hintIconTileY = 3120;
+        g.hintIconNpcIndex = 5; g.hintIconPlayerIndex = 6;
         int saved = Game.loopCycle;
         try {
             Game.loopCycle = 0;
-            g.anInt855 = 1; g.drawMinimap();
+            g.hintIconType = 1; g.drawMinimap();
             assertEquals(1, g.hints.size());
             assertEquals("offsetY first", 3, g.hints.get(0)[1]); assertEquals(2, g.hints.get(0)[2]);
-            g.hints.clear(); g.anInt855 = 2; g.drawMinimap();
+            g.hints.clear(); g.hintIconType = 2; g.drawMinimap();
             assertEquals(20 * 4 + 2 - 20, g.hints.get(0)[1]); assertEquals(10 * 4 + 2 - 10, g.hints.get(0)[2]);
-            g.hints.clear(); g.anInt855 = 10; g.drawMinimap();
+            g.hints.clear(); g.hintIconType = 10; g.drawMinimap();
             assertEquals(-4, g.hints.get(0)[1]); assertEquals(-1, g.hints.get(0)[2]);
-            g.hints.clear(); g.anInt855 = 3; g.drawMinimap();
+            g.hints.clear(); g.hintIconType = 3; g.drawMinimap();
             assertEquals("other modes draw nothing", 0, g.hints.size());
-            g.anInt855 = 1; g.anInt1222 = 16; g.drawMinimap();
+            g.hintIconType = 1; g.hintIconNpcIndex = 16; g.drawMinimap();
             assertEquals("index beyond the array", 0, g.hints.size());
-            g.anInt1222 = 7; g.drawMinimap();
+            g.hintIconNpcIndex = 7; g.drawMinimap();
             assertEquals("empty slot", 0, g.hints.size());
-            g.anInt1222 = 5; Game.loopCycle = 10; g.drawMinimap();
+            g.hintIconNpcIndex = 5; Game.loopCycle = 10; g.drawMinimap();
             assertEquals("blink off half", 0, g.hints.size());
             Game.loopCycle = 19; g.drawMinimap();
             assertEquals(0, g.hints.size());
             Game.loopCycle = 20; g.drawMinimap();
             assertEquals(1, g.hints.size());
-            g.hints.clear(); g.anInt855 = 0; g.drawMinimap();
+            g.hints.clear(); g.hintIconType = 0; g.drawMinimap();
             assertEquals(0, g.hints.size());
         } finally { Game.loopCycle = saved; }
     }
@@ -283,5 +283,57 @@ public class MinimapDrawTest {
         assertEquals(1, f.size());
         assertEquals(6 * 4 + 2 - 10, f.get(0)[1]);
         assertEquals(11 * 4 + 2 - 20, f.get(0)[2]);
+    }
+
+    /** Pixels of the given colour as "x,y" strings, in raster order. */
+    private List<String> pixelsOf(int rgb) {
+        List<String> r = new ArrayList<String>();
+        int[] p = g.aRSImageProducer_1164.pixels;
+        for (int y = 0; y < 156; y++) for (int x = 0; x < 172; x++) if (p[x + y * 172] == rgb) r.add(x + "," + y);
+        return r;
+    }
+
+    private static List<String> run(int x0, int count, int y) {
+        List<String> r = new ArrayList<String>();
+        for (int x = x0; x < x0 + count; x++) r.add(x + "," + y);
+        return r;
+    }
+
+    @Test public void minimapScanlineArraysGiveEachRowsStartColumnPast25AndPixelCount() {
+        Arrays.fill(map.pixels, 0x00ff00);
+        Game.myPlayer.x = 300 * 32; // keep every sampled source row inside the 512x512 map sprite
+        Game.myPlayer.y = 300 * 32;
+        Arrays.fill(g.minimapScanlineWidths, 0);
+        Arrays.fill(g.minimapScanlineStarts, 0);
+        g.minimapScanlineStarts[10] = 7; g.minimapScanlineWidths[10] = 3;
+        drawFresh();
+        assertEquals("index 10 -> row 15, x 25+7 .. +3 pixels", run(32, 3, 15), pixelsOf(0x00ff00));
+        g.minimapScanlineStarts[10] = 9;
+        drawFresh();
+        assertEquals("start alone moves the run", run(34, 3, 15), pixelsOf(0x00ff00));
+        g.minimapScanlineWidths[10] = 5;
+        drawFresh();
+        assertEquals("count alone widens it", run(34, 5, 15), pixelsOf(0x00ff00));
+        g.minimapScanlineWidths[10] = 0; g.minimapScanlineStarts[0] = 0; g.minimapScanlineWidths[0] = 1; g.minimapScanlineStarts[150] = 145; g.minimapScanlineWidths[150] = 1;
+        drawFresh();
+        List<String> ends = run(25, 1, 5);
+        ends.addAll(run(170, 1, 155));
+        assertEquals("first index is row 5, last (150) is row 155", ends, pixelsOf(0x00ff00));
+    }
+
+    @Test public void compassScanlineArraysGiveEachRowsStartColumnAndPixelCount() {
+        Arrays.fill(g.minimapScanlineWidths, 0);
+        Arrays.fill(g.compass.pixels, 0x0000ff);
+        Arrays.fill(g.compassScanlineStarts, 0);
+        Arrays.fill(g.compassScanlineWidths, 0);
+        g.compassScanlineStarts[4] = 2; g.compassScanlineWidths[4] = 5;
+        drawFresh();
+        assertEquals("index 4 -> row 4, x 2 .. +5 pixels", run(2, 5, 4), pixelsOf(0x0000ff));
+        g.compassScanlineStarts[4] = 6;
+        drawFresh();
+        assertEquals(run(6, 5, 4), pixelsOf(0x0000ff));
+        g.compassScanlineWidths[4] = 1;
+        drawFresh();
+        assertEquals(run(6, 1, 4), pixelsOf(0x0000ff));
     }
 }

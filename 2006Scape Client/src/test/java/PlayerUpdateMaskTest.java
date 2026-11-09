@@ -104,15 +104,15 @@ public class PlayerUpdateMaskTest {
 
     @Test public void appearanceLengthAndPlayerSlotCacheCopiedBytes() throws Exception {
         Game game = game(); Player player = new Player();
-        field(game, "aStreamArray895s", new Stream[4]);
+        field(game, "cachedPlayerAppearances", new Stream[4]);
         Stream packet = new Stream(new byte[90]);
         packet.buffer[0] = (byte) 200; // Negative byte transform gives length 56.
         packet.currentOffset = 0;
         game.decodePlayerUpdateMask(0x10, 2, packet, player);
         assertEquals(57, packet.currentOffset);
-        assertNull(game.aStreamArray895s[1]);
-        assertNotNull(game.aStreamArray895s[2]);
-        assertEquals(56, game.aStreamArray895s[2].buffer.length);
+        assertNull(game.cachedPlayerAppearances[1]);
+        assertNotNull(game.cachedPlayerAppearances[2]);
+        assertEquals(56, game.cachedPlayerAppearances[2].buffer.length);
     }
 
     @Test public void faceCoordinatesAndTwoHitFormatsKeepDamageAndTypeDistinct() throws Exception {
@@ -126,5 +126,108 @@ public class PlayerUpdateMaskTest {
         assertEquals(19, player.hitArray[1]); assertEquals(5, player.hitMarkTypes[1]);
         assertEquals(31, player.currentHealth); assertEquals(32, player.maxHealth);
         assertEquals(500, player.loopCycleStatus);
+    }
+
+    // ---- per-player appearance cache: mask 0x10 stores it, addNewLocalPlayers replays it ----
+
+    private static int[] appearanceBlock(int gender, int combat) {
+        int[] block = new int[3 + 12 + 5 + 14 + 8 + 3];
+        block[0] = gender;
+        for (int k = 0; k < 14; k++) block[20 + k] = 255;   // seven 0xFFFF animation ids
+        block[42] = combat;
+        return block;
+    }
+
+    private static int gender(Player p) throws Exception {
+        Field f = Player.class.getDeclaredField("gender"); f.setAccessible(true); return f.getInt(p);
+    }
+
+    private static Game listGame() throws Exception {
+        Game game = game();
+        game.playerArray = new Player[2048];
+        game.playerIndices = new int[2048];
+        game.maskUpdateIndices = new int[2048];
+        game.cachedPlayerAppearances = new Stream[2048];
+        return game;
+    }
+
+    @Test public void appearanceMaskStoresAPrivateCopyOfExactlyTheBlockAtThePlayersIndex() throws Exception {
+        Game game = listGame();
+        int[] block = appearanceBlock(1, 77);
+        int[] wire = new int[block.length + 2];
+        wire[0] = (-block.length) & 0xff;                     // length is sent negated
+        System.arraycopy(block, 0, wire, 1, block.length);
+        wire[wire.length - 1] = 0x5a;                         // next mask's byte must stay unread
+        Stream in = packet(wire);
+        Player player = new Player();
+        game.decodePlayerUpdateMask(0x10, 37, in, player);
+        Stream cached = game.cachedPlayerAppearances[37];
+        assertNotNull(cached);
+        assertNull(game.cachedPlayerAppearances[36]); assertNull(game.cachedPlayerAppearances[38]);
+        assertNotSame(in.buffer, cached.buffer);
+        assertEquals(block.length, cached.buffer.length);
+        for (int i = 0; i < block.length; i++) assertEquals((byte) block[i], cached.buffer[i]);
+        assertEquals(block.length + 1, in.currentOffset);
+        assertEquals(1, gender(player)); assertEquals(77, player.combatLevel);
+        in.buffer[1] = 0;                                     // later packet-buffer reuse does not touch the cache
+        assertEquals(1, cached.buffer[0]);
+        game.decodePlayerUpdateMask(0, 37, packet(9), new Player());   // other masks leave it alone
+        assertSame(cached, game.cachedPlayerAppearances[37]);
+    }
+
+    @Test public void addNewLocalPlayersReplaysTheCachedAppearanceOnlyIntoANewlyCreatedPlayer() throws Exception {
+        Player savedMe = Game.myPlayer;
+        try {
+            Game.myPlayer = new Player(); Game.myPlayer.setPos(50, 60, true);
+            Game game = listGame();
+            byte[] cachedBytes = new byte[appearanceBlock(0, 0).length];
+            int[] block = appearanceBlock(1, 88);
+            for (int i = 0; i < block.length; i++) cachedBytes[i] = (byte) block[i];
+            Stream cached = new Stream(cachedBytes);
+            cached.currentOffset = cachedBytes.length;          // left at the end by an earlier read
+            game.cachedPlayerAppearances[9] = cached;
+            Player existing = new Player(); existing.combatLevel = 12;
+            game.playerArray[11] = existing; game.cachedPlayerAppearances[11] = new Stream(cachedBytes.clone());
+            // add 9 (cached), 10 (no cache), 11 (already present): 11+1+1+5+5 bits each, then 2047
+            Stream bits = ExistingNpcMovementBitsTest.bits(11, 9, 1, 0, 1, 1, 5, 0, 5, 0,
+                    11, 10, 1, 0, 1, 1, 5, 1, 5, 1, 11, 11, 1, 0, 1, 1, 5, 2, 5, 2, 11, 2047);
+            game.addNewLocalPlayers(bits, bits.buffer.length);
+            Player added = game.playerArray[9];
+            assertNotNull(added);
+            assertTrue(added.visible); assertEquals(1, gender(added)); assertEquals(88, added.combatLevel);
+            assertSame(cached, game.cachedPlayerAppearances[9]);       // replay keeps the cache entry
+            Player uncached = game.playerArray[10];
+            assertFalse(uncached.visible); assertEquals(0, uncached.combatLevel);
+            assertNull(game.cachedPlayerAppearances[10]);
+            assertSame(existing, game.playerArray[11]); assertEquals(12, existing.combatLevel);
+            assertEquals(3, game.playerCount);
+            // the player leaves the list (slot nulled) and comes back: the same cache is applied again
+            game.playerArray[9] = null; game.playerCount = 0;
+            Stream again = ExistingNpcMovementBitsTest.bits(11, 9, 1, 0, 1, 1, 5, 0, 5, 0, 11, 2047);
+            game.addNewLocalPlayers(again, again.buffer.length);
+            assertNotSame(added, game.playerArray[9]);
+            assertEquals(88, game.playerArray[9].combatLevel); assertTrue(game.playerArray[9].visible);
+        } finally {
+            Game.myPlayer = savedMe;
+        }
+    }
+
+    @Test public void playerListRemovalKeepsTheCachedAppearance() throws Exception {
+        Player savedMe = Game.myPlayer;
+        try {
+            Game.myPlayer = new Player(); Game.myPlayer.setPos(50, 60, true);
+            Game game = listGame();
+            game.removedEntityIndices = new int[1000];
+            Game.loopCycle = 731;
+            Player p = new Player(); p.setPos(50, 60, true); p.lastUpdateCycle = -1;
+            game.playerArray[41] = p; game.playerIndices[0] = 41; game.playerCount = 1;
+            Stream cached = new Stream(new byte[1]);
+            game.cachedPlayerAppearances[41] = cached;
+            game.updatePlayers(2, ExistingNpcMovementBitsTest.bits(1, 0, 8, 0)); // keep 0 of 1
+            assertNull(game.playerArray[41]);
+            assertSame(cached, game.cachedPlayerAppearances[41]);
+        } finally {
+            Game.myPlayer = savedMe;
+        }
     }
 }

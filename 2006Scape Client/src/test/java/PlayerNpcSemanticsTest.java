@@ -158,7 +158,7 @@ public class PlayerNpcSemanticsTest {
         return o.toByteArray();
     }
     @Test public void appearanceColoursHoldsOneValidatedPaletteIndexPerColourSlot() throws Exception {
-        int[][] pal = Game.anIntArrayArray1003;
+        int[][] pal = Game.appearanceColorPalettes;
         int[] in = new int[5];
         for (int i = 0; i < 5; i++) in[i] = pal[i].length - 1;     // largest valid index of each slot's palette
         Player p = new Player();

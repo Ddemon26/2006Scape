@@ -15,13 +15,13 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 
 	public static boolean ctrlDown = false;
 	public static boolean shiftDown = false;
-	private int mouseWheelX = 0;
-	private int mouseWheelY = 0;
+	private int middleDragLastX = 0;
+	private int middleDragLastY = 0;
 	public static boolean removeShiftDropOnMenuOpen;
 
-	final void createClientFrame(int i, int j) {
-		myWidth = j;
-		myHeight = i;
+	final void createClientFrame(int height, int width) {
+		myWidth = width;
+		myHeight = height;
 		this.setPreferredSize(new Dimension(this.myWidth, this.myHeight));
 
 		gameFrame = new RSFrame(this);
@@ -227,9 +227,9 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 		this.requestFocus();
 	}
 
-	final void initClientFrame(int i, int j) {
-		myWidth = j;
-		myHeight = i;
+	final void initClientFrame(int height, int width) {
+		myWidth = width;
+		myHeight = height;
 		graphics = getGameComponent().getGraphics();
 		fullGameScreen = new RSImageProducer(myWidth, myHeight, getGameComponent());
 		startRunnable(this, 1);
@@ -265,14 +265,14 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 					return;
 				}
 			}
-			int i2 = speedRatio;
-			int j2 = sleepMillis;
+			int previousSpeedRatio = speedRatio;
+			int previousSleepMillis = sleepMillis;
 			speedRatio = 300;
 			sleepMillis = 1;
 			long now = System.currentTimeMillis();
 			if (frameTimes[frameSlot] == 0L) {
-				speedRatio = i2;
-				sleepMillis = j2;
+				speedRatio = previousSpeedRatio;
+				sleepMillis = previousSleepMillis;
 			} else if (now > frameTimes[frameSlot]) {
 				speedRatio = (int) (2560 * delayTime / (now - frameTimes[frameSlot]));
 			}
@@ -353,8 +353,8 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 		}
 	}
 
-	final void setFrameRate(int i) {
-		delayTime = 1000 / i;
+	final void setFrameRate(int framesPerSecond) {
+		delayTime = 1000 / framesPerSecond;
 	}
 
 	@Override
@@ -401,7 +401,7 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 		raiseWelcomeScreen();
 	}
 
-	public boolean mouseWheelDown;
+	public boolean middleButtonDown;
 
 	@Override
 	public final void mousePressed(MouseEvent mouseevent) {
@@ -412,9 +412,9 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 		clickY = y;
 		clickTime = System.currentTimeMillis();
 		if (mouseevent.getButton() == MouseEvent.BUTTON2) {
-			mouseWheelDown = true;
-			mouseWheelX = mouseevent.getX();
-			mouseWheelY = mouseevent.getY();
+			middleButtonDown = true;
+			middleDragLastX = mouseevent.getX();
+			middleDragLastY = mouseevent.getY();
 			return;
 		}
 
@@ -432,7 +432,7 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 	public final void mouseReleased(MouseEvent mouseevent) {
 		idleTime = 0;
 		clickMode2 = 0;
-		mouseWheelDown = false;
+		middleButtonDown = false;
 	}
 
 	@Override
@@ -453,19 +453,19 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 	public final void mouseDragged(MouseEvent e) {
 		int x = e.getX();
 		int y = e.getY();
-		if (mouseWheelDown) {
-			y = mouseWheelX - e.getX();
-			int dragUp = mouseWheelY - e.getY();
-			mouseWheelDragged(y, -dragUp);
-			mouseWheelX = e.getX();
-			mouseWheelY = e.getY();
+		if (middleButtonDown) {
+			y = middleDragLastX - e.getX();
+			int dragUp = middleDragLastY - e.getY();
+			middleButtonDragged(y, -dragUp);
+			middleDragLastX = e.getX();
+			middleDragLastY = e.getY();
 			return;
 		}
 		idleTime = 0;
 		mouseX = x;
 		mouseY = y;
 	}
-	void mouseWheelDragged(int dragLeft, int dragDown) {
+	void middleButtonDragged(int dragLeft, int dragDown) {
 
 	}
 
@@ -485,60 +485,60 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 
 	public void handleMouseWheel(int notches, boolean isControlDown) {}
 
-	public void handleKeyPressed(int i, int j, boolean isCtrl, boolean isShift) {
+	public void handleKeyPressed(int keyCode, int keyChar, boolean isCtrl, boolean isShift) {
 		idleTime = 0;
 		if (isShift) shiftDown = true;
 		if (isCtrl) ctrlDown = true;
-		if (j < 30) {
-			j = 0;
+		if (keyChar < 30) {
+			keyChar = 0;
 		}
-		if (i == 37) {
-			j = 1;
+		if (keyCode == 37) {
+			keyChar = 1;
 		}
-		if (i == 39) {
-			j = 2;
+		if (keyCode == 39) {
+			keyChar = 2;
 		}
-		if (i == 38) {
-			j = 3;
+		if (keyCode == 38) {
+			keyChar = 3;
 		}
-		if (i == 40) {
-			j = 4;
+		if (keyCode == 40) {
+			keyChar = 4;
 		}
-		if (i == 17) {
-			j = 5;
+		if (keyCode == 17) {
+			keyChar = 5;
 		}
-		if (i == 8) {
-			j = 8;
+		if (keyCode == 8) {
+			keyChar = 8;
 		}
-		if (i == 127) {
-			j = 8;
+		if (keyCode == 127) {
+			keyChar = 8;
 		}
-		if (i == 9) {
-			j = 9;
+		if (keyCode == 9) {
+			keyChar = 9;
 		}
-		if (i == 10) {
-			j = 10;
+		if (keyCode == 10) {
+			keyChar = 10;
 		}
-		if (i >= 112 && i <= 123) {
-			j = 1008 + i - 112;
+		if (keyCode >= 112 && keyCode <= 123) {
+			keyChar = 1008 + keyCode - 112;
 		}
-		if (i == 36) {
-			j = 1000;
+		if (keyCode == 36) {
+			keyChar = 1000;
 		}
-		if (i == 35) {
-			j = 1001;
+		if (keyCode == 35) {
+			keyChar = 1001;
 		}
-		if (i == 33) {
-			j = 1002;
+		if (keyCode == 33) {
+			keyChar = 1002;
 		}
-		if (i == 34) {
-			j = 1003;
+		if (keyCode == 34) {
+			keyChar = 1003;
 		}
-		if (j > 0 && j < 128) {
-			keyArray[j] = 1;
+		if (keyChar > 0 && keyChar < 128) {
+			keyArray[keyChar] = 1;
 		}
-		if (j > 4) {
-			charQueue[writeIndex] = j;
+		if (keyChar > 4) {
+			charQueue[writeIndex] = keyChar;
 			writeIndex = writeIndex + 1 & 0x7f;
 		}
 	}
@@ -551,8 +551,8 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 	@Override
 	public final void keyReleased(KeyEvent keyevent) {
 		idleTime = 0;
-		int i = keyevent.getKeyCode();
-		char c = keyevent.getKeyChar();
+		int keyCode = keyevent.getKeyCode();
+		char keyChar = keyevent.getKeyChar();
 		switch (keyevent.getKeyCode())
 		{
 			case KeyEvent.VK_SHIFT:
@@ -562,38 +562,38 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 				ctrlDown = false;
 				break;
 		}
-		if (c < '\036') {
-			c = '\0';
+		if (keyChar < '\036') {
+			keyChar = '\0';
 		}
-		if (i == 37) {
-			c = '\001';
+		if (keyCode == 37) {
+			keyChar = '\001';
 		}
-		if (i == 39) {
-			c = '\002';
+		if (keyCode == 39) {
+			keyChar = '\002';
 		}
-		if (i == 38) {
-			c = '\003';
+		if (keyCode == 38) {
+			keyChar = '\003';
 		}
-		if (i == 40) {
-			c = '\004';
+		if (keyCode == 40) {
+			keyChar = '\004';
 		}
-		if (i == 17) {
-			c = '\005';
+		if (keyCode == 17) {
+			keyChar = '\005';
 		}
-		if (i == 8) {
-			c = '\b';
+		if (keyCode == 8) {
+			keyChar = '\b';
 		}
-		if (i == 127) {
-			c = '\b';
+		if (keyCode == 127) {
+			keyChar = '\b';
 		}
-		if (i == 9) {
-			c = '\t';
+		if (keyCode == 9) {
+			keyChar = '\t';
 		}
-		if (i == 10) {
-			c = '\n';
+		if (keyCode == 10) {
+			keyChar = '\n';
 		}
-		if (c > 0 && c < '\200') {
-			keyArray[c] = 0;
+		if (keyChar > 0 && keyChar < '\200') {
+			keyArray[keyChar] = 0;
 		}
 	}
 
@@ -603,16 +603,16 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 
 	final int readChar(int dummy) {
 		while (dummy >= 0) {
-			for (int j = 1; j > 0; j++) {
+			for (int spinCounter = 1; spinCounter > 0; spinCounter++) {
 				;
 			}
 		}
-		int k = -1;
+		int charCode = -1;
 		if (writeIndex != readIndex) {
-			k = charQueue[readIndex];
+			charCode = charQueue[readIndex];
 			readIndex = readIndex + 1 & 0x7f;
 		}
-		return k;
+		return charCode;
 	}
 
 	@Override
@@ -625,8 +625,8 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 	@Override
 	public final void focusLost(FocusEvent focusevent) {
 		awtFocus = false;
-		for (int i = 0; i < 128; i++) {
-			keyArray[i] = 0;
+		for (int keyChar = 0; keyChar < 128; keyChar++) {
+			keyArray[keyChar] = 0;
 		}
 
 	}
@@ -685,7 +685,7 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 		thread.setPriority(priority);
 	}
 
-	void drawLoadingText(int i, String s) {
+	void drawLoadingText(int percent, String message) {
 		while (graphics == null) {
 			graphics = getGameComponent().getGraphics();
 			try {
@@ -707,15 +707,15 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 			shouldClearScreen = false;
 		}
 		Color color = new Color(140, 17, 17);
-		int j = myHeight / 2 - 18;
+		int barY = myHeight / 2 - 18;
 		graphics.setColor(color);
-		graphics.drawRect(myWidth / 2 - 152, j, 304, 34);
-		graphics.fillRect(myWidth / 2 - 150, j + 2, i * 3, 30);
+		graphics.drawRect(myWidth / 2 - 152, barY, 304, 34);
+		graphics.fillRect(myWidth / 2 - 150, barY + 2, percent * 3, 30);
 		graphics.setColor(Color.black);
-		graphics.fillRect(myWidth / 2 - 150 + i * 3, j + 2, 300 - i * 3, 30);
+		graphics.fillRect(myWidth / 2 - 150 + percent * 3, barY + 2, 300 - percent * 3, 30);
 		graphics.setFont(font);
 		graphics.setColor(Color.white);
-		graphics.drawString(s, (myWidth - fontmetrics.stringWidth(s)) / 2, j + 22);
+		graphics.drawString(message, (myWidth - fontmetrics.stringWidth(message)) / 2, barY + 22);
 	}
 
 	RSApplet() {

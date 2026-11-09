@@ -4,12 +4,12 @@
 
 final class StationaryGraphic extends Animable {
 
-    public StationaryGraphic(int plane, int currentCycle, int delay, int spotAnimationId, int height, int worldX, int worldY) {
+    public StationaryGraphic(int plane, int currentCycle, int delay, int spotAnimationId, int height, int worldY, int worldX) {
         finished = false;
         spotAnimation = SpotAnim.cache[spotAnimationId];
         this.plane = plane;
-        this.worldY = worldY;
         this.worldX = worldX;
+        this.worldY = worldY;
         this.height = height;
         startCycle = currentCycle + delay;
         finished = false;
@@ -63,8 +63,8 @@ final class StationaryGraphic extends Animable {
     }
 
     public final  int      plane;
-    public final  int      worldY;
     public final  int      worldX;
+    public final  int      worldY;
     public final  int      height;
     public final  int      startCycle;
     public        boolean  finished;
