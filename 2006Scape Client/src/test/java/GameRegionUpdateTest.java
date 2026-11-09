@@ -202,7 +202,7 @@ public class GameRegionUpdateTest {
         for (String n : new String[] {"sound", "soundType", "soundDelay", "soundVolume"}) {
             Field f = Game.class.getDeclaredField(n); f.setAccessible(true); f.set(g, new int[50]);
         }
-        g.aBoolean848 = true;
+        g.soundEffectsEnabled = true;
         Player me = new Player(); Game.myPlayer = me;
         me.smallX[0] = 19; me.smallY[0] = 37;
         Sounds.leadingSilence20msUnits[9] = 12;
@@ -221,10 +221,10 @@ public class GameRegionUpdateTest {
         me.smallY[0] = 41;                                       // dy 4 outside
         run(g, 105, cat(i(pos(3, 5)), usBE(9), i(0x31)));
         assertEquals(3, g.currentSound);
-        g.aBoolean848 = false; me.smallY[0] = 37;
+        g.soundEffectsEnabled = false; me.smallY[0] = 37;
         run(g, 105, cat(i(pos(3, 5)), usBE(9), i(0x31)));
         assertEquals(3, g.currentSound);
-        g.aBoolean848 = true; g.currentSound = 50;
+        g.soundEffectsEnabled = true; g.currentSound = 50;
         run(g, 105, cat(i(pos(3, 5)), usBE(9), i(0x31)));
         assertEquals(50, g.currentSound);
     }

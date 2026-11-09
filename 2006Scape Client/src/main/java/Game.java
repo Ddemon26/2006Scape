@@ -141,24 +141,24 @@ public class Game extends RSApplet {
 		}
 	}
 	
-	static final void setVolume(int i) {
+	static final void setVolume(int volume) {
 		if (musicIsntNull()) {
 			if (fetchMusic)
-				musicVolume2 = i;
+				pendingSongVolume = volume;
 			else
-				applySongVolume(i);
+				applySongVolume(volume);
 		}
 	}
 	
-	static final void applySongVolume(int i) {
+	static final void applySongVolume(int volume) {
 		if (musicPlayer != null) {
 			if (songTransitionTicks == 0) {
 				if (currentSongVolume >= 0) {
-					currentSongVolume = i;
-					musicPlayer.fade(i, 0);
+					currentSongVolume = volume;
+					musicPlayer.fade(volume, 0);
 				}
 			} else if (queuedSongData != null)
-				queuedSongVolume = i;
+				queuedSongVolume = volume;
 		}
 	}
 	
@@ -192,9 +192,9 @@ public class Game extends RSApplet {
 		if (musicIsntNull()) {
 			nextSong = songId;
 			onDemandFetcher.requestFile(2, nextSong);
-			musicVolume2 = volume;
+			pendingSongVolume = volume;
 			pendingSongFadeTicks = -1;
-			aBoolean995 = true;
+			pendingSongLoop = true;
 			pendingSongFadeStep = fadeStepPerTick;
 		}
 	}
@@ -203,9 +203,9 @@ public class Game extends RSApplet {
 		if (musicIsntNull()) {
 			nextSong = songId;
 			onDemandFetcher.requestFile(2, nextSong);
-			musicVolume2 = volume;
+			pendingSongVolume = volume;
 			pendingSongFadeTicks = -1;
-			aBoolean995 = true;
+			pendingSongLoop = true;
 		    pendingSongFadeStep = -1;
 		}
 	}
@@ -224,13 +224,13 @@ public class Game extends RSApplet {
 				byte[] fetchedSongData = musicData;
 				if (fetchedSongData != null) {
 					if (ClientSettings.ANDROID)
-						setMusicData(musicVolume2, fetchedSongData, aBoolean995);
+						setMusicData(pendingSongVolume, fetchedSongData, pendingSongLoop);
 					else if (pendingSongFadeStep >= 0)
-						fadeOutAndQueueSong(aBoolean995, pendingSongFadeStep, musicVolume2, fetchedSongData);
+						fadeOutAndQueueSong(pendingSongLoop, pendingSongFadeStep, pendingSongVolume, fetchedSongData);
 					else if (pendingSongFadeTicks >= 0)
-						queueSongAfterFadeTicks(pendingSongFadeTicks, -1, aBoolean995, fetchedSongData, musicVolume2);
+						queueSongAfterFadeTicks(pendingSongFadeTicks, -1, pendingSongLoop, fetchedSongData, pendingSongVolume);
 					else
-						setMusicData(musicVolume2, fetchedSongData, aBoolean995);
+						setMusicData(pendingSongVolume, fetchedSongData, pendingSongLoop);
 					fetchMusic = false;
 				}
 			}
@@ -1438,23 +1438,23 @@ public class Game extends RSApplet {
 				DesktopHooks.setSoundVolume(config);
 			}
 			if (config == 0) {
-				aBoolean848 = true;
+				soundEffectsEnabled = true;
 				setWaveVolume(0);
 			}
 			if (config == 1) {
-				aBoolean848 = true;
+				soundEffectsEnabled = true;
 				setWaveVolume(-400);
 			}
 			if (config == 2) {
-				aBoolean848 = true;
+				soundEffectsEnabled = true;
 				setWaveVolume(-800);
 			}
 			if (config == 3) {
-				aBoolean848 = true;
+				soundEffectsEnabled = true;
 				setWaveVolume(-1200);
 			}
 			if (config == 4) {
-				aBoolean848 = false;
+				soundEffectsEnabled = false;
 			}
 		}
 		if (action == 5) {
@@ -10032,7 +10032,7 @@ public class Game extends RSApplet {
 			int soundParams = stream.readUnsignedByte();
 			int hearingRadius = soundParams >> 4 & 0xf;
 			int playCount = soundParams & 7;
-			if (myPlayer.smallX[0] >= tileX - hearingRadius && myPlayer.smallX[0] <= tileX + hearingRadius && myPlayer.smallY[0] >= tileY - hearingRadius && myPlayer.smallY[0] <= tileY + hearingRadius && aBoolean848 && !lowMem && currentSound < 50) {
+			if (myPlayer.smallX[0] >= tileX - hearingRadius && myPlayer.smallX[0] <= tileX + hearingRadius && myPlayer.smallY[0] >= tileY - hearingRadius && myPlayer.smallY[0] <= tileY + hearingRadius && soundEffectsEnabled && !lowMem && currentSound < 50) {
 				sound[currentSound] = soundEffectId;
 				soundType[currentSound] = playCount;
 				soundDelay[currentSound] = Sounds.leadingSilence20msUnits[soundEffectId];
@@ -12016,7 +12016,7 @@ public class Game extends RSApplet {
 		npcIndices = new int[16384];
 		removedEntityIndices = new int[1000];
 		loginBuffer = Stream.acquire();
-		aBoolean848 = true;
+		soundEffectsEnabled = true;
 		openInterfaceID = -1;
 		currentExp = new int[Skills.skillsCount];
 		aBoolean872 = false;
@@ -12183,7 +12183,7 @@ public class Game extends RSApplet {
 	public int publicChatMode;
 	public int privateChatMode;
 	public Stream loginBuffer;
-	public boolean aBoolean848;
+	public boolean soundEffectsEnabled;
 	public static int systemUpdateNoticeDrawCount;
 	public int[] anIntArray850;
 	public int[] anIntArray851;
@@ -12594,7 +12594,7 @@ public class Game extends RSApplet {
 	public static int songTransitionTicks = 0;
 	public static MusicPlayer musicPlayer;
 	public static boolean fetchMusic = false;
-	public static int musicVolume2;
+	public static int pendingSongVolume;
 	public static int currentSongVolume = -1;
 	public static byte[] queuedSongData;
 	public static int fadeProgress = 0;
@@ -12602,7 +12602,7 @@ public class Game extends RSApplet {
 	public static int queuedSongVolume;
 	public static boolean queuedSongLoop;
 	public static int pendingSongFadeStep;
-	public static boolean aBoolean995;
+	public static boolean pendingSongLoop;
 	public static int pendingSongFadeTicks;
 	public static int musicVolume = 255;
 	public int[] gameScreenOffsets;

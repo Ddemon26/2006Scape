@@ -29,7 +29,7 @@ public class Packet60AnchoredUpdatesTest {
         savedPlayer = Game.myPlayer; savedLowMem = Game.lowMem;
         Game g = new Game();
         g.inStream = new Stream(new byte[6000]);
-        g.aBoolean848 = true; Game.lowMem = false;
+        g.soundEffectsEnabled = true; Game.lowMem = false;
         Game.myPlayer = new Player();
         Game.myPlayer.smallX[0] = playerX; Game.myPlayer.smallY[0] = playerY;
         return g;

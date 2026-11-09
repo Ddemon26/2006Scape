@@ -22,9 +22,9 @@ public class GameMusicTransitionTest {
         oldQueued = Game.queuedSongData;
         oldOtherPending = Game.pendingSongFadeTicks;
         oldPendingStep = Game.pendingSongFadeStep;
-        oldMusicVolume2 = Game.musicVolume2;
+        oldMusicVolume2 = Game.pendingSongVolume;
         oldFetch = Game.fetchMusic;
-        oldLoop = Game.aBoolean995;
+        oldLoop = Game.pendingSongLoop;
         oldData = Game.musicData;
         oldAndroid = ClientSettings.ANDROID;
         oldOutput = Game.musicOutputVolume;
@@ -51,9 +51,9 @@ public class GameMusicTransitionTest {
         Game.queuedSongData = oldQueued;
         Game.pendingSongFadeTicks = oldOtherPending;
         Game.pendingSongFadeStep = oldPendingStep;
-        Game.musicVolume2 = oldMusicVolume2;
+        Game.pendingSongVolume = oldMusicVolume2;
         Game.fetchMusic = oldFetch;
-        Game.aBoolean995 = oldLoop;
+        Game.pendingSongLoop = oldLoop;
         Game.musicData = oldData;
         ClientSettings.ANDROID = oldAndroid;
         Game.musicOutputVolume = oldOutput;
@@ -348,8 +348,8 @@ public class GameMusicTransitionTest {
         Game.musicData = data;
         Game.pendingSongFadeStep = -1;
         Game.pendingSongFadeTicks = 45;
-        Game.musicVolume2 = 70;
-        Game.aBoolean995 = true;
+        Game.pendingSongVolume = 70;
+        Game.pendingSongLoop = true;
         Game.currentSongVolume = 64;
         Game.fadeStepPerTick = 10;
         Game.updateMusic();

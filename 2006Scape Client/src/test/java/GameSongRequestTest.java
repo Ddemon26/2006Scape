@@ -16,9 +16,9 @@ public class GameSongRequestTest {
     @Before public void setUp() {
         oldPlayer = Game.musicPlayer;
         oldFetch = Game.fetchMusic;
-        oldLoop = Game.aBoolean995;
+        oldLoop = Game.pendingSongLoop;
         oldAndroid = ClientSettings.ANDROID;
-        oldVolume = Game.musicVolume2;
+        oldVolume = Game.pendingSongVolume;
         oldPending = Game.pendingSongFadeStep;
         oldOtherPending = Game.pendingSongFadeTicks;
         oldFadeVolume = Game.currentSongVolume;
@@ -43,9 +43,9 @@ public class GameSongRequestTest {
     @After public void tearDown() {
         Game.musicPlayer = oldPlayer;
         Game.fetchMusic = oldFetch;
-        Game.aBoolean995 = oldLoop;
+        Game.pendingSongLoop = oldLoop;
         ClientSettings.ANDROID = oldAndroid;
-        Game.musicVolume2 = oldVolume;
+        Game.pendingSongVolume = oldVolume;
         Game.pendingSongFadeStep = oldPending;
         Game.pendingSongFadeTicks = oldOtherPending;
         Game.currentSongVolume = oldFadeVolume;
@@ -59,14 +59,14 @@ public class GameSongRequestTest {
         game.requestSongWithFade(10, 64, false, 2);
         assertEquals(2, game.nextSong);
         assertEquals(1, fetcher.getOutstandingRequestCount());
-        assertEquals(64, Game.musicVolume2);
+        assertEquals(64, Game.pendingSongVolume);
         assertEquals(10, Game.pendingSongFadeStep);
         assertEquals(-1, Game.pendingSongFadeTicks);
-        assertTrue(Game.aBoolean995);
+        assertTrue(Game.pendingSongLoop);
         game.requestSongWithFade(20, 96, true, 3);
         assertEquals(3, game.nextSong);
         assertEquals(2, fetcher.getOutstandingRequestCount());
-        assertEquals(96, Game.musicVolume2);
+        assertEquals(96, Game.pendingSongVolume);
         assertEquals(20, Game.pendingSongFadeStep);
     }
 
@@ -75,10 +75,10 @@ public class GameSongRequestTest {
         game.requestSongWithoutFade(127, true, 1);
         assertEquals(1, game.nextSong);
         assertEquals(2, fetcher.getOutstandingRequestCount());
-        assertEquals(127, Game.musicVolume2);
+        assertEquals(127, Game.pendingSongVolume);
         assertEquals(-1, Game.pendingSongFadeStep);
         assertEquals(-1, Game.pendingSongFadeTicks);
-        assertTrue(Game.aBoolean995);
+        assertTrue(Game.pendingSongLoop);
     }
 
     @Test public void originalCodeDispatchesFadeOnlyForMethod58() {
@@ -123,8 +123,8 @@ public class GameSongRequestTest {
     @Test public void method49UsesAvailableDataAndAdvancesPlayerOncePerCall() {
         Game.pendingSongFadeStep = -1;
         Game.pendingSongFadeTicks = -1;
-        Game.musicVolume2 = 73;
-        Game.aBoolean995 = false;
+        Game.pendingSongVolume = 73;
+        Game.pendingSongLoop = false;
         Game.updateMusic();
         assertEquals(0, player.plays);
         assertTrue(Game.fetchMusic);
@@ -144,6 +144,43 @@ public class GameSongRequestTest {
         Game.updateMusic();
         assertEquals(1, player.plays);
         assertEquals(3, player.ticks);
+    }
+
+    @Test public void setVolumeKeepsArgumentForPendingSongWhileFetchingElseFadesCurrentSong() {
+        Game.pendingSongVolume = 0;
+        Game.pendingSongFadeStep = -1;
+        Game.pendingSongFadeTicks = -1;
+        Game.pendingSongLoop = true;
+        Game.setVolume(77);                       // fetch pending: stored, nothing faded
+        assertEquals(77, Game.pendingSongVolume);
+        assertEquals("", player.events.toString());
+        Game.musicData = new byte[] {9};
+        Game.updateMusic();                       // the fetched song starts at that volume, looping per pendingSongLoop
+        assertEquals(77, player.volume);
+        assertTrue(player.loop);
+        assertFalse(Game.fetchMusic);
+
+        Game.currentSongVolume = 50;              // no fetch pending: the argument fades the current song
+        Game.songTransitionTicks = 0;
+        Game.setVolume(88);
+        assertEquals(77, Game.pendingSongVolume);
+        assertEquals(88, Game.currentSongVolume);
+        assertEquals("fade88;", player.events.toString());
+
+        Game.songTransitionTicks = 5;             // during a transition it becomes the queued song's volume
+        Game.queuedSongData = new byte[] {1};
+        int oldQueuedVolume = Game.queuedSongVolume;
+        Game.applySongVolume(99);
+        assertEquals(99, Game.queuedSongVolume);
+        assertEquals(88, Game.currentSongVolume);
+        assertEquals("fade88;", player.events.toString());
+        Game.queuedSongVolume = oldQueuedVolume;
+
+        Game.songTransitionTicks = 0;             // nothing playing: ignored
+        Game.currentSongVolume = -1;
+        Game.applySongVolume(33);
+        assertEquals(-1, Game.currentSongVolume);
+        assertEquals("fade88;", player.events.toString());
     }
 
     @Test public void method49RequiresPlayerEvenWithFetchedData() {
@@ -192,7 +229,7 @@ public class GameSongRequestTest {
             plays++; volume = value; data = bytes; loop = repeat;
         }
         void shutdown() { events.append("close;"); }
-        void fade(int a, int b) { }
+        void fade(int a, int b) { events.append("fade").append(a).append(';'); }
         void setVolume(int value) { events.append("volume").append(value).append(';'); }
         void tick(int value) { ticks++; lastTick = value; }
         void stop() { events.append("stop;"); }

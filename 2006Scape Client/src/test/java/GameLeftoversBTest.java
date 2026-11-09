@@ -118,6 +118,113 @@ public class GameLeftoversBTest {
         assertEquals(0, g.insertDragMode);
     }
 
+    // ---------- applyVarpSetting actions 1, 3, 4, 8 (pass 219) ----------
+    @Test public void action1Values1To4RebuildPaletteWithFallingGammaOtherValuesKeepIt() throws Exception {
+        int[] saved = Texture.hslToRgbPalette.clone();
+        try {
+            int[] mid = new int[5];
+            for (int v = 1; v <= 4; v++) {
+                Texture.hslToRgbPalette[64] = 0;
+                setVarp(4, 1, v); g.welcomeScreenRaised = false; g.applyVarpSetting(4);
+                mid[v] = Texture.hslToRgbPalette[64] & 0xff;
+                assertTrue(g.welcomeScreenRaised);
+            }
+            for (int v = 2; v <= 4; v++) assertTrue("brighter at value " + v, mid[v] > mid[v - 1] + 4);
+            Texture.buildPalettes(0.9); assertEquals(Texture.hslToRgbPalette[64] & 0xff, mid[1], 3);
+            Texture.buildPalettes(0.6); assertEquals(Texture.hslToRgbPalette[64] & 0xff, mid[4], 3);
+            Sprite cached = new Sprite(1, 1);
+            for (int v : new int[] {0, 5}) {                // palette untouched, item sprite cache still cleared
+                Texture.hslToRgbPalette[64] = 0x123456;
+                ItemDef.mruNodes1.removeFromCache(cached, 42L);
+                setVarp(4, 1, v); g.welcomeScreenRaised = false; g.applyVarpSetting(4);
+                assertEquals(0x123456, Texture.hslToRgbPalette[64]);
+                assertNull(ItemDef.mruNodes1.insertFromCache(42L));
+                assertTrue(g.welcomeScreenRaised);
+            }
+        } finally { System.arraycopy(saved, 0, Texture.hslToRgbPalette, 0, saved.length); ItemDef.mruNodes1.clear(); }
+    }
+
+    static final class MusicProbe extends MusicPlayer {
+        final StringBuilder events = new StringBuilder();
+        void play(int volume, byte[] data, int a, boolean loop) { events.append("play").append(volume).append(';'); }
+        void shutdown() { }
+        void fade(int volume, int a) { events.append("fade").append(volume).append(';'); }
+        void setVolume(int volume) { events.append("volume").append(volume).append(';'); }
+        void tick(int a) { }
+        void stop() { events.append("stop;"); }
+    }
+    @Test public void action3MapsValues0To4ToMusicVolume255To0AndAppliesIt() throws Exception {
+        MusicPlayer oldPlayer = Game.musicPlayer;
+        int oldVolume = Game.musicVolume, oldCurrent = Game.currentSongVolume, oldTicks = Game.songTransitionTicks, oldPending = Game.pendingSongVolume;
+        boolean oldFetch = Game.fetchMusic, oldLoop = Game.pendingSongLoop;
+        int oldStep = Game.pendingSongFadeStep, oldFadeTicks = Game.pendingSongFadeTicks, oldProgress = Game.fadeProgress;
+        byte[] oldQueued = Game.queuedSongData;
+        try {
+            MusicProbe p = new MusicProbe(); Game.musicPlayer = p;
+            Game.fetchMusic = false; Game.songTransitionTicks = 0; Game.currentSongVolume = 100; Game.musicVolume = 255;
+            g.currentSong = -1;
+            int[] expected = {192, 128, 64, 255};
+            int[] values = {1, 2, 3, 0};
+            for (int k = 0; k < 4; k++) {
+                setVarp(6, 3, values[k]); g.applyVarpSetting(6);
+                assertEquals(expected[k], Game.musicVolume);
+                assertEquals(expected[k], Game.currentSongVolume);
+            }
+            assertEquals("fade192;fade128;fade64;fade255;", p.events.toString());
+            setVarp(6, 3, 0); g.applyVarpSetting(6);          // unchanged volume: nothing applied
+            assertEquals("fade192;fade128;fade64;fade255;", p.events.toString());
+            p.events.setLength(0);
+            g.previousSong = 5;
+            setVarp(6, 3, 4); g.applyVarpSetting(6);          // value 4: music off, current song stopped
+            assertEquals(0, Game.musicVolume); assertEquals("stop;", p.events.toString());
+            assertEquals(-1, Game.currentSongVolume); assertEquals(0, g.previousSong);
+            setVarp(6, 3, 5); g.applyVarpSetting(6);          // unknown value maps to 0 too: no change
+            assertEquals("stop;", p.events.toString());
+            OnDemandFetcher f = new OnDemandFetcher(); f.versions[2] = new int[] {1, 1, 1, 1, 1, 1, 1, 1};
+            g.onDemandFetcher = f; g.currentSong = 7; g.nextSong = -1;
+            setVarp(6, 3, 2); g.applyVarpSetting(6);          // off -> on with a known song: refetch it at the new volume
+            assertEquals(128, Game.musicVolume); assertEquals(7, g.nextSong); assertEquals(128, Game.pendingSongVolume);
+            assertEquals("stop;", p.events.toString());
+        } finally {
+            Game.musicPlayer = oldPlayer; Game.musicVolume = oldVolume; Game.currentSongVolume = oldCurrent;
+            Game.songTransitionTicks = oldTicks; Game.pendingSongVolume = oldPending; Game.fetchMusic = oldFetch;
+            Game.pendingSongLoop = oldLoop; Game.pendingSongFadeStep = oldStep; Game.pendingSongFadeTicks = oldFadeTicks;
+            Game.fadeProgress = oldProgress; Game.queuedSongData = oldQueued;
+        }
+    }
+
+    @Test public void action4SetsSoundEffectsFlagWaveVolumeAndDesktopVolume() throws Exception {
+        boolean oldAndroid = ClientSettings.ANDROID; int oldWave = Signlink.wavevol, oldSound = SoundPlayer.volume;
+        try {
+            ClientSettings.ANDROID = false;
+            int[] wave = {0, -400, -800, -1200};
+            for (int v = 0; v < 4; v++) {
+                g.soundEffectsEnabled = false; Signlink.wavevol = 77;
+                setVarp(3, 4, v); g.applyVarpSetting(3);
+                assertTrue("value " + v + " enables effects", g.soundEffectsEnabled);
+                assertEquals(wave[v], Signlink.wavevol); assertEquals(v, SoundPlayer.volume);
+            }
+            g.soundEffectsEnabled = true; Signlink.wavevol = 77;
+            setVarp(3, 4, 4); g.applyVarpSetting(3);
+            assertFalse("value 4 disables effects", g.soundEffectsEnabled);
+            assertEquals(77, Signlink.wavevol); assertEquals(4, SoundPlayer.volume);
+            setVarp(3, 4, 5); g.applyVarpSetting(3);             // other values leave the flag alone
+            assertFalse(g.soundEffectsEnabled); assertEquals(5, SoundPlayer.volume);
+            assertTrue("a fresh client starts with effects on", new Game().soundEffectsEnabled);
+        } finally { ClientSettings.ANDROID = oldAndroid; Signlink.wavevol = oldWave; SoundPlayer.volume = oldSound; }
+    }
+
+    @Test public void action8StoresSplitPrivateChatAndRequestsChatRedraw() throws Exception {
+        for (int v : new int[] {1, 0, 3}) {
+            g.inputTaken = false;
+            setVarp(2, 8, v); g.applyVarpSetting(2);
+            assertEquals(v, g.splitPrivateChat); assertTrue(g.inputTaken);
+        }
+        g.inputTaken = false; g.splitPrivateChat = 9;
+        setVarp(2, 7, 1); g.applyVarpSetting(2);                 // action 7 does nothing
+        assertEquals(9, g.splitPrivateChat); assertFalse(g.inputTaken);
+    }
+
     // leftClickOpensMenu consumer: processMenuClick
     static class MenuSpy extends Game {
         List<String> calls = new ArrayList<String>();
