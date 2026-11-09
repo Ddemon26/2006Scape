@@ -2620,69 +2620,69 @@ public class Game extends RSApplet {
 			}
 
 		}
-		aClass30_Sub2_Sub1_Sub1_1201 = new Sprite(128, 265);
-		aClass30_Sub2_Sub1_Sub1_1202 = new Sprite(128, 265);
-		System.arraycopy(titleLeftFlamePaneProducer.pixels, 0, aClass30_Sub2_Sub1_Sub1_1201.pixels, 0, 33920);
+		titleLeftFlameBackdrop = new Sprite(128, 265);
+		titleRightFlameBackdrop = new Sprite(128, 265);
+		System.arraycopy(titleLeftFlamePaneProducer.pixels, 0, titleLeftFlameBackdrop.pixels, 0, 33920);
 
-		System.arraycopy(titleRightFlamePaneProducer.pixels, 0, aClass30_Sub2_Sub1_Sub1_1202.pixels, 0, 33920);
+		System.arraycopy(titleRightFlamePaneProducer.pixels, 0, titleRightFlameBackdrop.pixels, 0, 33920);
 
-		anIntArray851 = new int[256];
-		for (int k1 = 0; k1 < 64; k1++) {
-			anIntArray851[k1] = k1 * 0x40000;
+		flamePaletteRed = new int[256];
+		for (int shade = 0; shade < 64; shade++) {
+			flamePaletteRed[shade] = shade * 0x40000;
 		}
 
-		for (int l1 = 0; l1 < 64; l1++) {
-			anIntArray851[l1 + 64] = 0xff0000 + 1024 * l1;
+		for (int shade = 0; shade < 64; shade++) {
+			flamePaletteRed[shade + 64] = 0xff0000 + 1024 * shade;
 		}
 
-		for (int i2 = 0; i2 < 64; i2++) {
-			anIntArray851[i2 + 128] = 0xffff00 + 4 * i2;
+		for (int shade = 0; shade < 64; shade++) {
+			flamePaletteRed[shade + 128] = 0xffff00 + 4 * shade;
 		}
 
-		for (int j2 = 0; j2 < 64; j2++) {
-			anIntArray851[j2 + 192] = 0xffffff;
+		for (int shade = 0; shade < 64; shade++) {
+			flamePaletteRed[shade + 192] = 0xffffff;
 		}
 
-		anIntArray852 = new int[256];
-		for (int k2 = 0; k2 < 64; k2++) {
-			anIntArray852[k2] = k2 * 1024;
+		flamePaletteGreen = new int[256];
+		for (int shade = 0; shade < 64; shade++) {
+			flamePaletteGreen[shade] = shade * 1024;
 		}
 
-		for (int l2 = 0; l2 < 64; l2++) {
-			anIntArray852[l2 + 64] = 0x00ff00 + 4 * l2;
+		for (int shade = 0; shade < 64; shade++) {
+			flamePaletteGreen[shade + 64] = 0x00ff00 + 4 * shade;
 		}
 
-		for (int i3 = 0; i3 < 64; i3++) {
-			anIntArray852[i3 + 128] = 0x00ffff + 0x40000 * i3;
+		for (int shade = 0; shade < 64; shade++) {
+			flamePaletteGreen[shade + 128] = 0x00ffff + 0x40000 * shade;
 		}
 
-		for (int j3 = 0; j3 < 64; j3++) {
-			anIntArray852[j3 + 192] = 0xffffff;
+		for (int shade = 0; shade < 64; shade++) {
+			flamePaletteGreen[shade + 192] = 0xffffff;
 		}
 
-		anIntArray853 = new int[256];
-		for (int k3 = 0; k3 < 64; k3++) {
-			anIntArray853[k3] = k3 * 4;
+		flamePaletteBlue = new int[256];
+		for (int shade = 0; shade < 64; shade++) {
+			flamePaletteBlue[shade] = shade * 4;
 		}
 
-		for (int l3 = 0; l3 < 64; l3++) {
-			anIntArray853[l3 + 64] = 255 + 0x40000 * l3;
+		for (int shade = 0; shade < 64; shade++) {
+			flamePaletteBlue[shade + 64] = 255 + 0x40000 * shade;
 		}
 
-		for (int i4 = 0; i4 < 64; i4++) {
-			anIntArray853[i4 + 128] = 0xff00ff + 1024 * i4;
+		for (int shade = 0; shade < 64; shade++) {
+			flamePaletteBlue[shade + 128] = 0xff00ff + 1024 * shade;
 		}
 
-		for (int j4 = 0; j4 < 64; j4++) {
-			anIntArray853[j4 + 192] = 0xffffff;
+		for (int shade = 0; shade < 64; shade++) {
+			flamePaletteBlue[shade + 192] = 0xffffff;
 		}
 
-		anIntArray850 = new int[256];
-		anIntArray1190 = new int[32768];
-		anIntArray1191 = new int[32768];
+		activeFlamePalette = new int[256];
+		flameNoise = new int[32768];
+		flameNoiseScratch = new int[32768];
 		randomizeBackground(null);
-		anIntArray828 = new int[32768];
-		anIntArray829 = new int[32768];
+		flameIntensity = new int[32768];
+		flameNeighbourAverage = new int[32768];
 		drawLoadingText(10, "Connecting to fileserver");
 		if (!flameThreadActive) {
 			drawFlames = true;
@@ -2895,62 +2895,62 @@ public class Game extends RSApplet {
 	}
 
 	public void calcFlamesPosition() {
-		char c = '\u0100';
-		for (int j = 10; j < 117; j++) {
-			int k = (int) (Math.random() * 100D);
-			if (k < 50) {
-				anIntArray828[j + (c - 2 << 7)] = 255;
+		char gridHeight = '\u0100';
+		for (int fuelColumn = 10; fuelColumn < 117; fuelColumn++) {
+			int fuelRoll = (int) (Math.random() * 100D);
+			if (fuelRoll < 50) {
+				flameIntensity[fuelColumn + (gridHeight - 2 << 7)] = 255;
 			}
 		}
-		for (int l = 0; l < 100; l++) {
-			int i1 = (int) (Math.random() * 124D) + 2;
-			int k1 = (int) (Math.random() * 128D) + 128;
-			int k2 = i1 + (k1 << 7);
-			anIntArray828[k2] = 192;
+		for (int sparkIndex = 0; sparkIndex < 100; sparkIndex++) {
+			int sparkColumn = (int) (Math.random() * 124D) + 2;
+			int sparkRow = (int) (Math.random() * 128D) + 128;
+			int sparkCell = sparkColumn + (sparkRow << 7);
+			flameIntensity[sparkCell] = 192;
 		}
 
-		for (int j1 = 1; j1 < c - 1; j1++) {
-			for (int l1 = 1; l1 < 127; l1++) {
-				int l2 = l1 + (j1 << 7);
-				anIntArray829[l2] = (anIntArray828[l2 - 1] + anIntArray828[l2 + 1] + anIntArray828[l2 - 128] + anIntArray828[l2 + 128]) / 4;
+		for (int row = 1; row < gridHeight - 1; row++) {
+			for (int col = 1; col < 127; col++) {
+				int cellIndex = col + (row << 7);
+				flameNeighbourAverage[cellIndex] = (flameIntensity[cellIndex - 1] + flameIntensity[cellIndex + 1] + flameIntensity[cellIndex - 128] + flameIntensity[cellIndex + 128]) / 4;
 			}
 
 		}
 
-		anInt1275 += 128;
-		if (anInt1275 > anIntArray1190.length) {
-			anInt1275 -= anIntArray1190.length;
-			int i2 = (int) (Math.random() * 12D);
-			randomizeBackground(aBackgroundArray1152s[i2]);
+		flameNoiseScroll += 128;
+		if (flameNoiseScroll > flameNoise.length) {
+			flameNoiseScroll -= flameNoise.length;
+			int runeMaskIndex = (int) (Math.random() * 12D);
+			randomizeBackground(aBackgroundArray1152s[runeMaskIndex]);
 		}
-		for (int j2 = 1; j2 < c - 1; j2++) {
-			for (int i3 = 1; i3 < 127; i3++) {
-				int k3 = i3 + (j2 << 7);
-				int i4 = anIntArray829[k3 + 128] - anIntArray1190[k3 + anInt1275 & anIntArray1190.length - 1] / 5;
-				if (i4 < 0) {
-					i4 = 0;
+		for (int row = 1; row < gridHeight - 1; row++) {
+			for (int col = 1; col < 127; col++) {
+				int cellIndex = col + (row << 7);
+				int cooledHeat = flameNeighbourAverage[cellIndex + 128] - flameNoise[cellIndex + flameNoiseScroll & flameNoise.length - 1] / 5;
+				if (cooledHeat < 0) {
+					cooledHeat = 0;
 				}
-				anIntArray828[k3] = i4;
+				flameIntensity[cellIndex] = cooledHeat;
 			}
 
 		}
 
-		System.arraycopy(anIntArray969, 1, anIntArray969, 0, c - 1);
+		System.arraycopy(flameRowSway, 1, flameRowSway, 0, gridHeight - 1);
 
-		anIntArray969[c - 1] = (int) (Math.sin((double) loopCycle / 14D) * 16D + Math.sin((double) loopCycle / 15D) * 14D + Math.sin((double) loopCycle / 16D) * 12D);
-		if (anInt1040 > 0) {
-			anInt1040 -= 4;
+		flameRowSway[gridHeight - 1] = (int) (Math.sin((double) loopCycle / 14D) * 16D + Math.sin((double) loopCycle / 15D) * 14D + Math.sin((double) loopCycle / 16D) * 12D);
+		if (greenFlameFlashTimer > 0) {
+			greenFlameFlashTimer -= 4;
 		}
-		if (anInt1041 > 0) {
-			anInt1041 -= 4;
+		if (blueFlameFlashTimer > 0) {
+			blueFlameFlashTimer -= 4;
 		}
-		if (anInt1040 == 0 && anInt1041 == 0) {
-			int l3 = (int) (Math.random() * 2000D);
-			if (l3 == 0) {
-				anInt1040 = 1024;
+		if (greenFlameFlashTimer == 0 && blueFlameFlashTimer == 0) {
+			int flashRoll = (int) (Math.random() * 2000D);
+			if (flashRoll == 0) {
+				greenFlameFlashTimer = 1024;
 			}
-			if (l3 == 1) {
-				anInt1041 = 1024;
+			if (flashRoll == 1) {
+				blueFlameFlashTimer = 1024;
 			}
 		}
 	}
@@ -4856,7 +4856,7 @@ public class Game extends RSApplet {
 
 	public void printDebug() {
 		System.out.println("============");
-		System.out.println("flame-cycle:" + anInt1208);
+		System.out.println("flame-cycle:" + flameFrameCount);
 		if (onDemandFetcher != null) {
 			System.out.println("Od-cycle:" + onDemandFetcher.onDemandCycle);
 		}
@@ -8476,39 +8476,39 @@ public class Game extends RSApplet {
 	}
 
 	public void randomizeBackground(Background background) {
-		int j = 256;
-		for (int k = 0; k < anIntArray1190.length; k++) {
-			anIntArray1190[k] = 0;
+		int gridHeight = 256;
+		for (int noiseIndex = 0; noiseIndex < flameNoise.length; noiseIndex++) {
+			flameNoise[noiseIndex] = 0;
 		}
 
-		for (int l = 0; l < 5000; l++) {
-			int i1 = (int) (Math.random() * 128D * (double) j);
-			anIntArray1190[i1] = (int) (Math.random() * 256D);
+		for (int pointIndex = 0; pointIndex < 5000; pointIndex++) {
+			int pointCell = (int) (Math.random() * 128D * (double) gridHeight);
+			flameNoise[pointCell] = (int) (Math.random() * 256D);
 		}
 
-		for (int j1 = 0; j1 < 20; j1++) {
-			for (int k1 = 1; k1 < j - 1; k1++) {
-				for (int i2 = 1; i2 < 127; i2++) {
-					int k2 = i2 + (k1 << 7);
-					anIntArray1191[k2] = (anIntArray1190[k2 - 1] + anIntArray1190[k2 + 1] + anIntArray1190[k2 - 128] + anIntArray1190[k2 + 128]) / 4;
+		for (int smoothingPass = 0; smoothingPass < 20; smoothingPass++) {
+			for (int row = 1; row < gridHeight - 1; row++) {
+				for (int col = 1; col < 127; col++) {
+					int cellIndex = col + (row << 7);
+					flameNoiseScratch[cellIndex] = (flameNoise[cellIndex - 1] + flameNoise[cellIndex + 1] + flameNoise[cellIndex - 128] + flameNoise[cellIndex + 128]) / 4;
 				}
 
 			}
 
-			int ai[] = anIntArray1190;
-			anIntArray1190 = anIntArray1191;
-			anIntArray1191 = ai;
+			int swapBuffer[] = flameNoise;
+			flameNoise = flameNoiseScratch;
+			flameNoiseScratch = swapBuffer;
 		}
 
 		if (background != null) {
-			int l1 = 0;
-			for (int j2 = 0; j2 < background.imageHeight; j2++) {
-				for (int l2 = 0; l2 < background.imageWidth; l2++) {
-					if (background.paletteIndices[l1++] != 0) {
-						int i3 = l2 + 16 + background.offsetX;
-						int j3 = j2 + 16 + background.offsetY;
-						int k3 = i3 + (j3 << 7);
-						anIntArray1190[k3] = 0;
+			int maskIndex = 0;
+			for (int maskRow = 0; maskRow < background.imageHeight; maskRow++) {
+				for (int maskColumn = 0; maskColumn < background.imageWidth; maskColumn++) {
+					if (background.paletteIndices[maskIndex++] != 0) {
+						int noiseColumn = maskColumn + 16 + background.offsetX;
+						int noiseRow = maskRow + 16 + background.offsetY;
+						int noiseCell = noiseColumn + (noiseRow << 7);
+						flameNoise[noiseCell] = 0;
 					}
 				}
 
@@ -9141,16 +9141,16 @@ public class Game extends RSApplet {
 		aBackground_966 = null;
 		aBackground_967 = null;
 		aBackgroundArray1152s = null;
-		anIntArray850 = null;
-		anIntArray851 = null;
-		anIntArray852 = null;
-		anIntArray853 = null;
-		anIntArray1190 = null;
-		anIntArray1191 = null;
-		anIntArray828 = null;
-		anIntArray829 = null;
-		aClass30_Sub2_Sub1_Sub1_1201 = null;
-		aClass30_Sub2_Sub1_Sub1_1202 = null;
+		activeFlamePalette = null;
+		flamePaletteRed = null;
+		flamePaletteGreen = null;
+		flamePaletteBlue = null;
+		flameNoise = null;
+		flameNoiseScratch = null;
+		flameIntensity = null;
+		flameNeighbourAverage = null;
+		titleLeftFlameBackdrop = null;
+		titleRightFlameBackdrop = null;
 	}
 
 	public boolean advanceInterfaceModelAnimations(int elapsedTicks, int interfaceId) {
@@ -9757,84 +9757,84 @@ public class Game extends RSApplet {
 	}
 	
 	public void doFlamesDrawing() {
-		char c = '\u0100';
-		if (anInt1040 > 0) {
-			for (int i = 0; i < 256; i++) {
-				if (anInt1040 > 768) {
-					anIntArray850[i] = blendRgb256(anIntArray851[i], anIntArray852[i], 1024 - anInt1040);
-				} else if (anInt1040 > 256) {
-					anIntArray850[i] = anIntArray852[i];
+		char gridHeight = '\u0100';
+		if (greenFlameFlashTimer > 0) {
+			for (int paletteIndex = 0; paletteIndex < 256; paletteIndex++) {
+				if (greenFlameFlashTimer > 768) {
+					activeFlamePalette[paletteIndex] = blendRgb256(flamePaletteRed[paletteIndex], flamePaletteGreen[paletteIndex], 1024 - greenFlameFlashTimer);
+				} else if (greenFlameFlashTimer > 256) {
+					activeFlamePalette[paletteIndex] = flamePaletteGreen[paletteIndex];
 				} else {
-					anIntArray850[i] = blendRgb256(anIntArray852[i], anIntArray851[i], 256 - anInt1040);
+					activeFlamePalette[paletteIndex] = blendRgb256(flamePaletteGreen[paletteIndex], flamePaletteRed[paletteIndex], 256 - greenFlameFlashTimer);
 				}
 			}
 
-		} else if (anInt1041 > 0) {
-			for (int j = 0; j < 256; j++) {
-				if (anInt1041 > 768) {
-					anIntArray850[j] = blendRgb256(anIntArray851[j], anIntArray853[j], 1024 - anInt1041);
-				} else if (anInt1041 > 256) {
-					anIntArray850[j] = anIntArray853[j];
+		} else if (blueFlameFlashTimer > 0) {
+			for (int paletteIndex = 0; paletteIndex < 256; paletteIndex++) {
+				if (blueFlameFlashTimer > 768) {
+					activeFlamePalette[paletteIndex] = blendRgb256(flamePaletteRed[paletteIndex], flamePaletteBlue[paletteIndex], 1024 - blueFlameFlashTimer);
+				} else if (blueFlameFlashTimer > 256) {
+					activeFlamePalette[paletteIndex] = flamePaletteBlue[paletteIndex];
 				} else {
-					anIntArray850[j] = blendRgb256(anIntArray853[j], anIntArray851[j], 256 - anInt1041);
+					activeFlamePalette[paletteIndex] = blendRgb256(flamePaletteBlue[paletteIndex], flamePaletteRed[paletteIndex], 256 - blueFlameFlashTimer);
 				}
 			}
 
 		} else {
-			System.arraycopy(anIntArray851, 0, anIntArray850, 0, 256);
+			System.arraycopy(flamePaletteRed, 0, activeFlamePalette, 0, 256);
 
 		}
-		System.arraycopy(aClass30_Sub2_Sub1_Sub1_1201.pixels, 0, titleLeftFlamePaneProducer.pixels, 0, 33920);
+		System.arraycopy(titleLeftFlameBackdrop.pixels, 0, titleLeftFlamePaneProducer.pixels, 0, 33920);
 
-		int i1 = 0;
-		int j1 = 1152;
-		for (int k1 = 1; k1 < c - 1; k1++) {
-			int l1 = anIntArray969[k1] * (c - k1) / c;
-			int j2 = 22 + l1;
-			if (j2 < 0) {
-				j2 = 0;
+		int gridIndex = 0;
+		int paneIndex = 1152;
+		for (int row = 1; row < gridHeight - 1; row++) {
+			int rowSway = flameRowSway[row] * (gridHeight - row) / gridHeight;
+			int leftCutoff = 22 + rowSway;
+			if (leftCutoff < 0) {
+				leftCutoff = 0;
 			}
-			i1 += j2;
-			for (int l2 = j2; l2 < 128; l2++) {
-				int j3 = anIntArray828[i1++];
-				if (j3 != 0) {
-					int l3 = j3;
-					int j4 = 256 - j3;
-					j3 = anIntArray850[j3];
-					int l4 = titleLeftFlamePaneProducer.pixels[j1];
-					titleLeftFlamePaneProducer.pixels[j1++] = ((j3 & 0xff00ff) * l3 + (l4 & 0xff00ff) * j4 & 0xff00ff00) + ((j3 & 0xff00) * l3 + (l4 & 0xff00) * j4 & 0xff0000) >> 8;
+			gridIndex += leftCutoff;
+			for (int col = leftCutoff; col < 128; col++) {
+				int cellValue = flameIntensity[gridIndex++];
+				if (cellValue != 0) {
+					int intensity = cellValue;
+					int inverseIntensity = 256 - cellValue;
+					cellValue = activeFlamePalette[cellValue];
+					int paneBackground = titleLeftFlamePaneProducer.pixels[paneIndex];
+					titleLeftFlamePaneProducer.pixels[paneIndex++] = ((cellValue & 0xff00ff) * intensity + (paneBackground & 0xff00ff) * inverseIntensity & 0xff00ff00) + ((cellValue & 0xff00) * intensity + (paneBackground & 0xff00) * inverseIntensity & 0xff0000) >> 8;
 				} else {
-					j1++;
+					paneIndex++;
 				}
 			}
 
-			j1 += j2;
+			paneIndex += leftCutoff;
 		}
 
 		titleLeftFlamePaneProducer.drawGraphics(0, super.graphics, 0);
-		System.arraycopy(aClass30_Sub2_Sub1_Sub1_1202.pixels, 0, titleRightFlamePaneProducer.pixels, 0, 33920);
+		System.arraycopy(titleRightFlameBackdrop.pixels, 0, titleRightFlamePaneProducer.pixels, 0, 33920);
 
-		i1 = 0;
-		j1 = 1176;
-		for (int k2 = 1; k2 < c - 1; k2++) {
-			int i3 = anIntArray969[k2] * (c - k2) / c;
-			int k3 = 103 - i3;
-			j1 += i3;
-			for (int i4 = 0; i4 < k3; i4++) {
-				int k4 = anIntArray828[i1++];
-				if (k4 != 0) {
-					int i5 = k4;
-					int j5 = 256 - k4;
-					k4 = anIntArray850[k4];
-					int k5 = titleRightFlamePaneProducer.pixels[j1];
-					titleRightFlamePaneProducer.pixels[j1++] = ((k4 & 0xff00ff) * i5 + (k5 & 0xff00ff) * j5 & 0xff00ff00) + ((k4 & 0xff00) * i5 + (k5 & 0xff00) * j5 & 0xff0000) >> 8;
+		gridIndex = 0;
+		paneIndex = 1176;
+		for (int row = 1; row < gridHeight - 1; row++) {
+			int rowSway = flameRowSway[row] * (gridHeight - row) / gridHeight;
+			int visibleWidth = 103 - rowSway;
+			paneIndex += rowSway;
+			for (int col = 0; col < visibleWidth; col++) {
+				int cellValue = flameIntensity[gridIndex++];
+				if (cellValue != 0) {
+					int intensity = cellValue;
+					int inverseIntensity = 256 - cellValue;
+					cellValue = activeFlamePalette[cellValue];
+					int paneBackground = titleRightFlamePaneProducer.pixels[paneIndex];
+					titleRightFlamePaneProducer.pixels[paneIndex++] = ((cellValue & 0xff00ff) * intensity + (paneBackground & 0xff00ff) * inverseIntensity & 0xff00ff00) + ((cellValue & 0xff00) * intensity + (paneBackground & 0xff00) * inverseIntensity & 0xff0000) >> 8;
 				} else {
-					j1++;
+					paneIndex++;
 				}
 			}
 
-			i1 += 128 - k3;
-			j1 += 128 - k3 - i3;
+			gridIndex += 128 - visibleWidth;
+			paneIndex += 128 - visibleWidth - rowSway;
 		}
 
 		titleRightFlamePaneProducer.drawGraphics(0, super.graphics, 637);
@@ -9972,7 +9972,7 @@ public class Game extends RSApplet {
 			int i = 0;
 			int j = 20;
 			while (flameThreadActive) {
-				anInt1208++;
+				flameFrameCount++;
 				calcFlamesPosition();
 				calcFlamesPosition();
 				doFlamesDrawing();
@@ -12055,7 +12055,7 @@ public class Game extends RSApplet {
 		spriteDrawX = -1;
 		spriteDrawY = -1;
 		compassScanlineStarts = new int[33];
-		anIntArray969 = new int[256];
+		flameRowSway = new int[256];
 		cacheStores = new CacheStore[5];
 		variousSettings = new int[2000];
 		scrollbarDragging = false;
@@ -12165,8 +12165,8 @@ public class Game extends RSApplet {
 	public int[][] pathDistance;
 	public int[] friendsNodeIDs;
 	public NodeList[][][] groundArray;
-	public int[] anIntArray828;
-	public int[] anIntArray829;
+	public int[] flameIntensity;
+	public int[] flameNeighbourAverage;
 	public volatile boolean flameThreadActive;
 	public Socket aSocket832;
 	public int loginScreenState;
@@ -12185,10 +12185,10 @@ public class Game extends RSApplet {
 	public Stream loginBuffer;
 	public boolean soundEffectsEnabled;
 	public static int systemUpdateNoticeDrawCount;
-	public int[] anIntArray850;
-	public int[] anIntArray851;
-	public int[] anIntArray852;
-	public int[] anIntArray853;
+	public int[] activeFlamePalette;
+	public int[] flamePaletteRed;
+	public int[] flamePaletteGreen;
+	public int[] flamePaletteBlue;
 	public static int anInt854;
 	public int hintIconType;
 	public int openInterfaceID;
@@ -12294,7 +12294,7 @@ public class Game extends RSApplet {
 	public Background aBackground_966;
 	public Background aBackground_967;
 	public final int[] compassScanlineStarts;
-	public final int[] anIntArray969;
+	public final int[] flameRowSway;
 	final CacheStore[] cacheStores;
 	public int variousSettings[];
 	public boolean scrollbarDragging;
@@ -12357,8 +12357,8 @@ public class Game extends RSApplet {
 	public int anInt1037;
 	public int loginFailures;
 	public int chatAreaHoverId;
-	public int anInt1040;
-	public int anInt1041;
+	public int greenFlameFlashTimer;
+	public int blueFlameFlashTimer;
 	public int dialogID;
 	public final int[] maxStats;
 	public final int[] anIntArray1045;
@@ -12496,8 +12496,8 @@ public class Game extends RSApplet {
 	public int cameraPitchVelocity;
 	public static int anInt1188;
 	public int invOverlayInterfaceID;
-	public int[] anIntArray1190;
-	public int[] anIntArray1191;
+	public int[] flameNoise;
+	public int[] flameNoiseScratch;
 	public Stream stream;
 	public int anInt1193;
 	public int splitPrivateChat;
@@ -12505,13 +12505,13 @@ public class Game extends RSApplet {
 	public Background mapBack;
 	public Background chatBack;
 	public String[] menuActionName;
-	public Sprite aClass30_Sub2_Sub1_Sub1_1201;
-	public Sprite aClass30_Sub2_Sub1_Sub1_1202;
+	public Sprite titleLeftFlameBackdrop;
+	public Sprite titleRightFlameBackdrop;
 	public final int[] shakeSineAmplitude;
 	static final int[] torsoSecondaryColorPalette = {9104, 10275, 7595, 3610, 7975, 8526, 918, 38802, 24466, 10145, 58654, 5027, 1457, 16565, 34991, 25486};
 	public static boolean flagged;
 	public final int[] sound;
-	public int anInt1208;
+	public int flameFrameCount;
 	public int minimapRotationDrift;
 	public int minimapRotationDriftStep;
 	public int anInt1211;
@@ -12571,7 +12571,7 @@ public class Game extends RSApplet {
 	public TextDrawingArea aTextDrawingArea_1270;
 	public TextDrawingArea aTextDrawingArea_1271;
 	public TextDrawingArea chatTextDrawingArea;
-	public int anInt1275;
+	public int flameNoiseScroll;
 	public int backDialogID;
 	public int cameraDriftX;
 	public int cameraDriftXStep;

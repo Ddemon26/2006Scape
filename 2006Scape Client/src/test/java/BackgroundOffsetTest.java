@@ -170,8 +170,8 @@ public class BackgroundOffsetTest {
     public void titleFlameMaskClearsCellsAtOffsetPixelPositions() throws Exception {
         Game game = (Game) unsafe().allocateInstance(Game.class); // Avoids applet/window construction.
         for (int[] offset : new int[][] {{2, 3}, {0, 0}, {5, 0}, {0, 7}}) {
-            game.anIntArray1190 = new int[32768];
-            game.anIntArray1191 = new int[32768];
+            game.flameNoise = new int[32768];
+            game.flameNoiseScratch = new int[32768];
             Background background = new Background(archive(), "small", 0);
             background.offsetX = offset[0];
             background.offsetY = offset[1];
@@ -179,18 +179,18 @@ public class BackgroundOffsetTest {
             for (int row = 0; row < 2; row++) {
                 for (int col = 0; col < 2; col++) {
                     int x = col + 16 + offset[0], y = row + 16 + offset[1];
-                    assertEquals(Arrays.toString(offset) + " cell " + x + "," + y, 0, game.anIntArray1190[x + (y << 7)]);
+                    assertEquals(Arrays.toString(offset) + " cell " + x + "," + y, 0, game.flameNoise[x + (y << 7)]);
                 }
             }
         }
         // Counterexample: with offsets (2,3), the no-offset cells are not forced to zero.
-        game.anIntArray1190 = new int[32768];
-        game.anIntArray1191 = new int[32768];
+        game.flameNoise = new int[32768];
+        game.flameNoiseScratch = new int[32768];
         game.randomizeBackground(new Background(archive(), "small", 0));
         int nonzero = 0;
         for (int row = 0; row < 2; row++) {
             for (int col = 0; col < 2; col++) {
-                if (game.anIntArray1190[col + 16 + ((row + 16) << 7)] != 0) nonzero++;
+                if (game.flameNoise[col + 16 + ((row + 16) << 7)] != 0) nonzero++;
             }
         }
         assertTrue("smoothed random flame field should be nonzero away from the mask", nonzero > 0);

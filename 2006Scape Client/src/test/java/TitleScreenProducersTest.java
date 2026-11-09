@@ -312,18 +312,18 @@ public class TitleScreenProducersTest {
     // ---- the two side panes are the flame panes ----
 
     private void flameFixture(int[] flame) {
-        g.aClass30_Sub2_Sub1_Sub1_1201 = new Sprite(128, 265);
-        g.aClass30_Sub2_Sub1_Sub1_1202 = new Sprite(128, 265);
-        Arrays.fill(g.aClass30_Sub2_Sub1_Sub1_1201.pixels, 0x112233);
-        Arrays.fill(g.aClass30_Sub2_Sub1_Sub1_1202.pixels, 0x445566);
-        g.anIntArray850 = new int[256];
-        g.anIntArray851 = new int[256];
-        g.anIntArray852 = new int[256];
-        g.anIntArray853 = new int[256];
-        for (int i = 0; i < 256; i++) g.anIntArray851[i] = 0xabcdef;
-        g.anIntArray828 = flame;
-        g.anInt1040 = 0;
-        g.anInt1041 = 0;
+        g.titleLeftFlameBackdrop = new Sprite(128, 265);
+        g.titleRightFlameBackdrop = new Sprite(128, 265);
+        Arrays.fill(g.titleLeftFlameBackdrop.pixels, 0x112233);
+        Arrays.fill(g.titleRightFlameBackdrop.pixels, 0x445566);
+        g.activeFlamePalette = new int[256];
+        g.flamePaletteRed = new int[256];
+        g.flamePaletteGreen = new int[256];
+        g.flamePaletteBlue = new int[256];
+        for (int i = 0; i < 256; i++) g.flamePaletteRed[i] = 0xabcdef;
+        g.flameIntensity = flame;
+        g.greenFlameFlashTimer = 0;
+        g.blueFlameFlashTimer = 0;
     }
 
     @Test public void flameDrawingFillsAndPresentsTheTwoSidePanes() throws Exception {
@@ -353,14 +353,14 @@ public class TitleScreenProducersTest {
     // ---- flameThreadActive: flame-thread flag ----
 
     @Test public void flameLoopRunsOnlyWhileFlagIsSet() {
-        g.anInt1208 = 0;
+        g.flameFrameCount = 0;
         g.flameThreadActive = false;
         g.drawFlames();
-        assertEquals("flag false: loop body never entered", 0, g.anInt1208);
+        assertEquals("flag false: loop body never entered", 0, g.flameFrameCount);
         assertFalse(g.drawingFlames);
         g.flameThreadActive = true; // flame arrays missing: first iteration throws and the loop exits
         g.drawFlames();
-        assertEquals("flag true: loop body entered", 1, g.anInt1208);
+        assertEquals("flag true: loop body entered", 1, g.flameFrameCount);
         assertFalse(g.drawingFlames);
     }
 
