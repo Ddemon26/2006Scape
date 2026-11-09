@@ -2392,33 +2392,33 @@ public class Game extends RSApplet {
 			}
 		}
 		if (j >= 300 && j <= 313) {
-			int k = (j - 300) / 2;
-			int j1 = j & 1;
-			int i2 = designerKitIds[k];
-			if (i2 != -1) {
+			int kitSlot = (j - 300) / 2;
+			int stepDirection = j & 1;
+			int kitId = designerKitIds[kitSlot];
+			if (kitId != -1) {
 				do {
-					if (j1 == 0 && --i2 < 0) {
-						i2 = IDK.length - 1;
+					if (stepDirection == 0 && --kitId < 0) {
+						kitId = IDK.length - 1;
 					}
-					if (j1 == 1 && ++i2 >= IDK.length) {
-						i2 = 0;
+					if (stepDirection == 1 && ++kitId >= IDK.length) {
+						kitId = 0;
 					}
-				} while (IDK.cache[i2].notSelectable || IDK.cache[i2].bodyPartIndex != k + (designerMale ? 0 : 7));
-				designerKitIds[k] = i2;
+				} while (IDK.cache[kitId].notSelectable || IDK.cache[kitId].bodyPartIndex != kitSlot + (designerMale ? 0 : 7));
+				designerKitIds[kitSlot] = kitId;
 				designerModelDirty = true;
 			}
 		}
 		if (j >= 314 && j <= 323) {
-			int l = (j - 314) / 2;
-			int k1 = j & 1;
-			int j2 = designerColorIndices[l];
-			if (k1 == 0 && --j2 < 0) {
-				j2 = anIntArrayArray1003[l].length - 1;
+			int colorSlot = (j - 314) / 2;
+			int stepDirection = j & 1;
+			int colorIndex = designerColorIndices[colorSlot];
+			if (stepDirection == 0 && --colorIndex < 0) {
+				colorIndex = appearanceColorPalettes[colorSlot].length - 1;
 			}
-			if (k1 == 1 && ++j2 >= anIntArrayArray1003[l].length) {
-				j2 = 0;
+			if (stepDirection == 1 && ++colorIndex >= appearanceColorPalettes[colorSlot].length) {
+				colorIndex = 0;
 			}
-			designerColorIndices[l] = j2;
+			designerColorIndices[colorSlot] = colorIndex;
 			designerModelDirty = true;
 		}
 		if (j == 324 && !designerMale) {
@@ -2432,12 +2432,12 @@ public class Game extends RSApplet {
 		if (j == 326) {
 			stream.writeEncryptedOpcode(101);
 			stream.writeByte(designerMale ? 0 : 1);
-			for (int i1 = 0; i1 < 7; i1++) {
-				stream.writeByte(designerKitIds[i1]);
+			for (int kitSlot = 0; kitSlot < 7; kitSlot++) {
+				stream.writeByte(designerKitIds[kitSlot]);
 			}
 
-			for (int l1 = 0; l1 < 5; l1++) {
-				stream.writeByte(designerColorIndices[l1]);
+			for (int colorSlot = 0; colorSlot < 5; colorSlot++) {
+				stream.writeByte(designerColorIndices[colorSlot]);
 			}
 
 			return true;
@@ -5444,29 +5444,29 @@ public class Game extends RSApplet {
 			class9.modelPitch = 150;
 			class9.modelYaw = (int) (Math.sin((double) loopCycle / 40D) * 256D) & 0x7ff;
 			if (designerModelDirty) {
-				for (int k1 = 0; k1 < 7; k1++) {
-					int l1 = designerKitIds[k1];
-					if (l1 >= 0 && !IDK.cache[l1].areBodyModelsLoaded()) {
+				for (int kitSlot = 0; kitSlot < 7; kitSlot++) {
+					int kitId = designerKitIds[kitSlot];
+					if (kitId >= 0 && !IDK.cache[kitId].areBodyModelsLoaded()) {
 						return;
 					}
 				}
 
 				designerModelDirty = false;
-				Model aclass30_sub2_sub4_sub6s[] = new Model[7];
-				int i2 = 0;
-				for (int j2 = 0; j2 < 7; j2++) {
-					int k2 = designerKitIds[j2];
-					if (k2 >= 0) {
-						aclass30_sub2_sub4_sub6s[i2++] = IDK.cache[k2].buildBodyModel();
+				Model kitModels[] = new Model[7];
+				int kitModelCount = 0;
+				for (int kitSlot = 0; kitSlot < 7; kitSlot++) {
+					int kitId = designerKitIds[kitSlot];
+					if (kitId >= 0) {
+						kitModels[kitModelCount++] = IDK.cache[kitId].buildBodyModel();
 					}
 				}
 
-				Model model = new Model(i2, aclass30_sub2_sub4_sub6s);
-				for (int l2 = 0; l2 < 5; l2++) {
-					if (designerColorIndices[l2] != 0) {
-						model.recolor(anIntArrayArray1003[l2][0], anIntArrayArray1003[l2][designerColorIndices[l2]]);
-						if (l2 == 1) {
-							model.recolor(anIntArray1204[0], anIntArray1204[designerColorIndices[l2]]);
+				Model model = new Model(kitModelCount, kitModels);
+				for (int colorSlot = 0; colorSlot < 5; colorSlot++) {
+					if (designerColorIndices[colorSlot] != 0) {
+						model.recolor(appearanceColorPalettes[colorSlot][0], appearanceColorPalettes[colorSlot][designerColorIndices[colorSlot]]);
+						if (colorSlot == 1) {
+							model.recolor(torsoSecondaryColorPalette[0], torsoSecondaryColorPalette[designerColorIndices[colorSlot]]);
 						}
 					}
 				}
@@ -12323,7 +12323,7 @@ public class Game extends RSApplet {
 	public ISAACRandomGen encryption;
 	public Sprite minimapEdgeArrow;
 	public final int scrollTrackColor;
-	static final int[][] anIntArrayArray1003 = {{6798, 107, 10283, 16, 4797, 7744, 5799, 4634, 33697, 22433, 2983, 54193}, {8741, 12, 64030, 43162, 7735, 8404, 1701, 38430, 24094, 10153, 56621, 4783, 1341, 16578, 35003, 25239}, {25238, 8742, 12, 64030, 43162, 7735, 8404, 1701, 38430, 24094, 10153, 56621, 4783, 1341, 16578, 35003}, {4626, 11146, 6439, 12, 4758, 10270}, {4550, 4537, 5681, 5673, 5790, 6806, 8076, 4574}};
+	static final int[][] appearanceColorPalettes = {{6798, 107, 10283, 16, 4797, 7744, 5799, 4634, 33697, 22433, 2983, 54193}, {8741, 12, 64030, 43162, 7735, 8404, 1701, 38430, 24094, 10153, 56621, 4783, 1341, 16578, 35003, 25239}, {25238, 8742, 12, 64030, 43162, 7735, 8404, 1701, 38430, 24094, 10153, 56621, 4783, 1341, 16578, 35003}, {4626, 11146, 6439, 12, 4758, 10270}, {4550, 4537, 5681, 5673, 5790, 6806, 8076, 4574}};
 	public String amountOrNameInput;
 	public static int anInt1005;
 	public int daysSinceLastLogin;
@@ -12508,7 +12508,7 @@ public class Game extends RSApplet {
 	public Sprite aClass30_Sub2_Sub1_Sub1_1201;
 	public Sprite aClass30_Sub2_Sub1_Sub1_1202;
 	public final int[] shakeSineAmplitude;
-	static final int[] anIntArray1204 = {9104, 10275, 7595, 3610, 7975, 8526, 918, 38802, 24466, 10145, 58654, 5027, 1457, 16565, 34991, 25486};
+	static final int[] torsoSecondaryColorPalette = {9104, 10275, 7595, 3610, 7975, 8526, 918, 38802, 24466, 10145, 58654, 5027, 1457, 16565, 34991, 25486};
 	public static boolean flagged;
 	public final int[] sound;
 	public int anInt1208;

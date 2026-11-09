@@ -101,7 +101,7 @@ public class IdleCounterAndDesignerColorTest {
 
     @Test public void contentTypes314To323StepOneColourSlotWithWrap() {
         Game g = designer();
-        int[][] pal = Game.anIntArrayArray1003;
+        int[][] pal = Game.appearanceColorPalettes;
         assertEquals(5, g.designerColorIndices.length);
         g.designerModelDirty = false;
         g.promptUserForInput(button(315));     // slot 0 forward

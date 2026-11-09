@@ -101,7 +101,7 @@ public final class Player extends Entity {
 
 		for (int colourSlot = 0; colourSlot < 5; colourSlot++) {
 			int colourIndex = stream.readUnsignedByte();
-			if (colourIndex < 0 || colourIndex >= Game.anIntArrayArray1003[colourSlot].length) {
+			if (colourIndex < 0 || colourIndex >= Game.appearanceColorPalettes[colourSlot].length) {
 				colourIndex = 0;
 			}
 			appearanceColours[colourSlot] = colourIndex;
@@ -251,9 +251,9 @@ public final class Player extends Entity {
 			bodyModel = new Model(partCount, parts);
 			for (int colourSlot = 0; colourSlot < 5; colourSlot++) {
 				if (appearanceColours[colourSlot] != 0) {
-					bodyModel.recolor(Game.anIntArrayArray1003[colourSlot][0], Game.anIntArrayArray1003[colourSlot][appearanceColours[colourSlot]]);
+					bodyModel.recolor(Game.appearanceColorPalettes[colourSlot][0], Game.appearanceColorPalettes[colourSlot][appearanceColours[colourSlot]]);
 					if (colourSlot == 1) {
-						bodyModel.recolor(Game.anIntArray1204[0], Game.anIntArray1204[appearanceColours[colourSlot]]);
+						bodyModel.recolor(Game.torsoSecondaryColorPalette[0], Game.torsoSecondaryColorPalette[appearanceColours[colourSlot]]);
 					}
 				}
 			}
@@ -327,9 +327,9 @@ public final class Player extends Entity {
 		Model model = new Model(partCount, parts);
 		for (int colourSlot = 0; colourSlot < 5; colourSlot++) {
 			if (appearanceColours[colourSlot] != 0) {
-				model.recolor(Game.anIntArrayArray1003[colourSlot][0], Game.anIntArrayArray1003[colourSlot][appearanceColours[colourSlot]]);
+				model.recolor(Game.appearanceColorPalettes[colourSlot][0], Game.appearanceColorPalettes[colourSlot][appearanceColours[colourSlot]]);
 				if (colourSlot == 1) {
-					model.recolor(Game.anIntArray1204[0], Game.anIntArray1204[appearanceColours[colourSlot]]);
+					model.recolor(Game.torsoSecondaryColorPalette[0], Game.torsoSecondaryColorPalette[appearanceColours[colourSlot]]);
 				}
 			}
 		}
