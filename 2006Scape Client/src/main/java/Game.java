@@ -2411,14 +2411,14 @@ public class Game extends RSApplet {
 		if (j >= 314 && j <= 323) {
 			int l = (j - 314) / 2;
 			int k1 = j & 1;
-			int j2 = anIntArray990[l];
+			int j2 = designerColorIndices[l];
 			if (k1 == 0 && --j2 < 0) {
 				j2 = anIntArrayArray1003[l].length - 1;
 			}
 			if (k1 == 1 && ++j2 >= anIntArrayArray1003[l].length) {
 				j2 = 0;
 			}
-			anIntArray990[l] = j2;
+			designerColorIndices[l] = j2;
 			designerModelDirty = true;
 		}
 		if (j == 324 && !designerMale) {
@@ -2437,7 +2437,7 @@ public class Game extends RSApplet {
 			}
 
 			for (int l1 = 0; l1 < 5; l1++) {
-				stream.writeByte(anIntArray990[l1]);
+				stream.writeByte(designerColorIndices[l1]);
 			}
 
 			return true;
@@ -2708,7 +2708,7 @@ public class Game extends RSApplet {
 		if (loadingStage == 1) {
 			int j = tryFinishRegionLoad();
 			if (j != 0 && System.currentTimeMillis() - aLong824 > 0x57e40L) {
-				Signlink.reporterror(myUsername + " glcfb " + aLong1215 + "," + j + "," + lowMem + "," + cacheStores[0] + "," + onDemandFetcher.getOutstandingRequestCount() + "," + plane + "," + anInt1069 + "," + anInt1070);
+				Signlink.reporterror(myUsername + " glcfb " + serverSessionKey + "," + j + "," + lowMem + "," + cacheStores[0] + "," + onDemandFetcher.getOutstandingRequestCount() + "," + plane + "," + anInt1069 + "," + anInt1070);
 				aLong824 = System.currentTimeMillis();
 			}
 		}
@@ -3129,8 +3129,8 @@ public class Game extends RSApplet {
 		loadingStages();
 		advancePendingSceneChanges();
 		drainQueuedSoundsAndAdvanceSongCountdown();
-		anInt1009++;
-		if (anInt1009 > 750) {
+		cyclesSinceLastPacket++;
+		if (cyclesSinceLastPacket > 750) {
 			dropClient();
 		}
 		advancePlayerEntities();
@@ -4736,7 +4736,7 @@ public class Game extends RSApplet {
 		onDemandFetcher = null;
 		aStream_834 = null;
 		stream = null;
-		aStream_847 = null;
+		loginBuffer = null;
 		inStream = null;
 		regionKeys = null;
 		regionTerrainData = null;
@@ -5463,10 +5463,10 @@ public class Game extends RSApplet {
 
 				Model model = new Model(i2, aclass30_sub2_sub4_sub6s);
 				for (int l2 = 0; l2 < 5; l2++) {
-					if (anIntArray990[l2] != 0) {
-						model.recolor(anIntArrayArray1003[l2][0], anIntArrayArray1003[l2][anIntArray990[l2]]);
+					if (designerColorIndices[l2] != 0) {
+						model.recolor(anIntArrayArray1003[l2][0], anIntArrayArray1003[l2][designerColorIndices[l2]]);
 						if (l2 == 1) {
-							model.recolor(anIntArray1204[0], anIntArray1204[anIntArray990[l2]]);
+							model.recolor(anIntArray1204[0], anIntArray1204[designerColorIndices[l2]]);
 						}
 					}
 				}
@@ -6043,12 +6043,12 @@ public class Game extends RSApplet {
 			if (responseCode == 0) {
 				socketStream.readFully(inStream.buffer, 8);
 				inStream.currentOffset = 0;
-				aLong1215 = inStream.readLongBigEndian();
+				serverSessionKey = inStream.readLongBigEndian();
 				int isaacSeed[] = new int[4];
 				isaacSeed[0] = (int) (Math.random() * 99999999D);
 				isaacSeed[1] = (int) (Math.random() * 99999999D);
-				isaacSeed[2] = (int) (aLong1215 >> 32);
-				isaacSeed[3] = (int) aLong1215;
+				isaacSeed[2] = (int) (serverSessionKey >> 32);
+				isaacSeed[3] = (int) serverSessionKey;
 				stream.currentOffset = 0;
 				stream.writeByte(10);
 				stream.writeIntBigEndian(isaacSeed[0]);
@@ -6059,28 +6059,28 @@ public class Game extends RSApplet {
 				stream.writeLfTerminatedString(username);
 				stream.writeLfTerminatedString(password);
 				stream.encryptRsaBlock();
-				aStream_847.currentOffset = 0;
+				loginBuffer.currentOffset = 0;
 				if (reconnecting) {
-					aStream_847.writeByte(18);
+					loginBuffer.writeByte(18);
 				} else {
-					aStream_847.writeByte(16);
+					loginBuffer.writeByte(16);
 				}
-				aStream_847.writeByte(stream.currentOffset + 36 + 1 + 1 + 2);
-				aStream_847.writeByte(255);
-				aStream_847.writeShortBigEndian(1);
-				aStream_847.writeByte(lowMem ? 1 : 0);
+				loginBuffer.writeByte(stream.currentOffset + 36 + 1 + 1 + 2);
+				loginBuffer.writeByte(255);
+				loginBuffer.writeShortBigEndian(1);
+				loginBuffer.writeByte(lowMem ? 1 : 0);
 				for (int crcIndex = 0; crcIndex < 9; crcIndex++) {
-					aStream_847.writeIntBigEndian(expectedCRCs[crcIndex]);
+					loginBuffer.writeIntBigEndian(expectedCRCs[crcIndex]);
 				}
 
-				aStream_847.writeBytes(stream.buffer, stream.currentOffset, 0);
+				loginBuffer.writeBytes(stream.buffer, stream.currentOffset, 0);
 				stream.encryption = new ISAACRandomGen(isaacSeed);
 				for (int seedIndex = 0; seedIndex < 4; seedIndex++) {
 					isaacSeed[seedIndex] += 50;
 				}
 
 				encryption = new ISAACRandomGen(isaacSeed);
-				socketStream.queueBytes(aStream_847.currentOffset, aStream_847.buffer);
+				socketStream.queueBytes(loginBuffer.currentOffset, loginBuffer.buffer);
 				responseCode = socketStream.read();
 			}
 			if (responseCode == 1) {
@@ -6107,7 +6107,7 @@ public class Game extends RSApplet {
 				prevPktType = -1;
 				prevPktType2 = -1;
 				pktSize = 0;
-				anInt1009 = 0;
+				cyclesSinceLastPacket = 0;
 				systemUpdateCycles = 0;
 				logoutRequestCycles = 0;
 				hintIconType = 0;
@@ -6174,7 +6174,7 @@ public class Game extends RSApplet {
 				designerMale = true;
 				selectDefaultDesignerKits();
 				for (int resetSlot = 0; resetSlot < 5; resetSlot++) {
-					anIntArray990[resetSlot] = 0;
+					designerColorIndices[resetSlot] = 0;
 				}
 
 				for (int actionIndex = 0; actionIndex < 5; actionIndex++) {
@@ -6264,7 +6264,7 @@ public class Game extends RSApplet {
 				prevPktType = -1;
 				prevPktType2 = -1;
 				pktSize = 0;
-				anInt1009 = 0;
+				cyclesSinceLastPacket = 0;
 				systemUpdateCycles = 0;
 				menuActionRow = 0;
 				menuOpen = false;
@@ -10625,7 +10625,7 @@ public class Game extends RSApplet {
 			}
 			inStream.currentOffset = 0;
 			socketStream.readFully(inStream.buffer, pktSize);
-			anInt1009 = 0;
+			cyclesSinceLastPacket = 0;
 			prevPktType2 = prevPktType;
 			prevPktType = anInt841;
 			anInt841 = pktType;
@@ -12015,7 +12015,7 @@ public class Game extends RSApplet {
 		npcArray = new NPC[16384];
 		npcIndices = new int[16384];
 		removedEntityIndices = new int[1000];
-		aStream_847 = Stream.acquire();
+		loginBuffer = Stream.acquire();
 		aBoolean848 = true;
 		openInterfaceID = -1;
 		currentExp = new int[Skills.skillsCount];
@@ -12070,7 +12070,7 @@ public class Game extends RSApplet {
 		overheadChatTexts = new String[overheadChatCapacity];
 		minimapBuiltPlane = -1;
 		hitMarks = new Sprite[20];
-		anIntArray990 = new int[5];
+		designerColorIndices = new int[5];
 		scrollTrackColor = 0x23201b;
 		amountOrNameInput = "";
 		projectiles = new NodeList();
@@ -12182,7 +12182,7 @@ public class Game extends RSApplet {
 	public String aString844;
 	public int publicChatMode;
 	public int privateChatMode;
-	public Stream aStream_847;
+	public Stream loginBuffer;
 	public boolean aBoolean848;
 	public static int systemUpdateNoticeDrawCount;
 	public int[] anIntArray850;
@@ -12313,7 +12313,7 @@ public class Game extends RSApplet {
 	public Sprite[] hitMarks;
 	public int cameraDriftTimer;
 	public int anInt989;
-	public final int[] anIntArray990;
+	public final int[] designerColorIndices;
 	public static boolean aBoolean993;
 	public int anInt995;
 	public int anInt996;
@@ -12329,7 +12329,7 @@ public class Game extends RSApplet {
 	public int daysSinceLastLogin;
 	public int pktSize;
 	public int pktType;
-	public int anInt1009;
+	public int cyclesSinceLastPacket;
 	public int anInt1010;
 	public int logoutRequestCycles;
 	public NodeList projectiles;
@@ -12518,7 +12518,7 @@ public class Game extends RSApplet {
 	public String promptInput;
 	public int anInt1213;
 	public int[][][] intGroundArray;
-	public long aLong1215;
+	public long serverSessionKey;
 	public int loginScreenCursorPos;
 	public final Background[] modIcons;
 	public long aLong1220;

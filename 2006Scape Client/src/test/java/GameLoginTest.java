@@ -171,7 +171,7 @@ public class GameLoginTest {
         g.npcArray = new NPC[16385]; Arrays.fill(g.npcArray, new NPC());
         g.groundArray = new NodeList[5][105][105];
         for (NodeList[][] a : g.groundArray) for (NodeList[] b : a) Arrays.fill(b, new NodeList());
-        Arrays.fill(g.anIntArray990, 7);
+        Arrays.fill(g.designerColorIndices, 7);
         Arrays.fill(g.atPlayerActions, "a");
         Arrays.fill(g.atPlayerArray, true);
         g.myPrivilege = 0; Game.flagged = false;
@@ -191,9 +191,35 @@ public class GameLoginTest {
         assertNotNull(g.npcArray[16384]);
         for (int p = 0; p < 5; p++) for (int x = 0; x < 105; x++) for (int y = 0; y < 105; y++)
             assertEquals("p" + p + "x" + x + "y" + y, p < 4 && x < 104 && y < 104, g.groundArray[p][x][y] == null);
-        assertEquals(5, g.anIntArray990.length); assertEquals(5, g.atPlayerActions.length); assertEquals(5, g.atPlayerArray.length);
-        for (int i = 0; i < 5; i++) { assertEquals(0, g.anIntArray990[i]); assertNull(g.atPlayerActions[i]); assertFalse(g.atPlayerArray[i]); }
+        assertEquals(5, g.designerColorIndices.length); assertEquals(5, g.atPlayerActions.length); assertEquals(5, g.atPlayerArray.length);
+        for (int i = 0; i < 5; i++) { assertEquals(0, g.designerColorIndices[i]); assertNull(g.atPlayerActions[i]); assertFalse(g.atPlayerArray[i]); }
         assertTrue(g.drawn.isEmpty());
+    }
+
+    @Test public void serverKeyIsStoredAndLoginBlockIsBuiltInItsOwnBuffer() throws Exception {
+        long previousKey = 0;
+        for (int pass = 0; pass < 2; pass++) {
+            boolean flag = pass == 1;
+            g.cyclesSinceLastPacket = 600;
+            s(0, true, 3);
+            g.login("Alice", "pw", flag);
+            Conn c = next();
+            assertEquals(c.serverKey, g.serverSessionKey);
+            assertNotEquals(previousKey, g.serverSessionKey); previousKey = g.serverSessionKey;
+            assertEquals((int) (g.serverSessionKey >> 32), c.plain[2]); assertEquals((int) g.serverSessionKey, c.plain[3]);
+            assertNotSame(g.stream, g.loginBuffer);
+            assertEquals(c.size + 2, g.loginBuffer.currentOffset);
+            assertEquals(c.opcode, g.loginBuffer.buffer[0] & 255);
+            assertEquals(c.size, g.loginBuffer.buffer[1] & 255);
+            for (int i = 0; i < c.size; i++) assertEquals(c.block[i], g.loginBuffer.buffer[2 + i]);
+            assertFalse(g.loggedIn);
+            assertEquals(600, g.cyclesSinceLastPacket);
+        }
+        g.cyclesSinceLastPacket = 600;
+        s(0, true, 2, 0, 0);
+        g.login("Alice", "pw", false);
+        next();
+        assertTrue(g.loggedIn); assertEquals(0, g.cyclesSinceLastPacket);
     }
 
     @Test public void failureResponsesShowTheirMessages() throws Exception {
