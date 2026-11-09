@@ -159,7 +159,7 @@ public class GameDrawInterfaceBranchTest {
         ItemDef.mruNodes1.removeFromCache(sprite(2, 2, 0x0000aa), 9002);
         inv.itemIdsPlusOne = new int[]{9002, 9003}; inv.itemQuantities = new int[]{1, 1};
         field(ItemDef.class, "cache").set(null, null);
-        g.itemSelected = itemSelected; g.anInt1283 = slot; g.anInt1284 = interfaceId;
+        g.itemSelected = itemSelected; g.selectedItemSlot = slot; g.selectedItemInterfaceId = interfaceId;
         Arrays.fill(DrawingArea.pixels, BG);
         try { g.drawInterface(0, 0, root(inv, 0, 0), 0); } catch (RuntimeException e) { return true; }
         assertEquals(0x00aa00, px(0, 0)); assertEquals(0x0000aa, px(32, 0));   // cached (outline 0) sprites drawn
@@ -178,8 +178,8 @@ public class GameDrawInterfaceBranchTest {
         RSInterface inv = inventory(2, 1, 0, 0);
         ItemDef.mruNodes1.removeFromCache(sprite(2, 2, 0x00aa00), 9001);
         inv.itemIdsPlusOne = new int[]{0, 9002}; inv.itemQuantities = new int[]{0, 1};
-        g.activeInterfaceType = 1; g.anInt1085 = 1; g.anInt1084 = 2; g.anInt989 = holdCycles;
-        g.anInt1087 = 100; g.anInt1088 = 100; g.mouseX = 100 + dx; g.mouseY = 100 + dy;
+        g.activeInterfaceType = 1; g.dragSlotIndex = 1; g.dragInterfaceId = 2; g.dragHeldCycles = holdCycles;
+        g.dragStartX = 100; g.dragStartY = 100; g.mouseX = 100 + dx; g.mouseY = 100 + dy;
         Arrays.fill(DrawingArea.pixels, BG);
         g.drawInterface(0, 0, root(inv, 60, 80), 0);
         int[] o = spriteOrigin();
@@ -196,17 +196,17 @@ public class GameDrawInterfaceBranchTest {
     }
 
     // ---------- type 2: i10, j10 ----------
-    /** Container clip y in [30,130), scrollMax 400; dragged slot y before offset = 40. Returns {scroll, anInt1088}. */
+    /** Container clip y in [30,130), scrollMax 400; dragged slot y before offset = 40. Returns {scroll, dragStartY}. */
     private int[] autoScroll(int scroll, int cycles, int dy) throws Exception {
         RSInterface inv = inventory(1, 1, 0, 0);
         ItemDef.mruNodes1.removeFromCache(sprite(2, 2, 0x00aa00), 9001);
         inv.itemIdsPlusOne = new int[]{9002}; inv.itemQuantities = new int[]{1};
         RSInterface root = root(inv, 0, 10 + scroll);
         root.height = 100; root.scrollMax = 400; root.scrollPosition = scroll;
-        g.activeInterfaceType = 1; g.anInt1085 = 0; g.anInt1084 = 2; g.anInt989 = 10; g.cyclesSinceDraw = cycles;
-        g.anInt1087 = 100; g.anInt1088 = 100; g.mouseX = 100; g.mouseY = 100 + dy;
+        g.activeInterfaceType = 1; g.dragSlotIndex = 0; g.dragInterfaceId = 2; g.dragHeldCycles = 10; g.cyclesSinceDraw = cycles;
+        g.dragStartX = 100; g.dragStartY = 100; g.mouseX = 100; g.mouseY = 100 + dy;
         g.drawInterface(scroll, 0, root, 30);
-        return new int[]{root.scrollPosition, g.anInt1088};
+        return new int[]{root.scrollPosition, g.dragStartY};
     }
     @Test public void type2DragAboveClipScrollsUpByDistanceCappedByCyclesAndScroll() throws Exception {
         assertArrayEquals(new int[]{37, 113}, autoScroll(50, 2, -30));   // 2*(30-10)/3 = 13
@@ -229,7 +229,7 @@ public class GameDrawInterfaceBranchTest {
         c.type = 3; c.width = 5; c.height = 5; c.textColor = 0x111111; c.disabledHoverColor = hoverColorSet ? 0x222222 : 0;
         c.enabledColor = 0x333333; c.enabledHoverColor = hoverColorSet ? 0x444444 : 0;
         c.conditionOperators = selected ? new int[0] : null;
-        g.anInt1026 = h1026; g.anInt1039 = h1039; g.anInt1048 = h1048;
+        g.viewportHoverId = h1026; g.chatAreaHoverId = h1039; g.tabAreaHoverId = h1048;
         Arrays.fill(DrawingArea.pixels, BG);
         g.drawInterface(0, 0, root(c, 10, 10), 0);
         return px(10, 10);
@@ -262,10 +262,10 @@ public class GameDrawInterfaceBranchTest {
         assertArrayEquals(new int[]{10, 2}, drawText(text("ab", "xyz", false), 0x111111, 20));
         assertArrayEquals(new int[]{10, 3}, drawText(text("ab", "xyz", true), 0x333333, 20));
         assertArrayEquals(new int[]{10, 2}, drawText(text("ab", "", true), 0x333333, 20));    // empty enabled text keeps disabled
-        g.anInt1048 = 2;
+        g.tabAreaHoverId = 2;
         assertArrayEquals(new int[]{10, 2}, drawText(text("ab", "xyz", false), 0x222222, 20));
         assertArrayEquals(new int[]{10, 3}, drawText(text("ab", "xyz", true), 0x444444, 20));
-        g.anInt1048 = 0;
+        g.tabAreaHoverId = 0;
         RSInterface c = text("ab", "xyz", true); c.atActionType = 6; g.dialogContinuePending = true;
         assertArrayEquals(new int[]{10, 13}, drawText(c, 0x111111, 20));                    // "Please wait..." minus space
     }

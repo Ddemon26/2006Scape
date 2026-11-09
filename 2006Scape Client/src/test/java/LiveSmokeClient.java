@@ -128,11 +128,11 @@ public final class LiveSmokeClient extends Game {
         if (fullGameScreen != null) {
             writeImage("full.png", fullGameScreen, 765, 503);
         }
-        if (aRSImageProducer_1165 != null) {
-            writeImage("world.png", aRSImageProducer_1165, 512, 334);
+        if (worldViewIP != null) {
+            writeImage("world.png", worldViewIP, 512, 334);
         }
-        if (aRSImageProducer_1166 != null) {
-            writeImage("chat.png", aRSImageProducer_1166, 479, 96);
+        if (chatPanelIP != null) {
+            writeImage("chat.png", chatPanelIP, 479, 96);
         }
         Files.write(new File(output, "chat.txt").toPath(), lastChat.getBytes(StandardCharsets.UTF_8));
     }

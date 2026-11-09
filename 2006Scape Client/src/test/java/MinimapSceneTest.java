@@ -75,9 +75,9 @@ public class MinimapSceneTest {
         g.mapScenes = new Background[100];
         g.mapFunctions = new Sprite[100];
         g.byteGroundArray = new byte[4][104][104];
-        g.aClass11Array1230 = new CollisionMap[4];
+        g.collisionMaps = new CollisionMap[4];
         for (int p = 0; p < 4; p++) {
-            g.aClass11Array1230[p] = new CollisionMap();
+            g.collisionMaps[p] = new CollisionMap();
             openFlags(p, 0);
         }
         g.mapFunctionIconTileX = new int[1000];
@@ -92,7 +92,7 @@ public class MinimapSceneTest {
     }
 
     private void openFlags(int plane, int value) throws Exception {
-        int[][] flags = (int[][]) field(CollisionMap.class, "tileFlags").get(g.aClass11Array1230[plane]);
+        int[][] flags = (int[][]) field(CollisionMap.class, "tileFlags").get(g.collisionMaps[plane]);
         for (int[] row : flags) Arrays.fill(row, value);
     }
 
@@ -623,8 +623,8 @@ public class MinimapSceneTest {
         Player savedPlayer = Game.myPlayer;
         try {
             Fixture component = new Fixture();
-            game.aRSImageProducer_1164 = new RSImageProducer(172, 156, component);
-            game.aRSImageProducer_1165 = new RSImageProducer(512, 334, component);
+            game.minimapIP = new RSImageProducer(172, 156, component);
+            game.worldViewIP = new RSImageProducer(512, 334, component);
             game.minimapSprite = map;
             game.compass = new Sprite(33, 33);
             game.groundArray = new NodeList[4][104][104];
@@ -651,7 +651,7 @@ public class MinimapSceneTest {
             game.mapFunctionIconTileY[2] = 1;
             game.mapFunctionIconCount = 2;
             game.drawMinimap();
-            int[] raster = game.aRSImageProducer_1164.pixels;
+            int[] raster = game.minimapIP.pixels;
             assertEquals("image rows are drawn at x=25, y=5 with 146 columns", 0x123456, raster[25 + 5 * 172]);
             assertEquals(0x123456, raster[25 + 145 + 5 * 172]);
             assertEquals(0, raster[24 + 5 * 172]);

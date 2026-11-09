@@ -15,7 +15,7 @@ public class AccountDateTest {
         TimeZone a=TimeZone.getDefault();Locale b=Locale.getDefault();
         try {
             TimeZone.setDefault(TimeZone.getTimeZone("UTC"));Locale.setDefault(Locale.US);
-            Game g=new Game();g.anInt1170=20000;
+            Game g=new Game();g.currentAccountDay=20000;
             assertEquals("27-Feb-2002",g.formatAccountDay(0));
             assertEquals("26-Feb-2002",g.formatAccountDay(-1));
             assertEquals("28-Feb-2002",g.formatAccountDay(1));
@@ -29,12 +29,12 @@ public class AccountDateTest {
         TimeZone a=TimeZone.getDefault();Locale b=Locale.getDefault();
         try {
             TimeZone.setDefault(TimeZone.getTimeZone("UTC"));Locale.setDefault(Locale.FRANCE);
-            Game g=new Game();g.anInt1170=20000;
+            Game g=new Game();g.currentAccountDay=20000;
             for(String c:new String[]{"1999-12-31","2000-01-01","2000-02-28","2000-02-29","2000-03-01","2004-02-29","2004-03-01","2100-02-28","2100-03-01"}) {
                 int d=(int)java.time.temporal.ChronoUnit.DAYS.between(LocalDate.of(2002,2,27),LocalDate.parse(c));
-                g.anInt1170=d;assertEquals(expected(d),g.formatAccountDay(d));
+                g.currentAccountDay=d;assertEquals(expected(d),g.formatAccountDay(d));
             }
-            g.anInt1170=20000;
+            g.currentAccountDay=20000;
             for(int c=1;c<=12;c++)for(int d:new int[]{1,9,10,28}) {
                 int e=(int)java.time.temporal.ChronoUnit.DAYS.between(LocalDate.of(2002,2,27),LocalDate.of(2004,c,d));
                 assertEquals(expected(e),g.formatAccountDay(e));
@@ -45,7 +45,7 @@ public class AccountDateTest {
     @Test public void defaultTimezoneChangesDisplayedDateWhileInputRemainsUtcDays() {
         TimeZone a=TimeZone.getDefault();Locale b=Locale.getDefault();
         try {
-            Locale.setDefault(Locale.US);Game g=new Game();g.anInt1170=20000;
+            Locale.setDefault(Locale.US);Game g=new Game();g.currentAccountDay=20000;
             for(String c:new String[]{"UTC","America/Los_Angeles","Pacific/Kiritimati","Asia/Kolkata"}) {
                 TimeZone.setDefault(TimeZone.getTimeZone(c));
                 for(int d:new int[]{-11745,-1,0,1,2,304,305,730,731,732,20000})assertEquals(c+":"+d,expected(d),g.formatAccountDay(d));
@@ -63,13 +63,13 @@ public class AccountDateTest {
             TimeZone.setDefault(TimeZone.getTimeZone("UTC"));Locale.setDefault(Locale.US);
             Game g=new Game();
             for(int c:new int[]{-100,0,500,20000}) {
-                g.anInt1170=c;
+                g.currentAccountDay=c;
                 assertEquals(expected(c+9),g.formatAccountDay(c+9));
                 assertEquals(expected(c+10),g.formatAccountDay(c+10));
                 assertEquals("Unknown",g.formatAccountDay(c+11));
                 assertEquals("Unknown",g.formatAccountDay(Integer.MAX_VALUE));
             }
-            g.anInt1170=Integer.MAX_VALUE;
+            g.currentAccountDay=Integer.MAX_VALUE;
             assertEquals("Unknown",g.formatAccountDay(0));
             assertEquals("Unknown",g.formatAccountDay(Integer.MAX_VALUE));
         } finally {TimeZone.setDefault(a);Locale.setDefault(b);}

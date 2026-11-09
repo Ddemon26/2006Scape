@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 
 /**
  * Whole-scene rebuild routine of Game (rebuildScene): reset loops, terrain/object region loops, the constructed-scene
- * (aBoolean1159) chunk loops, the ground item pass, the low-memory model unload and the map-file prefetch ring.
+ * (constructedScene) chunk loops, the ground item pass, the low-memory model unload and the map-file prefetch ring.
  * Original member names only. Locals are observed through the data each one routes.
  */
 public class RegionSceneRebuildTest {
@@ -91,10 +91,10 @@ public class RegionSceneRebuildTest {
         g.byteGroundArray = new byte[4][104][104];
         g.intGroundArray = new int[4][105][105];
         g.groundArray = new NodeList[4][104][104];
-        for (int p = 0; p < 4; p++) g.aClass11Array1230[p] = new CollisionMap();
+        for (int p = 0; p < 4; p++) g.collisionMaps[p] = new CollisionMap();
         g.worldController = new WorldController(g.intGroundArray);
         g.baseX = RX * 64 - 20; g.baseY = RY * 64 - 30;
-        g.anInt1069 = 402; g.anInt1070 = 700;
+        g.regionCenterChunkX = 402; g.regionCenterChunkY = 700;
         g.regionTerrainData = new byte[slots][]; g.regionObjectData = new byte[slots][];
         g.regionKeys = new int[slots];
         Arrays.fill(g.regionKeys, (RX << 8) | RY);
@@ -159,7 +159,7 @@ public class RegionSceneRebuildTest {
     }
     private static int key(int rx, int ry) { return (rx << 8) | ry; }
     private static void fillTemplates(Game g, int value) {
-        for (int p = 0; p < 4; p++) for (int x = 0; x < 13; x++) Arrays.fill(g.anIntArrayArrayArray1129[p][x], value);
+        for (int p = 0; p < 4; p++) for (int x = 0; x < 13; x++) Arrays.fill(g.constructedChunkTemplates[p][x], value);
     }
 
     // ------------------------------------------------ reset loops (i, l, k1, j2)
@@ -168,14 +168,14 @@ public class RegionSceneRebuildTest {
         Probe g = game(0);
         for (int p = 0; p < 4; p++) {
             for (byte[] column : g.byteGroundArray[p]) Arrays.fill(column, (byte) 5);
-            for (int[] column : g.aClass11Array1230[p].tileFlags) Arrays.fill(column, 7);
+            for (int[] column : g.collisionMaps[p].tileFlags) Arrays.fill(column, 7);
         }
-        int before = g.anInt1051;
+        int before = g.sceneRebuildCount;
         g.rebuildScene();
-        assertEquals("routine completed", before + 1, g.anInt1051);
+        assertEquals("routine completed", before + 1, g.sceneRebuildCount);
         assertEquals(0, flagCount(g));
         for (int p = 0; p < 4; p++) {
-            int[][] f = g.aClass11Array1230[p].tileFlags;
+            int[][] f = g.collisionMaps[p].tileFlags;
             assertEquals("plane " + p + " edge", 0xffffff, f[0][50]);
             assertEquals("plane " + p + " edge", 0xffffff, f[50][103]);
             assertEquals("plane " + p + " interior", 0x1000000, f[50][50]);
@@ -236,11 +236,11 @@ public class RegionSceneRebuildTest {
     @Test public void blankLoopIsSkippedFromRowNumber800() {
         for (int limit : new int[] {799, 800}) {
             Probe g = game(1);
-            g.anInt1070 = limit;
+            g.regionCenterChunkY = limit;
             for (int x = 0; x < 105; x++) for (int y = 0; y < 105; y++) g.intGroundArray[0][x][y] = 1000 * x + y + 1;
             g.rebuildScene();
             boolean blanked = g.intGroundArray[0][20][50] == g.intGroundArray[0][19][50];
-            assertEquals("anInt1070=" + limit, limit < 800, blanked);
+            assertEquals("regionCenterChunkY=" + limit, limit < 800, blanked);
         }
     }
 
@@ -259,7 +259,7 @@ public class RegionSceneRebuildTest {
 
     private Probe instanceGame() {
         Probe g = game(3);
-        g.aBoolean1159 = true;
+        g.constructedScene = true;
         fillTemplates(g, -1);
         g.regionKeys[0] = key(RX + 1, RY); g.regionKeys[1] = key(RX, RY); g.regionKeys[2] = key(RX, RY + 1);
         return g;
@@ -268,7 +268,7 @@ public class RegionSceneRebuildTest {
     @Test public void terrainChunkLoopCopiesTheTemplateSourceTileToTheDestinationChunk() {
         Probe g = instanceGame();
         fillTemplates(g, template(0, 7 * 8, 9 * 8, 0));   // every other chunk points at an unloaded region
-        g.anIntArrayArrayArray1129[2][4][7] = template(1, RX * 8 + 3, RY * 8 + 5, 0);
+        g.constructedChunkTemplates[2][4][7] = template(1, RX * 8 + 3, RY * 8 + 5, 0);
         Map<String, int[]> a = new HashMap<String, int[]>(), b = new HashMap<String, int[]>();
         a.put("1,26,43", new int[] {50, 0});  // chunk-local tile (2,3) inside source chunk (3,5)
         a.put("1,2,3", new int[] {50, 0});    // wrong chunk, must not be copied
@@ -285,7 +285,7 @@ public class RegionSceneRebuildTest {
         int[][] expected = {{34, 59}, {-1, -1}, {37, 60}, {-1, -1}};
         for (int rotation : new int[] {0, 2}) {
             Probe g = instanceGame();
-            g.anIntArrayArrayArray1129[2][4][7] = template(1, RX * 8 + 3, RY * 8 + 5, rotation);
+            g.constructedChunkTemplates[2][4][7] = template(1, RX * 8 + 3, RY * 8 + 5, rotation);
             Map<String, int[]> a = new HashMap<String, int[]>();
             a.put("1,26,43", new int[] {50, 0});
             g.regionTerrainData[1] = terrain(a, END);
@@ -298,8 +298,8 @@ public class RegionSceneRebuildTest {
     @Test public void chunkTemplateMinusOneBlanksOnlyThePlaneZeroChunkAtItsOwnCoordinates() {
         Probe g = instanceGame();
         fillTemplates(g, template(0, 7 * 8, 9 * 8, 0));
-        g.anIntArrayArrayArray1129[0][4][7] = -1;       // chunkX 4, chunkY 7 -> start x 32, start y 56
-        g.anIntArrayArrayArray1129[1][2][3] = -1;       // other planes never blank
+        g.constructedChunkTemplates[0][4][7] = -1;       // chunkX 4, chunkY 7 -> start x 32, start y 56
+        g.constructedChunkTemplates[1][2][3] = -1;       // other planes never blank
         for (int x = 0; x < 105; x++) for (int y = 0; y < 105; y++) g.intGroundArray[0][x][y] = 1000 * x + y + 1;
         g.rebuildScene();
         int[][] h = g.intGroundArray[0];
@@ -313,7 +313,7 @@ public class RegionSceneRebuildTest {
     @Test public void objectChunkLoopPlacesTheTemplateSourceObjectAtTheDestinationChunk() throws Exception {
         Probe g = instanceGame();
         fillTemplates(g, template(0, 7 * 8, 9 * 8, 0));
-        g.anIntArrayArrayArray1129[3][6][2] = template(1, RX * 8 + 3, RY * 8 + 5, 0);
+        g.constructedChunkTemplates[3][6][2] = template(1, RX * 8 + 3, RY * 8 + 5, 0);
         g.regionObjectData[1] = objects(604, new int[] {1, 26, 43}, new int[] {1, 2, 3}, new int[] {0, 26, 43});
         g.regionObjectData[0] = objects(604, new int[] {1, 26, 43});
         g.rebuildScene();
@@ -324,7 +324,7 @@ public class RegionSceneRebuildTest {
     @Test public void objectChunkRotationBitsSelectTheRotation() throws Exception {
         Probe g = instanceGame();
         fillTemplates(g, template(0, 7 * 8, 9 * 8, 0));
-        g.anIntArrayArrayArray1129[3][6][2] = template(1, RX * 8 + 3, RY * 8 + 5, 2);
+        g.constructedChunkTemplates[3][6][2] = template(1, RX * 8 + 3, RY * 8 + 5, 2);
         g.regionObjectData[1] = objects(604, new int[] {1, 26, 43});
         g.rebuildScene();
         assertTrue(placed(g.worldController, 3, 48 + 5, 16 + 4));
@@ -402,7 +402,7 @@ public class RegionSceneRebuildTest {
 
     private Probe prefetchGame(int chunkX, int chunkY, boolean small) throws Exception {
         Probe g = game(0);
-        g.anInt1069 = chunkX; g.anInt1070 = chunkY; g.aBoolean1141 = small;
+        g.regionCenterChunkX = chunkX; g.regionCenterChunkY = chunkY; g.fixedRegionArea = small;
         List<Integer> keys = new ArrayList<Integer>();
         List<Integer> terrain = new ArrayList<Integer>(), obj = new ArrayList<Integer>();
         for (int x = 40; x <= 62; x++) for (int y = 40; y <= 105; y++) {
@@ -428,7 +428,7 @@ public class RegionSceneRebuildTest {
     }
 
     @Test public void prefetchRequestsTheTerrainAndObjectFilesOfTheRingAroundTheSceneOnlyInTypeThree() throws Exception {
-        // anInt1069=402 -> x 48..52, anInt1070=806 -> y 99..102 (chunk -6 over 8, -1) and (+6 over 8, +1)
+        // regionCenterChunkX=402 -> x 48..52, regionCenterChunkY=806 -> y 99..102 (chunk -6 over 8, -1) and (+6 over 8, +1)
         Probe g = prefetchGame(402, 806, false);
         g.rebuildScene();
         assertEquals(ring(48, 52, 99, 102), queued(g.onDemandFetcher));
@@ -447,5 +447,80 @@ public class RegionSceneRebuildTest {
         Probe g = prefetchGame(402, 806, true);
         g.rebuildScene();
         assertEquals(ring(49, 50, 49, 50), queued(g.onDemandFetcher));
+    }
+
+    // ------------------------------------------------ collision maps (collisionMaps) are one per plane
+
+    private static int blockedTiles(CollisionMap m) {
+        int n = 0;
+        for (int x = 0; x < 104; x++) for (int y = 0; y < 104; y++) if ((m.tileFlags[x][y] & 0x200000) != 0 && m.tileFlags[x][y] != 0xffffff) n++;
+        return n;
+    }
+
+    @Test public void blockedTerrainTileMarksOnlyTheCollisionMapOfItsOwnPlane() {
+        for (int target = 0; target < 4; target++) {
+            Probe g = game(1);
+            Map<String, int[]> t = new HashMap<String, int[]>();
+            t.put(target + ",5,9", new int[] {50, 0});
+            g.regionTerrainData[0] = terrain(t, END);
+            g.rebuildScene();
+            for (int p = 0; p < 4; p++)
+                assertEquals("terrain plane " + target + ", map " + p, p == target ? 1 : 0, blockedTiles(g.collisionMaps[p]));
+            assertTrue((g.collisionMaps[target].tileFlags[20 + 5][30 + 9] & 0x200000) != 0);
+        }
+    }
+
+    @Test public void rebuildClearsBlockedTilesOfEveryCollisionMapBeforeReloading() {
+        Probe g = game(1);
+        for (int p = 0; p < 4; p++) g.collisionMaps[p].tileFlags[7][7] |= 0x200000;
+        g.rebuildScene();
+        for (int p = 0; p < 4; p++) assertEquals(0, blockedTiles(g.collisionMaps[p]));
+    }
+
+    // ------------------------------------------------ outgoing packet counters (terrainRebuildCount, sceneRebuildCount)
+
+    /** Opcodes written to g.stream by one rebuild, decoded with a replay of the zero-key ISAAC (opcode 238 carries one raw byte). */
+    private static List<Integer> opcodesWritten(Game g) {
+        ISAACRandomGen replay = new ISAACRandomGen(new int[4]);
+        List<Integer> ops = new ArrayList<Integer>();
+        for (int i = 0; i < g.stream.currentOffset; i++) {
+            int op = (g.stream.buffer[i] - replay.getNextKey()) & 0xff;
+            ops.add(op);
+            if (op == 238) { i++; ops.add(-(g.stream.buffer[i] & 0xff)); }
+        }
+        return ops;
+    }
+
+    @Test public void anInt1097CountsRebuildsAndSendsOpcode238WithByte96AfterTheOneHundredSixtyFirst() {
+        for (int[] c : new int[][] {{0, 1, 0}, {158, 159, 0}, {159, 160, 0}, {160, 0, 1}, {161, 0, 1}}) {
+            Probe g = game(0);
+            g.terrainRebuildCount = c[0];
+            g.rebuildScene();
+            assertEquals("counter from " + c[0], c[1], g.terrainRebuildCount);
+            List<Integer> ops = opcodesWritten(g);
+            assertEquals("238 from " + c[0], c[2] == 1, ops.contains(238));
+            if (c[2] == 1) assertTrue(ops.contains(-96));
+        }
+    }
+
+    @Test public void anInt1097IsOnlyAdvancedByTheNonConstructedSceneBranch() {
+        Probe g = game(0);
+        g.constructedScene = true; g.terrainRebuildCount = 160;
+        g.rebuildScene();
+        assertEquals(160, g.terrainRebuildCount);
+        assertFalse(opcodesWritten(g).contains(238));
+    }
+
+    @Test public void anInt1051CountsEveryRebuildAndSendsOpcode150AfterTheNinetyNinth() {
+        for (boolean constructed : new boolean[] {false, true}) {
+            for (int[] c : new int[][] {{0, 1, 0}, {97, 98, 0}, {98, 0, 1}, {99, 0, 1}}) {
+                Probe g = game(0);
+                g.constructedScene = constructed;
+                g.sceneRebuildCount = c[0];
+                g.rebuildScene();
+                assertEquals("counter from " + c[0], c[1], g.sceneRebuildCount);
+                assertEquals("150 from " + c[0], c[2] == 1, opcodesWritten(g).contains(150));
+            }
+        }
     }
 }

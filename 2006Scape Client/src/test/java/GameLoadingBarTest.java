@@ -22,8 +22,8 @@ public class GameLoadingBarTest {
         state.saveState();
         g = new Game();
         Fixture c = new Fixture();
-        g.aRSImageProducer_1107 = new RSImageProducer(1, 1, c); // resetImageProducers returns early
-        g.aRSImageProducer_1109 = new RSImageProducer(W, H, c);
+        g.titleTopBannerProducer = new RSImageProducer(1, 1, c); // resetImageProducers returns early
+        g.titleCenterBoxProducer = new RSImageProducer(W, H, c);
         Field archive = TextWidthTest.class.getDeclaredField("ARCHIVE");
         archive.setAccessible(true);
         g.titleStreamLoader = new StreamLoader(Base64.getDecoder().decode((String) archive.get(null)));
@@ -39,9 +39,9 @@ public class GameLoadingBarTest {
     }
 
     private int[] draw(int i, String s) {
-        Arrays.fill(g.aRSImageProducer_1109.pixels, SENTINEL);
+        Arrays.fill(g.titleCenterBoxProducer.pixels, SENTINEL);
         g.drawLoadingText(i, s);
-        return g.aRSImageProducer_1109.pixels;
+        return g.titleCenterBoxProducer.pixels;
     }
 
     private static int px(int[] p, int x, int y) { return p[y * W + x]; }
