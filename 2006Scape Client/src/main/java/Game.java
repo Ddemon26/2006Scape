@@ -2339,10 +2339,10 @@ public class Game extends RSApplet {
 
 	}
 
-	public boolean promptUserForInput(RSInterface class9) {
-		int j = class9.contentType;
+	public boolean promptUserForInput(RSInterface widget) {
+		int contentType = widget.contentType;
 		if (anInt900 == 2) {
-			if (j == 201) {
+			if (contentType == 201) {
 				inputTaken = true;
 				inputDialogState = 0;
 				messagePromptRaised = true;
@@ -2353,7 +2353,7 @@ public class Game extends RSApplet {
 					AndroidHooks.showKeyboard();
 				}
 			}
-			if (j == 202) {
+			if (contentType == 202) {
 				inputTaken = true;
 				inputDialogState = 0;
 				messagePromptRaised = true;
@@ -2365,11 +2365,11 @@ public class Game extends RSApplet {
 				}
 			}
 		}
-		if (j == 205) {
+		if (contentType == 205) {
 			logoutRequestCycles = 250;
 			return true;
 		}
-		if (j == 501) {
+		if (contentType == 501) {
 			inputTaken = true;
 			inputDialogState = 0;
 			messagePromptRaised = true;
@@ -2380,7 +2380,7 @@ public class Game extends RSApplet {
 				AndroidHooks.showKeyboard();
 			}
 		}
-		if (j == 502) {
+		if (contentType == 502) {
 			inputTaken = true;
 			inputDialogState = 0;
 			messagePromptRaised = true;
@@ -2391,9 +2391,9 @@ public class Game extends RSApplet {
 				AndroidHooks.showKeyboard();
 			}
 		}
-		if (j >= 300 && j <= 313) {
-			int kitSlot = (j - 300) / 2;
-			int stepDirection = j & 1;
+		if (contentType >= 300 && contentType <= 313) {
+			int kitSlot = (contentType - 300) / 2;
+			int stepDirection = contentType & 1;
 			int kitId = designerKitIds[kitSlot];
 			if (kitId != -1) {
 				do {
@@ -2408,9 +2408,9 @@ public class Game extends RSApplet {
 				designerModelDirty = true;
 			}
 		}
-		if (j >= 314 && j <= 323) {
-			int colorSlot = (j - 314) / 2;
-			int stepDirection = j & 1;
+		if (contentType >= 314 && contentType <= 323) {
+			int colorSlot = (contentType - 314) / 2;
+			int stepDirection = contentType & 1;
 			int colorIndex = designerColorIndices[colorSlot];
 			if (stepDirection == 0 && --colorIndex < 0) {
 				colorIndex = appearanceColorPalettes[colorSlot].length - 1;
@@ -2421,15 +2421,15 @@ public class Game extends RSApplet {
 			designerColorIndices[colorSlot] = colorIndex;
 			designerModelDirty = true;
 		}
-		if (j == 324 && !designerMale) {
+		if (contentType == 324 && !designerMale) {
 			designerMale = true;
 			selectDefaultDesignerKits();
 		}
-		if (j == 325 && designerMale) {
+		if (contentType == 325 && designerMale) {
 			designerMale = false;
 			selectDefaultDesignerKits();
 		}
-		if (j == 326) {
+		if (contentType == 326) {
 			stream.writeEncryptedOpcode(101);
 			stream.writeByte(designerMale ? 0 : 1);
 			for (int kitSlot = 0; kitSlot < 7; kitSlot++) {
@@ -2442,15 +2442,15 @@ public class Game extends RSApplet {
 
 			return true;
 		}
-		if (j == 613) {
+		if (contentType == 613) {
 			canMute = !canMute;
 		}
-		if (j >= 601 && j <= 612) {
+		if (contentType >= 601 && contentType <= 612) {
 			closeOpenInterfaces();
 			if (reportAbuseInput.length() > 0) {
 				stream.writeEncryptedOpcode(218);
 				stream.writeLongBigEndian(TextClass.encodeBase37Name(reportAbuseInput));
-				stream.writeByte(j - 601);
+				stream.writeByte(contentType - 601);
 				stream.writeByte(canMute ? 1 : 0);
 			}
 		}
@@ -5335,114 +5335,114 @@ public class Game extends RSApplet {
 
 	}
 
-	public void drawFriendsListOrWelcomeScreen(RSInterface class9) {
-		int j = class9.contentType;
-		if (j >= 1 && j <= 100 || j >= 701 && j <= 800) {
-			if (j == 1 && anInt900 == 0) {
-				class9.disabledText = "Loading friend list";
-				class9.atActionType = 0;
+	public void drawFriendsListOrWelcomeScreen(RSInterface widget) {
+		int contentTypeOrRowIndex = widget.contentType;
+		if (contentTypeOrRowIndex >= 1 && contentTypeOrRowIndex <= 100 || contentTypeOrRowIndex >= 701 && contentTypeOrRowIndex <= 800) {
+			if (contentTypeOrRowIndex == 1 && anInt900 == 0) {
+				widget.disabledText = "Loading friend list";
+				widget.atActionType = 0;
 				return;
 			}
-			if (j == 1 && anInt900 == 1) {
-				class9.disabledText = "Connecting to friendserver";
-				class9.atActionType = 0;
+			if (contentTypeOrRowIndex == 1 && anInt900 == 1) {
+				widget.disabledText = "Connecting to friendserver";
+				widget.atActionType = 0;
 				return;
 			}
-			if (j == 2 && anInt900 != 2) {
-				class9.disabledText = "Please wait...";
-				class9.atActionType = 0;
+			if (contentTypeOrRowIndex == 2 && anInt900 != 2) {
+				widget.disabledText = "Please wait...";
+				widget.atActionType = 0;
 				return;
 			}
-			int k = friendsCount;
+			int visibleFriendCount = friendsCount;
 			if (anInt900 != 2) {
-				k = 0;
+				visibleFriendCount = 0;
 			}
-			if (j > 700) {
-				j -= 601;
+			if (contentTypeOrRowIndex > 700) {
+				contentTypeOrRowIndex -= 601;
 			} else {
-				j--;
+				contentTypeOrRowIndex--;
 			}
-			if (j >= k) {
-				class9.disabledText = "";
-				class9.atActionType = 0;
+			if (contentTypeOrRowIndex >= visibleFriendCount) {
+				widget.disabledText = "";
+				widget.atActionType = 0;
 				return;
 			} else {
-				class9.disabledText = friendsList[j];
-				class9.atActionType = 1;
+				widget.disabledText = friendsList[contentTypeOrRowIndex];
+				widget.atActionType = 1;
 				return;
 			}
 		}
-		if (j >= 101 && j <= 200 || j >= 801 && j <= 900) {
-			int l = friendsCount;
+		if (contentTypeOrRowIndex >= 101 && contentTypeOrRowIndex <= 200 || contentTypeOrRowIndex >= 801 && contentTypeOrRowIndex <= 900) {
+			int visibleFriendCount = friendsCount;
 			if (anInt900 != 2) {
-				l = 0;
+				visibleFriendCount = 0;
 			}
-			if (j > 800) {
-				j -= 701;
+			if (contentTypeOrRowIndex > 800) {
+				contentTypeOrRowIndex -= 701;
 			} else {
-				j -= 101;
+				contentTypeOrRowIndex -= 101;
 			}
-			if (j >= l) {
-				class9.disabledText = "";
-				class9.atActionType = 0;
+			if (contentTypeOrRowIndex >= visibleFriendCount) {
+				widget.disabledText = "";
+				widget.atActionType = 0;
 				return;
 			}
-			if (friendsNodeIDs[j] - 9 <= 0) {
-				class9.disabledText = "@red@Offline";
-			} else if (friendsNodeIDs[j] == nodeID) {
-				class9.disabledText = "@gre@World-" + (friendsNodeIDs[j] - 9);
+			if (friendsNodeIDs[contentTypeOrRowIndex] - 9 <= 0) {
+				widget.disabledText = "@red@Offline";
+			} else if (friendsNodeIDs[contentTypeOrRowIndex] == nodeID) {
+				widget.disabledText = "@gre@World-" + (friendsNodeIDs[contentTypeOrRowIndex] - 9);
 			} else {
-				class9.disabledText = "@yel@World-" + (friendsNodeIDs[j] - 9);
+				widget.disabledText = "@yel@World-" + (friendsNodeIDs[contentTypeOrRowIndex] - 9);
 			}
-			class9.atActionType = 1;
+			widget.atActionType = 1;
 			return;
 		}
-		if (j == 203) {
-			int i1 = friendsCount;
+		if (contentTypeOrRowIndex == 203) {
+			int visibleFriendCount = friendsCount;
 			if (anInt900 != 2) {
-				i1 = 0;
+				visibleFriendCount = 0;
 			}
-			class9.scrollMax = i1 * 15 + 20;
-			if (class9.scrollMax <= class9.height) {
-				class9.scrollMax = class9.height + 1;
+			widget.scrollMax = visibleFriendCount * 15 + 20;
+			if (widget.scrollMax <= widget.height) {
+				widget.scrollMax = widget.height + 1;
 			}
 			return;
 		}
-		if (j >= 401 && j <= 500) {
-			if ((j -= 401) == 0 && anInt900 == 0) {
-				class9.disabledText = "Loading ignore list";
-				class9.atActionType = 0;
+		if (contentTypeOrRowIndex >= 401 && contentTypeOrRowIndex <= 500) {
+			if ((contentTypeOrRowIndex -= 401) == 0 && anInt900 == 0) {
+				widget.disabledText = "Loading ignore list";
+				widget.atActionType = 0;
 				return;
 			}
-			if (j == 1 && anInt900 == 0) {
-				class9.disabledText = "Please wait...";
-				class9.atActionType = 0;
+			if (contentTypeOrRowIndex == 1 && anInt900 == 0) {
+				widget.disabledText = "Please wait...";
+				widget.atActionType = 0;
 				return;
 			}
-			int j1 = ignoreCount;
+			int visibleIgnoreCount = ignoreCount;
 			if (anInt900 == 0) {
-				j1 = 0;
+				visibleIgnoreCount = 0;
 			}
-			if (j >= j1) {
-				class9.disabledText = "";
-				class9.atActionType = 0;
+			if (contentTypeOrRowIndex >= visibleIgnoreCount) {
+				widget.disabledText = "";
+				widget.atActionType = 0;
 				return;
 			} else {
-				class9.disabledText = TextClass.formatDisplayName(TextClass.decodeBase37Name(ignoreListAsLongs[j]));
-				class9.atActionType = 1;
+				widget.disabledText = TextClass.formatDisplayName(TextClass.decodeBase37Name(ignoreListAsLongs[contentTypeOrRowIndex]));
+				widget.atActionType = 1;
 				return;
 			}
 		}
-		if (j == 503) {
-			class9.scrollMax = ignoreCount * 15 + 20;
-			if (class9.scrollMax <= class9.height) {
-				class9.scrollMax = class9.height + 1;
+		if (contentTypeOrRowIndex == 503) {
+			widget.scrollMax = ignoreCount * 15 + 20;
+			if (widget.scrollMax <= widget.height) {
+				widget.scrollMax = widget.height + 1;
 			}
 			return;
 		}
-		if (j == 327) {
-			class9.modelPitch = 150;
-			class9.modelYaw = (int) (Math.sin((double) loopCycle / 40D) * 256D) & 0x7ff;
+		if (contentTypeOrRowIndex == 327) {
+			widget.modelPitch = 150;
+			widget.modelYaw = (int) (Math.sin((double) loopCycle / 40D) * 256D) & 0x7ff;
 			if (designerModelDirty) {
 				for (int kitSlot = 0; kitSlot < 7; kitSlot++) {
 					int kitId = designerKitIds[kitSlot];
@@ -5474,93 +5474,93 @@ public class Game extends RSApplet {
 				model.buildAnimationGroups();
 				model.applyAnimationFrame(Animation.anims[myPlayer.idleAnimationId].frameIds[0]);
 				model.applyLighting(64, 850, -30, -50, -30, true);
-				class9.mediaType = 5;
-				class9.mediaID = 0;
+				widget.mediaType = 5;
+				widget.mediaID = 0;
 				RSInterface.replaceCachedModel(model, 0, 5);
 			}
 			return;
 		}
-		if (j == 324) {
+		if (contentTypeOrRowIndex == 324) {
 			if (aClass30_Sub2_Sub1_Sub1_931 == null) {
-				aClass30_Sub2_Sub1_Sub1_931 = class9.sprite1;
-				aClass30_Sub2_Sub1_Sub1_932 = class9.sprite2;
+				aClass30_Sub2_Sub1_Sub1_931 = widget.sprite1;
+				aClass30_Sub2_Sub1_Sub1_932 = widget.sprite2;
 			}
 			if (designerMale) {
-				class9.sprite1 = aClass30_Sub2_Sub1_Sub1_932;
+				widget.sprite1 = aClass30_Sub2_Sub1_Sub1_932;
 				return;
 			} else {
-				class9.sprite1 = aClass30_Sub2_Sub1_Sub1_931;
+				widget.sprite1 = aClass30_Sub2_Sub1_Sub1_931;
 				return;
 			}
 		}
-		if (j == 325) {
+		if (contentTypeOrRowIndex == 325) {
 			if (aClass30_Sub2_Sub1_Sub1_931 == null) {
-				aClass30_Sub2_Sub1_Sub1_931 = class9.sprite1;
-				aClass30_Sub2_Sub1_Sub1_932 = class9.sprite2;
+				aClass30_Sub2_Sub1_Sub1_931 = widget.sprite1;
+				aClass30_Sub2_Sub1_Sub1_932 = widget.sprite2;
 			}
 			if (designerMale) {
-				class9.sprite1 = aClass30_Sub2_Sub1_Sub1_931;
+				widget.sprite1 = aClass30_Sub2_Sub1_Sub1_931;
 				return;
 			} else {
-				class9.sprite1 = aClass30_Sub2_Sub1_Sub1_932;
+				widget.sprite1 = aClass30_Sub2_Sub1_Sub1_932;
 				return;
 			}
 		}
-		if (j == 600) {
-			class9.disabledText = reportAbuseInput;
+		if (contentTypeOrRowIndex == 600) {
+			widget.disabledText = reportAbuseInput;
 			if (loopCycle % 20 < 10) {
-				class9.disabledText += "|";
+				widget.disabledText += "|";
 				return;
 			} else {
-				class9.disabledText += " ";
+				widget.disabledText += " ";
 				return;
 			}
 		}
-		if (j == 613) {
+		if (contentTypeOrRowIndex == 613) {
 			if (myPrivilege >= 1 && myPrivilege <= 3) {
 				if (canMute) {
-					class9.textColor = 0xff0000;
-					class9.disabledText = "Moderator option: Mute player for 48 hours: <ON>";
+					widget.textColor = 0xff0000;
+					widget.disabledText = "Moderator option: Mute player for 48 hours: <ON>";
 				} else {
-					class9.textColor = 0xffffff;
-					class9.disabledText = "Moderator option: Mute player for 48 hours: <OFF>";
+					widget.textColor = 0xffffff;
+					widget.disabledText = "Moderator option: Mute player for 48 hours: <OFF>";
 				}
 			} else {
-				class9.disabledText = "";
+				widget.disabledText = "";
 			}
 		}
-		if (j == 661)
+		if (contentTypeOrRowIndex == 661)
 			if (anInt1034 == 0)
-				class9.disabledText = "\\nYou have not yet set any recovery questions.\\nIt is @lre@strongly@yel@ recommended that you do so.\\n\\nIf you don't you will be @lre@unable to recover your\\n@lre@password@yel@ if you forget it, or it is stolen.";
+				widget.disabledText = "\\nYou have not yet set any recovery questions.\\nIt is @lre@strongly@yel@ recommended that you do so.\\n\\nIf you don't you will be @lre@unable to recover your\\n@lre@password@yel@ if you forget it, or it is stolen.";
 			else if (anInt1034 <= anInt1170) {
-				class9.disabledText = "\\n\\nRecovery Questions Last Set:\\n@gre@"
+				widget.disabledText = "\\n\\nRecovery Questions Last Set:\\n@gre@"
 						+ formatAccountDay(anInt1034);
 			} else {
-				int l1 = (anInt1170 + 14) - anInt1034;
-				String s2;
-				if (l1 <= 0)
-					s2 = "Earlier today";
-				else if (l1 == 1)
-					s2 = "Yesterday";
+				int daysSinceRequest = (anInt1170 + 14) - anInt1034;
+				String requestAgeText;
+				if (daysSinceRequest <= 0)
+					requestAgeText = "Earlier today";
+				else if (daysSinceRequest == 1)
+					requestAgeText = "Yesterday";
 				else
-					s2 = l1 + " days ago";
-				class9.disabledText = s2
+					requestAgeText = daysSinceRequest + " days ago";
+				widget.disabledText = requestAgeText
 						+ " you requested@lre@ new recovery\\n@lre@questions.@yel@ The requested change will occur\\non: @lre@"
 						+ formatAccountDay(anInt1034)
 						+ "\\n\\nIf you do not remember making this request\\ncancel it immediately, and change your password.";
 			}
-		if (j == 663)
+		if (contentTypeOrRowIndex == 663)
 			if (anInt1083 <= 0 || anInt1083 > anInt1170 + 10)
-				class9.disabledText = "Last password change:\\n@gre@Never changed";
+				widget.disabledText = "Last password change:\\n@gre@Never changed";
 			else
-				class9.disabledText = "Last password change:\\n@gre@"
+				widget.disabledText = "Last password change:\\n@gre@"
 						+ formatAccountDay(anInt1083);
-		if (j == 668) {
+		if (contentTypeOrRowIndex == 668) {
 			if (anInt1034 > anInt1170) {
-				class9.disabledText = "To cancel this request:\\n1) Logout and return to the frontpage of this website.\\n2) Choose 'Cancel recovery questions'.";
+				widget.disabledText = "To cancel this request:\\n1) Logout and return to the frontpage of this website.\\n2) Choose 'Cancel recovery questions'.";
 				return;
 			}
-			class9.disabledText = "To change your recovery questions:\\n1) Logout and return to the frontpage of this website.\\n2) Choose 'Set new recovery questions'.";
+			widget.disabledText = "To change your recovery questions:\\n1) Logout and return to the frontpage of this website.\\n2) Choose 'Set new recovery questions'.";
 		}
 	}
 	
