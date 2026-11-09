@@ -130,7 +130,7 @@ public class RegionLoadReadinessTest {
         Probe g = game(1); g.regionKeys[0] = 0;
         g.regionObjectData[0] = data(0, 0, 0);
         assertEquals(-4, g.tryFinishRegionLoad());
-        g.aBoolean1159 = true; assertEquals(-3, g.tryFinishRegionLoad());
+        g.constructedScene = true; assertEquals(-3, g.tryFinishRegionLoad());
         g.regionObjectData[0] = new byte[] {0}; assertEquals(-4, g.tryFinishRegionLoad());
     }
     @Test public void successChangesStageAndPlaneBuildsOnceAndWrites121() {

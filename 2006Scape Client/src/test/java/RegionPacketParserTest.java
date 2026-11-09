@@ -120,7 +120,7 @@ public class RegionPacketParserTest {
         assertEquals(405, g.regionCenterChunkX); assertEquals(702, g.regionCenterChunkY);
         assertEquals((405 - 6) * 8, g.baseX); assertEquals((702 - 6) * 8, g.baseY);
         assertEquals(1, g.loadingStage);
-        assertFalse(g.aBoolean1159);
+        assertFalse(g.constructedScene);
     }
 
     @Test public void sameCentreIsIgnoredOnlyWhenBothCoordinatesMatchAndStageIsTwo() throws Exception {
@@ -185,9 +185,9 @@ public class RegionPacketParserTest {
         Game g = game(MAP);
         deliver(g, 241, packet241(702, t, 405));
         assertEquals(702, g.regionCenterChunkY); assertEquals(405, g.regionCenterChunkX);
-        assertTrue(g.aBoolean1159);
+        assertTrue(g.constructedScene);
         for (int p = 0; p < 4; p++) for (int x = 0; x < 13; x++) for (int y = 0; y < 13; y++)
-            assertEquals(p + "," + x + "," + y, t[p][x][y], g.anIntArrayArrayArray1129[p][x][y]);
+            assertEquals(p + "," + x + "," + y, t[p][x][y], g.constructedChunkTemplates[p][x][y]);
     }
 
     @Test public void opcode241ListsEachSourceRegionOnceInScanOrder() throws Exception {
@@ -231,7 +231,7 @@ public class RegionPacketParserTest {
 
     private Game shifted(int dx, int dy) throws Exception {
         Game g = game(MAP);
-        g.anInt1036 = NEW_BASE[0] - dx; g.anInt1037 = NEW_BASE[1] - dy;
+        g.previousBaseX = NEW_BASE[0] - dx; g.previousBaseY = NEW_BASE[1] - dy;
         return g;
     }
 
@@ -254,7 +254,7 @@ public class RegionPacketParserTest {
                 }
                 assertEquals(5000 - 16 * 128, e.x); assertEquals(7000 + 8 * 128, e.y);
             }
-            assertEquals(NEW_BASE[0], g.anInt1036); assertEquals(NEW_BASE[1], g.anInt1037);
+            assertEquals(NEW_BASE[0], g.previousBaseX); assertEquals(NEW_BASE[1], g.previousBaseY);
             assertEquals(24, g.destX); assertEquals(58, g.destY);
             assertTrue(g.aBoolean1080); assertFalse(g.aBoolean1160);
         }

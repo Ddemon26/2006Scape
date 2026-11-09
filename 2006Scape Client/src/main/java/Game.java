@@ -673,7 +673,7 @@ public class Game extends RSApplet {
 			ObjectManager objectManager = new ObjectManager(byteGroundArray, intGroundArray);
 			int regionCount = regionTerrainData.length;
 			stream.writeEncryptedOpcode(0);
-			if (!aBoolean1159) {
+			if (!constructedScene) {
 				for (int regionIndex = 0; regionIndex < regionCount; regionIndex++) {
 					int regionTileX = (regionKeys[regionIndex] >> 8) * 64 - baseX;
 					int regionTileY = (regionKeys[regionIndex] & 0xff) * 64 - baseY;
@@ -692,9 +692,9 @@ public class Game extends RSApplet {
 					}
 				}
 
-				anInt1097++;
-				if (anInt1097 > 160) {
-					anInt1097 = 0;
+				terrainRebuildCount++;
+				if (terrainRebuildCount > 160) {
+					terrainRebuildCount = 0;
 					stream.writeEncryptedOpcode(238);
 					stream.writeByte(96);
 				}
@@ -709,11 +709,11 @@ public class Game extends RSApplet {
 				}
 
 			}
-			if (aBoolean1159) {
+			if (constructedScene) {
 				for (int destPlane = 0; destPlane < 4; destPlane++) {
 					for (int destChunkX = 0; destChunkX < 13; destChunkX++) {
 						for (int destChunkY = 0; destChunkY < 13; destChunkY++) {
-							int chunkTemplate = anIntArrayArrayArray1129[destPlane][destChunkX][destChunkY];
+							int chunkTemplate = constructedChunkTemplates[destPlane][destChunkX][destChunkY];
 							if (chunkTemplate != -1) {
 								int sourcePlane = chunkTemplate >> 24 & 3;
 								int rotation = chunkTemplate >> 1 & 3;
@@ -737,7 +737,7 @@ public class Game extends RSApplet {
 
 				for (int chunkX = 0; chunkX < 13; chunkX++) {
 					for (int chunkY = 0; chunkY < 13; chunkY++) {
-						int chunkTemplate = anIntArrayArrayArray1129[0][chunkX][chunkY];
+						int chunkTemplate = constructedChunkTemplates[0][chunkX][chunkY];
 						if (chunkTemplate == -1) {
 							objectManager.blankRegionArea(chunkY * 8, 8, 8, chunkX * 8);
 						}
@@ -749,7 +749,7 @@ public class Game extends RSApplet {
 				for (int destPlane = 0; destPlane < 4; destPlane++) {
 					for (int chunkX = 0; chunkX < 13; chunkX++) {
 						for (int chunkY = 0; chunkY < 13; chunkY++) {
-							int chunkTemplate = anIntArrayArrayArray1129[destPlane][chunkX][chunkY];
+							int chunkTemplate = constructedChunkTemplates[destPlane][chunkX][chunkY];
 							if (chunkTemplate != -1) {
 								int sourcePlane = chunkTemplate >> 24 & 3;
 								int rotation = chunkTemplate >> 1 & 3;
@@ -798,9 +798,9 @@ public class Game extends RSApplet {
 
 			}
 
-			anInt1051++;
-			if (anInt1051 > 98) {
-				anInt1051 = 0;
+			sceneRebuildCount++;
+			if (sceneRebuildCount > 98) {
+				sceneRebuildCount = 0;
 				stream.writeEncryptedOpcode(150);
 			}
 			resetPendingSceneChangesAfterRegionLoad();
@@ -2734,7 +2734,7 @@ public class Game extends RSApplet {
 			if (objectData != null) {
 				int regionOffsetX = (regionKeys[regionIndex] >> 8) * 64 - baseX;
 				int regionOffsetY = (regionKeys[regionIndex] & 0xff) * 64 - baseY;
-				if (aBoolean1159) {
+				if (constructedScene) {
 					regionOffsetX = 10;
 					regionOffsetY = 10;
 				}
@@ -10821,7 +10821,7 @@ public class Game extends RSApplet {
 				if (pktType == 73) {
 					centerChunkX = inStream.readUnsignedShortBigEndianSubtract128();
 					centerChunkY = inStream.readUnsignedShortBigEndian();
-					aBoolean1159 = false;
+					constructedScene = false;
 				}
 				if (pktType == 241) {
 					centerChunkY = inStream.readUnsignedShortBigEndianSubtract128();
@@ -10831,9 +10831,9 @@ public class Game extends RSApplet {
 							for (int destChunkY = 0; destChunkY < 13; destChunkY++) {
 								int hasTemplate = inStream.readBitsMsbFirst(1);
 								if (hasTemplate == 1) {
-									anIntArrayArrayArray1129[destPlane][destChunkX][destChunkY] = inStream.readBitsMsbFirst(26);
+									constructedChunkTemplates[destPlane][destChunkX][destChunkY] = inStream.readBitsMsbFirst(26);
 								} else {
-									anIntArrayArrayArray1129[destPlane][destChunkX][destChunkY] = -1;
+									constructedChunkTemplates[destPlane][destChunkX][destChunkY] = -1;
 								}
 							}
 
@@ -10843,7 +10843,7 @@ public class Game extends RSApplet {
 
 					inStream.finishBitReading();
 					centerChunkX = inStream.readUnsignedShortBigEndian();
-					aBoolean1159 = true;
+					constructedScene = true;
 				}
 				if (regionCenterChunkX == centerChunkX && regionCenterChunkY == centerChunkY && loadingStage == 2) {
 					pktType = -1;
@@ -10904,7 +10904,7 @@ public class Game extends RSApplet {
 					for (int destPlane = 0; destPlane < 4; destPlane++) {
 						for (int destChunkX = 0; destChunkX < 13; destChunkX++) {
 							for (int destChunkY = 0; destChunkY < 13; destChunkY++) {
-								int chunkTemplate = anIntArrayArrayArray1129[destPlane][destChunkX][destChunkY];
+								int chunkTemplate = constructedChunkTemplates[destPlane][destChunkX][destChunkY];
 								if (chunkTemplate != -1) {
 									int sourceChunkX = chunkTemplate >> 14 & 0x3ff;
 									int sourceChunkY = chunkTemplate >> 3 & 0x7ff;
@@ -10947,10 +10947,10 @@ public class Game extends RSApplet {
 					}
 
 				}
-				int deltaX = baseX - anInt1036;
-				int deltaY = baseY - anInt1037;
-				anInt1036 = baseX;
-				anInt1037 = baseY;
+				int deltaX = baseX - previousBaseX;
+				int deltaY = baseY - previousBaseY;
+				previousBaseX = baseX;
+				previousBaseY = baseY;
 				for (int npcIndex = 0; npcIndex < 16384; npcIndex++) {
 					NPC npc = npcArray[npcIndex];
 					if (npc != null) {
@@ -12108,7 +12108,7 @@ public class Game extends RSApplet {
 		aString1121 = "";
 		atPlayerActions = new String[5];
 		atPlayerArray = new boolean[5];
-		anIntArrayArrayArray1129 = new int[4][13][13];
+		constructedChunkTemplates = new int[4][13][13];
 		cameraDriftYStep = 2;
 		mapFunctionIconSprites = new Sprite[1000];
 		fixedRegionArea = false;
@@ -12118,7 +12118,7 @@ public class Game extends RSApplet {
 		needDrawTabArea = false;
 		loggedIn = false;
 		canMute = false;
-		aBoolean1159 = false;
+		constructedScene = false;
 		aBoolean1160 = false;
 		minimapZoomDriftStep = 1;
 		myUsername = "";
@@ -12353,8 +12353,8 @@ public class Game extends RSApplet {
 	public Sprite[] mapFunctions;
 	public int baseX;
 	public int baseY;
-	public int anInt1036;
-	public int anInt1037;
+	public int previousBaseX;
+	public int previousBaseY;
 	public int loginFailures;
 	public int chatAreaHoverId;
 	public int greenFlameFlashTimer;
@@ -12366,7 +12366,7 @@ public class Game extends RSApplet {
 	public boolean designerMale;
 	public int tabAreaHoverId;
 	public String lastLoadingMessage;
-	public static int anInt1051;
+	public static int sceneRebuildCount;
 	public final int[] minimapScanlineStarts;
 	public StreamLoader titleStreamLoader;
 	public int flashingTabId;
@@ -12411,7 +12411,7 @@ public class Game extends RSApplet {
 	public Sprite[] headIcons;
 	public Sprite[] skullIcons;
 	public Sprite[] headIconsHint;
-	public static int anInt1097;
+	public static int terrainRebuildCount;
 	public int anInt1098;
 	public int anInt1099;
 	public int anInt1100;
@@ -12438,7 +12438,7 @@ public class Game extends RSApplet {
 	public static Player myPlayer;
 	public final String[] atPlayerActions;
 	public final boolean[] atPlayerArray;
-	public final int[][][] anIntArrayArrayArray1129;
+	public final int[][][] constructedChunkTemplates;
 	public final int[] tabInterfaceIDs = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 	public int cameraDriftY;
 	public int cameraDriftYStep;
@@ -12466,7 +12466,7 @@ public class Game extends RSApplet {
 	public static int anInt1155;
 	public boolean loggedIn;
 	public boolean canMute;
-	public boolean aBoolean1159;
+	public boolean constructedScene;
 	public boolean aBoolean1160;
 	static int loopCycle;
 	public static final String validUserPassChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!\"\243$%^&*()-_=+[{]};:'@#~,<.>/?\\| ";
