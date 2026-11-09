@@ -8206,104 +8206,104 @@ public class Game extends RSApplet {
 				}
 			} else if (component.type != 1) {
 				if (component.type == 2) {
-					int i3 = 0;
-					for (int l3 = 0; l3 < component.height; l3++) {
-						for (int l4 = 0; l4 < component.width; l4++) {
-							int k5 = drawX + l4 * (32 + component.invSpritePadX);
-							int j6 = drawY + l3 * (32 + component.invSpritePadY);
-							if (i3 < 20) {
-								k5 += component.spritesX[i3];
-								j6 += component.spritesY[i3];
+					int slotIndex = 0;
+					for (int row = 0; row < component.height; row++) {
+						for (int column = 0; column < component.width; column++) {
+							int slotX = drawX + column * (32 + component.invSpritePadX);
+							int slotY = drawY + row * (32 + component.invSpritePadY);
+							if (slotIndex < 20) {
+								slotX += component.spritesX[slotIndex];
+								slotY += component.spritesY[slotIndex];
 							}
-							if (component.itemIdsPlusOne[i3] > 0) {
-								int k6 = 0;
-								int j7 = 0;
-								int j9 = component.itemIdsPlusOne[i3] - 1;
-								if (k5 > DrawingArea.topX - 32 && k5 < DrawingArea.bottomX && j6 > DrawingArea.topY - 32 && j6 < DrawingArea.bottomY || activeInterfaceType != 0 && anInt1085 == i3) {
-									int l9 = 0;
-									if (itemSelected == 1 && anInt1283 == i3 && anInt1284 == component.id) {
-										l9 = 0xffffff;
+							if (component.itemIdsPlusOne[slotIndex] > 0) {
+								int dragOffsetX = 0;
+								int dragOffsetY = 0;
+								int itemId = component.itemIdsPlusOne[slotIndex] - 1;
+								if (slotX > DrawingArea.topX - 32 && slotX < DrawingArea.bottomX && slotY > DrawingArea.topY - 32 && slotY < DrawingArea.bottomY || activeInterfaceType != 0 && anInt1085 == slotIndex) {
+									int outlineColor = 0;
+									if (itemSelected == 1 && anInt1283 == slotIndex && anInt1284 == component.id) {
+										outlineColor = 0xffffff;
 									}
-									Sprite class30_sub2_sub1_sub1_2 = ItemDef.getSprite(j9, component.itemQuantities[i3], l9);
-									if (class30_sub2_sub1_sub1_2 != null) {
-										if (activeInterfaceType != 0 && anInt1085 == i3 && anInt1084 == component.id) {
-											k6 = super.mouseX - anInt1087;
-											j7 = super.mouseY - anInt1088;
-											if (k6 < 5 && k6 > -5) {
-												k6 = 0;
+									Sprite itemSprite = ItemDef.getSprite(itemId, component.itemQuantities[slotIndex], outlineColor);
+									if (itemSprite != null) {
+										if (activeInterfaceType != 0 && anInt1085 == slotIndex && anInt1084 == component.id) {
+											dragOffsetX = super.mouseX - anInt1087;
+											dragOffsetY = super.mouseY - anInt1088;
+											if (dragOffsetX < 5 && dragOffsetX > -5) {
+												dragOffsetX = 0;
 											}
-											if (j7 < 5 && j7 > -5) {
-												j7 = 0;
+											if (dragOffsetY < 5 && dragOffsetY > -5) {
+												dragOffsetY = 0;
 											}
 											if (anInt989 < 5) {
-												k6 = 0;
-												j7 = 0;
+												dragOffsetX = 0;
+												dragOffsetY = 0;
 											}
 											// Draw item being moved
-											class30_sub2_sub1_sub1_2.drawHalfBlended(k5 + k6, j6 + j7);
-											if (j6 + j7 < DrawingArea.topY && container.scrollPosition > 0) {
-												int i10 = cyclesSinceDraw * (DrawingArea.topY - j6 - j7) / 3;
-												if (i10 > cyclesSinceDraw * 10) {
-													i10 = cyclesSinceDraw * 10;
+											itemSprite.drawHalfBlended(slotX + dragOffsetX, slotY + dragOffsetY);
+											if (slotY + dragOffsetY < DrawingArea.topY && container.scrollPosition > 0) {
+												int scrollUpAmount = cyclesSinceDraw * (DrawingArea.topY - slotY - dragOffsetY) / 3;
+												if (scrollUpAmount > cyclesSinceDraw * 10) {
+													scrollUpAmount = cyclesSinceDraw * 10;
 												}
-												if (i10 > container.scrollPosition) {
-													i10 = container.scrollPosition;
+												if (scrollUpAmount > container.scrollPosition) {
+													scrollUpAmount = container.scrollPosition;
 												}
-												container.scrollPosition -= i10;
-												anInt1088 += i10;
+												container.scrollPosition -= scrollUpAmount;
+												anInt1088 += scrollUpAmount;
 											}
-											if (j6 + j7 + 32 > DrawingArea.bottomY && container.scrollPosition < container.scrollMax - container.height) {
-												int j10 = cyclesSinceDraw * (j6 + j7 + 32 - DrawingArea.bottomY) / 3;
-												if (j10 > cyclesSinceDraw * 10) {
-													j10 = cyclesSinceDraw * 10;
+											if (slotY + dragOffsetY + 32 > DrawingArea.bottomY && container.scrollPosition < container.scrollMax - container.height) {
+												int scrollDownAmount = cyclesSinceDraw * (slotY + dragOffsetY + 32 - DrawingArea.bottomY) / 3;
+												if (scrollDownAmount > cyclesSinceDraw * 10) {
+													scrollDownAmount = cyclesSinceDraw * 10;
 												}
-												if (j10 > container.scrollMax - container.height - container.scrollPosition) {
-													j10 = container.scrollMax - container.height - container.scrollPosition;
+												if (scrollDownAmount > container.scrollMax - container.height - container.scrollPosition) {
+													scrollDownAmount = container.scrollMax - container.height - container.scrollPosition;
 												}
-												container.scrollPosition += j10;
-												anInt1088 -= j10;
+												container.scrollPosition += scrollDownAmount;
+												anInt1088 -= scrollDownAmount;
 											}
-										} else if (atInventoryInterfaceType != 0 && atInventoryIndex == i3 && atInventoryInterface == component.id) {
+										} else if (atInventoryInterfaceType != 0 && atInventoryIndex == slotIndex && atInventoryInterface == component.id) {
 											// Using item? wear/unequip etc
-											class30_sub2_sub1_sub1_2.drawHalfBlended(k5, j6);
+											itemSprite.drawHalfBlended(slotX, slotY);
 										} else {
 											// Draw item in inventory/equipment etc
-											class30_sub2_sub1_sub1_2.drawSprite(k5, j6);
+											itemSprite.drawSprite(slotX, slotY);
 										}
-										if (class30_sub2_sub1_sub1_2.trimWidth == 33 || component.itemQuantities[i3] != 1) {
+										if (itemSprite.trimWidth == 33 || component.itemQuantities[slotIndex] != 1) {
 											// Draw item amounts
-											int k10 = component.itemQuantities[i3];
-											aTextDrawingArea_1270.drawLiteralText(0, intToKOrMil(k10), j6 + 10 + j7, k5 + 1 + k6); // shadow
-											aTextDrawingArea_1270.drawLiteralText(0xffff00, intToKOrMil(k10), j6 + 9 + j7, k5 + k6); // top layer
+											int quantity = component.itemQuantities[slotIndex];
+											aTextDrawingArea_1270.drawLiteralText(0, intToKOrMil(quantity), slotY + 10 + dragOffsetY, slotX + 1 + dragOffsetX); // shadow
+											aTextDrawingArea_1270.drawLiteralText(0xffff00, intToKOrMil(quantity), slotY + 9 + dragOffsetY, slotX + dragOffsetX); // top layer
 										}
 									}
 								}
-							} else if (component.sprites != null && i3 < 20) {
-								Sprite class30_sub2_sub1_sub1_1 = component.sprites[i3];
-								if (class30_sub2_sub1_sub1_1 != null) {
+							} else if (component.sprites != null && slotIndex < 20) {
+								Sprite emptySlotSprite = component.sprites[slotIndex];
+								if (emptySlotSprite != null) {
 									// Empty slots in equipment
-									class30_sub2_sub1_sub1_1.drawSprite(k5, j6);
+									emptySlotSprite.drawSprite(slotX, slotY);
 								}
 							}
-							i3++;
+							slotIndex++;
 						}
 
 					}
 
 				} else if (component.type == 3) {
-					boolean flag = false;
+					boolean hovered = false;
 					if (anInt1039 == component.id || anInt1048 == component.id || anInt1026 == component.id) {
-						flag = true;
+						hovered = true;
 					}
 					int color;
 					if (interfaceIsSelected(component)) {
 						color = component.enabledColor;
-						if (flag && component.enabledHoverColor != 0) {
+						if (hovered && component.enabledHoverColor != 0) {
 							color = component.enabledHoverColor;
 						}
 					} else {
 						color = component.textColor;
-						if (flag && component.disabledHoverColor != 0) {
+						if (hovered && component.disabledHoverColor != 0) {
 							color = component.disabledHoverColor;
 						}
 					}
@@ -8320,89 +8320,89 @@ public class Game extends RSApplet {
 					}
 				} else if (component.type == 4) {
 					TextDrawingArea textDrawingArea = component.textDrawingAreas;
-					String s = component.disabledText;
-					boolean flag1 = false;
+					String text = component.disabledText;
+					boolean hovered = false;
 					if (anInt1039 == component.id || anInt1048 == component.id || anInt1026 == component.id) {
-						flag1 = true;
+						hovered = true;
 					}
-					int i4;
+					int color;
 					if (interfaceIsSelected(component)) {
-						i4 = component.enabledColor;
-						if (flag1 && component.enabledHoverColor != 0) {
-							i4 = component.enabledHoverColor;
+						color = component.enabledColor;
+						if (hovered && component.enabledHoverColor != 0) {
+							color = component.enabledHoverColor;
 						}
 						if (component.enabledText.length() > 0) {
-							s = component.enabledText;
+							text = component.enabledText;
 						}
 					} else {
-						i4 = component.textColor;
-						if (flag1 && component.disabledHoverColor != 0) {
-							i4 = component.disabledHoverColor;
+						color = component.textColor;
+						if (hovered && component.disabledHoverColor != 0) {
+							color = component.disabledHoverColor;
 						}
 					}
 					if (component.atActionType == 6 && dialogContinuePending) {
-						s = "Please wait...";
-						i4 = component.textColor;
+						text = "Please wait...";
+						color = component.textColor;
 					}
 					if (DrawingArea.width == 479) {
-						if (i4 == 0xffff00) {
-							i4 = 255;
+						if (color == 0xffff00) {
+							color = 255;
 						}
-						if (i4 == 49152) {
-							i4 = 0xffffff;
+						if (color == 49152) {
+							color = 0xffffff;
 						}
 					}
-					for (int l6 = drawY + textDrawingArea.maxAsciiGlyphHeightPixels; s.length() > 0; l6 += textDrawingArea.maxAsciiGlyphHeightPixels) {
-						if (s.indexOf("%") != -1) {
+					for (int lineBaselineY = drawY + textDrawingArea.maxAsciiGlyphHeightPixels; text.length() > 0; lineBaselineY += textDrawingArea.maxAsciiGlyphHeightPixels) {
+						if (text.indexOf("%") != -1) {
 							do {
-								int k7 = s.indexOf("%1");
-								if (k7 == -1) {
+								int placeholderIndex = text.indexOf("%1");
+								if (placeholderIndex == -1) {
 									break;
 								}
-								s = s.substring(0, k7) + interfaceIntToString(extractInterfaceValues(component, 0)) + s.substring(k7 + 2);
+								text = text.substring(0, placeholderIndex) + interfaceIntToString(extractInterfaceValues(component, 0)) + text.substring(placeholderIndex + 2);
 							} while (true);
 							do {
-								int l7 = s.indexOf("%2");
-								if (l7 == -1) {
+								int placeholderIndex = text.indexOf("%2");
+								if (placeholderIndex == -1) {
 									break;
 								}
-								s = s.substring(0, l7) + interfaceIntToString(extractInterfaceValues(component, 1)) + s.substring(l7 + 2);
+								text = text.substring(0, placeholderIndex) + interfaceIntToString(extractInterfaceValues(component, 1)) + text.substring(placeholderIndex + 2);
 							} while (true);
 							do {
-								int i8 = s.indexOf("%3");
-								if (i8 == -1) {
+								int placeholderIndex = text.indexOf("%3");
+								if (placeholderIndex == -1) {
 									break;
 								}
-								s = s.substring(0, i8) + interfaceIntToString(extractInterfaceValues(component, 2)) + s.substring(i8 + 2);
+								text = text.substring(0, placeholderIndex) + interfaceIntToString(extractInterfaceValues(component, 2)) + text.substring(placeholderIndex + 2);
 							} while (true);
 							do {
-								int j8 = s.indexOf("%4");
-								if (j8 == -1) {
+								int placeholderIndex = text.indexOf("%4");
+								if (placeholderIndex == -1) {
 									break;
 								}
-								s = s.substring(0, j8) + interfaceIntToString(extractInterfaceValues(component, 3)) + s.substring(j8 + 2);
+								text = text.substring(0, placeholderIndex) + interfaceIntToString(extractInterfaceValues(component, 3)) + text.substring(placeholderIndex + 2);
 							} while (true);
 							do {
-								int k8 = s.indexOf("%5");
-								if (k8 == -1) {
+								int placeholderIndex = text.indexOf("%5");
+								if (placeholderIndex == -1) {
 									break;
 								}
-								s = s.substring(0, k8) + interfaceIntToString(extractInterfaceValues(component, 4)) + s.substring(k8 + 2);
+								text = text.substring(0, placeholderIndex) + interfaceIntToString(extractInterfaceValues(component, 4)) + text.substring(placeholderIndex + 2);
 							} while (true);
 						}
-						int l8 = s.indexOf("\\n");
-						String s1;
-						if (l8 != -1) {
-							s1 = s.substring(0, l8);
-							s = s.substring(l8 + 2);
+						int lineBreakIndex = text.indexOf("\\n");
+						String line;
+						if (lineBreakIndex != -1) {
+							line = text.substring(0, lineBreakIndex);
+							text = text.substring(lineBreakIndex + 2);
 						} else {
-							s1 = s;
-							s = "";
+							line = text;
+							text = "";
 						}
 						if (component.centeredText) {
-							textDrawingArea.drawCenteredTaggedText(i4, drawX + component.width / 2, s1, l6, component.shadowedText);
+							textDrawingArea.drawCenteredTaggedText(color, drawX + component.width / 2, line, lineBaselineY, component.shadowedText);
 						} else {
-							textDrawingArea.drawTaggedText(component.shadowedText, drawX, i4, s1, l6);
+							textDrawingArea.drawTaggedText(component.shadowedText, drawX, color, line, lineBaselineY);
 						}
 					}
 
@@ -8417,51 +8417,51 @@ public class Game extends RSApplet {
 						sprite.drawSprite(drawX, drawY);
 					}
 				} else if (component.type == 6) {
-					int k3 = Texture.textureInt1;
-					int j4 = Texture.textureInt2;
+					int savedCenterX = Texture.textureInt1;
+					int savedCenterY = Texture.textureInt2;
 					Texture.textureInt1 = drawX + component.width / 2;
 					Texture.textureInt2 = drawY + component.height / 2;
-					int i5 = Texture.sineTable[component.modelPitch] * component.modelZoom >> 16;
-					int l5 = Texture.cosineTable[component.modelPitch] * component.modelZoom >> 16;
-					boolean flag2 = interfaceIsSelected(component);
-					int i7;
-					if (flag2) {
-						i7 = component.enabledAnimationId;
+					int modelOffsetY = Texture.sineTable[component.modelPitch] * component.modelZoom >> 16;
+					int modelOffsetZ = Texture.cosineTable[component.modelPitch] * component.modelZoom >> 16;
+					boolean selected = interfaceIsSelected(component);
+					int animationId;
+					if (selected) {
+						animationId = component.enabledAnimationId;
 					} else {
-						i7 = component.disabledAnimationId;
+						animationId = component.disabledAnimationId;
 					}
 					Model model;
-					if (i7 == -1) {
-						model = component.getMediaModel(-1, -1, flag2);
+					if (animationId == -1) {
+						model = component.getMediaModel(-1, -1, selected);
 					} else {
-						Animation animation = Animation.anims[i7];
-						model = component.getMediaModel(animation.secondFrameIds[component.modelAnimationFrame], animation.frameIds[component.modelAnimationFrame], flag2);
+						Animation animation = Animation.anims[animationId];
+						model = component.getMediaModel(animation.secondFrameIds[component.modelAnimationFrame], animation.frameIds[component.modelAnimationFrame], selected);
 					}
 					if (model != null) {
-						model.projectRotated(component.modelYaw, 0, component.modelPitch, 0, i5, l5);
+						model.projectRotated(component.modelYaw, 0, component.modelPitch, 0, modelOffsetY, modelOffsetZ);
 					}
-					Texture.textureInt1 = k3;
-					Texture.textureInt2 = j4;
+					Texture.textureInt1 = savedCenterX;
+					Texture.textureInt2 = savedCenterY;
 				} else if (component.type == 7) {
 					TextDrawingArea textDrawingArea_1 = component.textDrawingAreas;
-					int k4 = 0;
-					for (int j5 = 0; j5 < component.height; j5++) {
-						for (int i6 = 0; i6 < component.width; i6++) {
-							if (component.itemIdsPlusOne[k4] > 0) {
-								ItemDef itemDef = ItemDef.forID(component.itemIdsPlusOne[k4] - 1);
-								String s2 = itemDef.name;
-								if (itemDef.stackable || component.itemQuantities[k4] != 1) {
-									s2 = s2 + " x" + intToKOrMilLongName(component.itemQuantities[k4]);
+					int slotIndex = 0;
+					for (int row = 0; row < component.height; row++) {
+						for (int column = 0; column < component.width; column++) {
+							if (component.itemIdsPlusOne[slotIndex] > 0) {
+								ItemDef itemDef = ItemDef.forID(component.itemIdsPlusOne[slotIndex] - 1);
+								String label = itemDef.name;
+								if (itemDef.stackable || component.itemQuantities[slotIndex] != 1) {
+									label = label + " x" + intToKOrMilLongName(component.itemQuantities[slotIndex]);
 								}
-								int i9 = drawX + i6 * (115 + component.invSpritePadX);
-								int k9 = drawY + j5 * (12 + component.invSpritePadY);
+								int labelX = drawX + column * (115 + component.invSpritePadX);
+								int labelY = drawY + row * (12 + component.invSpritePadY);
 								if (component.centeredText) {
-									textDrawingArea_1.drawCenteredTaggedText(component.textColor, i9 + component.width / 2, s2, k9, component.shadowedText);
+									textDrawingArea_1.drawCenteredTaggedText(component.textColor, labelX + component.width / 2, label, labelY, component.shadowedText);
 								} else {
-									textDrawingArea_1.drawTaggedText(component.shadowedText, i9, component.textColor, s2, k9);
+									textDrawingArea_1.drawTaggedText(component.shadowedText, labelX, component.textColor, label, labelY);
 								}
 							}
-							k4++;
+							slotIndex++;
 						}
 
 					}
