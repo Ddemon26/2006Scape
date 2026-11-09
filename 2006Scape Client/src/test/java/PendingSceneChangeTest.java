@@ -28,8 +28,8 @@ public class PendingSceneChangeTest {
             game.plane = 1;
             game.intGroundArray = new int[4][105][105];
             game.byteGroundArray = new byte[4][104][104];
-            game.aClass11Array1230 = new CollisionMap[4];
-            for (int n = 0; n < 4; n++) game.aClass11Array1230[n] = new CollisionMap();
+            game.collisionMaps = new CollisionMap[4];
+            for (int n = 0; n < 4; n++) game.collisionMaps[n] = new CollisionMap();
             for (int x = 0; x < 105; x++) for (int y = 0; y < 105; y++) {
                 game.intGroundArray[1][x][y] = 100;
                 game.intGroundArray[2][x][y] = 200;
@@ -52,12 +52,12 @@ public class PendingSceneChangeTest {
             tiles[1][10][11].obj1 = new Object1();
             tiles[1][10][11].obj1.uid = 402 << 14;
             tiles[1][10][11].obj1.info = (byte) (2 << 6);
-            game.aClass11Array1230[1].addWall(11, 2, 10, 0, false);
-            assertTrue((game.aClass11Array1230[1].tileFlags[10][11] & 8) != 0);
+            game.collisionMaps[1].addWall(11, 2, 10, 0, false);
+            assertTrue((game.collisionMaps[1].tileFlags[10][11] & 8) != 0);
             game.applySceneObjectChange(11, 1, 0, 0, 10, 0, -1);
             assertNull(tiles[1][10][11].obj1);
             assertNotNull(tiles[1][10][11].obj3);
-            assertEquals(0, game.aClass11Array1230[1].tileFlags[10][11] & 8);
+            assertEquals(0, game.collisionMaps[1].tileFlags[10][11] & 8);
             game.applySceneObjectChange(11, 1, 0, 0, 10, 3, -1);
             assertNull(tiles[1][10][11].obj3);
         } finally {

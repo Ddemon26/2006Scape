@@ -75,9 +75,9 @@ public class MinimapSceneTest {
         g.mapScenes = new Background[100];
         g.mapFunctions = new Sprite[100];
         g.byteGroundArray = new byte[4][104][104];
-        g.aClass11Array1230 = new CollisionMap[4];
+        g.collisionMaps = new CollisionMap[4];
         for (int p = 0; p < 4; p++) {
-            g.aClass11Array1230[p] = new CollisionMap();
+            g.collisionMaps[p] = new CollisionMap();
             openFlags(p, 0);
         }
         g.mapFunctionIconTileX = new int[1000];
@@ -92,7 +92,7 @@ public class MinimapSceneTest {
     }
 
     private void openFlags(int plane, int value) throws Exception {
-        int[][] flags = (int[][]) field(CollisionMap.class, "tileFlags").get(g.aClass11Array1230[plane]);
+        int[][] flags = (int[][]) field(CollisionMap.class, "tileFlags").get(g.collisionMaps[plane]);
         for (int[] row : flags) Arrays.fill(row, value);
     }
 

@@ -39,7 +39,7 @@ public class RegionPacketParserTest {
         g.inStream = new Stream(new byte[6000]);
         g.groundArray = new NodeList[4][104][104];
         g.pendingSceneChanges = new NodeList();
-        g.anInt1069 = 1; g.anInt1070 = 1;
+        g.regionCenterChunkX = 1; g.regionCenterChunkY = 1;
         OnDemandFetcher f = (OnDemandFetcher) unsafe().allocateInstance(OnDemandFetcher.class);
         int[][] versions = new int[4][]; versions[3] = new int[70000]; Arrays.fill(versions[3], 1);
         for (int k = 0; k < 3; k++) versions[k] = new int[1];
@@ -117,7 +117,7 @@ public class RegionPacketParserTest {
     @Test public void opcode73ReadsXThenYAndDerivesTheBaseFromEach() throws Exception {
         Game g = game(MAP);
         deliver(g, 73, packet73(405, 702));
-        assertEquals(405, g.anInt1069); assertEquals(702, g.anInt1070);
+        assertEquals(405, g.regionCenterChunkX); assertEquals(702, g.regionCenterChunkY);
         assertEquals((405 - 6) * 8, g.baseX); assertEquals((702 - 6) * 8, g.baseY);
         assertEquals(1, g.loadingStage);
         assertFalse(g.aBoolean1159);
@@ -127,7 +127,7 @@ public class RegionPacketParserTest {
         // {packet x, packet y, loadingStage, ignored?}
         for (int[] c : new int[][] {{405, 702, 2, 1}, {405, 703, 2, 0}, {406, 702, 2, 0}, {405, 702, 1, 0}, {405, 702, 0, 0}}) {
             Game g = game(MAP);
-            g.anInt1069 = 405; g.anInt1070 = 702; g.loadingStage = c[2];
+            g.regionCenterChunkX = 405; g.regionCenterChunkY = 702; g.loadingStage = c[2];
             g.baseX = 7; g.baseY = 9; g.regionKeys = new int[] {-5};
             deliver(g, 73, packet73(c[0], c[1]));
             boolean ignored = c[3] == 1;
@@ -167,7 +167,7 @@ public class RegionPacketParserTest {
         int[][] map = {{48, 48, 500, 600}, {49, 48, 501, 601}, {48, 49, 502, 602}, {49, 49, 503, 603}};
         Game g = game(map);
         deliver(g, 73, packet73(390, 390));      // chunk 390/8 = 48 on both axes -> small world
-        assertTrue(g.aBoolean1141);
+        assertTrue(g.fixedRegionArea);
         assertArrayEquals(new int[] {key(48, 48), key(48, 49), key(49, 48), key(49, 49)}, g.regionKeys);
         assertArrayEquals(new int[] {500, -1, 501, -1}, g.regionTerrainFileIds);
         assertArrayEquals(new int[] {600, -1, 601, -1}, g.regionObjectFileIds);
@@ -184,7 +184,7 @@ public class RegionPacketParserTest {
         t[1][5][5] = 0;
         Game g = game(MAP);
         deliver(g, 241, packet241(702, t, 405));
-        assertEquals(702, g.anInt1070); assertEquals(405, g.anInt1069);
+        assertEquals(702, g.regionCenterChunkY); assertEquals(405, g.regionCenterChunkX);
         assertTrue(g.aBoolean1159);
         for (int p = 0; p < 4; p++) for (int x = 0; x < 13; x++) for (int y = 0; y < 13; y++)
             assertEquals(p + "," + x + "," + y, t[p][x][y], g.anIntArrayArrayArray1129[p][x][y]);
@@ -305,5 +305,38 @@ public class RegionPacketParserTest {
             for (Class30_Sub1 n = (Class30_Sub1) g.pendingSceneChanges.firstFromTail(); n != null; n = (Class30_Sub1) g.pendingSceneChanges.nextTowardHead()) count++;
             assertEquals(kept, count);
         }
+    }
+
+    @Test public void fixedAreaFlagFollowsTheChunkRegionPredicateExactly() throws Exception {
+        // {chunkX, chunkY, expected fixedRegionArea}: region = chunk / 8
+        int[][] cases = {{390, 390, 1}, {398, 390, 1}, {406, 390, 0}, {382, 390, 0}, {390, 398, 0}, {390, 382, 0},
+                {390, 1190, 1}, {398, 1190, 0}, {382, 1190, 0}, {390, 1198, 0}, {405, 702, 0}};
+        for (int[] c : cases) {
+            Game g = game(MAP);
+            deliver(g, 73, packet73(c[0], c[1]));
+            assertEquals(Arrays.toString(c), c[2] == 1, g.fixedRegionArea);
+        }
+    }
+
+    @Test public void fixedAreaFlagIsRecomputedOnEveryAcceptedCentreAndByOpcode241() throws Exception {
+        Game g = game(MAP);
+        deliver(g, 73, packet73(390, 390));
+        assertTrue(g.fixedRegionArea);
+        deliver(g, 73, packet73(405, 702));
+        assertFalse(g.fixedRegionArea);
+        g.fixedRegionArea = false;
+        deliver(g, 241, packet241(390, noTemplates(), 390));
+        assertTrue(g.fixedRegionArea);
+        deliver(g, 241, packet241(702, noTemplates(), 405));
+        assertFalse(g.fixedRegionArea);
+    }
+
+    @Test public void fixedAreaFlagBlanksOnlyTheListedRegionColumnsAndRowsOfTheWindow() throws Exception {
+        // chunk (390,1190): regions x 48..49, y 148..149; with the flag, y 149 is blanked (and y 147 / x 50 if present)
+        int[][] map = {{48, 148, 3, 4}, {48, 149, 5, 6}, {49, 148, 7, 8}, {49, 149, 9, 10}};
+        Game g = game(map);
+        deliver(g, 73, packet73(390, 1190));
+        assertTrue(g.fixedRegionArea);
+        assertArrayEquals(new int[] {3, -1, 7, -1}, g.regionTerrainFileIds);
     }
 }

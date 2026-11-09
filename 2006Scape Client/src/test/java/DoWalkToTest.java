@@ -19,10 +19,10 @@ public class DoWalkToTest {
         Game.waypointsSinceKeepAlive = 0;
         game = new Game();
         game.pathBackDirection = new int[104][104];
-        game.aClass11Array1230 = new CollisionMap[4];
+        game.collisionMaps = new CollisionMap[4];
         for (int p = 0; p < 4; p++) {
-            game.aClass11Array1230[p] = new CollisionMap();
-            for (int[] column : game.aClass11Array1230[p].tileFlags) Arrays.fill(column, 0);
+            game.collisionMaps[p] = new CollisionMap();
+            for (int[] column : game.collisionMaps[p].tileFlags) Arrays.fill(column, 0);
         }
         game.plane = 0;
         game.baseX = BASE_X;
@@ -35,7 +35,7 @@ public class DoWalkToTest {
         Game.waypointsSinceKeepAlive = savedKeepAlive;
     }
 
-    private int[][] flags() { return game.aClass11Array1230[game.plane].tileFlags; }
+    private int[][] flags() { return game.collisionMaps[game.plane].tileFlags; }
 
     private void blockAll() { for (int[] column : flags()) Arrays.fill(column, BLOCKED); }
 
@@ -297,7 +297,7 @@ public class DoWalkToTest {
     }
 
     @Test public void shapePlusOneAndOrientationSelectWallReachTiles() {
-        CollisionMap map = game.aClass11Array1230[0];
+        CollisionMap map = game.collisionMaps[0];
         for (int shape = 0; shape < 3; shape += 2) {
             for (int orientation = 0; orientation < 4; orientation++) {
                 game.stream.currentOffset = 0;
