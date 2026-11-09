@@ -7372,15 +7372,15 @@ public class Game extends RSApplet {
 			tabAreaOffsets = Texture.lineOffsets;
 			Texture.setScreenSize(512, 334);
 			chatBoxAreaOffsets = Texture.lineOffsets;
-			int ai[] = new int[9];
-			for (int i8 = 0; i8 < 9; i8++) {
-				int k8 = 128 + i8 * 32 + 15;
-				int l8 = 600 + k8 * 3;
-				int i9 = Texture.sineTable[k8];
-				ai[i8] = l8 * i9 >> 16;
+			int cameraHeightByPitch[] = new int[9];
+			for (int pitchIndex = 0; pitchIndex < 9; pitchIndex++) {
+				int samplePitch = 128 + pitchIndex * 32 + 15;
+				int cameraDistance = 600 + samplePitch * 3;
+				int pitchSine = Texture.sineTable[samplePitch];
+				cameraHeightByPitch[pitchIndex] = cameraDistance * pitchSine >> 16;
 			}
 
-			WorldController.buildTileVisibilityTable(500, 800, 512, 334, ai);
+			WorldController.buildTileVisibilityTable(500, 800, 512, 334, cameraHeightByPitch);
 			Censor.loadConfig(streamLoader_4);
 			mouseDetection = new MouseDetection(this);
 			startRunnable(mouseDetection, 10);
