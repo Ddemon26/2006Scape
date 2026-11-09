@@ -2341,7 +2341,7 @@ public class Game extends RSApplet {
 
 	public boolean promptUserForInput(RSInterface widget) {
 		int contentType = widget.contentType;
-		if (anInt900 == 2) {
+		if (friendListState == 2) {
 			if (contentType == 201) {
 				inputTaken = true;
 				inputDialogState = 0;
@@ -5338,23 +5338,23 @@ public class Game extends RSApplet {
 	public void drawFriendsListOrWelcomeScreen(RSInterface widget) {
 		int contentTypeOrRowIndex = widget.contentType;
 		if (contentTypeOrRowIndex >= 1 && contentTypeOrRowIndex <= 100 || contentTypeOrRowIndex >= 701 && contentTypeOrRowIndex <= 800) {
-			if (contentTypeOrRowIndex == 1 && anInt900 == 0) {
+			if (contentTypeOrRowIndex == 1 && friendListState == 0) {
 				widget.disabledText = "Loading friend list";
 				widget.atActionType = 0;
 				return;
 			}
-			if (contentTypeOrRowIndex == 1 && anInt900 == 1) {
+			if (contentTypeOrRowIndex == 1 && friendListState == 1) {
 				widget.disabledText = "Connecting to friendserver";
 				widget.atActionType = 0;
 				return;
 			}
-			if (contentTypeOrRowIndex == 2 && anInt900 != 2) {
+			if (contentTypeOrRowIndex == 2 && friendListState != 2) {
 				widget.disabledText = "Please wait...";
 				widget.atActionType = 0;
 				return;
 			}
 			int visibleFriendCount = friendsCount;
-			if (anInt900 != 2) {
+			if (friendListState != 2) {
 				visibleFriendCount = 0;
 			}
 			if (contentTypeOrRowIndex > 700) {
@@ -5374,7 +5374,7 @@ public class Game extends RSApplet {
 		}
 		if (contentTypeOrRowIndex >= 101 && contentTypeOrRowIndex <= 200 || contentTypeOrRowIndex >= 801 && contentTypeOrRowIndex <= 900) {
 			int visibleFriendCount = friendsCount;
-			if (anInt900 != 2) {
+			if (friendListState != 2) {
 				visibleFriendCount = 0;
 			}
 			if (contentTypeOrRowIndex > 800) {
@@ -5399,7 +5399,7 @@ public class Game extends RSApplet {
 		}
 		if (contentTypeOrRowIndex == 203) {
 			int visibleFriendCount = friendsCount;
-			if (anInt900 != 2) {
+			if (friendListState != 2) {
 				visibleFriendCount = 0;
 			}
 			widget.scrollMax = visibleFriendCount * 15 + 20;
@@ -5409,18 +5409,18 @@ public class Game extends RSApplet {
 			return;
 		}
 		if (contentTypeOrRowIndex >= 401 && contentTypeOrRowIndex <= 500) {
-			if ((contentTypeOrRowIndex -= 401) == 0 && anInt900 == 0) {
+			if ((contentTypeOrRowIndex -= 401) == 0 && friendListState == 0) {
 				widget.disabledText = "Loading ignore list";
 				widget.atActionType = 0;
 				return;
 			}
-			if (contentTypeOrRowIndex == 1 && anInt900 == 0) {
+			if (contentTypeOrRowIndex == 1 && friendListState == 0) {
 				widget.disabledText = "Please wait...";
 				widget.atActionType = 0;
 				return;
 			}
 			int visibleIgnoreCount = ignoreCount;
-			if (anInt900 == 0) {
+			if (friendListState == 0) {
 				visibleIgnoreCount = 0;
 			}
 			if (contentTypeOrRowIndex >= visibleIgnoreCount) {
@@ -5481,28 +5481,28 @@ public class Game extends RSApplet {
 			return;
 		}
 		if (contentTypeOrRowIndex == 324) {
-			if (aClass30_Sub2_Sub1_Sub1_931 == null) {
-				aClass30_Sub2_Sub1_Sub1_931 = widget.sprite1;
-				aClass30_Sub2_Sub1_Sub1_932 = widget.sprite2;
+			if (genderButtonSprite1 == null) {
+				genderButtonSprite1 = widget.sprite1;
+				genderButtonSprite2 = widget.sprite2;
 			}
 			if (designerMale) {
-				widget.sprite1 = aClass30_Sub2_Sub1_Sub1_932;
+				widget.sprite1 = genderButtonSprite2;
 				return;
 			} else {
-				widget.sprite1 = aClass30_Sub2_Sub1_Sub1_931;
+				widget.sprite1 = genderButtonSprite1;
 				return;
 			}
 		}
 		if (contentTypeOrRowIndex == 325) {
-			if (aClass30_Sub2_Sub1_Sub1_931 == null) {
-				aClass30_Sub2_Sub1_Sub1_931 = widget.sprite1;
-				aClass30_Sub2_Sub1_Sub1_932 = widget.sprite2;
+			if (genderButtonSprite1 == null) {
+				genderButtonSprite1 = widget.sprite1;
+				genderButtonSprite2 = widget.sprite2;
 			}
 			if (designerMale) {
-				widget.sprite1 = aClass30_Sub2_Sub1_Sub1_931;
+				widget.sprite1 = genderButtonSprite1;
 				return;
 			} else {
-				widget.sprite1 = aClass30_Sub2_Sub1_Sub1_932;
+				widget.sprite1 = genderButtonSprite2;
 				return;
 			}
 		}
@@ -5530,13 +5530,13 @@ public class Game extends RSApplet {
 			}
 		}
 		if (contentTypeOrRowIndex == 661)
-			if (anInt1034 == 0)
+			if (recoveryQuestionsDay == 0)
 				widget.disabledText = "\\nYou have not yet set any recovery questions.\\nIt is @lre@strongly@yel@ recommended that you do so.\\n\\nIf you don't you will be @lre@unable to recover your\\n@lre@password@yel@ if you forget it, or it is stolen.";
-			else if (anInt1034 <= anInt1170) {
+			else if (recoveryQuestionsDay <= currentAccountDay) {
 				widget.disabledText = "\\n\\nRecovery Questions Last Set:\\n@gre@"
-						+ formatAccountDay(anInt1034);
+						+ formatAccountDay(recoveryQuestionsDay);
 			} else {
-				int daysSinceRequest = (anInt1170 + 14) - anInt1034;
+				int daysSinceRequest = (currentAccountDay + 14) - recoveryQuestionsDay;
 				String requestAgeText;
 				if (daysSinceRequest <= 0)
 					requestAgeText = "Earlier today";
@@ -5546,17 +5546,17 @@ public class Game extends RSApplet {
 					requestAgeText = daysSinceRequest + " days ago";
 				widget.disabledText = requestAgeText
 						+ " you requested@lre@ new recovery\\n@lre@questions.@yel@ The requested change will occur\\non: @lre@"
-						+ formatAccountDay(anInt1034)
+						+ formatAccountDay(recoveryQuestionsDay)
 						+ "\\n\\nIf you do not remember making this request\\ncancel it immediately, and change your password.";
 			}
 		if (contentTypeOrRowIndex == 663)
-			if (anInt1083 <= 0 || anInt1083 > anInt1170 + 10)
+			if (lastPasswordChangeDay <= 0 || lastPasswordChangeDay > currentAccountDay + 10)
 				widget.disabledText = "Last password change:\\n@gre@Never changed";
 			else
 				widget.disabledText = "Last password change:\\n@gre@"
-						+ formatAccountDay(anInt1083);
+						+ formatAccountDay(lastPasswordChangeDay);
 		if (contentTypeOrRowIndex == 668) {
-			if (anInt1034 > anInt1170) {
+			if (recoveryQuestionsDay > currentAccountDay) {
 				widget.disabledText = "To cancel this request:\\n1) Logout and return to the frontpage of this website.\\n2) Choose 'Cancel recovery questions'.";
 				return;
 			}
@@ -5565,7 +5565,7 @@ public class Game extends RSApplet {
 	}
 	
 	public String formatAccountDay(int dayCount) {
-		if (dayCount > anInt1170 + 10) {
+		if (dayCount > currentAccountDay + 10) {
 			return "Unknown";
 		} else {
 			long timestampMillis = ((long) dayCount + 11745L) * 0x5265c00L;
@@ -6155,7 +6155,7 @@ public class Game extends RSApplet {
 				}
 
 				pendingSceneChanges = new NodeList();
-				anInt900 = 0;
+				friendListState = 0;
 				friendsCount = 0;
 				dialogID = -1;
 				backDialogID = -1;
@@ -11576,7 +11576,7 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 221) {
-				anInt900 = inStream.readUnsignedByte();
+				friendListState = inStream.readUnsignedByte();
 				needDrawTabArea = true;
 				pktType = -1;
 				return true;
@@ -12233,7 +12233,7 @@ public class Game extends RSApplet {
 	public int cameraYawDrift;
 	public int cameraYawDriftStep;
 	public int friendsCount;
-	public int anInt900;
+	public int friendListState;
 	public int[][] pathBackDirection;
 	public final int scrollHighlightColor;
 	public RSImageProducer backLeftIP1;
@@ -12259,8 +12259,8 @@ public class Game extends RSApplet {
 	public final int scrollShadowColor;
 	public final int[] shakeSineSpeed;
 	public int[][] tileCentreEntityCycle;
-	public Sprite aClass30_Sub2_Sub1_Sub1_931;
-	public Sprite aClass30_Sub2_Sub1_Sub1_932;
+	public Sprite genderButtonSprite1;
+	public Sprite genderButtonSprite2;
 	public int hintIconPlayerIndex;
 	public int hintIconTileX;
 	public int hintIconTileY;
@@ -12606,12 +12606,12 @@ public class Game extends RSApplet {
 	public static int pendingSongFadeTicks;
 	public static int musicVolume = 255;
 	public int[] gameScreenOffsets;
-	public int anInt1170;
+	public int currentAccountDay;
 	public int anInt1215;
-	public int anInt1083;
+	public int lastPasswordChangeDay;
 	public int anInt992;
 	public int anInt1273;
-	public int anInt1034;
+	public int recoveryQuestionsDay;
 
 	static {
 		anIntArray1019 = new int[99];
