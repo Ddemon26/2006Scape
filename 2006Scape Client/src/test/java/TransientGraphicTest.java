@@ -60,8 +60,8 @@ public class TransientGraphicTest {
         SpotAnim.cache = new SpotAnim[]{first, second};
         StationaryGraphic a = new StationaryGraphic(2, 100, 7, 1, 345, 260, 388);
         assertEquals(2, a.plane);
-        assertEquals(388, a.worldY);
-        assertEquals(260, a.worldX);
+        assertEquals(388, a.worldX);
+        assertEquals(260, a.worldY);
         assertEquals(345, a.height);
         assertEquals(107, a.startCycle);
         assertFalse(a.finished);
@@ -116,5 +116,37 @@ public class TransientGraphicTest {
         g.updateTransientGraphics();
         assertTrue(delayed.finished);
         assertNull(g.transientGraphics.firstFromTail());
+    }
+
+    /** Pass 217: the coordinate fields were swapped by name (old "worldX" carried world Y); checks scene tile and height lookup. */
+    @Test public void coordinateFieldsAreSceneXAndSceneY() throws Exception {
+        SpotAnim.cache = new SpotAnim[]{spot(sequence(5))};
+        Game g = game();
+        g.transientGraphics = new NodeList();
+        g.worldController = new WorldController(new int[4][105][105]);
+        g.byteGroundArray = new byte[4][104][104];
+        g.intGroundArray = new int[4][105][105];
+        for (int x = 0; x < 105; x++) for (int y = 0; y < 105; y++) g.intGroundArray[0][x][y] = x * 10 + y * 1000;
+        g.plane = 0;
+        g.loopCycle = 50;
+        g.cyclesSinceDraw = 1;
+        // tile x 9, tile y 5 (distinct, so a transposed meaning lands on tile [5][9])
+        int worldXCoord = 9 * 128 + 64, worldYCoord = 5 * 128 + 64;
+        StationaryGraphic gr = new StationaryGraphic(0, 50, 0, 0, 77, worldYCoord, worldXCoord);
+        assertEquals(worldYCoord, gr.worldY);
+        assertEquals(worldXCoord, gr.worldX);
+        // interpolatedGroundHeight(plane, worldY, worldX)
+        assertEquals(9 * 10 + 5 * 1000 + 5 + 500, g.interpolatedGroundHeight(0, gr.worldY, gr.worldX));
+        g.transientGraphics.insertHead(gr);
+        g.updateTransientGraphics();
+        Ground[][][] ground = grounds(g.worldController);
+        assertNull("not the transposed tile", ground[0][5][9]);
+        Ground tile = ground[0][9][5];
+        assertNotNull(tile);
+        assertSame(gr, tile.obj5Array[0].model);
+        assertEquals(worldXCoord, tile.obj5Array[0].worldX);
+        assertEquals(worldYCoord, tile.obj5Array[0].worldY);
+        assertEquals(9, tile.obj5Array[0].minTileX);
+        assertEquals(5, tile.obj5Array[0].minTileY);
     }
 }

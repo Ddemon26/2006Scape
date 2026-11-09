@@ -8164,7 +8164,7 @@ public class Game extends RSApplet {
 				if (graphic.finished) {
 					graphic.unlink();
 				} else {
-					worldController.addEntity(graphic.plane, 0, graphic.height, -1, graphic.worldX, 60, graphic.worldY, graphic, false);
+					worldController.addEntity(graphic.plane, 0, graphic.height, -1, graphic.worldY, 60, graphic.worldX, graphic, false);
 				}
 			}
 		}
@@ -10156,11 +10156,11 @@ public class Game extends RSApplet {
 			}
 			if (player != null) {
 				ObjectDef objectDef = ObjectDef.forID(objectId);
-				int i22 = intGroundArray[plane][tileX][tileY];
-				int j22 = intGroundArray[plane][tileX + 1][tileY];
-				int k22 = intGroundArray[plane][tileX + 1][tileY + 1];
-				int l22 = intGroundArray[plane][tileX][tileY + 1];
-				Model model = objectDef.getModel(shape, orientation, i22, j22, k22, l22, -1);
+				int heightX0Y0 = intGroundArray[plane][tileX][tileY];
+				int heightX1Y0 = intGroundArray[plane][tileX + 1][tileY];
+				int heightX1Y1 = intGroundArray[plane][tileX + 1][tileY + 1];
+				int heightX0Y1 = intGroundArray[plane][tileX][tileY + 1];
+				Model model = objectDef.getModel(shape, orientation, heightX0Y0, heightX1Y0, heightX1Y1, heightX0Y1, -1);
 				if (model != null) {
 					queueSceneObjectChange(endDelay + 1, -1, 0, objectCategory, tileY, 0, plane, tileX, startDelay + 1);
 					player.attachedModelStartCycle = startDelay + loopCycle;

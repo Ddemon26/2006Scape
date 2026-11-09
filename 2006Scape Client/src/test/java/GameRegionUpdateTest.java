@@ -314,6 +314,42 @@ public class GameRegionUpdateTest {
         assertEquals(0, pending(g).size());
     }
 
+    /** Pass 217: op 147 locals i22/j22/k22/l22 are the four ground corner heights (x0y0, x1y0, x1y1, x0y1) fed to a terrain-adjusting model. */
+    @Test public void method137Op147CornerLocalsAreTileCornerHeightsForTerrainAdjustingModel() throws Exception {
+        java.lang.reflect.Constructor<Model> mc = Model.class.getDeclaredConstructor();
+        mc.setAccessible(true);
+        int[][] corners = {{100, 220, 340, 500}, {100, 220, 700, 500}};   // second run changes only ground[x+1][y+1]
+        int[][] want = {{-190, -70, 50, 210}, {-280, -160, 320, 120}};
+        for (int run = 0; run < 2; run++) {
+            Game g = game();
+            ObjectDef def = ObjectDef.forID(401);
+            def.adjustsToTerrain = true;
+            Model base = mc.newInstance();
+            base.vertexCount = 4;
+            base.vertexX = new int[] {-64, 64, 64, -64};
+            base.vertexZ = new int[] {-64, -64, 64, 64};
+            base.vertexY = new int[4];
+            ((LruCache) sget(ObjectDef.class, "mruNodes2")).clear();
+            ((LruCache) sget(ObjectDef.class, "mruNodes2")).removeFromCache(base, (401 << 6));
+            Player target = new Player();
+            g.playerArray[5] = target;
+            Game.myPlayer = new Player();
+            for (int x = 0; x < 105; x++) for (int y = 0; y < 105; y++) g.intGroundArray[1][x][y] = 999;   // wrong neighbours stand out
+            int tx = 17, ty = 34;
+            g.intGroundArray[1][tx][ty] = corners[run][0];
+            g.intGroundArray[1][tx + 1][ty] = corners[run][1];
+            g.intGroundArray[1][tx + 1][ty + 1] = corners[run][2];
+            g.intGroundArray[1][tx][ty + 1] = corners[run][3];
+            run(g, 147, cat(i(128 - pos(1, 2)), usBE(5), i(128), usLE(11), i(0), usBE(22),
+                    i(128 - (10 << 2)), i(0), usBE(401), i(0)));
+            Model m = target.attachedModel;
+            assertNotNull(m);
+            assertNotSame("terrain adjustment copies the model", base, m);
+            assertArrayEquals("vertex at (-64,-64),(64,-64),(64,64),(-64,64)", want[run], Arrays.copyOf(m.vertexY, 4));
+            assertArrayEquals("source model untouched", new int[4], base.vertexY);
+        }
+    }
+
     @Test public void method137Op101And151QueueRemovalAndSpawnWithShapeCategory() throws Exception {
         Game g = game();
         run(g, 101, cat(i(-((5 << 2) | 2)), i(pos(2, 3))));
@@ -341,8 +377,8 @@ public class GameRegionUpdateTest {
         assertSame(SpotAnim.cache[4], get(gr, "spotAnimation"));
         assertEquals(90 - 25, gr.height);
         assertEquals(1007, get(gr, "startCycle"));
-        assertEquals(35 * 128 + 64, gr.worldX);   // original field naming: worldX holds world Y here
-        assertEquals(18 * 128 + 64, gr.worldY);
+        assertEquals(35 * 128 + 64, gr.worldY);   // world Y (field was named worldX before pass 217)
+        assertEquals(18 * 128 + 64, gr.worldX);
         assertEquals(1, gr.plane);
     }
 
