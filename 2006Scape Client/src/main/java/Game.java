@@ -3344,25 +3344,25 @@ public class Game extends RSApplet {
 
 	}
 
-	void drawLoadingText(int i, String s) {
-		anInt1079 = i;
-		aString1049 = s;
+	void drawLoadingText(int percent, String message) {
+		lastLoadingPercent = percent;
+		lastLoadingMessage = message;
 		resetImageProducers();
 		if (titleStreamLoader == null) {
-			super.drawLoadingText(i, s);
+			super.drawLoadingText(percent, message);
 			return;
 		}
 		aRSImageProducer_1109.setAsDrawingArea();
-		char c = '\u0168';
-		char c1 = '\310';
-		byte byte1 = 20;
-		chatTextDrawingArea.drawCenteredLiteralText(0xffffff, "" + ClientSettings.SERVER_NAME + " is loading - please wait...", c1 / 2 - 26 - byte1, c / 2);
-		int j = c1 / 2 - 18 - byte1;
-		DrawingArea.drawRectangleOutline(j, 34, 0x8c1111, c / 2 - 152, 304);
-		DrawingArea.drawRectangleOutline(j + 1, 32, 0, c / 2 - 151, 302);
-		DrawingArea.fillRectangle(30, j + 2, 0x8c1111, i * 3, c / 2 - 150);
-		DrawingArea.fillRectangle(30, j + 2, 0, 300 - i * 3, c / 2 - 150 + i * 3);
-		chatTextDrawingArea.drawCenteredLiteralText(0xffffff, s, c1 / 2 + 5 - byte1, c / 2);
+		char areaWidth = '\u0168';
+		char areaHeight = '\310';
+		byte verticalLift = 20;
+		chatTextDrawingArea.drawCenteredLiteralText(0xffffff, "" + ClientSettings.SERVER_NAME + " is loading - please wait...", areaHeight / 2 - 26 - verticalLift, areaWidth / 2);
+		int barY = areaHeight / 2 - 18 - verticalLift;
+		DrawingArea.drawRectangleOutline(barY, 34, 0x8c1111, areaWidth / 2 - 152, 304);
+		DrawingArea.drawRectangleOutline(barY + 1, 32, 0, areaWidth / 2 - 151, 302);
+		DrawingArea.fillRectangle(30, barY + 2, 0x8c1111, percent * 3, areaWidth / 2 - 150);
+		DrawingArea.fillRectangle(30, barY + 2, 0, 300 - percent * 3, areaWidth / 2 - 150 + percent * 3);
+		chatTextDrawingArea.drawCenteredLiteralText(0xffffff, message, areaHeight / 2 + 5 - verticalLift, areaWidth / 2);
 		aRSImageProducer_1109.drawGraphics(171, super.graphics, 202);
 		if (welcomeScreenRaised) {
 			welcomeScreenRaised = false;
@@ -7397,7 +7397,7 @@ public class Game extends RSApplet {
 			}
 			return;
 		} catch (Exception exception) {
-			Signlink.reporterror("loaderror " + aString1049 + " " + anInt1079);
+			Signlink.reporterror("loaderror " + lastLoadingMessage + " " + lastLoadingPercent);
 		}
 		loadingError = true;
 	}
@@ -12365,7 +12365,7 @@ public class Game extends RSApplet {
 	public int anInt1046;
 	public boolean designerMale;
 	public int anInt1048;
-	public String aString1049;
+	public String lastLoadingMessage;
 	public static int anInt1051;
 	public final int[] minimapScanlineStarts;
 	public StreamLoader titleStreamLoader;
@@ -12393,7 +12393,7 @@ public class Game extends RSApplet {
 	public Sprite mapDotPlayer;
 	public Sprite mapDotFriend;
 	public Sprite mapDotTeam;
-	public int anInt1079;
+	public int lastLoadingPercent;
 	public boolean aBoolean1080;
 	public String[] friendsList;
 	public Stream inStream;
