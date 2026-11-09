@@ -19,9 +19,9 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 	private int middleDragLastY = 0;
 	public static boolean removeShiftDropOnMenuOpen;
 
-	final void createClientFrame(int i, int j) {
-		myWidth = j;
-		myHeight = i;
+	final void createClientFrame(int height, int width) {
+		myWidth = width;
+		myHeight = height;
 		this.setPreferredSize(new Dimension(this.myWidth, this.myHeight));
 
 		gameFrame = new RSFrame(this);
@@ -227,9 +227,9 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 		this.requestFocus();
 	}
 
-	final void initClientFrame(int i, int j) {
-		myWidth = j;
-		myHeight = i;
+	final void initClientFrame(int height, int width) {
+		myWidth = width;
+		myHeight = height;
 		graphics = getGameComponent().getGraphics();
 		fullGameScreen = new RSImageProducer(myWidth, myHeight, getGameComponent());
 		startRunnable(this, 1);
@@ -265,14 +265,14 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 					return;
 				}
 			}
-			int i2 = speedRatio;
-			int j2 = sleepMillis;
+			int previousSpeedRatio = speedRatio;
+			int previousSleepMillis = sleepMillis;
 			speedRatio = 300;
 			sleepMillis = 1;
 			long now = System.currentTimeMillis();
 			if (frameTimes[frameSlot] == 0L) {
-				speedRatio = i2;
-				sleepMillis = j2;
+				speedRatio = previousSpeedRatio;
+				sleepMillis = previousSleepMillis;
 			} else if (now > frameTimes[frameSlot]) {
 				speedRatio = (int) (2560 * delayTime / (now - frameTimes[frameSlot]));
 			}
@@ -353,8 +353,8 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 		}
 	}
 
-	final void setFrameRate(int i) {
-		delayTime = 1000 / i;
+	final void setFrameRate(int framesPerSecond) {
+		delayTime = 1000 / framesPerSecond;
 	}
 
 	@Override
@@ -603,16 +603,16 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 
 	final int readChar(int dummy) {
 		while (dummy >= 0) {
-			for (int j = 1; j > 0; j++) {
+			for (int spinCounter = 1; spinCounter > 0; spinCounter++) {
 				;
 			}
 		}
-		int k = -1;
+		int charCode = -1;
 		if (writeIndex != readIndex) {
-			k = charQueue[readIndex];
+			charCode = charQueue[readIndex];
 			readIndex = readIndex + 1 & 0x7f;
 		}
-		return k;
+		return charCode;
 	}
 
 	@Override
@@ -625,8 +625,8 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 	@Override
 	public final void focusLost(FocusEvent focusevent) {
 		awtFocus = false;
-		for (int i = 0; i < 128; i++) {
-			keyArray[i] = 0;
+		for (int keyChar = 0; keyChar < 128; keyChar++) {
+			keyArray[keyChar] = 0;
 		}
 
 	}
@@ -685,7 +685,7 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 		thread.setPriority(priority);
 	}
 
-	void drawLoadingText(int i, String s) {
+	void drawLoadingText(int percent, String message) {
 		while (graphics == null) {
 			graphics = getGameComponent().getGraphics();
 			try {
@@ -707,15 +707,15 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 			shouldClearScreen = false;
 		}
 		Color color = new Color(140, 17, 17);
-		int j = myHeight / 2 - 18;
+		int barY = myHeight / 2 - 18;
 		graphics.setColor(color);
-		graphics.drawRect(myWidth / 2 - 152, j, 304, 34);
-		graphics.fillRect(myWidth / 2 - 150, j + 2, i * 3, 30);
+		graphics.drawRect(myWidth / 2 - 152, barY, 304, 34);
+		graphics.fillRect(myWidth / 2 - 150, barY + 2, percent * 3, 30);
 		graphics.setColor(Color.black);
-		graphics.fillRect(myWidth / 2 - 150 + i * 3, j + 2, 300 - i * 3, 30);
+		graphics.fillRect(myWidth / 2 - 150 + percent * 3, barY + 2, 300 - percent * 3, 30);
 		graphics.setFont(font);
 		graphics.setColor(Color.white);
-		graphics.drawString(s, (myWidth - fontmetrics.stringWidth(s)) / 2, j + 22);
+		graphics.drawString(message, (myWidth - fontmetrics.stringWidth(message)) / 2, barY + 22);
 	}
 
 	RSApplet() {
