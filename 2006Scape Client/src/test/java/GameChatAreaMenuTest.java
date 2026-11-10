@@ -41,7 +41,7 @@ public class GameChatAreaMenuTest {
         put(0, 2, "Other");
         assertEquals(0, at(60).length); social(61); social(74);
         assertEquals(0, at(75).length);
-        g.anInt1089 = 19;
+        g.chatScrollOffsetPixels = 19;
         assertEquals(0, at(79).length); social(80); social(93);
         assertEquals(0, at(94).length);
     }

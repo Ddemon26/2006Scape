@@ -386,111 +386,111 @@ public class Game extends RSApplet {
 		} else if (dialogID != -1) {
 			drawInterface(0, 0, RSInterface.interfaceCache[dialogID], 0);//CHANGED THIS - andrew was 0, 0
 		} else {
-			TextDrawingArea textDrawingArea = aTextDrawingArea_1271;
-			int j = 0;
+			TextDrawingArea historyFont = aTextDrawingArea_1271;
+			int admittedLineCount = 0;
 			DrawingArea.setClip(77, 0, 463, 0);
-			for (int k = 0; k < 100; k++) {
-				if (chatMessages[k] != null) {
-					int l = chatTypes[k];
-					int i1 = 70 - j * 14 + anInt1089;
-					String s1 = chatNames[k];
-					byte byte0 = 0;
-					if (s1 != null && s1.startsWith("@cr1@")) {
-						s1 = s1.substring(5);
-						byte0 = 1;
+			for (int historyIndex = 0; historyIndex < 100; historyIndex++) {
+				if (chatMessages[historyIndex] != null) {
+					int messageType = chatTypes[historyIndex];
+					int lineBaselineY = 70 - admittedLineCount * 14 + chatScrollOffsetPixels;
+					String senderDisplayName = chatNames[historyIndex];
+					byte senderCrown = 0;
+					if (senderDisplayName != null && senderDisplayName.startsWith("@cr1@")) {
+						senderDisplayName = senderDisplayName.substring(5);
+						senderCrown = 1;
 					}
-					if (s1 != null && s1.startsWith("@cr2@")) {
-						s1 = s1.substring(5);
-						byte0 = 2;
+					if (senderDisplayName != null && senderDisplayName.startsWith("@cr2@")) {
+						senderDisplayName = senderDisplayName.substring(5);
+						senderCrown = 2;
 					}
-					if (l == 0) {
-						if (i1 > 0 && i1 < 110) {
+					if (messageType == 0) {
+						if (lineBaselineY > 0 && lineBaselineY < 110) {
 							try {
-							textDrawingArea.drawTaggedText(false, 4, 0, chatMessages[k], i1);
+							historyFont.drawTaggedText(false, 4, 0, chatMessages[historyIndex], lineBaselineY);
 							} catch (Exception e) {
 								
 							}
 						}
-						j++;
+						admittedLineCount++;
 					}
-					if ((l == 1 || l == 2) && (l == 1 || publicChatMode == 0 || publicChatMode == 1 && isFriendOrSelf(s1))) {
-						if (i1 > 0 && i1 < 110) {
-							int j1 = 4;
-							if (byte0 == 1) {
-								modIcons[0].drawNonzeroIndexed(j1, i1 - 12);
-								j1 += 14;
+					if ((messageType == 1 || messageType == 2) && (messageType == 1 || publicChatMode == 0 || publicChatMode == 1 && isFriendOrSelf(senderDisplayName))) {
+						if (lineBaselineY > 0 && lineBaselineY < 110) {
+							int publicTextX = 4;
+							if (senderCrown == 1) {
+								modIcons[0].drawNonzeroIndexed(publicTextX, lineBaselineY - 12);
+								publicTextX += 14;
 							}
-							if (byte0 == 2) {
-								modIcons[1].drawNonzeroIndexed(j1, i1 - 12);
-								j1 += 14;
+							if (senderCrown == 2) {
+								modIcons[1].drawNonzeroIndexed(publicTextX, lineBaselineY - 12);
+								publicTextX += 14;
 							}
-							textDrawingArea.drawLiteralText(0, s1 + ":", i1, j1);
-							j1 += textDrawingArea.measureTaggedTextWidth(s1) + 8;
-							textDrawingArea.drawLiteralText(255, chatMessages[k], i1, j1);
+							historyFont.drawLiteralText(0, senderDisplayName + ":", lineBaselineY, publicTextX);
+							publicTextX += historyFont.measureTaggedTextWidth(senderDisplayName) + 8;
+							historyFont.drawLiteralText(255, chatMessages[historyIndex], lineBaselineY, publicTextX);
 						}
-						j++;
+						admittedLineCount++;
 					}
-					if ((l == 3 || l == 7) && splitPrivateChat == 0 && (l == 7 || privateChatMode == 0 || privateChatMode == 1 && isFriendOrSelf(s1))) {
-						if (i1 > 0 && i1 < 110) {
-							int k1 = 4;
-							textDrawingArea.drawLiteralText(0, "From", i1, k1);
-							k1 += textDrawingArea.measureTaggedTextWidth("From ");
-							if (byte0 == 1) {
-								modIcons[0].drawNonzeroIndexed(k1, i1 - 12);
-								k1 += 14;
+					if ((messageType == 3 || messageType == 7) && splitPrivateChat == 0 && (messageType == 7 || privateChatMode == 0 || privateChatMode == 1 && isFriendOrSelf(senderDisplayName))) {
+						if (lineBaselineY > 0 && lineBaselineY < 110) {
+							int privateTextX = 4;
+							historyFont.drawLiteralText(0, "From", lineBaselineY, privateTextX);
+							privateTextX += historyFont.measureTaggedTextWidth("From ");
+							if (senderCrown == 1) {
+								modIcons[0].drawNonzeroIndexed(privateTextX, lineBaselineY - 12);
+								privateTextX += 14;
 							}
-							if (byte0 == 2) {
-								modIcons[1].drawNonzeroIndexed(k1, i1 - 12);
-								k1 += 14;
+							if (senderCrown == 2) {
+								modIcons[1].drawNonzeroIndexed(privateTextX, lineBaselineY - 12);
+								privateTextX += 14;
 							}
-							textDrawingArea.drawLiteralText(0, s1 + ":", i1, k1);
-							k1 += textDrawingArea.measureTaggedTextWidth(s1) + 8;
-							textDrawingArea.drawLiteralText(0x800000, chatMessages[k], i1, k1);
+							historyFont.drawLiteralText(0, senderDisplayName + ":", lineBaselineY, privateTextX);
+							privateTextX += historyFont.measureTaggedTextWidth(senderDisplayName) + 8;
+							historyFont.drawLiteralText(0x800000, chatMessages[historyIndex], lineBaselineY, privateTextX);
 						}
-						j++;
+						admittedLineCount++;
 					}
-					if (l == 4 && (tradeMode == 0 || tradeMode == 1 && isFriendOrSelf(s1))) {
-						if (i1 > 0 && i1 < 110) {
-							textDrawingArea.drawLiteralText(0x800080, s1 + " " + chatMessages[k], i1, 4);
+					if (messageType == 4 && (tradeMode == 0 || tradeMode == 1 && isFriendOrSelf(senderDisplayName))) {
+						if (lineBaselineY > 0 && lineBaselineY < 110) {
+							historyFont.drawLiteralText(0x800080, senderDisplayName + " " + chatMessages[historyIndex], lineBaselineY, 4);
 						}
-						j++;
+						admittedLineCount++;
 					}
-					if (l == 5 && splitPrivateChat == 0 && privateChatMode < 2) {
-						if (i1 > 0 && i1 < 110) {
-							textDrawingArea.drawLiteralText(0x800000, chatMessages[k], i1, 4);
+					if (messageType == 5 && splitPrivateChat == 0 && privateChatMode < 2) {
+						if (lineBaselineY > 0 && lineBaselineY < 110) {
+							historyFont.drawLiteralText(0x800000, chatMessages[historyIndex], lineBaselineY, 4);
 						}
-						j++;
+						admittedLineCount++;
 					}
-					if (l == 6 && splitPrivateChat == 0 && privateChatMode < 2) {
-						if (i1 > 0 && i1 < 110) {
-							textDrawingArea.drawLiteralText(0, "To " + s1 + ":", i1, 4);
-							textDrawingArea.drawLiteralText(0x800000, chatMessages[k], i1, 12 + textDrawingArea.measureTaggedTextWidth("To " + s1));
+					if (messageType == 6 && splitPrivateChat == 0 && privateChatMode < 2) {
+						if (lineBaselineY > 0 && lineBaselineY < 110) {
+							historyFont.drawLiteralText(0, "To " + senderDisplayName + ":", lineBaselineY, 4);
+							historyFont.drawLiteralText(0x800000, chatMessages[historyIndex], lineBaselineY, 12 + historyFont.measureTaggedTextWidth("To " + senderDisplayName));
 						}
-						j++;
+						admittedLineCount++;
 					}
-					if (l == 8 && (tradeMode == 0 || tradeMode == 1 && isFriendOrSelf(s1))) {
-						if (i1 > 0 && i1 < 110) {
-							textDrawingArea.drawLiteralText(0x7e3200, s1 + " " + chatMessages[k], i1, 4);
+					if (messageType == 8 && (tradeMode == 0 || tradeMode == 1 && isFriendOrSelf(senderDisplayName))) {
+						if (lineBaselineY > 0 && lineBaselineY < 110) {
+							historyFont.drawLiteralText(0x7e3200, senderDisplayName + " " + chatMessages[historyIndex], lineBaselineY, 4);
 						}
-						j++;
+						admittedLineCount++;
 					}
 				}
 			}
 
 			DrawingArea.resetClip();
-			anInt1211 = j * 14 + 7;
-			if (anInt1211 < 78) {
-				anInt1211 = 78;
+			chatContentHeightPixels = admittedLineCount * 14 + 7;
+			if (chatContentHeightPixels < 78) {
+				chatContentHeightPixels = 78;
 			}
-			drawScrollbar(77, anInt1211 - anInt1089 - 77, 0, 463, anInt1211);
-			String s;
+			drawScrollbar(77, chatContentHeightPixels - chatScrollOffsetPixels - 77, 0, 463, chatContentHeightPixels);
+			String localDisplayName;
 			if (myPlayer != null && myPlayer.name != null) {
-				s = myPlayer.name;
+				localDisplayName = myPlayer.name;
 			} else {
-				s = TextClass.formatDisplayName(myUsername);
+				localDisplayName = TextClass.formatDisplayName(myUsername);
 			}
-			textDrawingArea.drawLiteralText(0, s + ":", 90, 4);
-			textDrawingArea.drawLiteralText(255, inputString + "*", 90, 6 + textDrawingArea.measureTaggedTextWidth(s + ": "));
+			historyFont.drawLiteralText(0, localDisplayName + ":", 90, 4);
+			historyFont.drawLiteralText(255, inputString + "*", 90, 6 + historyFont.measureTaggedTextWidth(localDisplayName + ": "));
 			DrawingArea.drawHorizontalLine(77, 0, 479, 0);
 		}
 		if (menuOpen && menuScreenArea == 2) {
@@ -5260,7 +5260,7 @@ public class Game extends RSApplet {
 				continue;
 			}
 			int chatType = chatTypes[messageIndex];
-			int lineBottomY = 70 - visibleLineCount * 14 + anInt1089 + 4;
+			int lineBottomY = 70 - visibleLineCount * 14 + chatScrollOffsetPixels + 4;
 			if (lineBottomY < -20) {
 				break;
 			}
@@ -7923,19 +7923,19 @@ public class Game extends RSApplet {
 			needDrawTabArea = false;
 		}
 		if (backDialogID == -1) {
-			aClass9_1059.scrollPosition = anInt1211 - anInt1089 - 77;
+			chatScrollbarState.scrollPosition = chatContentHeightPixels - chatScrollOffsetPixels - 77;
 			if (super.mouseX > 448 && super.mouseX < 560 && super.mouseY > 332) {
-				handleScrollbarInput(463, 77, super.mouseX - 17, super.mouseY - 357, aClass9_1059, 0, false, anInt1211);
+				handleScrollbarInput(463, 77, super.mouseX - 17, super.mouseY - 357, chatScrollbarState, 0, false, chatContentHeightPixels);
 			}
-			int clampedChatScrollOffset = anInt1211 - 77 - aClass9_1059.scrollPosition;
+			int clampedChatScrollOffset = chatContentHeightPixels - 77 - chatScrollbarState.scrollPosition;
 			if (clampedChatScrollOffset < 0) {
 				clampedChatScrollOffset = 0;
 			}
-			if (clampedChatScrollOffset > anInt1211 - 77) {
-				clampedChatScrollOffset = anInt1211 - 77;
+			if (clampedChatScrollOffset > chatContentHeightPixels - 77) {
+				clampedChatScrollOffset = chatContentHeightPixels - 77;
 			}
-			if (anInt1089 != clampedChatScrollOffset) {
-				anInt1089 = clampedChatScrollOffset;
+			if (chatScrollOffsetPixels != clampedChatScrollOffset) {
+				chatScrollOffsetPixels = clampedChatScrollOffset;
 				inputTaken = true;
 			}
 		}
@@ -12087,7 +12087,7 @@ public class Game extends RSApplet {
 		flashingTabId = -1;
 		transientGraphics = new NodeList();
 		compassScanlineWidths = new int[33];
-		aClass9_1059 = new RSInterface();
+		chatScrollbarState = new RSInterface();
 		mapScenes = new Background[100];
 		scrollThumbColor = 0x4d4233;
 		designerKitIds = new int[7];
@@ -12133,7 +12133,7 @@ public class Game extends RSApplet {
 		shakeSineAmplitude = new int[5];
 		sound = new int[50];
 		minimapRotationDriftStep = 2;
-		anInt1211 = 78;
+		chatContentHeightPixels = 78;
 		promptInput = "";
 		modIcons = new Background[2];
 		tabID = 3;
@@ -12373,7 +12373,7 @@ public class Game extends RSApplet {
 	public int multiCombatOverlayState;
 	public NodeList transientGraphics;
 	public final int[] compassScanlineWidths;
-	public final RSInterface aClass9_1059;
+	public final RSInterface chatScrollbarState;
 	public Background[] mapScenes;
 	public static int anInt1061;
 	public int currentSound;
@@ -12402,7 +12402,7 @@ public class Game extends RSApplet {
 	public int activeInterfaceType;
 	public int dragStartX;
 	public int dragStartY;
-	public int anInt1089;
+	public int chatScrollOffsetPixels;
 	public final int[] expectedCRCs;
 	public int[] menuActionCmd2;
 	public int[] menuActionCmd3;
@@ -12514,7 +12514,7 @@ public class Game extends RSApplet {
 	public int flameFrameCount;
 	public int minimapRotationDrift;
 	public int minimapRotationDriftStep;
-	public int anInt1211;
+	public int chatContentHeightPixels;
 	public String promptInput;
 	public int anInt1213;
 	public int[][][] intGroundArray;
