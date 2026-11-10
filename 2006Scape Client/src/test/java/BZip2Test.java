@@ -616,4 +616,162 @@ public class BZip2Test {
         assertTrue("some fixture separates a group size of 50 from 49 or 51", distinguishes);
     }
 
+    // Pass 236: independent BWT columns and standard-library compressed fixtures reach
+    // the formerly untested 3,840-deep-move boundary. Original locals: i10/k9/l9,
+    // slots 25/26/27. Instrument a private class copy; do not replace any decode work.
+    // Fixtures are built in memory (no committed archives): an xorshift plaintext, its
+    // brute-force BWT last column, and an Apache Commons Compress "BZh1" stream.
+    private static final java.util.List<int[]> copies = new java.util.ArrayList<int[]>();
+    private static int copied;
+
+    private static byte[] xorshiftPlaintext(int length) {
+        byte[] out = new byte[length]; int x = 0x12345678;
+        for (int i = 0; i < length; i++) {
+            x ^= x << 13; x ^= x >>> 17; x ^= x << 5; out[i] = (byte) x;
+        }
+        return out;
+    }
+
+    /** Headerless bzip2 stream (the 4-byte "BZh1" magic removed), as the client decoder expects. */
+    private static byte[] headerlessBzip2(byte[] plain) throws Exception {
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        try (org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream bz =
+                 new org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream(out, 1)) {
+            bz.write(plain);
+        }
+        byte[] all = out.toByteArray();
+        assertEquals("BZh1", new String(all, 0, 4, "US-ASCII"));
+        return Arrays.copyOfRange(all, 4, all.length);
+    }
+
+    /** Last column of the sorted cyclic rotations (a brute-force Burrows-Wheeler transform). */
+    private static byte[] bwtLastColumn(final byte[] s) {
+        final int n = s.length;
+        Integer[] rot = new Integer[n];
+        for (int i = 0; i < n; i++) rot[i] = i;
+        Arrays.sort(rot, new java.util.Comparator<Integer>() {
+            @Override public int compare(Integer a, Integer b) {
+                for (int k = 0; k < n; k++) {
+                    int d = (s[(a + k) % n] & 255) - (s[(b + k) % n] & 255);
+                    if (d != 0) return d;
+                }
+                return 0;
+            }
+        });
+        byte[] col = new byte[n];
+        for (int i = 0; i < n; i++) col[i] = s[(rot[i] + n - 1) % n];
+        return col;
+    }
+
+    private static byte[] resource(String path) throws Exception {
+        try (java.io.InputStream in = BZip2Test.class.getResourceAsStream(path)) {
+            assertNotNull(path, in);
+            java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+            byte[] b = new byte[4096]; int n;
+            while ((n = in.read(b)) >= 0) out.write(b, 0, n);
+            return out.toByteArray();
+        }
+    }
+
+    /** Shared by the live observer: observe only, leave the actual copy intact. */
+    public static byte[] observeCopies(byte[] bytes, final String owner, final String callback) {
+        org.objectweb.asm.ClassWriter w = new org.objectweb.asm.ClassWriter(org.objectweb.asm.ClassWriter.COMPUTE_MAXS);
+        new org.objectweb.asm.ClassReader(bytes).accept(new org.objectweb.asm.ClassVisitor(org.objectweb.asm.Opcodes.ASM9, w) {
+            @Override public org.objectweb.asm.MethodVisitor visitMethod(int a, String n, String d, String s, String[] e) {
+                org.objectweb.asm.MethodVisitor mv = super.visitMethod(a, n, d, s, e);
+                if (!n.equals(DECODE_BLOCKS)) return mv;
+                return new org.objectweb.asm.MethodVisitor(org.objectweb.asm.Opcodes.ASM9, mv) {
+                    @Override public void visitIincInsn(int slot, int amount) {
+                        if (slot == 25 && amount == -1) {
+                            super.visitVarInsn(org.objectweb.asm.Opcodes.ALOAD, 0);
+                            for (int v = 25; v <= 27; v++) super.visitVarInsn(org.objectweb.asm.Opcodes.ILOAD, v);
+                            super.visitMethodInsn(org.objectweb.asm.Opcodes.INVOKESTATIC, owner, callback, "(Ljava/lang/Object;III)V", false);
+                        }
+                        super.visitIincInsn(slot, amount);
+                    }
+                };
+            }
+        }, 0);
+        return w.toByteArray();
+    }
+
+    public static void copied(Object s, int i10, int k9, int l9) throws Exception {
+        int step = copied % 256;
+        assertEquals("i10 copy destination", 4095 - step, i10);
+        assertEquals("k9 source group", 15 - step / 16, k9);
+        assertEquals("l9 source offset", 15 - step % 16, l9);
+        assertTrue("no premature or extra compaction", copied / 256 < copies.size());
+        byte[] buf = (byte[]) observedField(s, F_MTF);
+        int[] bases = (int[]) observedField(s, F_MTF_BASE);
+        int want = copies.get(copied / 256)[k9 * 16 + l9];
+        assertEquals("source follows independent recency list", want, buf[bases[k9] + l9] & 255);
+        assertEquals("destination contains copied symbol", want, buf[i10] & 255);
+        copied++;
+    }
+
+    private static Object observedField(Object s, String name) throws Exception {
+        Field f = s.getClass().getDeclaredField(name); f.setAccessible(true); return f.get(s);
+    }
+
+    private static Class<?> observedDecoder() throws Exception {
+        ClassLoader loader = new ClassLoader(BZip2Test.class.getClassLoader()) {
+            @Override protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+                if (!name.equals(DECODER) && !name.equals(STATE)) return super.loadClass(name, resolve);
+                Class<?> c = findLoadedClass(name);
+                if (c == null) try {
+                    byte[] b = resource("/" + name + ".class");
+                    if (name.equals(DECODER)) b = observeCopies(b, "BZip2Test", "copied");
+                    c = defineClass(name, b, 0, b.length);
+                } catch (Exception e) { throw new ClassNotFoundException(name, e); }
+                if (resolve) resolveClass(c);
+                return c;
+            }
+        };
+        return loader.loadClass(DECODER);
+    }
+
+    @Test public void compactionCopiesEveryGroupAndSlotAtExactDeepMoveBoundary() throws Exception {
+        int[] wantDeep = {3839, 3840, 3841, 16859};
+        String[] names = {"deep-3839", "deep-3840", "deep-3841", "compaction"};
+        int[] lengths = {4099, 4100, 4101, 18000};
+        for (int f = 0; f < names.length; f++) {
+            byte[] plain = xorshiftPlaintext(lengths[f]);
+            byte[] col = bwtLastColumn(plain);
+            byte[] packed = headerlessBzip2(plain);
+            java.util.List<Integer> list = new java.util.ArrayList<Integer>();
+            for (int i = 0; i < 256; i++) list.add(i);
+            int deep = 0; copies.clear(); copied = 0;
+            for (byte b : col) {
+                int value = b & 255, pos = list.indexOf(value);
+                list.remove(pos); list.add(0, value);
+                if (pos >= 16 && ++deep % 3840 == 0) {
+                    int[] snapshot = new int[256];
+                    for (int i = 0; i < 256; i++) snapshot[i] = list.get(i);
+                    copies.add(snapshot);
+                }
+            }
+            assertEquals(names[f], wantDeep[f], deep);
+            byte[] expected = new byte[col.length]; int x = 0x12345678;
+            for (int i = 0; i < expected.length; i++) {
+                x ^= x << 13; x ^= x >>> 17; x ^= x << 5; expected[i] = (byte) x;
+            }
+            Class<?> decoder = observedDecoder();
+            Method m = decoder.getDeclaredMethod(DECODE, byte[].class, int.class, byte[].class, int.class, int.class);
+            m.setAccessible(true);
+            byte[] actual = new byte[expected.length];
+            assertEquals(actual.length, m.invoke(null, actual, actual.length, packed, packed.length, 0));
+            assertArrayEquals(names[f] + " independent plaintext", expected, actual);
+            assertEquals(names[f] + " all copies and no extras", deep / 3840 * 256, copied);
+            Field sf = decoder.getDeclaredField("sharedState"); sf.setAccessible(true);
+            Object state = sf.get(null);
+            byte[] buf = (byte[]) observedField(state, F_MTF); int[] base = (int[]) observedField(state, F_MTF_BASE);
+            assertEquals("front is restored every 3840 deep moves", 3840 - deep % 3840, base[0]);
+            for (int i = 0; i < 256; i++) assertEquals("final recency position " + i, (int) list.get(i), buf[base[i / 16] + i % 16] & 255);
+            // Compare the independently generated column to the client's inverse-BWT table too.
+            Class<?> stateClass = state.getClass(); Field tt = stateClass.getDeclaredField(F_TT); tt.setAccessible(true);
+            int[] table = (int[]) tt.get(null);
+            for (int i = 0; i < col.length; i++) assertEquals("last column " + i, col[i] & 255, table[i] & 255);
+        }
+    }
+
 }

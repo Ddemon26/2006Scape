@@ -380,14 +380,14 @@ final class BZip2Decompressor {
 						state.mtfGroupStart[0]--;
 						state.mtfBuffer[state.mtfGroupStart[0]] = movedSymbol;
 						if (state.mtfGroupStart[0] == 0) {
-							int i10 = 4095;
-							for (int k9 = 15; k9 >= 0; k9--) {
-								for (int l9 = 15; l9 >= 0; l9--) {
-									state.mtfBuffer[i10] = state.mtfBuffer[state.mtfGroupStart[k9] + l9];
-									i10--;
+							int compactWriteIndex = 4095;
+							for (int compactGroup = 15; compactGroup >= 0; compactGroup--) {
+								for (int compactSlot = 15; compactSlot >= 0; compactSlot--) {
+									state.mtfBuffer[compactWriteIndex] = state.mtfBuffer[state.mtfGroupStart[compactGroup] + compactSlot];
+									compactWriteIndex--;
 								}
 
-								state.mtfGroupStart[k9] = i10 + 1;
+								state.mtfGroupStart[compactGroup] = compactWriteIndex + 1;
 							}
 
 						}
