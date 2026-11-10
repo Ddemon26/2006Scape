@@ -3740,8 +3740,8 @@ public class Game extends RSApplet {
 			stream.writeShortBigEndianAdd128(j);
 			stream.writeShortLittleEndian(i1);
 			atInventoryLoopCycle = 0;
-			atInventoryInterface = k;
-			atInventoryIndex = j;
+			actionHighlightInterfaceId = k;
+			actionHighlightSlotIndex = j;
 			atInventoryInterfaceType = 2;
 			if (RSInterface.interfaceCache[k].parentID == openInterfaceID) {
 				atInventoryInterfaceType = 1;
@@ -3833,8 +3833,8 @@ public class Game extends RSApplet {
 			stream.writeShortBigEndian(k);
 			stream.writeShortBigEndianAdd128(i1);
 			atInventoryLoopCycle = 0;
-			atInventoryInterface = k;
-			atInventoryIndex = j;
+			actionHighlightInterfaceId = k;
+			actionHighlightSlotIndex = j;
 			atInventoryInterfaceType = 2;
 			if (RSInterface.interfaceCache[k].parentID == openInterfaceID) {
 				atInventoryInterfaceType = 1;
@@ -3868,8 +3868,8 @@ public class Game extends RSApplet {
 			stream.writeShortBigEndianAdd128(k);
 			stream.writeShortLittleEndian(i1);
 			atInventoryLoopCycle = 0;
-			atInventoryInterface = k;
-			atInventoryIndex = j;
+			actionHighlightInterfaceId = k;
+			actionHighlightSlotIndex = j;
 			atInventoryInterfaceType = 2;
 			if (RSInterface.interfaceCache[k].parentID == openInterfaceID) {
 				atInventoryInterfaceType = 1;
@@ -3884,8 +3884,8 @@ public class Game extends RSApplet {
 			stream.writeShortLittleEndianAdd128(j);
 			stream.writeShortLittleEndianAdd128(k);
 			atInventoryLoopCycle = 0;
-			atInventoryInterface = k;
-			atInventoryIndex = j;
+			actionHighlightInterfaceId = k;
+			actionHighlightSlotIndex = j;
 			atInventoryInterfaceType = 2;
 			if (RSInterface.interfaceCache[k].parentID == openInterfaceID) {
 				atInventoryInterfaceType = 1;
@@ -3939,8 +3939,8 @@ public class Game extends RSApplet {
 			stream.writeShortLittleEndian(selectedItemId);
 			stream.writeShortBigEndian(k);
 			atInventoryLoopCycle = 0;
-			atInventoryInterface = k;
-			atInventoryIndex = j;
+			actionHighlightInterfaceId = k;
+			actionHighlightSlotIndex = j;
 			atInventoryInterfaceType = 2;
 			if (RSInterface.interfaceCache[k].parentID == openInterfaceID) {
 				atInventoryInterfaceType = 1;
@@ -3955,8 +3955,8 @@ public class Game extends RSApplet {
 			stream.writeShortBigEndian(k);
 			stream.writeShortBigEndianAdd128(j);
 			atInventoryLoopCycle = 0;
-			atInventoryInterface = k;
-			atInventoryIndex = j;
+			actionHighlightInterfaceId = k;
+			actionHighlightSlotIndex = j;
 			atInventoryInterfaceType = 2;
 			if (RSInterface.interfaceCache[k].parentID == openInterfaceID) {
 				atInventoryInterfaceType = 1;
@@ -3994,8 +3994,8 @@ public class Game extends RSApplet {
 			stream.writeShortLittleEndianAdd128(i1);
 			stream.writeShortLittleEndian(j);
 			atInventoryLoopCycle = 0;
-			atInventoryInterface = k;
-			atInventoryIndex = j;
+			actionHighlightInterfaceId = k;
+			actionHighlightSlotIndex = j;
 			atInventoryInterfaceType = 2;
 			if (RSInterface.interfaceCache[k].parentID == openInterfaceID) {
 				atInventoryInterfaceType = 1;
@@ -4042,8 +4042,8 @@ public class Game extends RSApplet {
 			stream.writeShortBigEndianAdd128(j);
 			stream.writeShortBigEndianAdd128(i1);
 			atInventoryLoopCycle = 0;
-			atInventoryInterface = k;
-			atInventoryIndex = j;
+			actionHighlightInterfaceId = k;
+			actionHighlightSlotIndex = j;
 			atInventoryInterfaceType = 2;
 			if (RSInterface.interfaceCache[k].parentID == openInterfaceID) {
 				atInventoryInterfaceType = 1;
@@ -4058,8 +4058,8 @@ public class Game extends RSApplet {
 			stream.writeShortLittleEndian(j);
 			stream.writeShortBigEndianAdd128(i1);
 			atInventoryLoopCycle = 0;
-			atInventoryInterface = k;
-			atInventoryIndex = j;
+			actionHighlightInterfaceId = k;
+			actionHighlightSlotIndex = j;
 			atInventoryInterfaceType = 2;
 			if (RSInterface.interfaceCache[k].parentID == openInterfaceID) {
 				atInventoryInterfaceType = 1;
@@ -4271,8 +4271,8 @@ public class Game extends RSApplet {
 			stream.writeShortBigEndianAdd128(i1);
 			stream.writeShortBigEndianAdd128(j);
 			atInventoryLoopCycle = 0;
-			atInventoryInterface = k;
-			atInventoryIndex = j;
+			actionHighlightInterfaceId = k;
+			actionHighlightSlotIndex = j;
 			atInventoryInterfaceType = 2;
 			if (RSInterface.interfaceCache[k].parentID == openInterfaceID) {
 				atInventoryInterfaceType = 1;
@@ -4288,8 +4288,8 @@ public class Game extends RSApplet {
 			stream.writeShortBigEndian(k);
 			stream.writeShortBigEndianAdd128(anInt1137);
 			atInventoryLoopCycle = 0;
-			atInventoryInterface = k;
-			atInventoryIndex = j;
+			actionHighlightInterfaceId = k;
+			actionHighlightSlotIndex = j;
 			atInventoryInterfaceType = 2;
 			if (RSInterface.interfaceCache[k].parentID == openInterfaceID) {
 				atInventoryInterfaceType = 1;
@@ -4370,8 +4370,8 @@ public class Game extends RSApplet {
 			stream.writeShortBigEndianAdd128(j);
 			stream.writeShortBigEndianAdd128(k);
 			atInventoryLoopCycle = 0;
-			atInventoryInterface = k;
-			atInventoryIndex = j;
+			actionHighlightInterfaceId = k;
+			actionHighlightSlotIndex = j;
 			atInventoryInterfaceType = 2;
 			if (RSInterface.interfaceCache[k].parentID == openInterfaceID) {
 				atInventoryInterfaceType = 1;
@@ -8263,7 +8263,7 @@ public class Game extends RSApplet {
 												container.scrollPosition += scrollDownAmount;
 												dragStartY -= scrollDownAmount;
 											}
-										} else if (atInventoryInterfaceType != 0 && atInventoryIndex == slotIndex && atInventoryInterface == component.id) {
+										} else if (atInventoryInterfaceType != 0 && actionHighlightSlotIndex == slotIndex && actionHighlightInterfaceId == component.id) {
 											// Using item? wear/unequip etc
 											itemSprite.drawHalfBlended(slotX, slotY);
 										} else {
@@ -12542,8 +12542,8 @@ public class Game extends RSApplet {
 	public final int[] soundType;
 	public boolean dragMoved;
 	public int atInventoryLoopCycle;
-	public int atInventoryInterface;
-	public int atInventoryIndex;
+	public int actionHighlightInterfaceId;
+	public int actionHighlightSlotIndex;
 	public int atInventoryInterfaceType;
 	public byte[][] regionObjectData;
 	public int tradeMode;
