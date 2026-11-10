@@ -1243,51 +1243,51 @@ final class ObjectManager {
 		}
 	}
 
-	public static boolean method189(int i, byte[] is, int i_250_) // xxx bad
+	public static boolean areRegionObjectModelsLoaded(int regionOffsetX, byte[] objectData, int regionOffsetY) // xxx bad
 																	// method,
 																	// decompiled
 																	// with JODE
 	{
-		boolean bool = true;
-		Stream stream = new Stream(is);
-		int i_252_ = -1;
+		boolean allModelsLoaded = true;
+		Stream objectStream = new Stream(objectData);
+		int objectId = -1;
 		for (;;) {
-			int i_253_ = stream.readUnsignedSmart();
-			if (i_253_ == 0) {
+			int objectIdDelta = objectStream.readUnsignedSmart();
+			if (objectIdDelta == 0) {
 				break;
 			}
-			i_252_ += i_253_;
-			int i_254_ = 0;
-			boolean bool_255_ = false;
+			objectId += objectIdDelta;
+			int packedPosition = 0;
+			boolean checkedObject = false;
 			for (;;) {
-				if (bool_255_) {
-					int i_256_ = stream.readUnsignedSmart();
-					if (i_256_ == 0) {
+				if (checkedObject) {
+					int skippedPositionDelta = objectStream.readUnsignedSmart();
+					if (skippedPositionDelta == 0) {
 						break;
 					}
-					stream.readUnsignedByte();
+					objectStream.readUnsignedByte();
 				} else {
-					int i_257_ = stream.readUnsignedSmart();
-					if (i_257_ == 0) {
+					int positionDelta = objectStream.readUnsignedSmart();
+					if (positionDelta == 0) {
 						break;
 					}
-					i_254_ += i_257_ - 1;
-					int i_258_ = i_254_ & 0x3f;
-					int i_259_ = i_254_ >> 6 & 0x3f;
-					int i_260_ = stream.readUnsignedByte() >> 2;
-					int i_261_ = i_259_ + i;
-					int i_262_ = i_258_ + i_250_;
-					if (i_261_ > 0 && i_262_ > 0 && i_261_ < 103 && i_262_ < 103) {
-						ObjectDef class46 = ObjectDef.forID(i_252_);
-						if (i_260_ != 22 || !lowMem || class46.hasActions || class46.showInLowMemory) {
-							bool &= class46.areAllModelsLoaded();
-							bool_255_ = true;
+					packedPosition += positionDelta - 1;
+					int localY = packedPosition & 0x3f;
+					int localX = packedPosition >> 6 & 0x3f;
+					int shape = objectStream.readUnsignedByte() >> 2;
+					int tileX = localX + regionOffsetX;
+					int tileY = localY + regionOffsetY;
+					if (tileX > 0 && tileY > 0 && tileX < 103 && tileY < 103) {
+						ObjectDef objectDef = ObjectDef.forID(objectId);
+						if (shape != 22 || !lowMem || objectDef.hasActions || objectDef.showInLowMemory) {
+							allModelsLoaded &= objectDef.areAllModelsLoaded();
+							checkedObject = true;
 						}
 					}
 				}
 			}
 		}
-		return bool;
+		return allModelsLoaded;
 	}
 
 	public final void loadObjects(int baseX, CollisionMap collisionMaps[], int baseY, WorldController worldController, byte objectData[]) {

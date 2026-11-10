@@ -2738,7 +2738,7 @@ public class Game extends RSApplet {
 					regionOffsetX = 10;
 					regionOffsetY = 10;
 				}
-				allObjectModelsReady &= ObjectManager.method189(regionOffsetX, objectData, regionOffsetY);
+				allObjectModelsReady &= ObjectManager.areRegionObjectModelsLoaded(regionOffsetX, objectData, regionOffsetY);
 			}
 		}
 
