@@ -2603,20 +2603,20 @@ public class Game extends RSApplet {
 	public void loadTitleScreen() {
 		aBackground_966 = new Background(titleStreamLoader, "titlebox", 0);
 		aBackground_967 = new Background(titleStreamLoader, "titlebutton", 0);
-		aBackgroundArray1152s = new Background[12];
-		int j = 0;
+		titleFlameRuneMasks = new Background[12];
+		int flameIconMode = 0;
 		try {
-			j = Integer.parseInt(getParameter("fl_icon"));
-		} catch (Exception _ex) {
+			flameIconMode = Integer.parseInt(getParameter("fl_icon"));
+		} catch (Exception invalidFlameIconParameter) {
 		}
-		if (j == 0) {
-			for (int k = 0; k < 12; k++) {
-				aBackgroundArray1152s[k] = new Background(titleStreamLoader, "runes", k);
+		if (flameIconMode == 0) {
+			for (int runeMaskSlot = 0; runeMaskSlot < 12; runeMaskSlot++) {
+				titleFlameRuneMasks[runeMaskSlot] = new Background(titleStreamLoader, "runes", runeMaskSlot);
 			}
 
 		} else {
-			for (int l = 0; l < 12; l++) {
-				aBackgroundArray1152s[l] = new Background(titleStreamLoader, "runes", 12 + (l & 3));
+			for (int alternateMaskSlot = 0; alternateMaskSlot < 12; alternateMaskSlot++) {
+				titleFlameRuneMasks[alternateMaskSlot] = new Background(titleStreamLoader, "runes", 12 + (alternateMaskSlot & 3));
 			}
 
 		}
@@ -2921,7 +2921,7 @@ public class Game extends RSApplet {
 		if (flameNoiseScroll > flameNoise.length) {
 			flameNoiseScroll -= flameNoise.length;
 			int runeMaskIndex = (int) (Math.random() * 12D);
-			randomizeBackground(aBackgroundArray1152s[runeMaskIndex]);
+			randomizeBackground(titleFlameRuneMasks[runeMaskIndex]);
 		}
 		for (int row = 1; row < gridHeight - 1; row++) {
 			for (int col = 1; col < 127; col++) {
@@ -9140,7 +9140,7 @@ public class Game extends RSApplet {
 		}
 		aBackground_966 = null;
 		aBackground_967 = null;
-		aBackgroundArray1152s = null;
+		titleFlameRuneMasks = null;
 		activeFlamePalette = null;
 		flamePaletteRed = null;
 		flamePaletteGreen = null;
@@ -12460,7 +12460,7 @@ public class Game extends RSApplet {
 	public boolean dialogContinuePending;
 	public Sprite[] crosses;
 	public boolean musicEnabled;
-	public Background[] aBackgroundArray1152s;
+	public Background[] titleFlameRuneMasks;
 	public boolean needDrawTabArea;
 	public int unreadMessages;
 	public static int anInt1155;
