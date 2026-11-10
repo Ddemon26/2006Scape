@@ -15,6 +15,63 @@ public class OnDemandFetcherTransferTest {
     private OnDemandFetcher fetcher;
     private Game game;
 
+    @Test public void pass235SelectionSurvivesPayloadWaitCompletionAndDelivery() throws Exception {
+        OnDemandData d = request(0, 9, true);
+        byte[] data = pattern(700, 19);
+        feed(header(0, 9, 700, 0));
+        call("readData");
+        assertSame(d, get("responseRequest"));
+        feed(java.util.Arrays.copyOf(data, 499));
+        call("readData");
+        assertSame(d, get("responseRequest"));
+        assertArrayEquals(new byte[700], d.buffer);
+        feed(java.util.Arrays.copyOf(data, 500));
+        call("readData");
+        assertSame(d, get("responseRequest"));
+        assertSame(d, list("inFlightRequests").firstFromTail());
+        feed(header(0, 9, 700, 1), java.util.Arrays.copyOfRange(data, 500, 700));
+        call("readData");
+        assertArrayEquals(data, d.buffer);
+        assertNull(list("inFlightRequests").firstFromTail());
+        assertSame(d, get("responseRequest"));
+        assertSame(d, list("completedRequests").popTail());
+        assertSame(d, get("responseRequest"));
+        feed(new byte[5]);
+        call("readData");
+        assertSame(d, get("responseRequest"));
+        feed(header(1, 9, 1, 0), new byte[] {42});
+        call("readData");
+        assertNull(get("responseRequest"));
+    }
+
+    @Test public void pass235TypeAndIdMustBothMatchAndRejectionClearsSelection() throws Exception {
+        OnDemandData a = request(0, 9, true);
+        OnDemandData b = request(1, 8, true);
+        feed(header(1, 9, 1, 0), new byte[] {3});
+        call("readData");
+        assertNull(get("responseRequest"));
+        assertNull(a.buffer); assertNull(b.buffer);
+        feed(header(0, 9, 4, 0));
+        call("readData");
+        assertSame(a, get("responseRequest"));
+        feed(new byte[4]); call("readData");
+        assertSame(a, get("responseRequest"));
+        feed(header(1, 8, 0, 0)); call("readData");
+        assertNull(get("responseRequest"));
+        assertNull(b.buffer);
+        assertSame(a, list("completedRequests").popTail());
+        assertSame(b, list("completedRequests").popTail());
+    }
+
+    @Test public void pass235SelectionRetainedWhenContinuationHasNoStartBuffer() throws Exception {
+        OnDemandData d = request(0, 9, true);
+        feed(header(0, 9, 700, 1)); call("readData");
+        assertNull(get("inputStream"));
+        assertEquals(0, geti("pendingChunkLength"));
+        assertSame(d, get("responseRequest"));
+        assertSame(d, list("inFlightRequests").firstFromTail());
+    }
+
     private static Field field(Class<?> c, String n) throws Exception {
         Field f = c.getDeclaredField(n);
         f.setAccessible(true);
@@ -89,7 +146,7 @@ public class OnDemandFetcherTransferTest {
         OnDemandData want = request(2, 0x0102, true);
         feed(header(2, 0x0102, 1234, 0));
         call("readData");
-        assertSame(want, get("current"));
+        assertSame(want, get("responseRequest"));
         assertEquals(1234, want.buffer.length);
         assertNull(other.buffer);
         assertNull(other2.buffer);
@@ -125,7 +182,7 @@ public class OnDemandFetcherTransferTest {
         feed(header(1, 5, 0, 0));
         call("readData");
         assertNull(d.buffer);
-        assertNull(get("current"));
+        assertNull(get("responseRequest"));
         assertSame(d, list("completedRequests").popTail());
         OnDemandData e = request(1, 6, false);
         feed(header(1, 6, 0, 0));
@@ -168,7 +225,7 @@ public class OnDemandFetcherTransferTest {
     @Test public void unmatchedHeaderDiscardsBodyIntoIoBuffer() throws Exception {
         feed(header(2, 77, 20, 0), pattern(20, 5));
         call("readData");
-        assertNull(get("current"));
+        assertNull(get("responseRequest"));
         call("readData");
         assertEquals(0, geti("pendingChunkLength"));
         byte[] io = (byte[]) get("ioBuffer");
@@ -403,7 +460,7 @@ public class OnDemandFetcherTransferTest {
         OnDemandData partial = request(1, 6, false);
         feed(header(1, 6, 1000, 0));
         call("readData");
-        assertSame(partial, get("current"));
+        assertSame(partial, get("responseRequest"));
         assertFalse("false while still downloading", partial.urgent);
     }
 
@@ -430,13 +487,13 @@ public class OnDemandFetcherTransferTest {
         list("cacheLookupQueue").insertHead(lookupOnly);
         feed(header(1, 5, 10, 0));
         call("readData");
-        assertNull(get("current"));
+        assertNull(get("responseRequest"));
         assertNull(lookupOnly.buffer);
         set("pendingChunkLength", 0);
         OnDemandData inFlight = request(1, 5, true);
         feed(header(1, 5, 10, 0));
         call("readData");
-        assertSame(inFlight, get("current"));
+        assertSame(inFlight, get("responseRequest"));
     }
 
     @Test public void pass203HeaderResetsIdleCountersFromTheMatchOnward() throws Exception {
@@ -464,7 +521,7 @@ public class OnDemandFetcherTransferTest {
         OnDemandData d = request(1, 4, true);
         feed(header(1, 4, 10, 0), pattern(5, 1));   // 11 bytes available before the header, only 5 after it
         call("readData");
-        assertSame(d, get("current"));
+        assertSame(d, get("responseRequest"));
         assertEquals("waiting for the 10-byte body", 10, geti("pendingChunkLength"));
         assertTrue(((Boolean) get("madeProgress")).booleanValue());
         assertArrayEquals(new byte[10], d.buffer);
@@ -603,7 +660,7 @@ public class OnDemandFetcherTransferTest {
         outside.urgent = true;
         feed(header(2, 3, 10, 0), pattern(10, 1));
         call("readData");
-        assertNull(get("current"));
+        assertNull(get("responseRequest"));
         assertNull(outside.buffer);
         assertEquals(0, geti("pendingChunkLength"));               // payload drained into the scratch buffer
         OnDemandData sent = request(1, 4, false);
