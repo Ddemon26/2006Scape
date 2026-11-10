@@ -74,6 +74,33 @@ public class GameChatHistoryDrawingTest {
     }
     private int pixel(int x, int y) { return g.chatPanelIP.pixels[y * 479 + x]; }
     private void drawn(int x, int y, int color) { assertEquals("pixel " + x + "," + y, color, pixel(x,y)); }
+    @Test public void capturedTextIsCenteredAboveContinueAndBelowPromptPriority() {
+        g.dialogID = 0;
+        g.pushMessage("ABC", 0, "");
+        g.drawChatArea();
+        drawn(229,39,0); drawn(236,39,0); drawn(243,39,0);
+        drawn(228,39,BACK); drawn(250,39,BACK);
+        // Seventeen characters at seven-pixel advance, centered at x239.
+        drawn(180,59,128); drawn(187,59,128);
+        g.pushMessage("", 0, "");
+        g.drawChatArea();
+        drawn(229,39,BACK); drawn(180,59,128);
+        g.pushMessage("ABC", 0, "");
+        g.inputDialogState = 1;
+        g.amountOrNameInput = "";
+        g.drawChatArea();
+        drawn(194,39,0); // Enter amount's first glyph lies outside ABC.
+        g.inputDialogState = 2;
+        g.drawChatArea();
+        drawn(201,39,0); drawn(194,39,BACK);
+        g.inputDialogState = 0;
+        g.messagePromptRaised = true;
+        g.aString1121 = "Z"; g.promptInput = "";
+        g.drawChatArea();
+        drawn(236,39,0); drawn(229,39,BACK);
+        g.messagePromptRaised = false;
+        g.drawChatArea(); drawn(229,39,0);
+    }
     @Test public void constructorAndEmptyHistoryHaveMinimumAndDedicatedState() {
         assertEquals(0, g.chatScrollOffsetPixels); assertEquals(78, g.chatContentHeightPixels);
         assertNotNull(g.chatScrollbarState); assertNotSame(g.chatScrollbarState, new Game().chatScrollbarState);

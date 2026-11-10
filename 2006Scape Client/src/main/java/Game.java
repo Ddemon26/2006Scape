@@ -378,8 +378,8 @@ public class Game extends RSApplet {
 		} else if (inputDialogState == 2) {
 			chatTextDrawingArea.drawCenteredLiteralText(0, "Enter name:", 40, 239);
 			chatTextDrawingArea.drawCenteredLiteralText(128, amountOrNameInput + "*", 60, 239);
-		} else if (aString844 != null) {
-			chatTextDrawingArea.drawCenteredLiteralText(0, aString844, 40, 239);
+		} else if (chatContinueMessage != null) {
+			chatTextDrawingArea.drawCenteredLiteralText(0, chatContinueMessage, 40, 239);
 			chatTextDrawingArea.drawCenteredLiteralText(128, "Click to continue", 60, 239);
 		} else if (backDialogID != -1) {
 			drawInterface(0, 0, RSInterface.interfaceCache[backDialogID], 0);//CHANGED THIS - andrew was 0, 0
@@ -3229,8 +3229,8 @@ public class Game extends RSApplet {
 				crossIndex = 0;
 			}
 		}
-		if (super.clickMode3 == 1 && aString844 != null) {
-			aString844 = null;
+		if (super.clickMode3 == 1 && chatContinueMessage != null) {
+			chatContinueMessage = null;
 			inputTaken = true;
 			super.clickMode3 = 0;
 		}
@@ -5651,7 +5651,7 @@ public class Game extends RSApplet {
 	}
 	public void pushMessage(String message, int chatType, String senderName) {
 		if (chatType == 0 && dialogID != -1) {
-			aString844 = message;
+			chatContinueMessage = message;
 			super.clickMode3 = 0;
 		}
 		if (backDialogID == -1) {
@@ -6168,7 +6168,7 @@ public class Game extends RSApplet {
 				inputDialogState = 0;
 				menuOpen = false;
 				messagePromptRaised = false;
-				aString844 = null;
+				chatContinueMessage = null;
 				multiCombatOverlayState = 0;
 				flashingTabId = -1;
 				designerMale = true;
@@ -7954,7 +7954,7 @@ public class Game extends RSApplet {
 		if (activeInterfaceType == 3) {
 			inputTaken = true;
 		}
-		if (aString844 != null) {
+		if (chatContinueMessage != null) {
 			inputTaken = true;
 		}
 		if (menuOpen && menuScreenArea == 2) {
@@ -12179,7 +12179,7 @@ public class Game extends RSApplet {
 	public int anInt841;
 	public int prevPktType;
 	public int prevPktType2;
-	public String aString844;
+	public String chatContinueMessage;
 	public int publicChatMode;
 	public int privateChatMode;
 	public Stream loginBuffer;
