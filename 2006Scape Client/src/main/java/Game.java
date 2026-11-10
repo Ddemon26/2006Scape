@@ -9968,30 +9968,30 @@ public class Game extends RSApplet {
 	public void drawFlames() {
 		drawingFlames = true;
 		try {
-			long l = System.currentTimeMillis();
-			int i = 0;
-			int j = 20;
+			long previousSampleTimeMillis = System.currentTimeMillis();
+			int framesSinceSample = 0;
+			int sleepMillis = 20;
 			while (flameThreadActive) {
 				flameFrameCount++;
 				calcFlamesPosition();
 				calcFlamesPosition();
 				doFlamesDrawing();
-				if (++i > 10) {
-					long l1 = System.currentTimeMillis();
-					int k = (int) (l1 - l) / 10 - j;
-					j = 40 - k;
-					if (j < 5) {
-						j = 5;
+				if (++framesSinceSample > 10) {
+					long sampleTimeMillis = System.currentTimeMillis();
+					int estimatedFrameWorkMillis = (int) (sampleTimeMillis - previousSampleTimeMillis) / 10 - sleepMillis;
+					sleepMillis = 40 - estimatedFrameWorkMillis;
+					if (sleepMillis < 5) {
+						sleepMillis = 5;
 					}
-					i = 0;
-					l = l1;
+					framesSinceSample = 0;
+					previousSampleTimeMillis = sampleTimeMillis;
 				}
 				try {
-					Thread.sleep(j);
-				} catch (Exception _ex) {
+					Thread.sleep(sleepMillis);
+				} catch (Exception ignoredSleepException) {
 				}
 			}
-		} catch (Exception _ex) {
+		} catch (Exception ignoredFlameException) {
 		}
 		drawingFlames = false;
 	}
