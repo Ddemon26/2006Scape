@@ -120,12 +120,46 @@ public class GameMenuBuildersTest {
     @Test public void pushMessageTypeZeroCapturesDialogTextOnlyWhenDialogOpen() throws Exception {
         Game g = game();
         g.pushMessage("x", 0, "");
-        assertNull(g.aString844);
+        assertNull(g.chatContinueMessage);
         set(g, "dialogID", 5);
         g.pushMessage("y", 1, "");
-        assertNull(g.aString844);
+        assertNull(g.chatContinueMessage);
         g.pushMessage("z", 0, "");
-        assertEquals("z", g.aString844);
+        assertEquals("z", g.chatContinueMessage);
+    }
+
+    @Test public void pushMessageDialogCaptureBoundariesAndClickConsumption() throws Exception {
+        Game g = game();
+        assertNull(g.chatContinueMessage);
+        g.clickMode3 = 1;
+        g.pushMessage("history only", 0, "");
+        assertNull(g.chatContinueMessage);
+        assertEquals(1, g.clickMode3);
+        set(g, "dialogID", 0); // zero is an open interface, -1 alone is closed
+        for (int type : new int[] {1, 2, 3, 6}) {
+            g.pushMessage("other type", type, "Sender");
+            assertNull(g.chatContinueMessage);
+            assertEquals(1, g.clickMode3);
+        }
+        g.pushMessage("first", 0, "");
+        assertEquals("first", g.chatContinueMessage);
+        assertEquals(0, g.clickMode3);
+        g.pushMessage("replacement", 0, "");
+        assertEquals("replacement", g.chatContinueMessage);
+        g.pushMessage("private", 3, "Sender");
+        assertEquals("replacement", g.chatContinueMessage);
+        g.pushMessage("", 0, "");
+        assertEquals("", g.chatContinueMessage);
+        g.clickMode3 = 1;
+        g.pushMessage(null, 0, "");
+        assertNull(g.chatContinueMessage);
+        assertEquals(0, g.clickMode3);
+        set(g, "dialogID", 6180);
+        g.pushMessage("retained", 0, "");
+        set(g, "dialogID", -1);
+        g.pushMessage("history again", 0, "");
+        assertEquals("retained", g.chatContinueMessage);
+        assertEquals("history again", g.chatMessages[0]);
     }
 
     // pack bit fields MSB first

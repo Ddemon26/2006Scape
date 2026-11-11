@@ -58,6 +58,22 @@ public class Npc {
         applyDead = false;
         actionTimer = 0;
         randomWalk = true;
+        NPCDefinition def = NPCDefinition.forId(_npcType);
+        size = def != null ? def.getSize() : 1;
+        if (size < 1) {
+            size = 1;
+        }
+    }
+
+    public int getSize() {
+        if (size <= 0) {
+            NPCDefinition def = NPCDefinition.forId(npcType);
+            size = def != null ? def.getSize() : 1;
+            if (size < 1) {
+                size = 1;
+            }
+        }
+        return size;
     }
 
     public void requestTransform(int id) {
@@ -186,7 +202,7 @@ public class Npc {
      **/
 
     public int FocusPointX = -1, FocusPointY = -1;
-    public int face = 0;
+    public int face = 65535;
 
     private void appendSetFocusDestination(Stream str) {
         str.writeWordBigEndian(FocusPointX);
@@ -230,13 +246,16 @@ public class Npc {
             FRIDGEIR,
     };
 
+    public int interactingPlayer = -1;
+
     public void facePlayer(Player player) {
         for (int element : immobileNpcs) {
             if (npcType == (element)) {
                 return;
             }
         }
-        face = (player != null) ? player.playerId + 32768 : 32768;
+        interactingPlayer = (player != null) ? player.playerId : -1;
+        face = (player != null) ? player.playerId + 32768 : 65535;
         dirUpdateRequired = true;
         updateRequired = true;
     }

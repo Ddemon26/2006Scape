@@ -41,12 +41,12 @@ public class Entity extends Animable {
 		stepsQueuedBeforeAnimation = 0;
 	}
 
-	public final void updateHitData(int j, int k, int l) {
-		for (int i1 = 0; i1 < 4; i1++) {
-			if (hitsLoopCycle[i1] <= l) {
-				hitArray[i1] = k;
-				hitMarkTypes[i1] = j;
-				hitsLoopCycle[i1] = l + 70;
+	public final void updateHitData(int hitType, int hitDamage, int currentCycle) {
+		for (int hitSlot = 0; hitSlot < 4; hitSlot++) {
+			if (hitsLoopCycle[hitSlot] <= currentCycle) {
+				hitArray[hitSlot] = hitDamage;
+				hitMarkTypes[hitSlot] = hitType;
+				hitsLoopCycle[hitSlot] = currentCycle + 70;
 				return;
 			}
 		}

@@ -339,10 +339,10 @@ public class GameFrameAreaProducersTest {
     @Test public void drawGameScreenLocalIIsTheClampedChatScrollOffsetFromTheScrollbar() throws Exception {
         Fixture c = new Fixture();
         Rec f = frame(c);
-        f.anInt1211 = 300; f.anInt1089 = 40;
-        f.drawGameScreen();                                       // mouse outside: scrollbar position derives from anInt1089
-        assertEquals(300 - 40 - 77, f.aClass9_1059.scrollPosition);
-        assertEquals(40, f.anInt1089); assertEquals(0, f.chatCalls); assertEquals(0, f.scrollbarCalls.size());
+        f.chatContentHeightPixels = 300; f.chatScrollOffsetPixels = 40;
+        f.drawGameScreen();                                       // mouse outside: scrollbar position derives from chatScrollOffsetPixels
+        assertEquals(300 - 40 - 77, f.chatScrollbarState.scrollPosition);
+        assertEquals(40, f.chatScrollOffsetPixels); assertEquals(0, f.chatCalls); assertEquals(0, f.scrollbarCalls.size());
         f.scrollbarSets = 100;
         f.mouseX = 448; f.mouseY = 340; f.drawGameScreen();       // mouseX boundary: not > 448
         f.mouseX = 500; f.mouseY = 332; f.drawGameScreen();       // mouseY boundary: not > 332
@@ -351,13 +351,13 @@ public class GameFrameAreaProducersTest {
         f.drawGameScreen();
         assertEquals(1, f.scrollbarCalls.size());
         Object[] a = f.scrollbarCalls.get(0);
-        assertArrayEquals(new Object[] {463, 77, 483, -17, f.aClass9_1059, 0, false, 300}, a);
-        assertEquals(300 - 77 - 100, f.anInt1089); assertEquals(1, f.chatCalls); assertFalse(f.inputTaken);
-        f.scrollbarSets = -50; f.drawGameScreen();                // above the top: clamped to anInt1211 - 77
-        assertEquals(223, f.anInt1089); assertEquals(2, f.chatCalls);
+        assertArrayEquals(new Object[] {463, 77, 483, -17, f.chatScrollbarState, 0, false, 300}, a);
+        assertEquals(300 - 77 - 100, f.chatScrollOffsetPixels); assertEquals(1, f.chatCalls); assertFalse(f.inputTaken);
+        f.scrollbarSets = -50; f.drawGameScreen();                // above the top: clamped to chatContentHeightPixels - 77
+        assertEquals(223, f.chatScrollOffsetPixels); assertEquals(2, f.chatCalls);
         f.scrollbarSets = 500; f.drawGameScreen();                // below the bottom: clamped to 0
-        assertEquals(0, f.anInt1089); assertEquals(3, f.chatCalls);
+        assertEquals(0, f.chatScrollOffsetPixels); assertEquals(3, f.chatCalls);
         f.scrollbarSets = 223; f.drawGameScreen();                // equals current offset (0): no redraw
-        assertEquals(0, f.anInt1089); assertEquals(3, f.chatCalls);
+        assertEquals(0, f.chatScrollOffsetPixels); assertEquals(3, f.chatCalls);
     }
 }

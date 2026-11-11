@@ -2101,11 +2101,11 @@ final class Texture extends DrawingArea {
 	private static int[][] adjustedPalettes = new int[50][];
 
 	static {
-		reciprocalTable15 = new int[512];
+		reciprocalTable15 = new int[2048];
 		reciprocalTable16 = new int[2048];
 		sineTable = new int[2048];
 		cosineTable = new int[2048];
-		for (int i = 1; i < 512; i++) {
+		for (int i = 1; i < 2048; i++) {
 			reciprocalTable15[i] = 32768 / i;
 		}
 

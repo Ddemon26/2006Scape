@@ -52,34 +52,34 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				int fileId = ((ioBuffer[1] & 0xff) << 8) + (ioBuffer[2] & 0xff);
 				int fileSize = ((ioBuffer[3] & 0xff) << 8) + (ioBuffer[4] & 0xff);
 				int chunkIndex = ioBuffer[5] & 0xff;
-				current = null;
+				responseRequest = null;
 				for (OnDemandData inFlightRequest = (OnDemandData) inFlightRequests.firstFromTail(); inFlightRequest != null; inFlightRequest = (OnDemandData) inFlightRequests.nextTowardHead()) {
 					if (inFlightRequest.dataType == fileType && inFlightRequest.ID == fileId) {
-						current = inFlightRequest;
+						responseRequest = inFlightRequest;
 					}
-					if (current != null) {
+					if (responseRequest != null) {
 						inFlightRequest.idleCycles = 0;
 					}
 				}
 
-				if (current != null) {
+				if (responseRequest != null) {
 					connectionIdleCycles = 0;
 					if (fileSize == 0) {
 						Signlink.reporterror("Rej: " + fileType + "," + fileId);
-						current.buffer = null;
-						if (current.urgent) {
+						responseRequest.buffer = null;
+						if (responseRequest.urgent) {
 							synchronized (completedRequests) {
-								completedRequests.insertHead(current);
+								completedRequests.insertHead(responseRequest);
 							}
 						} else {
-							current.unlink();
+							responseRequest.unlink();
 						}
-						current = null;
+						responseRequest = null;
 					} else {
-						if (current.buffer == null && chunkIndex == 0) {
-							current.buffer = new byte[fileSize];
+						if (responseRequest.buffer == null && chunkIndex == 0) {
+							responseRequest.buffer = new byte[fileSize];
 						}
-						if (current.buffer == null && chunkIndex != 0) {
+						if (responseRequest.buffer == null && chunkIndex != 0) {
 							throw new IOException("missing start of file");
 						}
 					}
@@ -94,27 +94,27 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 				madeProgress = true;
 				byte destinationBuffer[] = ioBuffer;
 				int destinationOffset = 0;
-				if (current != null) {
-					destinationBuffer = current.buffer;
+				if (responseRequest != null) {
+					destinationBuffer = responseRequest.buffer;
 					destinationOffset = chunkStartOffset;
 				}
 				for (int bytesRead = 0; bytesRead < pendingChunkLength; bytesRead += inputStream.read(destinationBuffer, bytesRead + destinationOffset, pendingChunkLength - bytesRead)) {
 					;
 				}
-				if (pendingChunkLength + chunkStartOffset >= destinationBuffer.length && current != null) {
+				if (pendingChunkLength + chunkStartOffset >= destinationBuffer.length && responseRequest != null) {
 					if (clientInstance.cacheStores[0] != null) {
-						clientInstance.cacheStores[current.dataType + 1].writeFile(destinationBuffer.length, destinationBuffer, current.ID);
+						clientInstance.cacheStores[responseRequest.dataType + 1].writeFile(destinationBuffer.length, destinationBuffer, responseRequest.ID);
 					}
-					if (!current.urgent && current.dataType == 3) {
-						current.urgent = true;
-						current.dataType = 93;
+					if (!responseRequest.urgent && responseRequest.dataType == 3) {
+						responseRequest.urgent = true;
+						responseRequest.dataType = 93;
 					}
-					if (current.urgent) {
+					if (responseRequest.urgent) {
 						synchronized (completedRequests) {
-							completedRequests.insertHead(current);
+							completedRequests.insertHead(responseRequest);
 						}
 					} else {
-						current.unlink();
+						responseRequest.unlink();
 					}
 				}
 				pendingChunkLength = 0;
@@ -211,6 +211,14 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 
 	public void disable() {
 		running = false;
+		try {
+			if (socket != null) {
+				socket.close();
+			}
+		} catch (Exception ignored) {}
+		socket = null;
+		inputStream = null;
+		outputStream = null;
 	}
 
 	public void markMapFilesForDownload(boolean allRegions) {
@@ -675,7 +683,7 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 	private int urgentInFlightCount;
 	private int extraInFlightCount;
 	private final NodeList cacheMissQueue;
-	private OnDemandData current;
+	private OnDemandData responseRequest;
 	private final NodeList cacheLookupQueue;
 	private int[] mapRegionKeys;
 	private byte[] modelIndices;

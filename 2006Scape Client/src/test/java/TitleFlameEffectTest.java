@@ -28,7 +28,7 @@ public class TitleFlameEffectTest {
         g = new Game();
         g.graphics = new BufferedImage(765, 503, BufferedImage.TYPE_INT_RGB).getGraphics();
         g.resetImageProducers();
-        g.aBackgroundArray1152s = new Background[12];
+        g.titleFlameRuneMasks = new Background[12];
         g.flameIntensity = new int[W * H];
         g.flameNeighbourAverage = new int[W * H];
         g.flameNoise = new int[W * H];
@@ -419,7 +419,7 @@ public class TitleFlameEffectTest {
     }
 
     @Test public void regenerationPicksOneOfTheTwelveRuneMasksAtRandom() throws Exception {
-        for (int k = 0; k < 12; k++) g.aBackgroundArray1152s[k] = mask(6, 100, 8 * k, 0, 1);
+        for (int k = 0; k < 12; k++) g.titleFlameRuneMasks[k] = mask(6, 100, 8 * k, 0, 1);
         Set<Integer> seen = new HashSet<>();
         for (int n = 0; n < 400 && seen.size() < 12; n++) {
             g.flameNoiseScroll = 32768;
@@ -451,5 +451,77 @@ public class TitleFlameEffectTest {
         g.doFlamesDrawing();
         assertEquals(0x881119, g.titleLeftFlamePaneProducer.pixels[50 * 128 + 10] & 0xffffff);
         assertEquals(0xa12a33, g.titleRightFlamePaneProducer.pixels[50 * 128 + 50] & 0xffffff);
+    }
+
+    private static final class ConfiguredTitle extends Game {
+        String value;
+        boolean throwParameter;
+        @Override public String getParameter(String key) {
+            assertEquals("fl_icon", key);
+            if (throwParameter) throw new IllegalStateException("fixture parameter unavailable");
+            return value;
+        }
+        @Override public void drawLoadingText(int percent, String text) { }
+    }
+
+    /** Sixteen distinguishable 2x2 archive images: each has its own palette index and offset. */
+    private static StreamLoader numberedTitleArchive() throws Exception {
+        byte[] index = new byte[5 + 16 * 3 + 16 * 7];
+        index[1] = 64; index[3] = 64; index[4] = 17;
+        byte[] pixels = new byte[2 + 16 * 4];
+        for (int n = 0; n < 16; n++) {
+            int at = 5 + 16 * 3 + n * 7;
+            index[at] = (byte) n; index[at + 1] = (byte) (15 - n);
+            index[at + 3] = 2; index[at + 5] = 2;
+            pixels[2 + n * 4] = (byte) (n + 1);
+            pixels[2 + n * 4 + 3] = (byte) (n + 1);
+        }
+        String[] names = {"index.dat", "runes.dat", "titlebox.dat", "titlebutton.dat"};
+        byte[][] entries = {index, pixels, pixels, pixels};
+        byte[] data = new byte[index.length + 3 * pixels.length];
+        int[] hashes = new int[4], sizes = new int[4], offsets = new int[4];
+        int cursor = 0;
+        for (int n = 0; n < 4; n++) {
+            for (char ch : names[n].toUpperCase(java.util.Locale.ROOT).toCharArray())
+                hashes[n] = hashes[n] * 61 + ch - 32;
+            sizes[n] = entries[n].length; offsets[n] = cursor;
+            System.arraycopy(entries[n], 0, data, cursor, sizes[n]); cursor += sizes[n];
+        }
+        Field f = sun.misc.Unsafe.class.getDeclaredField("theUnsafe"); f.setAccessible(true);
+        StreamLoader archive = (StreamLoader) ((sun.misc.Unsafe) f.get(null)).allocateInstance(StreamLoader.class);
+        String[] fields = {"archiveData", "archiveDecompressed", "entryCount", "entryNameHashes",
+            "entryUnpackedSizes", "entryPackedSizes", "entryOffsets"};
+        Object[] values = {data, true, 4, hashes, sizes, sizes, offsets};
+        for (int n = 0; n < fields.length; n++) {
+            Field field = StreamLoader.class.getDeclaredField(fields[n]); field.setAccessible(true); field.set(archive, values[n]);
+        }
+        return archive;
+    }
+
+    @Test public void titleParameterSelectsAllTwelveArchiveEntriesAndCleanupReleasesThem() throws Exception {
+        String[] inputs = {null, "bad", "0", "1", "-7", "2147483647", "2147483648", "throw"};
+        int[][] expected = {
+            {0,1,2,3,4,5,6,7,8,9,10,11}, {0,1,2,3,4,5,6,7,8,9,10,11},
+            {0,1,2,3,4,5,6,7,8,9,10,11}, {12,13,14,15,12,13,14,15,12,13,14,15},
+            {12,13,14,15,12,13,14,15,12,13,14,15}, {12,13,14,15,12,13,14,15,12,13,14,15},
+            {0,1,2,3,4,5,6,7,8,9,10,11}, {0,1,2,3,4,5,6,7,8,9,10,11}};
+        for (int c = 0; c < inputs.length; c++) {
+            ConfiguredTitle game = new ConfiguredTitle();
+            game.graphics = new BufferedImage(765, 503, BufferedImage.TYPE_INT_RGB).getGraphics();
+            game.resetImageProducers(); game.titleStreamLoader = numberedTitleArchive();
+            game.flameThreadActive = true; game.value = inputs[c]; game.throwParameter = "throw".equals(inputs[c]);
+            game.loadTitleScreen();
+            assertEquals(12, game.titleFlameRuneMasks.length);
+            for (int slot = 0; slot < 12; slot++) {
+                Background b = game.titleFlameRuneMasks[slot];
+                int n = expected[c][slot];
+                assertEquals("input " + inputs[c] + " slot " + slot, n, b.offsetX);
+                assertEquals(15 - n, b.offsetY);
+                assertArrayEquals(new byte[] {(byte)(n+1),0,0,(byte)(n+1)}, b.paletteIndices);
+                assertEquals(2, b.imageWidth); assertEquals(2, b.imageHeight);
+                for (int other = 0; other < slot; other++) assertNotSame(game.titleFlameRuneMasks[other], b);
+            }
+            game.nullLoader(); assertNull(game.titleFlameRuneMasks);
+        }
     }
 }

@@ -340,4 +340,21 @@ public class InterfaceHoverDragSelectionFieldsTest {
         assertEquals(0, useWithRows(1, 2, 40));   // slot 1 hovered and selected
         assertEquals(1, useWithRows(0, 2, 40));
     }
+    @Test public void twelveItemActionBranchesRecordComponentIdAndZeroBasedSlotIndependently() {
+        int[] actions = {74,431,53,539,870,847,78,632,493,867,543,454};
+        for (int action : actions) for (int id : new int[]{100,101}) for (int slot : new int[]{0,4}) {
+            RSInterface component = new RSInterface(); component.id = id; component.parentID = 50;
+            RSInterface.interfaceCache[id] = component;
+            Game g = new Game();
+            g.stream = new Stream(new byte[128]); g.stream.encryption = new ISAACRandomGen(new int[]{1,2,3,4});
+            g.menuActionID[0] = action; g.menuActionCmd1[0] = 777;
+            g.menuActionCmd2[0] = slot; g.menuActionCmd3[0] = id;
+            g.actionHighlightInterfaceId = -9; g.actionHighlightSlotIndex = -9; g.atInventoryLoopCycle = 8;
+            g.doAction(0);
+            assertEquals("action " + action, id, g.actionHighlightInterfaceId);
+            assertEquals("action " + action, slot, g.actionHighlightSlotIndex);
+            assertEquals(0, g.atInventoryLoopCycle);
+            assertEquals(2, g.atInventoryInterfaceType);
+        }
+    }
 }

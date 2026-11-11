@@ -374,4 +374,17 @@ public class GameDrawInterfaceBranchTest {
         assertEquals(0x111111, px(col1, 19)); assertEquals(BG, px(col1 - 1, 19));
         assertArrayEquals(new int[]{col1, 4}, run(0x111111, row1 - 1));         // stackable "ef x1"; slot 2 empty
     }
+    @Test public void itemActionBlendNeedsBothMatchingComponentAndSlotAndActiveState() {
+        RSInterface inv = inventory(2, 1, 0, 0);
+        inv.itemIdsPlusOne = new int[]{778,778}; inv.itemQuantities = new int[]{1,1};
+        Sprite item = sprite(32,32,0xffffff); ItemDef.mruNodes1.removeFromCache(item,777);
+        RSInterface r = root(inv,10,20);
+        for (int active : new int[]{0,2}) for (int component : new int[]{2,3}) for (int slot : new int[]{0,1,2}) {
+            Arrays.fill(DrawingArea.pixels,0);
+            g.atInventoryInterfaceType = active; g.actionHighlightInterfaceId = component; g.actionHighlightSlotIndex = slot;
+            g.drawInterface(0,0,r,0);
+            for (int n=0;n<2;n++) assertEquals("active="+active+" component="+component+" slot="+slot+" drawn="+n,
+                active!=0 && component==2 && slot==n ? 0x7f7f7f : 0xffffff, px(10+n*32,20));
+        }
+    }
 }

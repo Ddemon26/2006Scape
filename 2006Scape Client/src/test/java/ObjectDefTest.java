@@ -375,23 +375,83 @@ public class ObjectDefTest {
             ObjectManager.lowMem = true;
             def.hasActions = false;
             def.showInLowMemory = false;
-            assertTrue("low memory, no actions, flag clear: not needed", ObjectManager.method189(5, data, 5));
+            assertTrue("low memory, no actions, flag clear: not needed", ObjectManager.areRegionObjectModelsLoaded(5, data, 5));
             assertTrue(fetcher.requested.isEmpty());
             def.showInLowMemory = true;
-            assertFalse("flag set: its missing model is needed", ObjectManager.method189(5, data, 5));
+            assertFalse("flag set: its missing model is needed", ObjectManager.areRegionObjectModelsLoaded(5, data, 5));
             assertEquals(Arrays.asList(2), fetcher.requested);
             def.showInLowMemory = false;
             def.hasActions = true;
-            assertFalse("actions: needed", ObjectManager.method189(5, data, 5));
+            assertFalse("actions: needed", ObjectManager.areRegionObjectModelsLoaded(5, data, 5));
             def.hasActions = false;
             ObjectManager.lowMem = false;
-            assertFalse("high memory: always needed", ObjectManager.method189(5, data, 5));
+            assertFalse("high memory: always needed", ObjectManager.areRegionObjectModelsLoaded(5, data, 5));
             ObjectManager.lowMem = true;
             byte[] other = {101, 1, 10 << 2, 0, 0};
-            assertFalse("other shapes are always needed", ObjectManager.method189(5, other, 5));
+            assertFalse("other shapes are always needed", ObjectManager.areRegionObjectModelsLoaded(5, other, 5));
         } finally {
             ObjectManager.lowMem = savedObjectManagerLowMem;
         }
+    }
+
+    private static void smart(java.io.ByteArrayOutputStream out, int n) {
+        if (n < 128) out.write(n); else { out.write((n + 32768) >> 8); out.write(n); }
+    }
+    private static byte[] region(int[] ids, int[][] positions, int[][] attributes) {
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        int prior = -1;
+        for (int n = 0; n < ids.length; n++) {
+            smart(out, ids[n] - prior); prior = ids[n]; int previous = 0;
+            for (int k = 0; k < positions[n].length; k++) {
+                smart(out, positions[n][k] - previous + 1); previous = positions[n][k];
+                out.write(attributes[n][k]);
+            }
+            smart(out, 0);
+        }
+        smart(out, 0); return out.toByteArray();
+    }
+    @Test public void method189TranslatesAxesAndExcludesOnlyOuterTilesAcrossPlanesAndOrientations() throws Exception {
+        boolean old = ObjectManager.lowMem;
+        try {
+            ObjectManager.lowMem = false;
+            RecordingFetcher f = modelTable(20);
+            ObjectDef d = typed(129); field(ObjectDef.class, "modelIds").set(d, new int[] {7}); installCache(d);
+            for (int plane = 0; plane < 4; plane++) for (int rotation = 0; rotation < 4; rotation++) {
+                byte[] b = region(new int[] {129}, new int[][] {{plane * 4096 + 3 * 64 + 9}}, new int[][] {{(10 << 2) | rotation}});
+                int[][] offsets = {{-3,0},{-2,0},{99,0},{100,0},{0,-9},{0,-8},{0,93},{0,94}};
+                boolean[] results = {true,false,false,true,true,false,false,true};
+                for (int n=0;n<offsets.length;n++) {
+                    f.requested.clear(); assertEquals("boundary " + n, results[n], ObjectManager.areRegionObjectModelsLoaded(offsets[n][0],b,offsets[n][1]));
+                    assertEquals(results[n] ? Arrays.asList() : Arrays.asList(7), f.requested);
+                }
+            }
+            assertTrue(ObjectManager.areRegionObjectModelsLoaded(0, new byte[] {0}, 0));
+        } finally { ObjectManager.lowMem = old; }
+    }
+    @Test public void method189ChecksEachRequiredIdOnceAndKeepsFailureAcrossLaterObjects() throws Exception {
+        boolean old = ObjectManager.lowMem;
+        try {
+            ObjectManager.lowMem = false;
+            RecordingFetcher f = modelTable(32, 9);
+            ObjectDef a=typed(1), b=typed(140), c=typed(400);
+            field(ObjectDef.class,"modelIds").set(a,new int[]{7}); field(ObjectDef.class,"modelIds").set(b,new int[]{8}); field(ObjectDef.class,"modelIds").set(c,new int[]{9}); installCache(a,b,c);
+            byte[] data=region(new int[]{1,140,400},new int[][]{{65,66,4095,8191},{0,65,66},{65}},new int[][]{{40,255,0,88},{40,41,42},{40}});
+            assertFalse(ObjectManager.areRegionObjectModelsLoaded(0,data,0)); assertEquals(Arrays.asList(7,8),f.requested);
+            modelTable(32,7,8,9); assertTrue(ObjectManager.areRegionObjectModelsLoaded(0,data,0));
+        } finally { ObjectManager.lowMem = old; }
+    }
+    @Test public void method189ContinuesAfterFilteredLocationsAndUsesShapeNotOrientation() throws Exception {
+        boolean old=ObjectManager.lowMem;
+        try {
+            ObjectManager.lowMem=true; RecordingFetcher f=modelTable(32);
+            ObjectDef d=typed(2); field(ObjectDef.class,"modelIds").set(d,new int[]{8}); d.hasActions=false; d.showInLowMemory=false; installCache(d);
+            for(int rotation=0;rotation<4;rotation++) {
+                f.requested.clear(); byte[] b=region(new int[]{2},new int[][]{{0,65,66,67}},new int[][]{{40,(22<<2)|rotation,(10<<2)|rotation,40}});
+                assertFalse(ObjectManager.areRegionObjectModelsLoaded(0,b,0)); assertEquals(Arrays.asList(8),f.requested);
+                f.requested.clear(); byte[] skipped=region(new int[]{2},new int[][]{{65,66}},new int[][]{{(22<<2)|rotation,(22<<2)|rotation}});
+                assertTrue(ObjectManager.areRegionObjectModelsLoaded(0,skipped,0)); assertTrue(f.requested.isEmpty());
+            }
+        } finally {ObjectManager.lowMem=old;}
     }
 
     // ---------------------------------------------------------------- placement (ObjectManager.placeObjectWithoutShading)

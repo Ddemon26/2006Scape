@@ -75,7 +75,7 @@ public class TextureTriangleTest {
     @Test public void reciprocalTablesHoldFixedPointInverses() throws Exception {
         int[] t15 = (int[]) get("reciprocalTable15");
         int[] t16 = Texture.reciprocalTable16;
-        assertEquals(512, t15.length);
+        assertEquals(2048, t15.length);
         assertEquals(2048, t16.length);
         assertEquals(0, t15[0]);
         assertEquals(0, t16[0]);
@@ -83,10 +83,11 @@ public class TextureTriangleTest {
         assertEquals(16384, t15[2]);
         assertEquals(10922, t15[3]);
         assertEquals(64, t15[511]);
+        assertEquals(16, t15[2047]);
         assertEquals(65536, t16[1]);
         assertEquals(21845, t16[3]);
         assertEquals(32, t16[2047]);
-        for (int i = 1; i < 512; i++) assertTrue("15-bit " + i, t15[i] * i <= 32768 && t15[i] * i > 32768 - i);
+        for (int i = 1; i < 2048; i++) assertTrue("15-bit " + i, t15[i] * i <= 32768 && t15[i] * i > 32768 - i);
         for (int i = 1; i < 2048; i++) assertTrue("16-bit " + i, t16[i] * i <= 65536 && t16[i] * i > 65536 - i);
     }
 
