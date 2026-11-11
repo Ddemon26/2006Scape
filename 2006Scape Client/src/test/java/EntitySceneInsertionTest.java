@@ -145,7 +145,7 @@ public class EntitySceneInsertionTest {
         DrawingArea.width = 8; DrawingArea.height = 8; DrawingArea.pixels = new int[64];
         g.worldViewIP = (RSImageProducer) unsafe().allocateInstance(RSImageProducer.class);
         f(RSApplet.class, "graphics").set(g, new java.awt.image.BufferedImage(8, 8, 1).createGraphics());
-        g.aBoolean1160 = true;
+        g.cutsceneCameraActive = true;
         g.xCameraPos = 11; g.zCameraPos = 22; g.yCameraPos = 33; g.yCameraCurve = 200; g.xCameraCurve = 44;
     }
 
@@ -194,7 +194,7 @@ public class EntitySceneInsertionTest {
     @Test public void freeCameraPitchYawAndRoofPlaneFeedSetCameraPosAndDrawScene() throws Exception {
         Player savedMe = Game.myPlayer; int[] ras = {DrawingArea.width, DrawingArea.height}; int[] savedPx = DrawingArea.pixels; int savedZoom = Game.zoom; int savedUse = Texture.useCounter;
         try {
-            TestGame g = newGame(); setupFrame(g); g.aBoolean1160 = false; Game.myPlayer = hidden(player(5 * 128, 6 * 128)); g.playerCount = 0; g.npcCount = 0;
+            TestGame g = newGame(); setupFrame(g); g.cutsceneCameraActive = false; Game.myPlayer = hidden(player(5 * 128, 6 * 128)); g.playerCount = 0; g.npcCount = 0;
             Game.zoom = 3; g.roofPlane = 2; g.fixedPlane = 3;
             for (int c = 0; c < 5; c++) g.shakeChannelActive[c] = false;
             g.cameraPitchBase = 150; g.cameraTerrainClearance = 256 * 90; g.cameraYawBase = 1000; g.cameraYawDrift = 1500;

@@ -1963,96 +1963,96 @@ public class Game extends RSApplet {
 	}
 
 	public void calcCameraPos() {
-		int i = anInt1098 * 128 + 64;
-		int j = anInt1099 * 128 + 64;
-		int k = interpolatedGroundHeight(plane, j, i) - anInt1100;
-		if (xCameraPos < i) {
-			xCameraPos += anInt1101 + (i - xCameraPos) * anInt1102 / 1000;
-			if (xCameraPos > i) {
-				xCameraPos = i;
+		int targetX = cutsceneCameraTileX * 128 + 64;
+		int targetY = cutsceneCameraTileY * 128 + 64;
+		int targetZ = interpolatedGroundHeight(plane, targetY, targetX) - cutsceneCameraHeight;
+		if (xCameraPos < targetX) {
+			xCameraPos += cutsceneCameraMoveStep + (targetX - xCameraPos) * cutsceneCameraMoveRate / 1000;
+			if (xCameraPos > targetX) {
+				xCameraPos = targetX;
 			}
 		}
-		if (xCameraPos > i) {
-			xCameraPos -= anInt1101 + (xCameraPos - i) * anInt1102 / 1000;
-			if (xCameraPos < i) {
-				xCameraPos = i;
+		if (xCameraPos > targetX) {
+			xCameraPos -= cutsceneCameraMoveStep + (xCameraPos - targetX) * cutsceneCameraMoveRate / 1000;
+			if (xCameraPos < targetX) {
+				xCameraPos = targetX;
 			}
 		}
-		if (zCameraPos < k) {
-			zCameraPos += anInt1101 + (k - zCameraPos) * anInt1102 / 1000;
-			if (zCameraPos > k) {
-				zCameraPos = k;
+		if (zCameraPos < targetZ) {
+			zCameraPos += cutsceneCameraMoveStep + (targetZ - zCameraPos) * cutsceneCameraMoveRate / 1000;
+			if (zCameraPos > targetZ) {
+				zCameraPos = targetZ;
 			}
 		}
-		if (zCameraPos > k) {
-			zCameraPos -= anInt1101 + (zCameraPos - k) * anInt1102 / 1000;
-			if (zCameraPos < k) {
-				zCameraPos = k;
+		if (zCameraPos > targetZ) {
+			zCameraPos -= cutsceneCameraMoveStep + (zCameraPos - targetZ) * cutsceneCameraMoveRate / 1000;
+			if (zCameraPos < targetZ) {
+				zCameraPos = targetZ;
 			}
 		}
-		if (yCameraPos < j) {
-			yCameraPos += anInt1101 + (j - yCameraPos) * anInt1102 / 1000;
-			if (yCameraPos > j) {
-				yCameraPos = j;
+		if (yCameraPos < targetY) {
+			yCameraPos += cutsceneCameraMoveStep + (targetY - yCameraPos) * cutsceneCameraMoveRate / 1000;
+			if (yCameraPos > targetY) {
+				yCameraPos = targetY;
 			}
 		}
-		if (yCameraPos > j) {
-			yCameraPos -= anInt1101 + (yCameraPos - j) * anInt1102 / 1000;
-			if (yCameraPos < j) {
-				yCameraPos = j;
+		if (yCameraPos > targetY) {
+			yCameraPos -= cutsceneCameraMoveStep + (yCameraPos - targetY) * cutsceneCameraMoveRate / 1000;
+			if (yCameraPos < targetY) {
+				yCameraPos = targetY;
 			}
 		}
-		i = anInt995 * 128 + 64;
-		j = anInt996 * 128 + 64;
-		k = interpolatedGroundHeight(plane, j, i) - anInt997;
-		int l = i - xCameraPos;
-		int i1 = k - zCameraPos;
-		int j1 = j - yCameraPos;
-		int k1 = (int) Math.sqrt(l * l + j1 * j1);
-		int l1 = (int) (Math.atan2(i1, k1) * 325.94900000000001D) & 0x7ff;
-		int i2 = (int) (Math.atan2(l, j1) * -325.94900000000001D) & 0x7ff;
-		if (l1 < 128) {
-			l1 = 128;
+		targetX = cutsceneLookTileX * 128 + 64;
+		targetY = cutsceneLookTileY * 128 + 64;
+		targetZ = interpolatedGroundHeight(plane, targetY, targetX) - cutsceneLookHeight;
+		int deltaX = targetX - xCameraPos;
+		int deltaZ = targetZ - zCameraPos;
+		int deltaY = targetY - yCameraPos;
+		int horizontalDistance = (int) Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+		int targetPitch = (int) (Math.atan2(deltaZ, horizontalDistance) * 325.94900000000001D) & 0x7ff;
+		int targetYaw = (int) (Math.atan2(deltaX, deltaY) * -325.94900000000001D) & 0x7ff;
+		if (targetPitch < 128) {
+			targetPitch = 128;
 		}
-		if (l1 > 383) {
-			l1 = 383;
+		if (targetPitch > 383) {
+			targetPitch = 383;
 		}
-		if (yCameraCurve < l1) {
-			yCameraCurve += anInt998 + (l1 - yCameraCurve) * anInt999 / 1000;
-			if (yCameraCurve > l1) {
-				yCameraCurve = l1;
+		if (yCameraCurve < targetPitch) {
+			yCameraCurve += cutsceneLookTurnStep + (targetPitch - yCameraCurve) * cutsceneLookTurnRate / 1000;
+			if (yCameraCurve > targetPitch) {
+				yCameraCurve = targetPitch;
 			}
 		}
-		if (yCameraCurve > l1) {
-			yCameraCurve -= anInt998 + (yCameraCurve - l1) * anInt999 / 1000;
-			if (yCameraCurve < l1) {
-				yCameraCurve = l1;
+		if (yCameraCurve > targetPitch) {
+			yCameraCurve -= cutsceneLookTurnStep + (yCameraCurve - targetPitch) * cutsceneLookTurnRate / 1000;
+			if (yCameraCurve < targetPitch) {
+				yCameraCurve = targetPitch;
 			}
 		}
-		int j2 = i2 - xCameraCurve;
-		if (j2 > 1024) {
-			j2 -= 2048;
+		int yawDelta = targetYaw - xCameraCurve;
+		if (yawDelta > 1024) {
+			yawDelta -= 2048;
 		}
-		if (j2 < -1024) {
-			j2 += 2048;
+		if (yawDelta < -1024) {
+			yawDelta += 2048;
 		}
-		if (j2 > 0) {
-			xCameraCurve += anInt998 + j2 * anInt999 / 1000;
+		if (yawDelta > 0) {
+			xCameraCurve += cutsceneLookTurnStep + yawDelta * cutsceneLookTurnRate / 1000;
 			xCameraCurve &= 0x7ff;
 		}
-		if (j2 < 0) {
-			xCameraCurve -= anInt998 + -j2 * anInt999 / 1000;
+		if (yawDelta < 0) {
+			xCameraCurve -= cutsceneLookTurnStep + -yawDelta * cutsceneLookTurnRate / 1000;
 			xCameraCurve &= 0x7ff;
 		}
-		int k2 = i2 - xCameraCurve;
-		if (k2 > 1024) {
-			k2 -= 2048;
+		int yawDeltaAfterTurn = targetYaw - xCameraCurve;
+		if (yawDeltaAfterTurn > 1024) {
+			yawDeltaAfterTurn -= 2048;
 		}
-		if (k2 < -1024) {
-			k2 += 2048;
+		if (yawDeltaAfterTurn < -1024) {
+			yawDeltaAfterTurn += 2048;
 		}
-		if (k2 < 0 && j2 > 0 || k2 > 0 && j2 < 0) {
-			xCameraCurve = i2;
+		if (yawDeltaAfterTurn < 0 && yawDelta > 0 || yawDeltaAfterTurn > 0 && yawDelta < 0) {
+			xCameraCurve = targetYaw;
 		}
 	}
 
@@ -3281,7 +3281,7 @@ public class Game extends RSApplet {
 		if (loadingStage == 2) {
 			updateCameraFollow();
 		}
-		if (loadingStage == 2 && aBoolean1160) {
+		if (loadingStage == 2 && cutsceneCameraActive) {
 			calcCameraPos();
 		}
 		for (int i1 = 0; i1 < 5; i1++) {
@@ -8914,9 +8914,9 @@ public class Game extends RSApplet {
 				}
 
 			}
-			anInt1005++;
-			if (anInt1005 > 1512) {
-				anInt1005 = 0;
+			junkPacketCounter++;
+			if (junkPacketCounter > 1512) {
+				junkPacketCounter = 0;
 				stream.writeEncryptedOpcode(77);
 				stream.writeByte(0);
 				int i2 = stream.currentOffset;
@@ -10947,7 +10947,7 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 107) {
-				aBoolean1160 = false;
+				cutsceneCameraActive = false;
 				for (int l = 0; l < 5; l++) {
 					shakeChannelActive[l] = false;
 				}
@@ -10976,16 +10976,16 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 166) {
-				aBoolean1160 = true;
-				anInt1098 = inStream.readUnsignedByte();
-				anInt1099 = inStream.readUnsignedByte();
-				anInt1100 = inStream.readUnsignedShortBigEndian();
-				anInt1101 = inStream.readUnsignedByte();
-				anInt1102 = inStream.readUnsignedByte();
-				if (anInt1102 >= 100) {
-					xCameraPos = anInt1098 * 128 + 64;
-					yCameraPos = anInt1099 * 128 + 64;
-					zCameraPos = interpolatedGroundHeight(plane, yCameraPos, xCameraPos) - anInt1100;
+				cutsceneCameraActive = true;
+				cutsceneCameraTileX = inStream.readUnsignedByte();
+				cutsceneCameraTileY = inStream.readUnsignedByte();
+				cutsceneCameraHeight = inStream.readUnsignedShortBigEndian();
+				cutsceneCameraMoveStep = inStream.readUnsignedByte();
+				cutsceneCameraMoveRate = inStream.readUnsignedByte();
+				if (cutsceneCameraMoveRate >= 100) {
+					xCameraPos = cutsceneCameraTileX * 128 + 64;
+					yCameraPos = cutsceneCameraTileY * 128 + 64;
+					zCameraPos = interpolatedGroundHeight(plane, yCameraPos, xCameraPos) - cutsceneCameraHeight;
 				}
 				pktType = -1;
 				return true;
@@ -11273,7 +11273,7 @@ public class Game extends RSApplet {
 					destX -= deltaX;
 					destY -= deltaY;
 				}
-				aBoolean1160 = false;
+				cutsceneCameraActive = false;
 				pktType = -1;
 				return true;
 			}
@@ -11829,22 +11829,22 @@ public class Game extends RSApplet {
 				return true;
 			}
 			if (pktType == 177) {
-				aBoolean1160 = true;
-				anInt995 = inStream.readUnsignedByte();
-				anInt996 = inStream.readUnsignedByte();
-				anInt997 = inStream.readUnsignedShortBigEndian();
-				anInt998 = inStream.readUnsignedByte();
-				anInt999 = inStream.readUnsignedByte();
-				if (anInt999 >= 100) {
-					int k7 = anInt995 * 128 + 64;
-					int k14 = anInt996 * 128 + 64;
-					int i20 = interpolatedGroundHeight(plane, k14, k7) - anInt997;
-					int l22 = k7 - xCameraPos;
-					int k25 = i20 - zCameraPos;
-					int j28 = k14 - yCameraPos;
-					int i30 = (int) Math.sqrt(l22 * l22 + j28 * j28);
-					yCameraCurve = (int) (Math.atan2(k25, i30) * 325.94900000000001D) & 0x7ff;
-					xCameraCurve = (int) (Math.atan2(l22, j28) * -325.94900000000001D) & 0x7ff;
+				cutsceneCameraActive = true;
+				cutsceneLookTileX = inStream.readUnsignedByte();
+				cutsceneLookTileY = inStream.readUnsignedByte();
+				cutsceneLookHeight = inStream.readUnsignedShortBigEndian();
+				cutsceneLookTurnStep = inStream.readUnsignedByte();
+				cutsceneLookTurnRate = inStream.readUnsignedByte();
+				if (cutsceneLookTurnRate >= 100) {
+					int lookX = cutsceneLookTileX * 128 + 64;
+					int lookY = cutsceneLookTileY * 128 + 64;
+					int lookZ = interpolatedGroundHeight(plane, lookY, lookX) - cutsceneLookHeight;
+					int deltaX = lookX - xCameraPos;
+					int deltaZ = lookZ - zCameraPos;
+					int deltaY = lookY - yCameraPos;
+					int horizontalDistance = (int) Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+					yCameraCurve = (int) (Math.atan2(deltaZ, horizontalDistance) * 325.94900000000001D) & 0x7ff;
+					xCameraCurve = (int) (Math.atan2(deltaX, deltaY) * -325.94900000000001D) & 0x7ff;
 					if (yCameraCurve < 128) {
 						yCameraCurve = 128;
 					}
@@ -12083,7 +12083,7 @@ public class Game extends RSApplet {
 		addNpcsToScene(false);
 		updateProjectiles();
 		updateTransientGraphics();
-		if (!aBoolean1160) {
+		if (!cutsceneCameraActive) {
 			int cameraPitch = cameraPitchBase;
 			if (cameraTerrainClearance / 256 > cameraPitch) {
 				cameraPitch = cameraTerrainClearance / 256;
@@ -12096,7 +12096,7 @@ public class Game extends RSApplet {
 			setCameraPos(600 + cameraPitch * zoom, cameraPitch, cameraFollowX, interpolatedGroundHeight(plane, myPlayer.y, myPlayer.x) - 70, cameraYaw, cameraFollowY);
 		}
 		int scenePlane;
-		if (!aBoolean1160) {
+		if (!cutsceneCameraActive) {
 			scenePlane = selectRoofVisibilityPlane();
 		} else {
 			scenePlane = selectFixedCameraPlane();
@@ -12386,7 +12386,7 @@ public class Game extends RSApplet {
 		loggedIn = false;
 		canMute = false;
 		constructedScene = false;
-		aBoolean1160 = false;
+		cutsceneCameraActive = false;
 		minimapZoomDriftStep = 1;
 		myUsername = "";
 		myPassword = "";
@@ -12583,17 +12583,17 @@ public class Game extends RSApplet {
 	public int dragHeldCycles;
 	public final int[] designerColorIndices;
 	public static boolean aBoolean993;
-	public int anInt995;
-	public int anInt996;
-	public int anInt997;
-	public int anInt998;
-	public int anInt999;
+	public int cutsceneLookTileX;
+	public int cutsceneLookTileY;
+	public int cutsceneLookHeight;
+	public int cutsceneLookTurnStep;
+	public int cutsceneLookTurnRate;
 	public ISAACRandomGen encryption;
 	public Sprite minimapEdgeArrow;
 	public final int scrollTrackColor;
 	static final int[][] appearanceColorPalettes = {{6798, 107, 10283, 16, 4797, 7744, 5799, 4634, 33697, 22433, 2983, 54193}, {8741, 12, 64030, 43162, 7735, 8404, 1701, 38430, 24094, 10153, 56621, 4783, 1341, 16578, 35003, 25239}, {25238, 8742, 12, 64030, 43162, 7735, 8404, 1701, 38430, 24094, 10153, 56621, 4783, 1341, 16578, 35003}, {4626, 11146, 6439, 12, 4758, 10270}, {4550, 4537, 5681, 5673, 5790, 6806, 8076, 4574}};
 	public String amountOrNameInput;
-	public static int anInt1005;
+	public static int junkPacketCounter;
 	public int daysSinceLastLogin;
 	public int pktSize;
 	public int pktType;
@@ -12680,11 +12680,11 @@ public class Game extends RSApplet {
 	public Sprite[] skullIcons;
 	public Sprite[] headIconsHint;
 	public static int terrainRebuildCount;
-	public int anInt1098;
-	public int anInt1099;
-	public int anInt1100;
-	public int anInt1101;
-	public int anInt1102;
+	public int cutsceneCameraTileX;
+	public int cutsceneCameraTileY;
+	public int cutsceneCameraHeight;
+	public int cutsceneCameraMoveStep;
+	public int cutsceneCameraMoveRate;
 	public boolean tabAreaAltered;
 	public int systemUpdateCycles;
 	public RSImageProducer titleTopBannerProducer;
@@ -12735,7 +12735,7 @@ public class Game extends RSApplet {
 	public boolean loggedIn;
 	public boolean canMute;
 	public boolean constructedScene;
-	public boolean aBoolean1160;
+	public boolean cutsceneCameraActive;
 	static int loopCycle;
 	public static final String validUserPassChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!\"\243$%^&*()-_=+[{]};:'@#~,<.>/?\\| ";
 	public RSImageProducer tabPanelIP;

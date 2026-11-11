@@ -10,13 +10,13 @@ public class CameraFollowTest {
 
     @Before public void saveStatics() {
         priorPlayer = Game.myPlayer;
-        priorCounter = Game.anInt1005;
-        Game.anInt1005 = 0;
+        priorCounter = Game.junkPacketCounter;
+        Game.junkPacketCounter = 0;
     }
 
     @After public void restoreStatics() {
         Game.myPlayer = priorPlayer;
-        Game.anInt1005 = priorCounter;
+        Game.junkPacketCounter = priorCounter;
     }
 
     private static Game game() throws Exception {

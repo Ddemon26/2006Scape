@@ -256,7 +256,18 @@ public class RegionPacketParserTest {
             }
             assertEquals(NEW_BASE[0], g.previousBaseX); assertEquals(NEW_BASE[1], g.previousBaseY);
             assertEquals(24, g.destX); assertEquals(58, g.destY);
-            assertTrue(g.aBoolean1080); assertFalse(g.aBoolean1160);
+            assertTrue(g.aBoolean1080); assertFalse(g.cutsceneCameraActive);
+        }
+    }
+
+    @Test public void regionChangePacketsCancelAnActiveServerDrivenCamera() throws Exception {
+        for (int op : new int[] {73, 241}) {
+            Game g = shifted(16, -8);
+            g.cutsceneCameraActive = true;
+            g.cutsceneCameraTileX = 50; g.cutsceneLookTileX = 20;
+            deliver(g, op, op == 73 ? packet73(405, 702) : packet241(702, noTemplates(), 405));
+            assertFalse("opcode " + op, g.cutsceneCameraActive);
+            assertEquals(50, g.cutsceneCameraTileX); assertEquals(20, g.cutsceneLookTileX);   // only the flag is cleared
         }
     }
 
