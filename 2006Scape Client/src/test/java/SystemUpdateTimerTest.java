@@ -453,7 +453,7 @@ public class SystemUpdateTimerTest {
     private Game chat(int advance) throws Exception {
         Game g = new Game();
         g.splitPrivateChat = 1;
-        g.aTextDrawingArea_1271 = font(advance, null);
+        g.p12TextDrawingArea = font(advance, null);
         g.modIcons[0] = icon(ICON1); g.modIcons[1] = icon(ICON2);
         g.privateChatMode = 0;
         return g;

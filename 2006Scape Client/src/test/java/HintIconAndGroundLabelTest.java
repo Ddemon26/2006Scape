@@ -67,7 +67,7 @@ public class HintIconAndGroundLabelTest {
         Spy s = new Spy();
         s.groundArray = new NodeList[4][104][104];
         s.chatTextDrawingArea = TextWidthTest.font(false);
-        s.aTextDrawingArea_1270 = s.chatTextDrawingArea;
+        s.p11TextDrawingArea = s.chatTextDrawingArea;
         s.chatEffectsMode = 0; s.publicChatMode = 0;
         s.playerArray = new Player[64]; s.playerIndices = new int[64]; s.playerCount = 0;
         s.npcArray = new NPC[64]; s.npcIndices = new int[64]; s.npcCount = 0;

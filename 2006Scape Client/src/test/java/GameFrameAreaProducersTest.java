@@ -199,7 +199,7 @@ public class GameFrameAreaProducersTest {
         g.minimapIP = new RSImageProducer(172, 156, c);
         g.chatBack = solid(479, 96, 0x445566);
         g.scrollUpArrow = solid(16, 16, 0x990000); g.scrollDownArrow = solid(16, 16, 0x990000);
-        g.chatTextDrawingArea = blankFont(); g.aTextDrawingArea_1271 = blankFont();
+        g.chatTextDrawingArea = blankFont(); g.p12TextDrawingArea = blankFont();
         g.drawChatArea();
         int[] q = g.chatPanelIP.pixels;
         // chatBack covers the whole 479x96 producer; only the scrollbar column x>=463, y<77 is drawn over it.
@@ -245,7 +245,7 @@ public class GameFrameAreaProducersTest {
                 "backVmidIP1", "backVmidIP2", "backVmidIP3", "backVmidIP2_2"}) {
             Game.class.getField(n).set(f, new RSImageProducer(2, 2, c));
         }
-        f.aTextDrawingArea_1271 = blankFont();
+        f.p12TextDrawingArea = blankFont();
         f.welcomeScreenRaised = true;
         f.tabInterfaceIDs[0] = -1;
         f.drawGameScreen();
@@ -283,7 +283,7 @@ public class GameFrameAreaProducersTest {
         f.worldViewIP = new RSImageProducer(512, 334, c);
         f.chatModeButtonsIP = new RSImageProducer(496, 50, c);
         f.backBase1 = solid(496, 50, 0x303030);
-        f.aTextDrawingArea_1271 = blankFont();
+        f.p12TextDrawingArea = blankFont();
         return f;
     }
 

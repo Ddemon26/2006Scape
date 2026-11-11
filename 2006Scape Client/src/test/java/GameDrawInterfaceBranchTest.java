@@ -138,7 +138,7 @@ public class GameDrawInterfaceBranchTest {
         ItemDef.mruNodes1.removeFromCache(sprite(2, 2, 0x0000aa), 9002);
         inv.itemIdsPlusOne = new int[]{9002, 0, 9003};
         inv.itemQuantities = new int[]{1, 0, 150000};
-        g.aTextDrawingArea_1270 = font(1);
+        g.p11TextDrawingArea = font(1);
         g.drawInterface(0, 0, root(inv, 10, 20), 0);
         assertEquals(0x00aa00, px(10, 20));
         assertEquals(BG, px(42, 20));

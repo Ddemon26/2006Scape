@@ -289,7 +289,7 @@ public class GameLeftoversBTest {
         EntitySpy s = new EntitySpy();
         s.groundArray = new NodeList[4][104][104];
         s.chatTextDrawingArea = TextWidthTest.font(false);
-        s.aTextDrawingArea_1270 = s.chatTextDrawingArea;
+        s.p11TextDrawingArea = s.chatTextDrawingArea;
         s.chatEffectsMode = mode; s.publicChatMode = 0;
         Player p = new Player(); s.myPlayer = p;
         p.textSpoken = "AB"; p.overheadChatColorCode = 0; p.overheadChatEffectCode = effect; p.textCycle = 100; p.headIcon = -1; p.visible = true;

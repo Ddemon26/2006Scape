@@ -61,7 +61,7 @@ public class GameChatHistoryDrawingTest {
         g.worldViewIP = new RSImageProducer(512, 334, c);
         g.graphics = new BufferedImage(765, 503, BufferedImage.TYPE_INT_RGB).getGraphics();
         g.chatBack = solid(479, 96, BACK);
-        g.aTextDrawingArea_1271 = font(3); g.chatTextDrawingArea = font(7);
+        g.p12TextDrawingArea = font(3); g.chatTextDrawingArea = font(7);
         set(g, "modIcons", new Background[] {solid(2, 2, 0xaa1111), solid(2, 2, 0x11aa11)});
         g.backDialogID = g.dialogID = -1;
         g.publicChatMode = g.privateChatMode = g.tradeMode = g.splitPrivateChat = 0;
