@@ -3033,7 +3033,7 @@ public class Game extends RSApplet {
 		//(for example killing a bunch of cows results in client lag, 
 		//likely from all the items on the ground for example), < 100 is fine. 
 		//OSRS uses < 100 and there are no drawbacks from having this < 100.
-		for (int j = 0; j < 100; j++) {
+		for (int packetParseIteration = 0; packetParseIteration < 100; packetParseIteration++) {
 			if (!parsePacket()) {
 				break;
 			}
@@ -3047,63 +3047,63 @@ public class Game extends RSApplet {
 				if (super.clickMode3 != 0 || mouseDetection.sampleCount >= 40) {
 					stream.writeEncryptedOpcode(45);
 					stream.writeByte(0);
-					int j2 = stream.currentOffset;
-					int j3 = 0;
-					for (int j4 = 0; j4 < mouseDetection.sampleCount; j4++) {
-						if (j2 - stream.currentOffset >= 240) {
+					int mouseSamplePayloadStart = stream.currentOffset;
+					int mouseSamplesEncoded = 0;
+					for (int mouseSampleIndex = 0; mouseSampleIndex < mouseDetection.sampleCount; mouseSampleIndex++) {
+						if (mouseSamplePayloadStart - stream.currentOffset >= 240) {
 							break;
 						}
-						j3++;
-						int l4 = mouseDetection.sampledMouseYs[j4];
-						if (l4 < 0) {
-							l4 = 0;
-						} else if (l4 > 502) {
-							l4 = 502;
+						mouseSamplesEncoded++;
+						int sampleY = mouseDetection.sampledMouseYs[mouseSampleIndex];
+						if (sampleY < 0) {
+							sampleY = 0;
+						} else if (sampleY > 502) {
+							sampleY = 502;
 						}
-						int k5 = mouseDetection.sampledMouseXs[j4];
-						if (k5 < 0) {
-							k5 = 0;
-						} else if (k5 > 764) {
-							k5 = 764;
+						int sampleX = mouseDetection.sampledMouseXs[mouseSampleIndex];
+						if (sampleX < 0) {
+							sampleX = 0;
+						} else if (sampleX > 764) {
+							sampleX = 764;
 						}
-						int i6 = l4 * 765 + k5;
-						if (mouseDetection.sampledMouseYs[j4] == -1 && mouseDetection.sampledMouseXs[j4] == -1) {
-							k5 = -1;
-							l4 = -1;
-							i6 = 0x7ffff;
+						int samplePackedPosition = sampleY * 765 + sampleX;
+						if (mouseDetection.sampledMouseYs[mouseSampleIndex] == -1 && mouseDetection.sampledMouseXs[mouseSampleIndex] == -1) {
+							sampleX = -1;
+							sampleY = -1;
+							samplePackedPosition = 0x7ffff;
 						}
-						if (k5 == anInt1237 && l4 == anInt1238) {
-							if (anInt1022 < 2047) {
-								anInt1022++;
+						if (sampleX == lastMouseSampleX && sampleY == lastMouseSampleY) {
+							if (mouseSampleRepeatCount < 2047) {
+								mouseSampleRepeatCount++;
 							}
 						} else {
-							int j6 = k5 - anInt1237;
-							anInt1237 = k5;
-							int k6 = l4 - anInt1238;
-							anInt1238 = l4;
-							if (anInt1022 < 8 && j6 >= -32 && j6 <= 31 && k6 >= -32 && k6 <= 31) {
-								j6 += 32;
-								k6 += 32;
-								stream.writeShortBigEndian((anInt1022 << 12) + (j6 << 6) + k6);
-								anInt1022 = 0;
-							} else if (anInt1022 < 8) {
-								stream.writeMediumBigEndian(0x800000 + (anInt1022 << 19) + i6);
-								anInt1022 = 0;
+							int sampleDeltaX = sampleX - lastMouseSampleX;
+							lastMouseSampleX = sampleX;
+							int sampleDeltaY = sampleY - lastMouseSampleY;
+							lastMouseSampleY = sampleY;
+							if (mouseSampleRepeatCount < 8 && sampleDeltaX >= -32 && sampleDeltaX <= 31 && sampleDeltaY >= -32 && sampleDeltaY <= 31) {
+								sampleDeltaX += 32;
+								sampleDeltaY += 32;
+								stream.writeShortBigEndian((mouseSampleRepeatCount << 12) + (sampleDeltaX << 6) + sampleDeltaY);
+								mouseSampleRepeatCount = 0;
+							} else if (mouseSampleRepeatCount < 8) {
+								stream.writeMediumBigEndian(0x800000 + (mouseSampleRepeatCount << 19) + samplePackedPosition);
+								mouseSampleRepeatCount = 0;
 							} else {
-								stream.writeIntBigEndian(0xc0000000 + (anInt1022 << 19) + i6);
-								anInt1022 = 0;
+								stream.writeIntBigEndian(0xc0000000 + (mouseSampleRepeatCount << 19) + samplePackedPosition);
+								mouseSampleRepeatCount = 0;
 							}
 						}
 					}
 
-					stream.backpatchBytePayloadLength(stream.currentOffset - j2);
-					if (j3 >= mouseDetection.sampleCount) {
+					stream.backpatchBytePayloadLength(stream.currentOffset - mouseSamplePayloadStart);
+					if (mouseSamplesEncoded >= mouseDetection.sampleCount) {
 						mouseDetection.sampleCount = 0;
 					} else {
-						mouseDetection.sampleCount -= j3;
+						mouseDetection.sampleCount -= mouseSamplesEncoded;
 						for (int i5 = 0; i5 < mouseDetection.sampleCount; i5++) {
-							mouseDetection.sampledMouseXs[i5] = mouseDetection.sampledMouseXs[i5 + j3];
-							mouseDetection.sampledMouseYs[i5] = mouseDetection.sampledMouseYs[i5 + j3];
+							mouseDetection.sampledMouseXs[i5] = mouseDetection.sampledMouseXs[i5 + mouseSamplesEncoded];
+							mouseDetection.sampledMouseYs[i5] = mouseDetection.sampledMouseYs[i5 + mouseSamplesEncoded];
 						}
 
 					}
@@ -3113,31 +3113,31 @@ public class Game extends RSApplet {
 			}
 		}
 		if (super.clickMode3 != 0) {
-			long l = (super.saveClickTime - aLong1220) / 50L;
-			if (l > 4095L) {
-				l = 4095L;
+			long clickDelayTicks = (super.saveClickTime - lastReportedClickTime) / 50L;
+			if (clickDelayTicks > 4095L) {
+				clickDelayTicks = 4095L;
 			}
-			aLong1220 = super.saveClickTime;
-			int k2 = super.saveClickY;
-			if (k2 < 0) {
-				k2 = 0;
-			} else if (k2 > 502) {
-				k2 = 502;
+			lastReportedClickTime = super.saveClickTime;
+			int clickY = super.saveClickY;
+			if (clickY < 0) {
+				clickY = 0;
+			} else if (clickY > 502) {
+				clickY = 502;
 			}
-			int k3 = super.saveClickX;
-			if (k3 < 0) {
-				k3 = 0;
-			} else if (k3 > 764) {
-				k3 = 764;
+			int clickX = super.saveClickX;
+			if (clickX < 0) {
+				clickX = 0;
+			} else if (clickX > 764) {
+				clickX = 764;
 			}
-			int k4 = k2 * 765 + k3;
-			int j5 = 0;
+			int clickPackedPosition = clickY * 765 + clickX;
+			int rightClickFlag = 0;
 			if (super.clickMode3 == 2) {
-				j5 = 1;
+				rightClickFlag = 1;
 			}
-			int l5 = (int) l;
+			int clickDelayTicksInt = (int) clickDelayTicks;
 			stream.writeEncryptedOpcode(241);
-			stream.writeIntBigEndian((l5 << 20) + (j5 << 19) + k4);
+			stream.writeIntBigEndian((clickDelayTicksInt << 20) + (rightClickFlag << 19) + clickPackedPosition);
 		}
 		if (cameraSendCooldown > 0) {
 			cameraSendCooldown--;
@@ -3152,13 +3152,13 @@ public class Game extends RSApplet {
 			stream.writeShortBigEndian(cameraPitchBase);
 			stream.writeShortBigEndianAdd128(cameraYawBase);
 		}
-		if (super.awtFocus && !aBoolean954) {
-			aBoolean954 = true;
+		if (super.awtFocus && !focusReportedToServer) {
+			focusReportedToServer = true;
 			stream.writeEncryptedOpcode(3);
 			stream.writeByte(1);
 		}
-		if (!super.awtFocus && aBoolean954) {
-			aBoolean954 = false;
+		if (!super.awtFocus && focusReportedToServer) {
+			focusReportedToServer = false;
 			stream.writeEncryptedOpcode(3);
 			stream.writeByte(0);
 		}
@@ -3254,11 +3254,11 @@ public class Game extends RSApplet {
 			}
 		}
 		if (WorldController.pickedTileX != -1) {
-			int k = WorldController.pickedTileX;
-			int k1 = WorldController.pickedTileY;
-			boolean flag = doWalkTo(0, 0, 0, 0, myPlayer.smallY[0], 0, 0, k1, myPlayer.smallX[0], true, k);
+			int walkTargetX = WorldController.pickedTileX;
+			int walkTargetY = WorldController.pickedTileY;
+			boolean walkAccepted = doWalkTo(0, 0, 0, 0, myPlayer.smallY[0], 0, 0, walkTargetY, myPlayer.smallX[0], true, walkTargetX);
 			WorldController.pickedTileX = -1;
-			if (flag) {
+			if (walkAccepted) {
 				crossX = super.saveClickX;
 				crossY = super.saveClickY;
 				crossType = 1;
@@ -3284,8 +3284,8 @@ public class Game extends RSApplet {
 		if (loadingStage == 2 && cutsceneCameraActive) {
 			calcCameraPos();
 		}
-		for (int i1 = 0; i1 < 5; i1++) {
-			shakePhase[i1]++;
+		for (int shakeIndex = 0; shakeIndex < 5; shakeIndex++) {
+			shakePhase[shakeIndex]++;
 		}
 
 		processKeyboardInput();
@@ -3350,15 +3350,15 @@ public class Game extends RSApplet {
 		if (minimapZoomDrift > 10) {
 			minimapZoomDriftStep = -1;
 		}
-		anInt1010++;
-		if (anInt1010 > 50) {
+		cyclesSinceLastSend++;
+		if (cyclesSinceLastSend > 50) {
 			stream.writeEncryptedOpcode(0);
 		}
 		try {
 			if (socketStream != null && stream.currentOffset > 0) {
 				socketStream.queueBytes(stream.currentOffset, stream.buffer);
 				stream.currentOffset = 0;
-				anInt1010 = 0;
+				cyclesSinceLastSend = 0;
 			}
 		} catch (IOException _ex) {
 			dropClient();
@@ -6176,11 +6176,11 @@ public class Game extends RSApplet {
 			if (responseCode == 2) {
 				myPrivilege = socketStream.read();
 				flagged = socketStream.read() == 1;
-				aLong1220 = 0L;
-				anInt1022 = 0;
+				lastReportedClickTime = 0L;
+				mouseSampleRepeatCount = 0;
 				mouseDetection.sampleCount = 0;
 				super.awtFocus = true;
-				aBoolean954 = true;
+				focusReportedToServer = true;
 				loggedIn = true;
 				stream.currentOffset = 0;
 				inStream.currentOffset = 0;
@@ -12315,7 +12315,7 @@ public class Game extends RSApplet {
 		chatNames = new String[100];
 		chatMessages = new String[100];
 		sideIcons = new Background[13];
-		aBoolean954 = true;
+		focusReportedToServer = true;
 		friendsListAsLongs = new long[200];
 		currentSong = -1;
 		drawingFlames = false;
@@ -12548,7 +12548,7 @@ public class Game extends RSApplet {
 	public int menuWidth;
 	public int anInt952;
 	public long aLong953;
-	public boolean aBoolean954;
+	public boolean focusReportedToServer;
 	public long[] friendsListAsLongs;
 	public int currentSong;
 	public static int nodeID = 10;
@@ -12598,7 +12598,7 @@ public class Game extends RSApplet {
 	public int pktSize;
 	public int pktType;
 	public int cyclesSinceLastPacket;
-	public int anInt1010;
+	public int cyclesSinceLastSend;
 	public int logoutRequestCycles;
 	public NodeList projectiles;
 	public int cameraFollowX;
@@ -12608,7 +12608,7 @@ public class Game extends RSApplet {
 	public int walkableInterfaceId;
 	public static final int[] anIntArray1019;
 	public int minimapState;
-	public int anInt1022;
+	public int mouseSampleRepeatCount;
 	public int loadingStage;
 	public Background scrollUpArrow;
 	public Background scrollDownArrow;
@@ -12789,7 +12789,7 @@ public class Game extends RSApplet {
 	public long serverSessionKey;
 	public int loginScreenCursorPos;
 	public final Background[] modIcons;
-	public long aLong1220;
+	public long lastReportedClickTime;
 	public int tabID;
 	public volatile int drawnTabID = 3;
 	public int hintIconNpcIndex;
@@ -12805,8 +12805,8 @@ public class Game extends RSApplet {
 	public int[] regionKeys;
 	public int[] regionTerrainFileIds;
 	public int[] regionObjectFileIds;
-	public int anInt1237;
-	public int anInt1238;
+	public int lastMouseSampleX;
+	public int lastMouseSampleY;
 	public final int anInt1239 = 100;
 	public final int[] soundType;
 	public boolean dragMoved;

@@ -220,6 +220,26 @@ public class GameLoginTest {
             assertEquals(1162, g.selectedSpellInterfaceId);              // not part of the reset
         } finally { setDoActionCounters(0); }
     }
+
+    @Test public void successResponseResetsClickTimeRepeatCountFocusAndSampleCountButNotLastSampleOrSendCounter() throws Exception {
+        g.lastReportedClickTime = 123456789L; g.mouseSampleRepeatCount = 17; g.lastMouseSampleX = 11; g.lastMouseSampleY = 22; g.cyclesSinceLastSend = 33;
+        g.focusReportedToServer = false; g.awtFocus = false; g.mouseDetection.sampleCount = 77;
+        s(3, false);                                      // refused login: none of the state is touched
+        g.login("Alice", "pw", true);
+        next();
+        assertFalse(g.loggedIn);
+        assertEquals(123456789L, g.lastReportedClickTime); assertEquals(17, g.mouseSampleRepeatCount); assertFalse(g.focusReportedToServer); assertFalse(g.awtFocus);
+        assertEquals(77, g.mouseDetection.sampleCount);
+        s(0, true, 2, 0, 0);
+        g.login("Alice", "pw", true);
+        next();
+        assertTrue(g.loggedIn);
+        assertEquals(0L, g.lastReportedClickTime); assertEquals(0, g.mouseSampleRepeatCount);
+        assertTrue(g.focusReportedToServer); assertTrue(g.awtFocus);
+        assertEquals(0, g.mouseDetection.sampleCount);
+        assertEquals(11, g.lastMouseSampleX); assertEquals(22, g.lastMouseSampleY); assertEquals(33, g.cyclesSinceLastSend);
+    }
+
     @Test public void serverKeyIsStoredAndLoginBlockIsBuiltInItsOwnBuffer() throws Exception {
         long previousKey = 0;
         for (int pass = 0; pass < 2; pass++) {

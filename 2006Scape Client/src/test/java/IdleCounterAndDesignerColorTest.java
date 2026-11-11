@@ -38,7 +38,7 @@ public class IdleCounterAndDesignerColorTest {
         s.stream = new Stream(new byte[5000]);
         s.stream.encryption = new ISAACRandomGen(new int[]{1, 2, 3, 4});
         s.loggedIn = true;
-        s.aBoolean954 = true;
+        s.focusReportedToServer = true;
         return s;
     }
     private static void cycle(Game g) {

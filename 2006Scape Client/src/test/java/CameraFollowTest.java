@@ -121,7 +121,7 @@ public class CameraFollowTest {
         s.stream = new Stream(new byte[5000]);
         s.stream.encryption = new ISAACRandomGen(new int[]{1, 2, 3, 4});
         s.loggedIn = true;
-        s.aBoolean954 = true;
+        s.focusReportedToServer = true;
         s.cameraDriftTimer = 0;
         return s;
     }
