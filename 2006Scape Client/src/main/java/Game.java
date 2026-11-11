@@ -3805,10 +3805,10 @@ public class Game extends RSApplet {
 				crossY = super.saveClickY;
 				crossType = 2;
 				crossIndex = 0;
-				anInt1188 += i1;
-				if (anInt1188 >= 90) {
+				challengeDecoyCounter += i1;
+				if (challengeDecoyCounter >= 90) {
 					stream.writeEncryptedOpcode(136);
-					anInt1188 = 0;
+					challengeDecoyCounter = 0;
 				}
 				stream.writeEncryptedOpcode(128);
 				stream.writeShortBigEndian(i1);
@@ -3846,11 +3846,11 @@ public class Game extends RSApplet {
 			}
 		}
 		if (l == 1062) { //Fifth click
-			anInt924 += baseX;
-			if (anInt924 >= 113) {
+			objectFifthClickDecoyCounter += baseX;
+			if (objectFifthClickDecoyCounter >= 113) {
 				stream.writeEncryptedOpcode(183);
 				stream.writeMediumBigEndian(0xe63271);
-				anInt924 = 0;
+				objectFifthClickDecoyCounter = 0;
 			}
 			walkToSceneObject(i1, k, j);
 			stream.writeEncryptedOpcode(228);
@@ -3949,10 +3949,10 @@ public class Game extends RSApplet {
 						stream.writeShortLittleEndian(playerIndices[j3]);
 					}
 					if (l == 6) {
-						anInt1188 += i1;
-						if (anInt1188 >= 90) {
+						challengeDecoyCounter += i1;
+						if (challengeDecoyCounter >= 90) {
 							stream.writeEncryptedOpcode(136);
-							anInt1188 = 0;
+							challengeDecoyCounter = 0;
 						}
 						stream.writeEncryptedOpcode(128);
 						stream.writeShortBigEndian(playerIndices[j3]);
@@ -4004,7 +4004,7 @@ public class Game extends RSApplet {
 		if (l == 626) {
 			RSInterface class9_1 = RSInterface.interfaceCache[k];
 			spellSelected = 1;
-			anInt1137 = k;
+			selectedSpellInterfaceId = k;
 			spellUsableOn = class9_1.spellUsableOn;
 			itemSelected = 0;
 			needDrawTabArea = true;
@@ -4048,11 +4048,11 @@ public class Game extends RSApplet {
 				crossY = super.saveClickY;
 				crossType = 2;
 				crossIndex = 0;
-				anInt986 += i1;
-				if (anInt986 >= 54) {
+				attackPlayerDecoyCounter += i1;
+				if (attackPlayerDecoyCounter >= 54) {
 					stream.writeEncryptedOpcode(189);
 					stream.writeByte(234);
-					anInt986 = 0;
+					attackPlayerDecoyCounter = 0;
 				}
 				stream.writeEncryptedOpcode(73);
 				stream.writeShortLittleEndian(i1);
@@ -4131,7 +4131,7 @@ public class Game extends RSApplet {
 			stream.writeShortLittleEndian(k + baseY);
 			stream.writeShortBigEndian(i1);
 			stream.writeShortLittleEndian(j + baseX);
-			stream.writeShortBigEndianAdd128(anInt1137);
+			stream.writeShortBigEndianAdd128(selectedSpellInterfaceId);
 		}
 		if (l == 646) {
 			stream.writeEncryptedOpcode(185);
@@ -4154,11 +4154,11 @@ public class Game extends RSApplet {
 				crossY = super.saveClickY;
 				crossType = 2;
 				crossIndex = 0;
-				anInt1226 += i1;
-				if (anInt1226 >= 85) {
+				npcSecondClickDecoyCounter += i1;
+				if (npcSecondClickDecoyCounter >= 85) {
 					stream.writeEncryptedOpcode(230);
 					stream.writeByte(239);
-					anInt1226 = 0;
+					npcSecondClickDecoyCounter = 0;
 				}
 				stream.writeEncryptedOpcode(17);
 				stream.writeShortLittleEndianAdd128(i1);
@@ -4172,11 +4172,11 @@ public class Game extends RSApplet {
 				crossY = super.saveClickY;
 				crossType = 2;
 				crossIndex = 0;
-				anInt1134++;
-				if (anInt1134 >= 96) {
+				npcThirdClickDecoyCounter++;
+				if (npcThirdClickDecoyCounter >= 96) {
 					stream.writeEncryptedOpcode(152);
 					stream.writeByte(88);
-					anInt1134 = 0;
+					npcThirdClickDecoyCounter = 0;
 				}
 				stream.writeEncryptedOpcode(21);
 				stream.writeShortBigEndian(i1);
@@ -4192,7 +4192,7 @@ public class Game extends RSApplet {
 				crossIndex = 0;
 				stream.writeEncryptedOpcode(131);
 				stream.writeShortLittleEndianAdd128(i1);
-				stream.writeShortBigEndianAdd128(anInt1137);
+				stream.writeShortBigEndianAdd128(selectedSpellInterfaceId);
 			}
 		}
 		if (l == 200) {
@@ -4245,7 +4245,7 @@ public class Game extends RSApplet {
 				crossIndex = 0;
 				stream.writeEncryptedOpcode(249);
 				stream.writeShortBigEndianAdd128(i1);
-				stream.writeShortLittleEndian(anInt1137);
+				stream.writeShortLittleEndian(selectedSpellInterfaceId);
 			}
 		}
 		if (l == 729) {
@@ -4275,7 +4275,7 @@ public class Game extends RSApplet {
 		if (l == 956 && walkToSceneObject(i1, k, j)) {
 			stream.writeEncryptedOpcode(35);
 			stream.writeShortLittleEndian(j + baseX);
-			stream.writeShortBigEndianAdd128(anInt1137);
+			stream.writeShortBigEndianAdd128(selectedSpellInterfaceId);
 			stream.writeShortBigEndianAdd128(k + baseY);
 			stream.writeShortLittleEndian(i1 >> 14 & 0x7fff);
 		}
@@ -4295,12 +4295,12 @@ public class Game extends RSApplet {
 		}
 		if (l == 867) {
 			if ((i1 & 3) == 0) {
-				anInt1175++;
+				itemThirdOptionDecoyCounter++;
 			}
-			if (anInt1175 >= 59) {
+			if (itemThirdOptionDecoyCounter >= 59) {
 				stream.writeEncryptedOpcode(200);
 				stream.writeShortBigEndian(25501);
-				anInt1175 = 0;
+				itemThirdOptionDecoyCounter = 0;
 			}
 			stream.writeEncryptedOpcode(43);
 			stream.writeShortLittleEndian(k);
@@ -4322,7 +4322,7 @@ public class Game extends RSApplet {
 			stream.writeShortBigEndian(j);
 			stream.writeShortBigEndianAdd128(i1);
 			stream.writeShortBigEndian(k);
-			stream.writeShortBigEndianAdd128(anInt1137);
+			stream.writeShortBigEndianAdd128(selectedSpellInterfaceId);
 			atInventoryLoopCycle = 0;
 			actionHighlightInterfaceId = k;
 			actionHighlightSlotIndex = j;
@@ -4425,12 +4425,12 @@ public class Game extends RSApplet {
 				crossType = 2;
 				crossIndex = 0;
 				if ((i1 & 3) == 0) {
-					anInt1155++;
+					npcFifthOptionDecoyCounter++;
 				}
-				if (anInt1155 >= 53) {
+				if (npcFifthOptionDecoyCounter >= 53) {
 					stream.writeEncryptedOpcode(85);
 					stream.writeByte(66);
-					anInt1155 = 0;
+					npcFifthOptionDecoyCounter = 0;
 				}
 				stream.writeEncryptedOpcode(18);
 				stream.writeShortLittleEndian(i1);
@@ -6264,14 +6264,14 @@ public class Game extends RSApplet {
 					atPlayerArray[actionIndex] = false;
 				}
 
-				anInt1175 = 0;
-				anInt1134 = 0;
-				anInt986 = 0;
+				itemThirdOptionDecoyCounter = 0;
+				npcThirdClickDecoyCounter = 0;
+				attackPlayerDecoyCounter = 0;
 				waypointsSinceKeepAlive = 0;
-				anInt924 = 0;
-				anInt1188 = 0;
-				anInt1155 = 0;
-				anInt1226 = 0;
+				objectFifthClickDecoyCounter = 0;
+				challengeDecoyCounter = 0;
+				npcFifthOptionDecoyCounter = 0;
+				npcSecondClickDecoyCounter = 0;
 				resetImageProducers2();
 				return;
 			}
@@ -12521,7 +12521,7 @@ public class Game extends RSApplet {
 	public int crossType;
 	public int plane;
 	public final int[] currentStats;
-	public static int anInt924;
+	public static int objectFifthClickDecoyCounter;
 	public final long[] ignoreListAsLongs;
 	public boolean loadingError;
 	public final int scrollShadowColor;
@@ -12577,7 +12577,7 @@ public class Game extends RSApplet {
 	public final String[] overheadChatTexts;
 	public int cameraTerrainClearance;
 	public int minimapBuiltPlane;
-	public static int anInt986;
+	public static int attackPlayerDecoyCounter;
 	public Sprite[] hitMarks;
 	public int cameraDriftTimer;
 	public int dragHeldCycles;
@@ -12711,9 +12711,9 @@ public class Game extends RSApplet {
 	public int cameraDriftY;
 	public int cameraDriftYStep;
 	public int menuActionRow;
-	public static int anInt1134;
+	public static int npcThirdClickDecoyCounter;
 	public int spellSelected;
-	public int anInt1137;
+	public int selectedSpellInterfaceId;
 	public int spellUsableOn;
 	public String spellTooltip;
 	public Sprite[] mapFunctionIconSprites;
@@ -12731,7 +12731,7 @@ public class Game extends RSApplet {
 	public Background[] titleFlameRuneMasks;
 	public boolean needDrawTabArea;
 	public int unreadMessages;
-	public static int anInt1155;
+	public static int npcFifthOptionDecoyCounter;
 	public boolean loggedIn;
 	public boolean canMute;
 	public boolean constructedScene;
@@ -12749,7 +12749,7 @@ public class Game extends RSApplet {
 	public static long soundEndReferenceStartMillis;
 	public String myUsername;
 	public String myPassword;
-	public static int anInt1175;
+	public static int itemThirdOptionDecoyCounter;
 	public boolean genericLoadingError;
 	public final int[] anIntArray1177 = {0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3};
 	public int reportAbuseInterfaceID;
@@ -12762,7 +12762,7 @@ public class Game extends RSApplet {
 	public int cameraYawBase;
 	public int cameraYawVelocity;
 	public int cameraPitchVelocity;
-	public static int anInt1188;
+	public static int challengeDecoyCounter;
 	public int invOverlayInterfaceID;
 	public int[] flameNoise;
 	public int[] flameNoiseScratch;
@@ -12795,7 +12795,7 @@ public class Game extends RSApplet {
 	public int hintIconNpcIndex;
 	public boolean inputTaken;
 	public int inputDialogState;
-	public static int anInt1226;
+	public static int npcSecondClickDecoyCounter;
 	public int nextSong;
 	public boolean songChanging;
 	public final int[] minimapScanlineWidths;

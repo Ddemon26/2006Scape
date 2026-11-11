@@ -196,6 +196,30 @@ public class GameLoginTest {
         assertTrue(g.drawn.isEmpty());
     }
 
+    private static void setDoActionCounters(int v) {
+        Game.itemThirdOptionDecoyCounter = Game.npcThirdClickDecoyCounter = Game.attackPlayerDecoyCounter = Game.objectFifthClickDecoyCounter = Game.challengeDecoyCounter = Game.npcFifthOptionDecoyCounter = Game.npcSecondClickDecoyCounter = v;
+    }
+    private static void assertDoActionCounters(int v) {
+        assertEquals(v, Game.itemThirdOptionDecoyCounter); assertEquals(v, Game.npcThirdClickDecoyCounter); assertEquals(v, Game.attackPlayerDecoyCounter);
+        assertEquals(v, Game.objectFifthClickDecoyCounter); assertEquals(v, Game.challengeDecoyCounter); assertEquals(v, Game.npcFifthOptionDecoyCounter); assertEquals(v, Game.npcSecondClickDecoyCounter);
+    }
+    @Test public void successResponseZeroesTheDoActionCountersButNotTheSelectedSpell() throws Exception {
+        try {
+            setDoActionCounters(7);
+            g.selectedSpellInterfaceId = 1162;
+            s(0, true, 3);                                // a rejected login resets nothing
+            g.login("Alice", "pw", true);
+            next();
+            assertFalse(g.loggedIn);
+            assertDoActionCounters(7);
+            s(0, true, 2, 2, 1);
+            g.login("Alice", "pw", true);
+            next();
+            assertTrue(g.loggedIn);
+            assertDoActionCounters(0);
+            assertEquals(1162, g.selectedSpellInterfaceId);              // not part of the reset
+        } finally { setDoActionCounters(0); }
+    }
     @Test public void serverKeyIsStoredAndLoginBlockIsBuiltInItsOwnBuffer() throws Exception {
         long previousKey = 0;
         for (int pass = 0; pass < 2; pass++) {
