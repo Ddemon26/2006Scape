@@ -211,6 +211,14 @@ public final class OnDemandFetcher extends OnDemandFetcherParent implements Runn
 
 	public void disable() {
 		running = false;
+		try {
+			if (socket != null) {
+				socket.close();
+			}
+		} catch (Exception ignored) {}
+		socket = null;
+		inputStream = null;
+		outputStream = null;
 	}
 
 	public void markMapFilesForDownload(boolean allRegions) {

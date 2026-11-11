@@ -11,6 +11,8 @@ import com.rs2.game.content.combat.CombatConstants;
 import com.rs2.game.content.combat.magic.MagicData;
 import com.rs2.game.content.combat.range.RangeData;
 import com.rs2.game.items.DeprecatedItems;
+import com.rs2.game.npcs.Npc;
+import com.rs2.game.npcs.NpcData;
 import com.rs2.game.npcs.NpcHandler;
 import com.rs2.game.players.Player;
 import com.rs2.net.Packet;
@@ -107,16 +109,12 @@ public class ClickNPC implements PacketType {
 				}
 			}
 			if ((usingBow || player.autocasting)
-					&& player.goodDistance(player.getX(), player.getY(),
-							NpcHandler.npcs[player.npcIndex].getX(),
-							NpcHandler.npcs[player.npcIndex].getY(), 7)) {
+					&& NpcData.goodDistanceNpc(player.npcIndex, player.getX(), player.getY(), 7)) {
 				player.stopMovement();
 			}
 
 			if (usingOtherRangeWeapons
-					&& player.goodDistance(player.getX(), player.getY(),
-							NpcHandler.npcs[player.npcIndex].getX(),
-							NpcHandler.npcs[player.npcIndex].getY(), 4)) {
+					&& NpcData.goodDistanceNpc(player.npcIndex, player.getX(), player.getY(), 4)) {
 				player.stopMovement();
 			}
 			if (!usingCross && !usingArrows && usingBow
@@ -155,6 +153,17 @@ public class ClickNPC implements PacketType {
 
 			if (player.followPlayerId > 0) {
 				player.getPlayerAssistant().resetFollow();
+			}
+			if (RangeData.usingHally(player) && NpcData.goodDistanceNpc(player.npcIndex, player.getX(), player.getY(), 2)) {
+				player.stopMovement();
+			} else if (!player.usingRangeWeapon && !player.usingBow && !player.usingMagic
+					&& NpcData.goodDistanceNpc(player.npcIndex, player.getX(), player.getY(), 1)) {
+				int npcX = NpcHandler.npcs[player.npcIndex].getX();
+				int npcY = NpcHandler.npcs[player.npcIndex].getY();
+				int npcSize = NpcHandler.npcs[player.npcIndex].getSize();
+				if (npcSize > 1 || player.getX() == npcX || player.getY() == npcY) {
+					player.stopMovement();
+				}
 			}
 			if (player.attackTimer <= 0) {
 				player.getCombatAssistant().attackNpc(player.npcIndex);
@@ -218,9 +227,7 @@ public class ClickNPC implements PacketType {
 			}
 
 			if (player.usingMagic) {
-				if (player.goodDistance(player.getX(), player.getY(),
-						NpcHandler.npcs[player.npcIndex].getX(),
-						NpcHandler.npcs[player.npcIndex].getY(), 6)) {
+				if (NpcData.goodDistanceNpc(player.npcIndex, player.getX(), player.getY(), 6)) {
 					player.stopMovement();
 				}
 				if (player.attackTimer <= 0) {
@@ -233,16 +240,19 @@ public class ClickNPC implements PacketType {
 
 		case FIRST_CLICK:
 			player.npcClickIndex = packet.readSignedWordBigEndian();
-			player.npcType = NpcHandler.npcs[player.npcClickIndex].npcType;
+			if (player.npcClickIndex < 0 || player.npcClickIndex >= NpcHandler.npcs.length || NpcHandler.npcs[player.npcClickIndex] == null) {
+				break;
+			}
+			Npc firstClickNpc = NpcHandler.npcs[player.npcClickIndex];
+			player.npcType = firstClickNpc.npcType;
 
-			if (player.goodDistance(NpcHandler.npcs[player.npcClickIndex].getX(),
-					NpcHandler.npcs[player.npcClickIndex].getY(), player.getX(),
+			if (NpcData.goodDistanceNpc(player.npcClickIndex, player.getX(),
 					player.getY(), 2)) {
 				player.turnPlayerTo(NpcHandler.npcs[player.npcClickIndex].getX(),
 						NpcHandler.npcs[player.npcClickIndex].getY());
 				NpcHandler.npcs[player.npcClickIndex].facePlayer(player);
 				player.getNpcs().firstClickNpc(player.npcType);
-				player.post(new NpcFirstClickEvent(player.npcType));
+				player.post(new NpcFirstClickEvent(player.npcType, player.npcClickIndex));
 			} else {
 				player.clickNpcType = 1;
 				   CycleEventHandler.getSingleton().addEvent(player, new CycleEvent() {
@@ -250,16 +260,15 @@ public class ClickNPC implements PacketType {
 			            public void execute(CycleEventContainer container) {
 						if (player.clickNpcType == 1
 								&& NpcHandler.npcs[player.npcClickIndex] != null) {
-							if (player.goodDistance(player.getX(), player.getY(),
-									NpcHandler.npcs[player.npcClickIndex].getX(),
-									NpcHandler.npcs[player.npcClickIndex].getY(), 1)) {
+							if (NpcData.goodDistanceNpc(player.npcClickIndex, player.getX(),
+									player.getY(), 1)) {
 								player.turnPlayerTo(
 										NpcHandler.npcs[player.npcClickIndex].getX(),
 										NpcHandler.npcs[player.npcClickIndex].getY());
 								NpcHandler.npcs[player.npcClickIndex]
 										.facePlayer(player);
 								player.getNpcs().firstClickNpc(player.npcType);
-								player.post(new NpcFirstClickEvent(player.npcType));
+								player.post(new NpcFirstClickEvent(player.npcType, player.npcClickIndex));
 								container.stop();
 							}
 						}
@@ -278,8 +287,7 @@ public class ClickNPC implements PacketType {
 		case SECOND_CLICK:
 			player.npcClickIndex = packet.readUnsignedWordBigEndianA();
 			player.npcType = NpcHandler.npcs[player.npcClickIndex].npcType;
-			if (player.goodDistance(NpcHandler.npcs[player.npcClickIndex].getX(),
-					NpcHandler.npcs[player.npcClickIndex].getY(), player.getX(),
+			if (NpcData.goodDistanceNpc(player.npcClickIndex, player.getX(),
 					player.getY(), 2)) {
 				player.turnPlayerTo(NpcHandler.npcs[player.npcClickIndex].getX(),
 						NpcHandler.npcs[player.npcClickIndex].getY());
@@ -293,9 +301,8 @@ public class ClickNPC implements PacketType {
 			            public void execute(CycleEventContainer container) {
 						if (player.clickNpcType == 2
 								&& NpcHandler.npcs[player.npcClickIndex] != null) {
-							if (player.goodDistance(player.getX(), player.getY(),
-									NpcHandler.npcs[player.npcClickIndex].getX(),
-									NpcHandler.npcs[player.npcClickIndex].getY(), 1)) {
+							if (NpcData.goodDistanceNpc(player.npcClickIndex, player.getX(),
+									player.getY(), 1)) {
 								player.turnPlayerTo(
 										NpcHandler.npcs[player.npcClickIndex].getX(),
 										NpcHandler.npcs[player.npcClickIndex].getY());
@@ -322,8 +329,7 @@ public class ClickNPC implements PacketType {
 		case THIRD_CLICK:
 			player.npcClickIndex = packet.readSignedWord();
 			player.npcType = NpcHandler.npcs[player.npcClickIndex].npcType;
-			if (player.goodDistance(NpcHandler.npcs[player.npcClickIndex].getX(),
-					NpcHandler.npcs[player.npcClickIndex].getY(), player.getX(),
+			if (NpcData.goodDistanceNpc(player.npcClickIndex, player.getX(),
 					player.getY(), 2)) {
 				player.turnPlayerTo(NpcHandler.npcs[player.npcClickIndex].getX(),
 						NpcHandler.npcs[player.npcClickIndex].getY());
@@ -337,9 +343,8 @@ public class ClickNPC implements PacketType {
 			            public void execute(CycleEventContainer container) {
 						if (player.clickNpcType == 3
 								&& NpcHandler.npcs[player.npcClickIndex] != null) {
-							if (player.goodDistance(player.getX(), player.getY(),
-									NpcHandler.npcs[player.npcClickIndex].getX(),
-									NpcHandler.npcs[player.npcClickIndex].getY(), 1)) {
+							if (NpcData.goodDistanceNpc(player.npcClickIndex, player.getX(),
+									player.getY(), 1)) {
 								player.turnPlayerTo(
 										NpcHandler.npcs[player.npcClickIndex].getX(),
 										NpcHandler.npcs[player.npcClickIndex].getY());

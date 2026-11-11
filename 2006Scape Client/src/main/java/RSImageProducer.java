@@ -13,6 +13,9 @@ import java.awt.image.ImageProducer;
 
 final class RSImageProducer implements ImageProducer, ImageObserver {
 
+	public static final int[] masterScreenBuffer = new int[765 * 503];
+	public static final Object masterBufferLock = new Object();
+
 	public RSImageProducer(int pixelWidth, int pixelHeight, Component component) {
 		width = pixelWidth;
 		height = pixelHeight;

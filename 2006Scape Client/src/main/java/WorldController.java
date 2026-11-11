@@ -933,7 +933,7 @@ final class WorldController {
 				for (int tileY = drawMinTileY; tileY < drawMaxTileY; tileY++) {
 					Ground tile = planeTiles[tileX][tileY];
 					if (tile != null) {
-						if (tile.minCameraPlane > plane || !cameraTileVisibility[tileX - cameraTileX + drawDistance][tileY - cameraTileY + drawDistance] && tileHeights[planeIndex][tileX][tileY] - cameraZ < 50) {
+						if (tile.minCameraPlane > plane || (!ClientSettings.ANDROID && !cameraTileVisibility[tileX - cameraTileX + drawDistance][tileY - cameraTileY + drawDistance]) && tileHeights[planeIndex][tileX][tileY] - cameraZ < 50) {
 							tile.firstPassPending = false;
 							tile.drawPending = false;
 							tile.cornerWallEdgeMask = 0;
@@ -1710,7 +1710,7 @@ final class WorldController {
 				}
 				boolean anyTileVisible = false;
 				while (firstTableRow <= lastTableRow) {
-					if (cameraTileVisibility[tableColumn][firstTableRow++]) {
+					if (ClientSettings.ANDROID || cameraTileVisibility[tableColumn][firstTableRow++]) {
 						anyTileVisible = true;
 						break;
 					}
@@ -1750,7 +1750,7 @@ final class WorldController {
 				}
 				boolean anyTileVisible = false;
 				while (firstTableColumn <= lastTableColumn) {
-					if (cameraTileVisibility[firstTableColumn++][tableRow]) {
+					if (ClientSettings.ANDROID || cameraTileVisibility[firstTableColumn++][tableRow]) {
 						anyTileVisible = true;
 						break;
 					}
@@ -1796,7 +1796,7 @@ final class WorldController {
 						boolean anyTileVisible = false;
 						label0 : for (int column = firstTableColumn; column <= lastTableColumn; column++) {
 							for (int row = firstTableRow; row <= lastTableRow; row++) {
-								if (!cameraTileVisibility[column][row]) {
+								if (!ClientSettings.ANDROID && !cameraTileVisibility[column][row]) {
 									continue;
 								}
 								anyTileVisible = true;

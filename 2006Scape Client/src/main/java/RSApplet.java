@@ -19,6 +19,13 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 	private int middleDragLastY = 0;
 	public static boolean removeShiftDropOnMenuOpen;
 
+	public static final int TARGET_DEFAULT = 0;
+	public static final int TARGET_VIEWPORT = 1;
+	public static final int TARGET_TAB = 2;
+	public static final int TARGET_CHAT = 3;
+	public static final int TARGET_MINIMAP = 4;
+	public static int touchTargetArea = TARGET_DEFAULT;
+
 	final void createClientFrame(int height, int width) {
 		myWidth = width;
 		myHeight = height;
@@ -738,7 +745,7 @@ public class RSApplet extends Applet implements Runnable, MouseListener, MouseWh
 	int myWidth;
 	int myHeight;
 	Graphics graphics;
-	RSImageProducer fullGameScreen;
+	public RSImageProducer fullGameScreen;
 	RSFrame gameFrame;
 	private boolean shouldClearScreen;
 	boolean awtFocus;
