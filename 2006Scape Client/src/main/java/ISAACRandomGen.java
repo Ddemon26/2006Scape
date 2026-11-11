@@ -21,145 +21,145 @@ public final class ISAACRandomGen {
 
 	private void isaac() {
 		lastResult += ++counter;
-		for (int i = 0; i < 256; i++) {
-			int j = memory[i];
-			if ((i & 3) == 0) {
+		for (int slot = 0; slot < 256; slot++) {
+			int oldValue = memory[slot];
+			if ((slot & 3) == 0) {
 				accumulator ^= accumulator << 13;
-			} else if ((i & 3) == 1) {
+			} else if ((slot & 3) == 1) {
 				accumulator ^= accumulator >>> 6;
-			} else if ((i & 3) == 2) {
+			} else if ((slot & 3) == 2) {
 				accumulator ^= accumulator << 2;
-			} else if ((i & 3) == 3) {
+			} else if ((slot & 3) == 3) {
 				accumulator ^= accumulator >>> 16;
 			}
-			accumulator += memory[i + 128 & 0xff];
-			int k;
-			memory[i] = k = memory[(j & 0x3fc) >> 2] + accumulator + lastResult;
-			results[i] = lastResult = memory[(k >> 8 & 0x3fc) >> 2] + j;
+			accumulator += memory[slot + 128 & 0xff];
+			int newValue;
+			memory[slot] = newValue = memory[(oldValue & 0x3fc) >> 2] + accumulator + lastResult;
+			results[slot] = lastResult = memory[(newValue >> 8 & 0x3fc) >> 2] + oldValue;
 		}
 
 	}
 
 	private void initializeKeySet() {
-		int i1;
-		int j1;
-		int k1;
-		int l1;
-		int i2;
-		int j2;
-		int k2;
-		int l = i1 = j1 = k1 = l1 = i2 = j2 = k2 = 0x9e3779b9;
-		for (int i = 0; i < 4; i++) {
-			l ^= i1 << 11;
-			k1 += l;
-			i1 += j1;
-			i1 ^= j1 >>> 2;
-			l1 += i1;
-			j1 += k1;
-			j1 ^= k1 << 8;
-			i2 += j1;
-			k1 += l1;
-			k1 ^= l1 >>> 16;
-			j2 += k1;
-			l1 += i2;
-			l1 ^= i2 << 10;
-			k2 += l1;
-			i2 += j2;
-			i2 ^= j2 >>> 4;
-			l += i2;
-			j2 += k2;
-			j2 ^= k2 << 8;
-			i1 += j2;
-			k2 += l;
-			k2 ^= l >>> 9;
-			j1 += k2;
-			l += i1;
+		int mixWord1;
+		int mixWord2;
+		int mixWord3;
+		int mixWord4;
+		int mixWord5;
+		int mixWord6;
+		int mixWord7;
+		int mixWord0 = mixWord1 = mixWord2 = mixWord3 = mixWord4 = mixWord5 = mixWord6 = mixWord7 = 0x9e3779b9;
+		for (int scrambleRound = 0; scrambleRound < 4; scrambleRound++) {
+			mixWord0 ^= mixWord1 << 11;
+			mixWord3 += mixWord0;
+			mixWord1 += mixWord2;
+			mixWord1 ^= mixWord2 >>> 2;
+			mixWord4 += mixWord1;
+			mixWord2 += mixWord3;
+			mixWord2 ^= mixWord3 << 8;
+			mixWord5 += mixWord2;
+			mixWord3 += mixWord4;
+			mixWord3 ^= mixWord4 >>> 16;
+			mixWord6 += mixWord3;
+			mixWord4 += mixWord5;
+			mixWord4 ^= mixWord5 << 10;
+			mixWord7 += mixWord4;
+			mixWord5 += mixWord6;
+			mixWord5 ^= mixWord6 >>> 4;
+			mixWord0 += mixWord5;
+			mixWord6 += mixWord7;
+			mixWord6 ^= mixWord7 << 8;
+			mixWord1 += mixWord6;
+			mixWord7 += mixWord0;
+			mixWord7 ^= mixWord0 >>> 9;
+			mixWord2 += mixWord7;
+			mixWord0 += mixWord1;
 		}
 
-		for (int j = 0; j < 256; j += 8) {
-			l += results[j];
-			i1 += results[j + 1];
-			j1 += results[j + 2];
-			k1 += results[j + 3];
-			l1 += results[j + 4];
-			i2 += results[j + 5];
-			j2 += results[j + 6];
-			k2 += results[j + 7];
-			l ^= i1 << 11;
-			k1 += l;
-			i1 += j1;
-			i1 ^= j1 >>> 2;
-			l1 += i1;
-			j1 += k1;
-			j1 ^= k1 << 8;
-			i2 += j1;
-			k1 += l1;
-			k1 ^= l1 >>> 16;
-			j2 += k1;
-			l1 += i2;
-			l1 ^= i2 << 10;
-			k2 += l1;
-			i2 += j2;
-			i2 ^= j2 >>> 4;
-			l += i2;
-			j2 += k2;
-			j2 ^= k2 << 8;
-			i1 += j2;
-			k2 += l;
-			k2 ^= l >>> 9;
-			j1 += k2;
-			l += i1;
-			memory[j] = l;
-			memory[j + 1] = i1;
-			memory[j + 2] = j1;
-			memory[j + 3] = k1;
-			memory[j + 4] = l1;
-			memory[j + 5] = i2;
-			memory[j + 6] = j2;
-			memory[j + 7] = k2;
+		for (int seedBlock = 0; seedBlock < 256; seedBlock += 8) {
+			mixWord0 += results[seedBlock];
+			mixWord1 += results[seedBlock + 1];
+			mixWord2 += results[seedBlock + 2];
+			mixWord3 += results[seedBlock + 3];
+			mixWord4 += results[seedBlock + 4];
+			mixWord5 += results[seedBlock + 5];
+			mixWord6 += results[seedBlock + 6];
+			mixWord7 += results[seedBlock + 7];
+			mixWord0 ^= mixWord1 << 11;
+			mixWord3 += mixWord0;
+			mixWord1 += mixWord2;
+			mixWord1 ^= mixWord2 >>> 2;
+			mixWord4 += mixWord1;
+			mixWord2 += mixWord3;
+			mixWord2 ^= mixWord3 << 8;
+			mixWord5 += mixWord2;
+			mixWord3 += mixWord4;
+			mixWord3 ^= mixWord4 >>> 16;
+			mixWord6 += mixWord3;
+			mixWord4 += mixWord5;
+			mixWord4 ^= mixWord5 << 10;
+			mixWord7 += mixWord4;
+			mixWord5 += mixWord6;
+			mixWord5 ^= mixWord6 >>> 4;
+			mixWord0 += mixWord5;
+			mixWord6 += mixWord7;
+			mixWord6 ^= mixWord7 << 8;
+			mixWord1 += mixWord6;
+			mixWord7 += mixWord0;
+			mixWord7 ^= mixWord0 >>> 9;
+			mixWord2 += mixWord7;
+			mixWord0 += mixWord1;
+			memory[seedBlock] = mixWord0;
+			memory[seedBlock + 1] = mixWord1;
+			memory[seedBlock + 2] = mixWord2;
+			memory[seedBlock + 3] = mixWord3;
+			memory[seedBlock + 4] = mixWord4;
+			memory[seedBlock + 5] = mixWord5;
+			memory[seedBlock + 6] = mixWord6;
+			memory[seedBlock + 7] = mixWord7;
 		}
 
-		for (int k = 0; k < 256; k += 8) {
-			l += memory[k];
-			i1 += memory[k + 1];
-			j1 += memory[k + 2];
-			k1 += memory[k + 3];
-			l1 += memory[k + 4];
-			i2 += memory[k + 5];
-			j2 += memory[k + 6];
-			k2 += memory[k + 7];
-			l ^= i1 << 11;
-			k1 += l;
-			i1 += j1;
-			i1 ^= j1 >>> 2;
-			l1 += i1;
-			j1 += k1;
-			j1 ^= k1 << 8;
-			i2 += j1;
-			k1 += l1;
-			k1 ^= l1 >>> 16;
-			j2 += k1;
-			l1 += i2;
-			l1 ^= i2 << 10;
-			k2 += l1;
-			i2 += j2;
-			i2 ^= j2 >>> 4;
-			l += i2;
-			j2 += k2;
-			j2 ^= k2 << 8;
-			i1 += j2;
-			k2 += l;
-			k2 ^= l >>> 9;
-			j1 += k2;
-			l += i1;
-			memory[k] = l;
-			memory[k + 1] = i1;
-			memory[k + 2] = j1;
-			memory[k + 3] = k1;
-			memory[k + 4] = l1;
-			memory[k + 5] = i2;
-			memory[k + 6] = j2;
-			memory[k + 7] = k2;
+		for (int memoryBlock = 0; memoryBlock < 256; memoryBlock += 8) {
+			mixWord0 += memory[memoryBlock];
+			mixWord1 += memory[memoryBlock + 1];
+			mixWord2 += memory[memoryBlock + 2];
+			mixWord3 += memory[memoryBlock + 3];
+			mixWord4 += memory[memoryBlock + 4];
+			mixWord5 += memory[memoryBlock + 5];
+			mixWord6 += memory[memoryBlock + 6];
+			mixWord7 += memory[memoryBlock + 7];
+			mixWord0 ^= mixWord1 << 11;
+			mixWord3 += mixWord0;
+			mixWord1 += mixWord2;
+			mixWord1 ^= mixWord2 >>> 2;
+			mixWord4 += mixWord1;
+			mixWord2 += mixWord3;
+			mixWord2 ^= mixWord3 << 8;
+			mixWord5 += mixWord2;
+			mixWord3 += mixWord4;
+			mixWord3 ^= mixWord4 >>> 16;
+			mixWord6 += mixWord3;
+			mixWord4 += mixWord5;
+			mixWord4 ^= mixWord5 << 10;
+			mixWord7 += mixWord4;
+			mixWord5 += mixWord6;
+			mixWord5 ^= mixWord6 >>> 4;
+			mixWord0 += mixWord5;
+			mixWord6 += mixWord7;
+			mixWord6 ^= mixWord7 << 8;
+			mixWord1 += mixWord6;
+			mixWord7 += mixWord0;
+			mixWord7 ^= mixWord0 >>> 9;
+			mixWord2 += mixWord7;
+			mixWord0 += mixWord1;
+			memory[memoryBlock] = mixWord0;
+			memory[memoryBlock + 1] = mixWord1;
+			memory[memoryBlock + 2] = mixWord2;
+			memory[memoryBlock + 3] = mixWord3;
+			memory[memoryBlock + 4] = mixWord4;
+			memory[memoryBlock + 5] = mixWord5;
+			memory[memoryBlock + 6] = mixWord6;
+			memory[memoryBlock + 7] = mixWord7;
 		}
 
 		isaac();
